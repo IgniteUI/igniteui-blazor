@@ -2,7 +2,7 @@ blank_issues_enabled: false
 contact_links:
     - name: Ask a Question
       url: https://github.com/IgniteUI/igniteui-blazor/discussions/new
-      about: Please ask and answer questions for Ignite UI for Blazor here.
+      about: Start a Discussion.
     - name: Read the Docs
       url: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-getting-started
       about: Be sure you've read the docs!
