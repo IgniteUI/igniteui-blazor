@@ -18,6 +18,10 @@ All components are based on the [Indigo.Design Design System](https://www.infrag
 --- | --- | --- | --- | --- |
 Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
 
+## Purpose
+
+This repository is intended for clients to create feature requests, log bugs, and ask questions related to [Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor). Please note that this repository does not contain any source code or allow for direct code changes.
+
 ## Overview
 
 |Components|Status|Documentation|
@@ -77,14 +81,13 @@ Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
 Provide a complete windowing experience, splitting complex layouts into smaller, easier-to-manage panes. 
 
 In order to use the Ignite UI Blazor in your application you should install 
-???
+[NuGet packages](https://www.nuget.org/packages/IgniteUI.Blazor.Trial).
 
-### Tooling Support
+There are three ways to install Ignite UI for Blazor using NuGet:
 
-???
+[Using Visual Studio](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-visual-studio)
+[Using the .NET CLI](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-the-net-cli)
+[Using the Package Manager](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-the-package-manager)
 
-
-## Setup
-
-???
+Full documentation for [Installing Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor)
 
