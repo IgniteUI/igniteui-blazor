@@ -78,7 +78,7 @@ This repository is intended for users to create feature requests, submit issues,
 
 ### [Dock Manager - EXCLUSIVE FEATURE](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager)
 
-Provide a complete windowing experience, splitting complex layouts into smaller, easier-to-manage panes. 
+Provide a complete multi-window experience, splitting complex layouts into smaller, easier-to-manage, and modify panes. 
 
 In order to use the Ignite UI Blazor in your application you should install 
 [NuGet packages](https://www.nuget.org/packages/IgniteUI.Blazor.Trial).
