@@ -20,7 +20,7 @@ Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
 
 ## Purpose
 
-This repository is intended for clients to create feature requests, log bugs, and ask questions related to [Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor). Please note that this repository does not contain any source code or allow for direct code changes.
+This repository is intended for users to create feature requests, submit issues, and ask questions related to [Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor). Please note that this repository does not contain any source code or allow for direct code changes.
 
 ## Overview
 
