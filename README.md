@@ -1,4 +1,5 @@
-![Logo Ignite UI for Blazor)](https://user-images.githubusercontent.com/52001020/173773052-e8fd2806-2631-47a8-838d-1eabdaa4afce.svg)
+
+![MicrosoftTeams-image](https://github.com/IgniteUI/igniteui-blazor/assets/52001020/3b1a1d50-49d5-4e9f-a59a-c170255f9b2c)
 
 
 <h1 align="center">
@@ -26,49 +27,50 @@ This repository is intended for users to create feature requests, submit issues,
 
 |Components|Status|Documentation|
 |:--|:--:|:--:|
-|Combo|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/combo/overview)
-|Stepper|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/stepper)|
-|Select|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/select)|
-|Dialog|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/dialog)|
-|Date Time Input|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/date-time-input)|
-|Tabs|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tabs)|
 |Accordion|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/accordion)|
-|Mask Input|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/input)|
-|Expansion Panel|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/expansion-panel)|
-|Tree|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree)|
-|Drop Down|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast)|
-|Linear Progress|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/linear-progress)|
-|Circular Progress|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/circular-progress)|
-|Chip|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/chip)|   
-|Snackbar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/snackbar)|
-|Toast|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast)|
-|Rating|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/rating)|
-|Slider & Range Slider|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/slider)| 
 |Avatar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/avatar)|
 |Badge|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/badge)|
 |Button|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button)|
 |Calendar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/calendar)|
 |Card|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/card)|
 |Checkbox|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/checkbox)|
+|Chip|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/chip)|   
+|Circular Progress|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/circular-progress)|
+|Combo|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/combo/overview)
+|Date Time Input|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/date-time-input)|
+|Dialog|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/dialog)|
+|Drop Down|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast)|
+|Expansion Panel|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/expansion-panel)|
 |Form|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/form)|
-|Icon|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/icon)|
 |Icon Button|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/icon-button)|
+|Icon|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/icon)|
 |Input|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/input)|
+|Linear Progress|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/linear-progress)|
 |List|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/list)|
+|Mask Input|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/input)|
 |Navigation Bar (Navbar)|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/navbar)|
 |Navigation Drawer|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/navigation-drawer)|
-|Radio|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio)|
 |Radio Group|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio)|
+|Radio|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio)|
+|Rating|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/rating)|
 |Ripple|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/ripple)|
+|Select|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/select)|
+|Slider & Range Slider|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/slider)| 
+|Snackbar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/snackbar)|
+|Stepper|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/stepper)|
 |Switch|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/switch)|
+|Tabs|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tabs)|
+|Toast|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast)|
+|Tree|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree)|
+
 
 ## Grid components
 
-|Components|Status|Documentation|Released Version|
-|:--|:--:|:--:|:--:|
+|Components|Status|Documentation|
+|:--|:--:|:--:|
+|Data Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/grid/overview)|
 |Pivot Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/pivot-grid/overview)|
-|Data Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/grid/overview)||
-|Tree Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree-grid/overview)||
+|Tree Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree-grid/overview)|
 
 ## Usage
 
