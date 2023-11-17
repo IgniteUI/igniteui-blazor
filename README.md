@@ -1,6 +1,5 @@
 
-[![NuGet version](https://badge.fury.io/nu/IgniteUI.svg)](https://badge.fury.io/nu/IgniteUI)
-[![Discord](https://img.shields.io/discord/836634487483269200?logo=discord&logoColor=ffffff)](https://discord.com/channels/836634487483269200/836636796229386241)
+
 ![MicrosoftTeams-image](https://github.com/IgniteUI/igniteui-blazor/assets/52001020/3b1a1d50-49d5-4e9f-a59a-c170255f9b2c)
 
 
@@ -9,7 +8,7 @@
 </h1>
 
 
-
+[![NuGet version](https://badge.fury.io/nu/IgniteUI.svg)](https://badge.fury.io/nu/IgniteUI)
 [![Discord](https://img.shields.io/discord/836634487483269200?logo=discord&logoColor=ffffff)](https://discord.com/channels/836634487483269200/836636796229386241)
 
 [Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor) is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach. 
