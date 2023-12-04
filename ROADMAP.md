@@ -9,6 +9,7 @@
 ## Going down the road
 
 1. IgrDataGrid - Declarative Filtering [#48](https://github.com/IgniteUI/igniteui-react/issues/48)
+2. Query Builder Component [#93](https://github.com/IgniteUI/igniteui-blazor/issues/93)
 
 # Previous Milestone
 
