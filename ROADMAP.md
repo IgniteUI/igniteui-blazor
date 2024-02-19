@@ -2,16 +2,19 @@
 
 # Current Milestone
 
-## Milestone 4, (Due by Dec, 2023)
+## Milestone 5, (Due by Mar, 2024)
 
-1. IgrDataGrid - State Persistence [#47](https://github.com/IgniteUI/igniteui-react/issues/47)
+1. Hierarchical grid [#97](https://github.com/IgniteUI/igniteui-blazor/issues/97)
 
 ## Going down the road
 
-1. IgrDataGrid - Declarative Filtering [#48](https://github.com/IgniteUI/igniteui-react/issues/48)
-2. Query Builder Component [#93](https://github.com/IgniteUI/igniteui-blazor/issues/93)
+1. Query Builder Component [#93](https://github.com/IgniteUI/igniteui-blazor/issues/93)
 
 # Previous Milestone
+
+## Milestone 4, version 23.1 (Released Dec 15, 2023)
+
+1. **[DONE]** IgrDataGrid - Declarative Filtering [#48](https://github.com/IgniteUI/igniteui-react/issues/48)
 
 ## Milestone 3, version 23.1 (Released Jun 28, 2023) [Release Blog 23.1.0](https://www.infragistics.com/community/blogs/b/infragistics/posts/ignite-ui-for-blazor-23-1-release)
 
