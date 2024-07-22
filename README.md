@@ -31,6 +31,7 @@ This repository is intended for users to create feature requests, submit issues,
 |Accordion|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/accordion)|
 |Avatar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/avatar)|
 |Badge|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/badge)|
+|Button Group|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button-group)|
 |Button|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button)|
 |Calendar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/calendar)|
 |Card|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/card)|
@@ -61,6 +62,7 @@ This repository is intended for users to create feature requests, submit issues,
 |Stepper|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/stepper)|
 |Switch|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/switch)|
 |Tabs|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tabs)|
+|Text Area|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/text-area)|
 |Toast|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast)|
 |Tree|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree)|
 
@@ -72,6 +74,7 @@ This repository is intended for users to create feature requests, submit issues,
 |Data Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/grid/overview)|
 |Pivot Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/pivot-grid/overview)|
 |Tree Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree-grid/overview)|
+|Hierarchical Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/hierarchical-grid/overview)|
 
 ## Usage
 
