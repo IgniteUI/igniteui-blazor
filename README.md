@@ -11,8 +11,7 @@
 [![NuGet version](https://badge.fury.io/nu/IgniteUI.Blazor.Trial.svg)](https://badge.fury.io/nu/IgniteUI.Blazor.Trial)
 [![Discord](https://img.shields.io/discord/836634487483269200?logo=discord&logoColor=ffffff)](https://discord.com/channels/836634487483269200/836636796229386241)
 
-[Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor) is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach. 
-All components are based on the [Indigo.Design Design System](https://www.infragistics.com/products/appbuilder/ui-toolkit) and are backed by ready-to-use UI kits for Sketch, Adobe XD and Figma.
+[Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor) component library packs native Blazor UI Controls, full-featured [Grids](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/data-grid), and 60+ high-performance [Charts](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/chart-overview) designed for any app scenario. Including [Dock Manager](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager) and complete control over how your apps look and feel with Bootstrap, Fluent, and Material themes. Equipped with full support for Blazor Server, Blazor WebAssembly, and .NET 8.
 
 ## Browser Support
 
