@@ -12,7 +12,7 @@
 [![Discord](https://img.shields.io/discord/836634487483269200?logo=discord&logoColor=ffffff)](https://discord.com/channels/836634487483269200/836636796229386241)
 
 [Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor) is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach. 
-All components are based on the [Indigo.Design Design System](https://www.infragistics.com/products/appbuilder/ui-toolkit) and are backed by ready-to-use UI kits for Sketch, Adobe XD and Figma.
+All components are based on the [Indigo.Design Design System](https://www.infragistics.com/products/appbuilder/ui-toolkit) and are backed by ready-to-use UI kits for Figma.
 
 ## Browser Support
 
@@ -22,7 +22,7 @@ Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
 
 ## Purpose
 
-This repository is intended for users to create feature requests, submit issues, and ask questions related to [Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor). Please note that this repository does not contain any source code or allow for direct code changes.
+This repository hosts the code for Ignite UI for Blazor Lite and is also intended for users to create feature requests, submit issues, and ask questions related to [Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor).
 
 ## Overview
 
@@ -76,18 +76,19 @@ This repository is intended for users to create feature requests, submit issues,
 |Tree Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree-grid/overview)|
 |Hierarchical Grid|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/hierarchical-grid/overview)|
 
+## [Dock Manager - EXCLUSIVE FEATURE](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager)
+
+Provide a complete multi-window experience, splitting complex layouts into smaller, easier-to-manage, and modify panes. 
+
 ## Usage
 
 ### [Ignite UI for Blazor Server App](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-getting-started#install-ignite-ui-for-blazor)
 
 ### [Ignite UI for Blazor WebAssembly](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-getting-started-blazor-client)
 
-### [Dock Manager - EXCLUSIVE FEATURE](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager)
-
-Provide a complete multi-window experience, splitting complex layouts into smaller, easier-to-manage, and modify panes. 
 
 In order to use the Ignite UI Blazor in your application you should install 
-[NuGet packages](https://www.nuget.org/packages/IgniteUI.Blazor.Trial).
+[NuGet packages](https://www.nuget.org/packages?q=IgniteUI.Blazor).
 
 There are three ways to install Ignite UI for Blazor using NuGet:
 
@@ -97,3 +98,59 @@ There are three ways to install Ignite UI for Blazor using NuGet:
 
 Full documentation for [Installing Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor)
 
+### Register Ignite UI for Blazor
+
+1 - Open the **Program.cs** file and register the Ignite UI for Blazor Service by calling **builder.Services.AddIgniteUIBlazor()**:
+
+```csharp
+builder.Services.AddIgniteUIBlazor();
+```
+
+2 - Add the **IgniteUI.Blazor.Controls** namespace in the **_Imports.razor** file:
+
+```csharp
+@using IgniteUI.Blazor.Controls
+```
+
+3 - Add the Style Sheet in the **<head\>** element of the **wwwroot/index.html** file:
+
+```html
+<head>
+    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+</head>
+```
+
+4 - Add Script Reference to the **wwwroot/index.html** file:
+
+```html
+<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
+<script src="_framework/blazor.webassembly.js"></script>
+```
+
+### Add Ignite UI for Blazor Component
+
+Add an Ignite UI for Blazor component to your razor page:
+
+```html
+<IgbCard style="width:350px">
+    <IgbCardMedia>
+        <img src="https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=350&q=80" />
+    </IgbCardMedia>
+    <IgbCardHeader>
+        <h4>Jane Doe</h4>
+        <h6>Professional Photographer</h6>
+    </IgbCardHeader>
+    <IgbCardContent>Hi! I'm Jane, photographer and filmmaker.
+        Photography is a way of feeling, of touching,
+        of loving. What you have caught on film is captured forever...
+        it remembers little things, long after you have
+        forgotten everything.</IgbCardContent>
+    <IgbCardActions>
+        <IgbButton>More Info</IgbButton>
+    </IgbCardActions>
+</IgbCard>
+```
+
+Build and run the Blazor app.
+
+<!-- ![](images/general/getting-started-blazor-card.jpg) -->

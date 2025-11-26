@@ -1,0 +1,1 @@
+export {WebExpansionPanelComponentEventArgsDescriptionMetadata} from "./WebExpansionPanelDescriptionMetadata_combined"

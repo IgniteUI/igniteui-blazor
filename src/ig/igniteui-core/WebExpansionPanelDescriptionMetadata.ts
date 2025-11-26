@@ -1,0 +1,1 @@
+export {WebExpansionPanelDescriptionMetadata} from "./WebExpansionPanelDescriptionMetadata_combined"
