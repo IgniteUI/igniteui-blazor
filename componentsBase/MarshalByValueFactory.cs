@@ -91,6 +91,15 @@ case "WebTabComponentEventArgs":
 case "TabHeaderElement":
 case "WebTabHeaderElement":
                 return true;
+case "TileChangeStateEventArgs":
+case "WebTileChangeStateEventArgs":
+                return true;
+case "TileChangeStateEventArgsDetail":
+case "WebTileChangeStateEventArgsDetail":
+                return true;
+case "TileComponentEventArgs":
+case "WebTileComponentEventArgs":
+                return true;
 case "TreeItemComponentEventArgs":
 case "WebTreeItemComponentEventArgs":
                 return true;
@@ -217,6 +226,18 @@ case "TabComponentEventArgs":
 case "TabHeaderElement":
             case "WebTabHeaderElement":
                 return new IgbTabHeaderElement();
+            break;
+case "TileChangeStateEventArgs":
+            case "WebTileChangeStateEventArgs":
+                return new IgbTileChangeStateEventArgs();
+            break;
+case "TileChangeStateEventArgsDetail":
+            case "WebTileChangeStateEventArgsDetail":
+                return new IgbTileChangeStateEventArgsDetail();
+            break;
+case "TileComponentEventArgs":
+            case "WebTileComponentEventArgs":
+                return new IgbTileComponentEventArgs();
             break;
 case "TreeItemComponentEventArgs":
             case "WebTreeItemComponentEventArgs":

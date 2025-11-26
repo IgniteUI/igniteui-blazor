@@ -1011,6 +1011,36 @@ export class Loader {
             break;
         }
             
+    case "WebTileManagerModule":
+        {
+            let { IgcTileManagerComponent } = await import('igniteui-webcomponents');
+            let { WebTileManagerDescriptionModule } = await import('igniteui-core/WebTileManagerDescriptionModule');
+
+            this._loadingSet.delete(module);
+
+            IgcTileManagerComponent.register();
+            TypeRegistrar.registerCons('IgcTileManagerComponent', IgcTileManagerComponent);
+
+            WebTileManagerDescriptionModule.register(cr.context);
+            this.checkDone();
+            break;
+        }
+            
+    case "WebTileModule":
+        {
+            let { IgcTileComponent } = await import('igniteui-webcomponents');
+            let { WebTileDescriptionModule } = await import('igniteui-core/WebTileDescriptionModule');
+
+            this._loadingSet.delete(module);
+
+            IgcTileComponent.register();
+            TypeRegistrar.registerCons('IgcTileComponent', IgcTileComponent);
+
+            WebTileDescriptionModule.register(cr.context);
+            this.checkDone();
+            break;
+        }
+            
     case "WebToastModule":
         {
             let { IgcToastComponent } = await import('igniteui-webcomponents');
@@ -1196,6 +1226,12 @@ Loader.marshalByValueSet.add('TabComponentEventArgs');
 Loader.marshalByValueSet.add('WebTabComponentEventArgs');
 Loader.marshalByValueSet.add('TabHeaderElement');
 Loader.marshalByValueSet.add('WebTabHeaderElement');
+Loader.marshalByValueSet.add('TileChangeStateEventArgs');
+Loader.marshalByValueSet.add('WebTileChangeStateEventArgs');
+Loader.marshalByValueSet.add('TileChangeStateEventArgsDetail');
+Loader.marshalByValueSet.add('WebTileChangeStateEventArgsDetail');
+Loader.marshalByValueSet.add('TileComponentEventArgs');
+Loader.marshalByValueSet.add('WebTileComponentEventArgs');
 Loader.marshalByValueSet.add('TreeItemComponentEventArgs');
 Loader.marshalByValueSet.add('WebTreeItemComponentEventArgs');
 Loader.marshalByValueSet.add('TreeSelectionEventArgs');
