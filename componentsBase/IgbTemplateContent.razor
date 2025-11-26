@@ -1,0 +1,35 @@
+@namespace IgniteUI.Blazor.Controls
+@typeparam T
+
+<div>
+    @if (Template != null && _hasPopulatedContext)
+    {
+        @Template(Context)
+    }
+</div>
+
+@code 
+{
+    [Parameter]
+    public RenderFragment<T> Template { get; set; }
+
+    private bool _hasPopulatedContext = false;
+    private T _context;
+    [Parameter]
+    public T Context 
+    { 
+        get
+        {
+            return _context;
+        }
+        set
+        {
+            _context = value;
+            _hasPopulatedContext = true;
+        }
+    }
+    public void Update()
+    {
+        StateHasChanged();
+    }
+}
