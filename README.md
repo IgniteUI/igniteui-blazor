@@ -3,9 +3,9 @@
 ![MicrosoftTeams-image](https://github.com/IgniteUI/igniteui-blazor/assets/52001020/3b1a1d50-49d5-4e9f-a59a-c170255f9b2c)
 
 
-<h1 align="center">
-  Ignite UI for Blazor - from Infragistics 
-</h1>
+
+# Ignite UI for Blazor - from Infragistics 
+
 
 
 [![NuGet version](https://badge.fury.io/nu/IgniteUI.Blazor.Trial.svg)](https://badge.fury.io/nu/IgniteUI.Blazor.Trial)
@@ -26,51 +26,55 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 
 ## Overview
 
-|Components|Status|Documentation|
-|:--|:--:|:--:|
-|Accordion|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/accordion)|
-|Avatar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/avatar)|
-|Badge|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/badge)|
-|Banner|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/banner)|
-|Button Group|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button-group)|
-|Button|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button)|
-|Bullet Graph|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/bullet-graph)|
-|Calendar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/calendar)|
-|Card|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/card)|
-|Carousel|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/carousel)|
-|Checkbox|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/checkbox)|
-|Chip|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/chip)|   
-|Circular Progress|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/circular-progress)|
-|Combo|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/combo/overview)
-|Date Picker|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/date-picker)|
-|Date Time Input|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/date-time-input)|
-|Dialog|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/dialog)|
-|Drop Down|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast)|
-|Expansion Panel|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/expansion-panel)|
-|Form|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/form)|
-|Icon Button|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/icon-button)|
-|Icon|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/icon)|
-|Input|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/input)|
-|Linear Gauge|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/linear-gauge)|
-|Linear Progress|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/linear-progress)|
-|List|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/list)|
-|Mask Input|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/input)|
-|Navigation Bar (Navbar)|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/navbar)|
-|Navigation Drawer|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/navigation-drawer)|
-|Radial Gauge|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/radial-gauge)|
-|Radio|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio)|
-|Radio Group|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio)|
-|Rating|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/rating)|
-|Ripple|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/ripple)|
-|Select|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/select)|
-|Slider & Range Slider|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/slider)| 
-|Snackbar|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/snackbar)|
-|Stepper|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/stepper)|
-|Switch|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/switch)|
-|Tabs|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tabs)|
-|Text Area|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/text-area)|
-|Toast|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast)|
-|Tree|:white_check_mark:|[Docs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree)|
+| Components              | Status |         Documentation          | Released Version |   License   |
+| :---------------------- | :----: | :----------------------------: | :--------------: | :---------: |
+| Chat                    |   ✅   | [Docs][Chat Docs]              |     [6.3.0]      | [MIT](LICENSE) |
+| Date Range Picker       |   ✅   | [Docs][Date Range Picker Docs] |     [6.1.0]      | [MIT](LICENSE) |
+| Tooltip                 |   ✅   |      [Docs][Tooltip Docs]      |     [5.4.0]      | [MIT](LICENSE) |
+| File Input              |   ✅   |    [Docs][File Input Docs]     |     [5.4.0]      | [MIT](LICENSE) |
+| Tile Manager            |   ✅   |   [Docs][Tile Manager Docs]    |     [5.3.0]      | [MIT](LICENSE) |
+| Carousel                |   ✅   |     [Docs][Carousel Docs]      |     [5.1.0]      | [MIT](LICENSE) |
+| Date picker             |   ✅   |    [Docs][Date Picker Docs]    |     [4.10.0]     | [MIT](LICENSE) |
+| Divider                 |   ✅   |      [Docs][Divider Docs]      |     [4.10.0]     | [MIT](LICENSE) |
+| Banner                  |   ✅   |      [Docs][Banner Docs]       |     [4.10.0]     | [MIT](LICENSE) |
+| Button group            |   ✅   |   [Docs][Button Group Docs]    |     [4.5.0]      | [MIT](LICENSE) |
+| Textarea                |   ✅   |     [Docs][Textarea Docs]      |     [4.5.0]      | [MIT](LICENSE) |
+| Combo                   |   ✅   |       [Docs][Combo Docs]       |     [4.1.0]      | [MIT](LICENSE) |
+| Stepper                 |   ✅   |      [Docs][Stepper Docs]      |     [4.1.0]      | [MIT](LICENSE) |
+| Select                  |   ✅   |      [Docs][Select Docs]       |     [3.4.0]      | [MIT](LICENSE) |
+| Dialog                  |   ✅   |      [Docs][Dialog Docs]       |     [3.4.0]      | [MIT](LICENSE) |
+| Date Time Input         |   ✅   |  [Docs][Date Time Input Docs]  |     [3.3.0]      | [MIT](LICENSE) |
+| Tabs                    |   ✅   |       [Docs][Tabs Docs]        |     [3.3.0]      | [MIT](LICENSE) |
+| Accordion               |   ✅   |     [Docs][Accordion Docs]     |     [3.3.0]      | [MIT](LICENSE) |
+| Mask Input              |   ✅   |   [Docs][Masked Input Docs]    |     [3.2.0]      | [MIT](LICENSE) |
+| Expansion Panel         |   ✅   |  [Docs][Expansion Panel Docs]  |     [3.2.0]      | [MIT](LICENSE) |
+| Tree                    |   ✅   |       [Docs][Tree Docs]        |     [3.2.0]      | [MIT](LICENSE) |
+| Drop Down               |   ✅   |     [Docs][Dropdown Docs]      |     [2.2.0]      | [MIT](LICENSE) |
+| Linear Progress         |   ✅   |  [Docs][Linear Progress Docs]  |     [2.1.0]      | [MIT](LICENSE) |
+| Circular Progress       |   ✅   | [Docs][Circular Progress Docs] |     [2.1.0]      | [MIT](LICENSE) |
+| Chip                    |   ✅   |       [Docs][Chip Docs]        |     [2.1.0]      | [MIT](LICENSE) |
+| Snackbar                |   ✅   |     [Docs][Snackbar Docs]      |     [2.1.0]      | [MIT](LICENSE) |
+| Toast                   |   ✅   |       [Docs][Toast Docs]       |     [2.1.0]      | [MIT](LICENSE) |
+| Rating                  |   ✅   |      [Docs][Rating Docs]       |     [2.1.0]      | [MIT](LICENSE) |
+| Slider                  |   ✅   |      [Docs][Slider Docs]       |     [2.0.0]      | [MIT](LICENSE) |
+| Range Slider            |   ✅   |      [Docs][Slider Docs]       |     [2.0.0]      | [MIT](LICENSE) |
+| Avatar                  |   ✅   |      [Docs][Avatar Docs]       |     [1.0.0]      | [MIT](LICENSE) |
+| Badge                   |   ✅   |       [Docs][Badge Docs]       |     [1.0.0]      | [MIT](LICENSE) |
+| Button                  |   ✅   |      [Docs][Button Docs]       |     [1.0.0]      | [MIT](LICENSE) |
+| Calendar                |   ✅   |     [Docs][Calendar Docs]      |     [1.0.0]      | [MIT](LICENSE) |
+| Card                    |   ✅   |       [Docs][Card Docs]        |     [1.0.0]      | [MIT](LICENSE) |
+| Checkbox                |   ✅   |     [Docs][Checkbox Docs]      |     [1.0.0]      | [MIT](LICENSE) |
+| Form                    |   ✅   |       [Docs][Form Docs]        |     [1.0.0]      | [MIT](LICENSE) |
+| Icon                    |   ✅   |       [Docs][Icon Docs]        |     [1.0.0]      | [MIT](LICENSE) |
+| Icon Button             |   ✅   |    [Docs][Icon Button Docs]    |     [1.0.0]      | [MIT](LICENSE) |
+| Input                   |   ✅   |       [Docs][Input Docs]       |     [1.0.0]      | [MIT](LICENSE) |
+| List                    |   ✅   |       [Docs][List Docs]        |     [1.0.0]      | [MIT](LICENSE) |
+| Navigation Bar (Navbar) |   ✅   |  [Docs][Navigation Bar Docs]   |     [1.0.0]      | [MIT](LICENSE) |
+| Navigation Drawer       |   ✅   | [Docs][Navigation Drawer Docs] |     [1.0.0]      | [MIT](LICENSE) |
+| Radio                   |   ✅   |       [Docs][Radio Docs]       |     [1.0.0]      | [MIT](LICENSE) |
+| Radio Group             |   ✅   |       [Docs][Radio Docs]       |     [1.0.0]      | [MIT](LICENSE) |
+| Ripple                  |   ✅   |      [Docs][Ripple Docs]       |     [1.0.0]      | [MIT](LICENSE) |
+| Switch                  |   ✅   |      [Docs][Switch Docs]       |     [1.0.0]      | [MIT](LICENSE) |
 
 
 ## Grid components
@@ -160,3 +164,125 @@ Add an Ignite UI for Blazor component to your razor page:
 Build and run the Blazor app.
 
 <!-- ![](images/general/getting-started-blazor-card.jpg) -->
+
+[Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
+[Commercial]: https://www.infragistics.com/legal/license
+[MIT]: LICENSE
+[igniteui-blazor-grids]: https://www.npmjs.com/package/igniteui-blazor-grids
+[igniteui-blazor-grid-lite]: https://www.npmjs.com/package/igniteui-blazor-grid-lite
+[igniteui-grid-lite]: https://www.npmjs.com/package/igniteui-grid-lite
+[igniteui-blazor]: https://www.npmjs.com/package/igniteui-blazor
+[igniteui-core]: https://www.npmjs.com/package/igniteui-blazor-core 
+[Ignite UI for Web Components]: https://www.infragistics.com/products/ignite-ui-blazor
+[igniteui-dockmanager]: https://www.npmjs.com/search?q=igniteui-dockmanager
+[Indigo.Design Design System]: https://www.infragistics.com/products/appbuilder/ui-toolkit
+[Ignite UI for WebComponents Grids]: https://www.npmjs.com/package/igniteui-webcomponents-grids
+[igniteui-blazor-inputs]: https://www.npmjs.com/package/igniteui-blazor-inputs
+[igniteui-blazor-maps]: https://www.npmjs.com/package/igniteui-blazor-maps
+[igniteui-blazor-dashboards]: https://www.npmjs.com/package/igniteui-blazor-dashboards
+[Dock Manager Picture]: https://github.com/IgniteUI/igniteui-webcomponents/assets/52001020/a9643f17-f1c2-4554-87aa-96c9daea13b0
+[VSCode Custom Data Format]: https://github.com/microsoft/vscode-custom-data
+[Web Types]: https://plugins.jetbrains.com/docs/intellij/websymbols-web-types.html
+[chrome_48x48]: https://user-images.githubusercontent.com/2188411/168109445-fbd7b217-35f9-44d1-8002-1eb97e39cdc6.png
+[firefox_48x48]: https://user-images.githubusercontent.com/2188411/168109465-e46305ee-f69f-4fa5-8f4a-14876f7fd3ca.png
+[edge_48x48]: https://user-images.githubusercontent.com/2188411/168109472-a730f8c0-3822-4ae6-9f54-785a66695245.png
+[opera_48x48]: https://user-images.githubusercontent.com/2188411/168109520-b6865a6c-b69f-44a4-9948-748d8afd687c.png
+[safari_48x48]: https://user-images.githubusercontent.com/2188411/168109527-6c58f2cf-7386-4b97-98b1-cfe0ab4e8626.png
+[Contribution Guidelines]: https://github.com/IgniteUI/igniteui-blazor/blob/master/.github/CONTRIBUTING.md
+[Pivot Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/pivot-grid/overview
+[Data Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/data-grid
+[Tree Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree-grid/overview
+[Hierarchical Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/hierarchical-grid/overview
+[Grid Lite]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grid-lite/overview 
+[Switch Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/switch
+[Ripple Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/ripple
+[Radio Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio
+[Navigation Drawer Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/navigation-drawer
+[Navigation Bar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/navbar
+[List Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/list
+[Input Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/input
+[Icon Button Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/icon-button
+[Icon Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/icon
+[Form Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/form
+[Checkbox Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/checkbox
+[Card Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/card
+[Calendar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/calendar
+[Button Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button
+[Badge Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/badge
+[Avatar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/avatar
+[Slider Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/slider
+[Rating Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/rating
+[Toast Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast
+[Snackbar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/snackbar
+[Chip Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/chip
+[Circular Progress Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/circular-progress
+[Linear Progress Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/linear-progress
+[Dropdown Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/dropdown
+[Tree Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree
+[Expansion Panel Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/expansion-panel
+[Masked Input Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/mask-input
+[Accordion Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/accordion
+[Tabs Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tabs
+[Date Time Input Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/date-time-input
+[Dialog Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/dialog
+[Select Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/select
+[Stepper Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/stepper
+[Combo Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/combo/overview
+[Textarea Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/text-area
+[Button Group Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button-group
+[Banner Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/banner
+[Divider Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/divider
+[Date Picker Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/date-picker
+[Carousel Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/carousel
+[Tile Manager Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tile-manager
+[File Input Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/file-input
+[Tooltip Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/tooltip
+[blazor Charts & Graphs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/chart-overview
+[Bubble charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/bubble-chart
+[Financial/Stock charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/stock-chart
+[Donut charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/donut-chart 
+[Spreadsheet Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/spreadsheet-overview
+[Dock Manager Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
+[Toolbar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/toolbar
+[Excel Library Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/excel-library
+[Bullet Graph Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/bullet-graph
+[Linear Gauge Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/linear-gauge
+[Radial Gauge Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/radial-gauge
+[Color Editor]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/color-editor
+[Zoom Slider Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/zoomslider-overview
+[Area Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/area-chart
+[Bar Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/bar-chart
+[Bubble Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/bubble-chart
+[Column Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/column-chart
+[Composite Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/composite-chart
+[Data Pie Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/data-pie-chart
+[Donut Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/donut-chart
+[Stock Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/stock-chart
+[Line Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/line-chart
+[Pie Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/pie-chart
+[Point Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/point-chart
+[Polar Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/polar-chart
+[Radial Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/radial-chart
+[Scatter Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/scatter-chart
+[Shape Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/shape-chart
+[Spline Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/spline-chart
+[Sparkline Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/sparkline-chart
+[Stacked Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/stacked-chart
+[Step Chart Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/step-chart
+[Treemap Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/treemap-chart
+[Geographic Area Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-scatter-area-series
+[Geographic Contour Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-scatter-contour-series
+[Geographic High Density Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-scatter-density-series
+[Geographic Bubble Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-scatter-bubble-series
+[Geographic Symbol Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-scatter-symbol-series
+[Geographic Polygon Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polygon-series
+[Geographic Polyline Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polyline-series
+[Dashboard Tile Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/dashboard-tile
+[Ignite UI for blazor]: https://www.infragistics.com/products/ignite-ui-blazor 
+[igniteui-blazor-gauges]: https://www.npmjs.com/package/igniteui-blazor-gauges
+[igniteui-blazor-charts]: https://www.npmjs.com/package/igniteui-blazor-charts
+[igniteui-blazor-excel]: https://www.npmjs.com/package/igniteui-blazor-excel
+[Chat Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/interactivity/chat
+[Tile Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tile-manager
+[Tooltip]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/tooltip
+[Date Range]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/date-range-picker
