@@ -291,6 +291,7 @@ Build and run the Blazor app.
 [21.2]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#21222-november-2021
 [22.1]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#22141-june-2022
 [22.2]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#22250-december-2022
+[23.2]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#232204-march-2024
 [24.1]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#24146-september-2024
 [24.2]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#24219-november-2024
 [25.1]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25119-june-2025
