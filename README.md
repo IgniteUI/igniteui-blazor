@@ -26,8 +26,8 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 
 | Components              | Status |         Documentation          | Released Version |   License   |
 | :---------------------- | :----: | :----------------------------: | :--------------: | :---------: |
-| Date Range Picker       |   ✅   | [Docs][Date Range Picker Docs] |     [25.2]       |    [MIT]    |
-| Tooltip                 |   ✅   |      [Docs][Tooltip Docs]      |     [25.2]       |    [MIT]    |
+| Date Range Picker       |   ✅   | Docs coming soon              |     [25.2]       |    [MIT]    |
+| Tooltip                 |   ✅   |      [Docs][Tooltip Docs]      |     [25.1]       |    [MIT]    |
 | Tile Manager            |   ✅   |   [Docs][Tile Manager Docs]    |     [25.1]       |    [MIT]    |
 | Carousel                |   ✅   |     [Docs][Carousel Docs]      |     [24.2]       |    [MIT]    |
 | Date picker             |   ✅   |    [Docs][Date Picker Docs]    |     [24.1]       |    [MIT]    |
