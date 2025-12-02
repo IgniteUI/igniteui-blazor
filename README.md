@@ -1,4 +1,4 @@
-![MicrosoftTeams-image](https://github.com/IgniteUI/igniteui-blazor/assets/52001020/3b1a1d50-49d5-4e9f-a59a-c170255f9b2c)
+![Ignite UI for Blazor](https://raw.githubusercontent.com/IgniteUI/igniteui-blazor/master/images/general/Ignite-UI-for-Blazor.png)
 
 
 
