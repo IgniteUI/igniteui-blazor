@@ -169,25 +169,14 @@ Build and run the Blazor app.
 [Commercial]: https://www.infragistics.com/legal/license
 [MIT]: https://github.com/IgniteUI/igniteui-blazor/blob/master/LICENSE
 [igniteui-blazor-grids]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
-[igniteui-blazor-grid-lite]: https://www.nuget.org/packages/IgniteUI.Blazor.GridLite
 [igniteui-grid-lite]: https://www.nuget.org/packages/IgniteUI.Blazor.GridLite
-[igniteui-blazor]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
-[igniteui-core]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial 
-[Ignite UI for Web Components]: https://www.infragistics.com/products/ignite-ui-blazor
-[igniteui-dockmanager]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
 [Indigo.Design Design System]: https://www.infragistics.com/products/appbuilder/ui-toolkit
-[igniteui-blazor-inputs]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
-[igniteui-blazor-maps]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
-[igniteui-blazor-dashboards]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
 [Dock Manager Picture]: https://github.com/IgniteUI/igniteui-webcomponents/assets/52001020/a9643f17-f1c2-4554-87aa-96c9daea13b0
-[VSCode Custom Data Format]: https://github.com/microsoft/vscode-custom-data
-[Web Types]: https://plugins.jetbrains.com/docs/intellij/websymbols-web-types.html
 [chrome_48x48]: https://user-images.githubusercontent.com/2188411/168109445-fbd7b217-35f9-44d1-8002-1eb97e39cdc6.png
 [firefox_48x48]: https://user-images.githubusercontent.com/2188411/168109465-e46305ee-f69f-4fa5-8f4a-14876f7fd3ca.png
 [edge_48x48]: https://user-images.githubusercontent.com/2188411/168109472-a730f8c0-3822-4ae6-9f54-785a66695245.png
 [opera_48x48]: https://user-images.githubusercontent.com/2188411/168109520-b6865a6c-b69f-44a4-9948-748d8afd687c.png
 [safari_48x48]: https://user-images.githubusercontent.com/2188411/168109527-6c58f2cf-7386-4b97-98b1-cfe0ab4e8626.png
-[Contribution Guidelines]: https://github.com/IgniteUI/igniteui-blazor/blob/master/.github/CONTRIBUTING.md
 [Pivot Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/pivot-grid/overview
 [Data Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/data-grid
 [Tree Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree-grid/overview
