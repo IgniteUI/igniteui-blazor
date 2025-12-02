@@ -1,7 +1,5 @@
 ![Ignite UI for Blazor](https://raw.githubusercontent.com/IgniteUI/igniteui-blazor/master/images/general/Ignite-UI-for-Blazor.png)
 
-
-
 # Ignite UI for Blazor - from Infragistics 
 
 [![NuGet version](https://badge.fury.io/nu/IgniteUI.Blazor.Trial.svg)](https://badge.fury.io/nu/IgniteUI.Blazor.Trial)
@@ -178,7 +176,6 @@ Build and run the Blazor app.
 [Ignite UI for Web Components]: https://www.infragistics.com/products/ignite-ui-blazor
 [igniteui-dockmanager]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
 [Indigo.Design Design System]: https://www.infragistics.com/products/appbuilder/ui-toolkit
-[Ignite UI for WebComponents Grids]: https://www.npmjs.com/package/igniteui-webcomponents-grids
 [igniteui-blazor-inputs]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
 [igniteui-blazor-maps]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
 [igniteui-blazor-dashboards]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
@@ -281,9 +278,6 @@ Build and run the Blazor app.
 [Geographic Polyline Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polyline-series
 [Dashboard Tile Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/dashboard-tile
 [Ignite UI for Blazor]: https://www.infragistics.com/products/ignite-ui-blazor 
-[igniteui-blazor-gauges]: https://www.npmjs.com/package/igniteui-blazor-gauges
-[igniteui-blazor-charts]: https://www.npmjs.com/package/igniteui-blazor-charts
-[igniteui-blazor-excel]: https://www.npmjs.com/package/igniteui-blazor-excel
 [Chat Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/interactivity/chat
 [Tile Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tile-manager
 [Tooltip]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/tooltip
