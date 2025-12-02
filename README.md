@@ -7,7 +7,7 @@
 [![NuGet version](https://badge.fury.io/nu/IgniteUI.Blazor.Trial.svg)](https://badge.fury.io/nu/IgniteUI.Blazor.Trial)
 [![Discord](https://img.shields.io/discord/836634487483269200?logo=discord&logoColor=ffffff)](https://discord.com/channels/836634487483269200/836636796229386241)
 
-[Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor) is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach. 
+[Ignite UI for Blazor] is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach. 
 All components are based on the [Indigo.Design Design System](https://www.infragistics.com/products/appbuilder/ui-toolkit) and are backed by ready-to-use UI kits for Figma.
 
 ## Browser Support
@@ -18,7 +18,7 @@ Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
 
 ## Purpose
 
-This repository hosts the code for Ignite UI for Blazor Lite and is also intended for users to create feature requests, submit issues, and ask questions related to [Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor).
+This repository hosts the code for Ignite UI for Blazor Lite and is also intended for users to create feature requests, submit issues, and ask questions related to [Ignite UI for Blazor].
 
 ## Overview
 
@@ -280,7 +280,7 @@ Build and run the Blazor app.
 [Geographic Polygon Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polygon-series
 [Geographic Polyline Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polyline-series
 [Dashboard Tile Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/dashboard-tile
-[Ignite UI for blazor]: https://www.infragistics.com/products/ignite-ui-blazor 
+[Ignite UI for Blazor]: https://www.infragistics.com/products/ignite-ui-blazor 
 [igniteui-blazor-gauges]: https://www.npmjs.com/package/igniteui-blazor-gauges
 [igniteui-blazor-charts]: https://www.npmjs.com/package/igniteui-blazor-charts
 [igniteui-blazor-excel]: https://www.npmjs.com/package/igniteui-blazor-excel
