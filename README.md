@@ -74,11 +74,11 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 
 | Components        | Status |         Documentation          | Released Version | Package | License |
 | :---------------- | :----: | :----------------------------: |:--:  | :----:| :----:|
-| Grid         |   ✅   |     [Docs][Data Grid Docs]     |[22.1]| [igniteui-blazor-grids] | [Commercial] |
-| Tree Grid         |   ✅   |     [Docs][Tree Grid Docs]     |[22.1]| [igniteui-blazor-grids]| [Commercial] |
-| Pivot Grid        |   ✅   |    [Docs][Pivot Grid Docs]     |[22.2]| [igniteui-blazor-grids]| [Commercial] |
-| Hierarchical Grid |   ✅   | [Docs][Hierarchical Grid Docs] |[23.2]| [igniteui-blazor-grids]| [Commercial] |
-| Grid Lite |   ✅   | [Docs][Grid Lite] |0.0.1| [igniteui-grid-lite]| [MIT] |
+| Grid         |   ✅   |     [Docs][Data Grid Docs]     |[22.1]| [IgniteUI.Blazor] | [Commercial] |
+| Tree Grid         |   ✅   |     [Docs][Tree Grid Docs]     |[22.1]| [IgniteUI.Blazor]| [Commercial] |
+| Pivot Grid        |   ✅   |    [Docs][Pivot Grid Docs]     |[22.2]| [IgniteUI.Blazor]| [Commercial] |
+| Hierarchical Grid |   ✅   | [Docs][Hierarchical Grid Docs] |[23.2]| [IgniteUI.Blazor]| [Commercial] |
+| Grid Lite |   ✅   | [Docs][Grid Lite] |0.0.1| [IgniteUI.Blazor.GridLite]| [MIT] |
 
 ### Dock Manager - EXCLUSIVE FEATURE
 
@@ -88,7 +88,7 @@ Provide a complete windowing experience, splitting complex layouts into smaller,
 
 - [Documentation][Dock Manager]
 - License - [Commercial]
-- Package - [Ignite UI Blazor](https://www.nuget.org/packages/IgniteUI.Blazor.Trial)
+- Package - [IgniteUI.Blazor]
 
 ## Usage
 
@@ -168,8 +168,8 @@ Build and run the Blazor app.
 [Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Commercial]: https://www.infragistics.com/legal/license
 [MIT]: https://github.com/IgniteUI/igniteui-blazor/blob/master/LICENSE
-[igniteui-blazor-grids]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
-[igniteui-grid-lite]: https://www.nuget.org/packages/IgniteUI.Blazor.GridLite
+[IgniteUI.Blazor]: https://www.nuget.org/packages/IgniteUI.Blazor.Trial
+[IgniteUI.Blazor.GridLite]: https://www.nuget.org/packages/IgniteUI.Blazor.GridLite
 [Indigo.Design Design System]: https://www.infragistics.com/products/appbuilder/ui-toolkit
 [Dock Manager Picture]: https://github.com/IgniteUI/igniteui-webcomponents/assets/52001020/a9643f17-f1c2-4554-87aa-96c9daea13b0
 [chrome_48x48]: https://user-images.githubusercontent.com/2188411/168109445-fbd7b217-35f9-44d1-8002-1eb97e39cdc6.png
