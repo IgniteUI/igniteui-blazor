@@ -22,7 +22,7 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 
 ### Components in [Ignite UI Blazor Lite](https://www.nuget.org/packages/IgniteUI.Blazor.Lite)
 
-| Components              | Status |         Documentation          | Released Version<br> Ignite UI Blazor |Released Version<br> Ignite UI Lite Blazor |   License   |
+| Components              | Status |         Documentation          | Released Version<br> Ignite UI Blazor |Released Version<br> Ignite UI Blazor Lite |   License   |
 | :---------------------- | :----: | :----------------------------: | :--------------: | :---------: | :---------: |
 | Date Range Picker       |   ✅   | Docs coming soon              |     [25.2]       | 0.0.1|    [MIT]    |
 | Tooltip                 |   ✅   |      [Docs][Tooltip Docs]      |     [25.1]       | 0.0.1|    [MIT]    |
