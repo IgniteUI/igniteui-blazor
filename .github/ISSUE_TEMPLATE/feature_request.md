@@ -2,8 +2,8 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-type: feature
-labels: "feature-request", ":new: status: new"
+type: Feature
+labels: ':toolbox: feature-request,:new: status: new'
 assignees: ''
 
 ---
