@@ -28,8 +28,13 @@ Map the user's request to one or more rows in the Task → Reference File table 
 **STEP 3 — Read every identified reference file in full (PARALLEL).**
 Call `read_file` (or equivalent) on **all** reference files identified in Step 2 **in a single parallel batch** — do NOT read them one at a time sequentially. You must do this even if you believe you already know the answer. Do not skip, skim, or partially read a reference file.
 
-**STEP 4 — Only then produce output.**
-Base your code and explanation exclusively on what you read in Step 3. If the reference files do not cover something, say so explicitly rather than guessing.
+**STEP 4 — Extract doc slugs, then call `get_doc` for the relevant grid and each feature.**
+Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. This is the primary source of truth for Blazor grid APIs — it returns verified property names, event names, and method signatures. Do NOT skip this step.
+
+If a reference file does not list a slug for the requested grid feature, call `search_docs(framework: "blazor", query: "<grid feature>")` to find the correct doc. If no Blazor doc exists, say that the feature is not covered rather than guessing.
+
+**STEP 5 — Only then produce output.**
+Base your code and explanation exclusively on what you read in Steps 3–4. If the reference files or MCP docs do not cover something, say so explicitly rather than guessing.
 
 ### Task → Reference File
 
@@ -60,6 +65,15 @@ Before using any Ignite UI for Blazor grid component you must have:
 | Using directive | `@using IgniteUI.Blazor.Controls` in **_Imports.razor** |
 | CSS theme | `<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />` in **index.html** or **_Host.cshtml** |
 | JS interop script | `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` in **index.html** or **_Host.cshtml** |
+| Ignite UI CLI MCP | The **Ignite UI CLI MCP server** (`igniteui-cli`) available as a tool provider — see [`references/mcp-setup.md`](./references/mcp-setup.md) |
+
+> **AGENT INSTRUCTION — MCP Server Setup (REQUIRED)**
+>
+> Before using any Ignite UI CLI MCP tools, you MUST verify the MCP server is available
+> by calling `list_components(framework: "blazor", filter: "grid")` or `search_docs(framework: "blazor", query: "grid")`.
+> If the tool is not available or the call fails, you MUST automatically configure it by following the setup steps in [`references/mcp-setup.md`](./references/mcp-setup.md).
+>
+> After writing the file, inform the user that the MCP server has been configured and they may need to reload the editor for the tools to activate. Do NOT skip this step or ask the user to do it manually.
 
 If these are not yet in place, read the `igniteui-blazor-components` skill's `references/setup.md` first.
 
@@ -75,7 +89,7 @@ Ignite UI for Blazor has **five grid types**. Ask these questions in order:
 4. **Does the data have parent-child relationships within a SINGLE schema** (e.g., Employees with a `ManagerId` field, or nested children arrays)? → **Tree Grid** (`IgbTreeGrid`)
 5. **Is the data a flat list/table with enterprise features needed** (editing, batch editing, grouping, paging, export, etc.)? → **Flat Grid** (`IgbGrid`)
 
-After choosing the grid type, **you must still complete Steps 2–4 from the mandatory protocol above** — return to the routing table and read every applicable `references/` file before writing any code.
+After choosing the grid type, **you must still complete Steps 2–5 from the mandatory protocol above** — return to the routing table and read every applicable `references/` file before writing any code.
 
 > **AGENT INSTRUCTION — Documentation URL Pattern**: For grid-specific topics (sorting, filtering, editing, paging, etc.), docs URLs follow this naming pattern per grid type:
 > - Grid Lite: `.../components/grid-lite/{topic}`
@@ -129,7 +143,7 @@ builder.Services.AddIgniteUIBlazor(
 | Cell editing | ❌ | ✅ | ✅ | ✅ | ❌ (read-only) |
 | Row editing | ❌ | ✅ | ✅ | ✅ | ❌ |
 | Row adding | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Batch editing | ❌ | ✅ | ✅ | ✅ | ❌ |
+| Batch editing | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Paging | ❌ | ✅ | ✅ | ✅ | ❌ |
 | Column pinning | ❌ | ✅ | ✅ | ✅ | ❌ |
 | Column hiding | ✅ | ✅ | ✅ | ✅ | ❌ |
@@ -145,6 +159,18 @@ builder.Services.AddIgniteUIBlazor(
 | Cell merging | ❌ | ✅ | ❌ | ❌ | ❌ |
 | Load on demand | ❌ | ❌ | ✅ **Exclusive** | ❌ | ❌ |
 | Remote data ops | `DataPipelineConfiguration` | Events + noop strategies | Events + noop strategies | Events + noop strategies | N/A |
+
+---
+
+## Key Blazor-Specific Notes
+
+> **AGENT INSTRUCTION — No `get_api_reference` for Blazor**
+>
+> `get_api_reference` and `search_api` MCP tools do **not** support Blazor. All property names, event names, and method signatures must be obtained from `get_doc` results.
+
+> **AGENT INSTRUCTION — Batch Editing is NOT available for Blazor**
+>
+> The Ignite UI for Blazor grid does **not** support batch editing. Supported editing modes are Cell editing and Row editing only. Do not suggest or generate batch editing code.
 
 ---
 
