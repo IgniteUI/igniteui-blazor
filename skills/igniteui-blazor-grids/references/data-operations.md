@@ -1,39 +1,22 @@
 # Data Operations — Programmatic Sorting, Filtering, Grouping & Custom Strategies
 
-This reference covers accessing grid instances programmatically and performing sorting, filtering, and grouping operations via C# code (not just the UI).
-
 ---
 
 ## Accessing Grid Instances via `@ref`
 
-Every grid type supports `@ref` to get a component reference for programmatic API calls:
+Use `@ref` to get a typed component reference for programmatic API calls. Declare with the matching type (`IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, or `IgbPivotGrid`) and access only after render:
 
 ```razor
-<IgbGrid @ref="flatGrid" Data="data" PrimaryKey="Id">
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
     ...
 </IgbGrid>
 
-<IgbTreeGrid @ref="treeGrid" Data="treeData" PrimaryKey="Id" ForeignKey="ParentId">
-    ...
-</IgbTreeGrid>
-
-<IgbHierarchicalGrid @ref="hGrid" Data="hierarchicalData" PrimaryKey="Id">
-    ...
-</IgbHierarchicalGrid>
-
-<IgbPivotGrid @ref="pivotGrid" Data="pivotData" PivotConfiguration="pivotConfig">
-    ...
-</IgbPivotGrid>
-
 @code {
-    private IgbGrid flatGrid = default!;
-    private IgbTreeGrid treeGrid = default!;
-    private IgbHierarchicalGrid hGrid = default!;
-    private IgbPivotGrid pivotGrid = default!;
+    private IgbGrid grid = default!;
 }
 ```
 
-> **Important:** Always declare the reference with `default!` and access it only after the component has rendered (e.g., in lifecycle methods after `OnAfterRenderAsync` or in event handlers).
+> **Important:** The reference is `null` until after the component renders. Use it in event handlers or `OnAfterRenderAsync`, not in `OnInitialized`.
 
 ---
 
@@ -101,35 +84,6 @@ Pass multiple expressions in a single call:
     }
 }
 ```
-
-### Sorting events
-
-| Event | Type | Description |
-|---|---|---|
-| `SortingDone` | `EventCallback<IgbSortingEventArgs>` | Fires after sorting is applied (UI or programmatic) |
-
-```razor
-<IgbGrid @ref="grid" Data="data" PrimaryKey="Id"
-         SortingDone="OnSortingDone">
-    ...
-</IgbGrid>
-
-@code {
-    private void OnSortingDone(IgbSortingEventArgs args)
-    {
-        // args.SortingExpressions — current sorting state
-    }
-}
-```
-
-### Applies to
-
-| Grid Type | Sorting Support |
-|---|---|
-| IgbGrid | ✅ Column-based |
-| IgbTreeGrid | ✅ Column-based (sorts within each level) |
-| IgbHierarchicalGrid | ✅ Column-based (each level independent) |
-| IgbPivotGrid | ✅ Dimension-based only (via configuration) |
 
 ---
 
@@ -217,21 +171,6 @@ For AND/OR grouped conditions, build a `FilteringExpressionsTree`:
 }
 ```
 
-### Filtering events
-
-| Event | Type | Description |
-|---|---|---|
-| `FilteringDone` | `EventCallback<IgbFilteringEventArgs>` | Fires after filtering is applied |
-
-### Applies to
-
-| Grid Type | Filtering Support |
-|---|---|
-| IgbGrid | ✅ Column-based |
-| IgbTreeGrid | ✅ Recursive (filters entire tree, shows matching rows + ancestors) |
-| IgbHierarchicalGrid | ✅ Per-level independent |
-| IgbPivotGrid | ✅ Dimension-based only (via `Filters` in configuration) |
-
 ---
 
 ## Programmatic Grouping (IgbGrid Only)
@@ -288,44 +227,13 @@ Grouping is exclusive to the flat grid. Tree Grid and Hierarchical Grid do not s
 
 ---
 
-## Custom Sorting Strategy
-
-Provide a custom sort comparer for a column:
-
-```razor
-<IgbColumn Field="Priority" Sortable="true"
-           SortStrategy="typeof(PrioritySortStrategy)" />
-
-@code {
-    public class PrioritySortStrategy : IgbSortingStrategy
-    {
-        public override int Compare(object? a, object? b, SortingDirection direction)
-        {
-            var order = new Dictionary<string, int>
-            {
-                ["Critical"] = 0, ["High"] = 1, ["Medium"] = 2, ["Low"] = 3
-            };
-
-            int aOrder = order.GetValueOrDefault(a?.ToString() ?? "", 99);
-            int bOrder = order.GetValueOrDefault(b?.ToString() ?? "", 99);
-
-            int result = aOrder.CompareTo(bOrder);
-            return direction == SortingDirection.Desc ? -result : result;
-        }
-    }
-}
-```
+Add `SortStrategy="typeof(YourStrategy)"` to a column and implement a class that extends `IgbSortingStrategy`, overriding `Compare`. Use `get_doc` to find the exact base class and method signature.
 
 ---
 
 ## Custom Filtering Strategy
 
-Provide a custom filter condition:
-
-```razor
-<IgbColumn Field="Name" Filterable="true"
-           FilterStrategy="typeof(CaseInsensitiveFilterStrategy)" />
-```
+Add `FilterStrategy="typeof(YourStrategy)"` to a column and implement a class that provides custom filter logic. Use `get_doc` to find the exact interface and method signatures.
 
 ---
 
@@ -340,12 +248,3 @@ Provide a custom filter condition:
 7. **Pivot Grid uses configuration** — sorting and filtering are managed through `IgbPivotConfiguration`, not through programmatic `SortAsync`/`FilterAsync`.
 8. **`FieldName` is case-sensitive** — it must match the C# property name exactly.
 
----
-
-## See Also
-
-- [references/structure.md](references/structure.md) — Column setup, sorting UI, filtering UI
-- [references/features.md](references/features.md) — Grouping UI, summaries, toolbar
-- [references/types.md](references/types.md) — Grid-type-specific behaviors
-- [references/editing.md](references/editing.md) — Editing modes and transactions
-- [references/paging-remote.md](references/paging-remote.md) — Server-side data operations

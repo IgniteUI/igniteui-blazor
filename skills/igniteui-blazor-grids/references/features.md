@@ -1,19 +1,5 @@
 # Features — Grouping, Summaries, Merging, Toolbar, Export, Row Drag, Action Strip, Master-Detail & Clipboard
 
-This reference covers grid features beyond basic columns, sorting, filtering, and selection: editing quick reference (full details in editing.md), grouping, summaries, cell merging, toolbar, export, virtualization, row drag, action strip, master-detail, and clipboard.
-
----
-
-## Editing Quick Reference
-
-> Full editing coverage is in `references/editing.md`. This section provides a quick overview.
-
-| Mode | How to Enable | Behavior |
-|---|---|---|
-| Cell editing | `Editable="true"` on column | Single-cell edit; commits on blur or Enter |
-| Row editing | `RowEditable="true"` on grid | Edit all cells in a row; confirm/cancel banner |
-| Batch editing | `BatchEditing="true"` on grid | All changes held in memory; commit/undo/redo |
-
 ---
 
 ## Grouping (IgbGrid Only)
@@ -491,13 +477,3 @@ Grid supports copy-to-clipboard out of the box.
 6. **Action strip requires `RowEditable="true"`** for editing actions to function.
 7. **Summaries respect the `SummaryCalculationMode`** — set it for tree/hierarchical grids to control level-based calculations.
 
----
-
-## See Also
-
-- [references/structure.md](references/structure.md) — Column setup, sorting, filtering, selection
-- [references/editing.md](references/editing.md) — Full editing details (cell, row, batch, validation)
-- [references/types.md](references/types.md) — Tree Grid, Hierarchical Grid, Pivot Grid specifics
-- [references/data-operations.md](references/data-operations.md) — Programmatic sorting, filtering, grouping
-- [references/paging-remote.md](references/paging-remote.md) — Paging and remote data loading
-- [references/sizing.md](references/sizing.md) — Grid and column sizing

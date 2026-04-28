@@ -1,7 +1,5 @@
 # Paging, Remote Data & Virtualization
 
-This reference covers paging (local and remote), remote data operations (server-side sorting, filtering, grouping), and virtualization patterns for Ignite UI for Blazor grids.
-
 ---
 
 ## Paging with `IgbPaginator`
@@ -329,12 +327,3 @@ When a selection in one grid drives the data in another:
 7. **Remote operations override client-side** — when using remote sorting/filtering, the grid still shows sort/filter UI, but you handle the actual data transformation on the server.
 8. **Paging is not available on IgbPivotGrid** — the Pivot Grid does not support pagination.
 
----
-
-## See Also
-
-- [references/structure.md](references/structure.md) — Sorting and filtering UI setup
-- [references/data-operations.md](references/data-operations.md) — Programmatic sorting/filtering API
-- [references/editing.md](references/editing.md) — Editing with remote data
-- [references/state.md](references/state.md) — Persisting grid state across page loads
-- [references/sizing.md](references/sizing.md) — Grid height, width, and column sizing

@@ -1,7 +1,5 @@
 # Grid Types — Tree Grid, Hierarchical Grid & Pivot Grid
 
-This reference covers the specifics of each specialized grid type: Tree Grid, Hierarchical Grid (with Row Islands), and Pivot Grid.
-
 ---
 
 ## Tree Grid (`IgbTreeGrid`)
@@ -477,12 +475,3 @@ The Pivot Grid does not support cell editing, row editing, or batch editing. It 
 4. Use `IgbPivotDataSelector` for an interactive drag-and-drop UI.
 5. Row selection, cell selection, and column selection are not supported.
 
----
-
-## See Also
-
-- [references/structure.md](references/structure.md) — Column setup, sorting, filtering, selection
-- [references/features.md](references/features.md) — Grouping, summaries, toolbar, export, master-detail
-- [references/data-operations.md](references/data-operations.md) — Programmatic operations per grid type
-- [references/editing.md](references/editing.md) — Editing modes and validation
-- [references/state.md](references/state.md) — State persistence, grid-type-specific operations

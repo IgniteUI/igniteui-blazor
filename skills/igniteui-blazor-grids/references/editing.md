@@ -1,6 +1,4 @@
-# Editing — Cell Editing, Row Editing, Batch Editing & Validation
-
-This reference covers all editing modes for Ignite UI for Blazor grids: cell editing, row editing, batch editing (transactions), validation, and custom editors.
+# Editing — Cell Editing, Row Editing & Validation
 
 > **Pivot Grid does not support editing.** The Pivot Grid is read-only. The content below applies to IgbGrid, IgbTreeGrid, and IgbHierarchicalGrid.
 
@@ -12,7 +10,6 @@ This reference covers all editing modes for Ignite UI for Blazor grids: cell edi
 |---|---|---|---|
 | Cell editing | `Editable="true"` on column | Quick inline edits | Commits on blur, Enter, or Tab |
 | Row editing | `RowEditable="true"` on grid | Multi-field row changes | Shows confirm/cancel banner; commits on confirm |
-| Batch editing | `BatchEditing="true"` on grid | Offline editing, undo/redo, bulk send to server | All changes in memory until `Commit()` |
 
 > **Recommendation:** Use **row editing** for most CRUD scenarios. It gives users a clear confirm/cancel flow and prevents partial row updates.
 
@@ -153,99 +150,6 @@ Add inline add/edit/delete actions:
 
 ---
 
-## Batch Editing
-
-### Enable batch editing
-
-```razor
-<IgbGrid @ref="grid" Data="employees" PrimaryKey="Id"
-         BatchEditing="true" RowEditable="true" AutoGenerate="false">
-    <IgbColumn Field="Id" Header="ID" Editable="false" />
-    <IgbColumn Field="Name" Header="Name" Editable="true" />
-    <IgbColumn Field="Department" Header="Department" Editable="true" />
-    <IgbColumn Field="Salary" Header="Salary" Editable="true" DataType="GridColumnDataType.Currency" />
-</IgbGrid>
-
-<IgbButton @onclick="Commit">Save All Changes</IgbButton>
-<IgbButton @onclick="Undo">Undo</IgbButton>
-<IgbButton @onclick="Redo">Redo</IgbButton>
-<IgbButton @onclick="Discard">Discard All</IgbButton>
-
-@code {
-    private IgbGrid grid = default!;
-    private List<Employee> employees = new();
-
-    private async Task Commit()
-    {
-        grid.Transactions.Commit(grid.Data);
-        // Optionally send to server
-        await EmployeeService.SaveBatchAsync(employees);
-    }
-
-    private void Undo()
-    {
-        grid.Transactions.Undo();
-    }
-
-    private void Redo()
-    {
-        grid.Transactions.Redo();
-    }
-
-    private void Discard()
-    {
-        grid.Transactions.Clear();
-    }
-}
-```
-
-### How batch editing works
-
-1. When `BatchEditing="true"`, all edits (cell changes, row adds, row deletes) are stored in an in-memory transaction log.
-2. The grid visually marks changed cells/rows (added = green, modified = yellow, deleted = strikethrough).
-3. Changes do **not** modify the underlying data source until `Commit()` is called.
-4. `Undo()` reverses the last change; `Redo()` replays it.
-5. `Clear()` discards all pending changes and restores original state.
-
-### Transactions API
-
-| Method | Description |
-|---|---|
-| `grid.Transactions.Commit(data)` | Applies all pending changes to the data source |
-| `grid.Transactions.Undo()` | Reverses the last transaction |
-| `grid.Transactions.Redo()` | Re-applies the last undone transaction |
-| `grid.Transactions.Clear()` | Discards all pending changes |
-| `grid.Transactions.GetAggregatedChanges()` | Returns all pending changes as a collection |
-
-### Sending batch changes to a server
-
-```razor
-@code {
-    private async Task SaveToServer()
-    {
-        var changes = grid.Transactions.GetAggregatedChanges();
-        foreach (var change in changes)
-        {
-            switch (change.Type)
-            {
-                case TransactionType.ADD:
-                    await Api.CreateAsync(change.NewValue);
-                    break;
-                case TransactionType.UPDATE:
-                    await Api.UpdateAsync(change.Id, change.NewValue);
-                    break;
-                case TransactionType.DELETE:
-                    await Api.DeleteAsync(change.Id);
-                    break;
-            }
-        }
-        grid.Transactions.Commit(grid.Data);
-    }
-}
-```
-
----
-
 ## Adding & Deleting Rows Programmatically
 
 ### Add a row
@@ -276,8 +180,6 @@ Add inline add/edit/delete actions:
     }
 }
 ```
-
-When `BatchEditing="true"`, `AddRowAsync` and `DeleteRowAsync` are added to the transaction log but not immediately committed.
 
 ---
 
@@ -372,20 +274,10 @@ Provide a fully custom edit template for a column:
 1. **Set `PrimaryKey`** — editing requires a primary key to identify rows.
 2. **`Editable` is on the column, not the grid** — mark each editable column individually.
 3. **`RowEditable` is on the grid** — it enables the row-editing overlay with confirm/cancel.
-4. **`BatchEditing` holds changes in memory** — nothing is written to the data source until `Commit()`.
-5. **Use `CellEdit` / `RowEdit` to cancel edits** — set `args.Cancel = true` before commit.
-6. **Use `CellEditDone` / `RowEditDone` to persist** — these fire after the edit is committed to the grid (or transaction log).
-7. **Validation blocks commit** — in row/batch editing, the row cannot be confirmed while validation errors exist.
-8. **Pivot Grid is read-only** — never set `Editable`, `RowEditable`, or `BatchEditing` on an `IgbPivotGrid`.
-9. **Row editing mode is recommended** — it provides the best UX with confirm/cancel and prevents partial updates.
-10. **Batch editing requires explicit commit** — always provide a Save/Commit button when using batch editing.
+4. **Use `CellEdit` / `RowEdit` to cancel edits** — set `args.Cancel = true` before commit.
+5. **Use `CellEditDone` / `RowEditDone` to persist** — these fire after the edit is committed to the grid.
+6. **Validation blocks commit** — in row editing, the row cannot be confirmed while validation errors exist.
+7. **Pivot Grid is read-only** — never set `Editable` or `RowEditable` on an `IgbPivotGrid`.
+8. **Row editing mode is recommended** — it provides the best UX with confirm/cancel and prevents partial updates.
 
----
 
-## See Also
-
-- [references/structure.md](references/structure.md) — Column setup and templates
-- [references/features.md](references/features.md) — Action strip for inline add/edit/delete
-- [references/data-operations.md](references/data-operations.md) — Programmatic API access
-- [references/paging-remote.md](references/paging-remote.md) — Remote data patterns
-- [references/state.md](references/state.md) — State persistence for editing transactions

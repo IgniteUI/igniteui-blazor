@@ -1,7 +1,5 @@
 # Structure — Grid Setup, Columns, Sorting, Filtering & Selection
 
-This reference covers basic grid setup, column configuration, column templates, column groups, multi-row layout, column pinning, sorting UI, filtering UI, and selection for all Ignite UI for Blazor grid types.
-
 ---
 
 ## Quick Start
@@ -491,13 +489,6 @@ Or grid-wide:
 6. **Data must be a C# collection** — `List<T>`, `T[]`, or `IEnumerable<T>`. Not a JSON string or JavaScript object.
 7. **Use `@ref` for programmatic access** — declare `private IgbGrid grid = default!;` and use `@ref="grid"` on the component.
 
----
-
-## See Also
-
-- [references/features.md](references/features.md) — Grouping, summaries, toolbar, export, row drag, action strip, master-detail
-- [references/types.md](references/types.md) — Tree Grid, Hierarchical Grid, Pivot Grid specifics
-- [references/data-operations.md](references/data-operations.md) — Programmatic sorting, filtering, grouping
 - [references/editing.md](references/editing.md) — Cell, row, and batch editing
 - [references/paging-remote.md](references/paging-remote.md) — Paging, remote data, virtualization
 - [references/sizing.md](references/sizing.md) — Grid and column sizing, cell spacing

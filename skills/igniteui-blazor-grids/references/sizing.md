@@ -1,7 +1,5 @@
 # Sizing — Grid Width, Height, Column Sizing & Cell Spacing
 
-This reference covers grid dimensions, column sizing strategies, and cell spacing CSS variables for Ignite UI for Blazor grids.
-
 ---
 
 ## Grid Width
@@ -304,10 +302,3 @@ Apply different sizing to a specific grid:
 8. **Auto-size is a one-time operation** — `AutoSize="true"` on a column fits content at initial render; it doesn't update dynamically as data changes.
 9. **Row height consistency** — all rows in a grid have the same height. Variable row height is not supported.
 
----
-
-## See Also
-
-- [references/structure.md](references/structure.md) — Column configuration and setup
-- [references/features.md](references/features.md) — Toolbar, virtualization
-- [references/paging-remote.md](references/paging-remote.md) — Paging and scroll-based loading
