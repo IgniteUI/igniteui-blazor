@@ -1,14 +1,11 @@
 ---
 name: igniteui-blazor-grids
-description: "Provides guidance on all Ignite UI for Blazor data grid types (Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, Pivot Grid) including setup, column configuration, sorting, filtering, selection, editing, grouping, summaries, toolbar, export, paging, remote data, and state persistence. Use when users ask about grids, tables, data grids, tabular data display, cell editing, batch editing, row selection, column pinning, column hiding, grouping rows, pivot tables, tree-structured data, hierarchical data, master-detail views, read-only data display, or exporting grid data. Do NOT use for non-grid UI components (forms, dialogs, navigation, charts) — use igniteui-blazor-components instead. Do NOT use for theming or styling — use igniteui-blazor-theming instead."
+description: "Provides guidance on all Ignite UI for Blazor data grid types (Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, Pivot Grid) including setup, column configuration, sorting, filtering, selection, editing, grouping, summaries, toolbar, export, paging, remote data, and state persistence. Use when users ask about grids, tables, data grids, tabular data display, cell editing, row selection, column pinning, column hiding, grouping rows, pivot tables, tree-structured data, hierarchical data, master-detail views, read-only data display, or exporting grid data. Do NOT use for non-grid UI components (forms, dialogs, navigation, charts) — use igniteui-blazor-components instead. Do NOT use for theming or styling — use igniteui-blazor-theming instead."
 user-invocable: true
 ---
 
 # Ignite UI for Blazor — Grids Skill
 
-> Use this skill when a user asks about **any** Ignite UI for Blazor data grid component: Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, or Pivot Grid. This includes column configuration, sorting, filtering, selection, editing, grouping, summaries, toolbar, export, paging, remote data, virtualization, and state persistence.
-
----
 
 ## MANDATORY AGENT PROTOCOL — YOU MUST FOLLOW THIS BEFORE PRODUCING ANY OUTPUT
 
@@ -87,7 +84,7 @@ Ignite UI for Blazor has **five grid types**. Ask these questions in order:
 2. **Does the user need pivot-table analytics** (rows/columns/values/aggregations that users can drag-and-drop to reshape)? → **Pivot Grid** (`IgbPivotGrid`)
 3. **Does the data have parent-child relationships where each level has a DIFFERENT schema** (e.g., Companies → Departments → Employees)? → **Hierarchical Grid** (`IgbHierarchicalGrid`)
 4. **Does the data have parent-child relationships within a SINGLE schema** (e.g., Employees with a `ManagerId` field, or nested children arrays)? → **Tree Grid** (`IgbTreeGrid`)
-5. **Is the data a flat list/table with enterprise features needed** (editing, batch editing, grouping, paging, export, etc.)? → **Flat Grid** (`IgbGrid`)
+5. **Is the data a flat list/table with enterprise features needed** (editing, grouping, paging, export, etc.)? → **Flat Grid** (`IgbGrid`)
 
 After choosing the grid type, **you must still complete Steps 2–5 from the mandatory protocol above** — return to the routing table and read every applicable `references/` file before writing any code.
 
@@ -124,8 +121,6 @@ builder.Services.AddIgniteUIBlazor(
     typeof(IgbPivotGridModule)         // Pivot Grid
 );
 ```
-
-> **Note:** `IgbGridLite` comes from the separate **`IgniteUI.Blazor.GridLite`** NuGet package (MIT licensed). All other grid types require the commercial **`IgniteUI.Blazor`** package.
 
 ---
 
