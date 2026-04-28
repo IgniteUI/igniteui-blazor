@@ -78,7 +78,7 @@ Follow the official .NET and C# coding conventions: https://learn.microsoft.com/
 
 ### C# Best Practices
 
-- Always use the latest C# version (currently C# 13): record types, pattern matching, global usings, primary constructors
+- Use the latest C# version supported by the repository's target frameworks and tooling; prefer modern language features such as record types, pattern matching, global usings, and primary constructors when supported
 - Use strict nullability (`#nullable enable`)
 - Prefer type inference (`var`) when the type is obvious
 - Avoid `dynamic`; use generics or `object` with pattern matching when type is uncertain
