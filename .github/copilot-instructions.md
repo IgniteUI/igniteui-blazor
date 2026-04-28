@@ -9,7 +9,6 @@ These are modern examples of how to write a Blazor component with code-behind se
 ```razor
 @* Counter.razor *@
 @page "/counter"
-@inherits CounterBase
 
 <section class="container">
     @if (IsRunning)
@@ -26,7 +25,7 @@ These are modern examples of how to write a Blazor component with code-behind se
 
 ```cs
 // Counter.razor.cs
-public partial class CounterBase : ComponentBase
+public partial class Counter : ComponentBase
 {
     protected bool IsRunning { get; private set; } = true;
 
@@ -129,7 +128,7 @@ Follow the official .NET and C# coding conventions: https://learn.microsoft.com/
 
 ### Testing
 
-- Write unit and integration tests using xUnit, NUnit, or MSTest in Visual Studio Enterprise
+- Write unit and integration tests using xUnit, NUnit, or MSTest
 - Use Moq or NSubstitute for mocking dependencies
 - Debug UI issues using browser developer tools; use Visual Studio's debugger for server-side issues
 - Use Visual Studio's diagnostics tools for performance profiling
