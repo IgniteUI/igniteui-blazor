@@ -1,0 +1,196 @@
+# Application Setup & Registration
+
+> **Part of the [`igniteui-blazor-components`](../SKILL.md) skill hub.**
+
+## Contents
+
+- [NuGet Installation](#nuget-installation)
+- [Program.cs Registration](#programcs-registration)
+- [\_Imports.razor](#_importsrazor)
+- [CSS Theme Link](#css-theme-link)
+- [Script Reference](#script-reference)
+- [Project Type Differences](#project-type-differences)
+- [Selective Module Registration](#selective-module-registration)
+- [Key Rules](#key-rules)
+
+---
+
+## NuGet Installation
+
+```bash
+# Trial package from NuGet.org
+dotnet add package IgniteUI.Blazor
+
+# OSS component package from NuGet.org
+dotnet add package IgniteUI.Blazor.Lite
+
+# OSS Grid Lite package from NuGet.org
+dotnet add package IgniteUI.Blazor.GridLite
+
+# Or via Package Manager Console
+Install-Package IgniteUI.Blazor
+```
+
+Licensed users install from the Infragistics private feed:
+
+```bash
+# Add the Infragistics feed first (one-time)
+nuget sources add -name "Infragistics" \
+  -source "https://packages.infragistics.com/nuget/licensed/v3/index.json" \
+  -username "your@email.com" \
+  -password "your-password"
+
+dotnet add package IgniteUI.Blazor
+```
+
+Do **not** mix `IgniteUI.Blazor` and `IgniteUI.Blazor.Lite` in the same project. They use the same namespaces and duplicate some components; pick the trial/licensed package path or the OSS Lite package path.
+
+---
+
+## Program.cs Registration
+
+### Blazor Server (.NET 6+)
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddIgniteUIBlazor();   // registers ALL modules
+
+var app = builder.Build();
+```
+
+### Blazor WebAssembly (.NET 6+)
+
+```csharp
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+// ...
+builder.Services.AddIgniteUIBlazor();
+
+await builder.Build().RunAsync();
+```
+
+### Blazor Web App (.NET 8+ - both server and client Program.cs)
+
+```csharp
+// Server Project - Program.cs
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents()
+    .AddInteractiveWebAssemblyComponents();
+builder.Services.AddIgniteUIBlazor();
+
+// Client Project - Program.cs
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.Services.AddIgniteUIBlazor();
+await builder.Build().RunAsync();
+```
+
+> **AGENT INSTRUCTION - Blazor Web App render modes**
+>
+> Ignite UI components require an interactive render mode. For per-page or per-component interactivity, add the render mode directive to pages that use Ignite UI components:
+>
+> ```razor
+> @rendermode InteractiveServer
+> @* or: @rendermode InteractiveWebAssembly *@
+> @* or: @rendermode InteractiveAuto *@
+> ```
+>
+> For global interactivity, configure it in `App.razor`: `<Routes @rendermode="InteractiveAuto"/>`.
+
+---
+
+## \_Imports.razor
+
+Add the namespace to both client and server `_Imports.razor` files so Razor pages can use Ignite UI component tags without fully qualifying them:
+
+```razor
+@using IgniteUI.Blazor.Controls
+```
+
+---
+
+## CSS Theme Link
+
+Add in the `<head>` of:
+- **Blazor Server / Web App**: `Pages/_Host.cshtml` or `Components/App.razor`
+- **Blazor WASM**: `wwwroot/index.html`
+
+```html
+<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+```
+
+Available theme files (under `_content/IgniteUI.Blazor/themes/`):
+
+| Path | Theme |
+|---|---|
+| `light/bootstrap.css` | Bootstrap Light |
+| `dark/bootstrap.css` | Bootstrap Dark |
+| `light/material.css` | Material Light |
+| `dark/material.css` | Material Dark |
+| `light/fluent.css` | Fluent Light |
+| `dark/fluent.css` | Fluent Dark |
+| `light/indigo.css` | Indigo Light |
+| `dark/indigo.css` | Indigo Dark |
+
+For .NET 9+ Web App projects, use the `Assets` property:
+
+```razor
+<link rel="stylesheet" href="@Assets["_content/IgniteUI.Blazor/themes/light/bootstrap.css"]" />
+```
+
+---
+
+## Script Reference
+
+Add alongside the Blazor framework script in the host page:
+
+```html
+<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
+<!-- Blazor Server -->
+<script src="_framework/blazor.server.js"></script>
+<!-- Blazor WASM -->
+<script src="_framework/blazor.webassembly.js"></script>
+<!-- Blazor Web App -->
+<script src="_framework/blazor.web.js"></script>
+```
+
+---
+
+## Project Type Differences
+
+| Project type | `Program.cs` host | Host page for CSS/script | Script tag |
+|---|---|---|---|
+| **Blazor Server** | `WebApplication.CreateBuilder` | `Pages/_Host.cshtml` | `blazor.server.js` |
+| **Blazor WASM** | `WebAssemblyHostBuilder` | `wwwroot/index.html` | `blazor.webassembly.js` |
+| **Blazor Web App** | Both server + client `Program.cs` | `Components/App.razor` | `blazor.web.js` |
+| **MAUI Blazor Hybrid** | `MauiApp.CreateBuilder` (in `MauiProgram.cs`) | `wwwroot/index.html` | `blazor.webview.js` |
+
+---
+
+## Selective Module Registration
+
+Register only the modules you use to keep bundle size small:
+
+```csharp
+builder.Services.AddIgniteUIBlazor(
+    typeof(IgbInputModule),
+    typeof(IgbComboModule),
+    typeof(IgbDatePickerModule),
+    typeof(IgbDialogModule),
+    typeof(IgbButtonModule)
+);
+```
+
+Module names follow the pattern `Igb{ComponentName}Module`. If unsure of the module name, call `get_doc` for that component - every doc shows the exact `typeof(...)` registration call.
+
+---
+
+## Key Rules
+
+1. **Always call `get_doc` before writing code.** Module names, property names, and event signatures are version-specific and must come from the MCP docs, not from memory.
+2. **Both server and client `Program.cs` must register the service** in Blazor Web App projects.
+3. **The CSS theme link and the script tag are both required.** Missing either causes components to render unstyled or non-functional.
+4. **Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`**, not to individual Razor pages, to avoid repetition.
+5. **`AddIgniteUIBlazor()` with no arguments registers all modules.** Use explicit `typeof(...)` registrations in production for smaller bundles.
+6. **Blazor Web App components need an interactive render mode.** Static SSR pages will not render Ignite UI components correctly.
