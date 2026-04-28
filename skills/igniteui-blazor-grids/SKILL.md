@@ -31,6 +31,19 @@ Call `read_file` (or equivalent) on **all** reference files identified in Step 2
 **STEP 4 — Only then produce output.**
 Base your code and explanation exclusively on what you read in Step 3. If the reference files do not cover something, say so explicitly rather than guessing.
 
+### Task → Reference File
+
+| Task | Reference file |
+|---|---|
+| Grid type selection, quick start, column configuration, column templates, column groups, multi-row layout, pinning, sorting UI, filtering UI, selection | [`references/structure.md`](./references/structure.md) |
+| Grouping, summaries, cell merging, toolbar, export, virtualization & performance, row drag, action strip, master-detail, clipboard | [`references/features.md`](./references/features.md) |
+| Tree Grid specifics, Hierarchical Grid specifics, Grid Lite setup, Grid Lite data operations, Pivot Grid setup | [`references/types.md`](./references/types.md) |
+| Programmatic sorting / filtering / grouping, `@ref` access, custom strategies | [`references/data-operations.md`](./references/data-operations.md) |
+| Cell editing, row editing, batch editing, transactions, validation, summaries | [`references/editing.md`](./references/editing.md) |
+| Paging, remote data, server-side ops, noop strategies, virtual scroll, multi-grid coordination | [`references/paging-remote.md`](./references/paging-remote.md) |
+| State persistence, Tree Grid / Hierarchical Grid / Pivot Grid / Grid Lite data operations | [`references/state.md`](./references/state.md) |
+| Grid sizing (width, height, column sizing, null/px/% modes, cell spacing CSS variables) | [`references/sizing.md`](./references/sizing.md) |
+
 > **When in doubt, read more rather than fewer reference files.** The cost of an unnecessary file read is negligible; the cost of hallucinated API usage is a broken application.
 
 ---
@@ -132,23 +145,6 @@ builder.Services.AddIgniteUIBlazor(
 | Cell merging | ❌ | ✅ | ❌ | ❌ | ❌ |
 | Load on demand | ❌ | ❌ | ✅ **Exclusive** | ❌ | ❌ |
 | Remote data ops | `DataPipelineConfiguration` | Events + noop strategies | Events + noop strategies | Events + noop strategies | N/A |
-
----
-
-## Task → Reference File
-
-| Task | Reference file |
-|---|---|
-| Grid type selection, quick start, column configuration, column templates, column groups, multi-row layout, pinning, sorting UI, filtering UI, selection | [`references/structure.md`](./references/structure.md) |
-| Grouping, summaries, cell merging, toolbar, export, virtualization & performance, row drag, action strip, master-detail, clipboard | [`references/features.md`](./references/features.md) |
-| Tree Grid specifics, Hierarchical Grid specifics, Grid Lite setup, Grid Lite data operations, Pivot Grid setup | [`references/types.md`](./references/types.md) |
-| Programmatic sorting / filtering / grouping, `@ref` access, custom strategies | [`references/data-operations.md`](./references/data-operations.md) |
-| Cell editing, row editing, batch editing, transactions, validation, summaries | [`references/editing.md`](./references/editing.md) |
-| Paging, remote data, server-side ops, noop strategies, virtual scroll, multi-grid coordination | [`references/paging-remote.md`](./references/paging-remote.md) |
-| State persistence, Tree Grid / Hierarchical Grid / Pivot Grid / Grid Lite data operations | [`references/state.md`](./references/state.md) |
-| Grid sizing (width, height, column sizing, null/px/% modes, cell spacing CSS variables) | [`references/sizing.md`](./references/sizing.md) |
-
-> **When in doubt, read more rather than fewer reference files.** The cost of an unnecessary file read is negligible; the cost of hallucinated API usage is a broken application.
 
 ---
 
