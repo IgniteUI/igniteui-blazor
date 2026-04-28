@@ -276,7 +276,7 @@ Use Dashboard Tile when the requested component should infer or render compact d
 
 ## Key Rules
 
-1. **Always call `get_doc` for each chart, map, gauge, or dashboard component before writing code.** Visualization APIs are extensive and version-specific.
+1. **Always call `get_doc` for each chart, map, gauge, or dashboard component before writing code.** Use `search_api` and `get_api_reference` for visualization API details.
 2. **`IgbCategoryChart` is the fastest path for standard charts.** It auto-generates series from data. Use `IgbDataChart` only when you need multiple series types, custom axes, or advanced features.
 3. **`IgbDataChart` requires one module per series category.** Check `get_doc` for the exact module name.
 4. **Financial chart data must have `Open`, `High`, `Low`, `Close` fields.** If the data model is different, the chart will not render correctly.

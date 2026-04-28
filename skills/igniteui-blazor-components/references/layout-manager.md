@@ -16,7 +16,7 @@
 ---
 
 ## Overview
-This reference gives high-level guidance on when to use each layout manager component, their key features, and common API members. For detailed documentation, call `get_doc` and `get_api_reference` from `igniteui-cli` with the specific component or feature you're interested in for Blazor.
+This reference gives high-level guidance on when to use each layout manager component, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
 
 ## Dock Manager
 
@@ -172,7 +172,7 @@ Methods on `IgbTileManager`: `SaveLayout()` and `LoadLayout(string)` persist til
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** The `IgbDockManagerLayout` object graph and all property names must be confirmed from the docs.
+1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` to confirm layout object APIs, property names, methods, events, and signatures.
 2. **`IgbContentPane.ContentId` must exactly match the `slot` attribute of the projected HTML element.** A mismatch causes the pane to render empty.
 3. **Dock Manager must have an explicit height** (via CSS or inline style). Without a height it renders as 0px.
 4. **Layout serialization only persists structure, not content.** Slot content is always defined in Razor markup.

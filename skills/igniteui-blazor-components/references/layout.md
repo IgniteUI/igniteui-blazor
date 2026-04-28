@@ -16,7 +16,7 @@
 ---
 
 ## Overview
-This reference gives high-level guidance on layout and navigation components, their key features, and common API members. For detailed documentation, call `get_doc` and `get_api_reference` from `igniteui-cli` with the specific component or feature you're interested in for Blazor.
+This reference gives high-level guidance on layout and navigation components, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
 
 ## Tabs
 
@@ -301,7 +301,7 @@ Events on `IgbTree`: `NodeSelectionChanging` (cancellable), `NodeSelectionChange
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Slot names and attribute names are version-specific.
+1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for slot names, attributes, methods, events, and signatures.
 2. **`IgbTab.Panel` must match `IgbTabPanel.Id`** - mismatched IDs cause the panel to never display.
 3. **Stepper with `Linear="true"` prevents users from skipping steps.** Do not set `Linear` if free navigation is intended.
 4. **Activate/deactivate `IgbNavDrawerItem` programmatically** by setting `item.Active` - there is no automatic selection tracking.

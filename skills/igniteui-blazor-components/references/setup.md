@@ -182,13 +182,13 @@ builder.Services.AddIgniteUIBlazor(
 );
 ```
 
-Module names follow the pattern `Igb{ComponentName}Module`. If unsure of the module name, call `get_doc` for that component - every doc shows the exact `typeof(...)` registration call.
+Module names follow the pattern `Igb{ComponentName}Module`. If unsure of the module name, call `get_doc` for that component - every doc shows the exact `typeof(...)` registration call. Use `search_api` and `get_api_reference` for component API details.
 
 ---
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Module names, property names, and event signatures are version-specific and must come from the MCP docs, not from memory.
+1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for property names, methods, events, and signatures.
 2. **Both server and client `Program.cs` must register the service** in Blazor Web App projects.
 3. **The CSS theme link and the script tag are both required.** Missing either causes components to render unstyled or non-functional.
 4. **Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`**, not to individual Razor pages, to avoid repetition.

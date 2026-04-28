@@ -14,7 +14,7 @@
 ---
 
 ## Overview
-This reference gives high-level guidance on feedback and overlay components, their key features, and common API members. For detailed documentation, call `get_doc` and `get_api_reference` from `igniteui-cli` with the specific component or feature you're interested in for Blazor.
+This reference gives high-level guidance on feedback and overlay components, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
 
 ## Dialog
 
@@ -170,7 +170,7 @@ CSS parts: `spacer`, `message`, `illustration`, `actions`.
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Method signatures and event argument types are version-specific.
+1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for method signatures, events, and event argument types.
 2. **Use `@ref` to obtain a component reference**, then call `ShowAsync()` / `HideAsync()` on it from C# code.
 3. **`IgbDialog.KeepOpenOnEscape` is `false` by default.** Set it to `true` to force users to use your footer buttons instead of ESC.
 4. **`IgbDialog.CloseOnOutsideClick` is `false` by default** - set it to `true` for light-dismiss dialogs.

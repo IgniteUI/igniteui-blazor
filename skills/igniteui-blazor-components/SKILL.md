@@ -45,10 +45,12 @@ Map the user's request to one or more rows in the Task → Reference File table 
 **STEP 2 - Read every identified reference file in full (PARALLEL).**
 Call `read_file` (or equivalent) on **all** reference files identified in Step 1 **in a single parallel batch**. Reference files map components to their MCP doc slugs and explain which MCP calls to make.
 
-**STEP 3 - Extract doc slugs, then call `get_doc` for each component involved.**
-Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. This is the primary source of truth for Blazor - it returns the actual registration pattern, Razor markup, property names, events, and CSS parts. Do NOT skip this step.
+**STEP 3 - Extract doc slugs, then call `get_doc` and API tools for each component involved.**
+Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. It returns the actual registration pattern, Razor markup, examples, and CSS parts. Do NOT skip this step.
 
 If a reference file does not list a slug for the requested component, call `search_docs(framework: "blazor", query: "<component or feature>")` to find the correct doc. If no Blazor doc exists, say that the component or feature is not covered instead of guessing.
+
+Use `search_api` and `get_api_reference` for Blazor component API details when property names, methods, events, or signatures are needed.
 
 **STEP 4 - Only then produce output.**
 Base your code and explanation exclusively on what you read. If the reference files or MCP docs do not cover something, say so explicitly rather than guessing.

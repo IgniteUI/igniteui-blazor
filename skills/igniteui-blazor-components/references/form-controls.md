@@ -24,7 +24,7 @@
 ---
 
 ## Overview
-This reference gives high-level guidance on form controls, their key features, and common API members. For detailed documentation, call `get_doc` and `get_api_reference` from `igniteui-cli` with the specific component or feature you're interested in for Blazor.
+This reference gives high-level guidance on form controls, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
 
 ## Input
 
@@ -354,7 +354,7 @@ Events: `Change`, `Hover`.
 
 ## Key Rules
 
-1. **Always call `get_doc` for each component before writing any code.** Property names and event argument types are version-specific.
+1. **Always call `get_doc` for each component before writing any code.** Use `search_api` and `get_api_reference` for property names, methods, events, and signatures.
 2. **Do not wrap Ignite UI inputs in a standard HTML `<form>` unless the component doc shows that pattern.** Form behavior differs by component.
 3. **Register every module you use in `Program.cs`** using the `typeof(Igb{Name}Module)` pattern.
 4. **`IgbCombo` requires the `T` type parameter** - set it to the type of your `ValueKey` property, or `"object"` if there is no `ValueKey`.

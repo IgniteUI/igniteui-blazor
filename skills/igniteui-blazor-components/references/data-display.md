@@ -23,7 +23,7 @@
 ---
 
 ## Overview
-This reference gives high-level guidance on data display and action components, their key features, and common API members. For detailed documentation, call `get_doc` and `get_api_reference` from `igniteui-cli` with the specific component or feature you're interested in for Blazor.
+This reference gives high-level guidance on data display and action components, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
 
 ## Button & Button Group
 
@@ -343,7 +343,7 @@ CSS part: `base`. Customize color via `--color` CSS custom property.
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Slot names differ between components.
+1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for slot names, attributes, methods, events, and signatures.
 2. **Register each module explicitly.** `IgbButtonModule` and `IgbIconButtonModule` are separate modules.
 3. **Icons must be registered before they display.** Use `EnsureReady()` + `RegisterIconFromTextAsync()` in `OnAfterRenderAsync(bool firstRender)`.
 4. **`IgbCard` does not set a default width.** Always set a width via inline style or CSS class.
