@@ -73,6 +73,9 @@ Edit the Claude Desktop config file:
 
 After configuring the MCP server, ask your AI assistant:
 
-> "Detect which Ignite UI platform my project uses"
+> "Read the Ignite UI theming resource for the Blazor platform"
 
-If the MCP server is running, the `detect_platform` tool will return a detected platform or a generic fallback. For Blazor-specific theming, pass `platform: "blazor"` to theming tools that accept a platform parameter.
+If the MCP server is running, the assistant can call
+`read_resource` and return the Blazor theming
+guidance. For Blazor-specific theming, pass
+`platform: "blazor"` to theming tools that accept a platform parameter.

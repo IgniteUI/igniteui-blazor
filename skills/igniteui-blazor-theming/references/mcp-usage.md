@@ -5,7 +5,7 @@
 ## Contents
 
 - [Available MCP Theming Tools](#available-mcp-theming-tools)
-- [Detecting the Platform](#detecting-the-platform)
+- [Blazor Platform Context](#blazor-platform-context)
 - [Getting Component Design Tokens](#getting-component-design-tokens)
 - [Creating a Component Theme](#creating-a-component-theme)
 - [Creating a Color Palette](#creating-a-color-palette)
@@ -20,7 +20,7 @@ The `igniteui-theming` MCP server provides these tools by name:
 
 | Tool | Purpose |
 |---|---|
-| `detect_platform` | Detect the current theme platform/framework from project files |
+| `read_resource` | Read theming documentation and verify the MCP server is available |
 | `get_component_design_tokens` | List themeable tokens for a component |
 | `create_component_theme` | Generate CSS or Sass overrides for component design tokens |
 | `create_palette` | Generate a full color palette from seed colors |
@@ -31,17 +31,13 @@ The `igniteui-theming` MCP server provides these tools by name:
 | `set_roundness` | Generate global border-radius token CSS |
 | `set_spacing` | Generate global spacing token CSS |
 | `set_size` | Generate global size token CSS |
-| `read_resource` | Read theming documentation |
 
-## Detecting the Platform
+## Blazor Platform Context
 
-Before calling other theming tools, confirm the platform when a project config is available:
+This skill is scoped to Ignite UI for Blazor applications. 
 
-```
-detect_platform()
-```
-
-If platform detection cannot read the project configuration, pass `platform: "blazor"` explicitly to tools that accept a platform parameter.
+Use the `read_resource` call above as a lightweight MCP availability check when
+needed. For all theming tools that accept a platform parameter, pass `platform: "blazor"` explicitly.
 
 ## Getting Component Design Tokens
 

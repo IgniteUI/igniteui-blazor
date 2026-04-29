@@ -19,8 +19,10 @@ This skill teaches AI agents how to theme Ignite UI for Blazor applications usin
 > **AGENT INSTRUCTION - MCP Server Setup (REQUIRED)**
 >
 > Before using any theming tools, you MUST verify the MCP server is available
-> by calling `detect_platform`. If the tool is not available or the call fails,
-> you MUST automatically configure it by following the setup process steps described below.
+> by calling any lightweight theming MCP tool. 
+> This skill is already scoped to Ignite UI for Blazor, so do not use platform detection as the normal
+> setup check. If the theming tool is not available or the call fails, you MUST
+> automatically configure it by following the setup process steps described below.
 >
 > After writing the file, inform the user that the MCP server has been
 > configured and they may need to reload the editor for the tools to activate.
@@ -79,7 +81,7 @@ Map the user's request to one or more rows in the Task → Reference File table 
 
 **STEP 2 - Load the MCP theming tools.**
 For any task involving design token lookup, palette generation, or component theme CSS, use the Ignite UI Theming MCP tools by their tool names:
-- `detect_platform` - detect the current theme/framework
+- `read_resource` - verify/read theming documentation
 - `get_component_design_tokens` - get all CSS custom properties for a specific component
 - `create_component_theme` - generate a CSS block customizing a component's design tokens
 - `create_palette` - generate a full color palette from a base color
@@ -119,7 +121,8 @@ Base your CSS and instructions exclusively on what the MCP tools return and what
 
 > **AGENT INSTRUCTION - Theming MCP server platform**
 >
-> When calling Ignite UI Theming MCP tools, use `platform: "blazor"` (or confirm with `detect_platform`).
+> This skill already establishes the platform.
+> When calling Ignite UI Theming MCP tools that accept a platform, always pass `platform: "blazor"`.
 
 ---
 
