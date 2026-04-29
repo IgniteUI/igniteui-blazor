@@ -259,37 +259,6 @@ Apply different sizing to a specific grid:
 
 ---
 
-## Full Example: Responsive Grid Layout
-
-```razor
-<div style="height: calc(100vh - 120px);">
-    <IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="100%"
-             AutoGenerate="false" class="responsive-grid">
-        <IgbGridToolbar>
-            <IgbGridToolbarTitle>Employees</IgbGridToolbarTitle>
-            <IgbGridToolbarActions>
-                <IgbGridToolbarHiding />
-                <IgbGridToolbarPinning />
-            </IgbGridToolbarActions>
-        </IgbGridToolbar>
-        <IgbColumn Field="Id" Header="ID" Width="70px" Pinned="true" />
-        <IgbColumn Field="Name" Header="Name" Width="200px" MinWidth="120px" Resizable="true" />
-        <IgbColumn Field="Department" Header="Dept" Width="15%" MinWidth="100px" Resizable="true" />
-        <IgbColumn Field="Salary" Header="Salary" Width="150px" DataType="GridColumnDataType.Currency" />
-        <IgbColumn Field="HireDate" Header="Hired" Width="140px" DataType="GridColumnDataType.Date" />
-        <IgbPaginator PerPage="25" />
-    </IgbGrid>
-</div>
-
-<style>
-    .responsive-grid {
-        --ig-size: var(--ig-size-medium);
-    }
-</style>
-```
-
----
-
 ## Key Rules
 
 1. **Always set `Height` for performance** — without it, virtualization is disabled and all rows render to the DOM.

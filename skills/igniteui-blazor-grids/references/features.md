@@ -97,48 +97,14 @@ Enable with `HasSummary="true"` on a column. The built-in summaries depend on th
 
 ### Custom summary operands
 
-Create a custom summary class:
-
-```csharp
-public class MySalarySummary : IgbNumberSummaryOperand
-{
-    public override IgbSummaryResult[] Operate(object[] data, IgbSummaryOperand[] allData, string fieldName)
-    {
-        var values = data.Select(d => Convert.ToDecimal(d)).ToArray();
-        return new[]
-        {
-            new IgbSummaryResult
-            {
-                Key = "above50k",
-                Label = "Above $50K",
-                SummaryResult = values.Count(v => v > 50000).ToString()
-            },
-            new IgbSummaryResult
-            {
-                Key = "median",
-                Label = "Median",
-                SummaryResult = GetMedian(values).ToString("C")
-            }
-        };
-    }
-
-    private decimal GetMedian(decimal[] values)
-    {
-        var sorted = values.OrderBy(v => v).ToArray();
-        int mid = sorted.Length / 2;
-        return sorted.Length % 2 == 0
-            ? (sorted[mid - 1] + sorted[mid]) / 2
-            : sorted[mid];
-    }
-}
-```
-
-Apply via `Summaries` parameter:
+Extend `IgbNumberSummaryOperand` (or `IgbDateSummaryOperand`, `IgbSummaryOperand`) and override `Operate()` to return `IgbSummaryResult[]`. Apply via `Summaries` parameter:
 
 ```razor
 <IgbColumn Field="Salary" Header="Salary" HasSummary="true"
            Summaries="typeof(MySalarySummary)" />
 ```
+
+> For full custom summary class syntax, call `get_doc(framework: "blazor", slug: "grids/grid/summaries")`.
 
 ### Summary position
 
@@ -412,22 +378,7 @@ Show a detail view for each expanded row. This is specific to the flat grid — 
 </IgbGrid>
 
 @code {
-    private List<Customer> customers = new();
-
-    public class Customer
-    {
-        public int CustomerId { get; set; }
-        public string Name { get; set; } = "";
-        public string Country { get; set; } = "";
-        public List<Order> Orders { get; set; } = new();
-    }
-
-    public class Order
-    {
-        public int OrderId { get; set; }
-        public DateTime OrderDate { get; set; }
-        public decimal Total { get; set; }
-    }
+    private List<Customer> customers = new();  // Customer has Orders child collection
 }
 ```
 

@@ -205,7 +205,7 @@ Columns support built-in validators that run during editing:
 
 ### Validation display
 
-When a validation rule is violated, the cell shows a red border and a tooltip with the error message. The row cannot be committed while validation errors exist (in row editing or batch editing mode).
+When a validation rule is violated, the cell shows a red border and a tooltip with the error message. The row cannot be committed while validation errors exist in row editing mode.
 
 ### Custom validation
 

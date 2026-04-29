@@ -276,46 +276,6 @@ With 50 columns at 150px each (7500px total) in an 800px wide grid, only the vis
 
 ---
 
-## Multi-Grid Coordination (Master-Detail Pattern)
-
-When a selection in one grid drives the data in another:
-
-```razor
-<div style="display: flex; gap: 16px;">
-    <div style="flex: 1;">
-        <h3>Customers</h3>
-        <IgbGrid @ref="masterGrid" Data="customers" PrimaryKey="CustomerId"
-                  RowSelection="GridSelectionMode.Single"
-                  RowSelectionChanged="OnCustomerSelected"
-                  Width="100%" Height="400px">
-            <IgbColumn Field="CustomerId" Header="ID" />
-            <IgbColumn Field="Name" Header="Customer" />
-        </IgbGrid>
-    </div>
-    <div style="flex: 1;">
-        <h3>Orders</h3>
-        <IgbGrid Data="selectedCustomerOrders" PrimaryKey="OrderId"
-                  AutoGenerate="true"
-                  Width="100%" Height="400px" />
-    </div>
-</div>
-
-@code {
-    private IgbGrid masterGrid = default!;
-    private List<Customer> customers = new();
-    private List<Order> selectedCustomerOrders = new();
-
-    private async Task OnCustomerSelected(IgbRowSelectionEventArgs args)
-    {
-        var customerId = (int)args.NewSelection.First();
-        selectedCustomerOrders = await OrderService.GetByCustomerAsync(customerId);
-        StateHasChanged();
-    }
-}
-```
-
----
-
 ## Key Rules
 
 1. **`IgbPaginator` goes inside the grid** — it is a child component, not a sibling.

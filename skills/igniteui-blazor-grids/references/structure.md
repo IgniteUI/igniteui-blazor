@@ -37,15 +37,6 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule));
     {
         employees = EmployeeService.GetAll();
     }
-
-    public class Employee
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public DateTime HireDate { get; set; }
-        public decimal Salary { get; set; }
-        public bool IsActive { get; set; }
-    }
 }
 ```
 
@@ -488,7 +479,3 @@ Or grid-wide:
 5. **Use PascalCase for all parameters** — Blazor parameters use PascalCase (`Sortable`, `Filterable`), not kebab-case.
 6. **Data must be a C# collection** — `List<T>`, `T[]`, or `IEnumerable<T>`. Not a JSON string or JavaScript object.
 7. **Use `@ref` for programmatic access** — declare `private IgbGrid grid = default!;` and use `@ref="grid"` on the component.
-
-- [references/editing.md](references/editing.md) — Cell, row, and batch editing
-- [references/paging-remote.md](references/paging-remote.md) — Paging, remote data, virtualization
-- [references/sizing.md](references/sizing.md) — Grid and column sizing, cell spacing

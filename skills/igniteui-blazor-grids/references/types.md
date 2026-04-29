@@ -136,11 +136,10 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTreeGridModule));
 @code {
     private List<Employee> employees = new()
     {
+        // flat list: root rows have null ManagerId
         new(1, "Casey Houston", "VP", null, new DateTime(2017, 1, 15)),
         new(2, "Gilberto Todd", "Director", 1, new DateTime(2018, 3, 20)),
-        new(3, "Tanya Bennett", "Manager", 2, new DateTime(2019, 6, 10)),
-        new(4, "Jack Simon", "Developer", 3, new DateTime(2020, 2, 5)),
-        new(5, "Debra Morton", "Developer", 3, new DateTime(2020, 8, 12))
+        // ...
     };
 
     record Employee(int Id, string Name, string Title, int? ManagerId, DateTime HireDate);
@@ -162,23 +161,12 @@ The `ForeignKey` property identifies which field references the parent's `Primar
 @code {
     private List<FileNode> fileSystem = new()
     {
-        new FileNode
-        {
-            Id = 1, Name = "Documents", Type = "Folder", Size = 0,
-            Children = new()
-            {
-                new FileNode { Id = 2, Name = "Resume.pdf", Type = "PDF", Size = 250 },
-                new FileNode { Id = 3, Name = "Cover Letter.docx", Type = "Word", Size = 85 }
+        new FileNode { Id = 1, Name = "Documents", Type = "Folder", Size = 0,
+            Children = new() {
+                new FileNode { Id = 2, Name = "Resume.pdf", Type = "PDF", Size = 250 }
             }
         },
-        new FileNode
-        {
-            Id = 4, Name = "Photos", Type = "Folder", Size = 0,
-            Children = new()
-            {
-                new FileNode { Id = 5, Name = "Vacation.jpg", Type = "Image", Size = 4200 }
-            }
-        }
+        // ...
     };
 
     public class FileNode
@@ -431,57 +419,25 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbPivotGridModule));
         {
             Rows = new List<IgbPivotDimension>
             {
-                new IgbPivotDimension
-                {
-                    MemberName = "Country",
-                    Enabled = true
-                },
-                new IgbPivotDimension
-                {
-                    MemberName = "City",
-                    Enabled = true
-                }
+                new IgbPivotDimension { MemberName = "Country", Enabled = true },
+                new IgbPivotDimension { MemberName = "City", Enabled = true }
             },
             Columns = new List<IgbPivotDimension>
             {
-                new IgbPivotDimension
-                {
-                    MemberName = "Year",
-                    Enabled = true
-                }
+                new IgbPivotDimension { MemberName = "Year", Enabled = true }
             },
             Values = new List<IgbPivotValue>
             {
                 new IgbPivotValue
                 {
                     Member = "Revenue",
-                    Aggregate = new IgbPivotAggregation
-                    {
-                        AggregatorName = PivotAggregationType.SUM,
-                        Key = "SUM",
-                        Label = "Sum of Revenue"
-                    },
-                    Enabled = true
-                },
-                new IgbPivotValue
-                {
-                    Member = "UnitsSold",
-                    Aggregate = new IgbPivotAggregation
-                    {
-                        AggregatorName = PivotAggregationType.COUNT,
-                        Key = "COUNT",
-                        Label = "Count of Sales"
-                    },
+                    Aggregate = new IgbPivotAggregation { AggregatorName = PivotAggregationType.SUM, Key = "SUM", Label = "Sum of Revenue" },
                     Enabled = true
                 }
             },
             Filters = new List<IgbPivotDimension>
             {
-                new IgbPivotDimension
-                {
-                    MemberName = "ProductCategory",
-                    Enabled = true
-                }
+                new IgbPivotDimension { MemberName = "ProductCategory", Enabled = true }
             }
         };
     }
