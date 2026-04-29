@@ -1,4 +1,114 @@
-# Grid Types — Tree Grid, Hierarchical Grid & Pivot Grid
+# Grid Types — Grid Lite, Tree Grid, Hierarchical Grid & Pivot Grid
+
+---
+
+## Grid Lite (`IgbGridLite`)
+
+Lightweight, read-only grid with sorting, filtering, column resizing, and virtualization. MIT-licensed, separate package — **not** bundled with `IgniteUI.Blazor`.
+
+> **No editing, selection, or paging.** Upgrade to `IgbGrid` when those features are needed.
+
+### Registration
+
+```csharp
+// Install: dotnet add package IgniteUI.Blazor.GridLite
+builder.Services.AddIgniteUIBlazor(typeof(IgbGridLiteModule));
+```
+
+Add the Grid Lite CSS in `index.html`:
+
+```html
+<link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
+```
+
+### Basic usage (v0.4.0+ declarative API)
+
+Columns are declared as child elements (`<IgbGridLiteColumn>`), not via a `Columns` parameter:
+
+```razor
+<IgbGridLite TItem="Employee" Data="@employees">
+    <IgbGridLiteColumn Field="@nameof(Employee.Name)" Header="Name" DataType="GridLiteColumnDataType.String" Sortable Filterable Resizable />
+    <IgbGridLiteColumn Field="@nameof(Employee.Department)" Header="Department" Sortable />
+    <IgbGridLiteColumn Field="@nameof(Employee.Salary)" Header="Salary" DataType="GridLiteColumnDataType.Number" Width="150px" />
+    <IgbGridLiteColumn Field="@nameof(Employee.HireDate)" Header="Hire Date" DataType="GridLiteColumnDataType.Date" Sortable />
+</IgbGridLite>
+```
+
+### Column properties
+
+| Property | Description |
+|---|---|
+| `Field` | Property name on the data item |
+| `Header` | Column header text |
+| `DataType` | `GridLiteColumnDataType.String/Number/Boolean/Date` |
+| `Width` | Column width (e.g., `"150px"`) |
+| `Sortable` | Enables sorting on this column |
+| `SortingCaseSensitive` | Case-sensitive sorting (use alongside `Sortable`) |
+| `Filterable` | Enables filtering on this column |
+| `FilteringCaseSensitive` | Case-sensitive filtering (use alongside `Filterable`) |
+| `Resizable` | Allows column resize |
+| `Hidden` | Hides the column |
+
+> **`Key` vs `Field`:** Use `Field` on column definitions. In sort/filter expression objects (`IgbGridLiteSortingExpression`, `IgbGridLiteFilterExpression`), use `Key` to identify the field.
+
+### Grid-level sorting options
+
+```razor
+<IgbGridLite TItem="ProductInfo" Data="@products" SortingOptions="@sortingOptions">
+    <IgbGridLiteColumn Field="Name" Header="Name" DataType="GridLiteColumnDataType.String" Sortable />
+    <IgbGridLiteColumn Field="Price" Header="Price" DataType="GridLiteColumnDataType.Number" Width="150px" Sortable />
+</IgbGridLite>
+
+@code {
+    private IgbGridLiteSortingOptions sortingOptions = new()
+    {
+        Mode = GridLiteSortingMode.Multiple  // default is Single
+    };
+}
+```
+
+Tri-state sorting (asc → desc → none) is always enabled — there is no property to disable it.
+
+### Dynamic columns
+
+Use `@if` conditional rendering. There is no `UpdateColumnsAsync()` method:
+
+```razor
+<IgbGridLite TItem="ProductInfo" Data="@products">
+    <IgbGridLiteColumn Field="Name" Header="Name" Sortable />
+    @if (showRating)
+    {
+        <IgbGridLiteColumn Field="Rating" Header="Rating" DataType="GridLiteColumnDataType.Number" />
+    }
+</IgbGridLite>
+
+@code {
+    private bool showRating = true;
+    private void ToggleRating() => showRating = !showRating;
+}
+```
+
+### Sorting and filtering events
+
+```razor
+<IgbGridLite TItem="ProductInfo" Data="@products"
+             Sorting="@HandleSorting"
+             Sorted="@HandleSorted"
+             Filtering="@HandleFiltering"
+             Filtered="@HandleFiltered">
+    <IgbGridLiteColumn Field="Name" Header="Name" Sortable Filterable />
+</IgbGridLite>
+```
+
+### Grid Lite key rules
+
+1. **Declarative columns (v0.4.0+)** — use `<IgbGridLiteColumn>` child elements. The old `Columns` parameter + `List<IgbColumnConfiguration>` is removed.
+2. **Column properties**: `Key` → `Field`, `Type` → `DataType`, `HeaderText` → `Header`.
+3. **Sort/filter attributes**: `Sort = true` → `Sortable`; `Filter = true` → `Filterable`.
+4. **Grid-level sorting**: `SortConfiguration` → `SortingOptions`; `IgbGridLiteSortConfiguration` → `IgbGridLiteSortingOptions`; `Multiple = true/false` → `Mode = GridLiteSortingMode.Multiple/Single`.
+5. **Dynamic columns via `@if`** — `UpdateColumnsAsync()` is removed.
+6. **Own package and CSS** — install `IgniteUI.Blazor.GridLite` and include its CSS theme separately.
+7. **Upgrade path** — when Grid Lite's capabilities are insufficient, upgrade to `IgbGrid`.
 
 ---
 
