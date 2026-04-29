@@ -343,9 +343,8 @@ CSS part: `base`. Customize color via `--color` CSS custom property.
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for slot names, attributes, methods, events, and signatures.
-2. **Register each module explicitly.** `IgbButtonModule` and `IgbIconButtonModule` are separate modules.
-3. **Icons must be registered before they display.** Use `EnsureReady()` + `RegisterIconFromTextAsync()` in `OnAfterRenderAsync(bool firstRender)`.
-4. **`IgbCard` does not set a default width.** Always set a width via inline style or CSS class.
-5. **Prefer the Dropdown `target` slot for the trigger.** For an external trigger, follow the current `dropdown` MCP doc and call `Show()`, `Hide()`, or `Toggle()` on the dropdown reference.
-6. **`IgbTooltip.Anchor` uses the target element ID string in the documented Blazor pattern.** Give the target an `id` and pass that same value to `Anchor`.
+1. **Register each module explicitly.** `IgbButtonModule` and `IgbIconButtonModule` are separate modules.
+2. **Icons must be registered before they display.** Use `EnsureReady()` + `RegisterIconFromTextAsync()` in `OnAfterRenderAsync(bool firstRender)`.
+3. **`IgbCard` does not set a default width.** Always set a width via inline style or CSS class.
+4. **Prefer the Dropdown `target` slot for the trigger.** For an external trigger, follow the current `dropdown` MCP doc and call `Show()`, `Hide()`, or `Toggle()` on the dropdown reference.
+5. **`IgbTooltip.Anchor` uses the target element ID string in the documented Blazor pattern.** Give the target an `id` and pass that same value to `Anchor`.

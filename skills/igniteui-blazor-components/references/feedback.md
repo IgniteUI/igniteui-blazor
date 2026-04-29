@@ -170,10 +170,9 @@ CSS parts: `spacer`, `message`, `illustration`, `actions`.
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for method signatures, events, and event argument types.
-2. **Use `@ref` to obtain a component reference**, then call `ShowAsync()` / `HideAsync()` on it from C# code.
-3. **`IgbDialog.KeepOpenOnEscape` is `false` by default.** Set it to `true` to force users to use your footer buttons instead of ESC.
-4. **`IgbDialog.CloseOnOutsideClick` is `false` by default** - set it to `true` for light-dismiss dialogs.
-5. **`IgbSnackbar.DisplayTime="0"` keeps it open until `HideAsync()` is called.** Use `KeepOpen` for the same effect.
-6. **Footer buttons in `IgbDialog` must use `slot="footer"`.** Without the slot, they render in the body.
-7. **`IgbBanner` is inline** (pushes content down) while `IgbDialog` is a modal overlay. Use banners for persistent, low-urgency messages and dialogs for confirmations or blocking actions.
+1. **Use `@ref` to obtain a component reference**, then call `ShowAsync()` / `HideAsync()` on it from C# code.
+2. **`IgbDialog.KeepOpenOnEscape` is `false` by default.** Set it to `true` to force users to use your footer buttons instead of ESC.
+3. **`IgbDialog.CloseOnOutsideClick` is `false` by default** - set it to `true` for light-dismiss dialogs.
+4. **`IgbSnackbar.DisplayTime="0"` keeps it open until `HideAsync()` is called.** Use `KeepOpen` for the same effect.
+5. **Footer buttons in `IgbDialog` must use `slot="footer"`.** Without the slot, they render in the body.
+6. **`IgbBanner` is inline** (pushes content down) while `IgbDialog` is a modal overlay. Use banners for persistent, low-urgency messages and dialogs for confirmations or blocking actions.

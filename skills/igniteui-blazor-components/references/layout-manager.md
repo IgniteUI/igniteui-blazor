@@ -172,10 +172,9 @@ Methods on `IgbTileManager`: `SaveLayout()` and `LoadLayout(string)` persist til
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` to confirm layout object APIs, property names, methods, events, and signatures.
-2. **`IgbContentPane.ContentId` must exactly match the `slot` attribute of the projected HTML element.** A mismatch causes the pane to render empty.
-3. **Dock Manager must have an explicit height** (via CSS or inline style). Without a height it renders as 0px.
-4. **Layout serialization only persists structure, not content.** Slot content is always defined in Razor markup.
-5. **`IgbTileManager` uses CSS Grid internally.** Set `ColumnCount` to control the number of columns.
-6. **Do not invent Dock Manager serialization APIs.** Use `dock-manager` and the installed API before writing persistence code.
-7. **Tile Manager serialization uses `SaveLayout()` / `LoadLayout(string)`.** The saved payload stores tile layout properties, not tile content.
+1. **`IgbContentPane.ContentId` must exactly match the `slot` attribute of the projected HTML element.** A mismatch causes the pane to render empty.
+2. **Dock Manager must have an explicit height** (via CSS or inline style). Without a height it renders as 0px.
+3. **Layout serialization only persists structure, not content.** Slot content is always defined in Razor markup.
+4. **`IgbTileManager` uses CSS Grid internally.** Set `ColumnCount` to control the number of columns.
+5. **Do not invent Dock Manager serialization APIs.** Use `dock-manager` and the installed API before writing persistence code.
+6. **Tile Manager serialization uses `SaveLayout()` / `LoadLayout(string)`.** The saved payload stores tile layout properties, not tile content.

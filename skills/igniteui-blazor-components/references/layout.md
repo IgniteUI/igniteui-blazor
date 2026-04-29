@@ -301,9 +301,8 @@ Events on `IgbTree`: `NodeSelectionChanging` (cancellable), `NodeSelectionChange
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for slot names, attributes, methods, events, and signatures.
-2. **`IgbTab.Panel` must match `IgbTabPanel.Id`** - mismatched IDs cause the panel to never display.
-3. **Stepper with `Linear="true"` prevents users from skipping steps.** Do not set `Linear` if free navigation is intended.
-4. **Activate/deactivate `IgbNavDrawerItem` programmatically** by setting `item.Active` - there is no automatic selection tracking.
-5. **Register icons via `RegisterIconFromTextAsync` in `OnAfterRenderAsync(bool firstRender)`**, and always call `await component.EnsureReady()` first.
-6. **`IgbAccordion` with `SingleExpand="true"` closes other panels when one is opened.** This is the most common use case for accordions.
+1. **`IgbTab.Panel` must match `IgbTabPanel.Id`** - mismatched IDs cause the panel to never display.
+2. **Stepper with `Linear="true"` prevents users from skipping steps.** Do not set `Linear` if free navigation is intended.
+3. **Activate/deactivate `IgbNavDrawerItem` programmatically** by setting `item.Active` - there is no automatic selection tracking.
+4. **Register icons via `RegisterIconFromTextAsync` in `OnAfterRenderAsync(bool firstRender)`**, and always call `await component.EnsureReady()` first.
+5. **`IgbAccordion` with `SingleExpand="true"` closes other panels when one is opened.** This is the most common use case for accordions.

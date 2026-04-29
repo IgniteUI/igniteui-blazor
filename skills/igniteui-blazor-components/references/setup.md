@@ -202,9 +202,8 @@ Module names follow the pattern `Igb{ComponentName}Module`. If unsure of the mod
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for property names, methods, events, and signatures.
-2. **Both server and client `Program.cs` must register the service** in Blazor Web App projects.
-3. **The CSS theme link and the script tag are both required.** Missing either causes components to render unstyled or non-functional.
-4. **Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`**, and in both server/client `_Imports.razor` files for split Blazor Web App projects.
-5. **`AddIgniteUIBlazor()` with no arguments registers all modules.** Use explicit `typeof(...)` registrations in production for smaller bundles.
-6. **Blazor Web App components need an interactive render mode.** Static SSR pages will not render Ignite UI components correctly.
+1. **Both server and client `Program.cs` must register the service** in Blazor Web App projects.
+2. **The CSS theme link and the script tag are both required.** Missing either causes components to render unstyled or non-functional.
+3. **Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`**, and in both server/client `_Imports.razor` files for split Blazor Web App projects.
+4. **`AddIgniteUIBlazor()` with no arguments registers all modules.** Use explicit `typeof(...)` registrations in production for smaller bundles.
+5. **Blazor Web App components need an interactive render mode.** Static SSR pages will not render Ignite UI components correctly.
