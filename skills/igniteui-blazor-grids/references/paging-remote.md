@@ -1,179 +1,288 @@
-# Paging, Remote Operations & Virtualization
-
-> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
-
-## Contents
-
-- [Local Paging with IgbPaginator](#local-paging-with-igbpaginator)
-- [Remote Paging](#remote-paging)
-- [Remote Sorting & Filtering](#remote-sorting--filtering)
-- [Virtual Scrolling](#virtual-scrolling)
-- [Key Rules](#key-rules)
+# Paging, Remote Data & Virtualization
 
 ---
 
-## Local Paging with IgbPaginator
+## Paging with `IgbPaginator`
+
+The grid does not have built-in paging. Instead, place an `IgbPaginator` component inside the grid:
+
+### Basic paging
 
 ```razor
-<IgbGrid Data="AllProducts" PrimaryKey="ProductID" AutoGenerate="false">
-    <IgbColumn Field="ProductName" />
-    <IgbColumn Field="UnitPrice" DataType="GridColumnDataType.Number" />
-    <IgbPaginator PerPage="15" />
+<IgbGrid Data="data" PrimaryKey="Id" AutoGenerate="false"
+         Width="100%" Height="500px">
+    <IgbColumn Field="Id" Header="ID" />
+    <IgbColumn Field="Name" Header="Name" />
+    <IgbColumn Field="Department" Header="Department" />
+    <IgbPaginator PerPage="10" />
 </IgbGrid>
 ```
 
-`IgbPaginator` is a child component of `IgbGrid`. It handles all local pagination automatically.
+### Paginator parameters
 
-Key attributes on `IgbPaginator`: `PerPage` (rows per page, default: 15), `SelectOptions` (array of per-page options shown in the page size dropdown), `TotalRecords` (only needed for remote paging - see below).
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `PerPage` | `int` | `15` | Rows per page |
+| `TotalRecords` | `int` | - | Total record count (required for remote paging) |
+| `SelectOptions` | `int[]` | `[5, 10, 15, 25, 50]` | Page size dropdown options |
+
+### Paginator events
+
+| Event | Type | Description |
+|---|---|---|
+| `PerPageChanged` | `EventCallback<int>` | Fires when page size changes |
+| `PageChanged` | `EventCallback<int>` | Fires when current page changes |
+| `PagingDone` | `EventCallback<IgbPagingEventArgs>` | Fires after paging completes |
+
+### Programmatic paging
+
+```razor
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+    <IgbPaginator @ref="paginator" PerPage="10" />
+    ...
+</IgbGrid>
+
+<IgbButton @onclick="GoToFirstPage">First Page</IgbButton>
+<IgbButton @onclick="GoToNextPage">Next Page</IgbButton>
+
+@code {
+    private IgbGrid grid = default!;
+    private IgbPaginator paginator = default!;
+
+    private async Task GoToFirstPage()
+    {
+        await paginator.PaginateAsync(0);
+    }
+
+    private async Task GoToNextPage()
+    {
+        await paginator.NextPageAsync();
+    }
+}
+```
+
+### Paginator navigation methods
+
+| Method | Description |
+|---|---|
+| `PaginateAsync(int page)` | Go to a specific page (0-based index) |
+| `NextPageAsync()` | Go to the next page |
+| `PreviousPageAsync()` | Go to the previous page |
 
 ---
 
 ## Remote Paging
 
-Remote paging loads only the current page from the server. The grid displays the page data and the paginator shows the correct total count.
+When data lives on a server, fetch only the current page:
 
 ```razor
-<IgbGrid @ref="Grid"
-         Data="CurrentPageData"
-         PrimaryKey="ProductID"
-         AutoGenerate="false"
-         Height="500px">
-    <IgbColumn Field="ProductName" />
-    <IgbColumn Field="UnitPrice" DataType="GridColumnDataType.Number" />
-    <IgbPaginator @ref="Paginator"
-                  PerPage="@PageSize"
-                  TotalRecords="@TotalRecords"
-                  PageChange="OnPageChange"
-                  PerPageChange="OnPerPageChange" />
+<IgbGrid @ref="grid" Data="currentPageData" PrimaryKey="Id"
+         AutoGenerate="false" Width="100%" Height="500px">
+    <IgbColumn Field="Id" Header="ID" />
+    <IgbColumn Field="Name" Header="Name" />
+    <IgbColumn Field="Department" Header="Department" />
+    <IgbPaginator PerPage="@pageSize"
+                   TotalRecords="@totalRecords"
+                   PageChanged="OnPageChanged"
+                   PerPageChanged="OnPerPageChanged" />
 </IgbGrid>
 
 @code {
-    IgbGrid Grid { get; set; }
-    IgbPaginator Paginator { get; set; }
-
-    List<Product> CurrentPageData { get; set; } = new();
-    int TotalRecords { get; set; } = 0;
-    int PageSize { get; set; } = 15;
-    int CurrentPage { get; set; } = 0;
+    private IgbGrid grid = default!;
+    private List<Employee> currentPageData = new();
+    private int totalRecords = 0;
+    private int pageSize = 20;
+    private int currentPage = 0;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadPageAsync(0, PageSize);
+        await LoadPageAsync();
     }
 
-    async Task OnPageChange(int newPage)
+    private async Task OnPageChanged(int page)
     {
-        CurrentPage = newPage;
-        await LoadPageAsync(newPage, PageSize);
+        currentPage = page;
+        await LoadPageAsync();
     }
 
-    async Task OnPerPageChange(int newSize)
+    private async Task OnPerPageChanged(int newPageSize)
     {
-        PageSize = newSize;
-        CurrentPage = 0;
-        await LoadPageAsync(0, newSize);
+        pageSize = newPageSize;
+        currentPage = 0;
+        await LoadPageAsync();
     }
 
-    async Task LoadPageAsync(int page, int perPage)
+    private async Task LoadPageAsync()
     {
-        var result = await MyApi.GetProductsAsync(skip: page * perPage, take: perPage);
-        CurrentPageData = result.Items;
-        TotalRecords = result.TotalCount;
+        var result = await Api.GetEmployeesPagedAsync(currentPage, pageSize);
+        currentPageData = result.Items;
+        totalRecords = result.TotalCount;
         StateHasChanged();
     }
 }
 ```
 
-> **AGENT INSTRUCTION:** When implementing remote paging, `TotalRecords` on `IgbPaginator` must be set to the server's total record count (not the page count). The grid `Data` must be replaced with each new page's data when the page changes.
+### Key points for remote paging
+
+1. **Set `TotalRecords`** on the paginator - this tells it the total number of records on the server.
+2. **Bind `Data` to the current page** - only the current page's data is in memory.
+3. **Handle `PageChanged` and `PerPageChanged`** - fetch new data from the server on each event.
 
 ---
 
-## Remote Sorting & Filtering
+## Remote Data Operations
 
-For remote operations, disable local sorting/filtering and handle the events yourself:
+For large datasets, disable client-side sorting/filtering and handle them on the server.
+
+### Remote sorting
 
 ```razor
-<IgbGrid @ref="Grid"
-         Data="CurrentPageData"
-         PrimaryKey="ProductID"
-         AutoGenerate="false"
-         AllowFiltering="true"
-         SortingChanged="OnSortingChanged"
-         FilteringExpressionsTreeChange="OnFilteringChanged">
-    <IgbColumn Field="ProductName" Sortable="true" Filterable="true" />
-    <IgbColumn Field="UnitPrice" DataType="GridColumnDataType.Number" Sortable="true" />
-    <IgbPaginator TotalRecords="@TotalRecords" PageChange="OnPageChange" />
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id"
+         SortingDone="OnSortingDone">
+    <IgbColumn Field="Name" Sortable="true" />
+    <IgbColumn Field="Department" Sortable="true" />
+    <IgbColumn Field="Salary" Sortable="true" DataType="GridColumnDataType.Number" />
+    <IgbPaginator PerPage="@pageSize" TotalRecords="@totalRecords"
+                   PageChanged="OnPageChanged" />
 </IgbGrid>
 
 @code {
-    IgbGrid Grid { get; set; }
-    List<Product> CurrentPageData { get; set; } = new();
-    int TotalRecords { get; set; }
+    private IgbGrid grid = default!;
+    private List<Employee> data = new();
+    private int totalRecords = 0;
+    private int pageSize = 20;
+    private int currentPage = 0;
+    private IgbSortingExpression[]? currentSort;
 
-    IgbSortingExpression[] CurrentSort { get; set; } = Array.Empty<IgbSortingExpression>();
-    IgbFilteringExpressionsTree CurrentFilter { get; set; }
-
-    async Task OnSortingChanged(IgbSortingExpression[] sortExpressions)
+    private async Task OnSortingDone(IgbSortingEventArgs args)
     {
-        CurrentSort = sortExpressions;
+        currentSort = args.SortingExpressions;
+        currentPage = 0;
         await LoadDataAsync();
     }
 
-    async Task OnFilteringChanged(IgbFilteringExpressionsTree filterTree)
+    private async Task OnPageChanged(int page)
     {
-        CurrentFilter = filterTree;
+        currentPage = page;
         await LoadDataAsync();
     }
 
-    async Task LoadDataAsync()
+    private async Task LoadDataAsync()
     {
-        var result = await MyApi.GetProductsAsync(sort: CurrentSort, filter: CurrentFilter);
-        CurrentPageData = result.Items;
-        TotalRecords = result.TotalCount;
+        var result = await Api.GetEmployeesAsync(
+            page: currentPage,
+            pageSize: pageSize,
+            sortField: currentSort?.FirstOrDefault()?.FieldName,
+            sortDir: currentSort?.FirstOrDefault()?.Dir.ToString()
+        );
+        data = result.Items;
+        totalRecords = result.TotalCount;
         StateHasChanged();
     }
 }
 ```
 
-> **AGENT INSTRUCTION:** Confirm event names (`SortingChanged`, `FilteringExpressionsTreeChange`) from `get_doc`. These names may differ between versions.
+### Remote filtering
+
+```razor
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id"
+         AllowFiltering="true"
+         FilteringDone="OnFilteringDone">
+    <IgbColumn Field="Name" Filterable="true" DataType="GridColumnDataType.String" />
+    <IgbColumn Field="Department" Filterable="true" DataType="GridColumnDataType.String" />
+</IgbGrid>
+
+@code {
+    private IgbGrid grid = default!;
+    private List<Employee> data = new();
+
+    private async Task OnFilteringDone(IgbFilteringEventArgs args)
+    {
+        // Extract filter information and send to server
+        var filterExpressions = args.FilteringExpressions;
+        var result = await Api.GetEmployeesFilteredAsync(filterExpressions);
+        data = result.Items;
+        StateHasChanged();
+    }
+}
+```
+
+### Combined remote operations pattern
+
+For production apps, combine paging, sorting, and filtering into a single server call:
+
+```razor
+@code {
+    private int currentPage = 0;
+    private int pageSize = 20;
+    private int totalRecords = 0;
+    private IgbSortingExpression[]? currentSort;
+    private string? filterField;
+    private string? filterValue;
+
+    private async Task LoadDataAsync()
+    {
+        var result = await Api.QueryAsync(new QueryRequest
+        {
+            Page = currentPage,
+            PageSize = pageSize,
+            SortField = currentSort?.FirstOrDefault()?.FieldName,
+            SortDirection = currentSort?.FirstOrDefault()?.Dir.ToString(),
+            FilterField = filterField,
+            FilterValue = filterValue
+        });
+
+        data = result.Items;
+        totalRecords = result.TotalCount;
+        StateHasChanged();
+    }
+}
+```
 
 ---
 
-## Virtual Scrolling
+## Virtualization
 
-`IgbGrid` uses row virtualization by default when `Height` is set. Only the visible rows are rendered in the DOM.
+### How virtualization works
+
+Virtualization is **built-in and automatic**. The grid only renders DOM elements for the visible viewport. As the user scrolls, rows and cells are recycled.
+
+### Requirements
+
+1. **The grid must have a fixed `Height`** - set `Height="500px"` or `Height="80vh"`. Without a height, the grid renders all rows and virtualization is disabled.
+2. **Column widths help column virtualization** - when total column width exceeds the grid width, columns outside the viewport are not rendered.
+
+### Row virtualization
 
 ```razor
-<!-- Virtualization is enabled automatically when Height is set -->
-<IgbGrid Data="LargeDataset" Height="600px" Width="100%">
-    <IgbColumn Field="Name" />
+<IgbGrid Data="largeDataSet" PrimaryKey="Id"
+         Width="100%" Height="600px" AutoGenerate="true" />
+```
+
+Even with 100,000+ rows, only ~20-30 (depending on row height and grid height) are rendered at any time.
+
+### Column virtualization
+
+```razor
+<IgbGrid Data="wideData" PrimaryKey="Id" Width="800px" Height="600px">
+    @for (int i = 0; i < 50; i++)
+    {
+        <IgbColumn Field="@($"Col{i}")" Header="@($"Column {i}")" Width="150px" />
+    }
 </IgbGrid>
 ```
 
-For column virtualization (useful when there are many columns):
-
-```razor
-<IgbGrid Data="Data" Height="600px" ColumnWidth="150px">
-    <!-- many columns -->
-</IgbGrid>
-```
-
-Programmatic scroll to a row:
-
-```csharp
-await Grid.NavigateToAsync(rowIndex: 500, columnIndex: 0, () =>
-{
-    // callback when navigation is complete
-});
-```
+With 50 columns at 150px each (7500px total) in an 800px wide grid, only the visible columns are rendered.
 
 ---
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing paging or remote data code.** Event names and paginator property names are version-specific.
-2. **For remote paging, set `TotalRecords` on `IgbPaginator` to the server's total count**, not the count of the current page.
-3. **For remote paging, replace `Grid.Data` (or the bound list) with new data on each page change.** The grid does not automatically fetch data.
-4. **Row virtualization is enabled automatically by setting `Height` on the grid.** Remove the height to disable it (not recommended for large datasets).
-5. **For remote sorting and filtering, handle the grid events and re-fetch data from the server.** Do not try to sort/filter the local `Data` list - that defeats remote operations.
-6. **When combining remote paging + remote sorting + remote filtering, always reset to page 0 when sort or filter changes**, otherwise the user sees an empty page.
+1. **`IgbPaginator` goes inside the grid** - it is a child component, not a sibling.
+2. **Remote paging requires `TotalRecords`** - without it, the paginator cannot calculate page count.
+3. **Handle events for remote operations** - `SortingDone`, `FilteringDone`, `PageChanged` are your hooks to fetch server data.
+4. **Virtualization needs a fixed `Height`** - this is the #1 performance requirement.
+5. **Do not use `.Skip().Take()` on `IQueryable` directly on the grid** - the grid expects a materialized collection (`List<T>` or `T[]`). Fetch data asynchronously and set it as the `Data` property.
+6. **`StateHasChanged()` after data updates** - call it after reassigning the `Data` property from an async operation.
+7. **Remote operations override client-side** - when using remote sorting/filtering, the grid still shows sort/filter UI, but you handle the actual data transformation on the server.
+8. **Paging is not available on IgbPivotGrid** - the Pivot Grid does not support pagination.

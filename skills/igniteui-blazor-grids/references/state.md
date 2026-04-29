@@ -1,143 +1,152 @@
-# Grid State Persistence
-
-> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
-
-## Contents
-
-- [Basic Usage](#basic-usage)
-- [Selective State Options](#selective-state-options)
-- [Saving and Restoring](#saving-and-restoring)
-- [Key Rules](#key-rules)
+# State Persistence
 
 ---
 
-## Basic Usage
+## State Persistence
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule), typeof(IgbGridStateModule));
-```
+Save and restore the full grid state (sorting, filtering, grouping, paging, selection, column order, column widths, column visibility, pinning) to survive page reloads, navigation, or user sessions.
 
-Add `IgbGridState` as a direct child of `IgbGrid`:
+### Save state
 
 ```razor
-<IgbGrid @ref="Grid" Data="Products" PrimaryKey="ProductID" AutoGenerate="false">
-    <IgbGridState @ref="GridState" />
-    <IgbColumn Field="ProductName" Sortable="true" Filterable="true" />
-    <IgbColumn Field="UnitPrice" DataType="GridColumnDataType.Number" Sortable="true" />
-    <IgbPaginator PerPage="15" />
+@inject IJSRuntime JS
+
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id" AutoGenerate="false"
+         Width="100%" Height="500px">
+    <IgbColumn Field="Name" Sortable="true" Filterable="true" />
+    <IgbColumn Field="Department" Sortable="true" Groupable="true" />
+    <IgbColumn Field="Salary" DataType="GridColumnDataType.Currency" HasSummary="true" />
+    <IgbPaginator PerPage="10" />
 </IgbGrid>
 
-@code {
-    IgbGrid Grid { get; set; }
-    IgbGridState GridState { get; set; }
-}
-```
-
----
-
-## Selective State Options
-
-By default, `IgbGridState` persists all supported features. To opt out of specific features, set `Options`:
-
-```razor
-<IgbGridState @ref="GridState" />
+<IgbButton @onclick="SaveState">Save State</IgbButton>
+<IgbButton @onclick="RestoreState">Restore State</IgbButton>
 
 @code {
-    IgbGridState GridState { get; set; }
+    private IgbGrid grid = default!;
 
-    protected override void OnAfterRender(bool firstRender)
+    private async Task SaveState()
     {
-        if (firstRender && GridState != null)
-        {
-            GridState.Options = new IgbGridStateOptions
-            {
-                Sorting = true,
-                Filtering = true,
-                Paging = true,
-                Selection = false,         // don't persist selection
-                CellSelection = false,     // don't persist cell selection
-                RowPinning = true,
-                ColumnPinning = true,
-                ColumnHiding = true,
-                ColumnMoving = true,
-                ColumnResizing = true,
-                GroupBy = true,
-                Expansion = false          // don't persist expanded rows
-            };
-        }
-    }
-}
-```
-
----
-
-## Saving and Restoring
-
-```razor
-<IgbGrid @ref="Grid" Data="Products" PrimaryKey="ProductID">
-    <IgbGridState @ref="GridState" />
-    <IgbColumn Field="ProductName" Sortable="true" />
-</IgbGrid>
-
-<IgbButton @onclick="SaveState">Save Layout</IgbButton>
-<IgbButton @onclick="RestoreState">Restore Layout</IgbButton>
-
-@code {
-    IgbGrid Grid { get; set; }
-    IgbGridState GridState { get; set; }
-
-    string SavedState { get; set; } = string.Empty;
-
-    async Task SaveState()
-    {
-        // Pass empty array to save ALL features
-        SavedState = await GridState.GetStateAsStringAsync(new string[0]);
-        // Persist to local storage, session, database, etc.
-        await LocalStorage.SetItemAsync("gridState", SavedState);
+        var state = await grid.GetStateAsync();
+        var json = state.ToJson();
+        await JS.InvokeVoidAsync("localStorage.setItem", "gridState", json);
     }
 
-    async Task RestoreState()
+    private async Task RestoreState()
     {
-        var json = await LocalStorage.GetItemAsync<string>("gridState");
+        var json = await JS.InvokeAsync<string>("localStorage.getItem", "gridState");
         if (!string.IsNullOrEmpty(json))
         {
-            // Pass empty array to restore ALL features
-            await GridState.ApplyStateFromStringAsync(json, new string[0]);
+            var state = IgbGridState.FromJson(json);
+            await grid.SetStateAsync(state);
         }
     }
+}
+```
+
+### What state includes
+
+| State Category | Properties Saved |
+|---|---|
+| Columns | Order, width, visibility, pinned, data type |
+| Sorting | Active sort expressions and directions |
+| Filtering | Active filter expressions |
+| Grouping | Active group-by expressions (IgbGrid only) |
+| Paging | Current page, page size |
+| Selection | Selected rows, selected cells, selected columns |
+| Advanced Filtering | Advanced filtering expressions tree |
+| Row expansion | Expanded row IDs (Tree Grid, Hierarchical Grid) |
+| Column moving | Column positions after user reordering |
+
+### Auto-save on navigation
+
+```razor
+@implements IDisposable
+
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+    ...
+</IgbGrid>
+
+@code {
+    private IgbGrid grid = default!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            // Auto-restore on page load
             await RestoreState();
+        }
+    }
+
+    public async void Dispose()
+    {
+        await SaveState();
+    }
+
+    private async Task SaveState()
+    {
+        var state = await grid.GetStateAsync();
+        await JS.InvokeVoidAsync("localStorage.setItem", "gridState", state.ToJson());
+    }
+
+    private async Task RestoreState()
+    {
+        var json = await JS.InvokeAsync<string>("localStorage.getItem", "gridState");
+        if (!string.IsNullOrEmpty(json))
+        {
+            await grid.SetStateAsync(IgbGridState.FromJson(json));
         }
     }
 }
 ```
 
-### Selective Save / Restore
+### Selective state save/restore
 
-Pass an array of feature names to save or restore only those features:
+Save only specific parts of the state:
 
-```csharp
-// Save only sorting and filtering
-var partialState = await GridState.GetStateAsStringAsync(new[] { "sorting", "filtering" });
-
-// Restore only sorting and filtering
-await GridState.ApplyStateFromStringAsync(partialState, new[] { "sorting", "filtering" });
+```razor
+@code {
+    private async Task SaveSortingOnly()
+    {
+        var state = await grid.GetStateAsync(new IgbGridStateOptions
+        {
+            Sorting = true,
+            Filtering = false,
+            Paging = false,
+            Selection = false,
+            Columns = false
+        });
+        await JS.InvokeVoidAsync("localStorage.setItem", "gridSorting", state.ToJson());
+    }
+}
 ```
 
-> **AGENT INSTRUCTION:** Confirm feature string names (e.g., `"sorting"`, `"filtering"`, `"paging"`) from `get_doc` for the current version. String values are case-sensitive.
+### State with server storage
+
+```razor
+@code {
+    private async Task SaveToServer()
+    {
+        var state = await grid.GetStateAsync();
+        var json = state.ToJson();
+        await UserPreferencesApi.SaveGridStateAsync(userId, "employeesGrid", json);
+    }
+
+    private async Task LoadFromServer()
+    {
+        var json = await UserPreferencesApi.GetGridStateAsync(userId, "employeesGrid");
+        if (!string.IsNullOrEmpty(json))
+        {
+            await grid.SetStateAsync(IgbGridState.FromJson(json));
+        }
+    }
+}
+```
 
 ---
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing state persistence code.** Method names and option property names are version-specific.
-2. **`IgbGridStateModule` must be registered in `Program.cs`** in addition to `IgbGridModule`.
-3. **`IgbGridState` must be a direct child of `IgbGrid`** - it does not work as a nested descendant.
-4. **`PrimaryKey` must be set on the grid** for state persistence to work reliably (especially for selection and row pinning).
-5. **Pass `new string[0]` (empty array) to save/restore ALL features.** Pass an array of feature name strings to save/restore specific features.
-6. **Auto-restore in `OnAfterRenderAsync(bool firstRender)`**, not in `OnInitialized`, because the grid must be rendered before state can be applied.
+1. **`PrimaryKey` must be set on the grid** for state persistence to work reliably (especially for selection and row pinning).
+2. **State serialization is JSON** - `GetStateAsync()` returns an object that can be serialized with `ToJson()`.
+3. **Restore state in `OnAfterRenderAsync`** - the grid must be rendered before you can call `SetStateAsync`.

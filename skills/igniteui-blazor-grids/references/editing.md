@@ -1,170 +1,281 @@
-# Grid Editing
+# Editing - Cell Editing, Row Editing & Validation
 
-> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> **Pivot Grid does not support editing.** The Pivot Grid is read-only. The content below applies to IgbGrid, IgbTreeGrid, and IgbHierarchicalGrid.
 
-## Contents
+---
 
-- [Cell Editing](#cell-editing)
-- [Row Editing](#row-editing)
-- [Edit Templates](#edit-templates)
-- [Edit Events](#edit-events)
-- [Adding and Deleting Rows](#adding-and-deleting-rows)
-- [Key Rules](#key-rules)
+## Choosing an Editing Mode
+
+| Mode | Property | Best For | Commit Behavior |
+|---|---|---|---|
+| Cell editing | `Editable="true"` on column | Quick inline edits | Commits on blur, Enter, or Tab |
+| Row editing | `RowEditable="true"` on grid | Multi-field row changes | Shows confirm/cancel banner; commits on confirm |
+
+> **Recommendation:** Use **row editing** for most CRUD scenarios. It gives users a clear confirm/cancel flow and prevents partial row updates.
 
 ---
 
 ## Cell Editing
 
-Cell editing allows users to double-click (or press Enter) on a cell to edit it in place.
+### Enable cell editing
+
+Mark columns as editable:
 
 ```razor
-<IgbGrid Data="Products" PrimaryKey="ProductID" AutoGenerate="false">
-    <IgbColumn Field="ProductID" Header="ID" />
-    <IgbColumn Field="ProductName" Header="Name" Editable="true" />
-    <IgbColumn Field="UnitPrice" Header="Price" DataType="GridColumnDataType.Number" Editable="true" />
-    <IgbColumn Field="InStock" Header="In Stock" DataType="GridColumnDataType.Boolean" Editable="true" />
+<IgbGrid Data="employees" PrimaryKey="Id" AutoGenerate="false">
+    <IgbColumn Field="Id" Header="ID" Editable="false" />
+    <IgbColumn Field="Name" Header="Name" Editable="true" DataType="GridColumnDataType.String" />
+    <IgbColumn Field="Salary" Header="Salary" Editable="true" DataType="GridColumnDataType.Currency" />
+    <IgbColumn Field="HireDate" Header="Hire Date" Editable="true" DataType="GridColumnDataType.Date" />
+    <IgbColumn Field="IsActive" Header="Active" Editable="true" DataType="GridColumnDataType.Boolean" />
 </IgbGrid>
 ```
 
-Only columns with `Editable="true"` allow editing. The grid renders the appropriate input control for the column's `DataType` automatically.
+- Double-click (or press Enter on a focused cell) enters edit mode.
+- The editor type is determined by `DataType`: text input for strings, numeric input for numbers, datepicker for dates, checkbox for booleans.
+
+### Cell editing events
+
+| Event | Type | Description |
+|---|---|---|
+| `CellEditEnter` | `EventCallback<IgbGridEditEventArgs>` | Fires when a cell enters edit mode |
+| `CellEdit` | `EventCallback<IgbGridEditEventArgs>` | Fires before a cell value is committed - set `args.Cancel = true` to reject |
+| `CellEditDone` | `EventCallback<IgbGridEditDoneEventArgs>` | Fires after a cell value is committed |
+| `CellEditExit` | `EventCallback<IgbGridEditEventArgs>` | Fires when a cell exits edit mode |
+
+### Example: Validate before commit
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" CellEdit="OnCellEdit">
+    <IgbColumn Field="Salary" Editable="true" DataType="GridColumnDataType.Number" />
+</IgbGrid>
+
+@code {
+    private void OnCellEdit(IgbGridEditEventArgs args)
+    {
+        if (args.Column.Field == "Salary")
+        {
+            var newValue = Convert.ToDecimal(args.NewValue);
+            if (newValue < 0)
+            {
+                args.Cancel = true; // reject negative salary
+            }
+        }
+    }
+}
+```
+
+### Example: React to committed changes
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" CellEditDone="OnCellEditDone">
+    ...
+</IgbGrid>
+
+@code {
+    private async Task OnCellEditDone(IgbGridEditDoneEventArgs args)
+    {
+        var rowData = args.RowData;
+        var field = args.Column.Field;
+        var newValue = args.NewValue;
+        // Save to server
+        await EmployeeService.UpdateFieldAsync(rowData, field, newValue);
+    }
+}
+```
 
 ---
 
 ## Row Editing
 
-Row editing shows an overlay row with **Done** and **Cancel** buttons. Changes are committed only when the user clicks **Done** (or discarded with **Cancel**).
+### Enable row editing
 
 ```razor
-<IgbGrid Data="Products"
-         PrimaryKey="ProductID"
-         AutoGenerate="false"
-         RowEditable="true"
-         RowEditEnter="OnRowEditEnter"
-         RowEditDone="OnRowEditDone">
-    <IgbColumn Field="ProductID" />
-    <IgbColumn Field="ProductName" Editable="true" />
-    <IgbColumn Field="UnitPrice" DataType="GridColumnDataType.Number" Editable="true" />
+<IgbGrid Data="employees" PrimaryKey="Id" RowEditable="true" AutoGenerate="false">
+    <IgbColumn Field="Id" Header="ID" Editable="false" />
+    <IgbColumn Field="Name" Header="Name" Editable="true" />
+    <IgbColumn Field="Department" Header="Department" Editable="true" />
+    <IgbColumn Field="Salary" Header="Salary" Editable="true" DataType="GridColumnDataType.Currency" />
 </IgbGrid>
-
-@code {
-    void OnRowEditEnter(IgbGridEditEventArgs e) { /* row edit started */ }
-
-    void OnRowEditDone(IgbGridEditDoneEventArgs e)
-    {
-        var updated = e.NewValue; // the updated row object
-        // persist to database
-    }
-}
 ```
 
-> **AGENT INSTRUCTION - Batch Editing NOT available**
->
-> Ignite UI for Blazor does **not** support batch editing. All edits are committed immediately (cell editing) or per-row (row editing). Do not suggest or generate batch editing code.
+- When `RowEditable="true"`, editing a cell shows a row-level overlay with **Confirm** and **Cancel** buttons.
+- All cells in the row are editable simultaneously.
+- Changes are committed to the data source only on **Confirm**.
 
----
+### Row editing events
 
-## Edit Templates
+| Event | Type | Description |
+|---|---|---|
+| `RowEditEnter` | `EventCallback<IgbGridEditEventArgs>` | Fires when a row enters edit mode |
+| `RowEdit` | `EventCallback<IgbGridEditEventArgs>` | Fires before row changes are committed - set `args.Cancel = true` to reject |
+| `RowEditDone` | `EventCallback<IgbGridEditDoneEventArgs>` | Fires after row changes are committed |
+| `RowEditExit` | `EventCallback<IgbGridEditEventArgs>` | Fires when a row exits edit mode |
 
-Use custom edit templates to replace the default editor for a column:
+### Example: Save row on confirm
 
 ```razor
-<IgbColumn Field="CategoryID" Header="Category" Editable="true">
-    <IgbCellEditorTemplateDirective>
-        @{
-            var cell = context as IgbCellTemplateContext;
-        }
-        <IgbSelect @bind-Value="@((string)cell.Cell.EditValue)">
-            <IgbSelectItem Value="1">Electronics</IgbSelectItem>
-            <IgbSelectItem Value="2">Clothing</IgbSelectItem>
-            <IgbSelectItem Value="3">Food</IgbSelectItem>
-        </IgbSelect>
-    </IgbCellEditorTemplateDirective>
-</IgbColumn>
-```
-
-> **AGENT INSTRUCTION:** Always call `get_doc` for the exact directive name and context type for cell editor templates. The directive type name (`IgbCellEditorTemplateDirective`) and context property names may differ between versions.
-
----
-
-## Edit Events
-
-| Event | Fires on | Args type | Cancellable |
-|---|---|---|---|
-| `CellEditEnter` | Cell enters edit mode | `IgbGridEditEventArgs` | Yes - set `e.Cancel = true` |
-| `CellEdit` | Cell edit about to commit | `IgbGridEditEventArgs` | Yes - set `e.Cancel = true` |
-| `CellEditDone` | Cell edit committed | `IgbGridEditDoneEventArgs` | No |
-| `CellEditExit` | Cell exits edit mode | `IgbGridEditEventArgs` | Yes |
-| `RowEditEnter` | Row enters edit mode | `IgbGridEditEventArgs` | Yes |
-| `RowEdit` | Row edit about to commit | `IgbGridEditEventArgs` | Yes |
-| `RowEditDone` | Row edit committed | `IgbGridEditDoneEventArgs` | No |
-| `RowEditExit` | Row exits edit mode | `IgbGridEditEventArgs` | Yes |
-
-Key properties on `IgbGridEditEventArgs`: `RowData`, `OldValue`, `NewValue`, `Column`, `Cancel`.
-
-Key properties on `IgbGridEditDoneEventArgs`: `RowData`, `OldValue`, `NewValue`, `Column`.
-
-```razor
-<IgbGrid CellEdit="OnCellEdit" RowEditDone="OnRowSaved" ...>
-```
-
-```csharp
-void OnCellEdit(IgbGridEditEventArgs e)
-{
-    if (e.Column.Field == "UnitPrice" && (double)e.NewValue < 0)
-    {
-        e.Cancel = true; // reject negative prices
-    }
-}
-
-async Task OnRowSaved(IgbGridEditDoneEventArgs e)
-{
-    await MyApi.UpdateProductAsync(e.RowData);
-}
-```
-
----
-
-## Adding and Deleting Rows
-
-Programmatic row addition and deletion use grid API methods.
-
-```razor
-<IgbGrid @ref="Grid" Data="Products" PrimaryKey="ProductID">
+<IgbGrid Data="data" PrimaryKey="Id" RowEditable="true"
+         RowEditDone="OnRowEditDone">
     ...
 </IgbGrid>
-<IgbButton @onclick="AddRow">Add Row</IgbButton>
-<IgbButton @onclick="DeleteSelected">Delete Selected</IgbButton>
 
 @code {
-    IgbGrid Grid { get; set; }
-    List<Product> Products { get; set; } = SampleData.GetProducts();
-
-    async Task AddRow()
+    private async Task OnRowEditDone(IgbGridEditDoneEventArgs args)
     {
-        var newRow = new Product { ProductID = GetNextId(), ProductName = "New Product" };
-        await Grid.AddRowAsync(newRow);
+        var updatedRow = args.RowData;
+        await EmployeeService.UpdateAsync(updatedRow);
     }
+}
+```
 
-    async Task DeleteSelected()
+### Row editing with Action Strip
+
+Add inline add/edit/delete actions:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" RowEditable="true">
+    <IgbColumn Field="Name" Editable="true" />
+    <IgbColumn Field="Salary" Editable="true" DataType="GridColumnDataType.Number" />
+    <IgbActionStrip>
+        <IgbGridEditingActions AddRow="true" />
+    </IgbActionStrip>
+</IgbGrid>
+```
+
+`IgbGridEditingActions` provides:
+- **Edit** - enters row edit mode on the clicked row
+- **Delete** - removes the row
+- **Add Row** (when `AddRow="true"`) - adds a new empty row above or below
+
+---
+
+## Adding & Deleting Rows Programmatically
+
+### Add a row
+
+```razor
+@code {
+    private async Task AddEmployee()
     {
-        var selected = await Grid.GetSelectedRowsAsync();
-        foreach (var row in selected)
+        var newEmployee = new Employee
         {
-            await Grid.DeleteRowAsync(row.Key);
+            Id = employees.Max(e => e.Id) + 1,
+            Name = "New Employee",
+            Department = "Unassigned",
+            Salary = 0
+        };
+        await grid.AddRowAsync(newEmployee);
+    }
+}
+```
+
+### Delete a row
+
+```razor
+@code {
+    private async Task DeleteEmployee(int id)
+    {
+        await grid.DeleteRowAsync(id); // pass the primary key value
+    }
+}
+```
+
+---
+
+## Validation
+
+### Built-in validation
+
+Columns support built-in validators that run during editing:
+
+```razor
+<IgbColumn Field="Name" Editable="true" Required="true" />
+<IgbColumn Field="Email" Editable="true" DataType="GridColumnDataType.String" MinLength="5" MaxLength="100" />
+<IgbColumn Field="Age" Editable="true" DataType="GridColumnDataType.Number" Min="18" Max="120" />
+```
+
+| Validator Parameter | Type | Description |
+|---|---|---|
+| `Required` | `bool` | Value cannot be empty |
+| `MinLength` | `int` | Minimum string length |
+| `MaxLength` | `int` | Maximum string length |
+| `Min` | `object` | Minimum numeric/date value |
+| `Max` | `object` | Maximum numeric/date value |
+
+### Validation display
+
+When a validation rule is violated, the cell shows a red border and a tooltip with the error message. The row cannot be committed while validation errors exist in row editing mode.
+
+### Custom validation
+
+Implement custom logic in the `CellEdit` or `RowEdit` event:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" RowEditable="true"
+         RowEdit="OnRowEdit">
+    <IgbColumn Field="StartDate" Editable="true" DataType="GridColumnDataType.Date" />
+    <IgbColumn Field="EndDate" Editable="true" DataType="GridColumnDataType.Date" />
+</IgbGrid>
+
+@code {
+    private void OnRowEdit(IgbGridEditEventArgs args)
+    {
+        var rowData = args.NewValue as ProjectTask;
+        if (rowData != null && rowData.EndDate < rowData.StartDate)
+        {
+            args.Cancel = true;
+            // Show notification to user
         }
     }
 }
 ```
 
-> **AGENT INSTRUCTION:** Confirm method names `AddRowAsync` / `DeleteRowAsync` from `get_doc` - method signatures may change between versions.
+---
+
+## Custom Editors
+
+Provide a fully custom edit template for a column:
+
+```razor
+<IgbColumn Field="Priority" Header="Priority" Editable="true">
+    <InlineEditorTemplate>
+        @{
+            var cell = (IgbCellTemplateContext)context;
+        }
+        <IgbSelect @bind-Value="cell.Cell.EditValue">
+            <IgbSelectItem Value="Low">Low</IgbSelectItem>
+            <IgbSelectItem Value="Medium">Medium</IgbSelectItem>
+            <IgbSelectItem Value="High">High</IgbSelectItem>
+            <IgbSelectItem Value="Critical">Critical</IgbSelectItem>
+        </IgbSelect>
+    </InlineEditorTemplate>
+</IgbColumn>
+
+<IgbColumn Field="AssignedTo" Header="Assigned To" Editable="true">
+    <InlineEditorTemplate>
+        @{
+            var cell = (IgbCellTemplateContext)context;
+        }
+        <IgbCombo TValue="Person"
+                   Data="people"
+                   ValueKey="Id"
+                   DisplayKey="Name"
+                   SingleSelect="true"
+                   @bind-Value="cell.Cell.EditValue" />
+    </InlineEditorTemplate>
+</IgbColumn>
+```
 
 ---
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing edit code.** Event argument types and method names are version-specific.
-2. **`PrimaryKey` is required for editing.** Without it, the grid cannot identify rows for updates.
-3. **Each editable column must have `Editable="true"`** - setting `RowEditable` on the grid does not automatically make all columns editable.
-4. **Batch editing is NOT available in Blazor.** Only Cell editing and Row editing are supported.
-5. **Cancel edits in `CellEdit` or `RowEdit` events (before commit).** The `CellEditDone` / `RowEditDone` events fire after the edit is already applied and are not cancellable.
-6. **For custom edit templates, confirm directive names from `get_doc`** - do not guess template directive names.
+1. **Set `PrimaryKey`** - editing requires a primary key to identify rows.
+2. **`Editable` is on the column, not the grid** - mark each editable column individually.
+3. **`RowEditable` is on the grid** - it enables the row-editing overlay with confirm/cancel.
+4. **Use `CellEdit` / `RowEdit` to cancel edits** - set `args.Cancel = true` before commit.
+5. **Use `CellEditDone` / `RowEditDone` to persist** - these fire after the edit is committed to the grid.
+6. **Validation blocks commit** - in row editing, the row cannot be confirmed while validation errors exist.
+7. **Pivot Grid is read-only** - never set `Editable` or `RowEditable` on an `IgbPivotGrid`.
+8. **Row editing mode is recommended** - it provides the best UX with confirm/cancel and prevents partial updates.

@@ -1,360 +1,418 @@
-# Grid Features
-
-> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
-
-## Contents
-
-- [Sorting](#sorting)
-- [Filtering](#filtering)
-- [Advanced Filtering](#advanced-filtering)
-- [Column Pinning](#column-pinning)
-- [Column Hiding](#column-hiding)
-- [Column Moving](#column-moving)
-- [Column Resizing](#column-resizing)
-- [Summaries](#summaries)
-- [Group By](#group-by)
-- [Selection](#selection)
-- [Row Adding](#row-adding)
-- [Row Actions](#row-actions)
-- [Search](#search)
-- [Keyboard Navigation](#keyboard-navigation)
-- [Toolbar](#toolbar)
-- [Excel & CSV Export](#excel--csv-export)
-- [Key Rules](#key-rules)
+# Features - Grouping, Summaries, Merging, Toolbar, Export, Row Drag, Action Strip, Master-Detail & Clipboard
 
 ---
 
-## Sorting
+## Grouping (IgbGrid Only)
+
+Grouping is exclusive to the Flat Grid (`IgbGrid`). Tree Grid and Hierarchical Grid do not support grouping.
+
+### Enable grouping
 
 ```razor
-<!-- Enable sorting on columns -->
-<IgbColumn Field="Name" Sortable="true" />
-<IgbColumn Field="Price" Sortable="true" />
+<IgbGrid Data="data" PrimaryKey="Id" AutoGenerate="false">
+    <IgbColumn Field="Department" Header="Department" Groupable="true" />
+    <IgbColumn Field="Name" Header="Name" />
+    <IgbColumn Field="Salary" Header="Salary" DataType="GridColumnDataType.Currency" />
+</IgbGrid>
 ```
 
-Programmatic sort:
+Users can drag column headers to the group area, or click the column menu grouping option.
+
+### Pre-set grouping expressions
 
 ```razor
-@code {
-    public IgbGrid Grid { get; set; }
+<IgbGrid Data="data" PrimaryKey="Id" GroupingExpressions="groupingExpressions">
+    <IgbColumn Field="Department" Groupable="true" />
+    <IgbColumn Field="Name" />
+</IgbGrid>
 
-    void SortByPrice()
+@code {
+    private IgbGroupingExpression[] groupingExpressions = new[]
     {
-        Grid.SortAsync(new IgbSortingExpression[]
+        new IgbGroupingExpression
         {
-            new IgbSortingExpression { FieldName = "Price", Dir = SortingDirection.Desc }
-        });
-    }
-
-    void ClearSort() => Grid.ClearSortAsync();
+            FieldName = "Department",
+            Dir = SortingDirection.Asc
+        }
+    };
 }
 ```
 
-Multi-column sort: hold Shift while clicking headers, or pass multiple `IgbSortingExpression` objects to `SortAsync`.
+### Group row template
 
----
-
-## Filtering
+Customize the group row:
 
 ```razor
-<!-- Quick filter (filter row) -->
-<IgbGrid AllowFiltering="true" FilterMode="FilterMode.QuickFilter">
-    <IgbColumn Field="Name" Filterable="true" />
-</IgbGrid>
-
-<!-- Excel-style filter dropdowns -->
-<IgbGrid AllowFiltering="true" FilterMode="FilterMode.ExcelStyleFilter">
-    <IgbColumn Field="Name" Filterable="true" />
-</IgbGrid>
-```
-
-Programmatic filter:
-
-```csharp
-Grid.FilterAsync("Price", 100, IgbFilteringOperand.LessThan);
-Grid.ClearFilterAsync("Price");
-Grid.ClearFilterAsync(); // clear all
-```
-
----
-
-## Advanced Filtering
-
-Use Advanced Filtering when users need a condition builder across multiple columns.
-
-```razor
-<IgbGrid Data="Data" AllowAdvancedFiltering="true">
-    <IgbGridToolbar>
-        <IgbGridToolbarAdvancedFiltering />
-    </IgbGridToolbar>
-    <IgbColumn Field="Name" />
-    <IgbColumn Field="Price" DataType="GridColumnDataType.Number" />
+<IgbGrid Data="data" PrimaryKey="Id">
+    <IgbColumn Field="Department" Groupable="true" />
+    <GroupRowTemplate>
+        @{
+            var groupRow = (IgbGroupByRowTemplateContext)context;
+        }
+        <span>
+            <strong>@groupRow.GroupRow.Expression.FieldName</strong>:
+            @groupRow.GroupRow.Value
+            (@groupRow.GroupRow.Records.Count items)
+        </span>
+    </GroupRowTemplate>
 </IgbGrid>
 ```
 
-Always confirm toolbar child component names and filtering expression APIs from `grid-advanced-filtering`.
-
----
-
-## Column Pinning
+### Hide group area
 
 ```razor
-<!-- Declarative pin -->
-<IgbColumn Field="ID" Pinned="true" />
-
-<!-- Runtime API -->
-@code {
-    void PinName() => Grid.PinColumnAsync("ProductName", 0);
-    void UnpinName() => Grid.UnpinColumnAsync("ProductName");
-}
-```
-
-Pin from toolbar: `<IgbGridToolbarPinning />` child inside `IgbGridToolbar`.
-
----
-
-## Column Hiding
-
-```razor
-<!-- Declarative hide -->
-<IgbColumn Field="InternalCode" Hidden="true" />
-```
-
-Show/hide from toolbar: add `<IgbGridToolbarHiding />` to the toolbar. Users can toggle columns from the column chooser panel.
-
-Programmatic:
-
-```csharp
-void ToggleColumn() => Grid.GetColumnByNameAsync("InternalCode")
-    .ContinueWith(t => t.Result.Hidden = !t.Result.Hidden);
-```
-
----
-
-## Column Moving
-
-```razor
-<IgbGrid Moving="true">
-    <IgbColumn Field="Name" />
-    <IgbColumn Field="Price" />
+<IgbGrid Data="data" PrimaryKey="Id" HideGroupedColumns="true">
+    ...
 </IgbGrid>
 ```
 
-Enable on individual columns instead of the grid level:
+### Grouping events
 
-```razor
-<IgbGrid>
-    <IgbColumn Field="Name" MovingEnabled="true" />
-</IgbGrid>
-```
-
----
-
-## Column Resizing
-
-```razor
-<IgbGrid Data="Data">
-    <IgbColumn Field="Name" Resizable="true" MinWidth="120px" MaxWidth="360px" />
-    <IgbColumn Field="Price" Resizable="true" Width="140px" />
-</IgbGrid>
-```
-
-Column resizing can be configured per column. Use `grid-column-resizing` to confirm current resize events, autosize APIs, and min/max width behavior before writing code.
+| Event | Type | Description |
+|---|---|---|
+| `GroupingDone` | `EventCallback<IgbGroupingDoneEventArgs>` | Fires after a column is grouped/ungrouped |
 
 ---
 
 ## Summaries
 
-```razor
-<IgbColumn Field="UnitPrice" DataType="GridColumnDataType.Number" HasSummary="true" />
-<IgbColumn Field="InStock" DataType="GridColumnDataType.Boolean" HasSummary="true" />
-```
+### Built-in summaries
 
-The grid shows built-in summaries based on `DataType`:
-- `String` → Count
-- `Number` → Count, Min, Max, Sum, Avg
-- `Boolean` → Count, True count
-- `Date` → Count, Earliest, Latest
+Enable with `HasSummary="true"` on a column. The built-in summaries depend on the column's data type:
 
-Custom summaries: implement the `IgbSummaryOperand` interface in a C# class and assign it via `SummaryOperand` on the column. Check `get_doc` for the exact interface contract.
-
----
-
-## Group By
+| Data Type | Default Summaries |
+|---|---|
+| String | Count |
+| Number | Count, Min, Max, Sum, Avg |
+| Date | Count, Earliest, Latest |
+| Boolean | Count |
 
 ```razor
-<IgbGrid AllowGrouping="true">
-    <IgbColumn Field="Country" Sortable="true" GroupByOrder="SortingDirection.Asc" />
-    <IgbColumn Field="Revenue" DataType="GridColumnDataType.Number" />
+<IgbGrid Data="data" PrimaryKey="Id">
+    <IgbColumn Field="Name" Header="Name" HasSummary="true" DataType="GridColumnDataType.String" />
+    <IgbColumn Field="Salary" Header="Salary" HasSummary="true" DataType="GridColumnDataType.Number" />
+    <IgbColumn Field="HireDate" Header="Hire Date" HasSummary="true" DataType="GridColumnDataType.Date" />
 </IgbGrid>
 ```
 
-Programmatic group-by:
+### Custom summary operands
 
-```csharp
-Grid.GroupByAsync(new IgbGroupByRecord[]
-{
-    new IgbGroupByRecord { FieldName = "Country", Dir = SortingDirection.Asc }
-});
-Grid.ClearGroupByAsync();
-```
-
----
-
-## Selection
+Extend `IgbNumberSummaryOperand` (or `IgbDateSummaryOperand`, `IgbSummaryOperand`) and override `Operate()` to return `IgbSummaryResult[]`. Apply via `Summaries` parameter:
 
 ```razor
-<IgbGrid RowSelection="GridSelectionMode.Multiple"
-         CellSelection="GridSelectionMode.Multiple">
-    <IgbColumn Field="ID" />
+<IgbColumn Field="Salary" Header="Salary" HasSummary="true"
+           Summaries="typeof(MySalarySummary)" />
+```
+
+> For full custom summary class syntax, call `get_doc(framework: "blazor", slug: "grids/grid/summaries")`.
+
+### Summary position
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" SummaryPosition="GridSummaryPosition.Top">
+    ...
 </IgbGrid>
 ```
 
-Row selection values: `GridSelectionMode.None` / `Single` / `Multiple`.
+Values: `GridSummaryPosition.Top`, `GridSummaryPosition.Bottom` (default).
 
-Programmatic selection:
-
-```csharp
-// Row selection by primary key
-Grid.SelectRowsAsync(new object[] { 1, 2, 3 }, clearOthers: true);
-Grid.DeselectAllRowsAsync();
-
-// Get selected rows
-var selected = await Grid.GetSelectedRowsAsync();
-
-// Cell selection
-Grid.SelectCellsAsync(new IgbGridCellRange[] {
-    new IgbGridCellRange { RowStart = 0, RowEnd = 2, ColumnStart = 0, ColumnEnd = 1 }
-});
-```
-
-Events: `RowSelectionChanging` (cancellable), `CellSelectionChanging` (cancellable).
-
----
-
-## Row Adding
-
-Use row adding when the user needs an inline add-new-row workflow. Always set `PrimaryKey` for editing workflows and confirm the current add-row API in `grid-row-adding`.
+### Summary calculation mode
 
 ```razor
-<IgbGrid Data="Data" PrimaryKey="ProductID" RowEditable="true">
-    <IgbActionStrip>
-        <IgbGridEditingActions AddRow="true" />
-    </IgbActionStrip>
-    <IgbColumn Field="ProductID" />
-    <IgbColumn Field="ProductName" Editable="true" />
+<IgbGrid Data="data" PrimaryKey="Id" SummaryCalculationMode="GridSummaryCalculationMode.RootLevelOnly">
+    ...
 </IgbGrid>
 ```
 
+Values: `GridSummaryCalculationMode.RootLevelOnly`, `GridSummaryCalculationMode.ChildLevelsOnly`, `GridSummaryCalculationMode.RootAndChildLevels`.
+
 ---
 
-## Row Actions
+## Cell Merging (IgbGrid Only)
 
-Use row actions for per-row editing, delete, pinning, and custom action buttons shown in an action strip.
+Merge visually identical adjacent cells in a column:
 
 ```razor
-<IgbGrid Data="Data" PrimaryKey="ProductID" RowEditable="true">
-    <IgbActionStrip>
-        <IgbGridEditingActions />
-        <IgbGridPinningActions />
-    </IgbActionStrip>
+<IgbGrid Data="data" PrimaryKey="Id">
+    <IgbColumn Field="Country" Header="Country" Merge="true" />
+    <IgbColumn Field="City" Header="City" Merge="true" />
+    <IgbColumn Field="Name" Header="Name" />
 </IgbGrid>
 ```
 
-Confirm the available built-in action components and custom action templates with `grid-row-actions`.
-
----
-
-## Search
-
-Use grid search for text search across visible/searchable columns.
-
-```razor
-<IgbGrid @ref="Grid" Data="Data">
-    <IgbColumn Field="ProductName" Searchable="true" />
-    <IgbColumn Field="Category" Searchable="true" />
-</IgbGrid>
-
-@code {
-    public IgbGrid Grid { get; set; }
-
-    async Task FindNext(string term)
-    {
-        await Grid.FindNextAsync(term);
-    }
-}
-```
-
-Always verify method names such as `FindNextAsync`, `FindPrevAsync`, and `ClearSearchAsync` with `grid-search`.
-
----
-
-## Keyboard Navigation
-
-Keyboard navigation is a grid behavior, but custom keyboard handling must follow the Blazor grid docs. Use `grid-keyboard-navigation` for supported key combinations, active node behavior, and event names before writing custom handlers.
+Cell merging requires the data to be sorted by the merged columns for meaningful visual grouping.
 
 ---
 
 ## Toolbar
 
+The grid toolbar provides built-in UI for column hiding, column pinning, exporting, and advanced filtering.
+
+### Basic toolbar
+
 ```razor
-<IgbGrid Data="Data" AllowFiltering="true">
+<IgbGrid Data="data" PrimaryKey="Id">
     <IgbGridToolbar>
-        <IgbGridToolbarTitle>Product Catalog</IgbGridToolbarTitle>
-        <IgbGridToolbarSeparator />
-        <IgbGridToolbarPinning />
-        <IgbGridToolbarHiding />
-        <IgbGridToolbarExporter ExportCSV="true" ExportExcel="true" />
+        <IgbGridToolbarTitle>Employees</IgbGridToolbarTitle>
+        <IgbGridToolbarActions>
+            <IgbGridToolbarHiding />
+            <IgbGridToolbarPinning />
+            <IgbGridToolbarExporter />
+            <IgbGridToolbarAdvancedFiltering />
+        </IgbGridToolbarActions>
     </IgbGridToolbar>
-    <IgbColumn Field="Name" Sortable="true" />
+    <IgbColumn Field="Name" Header="Name" />
+    <IgbColumn Field="Department" Header="Department" />
 </IgbGrid>
 ```
 
-All toolbar child components are optional. Add only the features you need:
+### Toolbar components
 
-| Component | Feature |
+| Component | Description |
 |---|---|
-| `IgbGridToolbarTitle` | Title label |
-| `IgbGridToolbarSeparator` | Visual separator |
-| `IgbGridToolbarPinning` | Column pin/unpin panel |
-| `IgbGridToolbarHiding` | Column chooser (show/hide) |
-| `IgbGridToolbarExporter` | Export to CSV / Excel |
-| `IgbGridToolbarAdvancedFiltering` | Advanced filter dialog |
+| `IgbGridToolbar` | Container for the toolbar |
+| `IgbGridToolbarTitle` | Displays a title/caption |
+| `IgbGridToolbarActions` | Container for action buttons |
+| `IgbGridToolbarHiding` | Column hiding UI |
+| `IgbGridToolbarPinning` | Column pinning UI |
+| `IgbGridToolbarExporter` | Export to Excel/CSV buttons |
+| `IgbGridToolbarAdvancedFiltering` | Opens the advanced filtering dialog |
+
+### Custom toolbar content
+
+```razor
+<IgbGridToolbar>
+    <IgbGridToolbarTitle>My Data</IgbGridToolbarTitle>
+    <IgbGridToolbarActions>
+        <IgbButton @onclick="RefreshData">Refresh</IgbButton>
+        <IgbGridToolbarExporter />
+    </IgbGridToolbarActions>
+</IgbGridToolbar>
+```
 
 ---
 
-## Excel & CSV Export
+## Export
 
-```csharp
-// Register export services in Program.cs
-builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule), typeof(IgbExcelExporterModule), typeof(IgbCsvExporterModule));
-// Also inject IgbExcelExporterService and IgbCsvExporterService
-builder.Services.AddScoped<IgbExcelExporterService>();
-builder.Services.AddScoped<IgbCsvExporterService>();
+### Excel Export
+
+```razor
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+    <IgbGridToolbar>
+        <IgbGridToolbarActions>
+            <IgbGridToolbarExporter ExportExcel="true" ExportCSV="false" />
+        </IgbGridToolbarActions>
+    </IgbGridToolbar>
+    ...
+</IgbGrid>
 ```
+
+### Programmatic export
 
 ```razor
 @inject IgbExcelExporterService ExcelExporter
 @inject IgbCsvExporterService CsvExporter
 
-<IgbGrid @ref="Grid" Data="Data">...</IgbGrid>
-<IgbButton @onclick="ExportExcel">Export Excel</IgbButton>
-<IgbButton @onclick="ExportCsv">Export CSV</IgbButton>
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+    ...
+</IgbGrid>
+
+<IgbButton @onclick="ExportToExcel">Export to Excel</IgbButton>
+<IgbButton @onclick="ExportToCsv">Export to CSV</IgbButton>
 
 @code {
-    IgbGrid Grid { get; set; }
+    private IgbGrid grid = default!;
 
-    async Task ExportExcel()
+    private async Task ExportToExcel()
     {
-        var options = new IgbExcelExporterOptions { FileName = "products" };
-        await ExcelExporter.ExportAsync(Grid, options);
+        var options = new IgbExcelExporterOptions("employees");
+        await ExcelExporter.ExportAsync(grid, options);
     }
 
-    async Task ExportCsv()
+    private async Task ExportToCsv()
     {
-        var options = new IgbCsvExporterOptions { FileName = "products" };
-        await CsvExporter.ExportAsync(Grid, options);
+        var options = new IgbCsvExporterOptions("employees");
+        options.FileType = CsvFileTypes.CSV;
+        await CsvExporter.ExportAsync(grid, options);
     }
+}
+```
+
+### Export options
+
+| Option | Type | Description |
+|---|---|---|
+| `FileName` | `string` | Name of the exported file (without extension) |
+| `IgnoreFiltering` | `bool` | Export all data, not just filtered |
+| `IgnoreSorting` | `bool` | Export in original data order |
+| `IgnoreColumnsVisibility` | `bool` | Include hidden columns in export |
+| `ExportGroupedRows` | `bool` | Include group rows in export (IgbGrid only) |
+
+### Export events
+
+| Event | Description |
+|---|---|
+| `ExportStarted` | Fires before export begins - cancel or configure here |
+| `ExportEnded` | Fires after export completes |
+| `ColumnExporting` | Fires for each column - skip or modify |
+| `RowExporting` | Fires for each row - skip or modify |
+
+---
+
+## Virtualization & Performance
+
+Both row and column virtualization are **enabled by default** when the grid has a fixed `Height`. The grid only renders DOM elements for the visible portion.
+
+### Requirements for virtualization
+
+1. **Set `Height`** on the grid - virtualization needs a fixed pixel or percentage height.
+2. **Set `Width`** on columns - column virtualization requires defined column widths when total column width exceeds the grid width.
+
+### Best practices
+
+- Bind to a concrete `List<T>` or `T[]`, not `IQueryable`.
+- For large data sets (100k+ rows), consider remote paging or virtualized data loading (see `references/paging-remote.md`).
+- Avoid complex templates on frequently re-rendered columns.
+- Use `OnDemand` summaries if summaries on large data sets cause slow rendering.
+
+---
+
+## Row Drag
+
+Enable row reordering or drag-to-external targets:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" RowDraggable="true"
+         RowDragEnd="OnRowDragEnd">
+    ...
+</IgbGrid>
+
+@code {
+    private void OnRowDragEnd(IgbRowDragEndEventArgs args)
+    {
+        // args.DragData contains the dragged row data
+    }
+}
+```
+
+### Row drag events
+
+| Event | Type | Description |
+|---|---|---|
+| `RowDragStart` | `EventCallback<IgbRowDragStartEventArgs>` | Fires when drag begins |
+| `RowDragEnd` | `EventCallback<IgbRowDragEndEventArgs>` | Fires when drag ends (drop) |
+
+### Custom drag ghost
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" RowDraggable="true">
+    <DragGhostTemplate>
+        @{
+            var row = (IgbGridRowDragGhostContext)context;
+        }
+        <div class="custom-ghost">
+            Moving: @row.RowData
+        </div>
+    </DragGhostTemplate>
+    ...
+</IgbGrid>
+```
+
+---
+
+## Action Strip
+
+Add context actions (edit, delete, pin) that appear when hovering or selecting a row:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" RowEditable="true">
+    <IgbColumn Field="Name" Header="Name" Editable="true" />
+    <IgbColumn Field="Salary" Header="Salary" Editable="true" />
+    <IgbActionStrip>
+        <IgbGridEditingActions AddRow="true" />
+        <IgbGridPinningActions />
+    </IgbActionStrip>
+</IgbGrid>
+```
+
+### Action strip components
+
+| Component | Description |
+|---|---|
+| `IgbActionStrip` | Container for row-level actions |
+| `IgbGridEditingActions` | Provides edit/delete/add row buttons |
+| `IgbGridPinningActions` | Provides pin/unpin row buttons |
+
+### Custom actions
+
+```razor
+<IgbActionStrip>
+    <IgbGridEditingActions />
+    <IgbButton @onclick="() => ViewDetails(currentRowId)">
+        <IgbIcon Name="visibility" Collection="material" />
+    </IgbButton>
+</IgbActionStrip>
+```
+
+---
+
+## Master-Detail (IgbGrid Only)
+
+Show a detail view for each expanded row. This is specific to the flat grid - for multi-schema parent-child, use Hierarchical Grid instead.
+
+```razor
+<IgbGrid Data="customers" PrimaryKey="CustomerId" AutoGenerate="false">
+    <IgbColumn Field="CustomerId" Header="ID" />
+    <IgbColumn Field="Name" Header="Customer Name" />
+    <IgbColumn Field="Country" Header="Country" />
+    <DetailTemplate>
+        @{
+            var customer = (Customer)context;
+        }
+        <div style="padding: 16px;">
+            <h4>Orders for @customer.Name</h4>
+            <IgbGrid Data="customer.Orders" PrimaryKey="OrderId" AutoGenerate="true"
+                     Width="100%" Height="200px" />
+        </div>
+    </DetailTemplate>
+</IgbGrid>
+
+@code {
+    private List<Customer> customers = new();  // Customer has Orders child collection
+}
+```
+
+> **Important:** Master-detail via `DetailTemplate` is not available on Tree Grid, Hierarchical Grid, or Pivot Grid. For multi-schema hierarchies, use `IgbHierarchicalGrid` with `IgbRowIsland`.
+
+---
+
+## Clipboard
+
+Grid supports copy-to-clipboard out of the box.
+
+### Key bindings
+
+| Keys | Action |
+|---|---|
+| `Ctrl+C` | Copy selected cells |
+| `Ctrl+Shift+H` | Copy with headers |
+
+### Configuration
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id"
+         ClipboardOptions="clipboardOptions">
+    ...
+</IgbGrid>
+
+@code {
+    private IgbClipboardOptions clipboardOptions = new IgbClipboardOptions
+    {
+        Enabled = true,
+        CopyHeaders = true,
+        CopyFormatters = true,
+        Separator = "\t"
+    };
 }
 ```
 
@@ -362,10 +420,10 @@ builder.Services.AddScoped<IgbCsvExporterService>();
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing feature code.** Method signatures and enums are version-specific.
-2. **`HasSummary` must be paired with the correct `DataType`** on the column - summaries use the data type to select built-in operands.
-3. **`AllowGrouping` on the grid, plus `Sortable="true"` on columns** is required for group-by to work properly.
-4. **Export services must be registered in `Program.cs`** as scoped services in addition to the modules.
-5. **`RowSelection` and `CellSelection` are independent settings** - you can enable row selection without cell selection and vice versa.
-6. **`PrimaryKey` must be set for programmatic row selection by key.** Without a primary key, row index is used instead.
-7. **Advanced filtering, row adding, row actions, search, resizing, and keyboard navigation each have their own Blazor docs.** Do not route them through generic feature text without calling the matching slug.
+1. **Grouping is IgbGrid only** - do not attempt `Groupable` on Tree Grid or Hierarchical Grid columns.
+2. **Cell merging is IgbGrid only** - it has no effect on other grid types.
+3. **Master-detail is IgbGrid only** - for other grids, use Tree Grid or Hierarchical Grid.
+4. **Virtualization requires a fixed grid height** - without `Height`, all rows render.
+5. **Export requires the toolbar or programmatic service injection** - register `IgbExcelExporterService` or `IgbCsvExporterService` if using programmatic export.
+6. **Action strip requires `RowEditable="true"`** for editing actions to function.
+7. **Summaries respect the `SummaryCalculationMode`** - set it for tree/hierarchical grids to control level-based calculations.

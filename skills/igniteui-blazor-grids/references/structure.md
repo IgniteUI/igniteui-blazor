@@ -1,183 +1,481 @@
-# Grid Structure & Column Configuration
-
-> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
-> For project setup and CSS — see [`igniteui-blazor-components/references/setup.md`](../../igniteui-blazor-components/references/setup.md).
-
-## Contents
-
-- [Module Registration](#module-registration)
-- [Basic Grid Setup](#basic-grid-setup)
-- [Column Definition](#column-definition)
-- [Column Data Types](#column-data-types)
-- [Column Templates](#column-templates)
-- [Multi-Column Headers](#multi-column-headers)
-- [Key Rules](#key-rules)
+# Structure - Grid Setup, Columns, Sorting, Filtering & Selection
 
 ---
 
-## Module Registration
+## Quick Start
+
+### 1. Register the module in Program.cs
 
 ```csharp
-// Program.cs
+using IgniteUI.Blazor.Controls;
+
 builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule));
 ```
 
-Other grids use their own modules:
-- Tree Grid: `typeof(IgbTreeGridModule)`
-- Hierarchical Grid: `typeof(IgbHierarchicalGridModule)`
-- Pivot Grid: `typeof(IgbPivotGridModule)`
-- Grid Lite: `typeof(IgbGridLiteModule)`
-
----
-
-## Basic Grid Setup
+### 2. Add `@using` in _Imports.razor
 
 ```razor
-<IgbGrid @ref="Grid"
-         Data="Products"
-         PrimaryKey="ProductID"
-         AutoGenerate="false"
-         Height="600px"
-         Width="100%">
-    <IgbColumn Field="ProductID" Header="ID" DataType="GridColumnDataType.Number" />
-    <IgbColumn Field="ProductName" Header="Name" DataType="GridColumnDataType.String" Sortable="true" Resizable="true" />
-    <IgbColumn Field="UnitPrice" Header="Price" DataType="GridColumnDataType.Number" />
-    <IgbColumn Field="InStock" Header="In Stock" DataType="GridColumnDataType.Boolean" />
-    <IgbColumn Field="OrderDate" Header="Order Date" DataType="GridColumnDataType.Date" />
+@using IgniteUI.Blazor.Controls
+```
+
+### 3. Basic grid markup
+
+```razor
+<IgbGrid Data="employees" PrimaryKey="Id" AutoGenerate="false"
+         Width="100%" Height="500px">
+    <IgbColumn Field="Id" Header="ID" DataType="GridColumnDataType.Number" />
+    <IgbColumn Field="Name" Header="Full Name" DataType="GridColumnDataType.String" Sortable="true" />
+    <IgbColumn Field="HireDate" Header="Hire Date" DataType="GridColumnDataType.Date" Filterable="true" />
+    <IgbColumn Field="Salary" Header="Salary" DataType="GridColumnDataType.Currency" />
+    <IgbColumn Field="IsActive" Header="Active" DataType="GridColumnDataType.Boolean" />
 </IgbGrid>
 
 @code {
-    public IgbGrid Grid { get; set; }
-    public List<Product> Products { get; set; } = SampleData.GetProducts();
+    private List<Employee> employees = new();
+
+    protected override void OnInitialized()
+    {
+        employees = EmployeeService.GetAll();
+    }
 }
 ```
 
-Key attributes on `IgbGrid`:
-
-| Attribute | Type | Description |
-|---|---|---|
-| `Data` | `IEnumerable<T>` | The data source |
-| `PrimaryKey` | `string` | Required for editing, selection, and row pinning |
-| `AutoGenerate` | `bool` | When `true`, creates columns from object properties automatically |
-| `Height` | `string` | Explicit height (CSS string); required for row virtualization |
-| `Width` | `string` | Explicit width |
-| `AllowFiltering` | `bool` | Enables the filter row |
-| `FilterMode` | `FilterMode` | `FilterMode.QuickFilter` (row) / `ExcelStyleFilter` (dropdown) / `ExternalFilter` |
-| `RowEditable` | `bool` | Enables row editing mode |
-| `RowSelection` | `GridSelectionMode` | `GridSelectionMode.None` / `Single` / `Multiple` |
-| `CellSelection` | `GridSelectionMode` | `GridSelectionMode.None` / `Single` / `Multiple` |
-| `Class` | `string` | CSS class used for sizing/theming, including `--ig-size` density overrides |
-
----
-
-## Column Definition
+### 4. Auto-generated columns
 
 ```razor
-<IgbColumn Field="ProductName"
-           Header="Product Name"
-           DataType="GridColumnDataType.String"
-           Sortable="true"
-           Filterable="true"
-           Editable="true"
-           Resizable="true"
-           Pinned="true"
-           Width="200px"
-           MinWidth="100px"
-           MaxWidth="400px"
-           HasSummary="true" />
+<IgbGrid Data="employees" PrimaryKey="Id" AutoGenerate="true"
+         Width="100%" Height="500px" />
 ```
 
-Key `IgbColumn` attributes:
+When `AutoGenerate="true"`, the grid creates a column for each public property of the data type. You can hook `AutoGenerating` to customize or skip columns:
 
-| Attribute | Type | Description |
-|---|---|---|
-| `Field` | `string` | Property name on the data object |
-| `Header` | `string` | Column header label |
-| `DataType` | `GridColumnDataType` | Type used for sorting, filtering, editing |
-| `Sortable` | `bool` | Enables sorting on this column |
-| `Filterable` | `bool` | Enables filtering on this column |
-| `Editable` | `bool` | Allows cell editing in this column |
-| `Resizable` | `bool` | Allows column resize by dragging |
-| `Pinned` | `bool` | Pins the column to the left edge |
-| `Hidden` | `bool` | Hides the column (toggleable at runtime) |
-| `Width` | `string` | CSS width |
-| `MinWidth` | `string` | Minimum column width during resize |
-| `HasSummary` | `bool` | Enables summary row for this column |
-| `GroupByOrder` | `SortingDirection` | Initial group-by direction |
-| `MovingEnabled` | `bool` | Allows drag-to-reorder this column |
+```razor
+<IgbGrid Data="employees" PrimaryKey="Id" AutoGenerate="true"
+         AutoGenerating="OnAutoGenerating" />
+
+@code {
+    private void OnAutoGenerating(IgbColumnAutoGenerateEventArgs args)
+    {
+        if (args.Column.Field == "InternalCode")
+        {
+            args.Cancel = true; // skip this column
+        }
+        else if (args.Column.Field == "Salary")
+        {
+            args.Column.DataType = GridColumnDataType.Currency;
+            args.Column.Editable = false;
+        }
+    }
+}
+```
 
 ---
 
-## Column Data Types
+## Column Configuration
 
-| `GridColumnDataType` | Use for |
-|---|---|
-| `String` | Text fields |
-| `Number` | Integer and decimal fields |
-| `Boolean` | True/false toggles |
-| `Date` | `DateTime` values (date only) |
-| `DateTime` | Full `DateTime` values |
-| `Time` | `TimeSpan` values |
-| `Currency` | Monetary values (uses locale formatting) |
-| `Percent` | Percentage values (0.5 = 50%) |
-| `Image` | URL string rendered as an image |
+### Column data types
+
+Use `GridColumnDataType` to set the type. This controls sorting, filtering, editing, and display:
+
+| Data Type | Enum Value | Behavior |
+|---|---|---|
+| String | `GridColumnDataType.String` | Text display and filtering |
+| Number | `GridColumnDataType.Number` | Numeric sorting and filtering |
+| Boolean | `GridColumnDataType.Boolean` | Checkbox display |
+| Date | `GridColumnDataType.Date` | Date picker in edit mode |
+| DateTime | `GridColumnDataType.DateTime` | Date-time picker in edit mode |
+| Currency | `GridColumnDataType.Currency` | Formatted currency display |
+| Percent | `GridColumnDataType.Percent` | Formatted percentage display |
+| Image | `GridColumnDataType.Image` | Renders image from URL |
+
+### Key column parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `Field` | `string` | - | Property name on the data object |
+| `Header` | `string` | Field name | Column header text |
+| `DataType` | `GridColumnDataType` | `String` | Data type for display, sort, filter, edit |
+| `Width` | `string` | - | Column width (e.g., `"200px"`, `"20%"`) |
+| `MinWidth` | `string` | - | Minimum column width |
+| `MaxWidth` | `string` | - | Maximum column width |
+| `Sortable` | `bool` | `false` | Enables sorting on this column |
+| `Filterable` | `bool` | `true` | Enables filtering on this column |
+| `Editable` | `bool` | `false` | Enables editing on this column |
+| `Resizable` | `bool` | `false` | Enables column resizing |
+| `Movable` | `bool` | `false` | Enables column moving |
+| `Hidden` | `bool` | `false` | Hides the column |
+| `Pinned` | `bool` | `false` | Pins the column |
+| `Groupable` | `bool` | `false` | Enables grouping for this column (IgbGrid only) |
+| `HasSummary` | `bool` | `false` | Enables summaries for this column |
+| `Disablefiltering` | `bool` | `false` | Disables filtering for this column even when grid filtering is on |
+| `DisablePinning` | `bool` | `false` | Disables pinning for this column |
+| `DisableHiding` | `bool` | `false` | Prevents hiding this column |
+| `CellClasses` | `string` | - | CSS class(es) to apply to cells |
+| `HeaderClasses` | `string` | - | CSS class(es) to apply to the header |
 
 ---
 
 ## Column Templates
 
-Use `RenderFragment` child content inside `IgbColumn` to customize cell rendering.
+### Cell template
+
+Use the `BodyTemplate` render fragment to customize the cell display:
 
 ```razor
-<IgbColumn Field="Status" Header="Status">
-    <IgbCellTemplateDirective>
+<IgbColumn Field="Salary" Header="Salary" DataType="GridColumnDataType.Currency">
+    <Template>
         @{
-            var status = (string)((context as IgbCellTemplateContext).Cell.Value);
+            var cell = (IgbCellTemplateContext)context;
+            var salary = (decimal)cell.Cell.Value;
         }
-        <span class="status-badge status-@status.ToLower()">@status</span>
-    </IgbCellTemplateDirective>
+        <span class="@(salary > 50000 ? "high-salary" : "")">
+            @salary.ToString("C")
+        </span>
+    </Template>
 </IgbColumn>
 ```
 
-> **AGENT INSTRUCTION:** Always call `get_doc` with slug `data-grid` or the grid-templates doc for the exact Razor template directive syntax for the current version.
-
-Header template:
+### Header template
 
 ```razor
-<IgbColumn Field="Total" Header="Total">
-    <IgbHeaderTemplateDirective>
-        <strong>Total ($)</strong>
-    </IgbHeaderTemplateDirective>
+<IgbColumn Field="Name" Header="Name">
+    <HeaderTemplate>
+        <div style="display: flex; align-items: center; gap: 4px;">
+            <IgbIcon Name="person" Collection="material" />
+            <span>Employee Name</span>
+        </div>
+    </HeaderTemplate>
+</IgbColumn>
+```
+
+### Edit template
+
+Provide a custom editor for edit mode:
+
+```razor
+<IgbColumn Field="Status" Header="Status" Editable="true">
+    <InlineEditorTemplate>
+        @{
+            var cell = (IgbCellTemplateContext)context;
+        }
+        <IgbSelect @bind-Value="cell.Cell.EditValue">
+            <IgbSelectItem Value="Active">Active</IgbSelectItem>
+            <IgbSelectItem Value="Inactive">Inactive</IgbSelectItem>
+            <IgbSelectItem Value="Pending">Pending</IgbSelectItem>
+        </IgbSelect>
+    </InlineEditorTemplate>
 </IgbColumn>
 ```
 
 ---
 
-## Multi-Column Headers
+## Column Groups (Multi-Column Headers)
 
-Group related columns under a shared header:
+Group columns under a shared header:
 
 ```razor
-<IgbGrid Data="Data" AutoGenerate="false">
+<IgbGrid Data="employees" PrimaryKey="Id" AutoGenerate="false">
+    <IgbColumn Field="Id" Header="ID" />
     <IgbColumnGroup Header="Personal Info">
-        <IgbColumn Field="FirstName" Header="First" />
-        <IgbColumn Field="LastName" Header="Last" />
-        <IgbColumn Field="Email" Header="Email" />
+        <IgbColumn Field="FirstName" Header="First Name" />
+        <IgbColumn Field="LastName" Header="Last Name" />
+        <IgbColumn Field="BirthDate" Header="Birth Date" DataType="GridColumnDataType.Date" />
     </IgbColumnGroup>
-    <IgbColumnGroup Header="Address">
-        <IgbColumn Field="City" Header="City" />
-        <IgbColumn Field="Country" Header="Country" />
+    <IgbColumnGroup Header="Employment">
+        <IgbColumn Field="Department" Header="Department" />
+        <IgbColumn Field="HireDate" Header="Hire Date" DataType="GridColumnDataType.Date" />
+        <IgbColumn Field="Salary" Header="Salary" DataType="GridColumnDataType.Currency" />
     </IgbColumnGroup>
 </IgbGrid>
+```
+
+Column groups can be nested for multi-level headers.
+
+---
+
+## Multi-Row Layout (MRL)
+
+Display multiple fields in a single visual row:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" AutoGenerate="false">
+    <IgbColumnLayout>
+        <IgbColumn Field="Name" Header="Name" RowStart="1" ColStart="1" ColEnd="3" />
+        <IgbColumn Field="Phone" Header="Phone" RowStart="2" ColStart="1" />
+        <IgbColumn Field="Email" Header="Email" RowStart="2" ColStart="2" />
+    </IgbColumnLayout>
+    <IgbColumnLayout>
+        <IgbColumn Field="City" Header="City" RowStart="1" ColStart="1" />
+        <IgbColumn Field="Country" Header="Country" RowStart="1" ColStart="2" />
+        <IgbColumn Field="PostalCode" Header="ZIP" RowStart="2" ColStart="1" ColEnd="3" />
+    </IgbColumnLayout>
+</IgbGrid>
+```
+
+Each `IgbColumnLayout` defines a group. Within it, `RowStart`, `ColStart`, `RowEnd`, `ColEnd` position columns on a layout grid.
+
+---
+
+## Column Pinning
+
+### Declarative pinning
+
+```razor
+<IgbColumn Field="Name" Header="Name" Pinned="true" />
+```
+
+### Programmatic pinning
+
+```razor
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id" AutoGenerate="false">
+    <IgbColumn Field="Id" Header="ID" />
+    <IgbColumn Field="Name" Header="Name" />
+</IgbGrid>
+
+<IgbButton @onclick="PinNameColumn">Pin Name</IgbButton>
+
+@code {
+    private IgbGrid grid = default!;
+
+    private async Task PinNameColumn()
+    {
+        var col = grid.GetColumnByName("Name");
+        col.Pinned = true;
+    }
+}
+```
+
+### Pin position
+
+Control whether pinned columns appear at the start or end:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" Pinning="pinningConfig">
+    ...
+</IgbGrid>
+
+@code {
+    private IgbPinningConfig pinningConfig = new IgbPinningConfig
+    {
+        Columns = ColumnPinningPosition.End
+    };
+}
+```
+
+---
+
+## Sorting
+
+### Enable sorting on columns
+
+```razor
+<IgbColumn Field="Name" Header="Name" Sortable="true" />
+<IgbColumn Field="HireDate" Header="Hire Date" Sortable="true" DataType="GridColumnDataType.Date" />
+```
+
+### Grid-level sorting mode
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `SortingMode` | `SortingMode` | `Single` | `Single` - one column at a time; `Multiple` - multi-column sort |
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" SortingMode="SortingMode.Multiple">
+    <IgbColumn Field="Department" Sortable="true" />
+    <IgbColumn Field="Name" Sortable="true" />
+</IgbGrid>
+```
+
+### Sorting events
+
+| Event | Type | Description |
+|---|---|---|
+| `SortingDone` | `EventCallback<IgbSortingEventArgs>` | Fires after sorting is applied |
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" SortingDone="OnSortingDone">
+    ...
+</IgbGrid>
+
+@code {
+    private void OnSortingDone(IgbSortingEventArgs args)
+    {
+        // React to sorting changes
+    }
+}
+```
+
+### Pre-set sorting expressions
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" SortingExpressions="sortExpressions">
+    ...
+</IgbGrid>
+
+@code {
+    private IgbSortingExpression[] sortExpressions = new[]
+    {
+        new IgbSortingExpression
+        {
+            FieldName = "Name",
+            Dir = SortingDirection.Asc
+        }
+    };
+}
+```
+
+---
+
+## Filtering
+
+### Quick Filter Row
+
+The default filter row appears below the header:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" AllowFiltering="true">
+    <IgbColumn Field="Name" Filterable="true" DataType="GridColumnDataType.String" />
+    <IgbColumn Field="HireDate" Filterable="true" DataType="GridColumnDataType.Date" />
+    <IgbColumn Field="Salary" Filterable="true" DataType="GridColumnDataType.Number" />
+</IgbGrid>
+```
+
+### Excel-Style Filtering
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id"
+         AllowFiltering="true"
+         FilterMode="FilterMode.ExcelStyleFilter">
+    <IgbColumn Field="Department" Filterable="true" />
+    <IgbColumn Field="Name" Filterable="true" />
+</IgbGrid>
+```
+
+### Advanced Filtering
+
+The advanced filter dialog provides a query-builder experience with AND/OR grouping:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id"
+         AllowAdvancedFiltering="true">
+    ...
+</IgbGrid>
+```
+
+> `AllowAdvancedFiltering` and column-level `AllowFiltering` with `FilterMode` can coexist. The toolbar button opens the advanced dialog, while the column-level filter row remains available.
+
+### Filtering Conditions
+
+The filter condition depends on the column's `DataType`:
+
+| Data Type | Available Conditions |
+|---|---|
+| String | Contains, StartsWith, EndsWith, Equals, DoesNotEqual, Empty, NotEmpty |
+| Number | Equals, DoesNotEqual, GreaterThan, LessThan, GreaterThanOrEqual, LessThanOrEqual, Empty, NotEmpty |
+| Boolean | All, True, False, Empty, NotEmpty |
+| Date | Equals, DoesNotEqual, Before, After, Today, Yesterday, ThisMonth, LastMonth, NextMonth, ThisYear, LastYear, NextYear, Empty, NotEmpty |
+
+---
+
+## Selection
+
+### Row Selection
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id"
+         RowSelection="GridSelectionMode.Multiple"
+         RowSelectionChanged="OnRowSelection">
+    ...
+</IgbGrid>
+
+@code {
+    private void OnRowSelection(IgbRowSelectionEventArgs args)
+    {
+        var newSelection = args.NewSelection; // selected row data
+    }
+}
+```
+
+| `RowSelection` Value | Behavior |
+|---|---|
+| `GridSelectionMode.None` | No row selection |
+| `GridSelectionMode.Single` | Select one row at a time |
+| `GridSelectionMode.Multiple` | Multi-select with checkboxes |
+| `GridSelectionMode.MultipleCascade` | Multi-select with cascade (Tree Grid: selects children when parent is selected) |
+
+### Cell Selection
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id"
+         CellSelection="GridSelectionMode.Multiple"
+         RangeSelected="OnRangeSelected">
+    ...
+</IgbGrid>
+
+@code {
+    private void OnRangeSelected(IgbGridForOfState<IgbCellType> args)
+    {
+        // Handle range selection
+    }
+}
+```
+
+### Column Selection
+
+Enable per-column:
+
+```razor
+<IgbColumn Field="Name" Selectable="true" />
+```
+
+Or grid-wide:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id"
+         ColumnSelection="GridSelectionMode.Multiple">
+    ...
+</IgbGrid>
+```
+
+### Getting selected rows
+
+```razor
+@code {
+    private IgbGrid grid = default!;
+
+    private void GetSelectedRows()
+    {
+        var selectedRows = grid.SelectedRows; // object[] of primary key values
+    }
+}
+```
+
+### Programmatic selection
+
+```razor
+@code {
+    private IgbGrid grid = default!;
+
+    private async Task SelectRows()
+    {
+        await grid.SelectRowsAsync(new object[] { 1, 3, 5 }); // select by primary keys
+    }
+
+    private async Task DeselectAll()
+    {
+        await grid.DeselectAllRowsAsync();
+    }
+}
 ```
 
 ---
 
 ## Key Rules
 
-1. **Always call `get_doc` before writing any grid code.** Property names change between versions.
-2. **Set `PrimaryKey`** whenever you use editing, selection, row pinning, or state persistence.
-3. **Set an explicit `Height`** to enable row virtualization for large datasets.
-4. **`AutoGenerate="false"` is recommended for production** — explicit columns prevent unexpected columns from appearing when the data shape changes.
-5. **Each grid type (Tree, Hierarchical, Pivot) uses its own module** — `IgbGridModule` only covers the flat grid.
-6. **Column templates use Blazor `RenderFragment` with MCP-provided directive types.** Confirm directive names from `get_doc` before writing template code.
+1. **Always set `PrimaryKey`** - it is required for selection, editing, and row identity.
+2. **`AutoGenerate="false"` is recommended** - it gives you full control over column order, types, and templates.
+3. **Column `DataType` matters** - it determines the filter conditions, sort behavior, and edit experience. Always set it explicitly.
+4. **Registration is mandatory** - every grid module must be registered in `Program.cs` or the component silently fails to render.
+5. **Use PascalCase for all parameters** - Blazor parameters use PascalCase (`Sortable`, `Filterable`), not kebab-case.
+6. **Data must be a C# collection** - `List<T>`, `T[]`, or `IEnumerable<T>`. Not a JSON string or JavaScript object.
+7. **Use `@ref` for programmatic access** - declare `private IgbGrid grid = default!;` and use `@ref="grid"` on the component.

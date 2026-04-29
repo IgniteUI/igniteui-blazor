@@ -1,162 +1,249 @@
-# Grid Data Operations - Sorting, Filtering & Grouping
-
-> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
-
-## Contents
-
-- [Accessing the Grid Instance](#accessing-the-grid-instance)
-- [Sorting](#sorting)
-- [Filtering](#filtering)
-- [Grouping](#grouping)
-- [Remote Data Operations](#remote-data-operations)
-- [Key Rules](#key-rules)
+# Data Operations - Programmatic Sorting, Filtering, Grouping & Custom Strategies
 
 ---
 
-## Accessing the Grid Instance
+## Accessing Grid Instances via `@ref`
 
-Use `@ref` to access the grid from C#:
+Use `@ref` to get a typed component reference for programmatic API calls. Declare with the matching type (`IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, or `IgbPivotGrid`) and access only after render:
 
 ```razor
-<IgbGrid @ref="Grid" Data="Data" AutoGenerate="false">
-    <IgbColumn Field="ProductName" Sortable="true" Filterable="true" />
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+    ...
 </IgbGrid>
 
 @code {
-    private IgbGrid Grid { get; set; }
+    private IgbGrid grid = default!;
 }
 ```
 
-For code that depends on rendered elements or child components, initialize after first render.
+> **Important:** The reference is `null` until after the component renders. Use it in event handlers or `OnAfterRenderAsync`, not in `OnInitialized`.
 
 ---
 
-## Sorting
+## Programmatic Sorting
 
-Enable sorting per column:
-
-```razor
-<IgbColumn Field="ProductName" Sortable="true" />
-```
-
-Initial sorting is controlled with `SortingExpressions`:
+### Sort a single column
 
 ```razor
-<IgbGrid Data="Data" SortingExpressions="InitialSort">
-    <IgbColumn Field="Category" Sortable="true" />
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+    <IgbColumn Field="Name" Sortable="true" />
+    <IgbColumn Field="Salary" Sortable="true" DataType="GridColumnDataType.Number" />
 </IgbGrid>
 
+<IgbButton @onclick="SortByName">Sort by Name (A-Z)</IgbButton>
+<IgbButton @onclick="SortBySalaryDesc">Sort by Salary (High-Low)</IgbButton>
+<IgbButton @onclick="ClearSorting">Clear Sorting</IgbButton>
+
 @code {
-    private IgbSortingExpression[] InitialSort =
+    private IgbGrid grid = default!;
+
+    private async Task SortByName()
     {
-        new IgbSortingExpression
+        await grid.SortAsync(new IgbSortingExpression[]
         {
-            FieldName = "Category",
-            Dir = SortingDirection.Asc,
-            IgnoreCase = true
-        }
-    };
+            new IgbSortingExpression
+            {
+                FieldName = "Name",
+                Dir = SortingDirection.Asc
+            }
+        });
+    }
+
+    private async Task SortBySalaryDesc()
+    {
+        await grid.SortAsync(new IgbSortingExpression[]
+        {
+            new IgbSortingExpression
+            {
+                FieldName = "Salary",
+                Dir = SortingDirection.Desc
+            }
+        });
+    }
+
+    private async Task ClearSorting()
+    {
+        await grid.ClearSortAsync();
+    }
 }
 ```
 
-Programmatic sorting uses the grid instance:
+### Multi-column sort
 
-```csharp
-await Grid.SortAsync(new[]
-{
-    new IgbSortingExpression
+Pass multiple expressions in a single call:
+
+```razor
+@code {
+    private async Task SortMultiple()
     {
-        FieldName = "Country",
-        Dir = SortingDirection.Asc
+        await grid.SortAsync(new IgbSortingExpression[]
+        {
+            new IgbSortingExpression { FieldName = "Department", Dir = SortingDirection.Asc },
+            new IgbSortingExpression { FieldName = "Name", Dir = SortingDirection.Asc }
+        });
     }
-});
-
-await Grid.ClearSortAsync("Country");
-await Grid.ClearSortAsync("");
+}
 ```
-
-> **AGENT INSTRUCTION:** Sorting changes the displayed order, not the underlying data source. Confirm method signatures from `get_doc` before writing final code.
 
 ---
 
-## Filtering
+## Programmatic Filtering
 
-Enable filtering on the grid and, when needed, on individual columns:
-
-```razor
-<IgbGrid Data="Data"
-         AutoGenerate="false"
-         AllowFiltering="true"
-         FilterMode="FilterMode.QuickFilter">
-    <IgbColumn Field="ProductName" DataType="GridColumnDataType.String" />
-    <IgbColumn Field="UnitPrice" DataType="GridColumnDataType.Number" Filterable="false" />
-</IgbGrid>
-```
-
-Initial filtering is controlled with `FilteringExpressionsTree`:
+### Filter a column
 
 ```razor
-<IgbGrid Data="Data"
-         AllowFiltering="true"
-         FilteringExpressionsTree="InitialFilter">
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id" AllowFiltering="true">
+    <IgbColumn Field="Name" Filterable="true" DataType="GridColumnDataType.String" />
+    <IgbColumn Field="Salary" Filterable="true" DataType="GridColumnDataType.Number" />
+    <IgbColumn Field="IsActive" Filterable="true" DataType="GridColumnDataType.Boolean" />
 </IgbGrid>
-```
 
-Create the filter tree in C# using the operand and condition names confirmed by `get_doc`.
+<IgbButton @onclick="FilterSalaryAbove50k">High Earners</IgbButton>
+<IgbButton @onclick="FilterActiveEmployees">Active Only</IgbButton>
+<IgbButton @onclick="ClearFilters">Clear All Filters</IgbButton>
 
-> **AGENT INSTRUCTION:** Do not invent filtering condition names. Blazor filtering uses condition names such as `"contains"` in MCP examples, but the exact condition set depends on data type and version.
+@code {
+    private IgbGrid grid = default!;
 
----
-
-## Grouping
-
-Enable grouping on each column that can be grouped:
-
-```razor
-<IgbGrid Data="Data" GroupingExpressions="InitialGroups">
-    <IgbColumn Field="ShipCountry" Groupable="true" />
-    <IgbColumn Field="ShipCity" Groupable="true" />
-</IgbGrid>
-```
-
-Initial grouping uses `GroupingExpressions`:
-
-```csharp
-private IgbGroupingExpression[] InitialGroups =
-{
-    new IgbGroupingExpression
+    private async Task FilterSalaryAbove50k()
     {
-        FieldName = "ShipCountry",
-        Dir = SortingDirection.Asc
+        await grid.FilterAsync("Salary", 50000, IgbFilteringCondition.GreaterThan);
     }
-};
+
+    private async Task FilterActiveEmployees()
+    {
+        await grid.FilterAsync("IsActive", true, IgbFilteringCondition.True);
+    }
+
+    private async Task ClearFilters()
+    {
+        await grid.ClearFilterAsync();
+    }
+}
 ```
 
-Programmatic grouping uses the grid instance:
+### Clear filter on a single column
 
-```csharp
-Grid.GroupBy(InitialGroups);
+```razor
+@code {
+    private async Task ClearNameFilter()
+    {
+        await grid.ClearFilterAsync("Name");
+    }
+}
 ```
 
-Grouping supports expand/collapse state, group-row selection, group row templates, summaries, and paging interactions. Read `grid-groupby` before combining these features.
+### Complex filtering with FilteringExpressionsTree
+
+For AND/OR grouped conditions, build a `FilteringExpressionsTree`:
+
+```razor
+@code {
+    private async Task ApplyComplexFilter()
+    {
+        var tree = new IgbFilteringExpressionsTree(FilteringLogic.And);
+
+        tree.FilteringOperands.Add(new IgbFilteringExpression
+        {
+            FieldName = "Department",
+            Condition = IgbFilteringCondition.Equals,
+            SearchVal = "Engineering"
+        });
+
+        var salaryGroup = new IgbFilteringExpressionsTree(FilteringLogic.Or);
+        salaryGroup.FilteringOperands.Add(new IgbFilteringExpression
+        {
+            FieldName = "Salary",
+            Condition = IgbFilteringCondition.GreaterThan,
+            SearchVal = 80000
+        });
+        salaryGroup.FilteringOperands.Add(new IgbFilteringExpression
+        {
+            FieldName = "Title",
+            Condition = IgbFilteringCondition.Contains,
+            SearchVal = "Senior"
+        });
+
+        tree.FilteringOperands.Add(salaryGroup);
+
+        grid.AdvancedFilteringExpressionsTree = tree;
+    }
+}
+```
 
 ---
 
-## Remote Data Operations
+## Programmatic Grouping (IgbGrid Only)
 
-Use [`paging-remote.md`](./paging-remote.md) when sorting, filtering, paging, or virtualization is handled by a server. Remote scenarios usually require:
+Grouping is exclusive to the flat grid. Tree Grid and Hierarchical Grid do not support grouping.
 
-- Loading only the visible page or chunk from the server
-- Setting `TotalRecords` or `TotalItemCount` so the grid or paginator can calculate the full data size
-- Replacing the bound data collection when server data changes
-- Resetting paging when sort or filter state changes
+### Group by a column
+
+```razor
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+    <IgbColumn Field="Department" Groupable="true" />
+    <IgbColumn Field="Name" />
+    <IgbColumn Field="Salary" DataType="GridColumnDataType.Number" />
+</IgbGrid>
+
+<IgbButton @onclick="GroupByDepartment">Group by Department</IgbButton>
+<IgbButton @onclick="ClearGrouping">Clear Grouping</IgbButton>
+
+@code {
+    private IgbGrid grid = default!;
+
+    private async Task GroupByDepartment()
+    {
+        await grid.GroupByAsync(new IgbGroupingExpression
+        {
+            FieldName = "Department",
+            Dir = SortingDirection.Asc
+        });
+    }
+
+    private async Task ClearGrouping()
+    {
+        await grid.ClearGroupingAsync();
+    }
+}
+```
+
+### Clear grouping on a specific field
+
+```razor
+@code {
+    private async Task UngroupDepartment()
+    {
+        await grid.ClearGroupingAsync("Department");
+    }
+}
+```
+
+### Grouping events
+
+| Event | Type | Description |
+|---|---|---|
+| `GroupingDone` | `EventCallback<IgbGroupingDoneEventArgs>` | Fires after grouping changes |
+
+---
+
+Add `SortStrategy="typeof(YourStrategy)"` to a column and implement a class that extends `IgbSortingStrategy`, overriding `Compare`. Use `get_doc` to find the exact base class and method signature.
+
+---
+
+## Custom Filtering Strategy
+
+Add `FilterStrategy="typeof(YourStrategy)"` to a column and implement a class that provides custom filter logic. Use `get_doc` to find the exact interface and method signatures.
 
 ---
 
 ## Key Rules
 
-1. **Always call `get_doc` for the specific operation before writing code.** Method names, event args, and expression object shapes are version-specific.
-2. **Use `@ref` for programmatic access.**
-3. **Keep UI feature setup and programmatic state separate.** Use `features.md` for toolbar/UI behaviors and this file for C# sorting, filtering, grouping, and expression state.
-4. **Use `paging-remote.md` for server-side operations.** Local data operations and remote data operations have different responsibilities.
-5. **Do not use `get_api_reference` or `search_api` for Blazor.** They do not support Blazor; use `get_doc` and `search_docs`.
+1. **All async methods need `await`** - `SortAsync`, `FilterAsync`, `GroupByAsync`, `ClearSortAsync`, `ClearFilterAsync`, `ClearGroupingAsync` are all asynchronous.
+2. **`@ref` requires correct type** - use `IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, or `IgbPivotGrid` to match the component in markup.
+3. **Access `@ref` only after render** - the reference is `null` until the component renders. Use it in event handlers or `OnAfterRenderAsync`, not in `OnInitialized`.
+4. **Grouping is IgbGrid only** - calling `GroupByAsync` on a Tree Grid or Hierarchical Grid reference will fail.
+5. **Tree Grid filtering is recursive** - filtering finds matching rows and all their ancestor rows, preserving the tree structure.
+6. **Hierarchical Grid levels are independent** - sorting/filtering the root does not affect child grids.
+7. **Pivot Grid uses configuration** - sorting and filtering are managed through `IgbPivotConfiguration`, not through programmatic `SortAsync`/`FilterAsync`.
+8. **`FieldName` is case-sensitive** - it must match the C# property name exactly.
