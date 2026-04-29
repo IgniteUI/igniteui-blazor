@@ -108,24 +108,37 @@ window.toggleDarkMode = function (isDark) {
 
 ## CSS Custom Properties (Design Tokens)
 
-All visual attributes of Ignite UI components (colors, borders, shadows, fonts) are exposed as CSS custom properties. You override them by declaring the property in a CSS rule that matches the component's scope.
+All visual attributes of Ignite UI components (colors, borders, shadows, fonts) are exposed as CSS custom properties. You override them by declaring the property in a CSS rule that matches the component's scope. Design tokens are the **primary** theming approach — prefer them over `::part()` selectors.
 
 **Workflow:**
 
 1. Call `get_component_design_tokens` to get all available tokens for a component.
 2. Pick the tokens you want to change.
-3. Write a CSS rule in your app's CSS file that overrides those tokens.
+3. Write a CSS rule that overrides those tokens.
+
+**File context matters:**
+
+- **Global CSS file** (`app.css`) — write `igc-<tag> { --ig-<component>-<token>: value; }` directly.
+- **`.razor.css` isolation file** — add `::deep` before the `igc-<tag>` selector.
 
 ```css
-/* Override button colors globally */
+/* app.css — global, no ::deep needed */
 :root {
     --ig-primary-500: #7b2fff;
     --ig-primary-600: #6200ee;
 }
 
-/* Override just the contained button background */
-igc-button::part(base) {
-    background: var(--ig-primary-500);
+igc-chip {
+    --ig-chip-background: var(--ig-primary-500);
+    --ig-chip-text-color: var(--ig-primary-500-contrast);
+}
+```
+
+```css
+/* MyView.razor.css — isolation file, ::deep required */
+::deep igc-chip {
+    --ig-chip-background: var(--ig-primary-500);
+    --ig-chip-text-color: var(--ig-primary-500-contrast);
 }
 ```
 
@@ -144,17 +157,34 @@ Apply a custom theme to a specific component instance (without affecting all com
 ```
 
 ```css
-/* Scoped override in your app's CSS */
+/* Scoped token override in your app's CSS (global file, no ::deep) */
 .my-custom-button igc-button {
     --ig-primary-500: #ff5722;
     --ig-primary-600: #e64a19;
 }
 ```
 
-Or scope to a CSS part:
+When the scoped override is inside a `.razor.css` isolation file, add `::deep`:
 
 ```css
+/* MyComponent.razor.css — isolation file */
+::deep .my-custom-button igc-button {
+    --ig-primary-500: #ff5722;
+    --ig-primary-600: #e64a19;
+}
+```
+
+Use `::part()` within a scoped selector only for properties not covered by tokens — verify via `get_component_design_tokens` first:
+
+```css
+/* Global CSS */
 .my-custom-button igc-button::part(base) {
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+/* Isolation file */
+::deep .my-custom-button igc-button::part(base) {
     border-radius: 20px;
     font-weight: 700;
 }
@@ -164,16 +194,25 @@ Or scope to a CSS part:
 
 ## CSS Parts
 
-Some Ignite UI Blazor components expose shadow DOM parts via `::part()`. Use these for styling only after the Blazor component documentation confirms the exact part names.
+Some Ignite UI Blazor components expose shadow DOM parts via `::part()`. Use these for styling only after the Blazor component documentation confirms the exact part names. Prefer design token CSS custom properties (via `get_component_design_tokens` / `create_component_theme`) over `::part()` — tokens are the primary theming layer. Only reach for `::part()` when the property you need is not covered by any design token.
+
+**`::part()` is not a replacement for design tokens.** Setting a design token (e.g., `--ig-chip-background`) is different from using `::part(base) { background: ... }`. Use the token approach when a token exists; use `::part()` for properties the token system does not expose.
 
 **Workflow:**
 
-1. Call `get_doc` to see the component's CSS parts list.
-2. Reference parts using `igc-<component-tag>::part(<part-name>)` in your CSS.
+1. Call `get_component_design_tokens` to check whether the desired property has a token.
+2. If a token exists, set it via `igc-<tag> { --ig-<component>-<token>: value; }` — no `::part()` needed.
+3. If no token covers it, call `get_doc` to see the component's CSS parts list, then use `igc-<component-tag>::part(<part-name>)`.
 
-Example - styling the dialog footer area:
+**File context:**
+
+- **Global CSS file** (`app.css`): use `igc-<tag>::part(<name>) { ... }` directly.
+- **`.razor.css` isolation file**: prefix with `::deep` → `::deep igc-<tag>::part(<name>) { ... }`.
+
+Example — styling the dialog footer area (global CSS):
 
 ```css
+/* app.css — global, no ::deep needed */
 igc-dialog::part(footer) {
     background-color: #f5f5f5;
     border-top: 1px solid #e0e0e0;
@@ -181,7 +220,18 @@ igc-dialog::part(footer) {
 }
 ```
 
-> **AGENT INSTRUCTION:** Blazor renders Ignite UI components as web components with `igc-` tag names. The CSS selector uses the web component tag name (e.g., `igc-button`, `igc-dialog`) not the Razor component name (`IgbButton`).
+Same override in a `.razor.css` isolation file:
+
+```css
+/* MyView.razor.css — isolation file, ::deep required */
+::deep igc-dialog::part(footer) {
+    background-color: #f5f5f5;
+    border-top: 1px solid #e0e0e0;
+    padding: 12px 16px;
+}
+```
+
+> **AGENT INSTRUCTION:** Blazor renders Ignite UI components as web components with `igc-` tag names. The CSS selector uses the web component tag name (e.g., `igc-button`, `igc-dialog`) not the Razor component name (`IgbButton`). `::deep` is a Blazor CSS isolation combinator — it is only needed in `.razor.css` files, not in global stylesheets.
 
 ---
 
