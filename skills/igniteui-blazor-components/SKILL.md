@@ -9,7 +9,7 @@ user-invocable: true
 ## Prerequisites
 
 - .NET 6+ Blazor project (Server, WebAssembly, Web App, or MAUI Blazor Hybrid)
-- `IgniteUI.Blazor` NuGet package installed (trial) **or** the licensed package from the Infragistics private NuGet feed; for OSS-only components use `IgniteUI.Blazor.Lite` instead
+- The correct NuGet package installed: licensed `IgniteUI.Blazor` from the Infragistics private feed for the full component suite, `IgniteUI.Blazor.Lite` for OSS core UI components, or `IgniteUI.Blazor.GridLite` for OSS Grid Lite
 - `builder.Services.AddIgniteUIBlazor(...)` called in `Program.cs`
 - `@using IgniteUI.Blazor.Controls` added to `_Imports.razor`
 - A theme CSS file linked in the host page (see [`references/setup.md`](./references/setup.md))
@@ -73,12 +73,11 @@ Base your code and explanation exclusively on what you read. If the reference fi
 
 | Package | Source | Who uses it |
 |---|---|---|
-| `IgniteUI.Blazor` | NuGet.org | Trial users |
-| `IgniteUI.Blazor` (licensed build) | Infragistics private NuGet feed (`https://packages.infragistics.com/nuget/licensed/`) | Licensed / enterprise users |
-| `IgniteUI.Blazor.Lite` | NuGet.org | Open-source component users |
-| `IgniteUI.Blazor.GridLite` | NuGet.org | Open-source Grid Lite users |
+| `IgniteUI.Blazor` | Infragistics private NuGet feed (`https://packages.infragistics.com/nuget/licensed/`) | Licensed / enterprise users that need the full component suite |
+| `IgniteUI.Blazor.Lite` | NuGet.org | Open-source users that need the MIT core UI components |
+| `IgniteUI.Blazor.GridLite` | NuGet.org | Open-source users that need the lightweight Grid Lite data grid |
 
-`IgniteUI.Blazor` and the licensed `IgniteUI.Blazor` build expose the same API and module registration pattern. Do **not** mix `IgniteUI.Blazor` with `IgniteUI.Blazor.Lite` in the same project; the OSS Lite packages use the same namespaces and duplicate some components.
+`IgniteUI.Blazor.Lite` contains the open-source UI component set, while `IgniteUI.Blazor.GridLite` contains the free `IgbGridLite` data grid package. Both use the `IgniteUI.Blazor.Controls` namespace. Do **not** mix the licensed `IgniteUI.Blazor` package with `IgniteUI.Blazor.Lite` in the same project; they use the same namespaces and duplicate some components.
 
 ## Key Blazor-Specific Notes
 

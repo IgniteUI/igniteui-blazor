@@ -18,9 +18,6 @@
 ## NuGet Installation
 
 ```bash
-# Trial package from NuGet.org
-dotnet add package IgniteUI.Blazor
-
 # OSS component package from NuGet.org
 dotnet add package IgniteUI.Blazor.Lite
 
@@ -28,10 +25,11 @@ dotnet add package IgniteUI.Blazor.Lite
 dotnet add package IgniteUI.Blazor.GridLite
 
 # Or via Package Manager Console
-Install-Package IgniteUI.Blazor
+Install-Package IgniteUI.Blazor.Lite
+Install-Package IgniteUI.Blazor.GridLite
 ```
 
-Licensed users install from the Infragistics private feed:
+Licensed users install the full `IgniteUI.Blazor` package from the Infragistics private feed:
 
 ```bash
 # Add the Infragistics feed first (one-time)
@@ -43,7 +41,15 @@ nuget sources add -name "Infragistics" \
 dotnet add package IgniteUI.Blazor
 ```
 
-Do **not** mix `IgniteUI.Blazor` and `IgniteUI.Blazor.Lite` in the same project. They use the same namespaces and duplicate some components; pick the trial/licensed package path or the OSS Lite package path.
+Package selection:
+
+| Package | Use when |
+|---|---|
+| `IgniteUI.Blazor` | Licensed full suite: premium grids, charts, maps, gauges, Dock Manager, and all core UI components |
+| `IgniteUI.Blazor.Lite` | Open-source MIT core UI components such as buttons, inputs, lists, cards, navigation, layout, and feedback components |
+| `IgniteUI.Blazor.GridLite` | Open-source MIT `IgbGridLite` for lightweight read-only or essential data grid scenarios |
+
+Do **not** mix `IgniteUI.Blazor` and `IgniteUI.Blazor.Lite` in the same project. They use the same namespaces and duplicate some components; pick the licensed full package path or the OSS Lite package path.
 
 ---
 
@@ -102,11 +108,13 @@ await builder.Build().RunAsync();
 
 ## \_Imports.razor
 
-Add the namespace to both client and server `_Imports.razor` files so Razor pages can use Ignite UI component tags without fully qualifying them:
+Add the namespace to `_Imports.razor` so Razor pages can use Ignite UI component tags without fully qualifying them:
 
 ```razor
 @using IgniteUI.Blazor.Controls
 ```
+
+For Blazor Web App solutions with separate server and client projects, add the same line to both `_Imports.razor` files when components are used in both projects. Page-level `@using IgniteUI.Blazor.Controls` is acceptable for isolated samples, but `_Imports.razor` is the preferred application setup.
 
 ---
 
@@ -137,6 +145,12 @@ For .NET 9+ Web App projects, use the `Assets` property:
 
 ```razor
 <link rel="stylesheet" href="@Assets["_content/IgniteUI.Blazor/themes/light/bootstrap.css"]" />
+```
+
+For `IgniteUI.Blazor.GridLite`, use the Grid Lite package theme path shown in the current Grid Lite docs:
+
+```html
+<link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
 ```
 
 ---
@@ -191,6 +205,6 @@ Module names follow the pattern `Igb{ComponentName}Module`. If unsure of the mod
 1. **Always call `get_doc` before writing code.** Use `search_api` and `get_api_reference` for property names, methods, events, and signatures.
 2. **Both server and client `Program.cs` must register the service** in Blazor Web App projects.
 3. **The CSS theme link and the script tag are both required.** Missing either causes components to render unstyled or non-functional.
-4. **Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`**, not to individual Razor pages, to avoid repetition.
+4. **Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`**, and in both server/client `_Imports.razor` files for split Blazor Web App projects.
 5. **`AddIgniteUIBlazor()` with no arguments registers all modules.** Use explicit `typeof(...)` registrations in production for smaller bundles.
 6. **Blazor Web App components need an interactive render mode.** Static SSR pages will not render Ignite UI components correctly.

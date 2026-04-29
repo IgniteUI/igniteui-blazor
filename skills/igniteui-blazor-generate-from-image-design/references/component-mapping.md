@@ -194,12 +194,13 @@ Decision rules:
 
 ## Package Requirements
 
-All Ignite UI Blazor components ship in a **single NuGet package**. No additional DV-specific packages are needed.
+Ignite UI Blazor package selection depends on the component family. The licensed `IgniteUI.Blazor` package provides the full suite, while the OSS packages cover core UI components and Grid Lite. No additional DV-specific packages are needed beyond the selected package.
 
 | NuGet Package | Description |
 |---|---|
-| `IgniteUI.Blazor` | Licensed / trial - full component suite including charts, grids, maps, gauges, DockManager |
-| `IgniteUI.Blazor.Lite` | Open-source / MIT - core UI components only (no charts, grids, maps, gauges, or DockManager) |
+| `IgniteUI.Blazor` | Licensed full component suite including premium grids, charts, maps, gauges, Dock Manager, and core UI components |
+| `IgniteUI.Blazor.Lite` | Open-source / MIT core UI components such as layout, navigation, forms, lists, cards, feedback, and common inputs |
+| `IgniteUI.Blazor.GridLite` | Open-source / MIT `IgbGridLite` package for lightweight data grid scenarios |
 
 | Capability | Package Required |
 |---|---|
@@ -207,8 +208,9 @@ All Ignite UI Blazor components ship in a **single NuGet package**. No additiona
 | Charts / sparklines | `IgniteUI.Blazor` only |
 | Maps | `IgniteUI.Blazor` only |
 | Gauges / bullet graphs | `IgniteUI.Blazor` only |
-| Data grids | `IgniteUI.Blazor` only |
-| Tile Manager | `IgniteUI.Blazor` only |
+| Full data grids (`IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`) | `IgniteUI.Blazor` only |
+| Grid Lite (`IgbGridLite`) | `IgniteUI.Blazor.GridLite` or `IgniteUI.Blazor` |
+| Tile Manager | `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor` |
 | Dock Manager | `IgniteUI.Blazor` only |
 
 ---
@@ -218,8 +220,17 @@ All Ignite UI Blazor components ship in a **single NuGet package**. No additiona
 ### 1. NuGet package reference (`.csproj`)
 
 ```xml
+<!-- Licensed full suite -->
 <PackageReference Include="IgniteUI.Blazor" Version="<resolved-version>" />
+
+<!-- OSS core UI components -->
+<PackageReference Include="IgniteUI.Blazor.Lite" Version="<resolved-version>" />
+
+<!-- OSS Grid Lite -->
+<PackageReference Include="IgniteUI.Blazor.GridLite" Version="<resolved-version>" />
 ```
+
+Choose the package that matches the component requirements above. Do not add all three by default.
 
 ### 2. Service registration (`Program.cs`)
 

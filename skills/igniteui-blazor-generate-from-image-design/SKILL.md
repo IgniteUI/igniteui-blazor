@@ -12,7 +12,7 @@ Before writing any implementation code, you must complete these steps in order:
 
 1. Analyze the image and identify all visible regions and UI patterns.
 2. Read [references/component-mapping.md](references/component-mapping.md) and [references/gotchas.md](references/gotchas.md).
-3. This skill is Blazor-only. Check NuGet package (`IgniteUI.Blazor` vs `IgniteUI.Blazor.Lite`) only when theming or component availability depends on it.
+3. This skill is Blazor-only. Check NuGet package (`IgniteUI.Blazor`, `IgniteUI.Blazor.Lite`, or `IgniteUI.Blazor.GridLite`) only when theming or component availability depends on it.
 4. To apply a theme, use the theming workflow from this skill and the dedicated `igniteui-blazor-theming` skill; use the `igniteui-theming` MCP tools instead of styling from memory.
 5. Call `get_doc` for every chosen component family before using it.
 6. Only then start coding.
@@ -22,7 +22,7 @@ Before writing any implementation code, you must complete these steps in order:
 ## Workflow
 
 1. **Analyze the design image** - Read the image, identify every UI section, component, layout structure.
-2. **Confirm NuGet package if needed** - this skill is Blazor-only; check package (`IgniteUI.Blazor` vs `IgniteUI.Blazor.Lite`) only when component availability or theming depends on it.
+2. **Confirm NuGet package if needed** - this skill is Blazor-only; check package (`IgniteUI.Blazor`, `IgniteUI.Blazor.Lite`, or `IgniteUI.Blazor.GridLite`) only when component availability or theming depends on it.
 3. **Discover components** - Call `list_components` with targeted filters and `framework: "blazor"` to find matching components for each UI pattern.
 4. **Look up component docs** - Call `get_doc` for every chosen component family before coding.
 5. **Generate theme** - (a) To generate a theme, first extract colors and create a color palette using `create_palette` or `create_custom_palette` depending on the scenario. Then extract elevations and call `create_elevations`. Then extract typography and call `create_typography`. Then call `create_theme` with the palette, elevations, and typography with `platform: "blazor"`. (b) After a theme exists, prefer using design tokens or scoped semantic CSS variables over raw literals. (c) For every Ignite UI component, call `get_component_design_tokens`, map extracted image tokens to token roles, then call `create_component_theme` with the tokens differing from the global theme for the specific component.
@@ -73,8 +73,9 @@ This skill is Blazor-only. Check NuGet package only when component availability 
 
 If you need to confirm the NuGet package:
 
-- If the project uses `IgniteUI.Blazor.Lite` (open-source), some premium components (charts, grids, DockManager) may not be available.
-- If the project uses `IgniteUI.Blazor` (licensed/trial), all components are available.
+- If the project uses `IgniteUI.Blazor.Lite` (open-source), premium components such as charts, maps, gauges, full grids, and Dock Manager are not available.
+- If the project uses `IgniteUI.Blazor.GridLite` (open-source), use `IgbGridLite` only for lightweight Grid Lite scenarios.
+- If the project uses licensed `IgniteUI.Blazor`, the full component suite is available.
 
 Then call `list_components` with `framework: "blazor"` and relevant filters to find components matching each UI pattern. Common filters:
 
@@ -184,9 +185,9 @@ Apply in this exact order:
 
 ---
 
-## Step 6: Install DV Packages
+## Step 6: Confirm Package Coverage
 
-All Ignite UI Blazor components - including charts, maps, gauges, and sparklines - ship in a **single NuGet package**: `IgniteUI.Blazor` (licensed/trial) or `IgniteUI.Blazor.Lite` (open-source, limited component set). There are no separate DV packages to install.
+Premium Ignite UI Blazor components - including charts, maps, gauges, sparklines, full grids, and Dock Manager - require the licensed `IgniteUI.Blazor` NuGet package. Open-source projects can use `IgniteUI.Blazor.Lite` for core UI components and `IgniteUI.Blazor.GridLite` for `IgbGridLite`. There are no separate DV-specific packages to install.
 
 However, each DV component requires **module registration** in `Program.cs`:
 
@@ -205,9 +206,9 @@ builder.Services.AddIgniteUIBlazor(
 );
 ```
 
-If the `IgniteUI.Blazor` NuGet package is not referenced in the project, identify the correct package version first, then ask for approval before modifying the `.csproj`.
+If the required NuGet package is not referenced in the project, identify the correct package and version first, then ask for approval before modifying the `.csproj`.
 
-> **Note:** `IgniteUI.Blazor.Lite` (open-source) does **not** include charts, maps, gauges, grids, or DockManager. If those are needed, the project requires `IgniteUI.Blazor` (licensed/trial).
+> **Note:** `IgniteUI.Blazor.Lite` (open-source) does **not** include charts, maps, gauges, full grids, or Dock Manager. If those are needed, the project requires licensed `IgniteUI.Blazor`. For a lightweight open-source grid, use `IgniteUI.Blazor.GridLite` with `IgbGridLite`.
 
 ---
 
