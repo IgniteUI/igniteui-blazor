@@ -1,5 +1,21 @@
 # Editing - Cell Editing, Row Editing & Validation
 
+> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> For grid setup and column configuration — see [`structure.md`](./structure.md). 
+> For programmatic API access — see [`data-operations.md`](./data-operations.md).
+
+## Contents
+
+- [Choosing an Editing Mode](#choosing-an-editing-mode)
+- [Cell Editing](#cell-editing)
+- [Row Editing](#row-editing)
+- [Adding & Deleting Rows Programmatically](#adding--deleting-rows-programmatically)
+- [Validation](#validation)
+- [Custom Editors](#custom-editors)
+- [Key Rules](#key-rules)
+
+---
+
 > **Pivot Grid does not support editing.** The Pivot Grid is read-only. The content below applies to IgbGrid, IgbTreeGrid, and IgbHierarchicalGrid.
 
 ---

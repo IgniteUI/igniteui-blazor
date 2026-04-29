@@ -1,5 +1,17 @@
 # Sizing - Grid Width, Height, Column Sizing & Cell Spacing
 
+> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> For grid setup and column configuration — see [`structure.md`](./structure.md).
+
+## Contents
+
+- [Grid Width](#grid-width)
+- [Grid Height](#grid-height)
+- [Column Sizing](#column-sizing)
+- [Row Height](#row-height)
+- [Cell Spacing (CSS Variables)](#cell-spacing-css-variables)
+- [Key Rules](#key-rules)
+
 ---
 
 ## Grid Width

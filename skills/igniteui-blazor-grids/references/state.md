@@ -1,5 +1,13 @@
 # State Persistence
 
+> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> For grid setup and column configuration — see [`structure.md`](./structure.md).
+
+## Contents
+
+- [State Persistence](#state-persistence)
+- [Key Rules](#key-rules)
+
 ---
 
 ## State Persistence

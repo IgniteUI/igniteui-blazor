@@ -1,5 +1,17 @@
 # Data Operations - Programmatic Sorting, Filtering, Grouping & Custom Strategies
 
+> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> For grid setup and column configuration — see [`structure.md`](./structure.md).
+
+## Contents
+
+- [Accessing Grid Instances via `@ref`](#accessing-grid-instances-via-ref)
+- [Programmatic Sorting](#programmatic-sorting)
+- [Programmatic Filtering](#programmatic-filtering)
+- [Programmatic Grouping (IgbGrid Only)](#programmatic-grouping-igbgrid-only)
+- [Custom Filtering Strategy](#custom-filtering-strategy)
+- [Key Rules](#key-rules)
+
 ---
 
 ## Accessing Grid Instances via `@ref`

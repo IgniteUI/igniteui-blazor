@@ -1,5 +1,16 @@
 # Paging, Remote Data & Virtualization
 
+> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> For grid setup and column configuration — see [`structure.md`](./structure.md).
+
+## Contents
+
+- [Paging with `IgbPaginator`](#paging-with-igbpaginator)
+- [Remote Paging](#remote-paging)
+- [Remote Data Operations](#remote-data-operations)
+- [Virtualization](#virtualization)
+- [Key Rules](#key-rules)
+
 ---
 
 ## Paging with `IgbPaginator`

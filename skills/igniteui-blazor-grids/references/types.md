@@ -1,5 +1,16 @@
 # Grid Types - Grid Lite, Tree Grid, Hierarchical Grid & Pivot Grid
 
+> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> For `IgbGrid` setup and column configuration — see [`structure.md`](./structure.md).
+
+## Contents
+
+- [Grid Lite (`IgbGridLite`)](#grid-lite-igbgridlite)
+- [Tree Grid (`IgbTreeGrid`)](#tree-grid-igbtreegrid)
+- [Hierarchical Grid (`IgbHierarchicalGrid`)](#hierarchical-grid-igbhierarchicalgrid)
+- [Pivot Grid (`IgbPivotGrid`)](#pivot-grid-igbpivotgrid)
+- [Key Rules by Grid Type](#key-rules-by-grid-type)
+
 ---
 
 ## Grid Lite (`IgbGridLite`)

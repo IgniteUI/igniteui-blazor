@@ -1,5 +1,21 @@
 # Structure - Grid Setup, Columns, Sorting, Filtering & Selection
 
+> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> For specialized grid types (Tree Grid, Hierarchical Grid, Pivot Grid, Grid Lite) — see [`types.md`](./types.md).
+
+## Contents
+
+- [Quick Start](#quick-start)
+- [Column Configuration](#column-configuration)
+- [Column Templates](#column-templates)
+- [Column Groups (Multi-Column Headers)](#column-groups-multi-column-headers)
+- [Multi-Row Layout (MRL)](#multi-row-layout-mrl)
+- [Column Pinning](#column-pinning)
+- [Sorting](#sorting)
+- [Filtering](#filtering)
+- [Selection](#selection)
+- [Key Rules](#key-rules)
+
 ---
 
 ## Quick Start

@@ -1,5 +1,23 @@
 # Features - Grouping, Summaries, Merging, Toolbar, Export, Row Drag, Action Strip, Master-Detail & Clipboard
 
+> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
+> For grid setup and column configuration — see [`structure.md`](./structure.md). 
+> For cell and row editing — see [`editing.md`](./editing.md).
+
+## Contents
+
+- [Grouping (IgbGrid Only)](#grouping-igbgrid-only)
+- [Summaries](#summaries)
+- [Cell Merging (IgbGrid Only)](#cell-merging-igbgrid-only)
+- [Toolbar](#toolbar)
+- [Export](#export)
+- [Virtualization & Performance](#virtualization--performance)
+- [Row Drag](#row-drag)
+- [Action Strip](#action-strip)
+- [Master-Detail (IgbGrid Only)](#master-detail-igbgrid-only)
+- [Clipboard](#clipboard)
+- [Key Rules](#key-rules)
+
 ---
 
 ## Grouping (IgbGrid Only)
