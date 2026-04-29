@@ -227,13 +227,13 @@ Grouping is exclusive to the flat grid. Tree Grid and Hierarchical Grid do not s
 
 ---
 
-Add `SortStrategy="typeof(YourStrategy)"` to a column and implement a class that extends `IgbSortingStrategy`, overriding `Compare`. Use `get_doc` to find the exact base class and method signature.
+Add `SortStrategy="typeof(YourStrategy)"` to a column and implement a class that extends `IgbSortingStrategy`, overriding `Compare`. Use `get_api_reference` to find the exact base class and method signature.
 
 ---
 
 ## Custom Filtering Strategy
 
-Add `FilterStrategy="typeof(YourStrategy)"` to a column and implement a class that provides custom filter logic. Use `get_doc` to find the exact interface and method signatures.
+Add `FilterStrategy="typeof(YourStrategy)"` to a column and implement a class that provides custom filter logic. Use `get_api_reference` to find the exact interface and method signatures.
 
 ---
 

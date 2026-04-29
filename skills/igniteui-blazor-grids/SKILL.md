@@ -25,10 +25,12 @@ Map the user's request to one or more rows in the Task → Reference File table 
 **STEP 3 - Read every identified reference file in full (PARALLEL).**
 Call `read_file` (or equivalent) on **all** reference files identified in Step 2 **in a single parallel batch** - do NOT read them one at a time sequentially. You must do this even if you believe you already know the answer. Do not skip, skim, or partially read a reference file.
 
-**STEP 4 - Extract doc slugs, then call `get_doc` for the relevant grid and each feature.**
-Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. This is the primary source of truth for Blazor grid APIs - it returns verified property names, event names, and method signatures. Do NOT skip this step.
+**STEP 4 - Extract doc slugs, then call `get_doc` and API tools for the relevant grid and each feature.**
+Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. It returns the relevant grid docs, examples, and feature guidance. Do NOT skip this step.
 
 If a reference file does not list a slug for the requested grid feature, call `search_docs(framework: "blazor", query: "<grid feature>")` to find the correct doc. If no Blazor doc exists, say that the feature is not covered rather than guessing.
+
+Use `search_api` and `get_api_reference` for Blazor grid API details when property names, methods, events, enums, or signatures are needed.
 
 **STEP 5 - Only then produce output.**
 Base your code and explanation exclusively on what you read in Steps 3–4. If the reference files or MCP docs do not cover something, say so explicitly rather than guessing.
@@ -159,9 +161,9 @@ builder.Services.AddIgniteUIBlazor(
 
 ## Key Blazor-Specific Notes
 
-> **AGENT INSTRUCTION - No `get_api_reference` for Blazor**
+> **AGENT INSTRUCTION - Blazor API Lookup**
 >
-> `get_api_reference` and `search_api` MCP tools do **not** support Blazor. All property names, event names, and method signatures must be obtained from `get_doc` results.
+> Use `search_api` and `get_api_reference` for Blazor grid property names, event names, method signatures, enums, and related API details.
 
 > **AGENT INSTRUCTION - `@ref` for programmatic access**
 >

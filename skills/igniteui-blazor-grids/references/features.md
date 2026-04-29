@@ -104,7 +104,7 @@ Extend `IgbNumberSummaryOperand` (or `IgbDateSummaryOperand`, `IgbSummaryOperand
            Summaries="typeof(MySalarySummary)" />
 ```
 
-> For full custom summary class syntax, call `get_doc(framework: "blazor", slug: "grids/grid/summaries")`.
+> For full custom summary class syntax, call `get_doc(framework: "blazor", slug: "grids/grid/summaries")` and use `get_api_reference` for the exact API contract.
 
 ### Summary position
 
