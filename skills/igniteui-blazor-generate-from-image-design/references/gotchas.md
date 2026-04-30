@@ -97,7 +97,7 @@ Set `ChartType` to `Spline`, `SplineArea`, or `StepLine` / `StepArea` depending 
 Charts may render with zero height inside a CSS Grid container. Always set a `min-height` on the chart container or an explicit `Height` on the chart component:
 ```css
 .chart-container {
-  min-height: 0; /* Prevents CSS Grid blowout */
+  min-height: 300px; /* Prevents the chart container from collapsing */
 }
 ```
 ```razor
