@@ -69,7 +69,7 @@ Save and restore the full grid state (sorting, filtering, grouping, paging, sele
 ### Auto-save on navigation
 
 ```razor
-@implements IDisposable
+@implements IAsyncDisposable
 
 <IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
     ...
@@ -86,7 +86,7 @@ Save and restore the full grid state (sorting, filtering, grouping, paging, sele
         }
     }
 
-    public async void Dispose()
+    public async ValueTask DisposeAsync()
     {
         await SaveState();
     }

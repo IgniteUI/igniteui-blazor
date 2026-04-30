@@ -9,6 +9,7 @@
 - [Programmatic Sorting](#programmatic-sorting)
 - [Programmatic Filtering](#programmatic-filtering)
 - [Programmatic Grouping (IgbGrid Only)](#programmatic-grouping-igbgrid-only)
+- [Custom Sorting Strategy](#custom-sorting-strategy)
 - [Custom Filtering Strategy](#custom-filtering-strategy)
 - [Key Rules](#key-rules)
 
@@ -238,6 +239,8 @@ Grouping is exclusive to the flat grid. Tree Grid and Hierarchical Grid do not s
 | `GroupingDone` | `EventCallback<IgbGroupingDoneEventArgs>` | Fires after grouping changes |
 
 ---
+
+## Custom Sorting Strategy
 
 Add `SortStrategy="typeof(YourStrategy)"` to a column and implement a class that extends `IgbSortingStrategy`, overriding `Compare`. Use `get_api_reference` to find the exact base class and method signature.
 
