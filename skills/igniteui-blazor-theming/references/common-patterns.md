@@ -90,7 +90,7 @@ Switch themes dynamically by updating the `href` attribute of the theme `<link>`
 </script>
 ```
 
-### Approach 2 - Preload both themes with a class toggle
+### Approach 2 - Preload both themes and toggle link disabled states
 
 ```html
 <link id="igLightTheme" href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
