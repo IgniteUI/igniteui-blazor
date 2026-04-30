@@ -305,9 +305,20 @@ Apply these in layout CSS rather than hardcoding hex values.
 
 ### Programmatic dark/light toggle
 Swap the CSS `<link>` element via JS interop:
+```html
+<script>
+  window.themeSwitcher = {
+    setTheme(href) {
+      document.getElementById('theme-css').href = href;
+    }
+  };
+</script>
+```
+
 ```csharp
-await JS.InvokeVoidAsync("eval",
-    "document.getElementById('theme-css').href = '_content/IgniteUI.Blazor/themes/dark/bootstrap.css'");
+await JS.InvokeVoidAsync(
+    "themeSwitcher.setTheme",
+    "_content/IgniteUI.Blazor/themes/dark/bootstrap.css");
 ```
 
 Or toggle a CSS class with variable overrides (see `igniteui-blazor-theming` skill for full patterns).
