@@ -123,7 +123,7 @@ Use `GridColumnDataType` to set the type. This controls sorting, filtering, edit
 | `Pinned` | `bool` | `false` | Pins the column |
 | `Groupable` | `bool` | `false` | Enables grouping for this column (IgbGrid only) |
 | `HasSummary` | `bool` | `false` | Enables summaries for this column |
-| `Disablefiltering` | `bool` | `false` | Disables filtering for this column even when grid filtering is on |
+| `DisableFiltering` | `bool` | `false` | Disables filtering for this column even when grid filtering is on |
 | `DisablePinning` | `bool` | `false` | Disables pinning for this column |
 | `DisableHiding` | `bool` | `false` | Prevents hiding this column |
 | `CellClasses` | `string` | - | CSS class(es) to apply to cells |
