@@ -1,4 +1,4 @@
-﻿# Data Display Components
+# Data Display Components
 
 > **Part of the [`igniteui-blazor-components`](../SKILL.md) skill hub.**
 > For project setup and module registration - see [`setup.md`](./setup.md).
