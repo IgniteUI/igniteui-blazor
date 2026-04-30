@@ -63,6 +63,8 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCategoryChartModule));
 
 Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `Column` / `Bar` / `Spline` / `SplineArea` / `StepLine` / `Auto`), `Height`, `Width`, `YAxisTitle`, `XAxisTitle`, `Brushes`, `Outlines`, `MarkerBrushes`, `IsTransitionInEnabled`, `IsHorizontalZoomEnabled`, `IsVerticalZoomEnabled`.
 
+Brush list properties such as `Brushes`, `Outlines`, `MarkerBrushes`, and `MarkerOutlines` are **string** parameters. Separate multiple colors with spaces, as in `Brushes="DodgerBlue IndianRed"`.
+
 > **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects numeric properties in `DataSource` objects and creates series for them. To control which properties are charted, use `IncludedProperties` or `ExcludedProperties` attributes.
 
 ---

@@ -65,20 +65,20 @@ Category charts show markers at every data point by default. If the screenshot d
 Charts, maps, gauges, and sparklines ignore the global CSS custom property theme. Set their visual properties explicitly via component parameters:
 ```razor
 <IgbCategoryChart
-    Brushes="#4FC3F7, #81C784, #FFB74D"
-    Outlines="#4FC3F7, #81C784, #FFB74D"
-    MarkerBrushes="#4FC3F7, #81C784, #FFB74D"
-    MarkerOutlines="#4FC3F7, #81C784, #FFB74D"
+    Brushes="#4FC3F7 #81C784 #FFB74D"
+    Outlines="#4FC3F7 #81C784 #FFB74D"
+    MarkerBrushes="#4FC3F7 #81C784 #FFB74D"
+    MarkerOutlines="#4FC3F7 #81C784 #FFB74D"
     XAxisLabelTextColor="#666666"
     YAxisLabelTextColor="#666666" />
 ```
 
 After a palette exists, prefer referencing palette tokens via `var(--ig-primary-500)` where the component supports CSS custom properties, or resolve the actual color value from the palette for DV component parameters.
 
-### `Brushes`, `Outlines`, `MarkerBrushes`, `MarkerOutlines` are comma-separated strings
-These are **string** parameters, not arrays. Pass colors as a single comma-separated string:
+### `Brushes`, `Outlines`, `MarkerBrushes`, `MarkerOutlines` are brush-list strings
+These are **string** parameters, not arrays. Pass colors as a single string separated by spaces.
 ```razor
-Brushes="#FF6B6B, #4ECDC4, #45B7D1"
+Brushes="#FF6B6B #4ECDC4 #45B7D1"
 ```
 
 ### `AreaFillOpacity` exists on `IgbCategoryChart`
