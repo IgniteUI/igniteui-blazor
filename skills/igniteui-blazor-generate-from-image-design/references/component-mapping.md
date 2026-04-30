@@ -65,7 +65,7 @@ Component decision matrix (by visual pattern, domain-neutral):
 |---|---|---|
 | Area chart | `IgbCategoryChart` | `ChartType="CategoryChartType.Area"`, `MarkerTypes`, `DataSource` |
 | Line chart | `IgbCategoryChart` | `ChartType="CategoryChartType.Line"`, `MarkerTypes`, `DataSource` |
-| Column/bar chart | `IgbCategoryChart` | `ChartType="CategoryChartType.Column"` / `ChartType="CategoryChartType.Bar"`, `DataSource` |
+| Column chart | `IgbCategoryChart` | `ChartType="CategoryChartType.Column"`, `DataSource` |
 | Sparkline (mini chart) | `IgbSparkline` | `DisplayType`, `ValueMemberPath`, `DataSource` |
 | Pie chart | `IgbPieChart` | `ValueMemberPath`, `LabelMemberPath`, `DataSource` |
 | Donut chart | `IgbDoughnutChart` + `IgbRingSeries` | `ValueMemberPath`, `LabelMemberPath`, `DataSource` |
