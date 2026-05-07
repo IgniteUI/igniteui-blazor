@@ -62,7 +62,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbComboModule));
 ```
 
 ```razor
-<IgbCombo T="City"
+<IgbCombo T="string"
           Data="Cities"
           ValueKey="Id"
           DisplayKey="Name"

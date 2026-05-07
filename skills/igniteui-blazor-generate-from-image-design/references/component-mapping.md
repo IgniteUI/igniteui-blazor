@@ -99,7 +99,7 @@ Decision rules:
 | Tree view | `IgbTree` + `IgbTreeItem` | `Label`, `Expanded`, `Selection` mode |
 | Content card | `IgbCard` | `IgbCardHeader`, `IgbCardMedia`, `IgbCardContent`, `IgbCardActions` |
 | Carousel | `IgbCarousel` | Slide-based navigation |
-| Action button | `IgbButton` | `Variant` (`ButtonVariant.Contained` / `Outlined` / `Flat` / `FAB`), `Disabled`, `Type`, `Href` |
+| Action button | `IgbButton` | `Variant` (`ButtonVariant.Contained` / `Outlined` / `Flat` / `Fab`), `Disabled`, `DisplayType`, `Href` |
 | Toggle button group | `IgbButtonGroup` + `IgbToggleButton` | `Selection` (`ButtonGroupSelection.Single` / `Multiple`), `Alignment` |
 | Icon-only button | `IgbIconButton` | `IconName`, `Collection`, `Variant` (`IconButtonVariant.Flat` / `Outlined` / `Contained`) |
 | Contextual dropdown / action menu | `IgbDropdown` | `IgbDropdownItem`, `IgbDropdownHeader`, `Placement`, `Change` event; trigger via `slot="target"` or `@ref` |

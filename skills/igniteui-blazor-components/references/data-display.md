@@ -47,7 +47,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbButtonModule), typeof(IgbButtonGrou
 </IgbButtonGroup>
 ```
 
-Key attributes on `IgbButton`: `Variant` (`ButtonVariant.Contained` / `Outlined` / `Flat` / `FAB`), `Disabled`, `Type` (`ButtonType.Button` / `Submit` / `Reset`), `Href` (renders as `<a>`).
+Key attributes on `IgbButton`: `Variant` (`ButtonVariant.Contained` / `Outlined` / `Flat` / `Fab`), `Disabled`, `DisplayType` (`ButtonBaseType.Button` / `Submit` / `Reset`), `Href` (renders as `<a>`).
 
 Key attributes on `IgbButtonGroup`: `Selection` (`ButtonGroupSelection.Single` / `SingleRequired` / `Multiple`), `Alignment` (`ContentOrientation.Horizontal` / `ContentOrientation.Vertical`).
 
@@ -81,7 +81,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbIconModule), typeof(IgbIconButtonMo
 }
 ```
 
-Key attributes: `IconName`, `Collection`, `Size` (`SizableComponentSize.Small` / `Medium` / `Large`), `Mirrored` (for RTL).
+Key attributes: `IconName`, `Collection`, `Mirrored` (for RTL). Size is controlled via CSS `--ig-size: var(--ig-size-small | --ig-size-medium | --ig-size-large)`.
 
 > **AGENT INSTRUCTION - Icon Registration:** Icons are registered by name+collection. Registration must happen in `OnAfterRenderAsync(bool firstRender)` after calling `EnsureReady()`. Re-use the same collection name across the app for consistency.
 
@@ -107,9 +107,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCardModule));
     <IgbCardContent>
         <p>A short description of Jane Doe.</p>
     </IgbCardContent>
-    <IgbCardActions Layout="@CardActionsLayout.Justified">
-        <IgbButton Variant="@ButtonVariant.Flat">Like</IgbButton>
-        <IgbButton Variant="@ButtonVariant.Flat">Share</IgbButton>
+    <IgbCardActions>
+        <IgbButton slot="start" Variant="@ButtonVariant.Flat">Like</IgbButton>
+        <IgbButton slot="start" Variant="@ButtonVariant.Flat">Share</IgbButton>
     </IgbCardActions>
 </IgbCard>
 ```
@@ -178,7 +178,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbAvatarModule));
 
 ```razor
 <!-- Image avatar -->
-<IgbAvatar Src="avatar.png" Alt="User photo" Shape="@AvatarShape.Circle" Size="@SizableComponentSize.Large" />
+<IgbAvatar Src="avatar.png" Alt="User photo" Shape="@AvatarShape.Circle" />
 
 <!-- Initials avatar -->
 <IgbAvatar Shape="@AvatarShape.Circle">AB</IgbAvatar>
@@ -189,7 +189,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbAvatarModule));
 </IgbAvatar>
 ```
 
-Key attributes: `Src`, `Alt`, `Shape` (`AvatarShape.Circle` / `Square` / `Rounded`), `Size`.
+Key attributes: `Src`, `Alt`, `Initials`, `Shape` (`AvatarShape.Circle` / `Square` / `Rounded`). Size is controlled via CSS `--ig-size: var(--ig-size-small | --ig-size-medium | --ig-size-large)`.
 
 ---
 
@@ -225,7 +225,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbChipModule));
 </IgbChip>
 
 @code {
-    void OnChipRemoved(IgbVoidEventArgs e) { /* handle removal */ }
+    void OnChipRemoved(IgbComponentBoolValueChangedEventArgs e) { /* handle removal */ }
 }
 ```
 
@@ -272,7 +272,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbLinearProgressModule));
 <IgbLinearProgress Indeterminate="true" />
 ```
 
-Key attributes: `Value`, `Max`, `Indeterminate`, `Striped`, `Variant`, `LabelAlign` (`ProgressLabelAlign.TopStart` / `TopEnd` / `BottomStart` / `BottomEnd`), `LabelVisibility`.
+Key attributes: `Value`, `Max`, `Indeterminate`, `Striped`, `Variant`, `LabelAlign` (`LinearProgressLabelAlign.TopStart` / `Top` / `TopEnd` / `BottomStart` / `Bottom` / `BottomEnd`).
 
 ---
 
@@ -316,7 +316,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTooltipModule));
 </IgbTooltip>
 ```
 
-Key attributes: `Anchor` (target element ID string), `Placement` (`PopoverPlacement.Top` / `Bottom` / `Left` / `Right` and start/end variants), `ShowDelay`, `HideDelay`, `ShowTriggers`, `HideTriggers`, `Sticky`, `WithArrow`, `DisableArrow`, `Open`.
+Key attributes: `Anchor` (target element ID string), `Placement` (`PopoverPlacement.Top` / `Bottom` / `Left` / `Right` and start/end variants), `ShowDelay`, `HideDelay`, `ShowTriggers`, `HideTriggers`, `Sticky`, `WithArrow`, `Open`.
 
 ---
 

@@ -171,7 +171,7 @@ CSS parts: `spacer`, `message`, `illustration`, `actions`.
 ## Key Rules
 
 1. **Use `@ref` to obtain a component reference**, then call `ShowAsync()` / `HideAsync()` on it from C# code.
-2. **`IgbDialog.KeepOpenOnEscape` is `false` by default.** Set it to `true` to force users to use your footer buttons instead of ESC.
+2. **`IgbDialog.KeepOpenOnEscape` is `false` by default** - meaning the dialog closes when the user presses ESC. Set it to `true` to prevent ESC from closing the dialog (forcing users to use your footer buttons).
 3. **`IgbDialog.CloseOnOutsideClick` is `false` by default** - set it to `true` for light-dismiss dialogs.
 4. **`IgbSnackbar.DisplayTime="0"` keeps it open until `HideAsync()` is called.** Use `KeepOpen` for the same effect.
 5. **Footer buttons in `IgbDialog` must use `slot="footer"`.** Without the slot, they render in the body.
