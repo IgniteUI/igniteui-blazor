@@ -8,7 +8,7 @@ user-invocable: true
 
 ## Prerequisites
 
-- .NET 6+ Blazor project (Server, WebAssembly, Web App, or MAUI Blazor Hybrid)
+- .NET 8+ Blazor project (Server, WebAssembly, Web App, or MAUI Blazor Hybrid)
 - The correct NuGet package installed: licensed `IgniteUI.Blazor` from the Infragistics private feed for the full component suite, `IgniteUI.Blazor.Lite` for OSS core UI components, or `IgniteUI.Blazor.GridLite` for OSS Grid Lite
 - `builder.Services.AddIgniteUIBlazor(...)` called in `Program.cs`
 - `@using IgniteUI.Blazor.Controls` added to `_Imports.razor`
