@@ -359,7 +359,7 @@ Use the event pattern shown in the Blazor docs for that component. Native click 
 ### Template context with `<Template>`
 Ignite UI Blazor uses `<Template>` child elements with the `context` parameter - not Angular's `<ng-template>`:
 ```razor
-<IgbGrid DataSource="Data">
+<IgbGrid Data="Data">
     <IgbColumn Field="Name" Header="Name">
         <Template>
             <div>
