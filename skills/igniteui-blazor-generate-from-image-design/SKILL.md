@@ -121,17 +121,16 @@ Follow this order - MCP guidance first, image extraction second:
 1. **Read MCP guidance first** - call `theming://guidance/colors/rules` (or `get_theming_guidance`) before looking at the image. This tells you the available theme inputs and any luminance or variant constraints.
 2. **Resolve the design system** - infer it from the existing workspace, explicit user request, or the closest visual match in the design. Do not assume one if a stronger signal exists.
 3. **Extract from the image** - now that you know the available slots, extract values only for the inputs you actually need.
-4. **Call `create_theme`** with the extracted seed values:
+4. **Call `create_palette`** with the extracted seed values (for Blazor, use `create_palette` with `output: "css"` — NOT `create_theme`, which always outputs Sass requiring compilation):
 
 ```
-create_theme({
-  primaryColor: "<color extracted from image for primary slot>",
-  secondaryColor: "<color extracted from image for secondary slot>",
-  surfaceColor: "<color extracted from image for surface/background slot>",
+create_palette({
+  primary: "<color extracted from image for primary slot>",
+  secondary: "<color extracted from image for secondary slot>",
+  surface: "<color extracted from image for surface/background slot>",
   variant: "<resolved theme variant>",
   platform: "blazor",
-  fontFamily: "<font extracted from image or existing app>",
-  designSystem: "<resolved design system>"
+  output: "css"
 })
 ```
 
@@ -139,7 +138,7 @@ Read and act on any luminance warnings returned. If the design needs multiple su
 
 Use `create_palette` for straightforward designs with a small, coherent color system. Use `create_custom_palette` when the design has multiple distinct surface depths, several accent families, or when the generated palette cannot reliably match the screenshot.
 
-The MCP output for Blazor produces CSS custom property overrides. Apply them in your global CSS file (e.g., `wwwroot/css/app.css`) or as a `:root` block.
+The `create_palette(output: "css")` output for Blazor produces CSS custom property overrides. Apply them in your global CSS file (e.g., `wwwroot/css/app.css`) or as a `:root` block.
 
 ### 5c - Per-component token discovery and mapping (always run)
 
