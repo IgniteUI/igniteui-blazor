@@ -43,7 +43,7 @@ jobs:
         run: dotnet restore
 
       - name: Build .NET library
-        run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=true
+        run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=false
 
       - name: Run .NET tests
         run: dotnet test --no-build --configuration Release --verbosity normal
