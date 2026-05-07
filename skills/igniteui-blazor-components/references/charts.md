@@ -65,7 +65,12 @@ Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `
 
 Brush list properties such as `Brushes`, `Outlines`, `MarkerBrushes`, and `MarkerOutlines` are **string** parameters. Separate multiple colors with spaces, as in `Brushes="DodgerBlue IndianRed"`.
 
-> **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects numeric properties in `DataSource` objects and creates series for them. To control which properties are charted, use `IncludedProperties` or `ExcludedProperties` attributes.
+> **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects numeric properties in `DataSource` objects and creates series for them. To control which properties are charted, use `IncludedProperties` or `ExcludedProperties` attributes. These are **array** parameters - bind them with `@(new string[] { ... })` syntax:
+> ```razor
+> <IgbCategoryChart DataSource="SalesData"
+>                   ExcludedProperties='@(new string[] { "Id", "InternalCode" })' />
+> ```
+> Do NOT pass a plain string like `ExcludedProperties="Id"` - this causes a type mismatch error.
 
 ---
 
@@ -283,3 +288,4 @@ Use Dashboard Tile when the requested component should infer or render compact d
 3. **Financial chart data must have `Open`, `High`, `Low`, `Close` fields.** If the data model is different, the chart will not render correctly.
 4. **Always set explicit `Width` and `Height` on charts.** Charts do not auto-size to their container without a height.
 5. **`IgbDataChart` series must match axes by name.** The `XAxisName` / `YAxisName` on each series must match the `Name` attribute of the axis component.
+6. **`IncludedProperties` and `ExcludedProperties` are `string[]` arrays.** Bind with `@(new string[] { "Prop1", "Prop2" })`. Do not pass a plain string.
