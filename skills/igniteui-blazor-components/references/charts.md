@@ -25,7 +25,7 @@
 
 | Use case | Recommended component |
 |---|---|
-| Simple line/area/column/bar charts with minimal config | `IgbCategoryChart` |
+| Simple line/area/column/point/spline/waterfall charts with minimal config | `IgbCategoryChart` |
 | Multiple series types on the same chart, custom axes, annotations | `IgbDataChart` |
 | Candlestick / OHLC financial data with range selector | `IgbFinancialChart` / stock chart docs |
 | Part-to-whole proportions (slices) | `IgbPieChart` |
@@ -61,7 +61,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCategoryChartModule));
 }
 ```
 
-Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `Column` / `Bar` / `Spline` / `SplineArea` / `StepLine` / `Auto`), `Height`, `Width`, `YAxisTitle`, `XAxisTitle`, `Brushes`, `Outlines`, `MarkerBrushes`, `IsTransitionInEnabled`, `IsHorizontalZoomEnabled`, `IsVerticalZoomEnabled`.
+Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `Column` / `Point` / `Spline` / `SplineArea` / `StepLine` / `StepArea` / `Waterfall` / `Auto`), `Height`, `Width`, `YAxisTitle`, `XAxisTitle`, `Brushes`, `Outlines`, `MarkerBrushes`, `IsTransitionInEnabled`, `IsHorizontalZoomEnabled`, `IsVerticalZoomEnabled`.
 
 Brush list properties such as `Brushes`, `Outlines`, `MarkerBrushes`, and `MarkerOutlines` are **string** parameters. Separate multiple colors with spaces, as in `Brushes="DodgerBlue IndianRed"`.
 
