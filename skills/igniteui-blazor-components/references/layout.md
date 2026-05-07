@@ -280,7 +280,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule));
 ```
 
 ```razor
-<IgbTree Selection="TreeSelectionType.Multiple">
+<IgbTree Selection="TreeSelection.Multiple">
     <IgbTreeItem Expanded="true" Label="Documents">
         <IgbTreeItem Label="Report.docx" />
         <IgbTreeItem Label="Notes.txt" />
@@ -291,7 +291,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule));
 </IgbTree>
 ```
 
-Key attributes on `IgbTree`: `Selection` (`TreeSelectionType.None` / `Multiple` / `Cascade`). On `IgbTreeItem`: `Label`, `Expanded`, `Selected`, `Disabled`, `Active`.
+Key attributes on `IgbTree`: `Selection` (`TreeSelection.None` / `Multiple` / `Cascade`). On `IgbTreeItem`: `Label`, `Expanded`, `Selected`, `Disabled`, `Active`.
 
 Slots on `IgbTreeItem`: `label` (custom label content), `indicator` (expand/collapse icon override). Nest `IgbTreeItem` children directly inside a parent `IgbTreeItem`.
 
