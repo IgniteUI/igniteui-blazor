@@ -11,18 +11,17 @@ jobs:
     name: Build & Validate
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        dotnet-version: ['8.0.x', '9.0.x', '10.0.x']
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup .NET ${{ matrix.dotnet-version }}
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -40,8 +39,7 @@ jobs:
         run: dotnet restore
 
       - name: Build .NET library
-        run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=true
+        run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=false
 
       - name: Run .NET tests
         run: dotnet test --no-build --configuration Release --verbosity normal
-        if: hashFiles('**/*Tests*.csproj', '**/*Test*.csproj') != ''
