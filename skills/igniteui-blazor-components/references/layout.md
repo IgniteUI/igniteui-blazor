@@ -267,6 +267,8 @@ Methods: `Show()`, `Hide()`, `Toggle()`.
 
 CSS parts: `base`, `main`, `mini`.
 
+> **AGENT INSTRUCTION - Mini slot activates overlay behavior:** Adding **any** content with `slot="mini"` switches the drawer to a collapsible/overlay mode where it floats over page content. If you need a **persistent, always-visible sidebar** that participates in the page layout (not an overlay), do **not** use `slot="mini"`. Instead, keep the drawer open with `Open="true"` and set `style="position: relative"` on the `IgbNavDrawer` so it flows inline with the layout rather than overlaying.
+
 > **AGENT INSTRUCTION:** Icons used inside `IgbNavDrawerItem` must be registered via `IgbIcon.RegisterIconFromTextAsync()` or `RegisterIconAsync()` in `OnAfterRenderAsync(bool firstRender)` before they display. Call `await iconRef.EnsureReady()` first.
 
 ---
