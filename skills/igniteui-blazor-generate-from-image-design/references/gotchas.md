@@ -399,3 +399,18 @@ Keep layout, spacing, typography, and surface styling in `.razor.css` files rath
 
 ### Parameter naming: PascalCase
 Blazor component parameters use PascalCase (`ChartType`, `DataSource`, `MarkerTypes`) - not Angular's camelCase bindings (`[chartType]`, `[dataSource]`, `[markerTypes]`).
+
+### Single quotes in Razor attribute expressions cause CS1012
+In Razor, `@onclick="() => Navigate('/dashboard')"` fails because the single quotes inside the double-quoted attribute are parsed as C# `char` literals, producing error CS1012. Use a named method or a variable instead:
+```razor
+@* WRONG - single quotes parsed as char literal *@
+<IgbNavDrawerItem @onclick="() => Navigate('/dashboard')">
+
+@* RIGHT - use a method reference or extract the path *@
+<IgbNavDrawerItem @onclick="NavigateToDashboard">
+
+@code {
+    private void NavigateToDashboard() => NavigationManager.NavigateTo("/dashboard");
+}
+```
+This applies to any inline lambda where a string literal containing `/` or special chars appears inside a double-quoted Razor attribute. Prefer named handler methods over inline lambdas with string arguments.
