@@ -23,7 +23,7 @@ This reference gives high-level guidance on layout and navigation components, th
 > **Docs:** [Tabs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tabs)
 
 ```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbTabsModule));
+builder.Services.AddIgniteUIBlazor(typeof(IgbTabsModule), typeof(IgbTabModule));
 ```
 
 ```razor
@@ -182,6 +182,7 @@ Required theme CSS:
 ```csharp
 builder.Services.AddIgniteUIBlazor(
     typeof(IgbNavDrawerModule),
+    typeof(IgbNavDrawerItemModule),
     typeof(IgbNavDrawerHeaderItemModule)
 );
 ```

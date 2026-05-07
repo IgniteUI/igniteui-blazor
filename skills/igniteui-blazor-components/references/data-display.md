@@ -146,7 +146,7 @@ Use Carousel for image/content slides, banners, onboarding panels, or media gall
 > **Docs:** [List](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/list)
 
 ```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbListModule));
+builder.Services.AddIgniteUIBlazor(typeof(IgbListModule), typeof(IgbListItemModule), typeof(IgbListHeaderModule));
 ```
 
 ```razor

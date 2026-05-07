@@ -83,7 +83,7 @@ Base your code and explanation exclusively on what you read. If the reference fi
 
 > **AGENT INSTRUCTION - Module Registration**
 >
-> Every Ignite UI for Blazor component has a corresponding module. Always register the module(s) in `Program.cs`:
+> Every Ignite UI for Blazor component **and its sub-components** has a corresponding module. Register **all** modules for every component used on the page in `Program.cs`:
 >
 > ```csharp
 > builder.Services.AddIgniteUIBlazor(typeof(IgbComboModule), typeof(IgbDatePickerModule));
