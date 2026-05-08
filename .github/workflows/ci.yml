@@ -48,7 +48,7 @@ jobs:
       - name: Run .NET tests with coverage
         run: >
           dotnet test --no-build --configuration Release --verbosity normal
-          --collect:"XPlat Code Coverage"
+          --collect:"IgniteUI.Blazor.Lite Code Coverage"
           --results-directory ./TestResults
 
       - name: Generate coverage report
