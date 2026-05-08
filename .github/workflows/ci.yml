@@ -52,7 +52,7 @@ jobs:
           --results-directory ./TestResults
 
       - name: Generate coverage report
-        uses: danielpalme/ReportGenerator-GitHub-Action@5.5.9
+        uses: danielpalme/ReportGenerator-GitHub-Action@c31aa4ed4f12f147061186cf2a029f307b5c3636
         with:
           reports: TestResults/**/coverage.cobertura.xml
           targetdir: CoverageReport
