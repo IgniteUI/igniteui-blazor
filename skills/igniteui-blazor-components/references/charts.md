@@ -63,6 +63,10 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCategoryChartModule));
 
 Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `Column` / `Point` / `Spline` / `SplineArea` / `StepLine` / `StepArea` / `Waterfall` / `Auto`), `Height`, `Width`, `YAxisTitle`, `XAxisTitle`, `Brushes`, `Outlines`, `MarkerBrushes`, `IsTransitionInEnabled`, `IsHorizontalZoomEnabled`, `IsVerticalZoomEnabled`.
 
+> **AGENT INSTRUCTION:** `CategoryChartType.Bar` does **not** exist. For a horizontal bar-style chart, use `CategoryChartType.Column` (vertical) or switch to `IgbDataChart` with `IgbBarSeries` for true horizontal bars. Never generate `ChartType="CategoryChartType.Bar"`.
+
+> **AGENT INSTRUCTION:** The `XAxisLabel` parameter on `IgbCategoryChart` is not a plain string property name. To control which data field is used as the X-axis label, set `XAxisMemberPath` with the property name string (e.g., `XAxisMemberPath="Month"`).
+
 Brush list properties such as `Brushes`, `Outlines`, `MarkerBrushes`, and `MarkerOutlines` are **string** parameters. Separate multiple colors with spaces, as in `Brushes="DodgerBlue IndianRed"`.
 
 > **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects numeric properties in `DataSource` objects and creates series for them. To control which properties are charted, use `IncludedProperties` or `ExcludedProperties` attributes. These are **array** parameters - bind them with `@(new string[] { ... })` syntax:
@@ -289,3 +293,5 @@ Use Dashboard Tile when the requested component should infer or render compact d
 4. **Always set explicit `Width` and `Height` on charts.** Charts do not auto-size to their container without a height.
 5. **`IgbDataChart` series must match axes by name.** The `XAxisName` / `YAxisName` on each series must match the `Name` attribute of the axis component.
 6. **`IncludedProperties` and `ExcludedProperties` are `string[]` arrays.** Bind with `@(new string[] { "Prop1", "Prop2" })`. Do not pass a plain string.
+7. **`CategoryChartType.Bar` does not exist.** Use `Column` for vertical bars in `IgbCategoryChart`. For horizontal bars, use `IgbDataChart` with `IgbBarSeries`.
+8. **Use `XAxisMemberPath` to set the X-axis label field**, not `XAxisLabel`. Passing a property name string to `XAxisLabel` is evaluated as a C# expression and silently fails.
