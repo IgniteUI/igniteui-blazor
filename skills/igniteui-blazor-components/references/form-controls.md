@@ -51,6 +51,8 @@ Slots: `prefix`, `suffix`, `helper-text`.
 
 Events: `IgbInput` (fires while typing), `Change` (fires on commit/blur).
 
+> **AGENT INSTRUCTION:** `IgbInput` has **no** `GetValueAsync()` method. Read values via the synchronous `Value` property or, preferably, use `@bind-Value` bound directly to a model property - that is the correct Blazor pattern and avoids the need to imperatively read the value at all.
+
 ---
 
 ## Combo Box
@@ -357,5 +359,5 @@ Events: `Change`, `Hover`.
 1. **Do not wrap Ignite UI inputs in a standard HTML `<form>` unless the component doc shows that pattern.** Form behavior differs by component.
 2. **Register every module you use in `Program.cs`** using the `typeof(Igb{Name}Module)` pattern.
 3. **`IgbCombo` requires the `T` type parameter** - set it to the type of your `ValueKey` property, or `"object"` if there is no `ValueKey`.
-4. **Use `@bind-Value` / `@bind-Checked` for two-way data binding** in Blazor.
+4. **Use `@bind-Value` / `@bind-Checked` for two-way data binding** in Blazor. Never call `GetValueAsync()` to read a field value - that method does not exist on `IgbInput`.
 5. **`IgbSlider` and `IgbRangeSlider` have separate modules** - register both if you use range sliders.
