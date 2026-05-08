@@ -15,8 +15,8 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 - **File separation**: `.razor` (template), `.razor.cs` (logic), `.razor.css` (scoped styles)
 - **Lifecycle**: Use `OnInitializedAsync` / `OnParametersSetAsync` for initialization and parameter changes
 - **Data binding**: Use `@bind` for two-way binding; 
-- **Component Inputs and Outputs**: - Use `[Parameter]` for component inputs and `EventCallback` for component outputs
-- **Event Handling**: - Prefer `EventCallback<T>` over `Action<T>` for event handling to integrate with the Blazor render pipeline
+- **Component inputs and outputs**: Use `[Parameter]` for component inputs and `EventCallback` for component outputs
+- **Event handling**: Prefer `EventCallback<T>` over `Action<T>` for event handling to integrate with the Blazor render pipeline
 - **DI**: Inject via `[Inject]` property or `@inject` directive; use `async/await` for all I/O
 - **Rendering**: Override `ShouldRender()` to skip unnecessary re-renders; call `StateHasChanged()` only outside Blazor's event pipeline
 - **Errors**: Wrap components in `ErrorBoundary`; use try-catch for API calls with `ILogger` diagnostics
