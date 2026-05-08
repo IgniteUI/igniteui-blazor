@@ -14,10 +14,12 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 
 - **File separation**: `.razor` (template), `.razor.cs` (logic), `.razor.css` (scoped styles)
 - **Lifecycle**: Use `OnInitializedAsync` / `OnParametersSetAsync` for initialization and parameter changes
-- **Data binding**: Use `@bind` for two-way binding; 
+- **Data binding**: Use `@bind` for two-way binding
+- **Component design**: Keep components small and focused on a single responsibility
 - **Component inputs and outputs**: Use `[Parameter]` for component inputs and `EventCallback` for component outputs
 - **Event handling**: Prefer `EventCallback<T>` over `Action<T>` for event handling to integrate with the Blazor render pipeline
 - **DI**: Inject via `[Inject]` property or `@inject` directive; use `async/await` for all I/O
+- **HTTP**: Use `HttpClient` or appropriate services to communicate with external APIs
 - **Rendering**: Override `ShouldRender()` to skip unnecessary re-renders; call `StateHasChanged()` only outside Blazor's event pipeline
 - **Errors**: Wrap components in `ErrorBoundary`; use try-catch for API calls with `ILogger` diagnostics
 - **Validation**: Use `FluentValidation` or `DataAnnotations` for form validation
@@ -35,6 +37,13 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 - Prefer CSS custom properties for themeable values
 - Do NOT use inline styles; extract to `.razor.css` or a shared stylesheet
 
+## Caching
+
+- Use `IMemoryCache` for lightweight server-side caching in Blazor Server apps
+- For Blazor WebAssembly, use `localStorage` or `sessionStorage` to cache state between page reloads
+- Consider distributed cache strategies (Redis, SQL Server Cache) for larger apps requiring shared state across multiple users
+- Cache API responses to avoid redundant calls when data is unlikely to change
+
 ## Security
 
 - Use ASP.NET Identity or JWT for auth; always HTTPS with proper CORS
@@ -44,6 +53,7 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 
 - Unit/integration: xUnit or MSTest with Moq or NSubstitute
 - Component tests: bUnit for rendering and interaction verification
+- Use Visual Studio's diagnostics tools for performance profiling
 
 ## UI Components
 
