@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json.schemastore.org/vs-2017.3.host",
+  "order": 100,
+  "icon": "icon.png",
+  "learnMoreLink": "https://www.infragistics.com/products/ignite-ui-blazor",
+  "symbolInfo": [
+    {
+      "id": "Hosting",
+      "name": {
+        "text": "Interactivity hosting model"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "Theme",
+      "name": {
+        "text": "IgniteUI design theme"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "Variant",
+      "name": {
+        "text": "Color variant"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "IncludeWeatherSample",
+      "name": {
+        "text": "Include the Weather sample (IgbGridLite + ApexCharts)"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "SkipRestore",
+      "name": {
+        "text": "Do not restore the project on create"
+      },
+      "isVisible": true
+    }
+  ]
+}
