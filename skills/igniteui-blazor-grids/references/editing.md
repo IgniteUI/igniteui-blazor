@@ -38,7 +38,7 @@
 Mark columns as editable:
 
 ```razor
-<IgbGrid Data="employees" PrimaryKey="Id" AutoGenerate="false">
+<IgbGrid Data="@employees" PrimaryKey="Id" AutoGenerate="false">
     <IgbColumn Field="Id" Header="ID" Editable="false" />
     <IgbColumn Field="Name" Header="Name" Editable="true" DataType="GridColumnDataType.String" />
     <IgbColumn Field="Salary" Header="Salary" Editable="true" DataType="GridColumnDataType.Currency" />
