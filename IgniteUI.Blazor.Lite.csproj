@@ -59,9 +59,11 @@
   
   <ItemGroup>
     <Compile Remove="dist\**" />
+    <Compile Remove="tests\**" />
     <Content Remove="dist\**" />
     <Content Remove="src\**" />
     <Content Remove="node_modules\**" />
+    <Content Remove="tests\**" />
     <Content Remove="*.json" />
     <EmbeddedResource Remove="dist\**" />
     <None Remove="dist\**" />

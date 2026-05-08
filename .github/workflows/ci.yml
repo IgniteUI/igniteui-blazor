@@ -45,6 +45,25 @@ jobs:
       - name: Build .NET library
         run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=false
 
-      - name: Run .NET tests
-        run: dotnet test --no-build --configuration Release --verbosity normal
-        if: hashFiles('**/*Tests*.csproj', '**/*Test*.csproj') != ''
+      - name: Run .NET tests with coverage
+        run: >
+          dotnet test --no-build --configuration Release --verbosity normal
+          --collect:"XPlat Code Coverage"
+          --results-directory ./TestResults
+
+      - name: Generate coverage report
+        uses: danielpalme/ReportGenerator-GitHub-Action@c31aa4ed4f12f147061186cf2a029f307b5c3636
+        with:
+          reports: TestResults/**/coverage.cobertura.xml
+          targetdir: CoverageReport
+          reporttypes: HtmlInline_AzurePipelines;Cobertura;MarkdownSummaryGithub
+
+      - name: Publish coverage summary
+        run: cat CoverageReport/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.dotnet-version }}
+          path: CoverageReport
+          retention-days: 14
