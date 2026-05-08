@@ -116,6 +116,7 @@ Use `GridColumnDataType` to set the type. This controls sorting, filtering, edit
 | `MaxWidth` | `string` | - | Maximum column width |
 | `Sortable` | `bool` | `false` | Enables sorting on this column |
 | `Filterable` | `bool` | `true` | Enables filtering on this column |
+| `Filterable` | `bool` | `false` | Disable filtering on this column |
 | `Editable` | `bool` | `false` | Enables editing on this column |
 | `Resizable` | `bool` | `false` | Enables column resizing |
 | `Movable` | `bool` | `false` | Enables column moving |
@@ -123,7 +124,6 @@ Use `GridColumnDataType` to set the type. This controls sorting, filtering, edit
 | `Pinned` | `bool` | `false` | Pins the column |
 | `Groupable` | `bool` | `false` | Enables grouping for this column (IgbGrid only) |
 | `HasSummary` | `bool` | `false` | Enables summaries for this column |
-| `DisableFiltering` | `bool` | `false` | Disables filtering for this column even when grid filtering is on |
 | `DisablePinning` | `bool` | `false` | Disables pinning for this column |
 | `DisableHiding` | `bool` | `false` | Prevents hiding this column |
 | `CellClasses` | `string` | - | CSS class(es) to apply to cells |
@@ -139,7 +139,7 @@ Use the `BodyTemplate` render fragment to customize the cell display:
 
 ```razor
 <IgbColumn Field="Salary" Header="Salary" DataType="GridColumnDataType.Currency">
-    <Template>
+    <BodyTemplate>
         @{
             var cell = (IgbCellTemplateContext)context;
             var salary = (decimal)cell.Cell.Value;
@@ -147,7 +147,7 @@ Use the `BodyTemplate` render fragment to customize the cell display:
         <span class="@(salary > 50000 ? "high-salary" : "")">
             @salary.ToString("C")
         </span>
-    </Template>
+    </BodyTemplate>
 </IgbColumn>
 ```
 
