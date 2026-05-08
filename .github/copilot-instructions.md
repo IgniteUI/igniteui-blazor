@@ -61,82 +61,87 @@ https://learn.microsoft.com/en-us/aspnet/core/blazor/state-management
 https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/dependency-injection
 https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/
 
-## Best Practices & Style Guide
 
-Here are the best practices and style guide information.
+## Copilot Instructions - Ignite UI for Blazor
 
-### Coding Style Guide
+This repository is the **source code for the Ignite UI for Blazor component library**. It produces a Razor class library consumed by Blazor applications. Contributions here involve writing and maintaining wrapper components, JS interop, and supporting infrastructure - not building end-user applications.
 
-Follow the official .NET and C# coding conventions: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions
+## Repository Architecture
 
-### Naming Conventions
+- **`components/Blazor/`** - Auto-generated and hand-maintained C# component wrappers (e.g., `IgbButton`, `IgbGrid`). Each component extends `BaseRendererControl` and renders an underlying web component (`igc-*` custom element) via `DirectRenderElementName`.
+- **`componentsBase/`** - Shared base classes, DI extensions (`AddIgniteUIBlazor`), serialization, data adapters, and JS interop plumbing.
+- **`src/`** - TypeScript interop layer (webpack-bundled). Manages component mounting, property sync, event bridging, and module loading between Blazor and the `igniteui-webcomponents` package.
+- **`skills/`** - AI agent skill files that teach LLMs how to *use* this library. These are shipped in the package for downstream consumers.
 
-- Use PascalCase for component names, method names, and public members
-- Use camelCase for private fields and local variables
-- Prefix interface names with `I` (e.g., `IUserService`)
+## Build & Tooling
 
-### C# Best Practices
+- **Multi-target**: `net8.0`, `net9.0`, `net10.0`
+- **C# build**: `dotnet build` - produces the Razor class library
+- **TS build**: `npm run build` - webpack bundles the JS interop into static web assets
+- **Ingest**: `npm run ingest` (gulp) - pulls upstream web component definitions
 
-- Use the latest C# version supported by the repository's target frameworks and tooling; prefer modern language features such as record types, pattern matching, global usings, and primary constructors when supported
-- Use strict nullability (`#nullable enable`)
-- Prefer type inference (`var`) when the type is obvious
-- Avoid `dynamic`; use generics or `object` with pattern matching when type is uncertain
+## Coding Conventions
 
-### Blazor Best Practices
+### C#
 
-- Separate template, logic, and styles into `.razor`, `.razor.cs`, and `.razor.css` files respectively
-- Use `OnInitializedAsync` and `OnParametersSetAsync` for lifecycle operations
-- Use `@bind` for two-way data binding
-- Leverage Dependency Injection for all services; inject via `[Inject]` property or `@inject` directive
-- Use `async/await` for all API calls and I/O-bound operations to avoid blocking the render thread
-- Use `HttpClient` or appropriate services to communicate with external APIs
+- Use the latest C# version supported by the target frameworks; prefer modern features (pattern matching, file-scoped namespaces) when they compile on all TFMs
+- Use strict nullability (`#nullable enable`) in new files
+- All public types live in `namespace IgniteUI.Blazor.Controls`
+- Use PascalCase for public members; camelCase for private fields
+- Prefix interfaces with `I` (e.g., `IIgniteUIBlazor`)
+- Prefer `var` when type is obvious; avoid `dynamic`
+- Use `[Parameter]` for component inputs exposed to consumers
+- Prefer `EventCallback<T>` over `Action<T>` for event parameters to integrate with the Blazor render pipeline
+- Use `partial` classes and `partial void` hooks (e.g., `OnCreatedIgbButton()`) for extensibility
 
-### Components
+### TypeScript
 
-- Keep components small and focused on a single responsibility
-- Use `[Parameter]` for component inputs and `EventCallback` for component outputs
-- Prefer `EventCallback<T>` over `Action<T>` for event handling to integrate with the Blazor render pipeline
-- Override `ShouldRender()` to prevent unnecessary re-renders
-- Call `StateHasChanged()` only when updating state outside of Blazor's event handling
-- Use `ErrorBoundary` to catch and handle UI-level errors gracefully
+- Standard ESM imports with `.js` extension
+- Strict types - no `any`; use `unknown` when uncertain
+- Keep interop logic in `src/`; component-specific logic in per-component files
 
-### State Management
+## Component Pattern
 
-- Use Cascading Parameters and `EventCallback` for basic state sharing across components
-- Use the StateContainer pattern (Scoped Service) for server-side Blazor session state
-- Implement Fluxor or BlazorState for complex state management in larger applications
-- For Blazor WebAssembly, use `Blazored.LocalStorage` or `Blazored.SessionStorage` to persist state between page reloads
+Every library component follows this pattern:
 
-### Caching
+```csharp
+public partial class IgbButton : IgbButtonBase
+{
+    // 1. Type identifier for the JS interop layer
+    public override string Type => "WebButton";
 
-- Use `IMemoryCache` for lightweight server-side caching of frequently accessed data in Blazor Server apps
-- For Blazor WebAssembly, use `localStorage` or `sessionStorage` to cache application state between page reloads
-- Consider distributed cache strategies (Redis, SQL Server Cache) for larger apps requiring shared state across multiple users
-- Cache API responses to avoid redundant calls when data is unlikely to change
+    // 2. Module registration
+    protected override void EnsureModulesLoaded()
+    {
+        if (!IgbButtonModule.IsLoadRequested(IgBlazor))
+            IgbButtonModule.Register(IgBlazor);
+    }
 
-### Error Handling and Validation
+    // 3. Renders the underlying web component element
+    protected override string DirectRenderElementName => "igc-button";
 
-- Implement try-catch for all API calls and provide meaningful user feedback
-- Use `ILogger` for error tracking and diagnostics
-- Use `FluentValidation` or `DataAnnotations` for form validation
+    // 4. Parameters exposed to Blazor consumers
+    [Parameter]
+    public ButtonVariant Variant { get; set; } = ButtonVariant.Contained;
+}
+```
 
-### Security and Authentication
+Each component has a corresponding `*Module.cs` that calls `ModuleLoader.Load(runtime, "WebXxxModule")` and registers dependencies.
 
-- Implement Authentication and Authorization using ASP.NET Identity or JWT tokens
-- Always use HTTPS and configure proper CORS policies
-- Never expose sensitive data in client-side Blazor WebAssembly code
+## Key Guidelines for Contributors
 
-### Testing
-
-- Write unit and integration tests using xUnit, NUnit, or MSTest
-- Use Moq or NSubstitute for mocking dependencies
-- Debug UI issues using browser developer tools; use Visual Studio's debugger for server-side issues
-- Use Visual Studio's diagnostics tools for performance profiling
+- **Do not break the public API.** Every `[Parameter]`, enum value, and `EventCallback` is part of the library's contract. Removing or renaming is a breaking change.
+- **Module dependencies are explicit.** If component A depends on component B, `AModule.Register` must call `BModule.MarkIsLoadRequested`.
+- **JS interop is synchronous-first.** The library uses `IJSInProcessRuntime` where available for performance. Only fall back to async when required.
+- **Property change tracking**: Use `MarkPropDirty("PropName")` when a parameter's setter fires, so the render cycle serializes only changed properties to JS.
+- **Static web assets**: The bundled JS output is served from `_content/IgniteUI.Blazor/`. The `<StaticWebAssetBasePath>` in the `.csproj` ensures this path regardless of the `PackageId` suffix.
+- **Multi-TFM awareness**: Code must compile cleanly on all target frameworks. Avoid APIs that only exist in one TFM without `#if` guards.
 
 ## Copilot Skills
 
-Domain-specific skills for AI-assisted development are located in the [`skills/`](../skills/) directory. Each sub-folder contains a `SKILL.md` file that teaches agents how to work with a particular area of the library:
+Domain-specific skills for AI-assisted development are located in the [`skills/`](../skills/) directory. Each sub-folder contains a `SKILL.md` file that teaches agents how to *use* the library. These skills are shipped in the package for downstream consumers:
 
-- [`skills/igniteui-blazor-components`](../skills/igniteui-blazor-components/SKILL.md) - Use for non-grid Ignite UI for Blazor components and setup. Covers form controls, date/time components, navigation and layout components, data-display widgets, feedback and overlay components, layout managers such as Dock Manager and Tile Manager, and non-grid visualizations including category/data charts, financial charts, pie/donut charts, sparkline, treemap, geographic map, gauges, and dashboard tiles.
-- [`skills/igniteui-blazor-grids`](../skills/igniteui-blazor-grids/SKILL.md) - Use for tabular data experiences. Covers `IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`, and `IgbGridLite`, plus column setup, sorting, filtering, grouping, selection, editing, summaries, paging, virtualization, remote operations, toolbar/export/search, state persistence, keyboard navigation, and column pinning, hiding, moving, and resizing.
-- [`skills/igniteui-blazor-theming`](../skills/igniteui-blazor-theming/SKILL.md) - Use for visual customization and design-system work. Covers built-in themes, light/dark variants, CSS variables and design tokens, CSS parts, component-level styling, spacing, sizing, roundness, scoped theming, dark mode, and the Ignite UI theming MCP workflow.
+- [`skills/igniteui-blazor-components`](../skills/igniteui-blazor-components/SKILL.md) - Non-grid UI components: form controls, layout, data display, feedback overlays, charts, gauges, layout managers.
+- [`skills/igniteui-blazor-grids`](../skills/igniteui-blazor-grids/SKILL.md) - Data grids: `IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`, `IgbGridLite`.
+- [`skills/igniteui-blazor-theming`](../skills/igniteui-blazor-theming/SKILL.md) - Theming and visual customization: design tokens, CSS parts, built-in themes.
+- [`skills/igniteui-blazor-generate-from-image-design`](../skills/igniteui-blazor-generate-from-image-design/SKILL.md) - Implement Blazor views from design images (screenshots, mockups, wireframes) using Ignite UI Blazor components and MCP servers.
