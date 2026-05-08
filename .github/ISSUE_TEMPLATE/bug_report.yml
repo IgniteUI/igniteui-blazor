@@ -26,7 +26,6 @@ body:
         - Blazor Server
         - Blazor WebAssembly
         - Blazor Hybrid (MAUI)
-        - Blazor United (Interactive SSR)
     validations:
       required: true
 
@@ -112,6 +111,7 @@ body:
         - Safari
         - Edge
         - Other
+        - Not Applicable (Blazor Server or Hybrid)
     validations:
       required: true
 
