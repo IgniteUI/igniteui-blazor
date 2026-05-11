@@ -5,6 +5,7 @@
 
 ## Contents
 
+- [Overview](#overview)
 - [Chart Type Decision Guide](#chart-type-decision-guide)
 - [Category Chart](#category-chart)
 - [Data Chart](#data-chart)
