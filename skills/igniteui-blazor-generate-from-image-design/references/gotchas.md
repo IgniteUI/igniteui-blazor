@@ -23,19 +23,29 @@ Ignite UI for Blazor components render as web components (`igc-chip`, `igc-grid`
 
 `::deep` and `::part()` solve different problems and are often combined: `::deep igc-chip::part(base) { ... }`.
 
+**`::deep` applies only to `igc-*` selectors - never to plain HTML or CSS class selectors.**
+
+`::deep` is not a general-purpose CSS scope piercer. It only works when Blazor's scope attribute is present on a parent element above the targeted element in the DOM. This means:
+
+- **DO** use `::deep` for `igc-*` element selectors and `igc-*::part()` combinations in `.razor.css` files.
+- **DO NOT** use `::deep` for plain HTML class selectors. These are already scoped by Blazor's CSS isolation and work without `::deep`.
+- **DO NOT** use `::deep` to target the root element of a component - Blazor places the scope attribute on the root element itself, so there is no scoped parent above it to make `::deep` work. Style the root element with a plain class selector.
+
 **Global CSS (`app.css`)** - write selectors directly:
 ```css
 igc-chip { --ig-chip-background: var(--ig-primary-500); }
 igc-dialog::part(footer) { border-top: 1px solid var(--ig-gray-200); }
 ```
 
-**`.razor.css` isolation file** - prefix every `igc-*` selector with `::deep`:
+**`.razor.css` isolation file** - prefix `igc-*` selectors with `::deep`; write plain HTML class selectors without it:
 ```css
 ::deep igc-chip { --ig-chip-background: var(--ig-primary-500); }
 ::deep igc-dialog::part(footer) { border-top: 1px solid var(--ig-gray-200); }
+
+.class-selector { display: grid; grid-template-columns: 260px 1fr; }
 ```
 
-`create_component_theme(platform: "blazor", output: "css")` generates global CSS selectors - use as-is in `app.css`, or add `::deep` when placing in a `.razor.css` file. Never add `::deep` to `:root {}` blocks.
+`create_component_theme(platform: "blazor", output: "css")` generates global CSS selectors - use as-is in `app.css`, or add `::deep` when placing in a `.razor.css` file. Never add `::deep` to `:root {}` blocks or plain HTML class rules.
 
 Blazor projects do **not** use Sass/SCSS.
 
