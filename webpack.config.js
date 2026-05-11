@@ -7,29 +7,31 @@ const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const glob = require('glob');
 
-const bootFileContent = `export async function beforeStart(options) {
+const bootFileContent = `const __igCurrentScriptUrl = import.meta.url;
+
+function __igLoadEntry() {
+  if (window.__igLoadPromise) {
+    return window.__igLoadPromise;
+  }
   if (window.__igLoaded) {
-    return new Promise((resolve, reject) => {
-        resolve();
-    });
+    return Promise.resolve();
   }
 
   window.__igLoaded = true;
   window.__igLibraryLoad = true;
   var timestamp = new Date().getTime().toString();
-  var currScriptSrc = import.meta.url;
   var entryScript = document.createElement("script");
   entryScript.async = false;
-  
+
   if (window.__igSkipCacheBust) {
-    entryScript.src = currScriptSrc.replace(/IgniteUI\\.Blazor(?:\\.[^\\.]+)*?\\.lib\\.module\\.js/, "app.bootstrap.js");
+    entryScript.src = __igCurrentScriptUrl.replace(/IgniteUI\\.Blazor(?:\\.[^\\.]+)*?\\.lib\\.module\\.js/, "app.bootstrap.js");
   } else {
-    entryScript.src = currScriptSrc.replace(/IgniteUI\\.Blazor(?:\\.[^\\.]+)*?\\.lib\\.module\\.js/, "app.bootstrap.js?bustv2=" + timestamp);
+    entryScript.src = __igCurrentScriptUrl.replace(/IgniteUI\\.Blazor(?:\\.[^\\.]+)*?\\.lib\\.module\\.js/, "app.bootstrap.js?bustv2=" + timestamp);
   }
 
   document.body.append(entryScript);
 
-  return new Promise((resolve, reject) => {
+  window.__igLoadPromise = new Promise((resolve, reject) => {
       function checkEntryLoaded() {
           if (window.__igEntryBundle) {
               window.__igEntryBundle.onload = () => {
@@ -44,17 +46,38 @@ const bootFileContent = `export async function beforeStart(options) {
       }
 
       entryScript.onload = () => {
-          console.log("script loaded");
           checkEntryLoaded();
       };
       if (entryScript.readyState == 'complete' || entryScript.readyState == 'loaded') {
-          console.log("script already loaded");
           checkEntryLoaded();
       }
   });
+
+  return window.__igLoadPromise;
+}
+
+export async function beforeStart(options) {
+  return __igLoadEntry();
 }
 export async function afterStarted(blazor) {
-  
+}
+
+export async function beforeWebStart(options) {
+  return __igLoadEntry();
+}
+export async function afterWebStarted(blazor) {
+}
+
+export async function beforeWebAssemblyStart(options, extensions) {
+  return __igLoadEntry();
+}
+export async function afterWebAssemblyStarted(blazor) {
+}
+
+export async function beforeServerStart(options, extensions) {
+  return __igLoadEntry();
+}
+export async function afterServerStarted(blazor) {
 }
 `;
 
