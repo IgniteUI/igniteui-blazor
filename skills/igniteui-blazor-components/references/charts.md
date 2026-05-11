@@ -20,6 +20,10 @@
 - [Key Rules](#key-rules)
 
 ---
+## Overview
+
+Ignite UI for Blazor provides 65+ chart types for data visualization. Charts are part of the IgniteUI.Blazor package (trial watermarked version available in the IgniteUI.Blazor.Trial public NuGet package).
+This reference gives high-level guidance on when to use some of the chart types, their key features, and common API members. For detailed documentation, call `get_doc` and `get_api_reference` from `igniteui-cli` with the specific chart component or feature you're interested in.
 
 ## Chart Type Decision Guide
 
