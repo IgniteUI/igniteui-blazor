@@ -124,6 +124,19 @@ Use the `Shape` parameter with `AvatarShape.Circle`, `AvatarShape.Rounded`, or `
 <IgbAvatar Shape="AvatarShape.Circle" Initials="JD" />
 ```
 
+### Icons in web component slots: use IgbIcon, not font-icon spans
+
+Always use `IgbIcon` in slots (`prefix`, `suffix`, `start`, `end`, `icon`). `<span class="material-icons">` is `display: inline` - `vertical-align` is ignored by the slot's flex container, so the icon drifts to the top. `IgbIcon` is `display: inline-flex; align-items: center` and self-centers automatically.
+
+```razor
+<!-- ❌ icon drifts to top -->
+<IgbInput><span slot="prefix" class="material-icons">search</span></IgbInput>
+
+<!-- ✅ self-centering -->
+<IgbInput><IgbIcon @ref="_icon" slot="prefix" IconName="search" Collection="material" /></IgbInput>
+```
+Register the icon in `OnAfterRenderAsync(firstRender)` after `EnsureReady()`.
+
 ### IgbList: slot-based structure
 Use named `slot` attributes on child elements inside `IgbListItem` for positioning:
 ```razor

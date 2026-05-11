@@ -49,6 +49,8 @@ Key attributes: `Label`, `Placeholder`, `DisplayType` (`InputType.Text / Email /
 
 Slots: `prefix`, `suffix`, `helper-text`.
 
+> **AGENT INSTRUCTION - Icons in slots:** Always use `IgbIcon` in `prefix`/`suffix` slots, never `<span class="material-icons">`. Font spans are `display: inline` so `vertical-align` is ignored inside the slot's flex context - the icon floats to the top. `IgbIcon` (`igc-icon`) is `display: inline-flex; align-items: center` and self-centers automatically. Register the icon in `OnAfterRenderAsync(firstRender)` after `EnsureReady()`.
+
 Events: `IgbInput` (fires while typing), `Change` (fires on commit/blur).
 
 > **AGENT INSTRUCTION:** `IgbInput` has **no** `GetValueAsync()` method. Read values via the synchronous `Value` property or, preferably, use `@bind-Value` bound directly to a model property - that is the correct Blazor pattern and avoids the need to imperatively read the value at all.
