@@ -268,7 +268,14 @@ Methods: `Show()`, `Hide()`, `Toggle()`.
 
 CSS parts: `base`, `main`, `mini`.
 
-> **AGENT INSTRUCTION - Mini slot activates overlay behavior:** Adding **any** content with `slot="mini"` switches the drawer to a collapsible/overlay mode where it floats over page content. If you need a **persistent, always-visible sidebar** that participates in the page layout (not an overlay), do **not** use `slot="mini"`. Instead, keep the drawer open with `Open="true"` and set `style="position: relative"` on the `IgbNavDrawer` so it flows inline with the layout rather than overlaying.
+> **AGENT INSTRUCTION - IgbNavDrawer shadow DOM mechanics:**
+>
+> Regardless of `Open` state or `style` on the host, `::part(base)` is always rendered as `position: fixed; transform: translateX(-Npx)`. When the component considers itself closed it also sets `inert` on `::part(base)`. The host element itself contributes `width: 0` to the layout because the fixed part takes no space.
+>
+> This means:
+> - `Open="true"` alone makes the panel visible but it still floats over content as an overlay.
+> - `slot="mini"` content switches the component to a collapsible expand/collapse mode with an icon-only collapsed state.
+> - To make the drawer occupy real space in the layout (pinned sidebar), the shadow DOM parts must be overridden in **global CSS** (not `.razor.css`): give the host an explicit width, override `::part(base)` to `position: relative; transform: none`, hide `::part(overlay)`, and remove the `inert` attribute via JS in `OnAfterRenderAsync`. Do **not** call `DrawerRef.Show()` in `OnAfterRenderAsync` - it throws "component not ready"; CSS handles visibility instead.
 
 > **AGENT INSTRUCTION:** Icons used inside `IgbNavDrawerItem` must be registered via `IgbIcon.RegisterIconFromTextAsync()` or `RegisterIconAsync()` in `OnAfterRenderAsync(bool firstRender)` before they display. Call `await iconRef.EnsureReady()` first.
 

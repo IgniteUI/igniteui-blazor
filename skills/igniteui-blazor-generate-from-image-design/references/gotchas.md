@@ -148,20 +148,10 @@ Use named `slot` attributes on child elements inside `IgbListItem` for positioni
 </IgbListItem>
 ```
 
-### IgbNavDrawer: open state and mini slot
-Use `Open`, `Position`, and the `mini` slot for expanded or collapsed drawer designs. Do not use Angular's `pin`/`pinned` model in Blazor:
-```razor
-<IgbNavDrawer Open="true" Position="NavDrawerPosition.Start">
-    <IgbNavDrawerHeaderItem>Navigation</IgbNavDrawerHeaderItem>
-    <div slot="mini">
-        <IgbIcon Collection="material" IconName="home" />
-    </div>
-    <IgbNavDrawerItem>
-        <IgbIcon slot="icon" Collection="material" IconName="home" />
-        <span slot="content">Home</span>
-    </IgbNavDrawerItem>
-</IgbNavDrawer>
-```
+### IgbNavDrawer:
+The component's `::part(base)` is always `position: fixed; transform: translateX(-Npx)` - the host contributes `width: 0` to the layout. `Open="true"` makes it visible but still floating over content. `slot="mini"` adds a collapsed icon-only state. There is no `pin`/`pinned` Blazor parameter.
+
+To make the drawer occupy real layout space (pinned sidebar), override the parts in **global CSS**: set explicit width on the host, `position: relative; transform: none` on `::part(base)`, hide `::part(overlay)`, and strip `inert` from `::part(base)` via JS in `OnAfterRenderAsync`. See `layout.md` for the full pattern.
 
 ### IgbTabs: Panel and Id pairing
 Each `IgbTab` must reference an `IgbTabPanel` via the `Panel` property matching the panel's `Id`:
