@@ -2,6 +2,7 @@
 
 # Ignite UI for Blazor - from Infragistics 
 
+[![CI](https://github.com/IgniteUI/igniteui-blazor/actions/workflows/ci.yml/badge.svg)](https://github.com/IgniteUI/igniteui-blazor/actions/workflows/ci.yml)
 [![NuGet version](https://badge.fury.io/nu/IgniteUI.Blazor.Lite.svg)](https://www.nuget.org/packages/IgniteUI.Blazor.Lite)
 [![Discord](https://img.shields.io/discord/836634487483269200?logo=discord&logoColor=ffffff)](https://discord.com/channels/836634487483269200/836636796229386241)
 
