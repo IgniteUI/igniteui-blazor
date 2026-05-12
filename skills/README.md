@@ -10,7 +10,7 @@ Skills are structured `SKILL.md` documents paired with `references/` sub-files. 
 
 ### [`igniteui-blazor-components`](./igniteui-blazor-components/SKILL.md)
 
-All non-grid Ignite UI Blazor components: form controls (Input, Combo, Select, Date Picker, Calendar, Checkbox, Radio, Slider, Rating), layout containers (Tabs, Stepper, Accordion, Navbar, Nav Drawer, Tree), data display (List, Card, Avatar, Badge, Chip, Button, Progress, Dropdown, Tooltip), feedback (Dialog, Snackbar, Toast, Banner), layout managers (Dock Manager, Tile Manager), and visualizations (charts, gauges, maps, sparklines).
+All non-grid IgniteUI.Blazor.Lite components: form controls (Input, Combo, Select, Date Picker, Calendar, Checkbox, Radio, Slider, Rating), layout containers (Tabs, Stepper, Accordion, Navbar, Nav Drawer, Tree), data display (List, Card, Avatar, Badge, Chip, Button, Progress, Dropdown, Tooltip), feedback (Dialog, Snackbar, Toast, Banner), layout managers (Dock Manager, Tile Manager), and visualizations (charts, gauges, maps, sparklines).
 
 ### [`igniteui-blazor-grids`](./igniteui-blazor-grids/SKILL.md)
 
