@@ -62,4 +62,4 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 - Every component requires module registration in `Program.cs`: `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule))`.
 - Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`.
 - Link a theme stylesheet in the host page (e.g., `_content/IgniteUI.Blazor/themes/light/bootstrap.css`).
-- If the `IgniteUI.Blazor` NuGet package is not present in the project file, add it first.
+- If the `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` NuGet packages are not present in the project file, add it first.
