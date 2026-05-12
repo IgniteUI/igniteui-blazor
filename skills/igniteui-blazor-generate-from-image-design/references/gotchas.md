@@ -104,14 +104,14 @@ Pass them as bound parameters:
 Set `ChartType` to `Spline`, `SplineArea`, or `StepLine` / `StepArea` depending on the visual in the screenshot.
 
 ### Charts inside CSS Grid can collapse
-Charts may render with zero height inside a CSS Grid container. Always set a `min-height` on the chart container or an explicit `Height` on the chart component:
+Charts may render with zero height inside a CSS Grid container. Set `min-height: 0` on the grid cell and `Height="100%"` on the chart component so the chart fills its container without requiring a fixed pixel value:
 ```css
 .chart-container {
-  min-height: 300px; /* Prevents the chart container from collapsing */
+  min-height: 0; /* Prevents the CSS Grid track from collapsing */
 }
 ```
 ```razor
-<IgbCategoryChart Height="300px" Width="100%" ... />
+<IgbCategoryChart Height="100%" Width="100%" ... />
 ```
 
 ---
