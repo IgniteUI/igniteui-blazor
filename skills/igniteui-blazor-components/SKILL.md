@@ -1,6 +1,6 @@
 ---
 name: igniteui-blazor-components
-description: "Covers non-grid Ignite UI for Blazor UI components: application setup, form controls (inputs, combos, selects, date/time pickers, calendar, checkbox, radio, switch, slider, rating), layout containers (tabs, stepper, accordion, expansion panel, navigation drawer, navbar, tree), data-display components (list, card, carousel, avatar, badge, chip, icon, progress indicators, dropdown, tooltip), feedback overlays (dialog, snackbar, toast, banner), layout managers (Dock Manager, Tile Manager), and visualizations (Category Chart, Data Chart, Financial/Stock Chart, Pie/Donut Chart, Sparkline, Treemap, Geographic Map, Gauges, Dashboard Tile). Use when users ask about any Ignite UI Blazor component that is NOT a data grid. Do NOT use for data grids, tables, or tabular data - use igniteui-blazor-grids instead. Do NOT use for theming or styling - use igniteui-blazor-theming instead."
+description: "Covers non-grid Ignite UI for Blazor UI components: application setup, form controls (inputs, combos, selects, date/time pickers, calendar, checkbox, radio, switch, slider, rating), layout containers (tabs, stepper, accordion, expansion panel, navigation drawer, navbar, tree), data-display components (list, card, carousel, avatar, badge, chip, icon, progress indicators, dropdown, tooltip), feedback overlays (dialog, snackbar, toast, banner), layout managers (Dock Manager, Tile Manager); and visualizations (Category Chart, Data Chart, Financial/Stock Chart, Pie/Donut Chart, Sparkline, Treemap, Geographic Map, Gauges, Dashboard Tile) requiring IgniteUI.Blazor or IgniteUI.Blazor.Trial. Use when users ask about any Ignite UI Blazor component that is NOT a data grid. Do NOT use for data grids, tables, or tabular data - use igniteui-blazor-grids instead. Do NOT use for theming or styling - use igniteui-blazor-theming instead."
 user-invocable: true
 ---
 
@@ -9,7 +9,7 @@ user-invocable: true
 ## Prerequisites
 
 - .NET 8+ Blazor project (Server, WebAssembly, Web App, or MAUI Blazor Hybrid)
-- The correct NuGet package installed: licensed `IgniteUI.Blazor` from the Infragistics private feed for the full component suite, `IgniteUI.Blazor.Lite` for OSS core UI components, or `IgniteUI.Blazor.GridLite` for OSS Grid Lite
+- The correct NuGet package installed: `IgniteUI.Blazor.Lite` (NuGet.org, MIT) for general purpose UI components; `IgniteUI.Blazor.GridLite` (NuGet.org, MIT) for the lightweight grid; `IgniteUI.Blazor` (Infragistics private feed, licensed) for the full suite including charts, maps, gauges, and enterprise grids; or `IgniteUI.Blazor.Trial` (NuGet.org) for evaluation of the full suite
 - `builder.Services.AddIgniteUIBlazor(...)` called in `Program.cs`
 - `@using IgniteUI.Blazor.Controls` added to `_Imports.razor`
 - A theme CSS file linked in the host page (see [`references/setup.md`](./references/setup.md))
@@ -73,9 +73,10 @@ Base your code and explanation exclusively on what you read. If the reference fi
 
 | Package | Source | Who uses it |
 |---|---|---|
-| `IgniteUI.Blazor` | Infragistics private NuGet feed (`https://packages.infragistics.com/nuget/licensed/`) | Licensed / enterprise users that need the full component suite |
-| `IgniteUI.Blazor.Lite` | NuGet.org | Open-source users that need the MIT core UI components |
-| `IgniteUI.Blazor.GridLite` | NuGet.org | Open-source users that need the lightweight Grid Lite data grid |
+| `IgniteUI.Blazor.Lite` | NuGet.org | Open-source / MIT users needing core UI components (forms, layout, navigation, data display, feedback) |
+| `IgniteUI.Blazor.GridLite` | NuGet.org | Open-source / MIT users needing the lightweight `IgbGridLite` data grid |
+| `IgniteUI.Blazor` | Infragistics private NuGet feed (`https://packages.infragistics.com/nuget/licensed/`) | Licensed / enterprise users that need the full component suite (grids, charts, maps, gauges, Dock Manager) |
+| `IgniteUI.Blazor.Trial` | NuGet.org | Evaluation users — same full suite as `IgniteUI.Blazor` but with a trial watermark |
 
 `IgniteUI.Blazor.Lite` contains the open-source UI component set, while `IgniteUI.Blazor.GridLite` contains the free `IgbGridLite` data grid package. Both use the `IgniteUI.Blazor.Controls` namespace. Do **not** mix the licensed `IgniteUI.Blazor` package with `IgniteUI.Blazor.Lite` in the same project; they use the same namespaces and duplicate some components.
 

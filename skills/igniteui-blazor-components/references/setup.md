@@ -24,9 +24,13 @@ dotnet add package IgniteUI.Blazor.Lite
 # OSS Grid Lite package from NuGet.org
 dotnet add package IgniteUI.Blazor.GridLite
 
+# Trial (full suite with watermark) from NuGet.org
+dotnet add package IgniteUI.Blazor.Trial
+
 # Or via Package Manager Console
 Install-Package IgniteUI.Blazor.Lite
 Install-Package IgniteUI.Blazor.GridLite
+Install-Package IgniteUI.Blazor.Trial
 ```
 
 Licensed users install the full `IgniteUI.Blazor` package from the Infragistics private feed:
@@ -45,9 +49,10 @@ Package selection:
 
 | Package | Use when |
 |---|---|
-| `IgniteUI.Blazor` | Licensed full suite: premium grids, charts, maps, gauges, Dock Manager, and all core UI components |
-| `IgniteUI.Blazor.Lite` | Open-source MIT core UI components such as buttons, inputs, lists, cards, navigation, layout, and feedback components |
+| `IgniteUI.Blazor.Lite` | Open-source MIT core UI components: buttons, inputs, lists, cards, navigation, layout, and feedback components |
 | `IgniteUI.Blazor.GridLite` | Open-source MIT `IgbGridLite` for lightweight read-only or essential data grid scenarios |
+| `IgniteUI.Blazor.Trial` | Evaluation of the full suite (same as `IgniteUI.Blazor` but with a trial watermark; available publicly on NuGet.org) |
+| `IgniteUI.Blazor` | Licensed full suite: premium grids, charts, maps, gauges, Dock Manager, and all core UI components |
 
 Do **not** mix `IgniteUI.Blazor` and `IgniteUI.Blazor.Lite` in the same project. They use the same namespaces and duplicate some components; pick the licensed full package path or the OSS Lite package path.
 

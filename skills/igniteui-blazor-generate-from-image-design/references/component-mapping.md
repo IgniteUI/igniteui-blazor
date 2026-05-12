@@ -194,24 +194,25 @@ Decision rules:
 
 ## Package Requirements
 
-Ignite UI Blazor package selection depends on the component family. The licensed `IgniteUI.Blazor` package provides the full suite, while the OSS packages cover core UI components and Grid Lite. No additional DV-specific packages are needed beyond the selected package.
+Ignite UI Blazor package selection depends on the component family. Use `IgniteUI.Blazor.Lite` for general purpose components and `IgniteUI.Blazor.GridLite` the light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts.
 
 | NuGet Package | Description |
 |---|---|
-| `IgniteUI.Blazor` | Licensed full component suite including premium grids, charts, maps, gauges, Dock Manager, and core UI components |
 | `IgniteUI.Blazor.Lite` | Open-source / MIT core UI components such as layout, navigation, forms, lists, cards, feedback, and common inputs |
 | `IgniteUI.Blazor.GridLite` | Open-source / MIT `IgbGridLite` package for lightweight data grid scenarios |
+| `IgniteUI.Blazor.Trial` | Full component suite with trial watermark - same capabilities as `IgniteUI.Blazor`, publicly available on NuGet.org for evaluation |
+| `IgniteUI.Blazor` | Licensed full component suite including premium grids, charts, maps, gauges, Dock Manager, and core UI components |
 
 | Capability | Package Required |
 |---|---|
-| Core UI components (list, avatar, navbar, drawer, card, badge, progress, icon, etc.) | `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor` |
-| Charts / sparklines | `IgniteUI.Blazor` only |
-| Maps | `IgniteUI.Blazor` only |
-| Gauges / bullet graphs | `IgniteUI.Blazor` only |
-| Full data grids (`IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`) | `IgniteUI.Blazor` only |
-| Grid Lite (`IgbGridLite`) | `IgniteUI.Blazor.GridLite` or `IgniteUI.Blazor` |
-| Tile Manager | `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor` |
-| Dock Manager | `IgniteUI.Blazor` only |
+| Core UI components (list, avatar, navbar, drawer, card, badge, progress, icon, etc.) | `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` |
+| Charts / sparklines | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
+| Maps | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
+| Gauges / bullet graphs | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
+| Full data grids (`IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`) | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
+| Grid Lite (`IgbGridLite`) | `IgniteUI.Blazor.GridLite` or `IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` |
+| Tile Manager | `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` |
+| Dock Manager | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
 
 ---
 
@@ -222,6 +223,9 @@ Ignite UI Blazor package selection depends on the component family. The licensed
 ```xml
 <!-- Licensed full suite -->
 <PackageReference Include="IgniteUI.Blazor" Version="<resolved-version>" />
+
+<!-- Trial full suite (watermarked, public NuGet.org) -->
+<PackageReference Include="IgniteUI.Blazor.Trial" Version="<resolved-version>" />
 
 <!-- OSS core UI components -->
 <PackageReference Include="IgniteUI.Blazor.Lite" Version="<resolved-version>" />

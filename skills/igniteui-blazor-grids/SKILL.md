@@ -184,5 +184,5 @@ builder.Services.AddIgniteUIBlazor(
 
 | Skill | Use for |
 |---|---|
-| `igniteui-blazor-components` | All non-grid Ignite UI Blazor components (forms, layout, data display, feedback, charts, etc.) |
+| `igniteui-blazor-components` | All non-grid `IgniteUI.Blazor.Lite` components (forms, layout, data display, feedback) and visualizations/charts available in `IgniteUI.Blazor` |
 | `igniteui-blazor-theming` | CSS custom properties, palettes, typography, theme switching, dark/light mode |
