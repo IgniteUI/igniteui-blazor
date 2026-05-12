@@ -100,6 +100,37 @@ Pass them as bound parameters:
 <IgbCategoryChart IncludedProperties='@(new string[] { "Month", "Revenue" })' ... />
 ```
 
+### `InnerExtent` is a chart-level property — never a series-level property
+
+`InnerExtent` controls the hole size at the center of a donut/pie chart. It is a property of the **chart** component (`IgbDoughnutChart`, `IgbPieChart`, `IgbDataPieChart`), not of any series child. Placing it on `IgbRingSeries` causes a runtime crash:
+
+```
+System.InvalidOperationException: IgbRingSeries does not have a property matching 'InnerExtent'
+```
+
+Correct usage:
+```razor
+<!-- ✅ InnerExtent on the chart -->
+<IgbDoughnutChart InnerExtent="0.45" Width="220px" Height="220px">
+    <IgbRingSeries ValueMemberPath="Value" LabelMemberPath="Label" ... />
+</IgbDoughnutChart>
+
+<!-- ❌ Runtime crash -->
+<IgbRingSeries InnerExtent="0.45" ... />
+```
+
+### Set `Brushes`, `Outlines`, and visual parameters inline — not via `@ref` in `OnAfterRenderAsync`
+
+Setting visual parameters via `@ref` property assignment in `OnAfterRenderAsync` triggers Blazor warning **BL0005** (*Component parameter should not be set outside of its component*). Always pass them as **inline Razor markup attributes** instead.
+
+```razor
+<!-- ✅ Inline markup — no BL0005 -->
+<IgbRingSeries Brushes="#CF6E7A #6C74DC #D4A84B" Outlines="#13131F #13131F #13131F" ... />
+
+<!-- ❌ BL0005 warning -->
+jobSeries.Brushes = "#CF6E7A #6C74DC #D4A84B";
+```
+
 ### Smooth area/line charts
 Set `ChartType` to `Spline`, `SplineArea`, or `StepLine` / `StepArea` depending on the visual in the screenshot.
 
