@@ -25,7 +25,7 @@ Before writing any implementation code, you must complete these steps in order:
 2. **Confirm NuGet package if needed** - this skill is Blazor-only; check package (`IgniteUI.Blazor`, `IgniteUI.Blazor.Lite`, or `IgniteUI.Blazor.GridLite`) only when component availability or theming depends on it.
 3. **Discover components** - Call `list_components` with targeted filters and `framework: "blazor"` to find matching components for each UI pattern.
 4. **Look up component docs** - Call `get_doc` for every chosen component family before coding.
-5. **Generate theme** - (a) To generate a theme, first extract colors and create a color palette using `create_palette` or `create_custom_palette` depending on the scenario. Then extract elevations and call `create_elevations`. Then extract typography and call `create_typography`. Then call `create_theme` with the palette, elevations, and typography with `platform: "blazor"`. (b) After a theme exists, prefer using design tokens or scoped semantic CSS variables over raw literals. (c) For every Ignite UI component, call `get_component_design_tokens`, map extracted image tokens to token roles, then call `create_component_theme` with the tokens differing from the global theme for the specific component.
+5. **Generate theme** - (a) To generate a theme, first extract colors and create a color palette using `create_palette` or `create_custom_palette` depending on the scenario. Then extract elevations and call `create_elevations`. Then extract typography and call `create_typography`. Then call `create_theme` with the palette, elevations, and typography with `platform: "blazor"`. (b) After a palette exists, prefer using design tokens or scoped semantic CSS variables over raw literals. (c) For every Ignite UI component, call `get_component_design_tokens`, map extracted image tokens to token roles, then call `create_component_theme` with the tokens differing from the global theme for the specific component.
 6. **Implement** - Build the screenshot-first layout, data, and view components.
 7. **Refine** - Use the `set_size`, `set_spacing`, `set_roundness` tools to refine the view's visual fidelity against the image, then iterate on implementation and theming until the view matches the design closely.
 8. **Validate** - Build, test, run, compare against the image, and fix differences.
@@ -178,7 +178,7 @@ Do not run `create_component_theme` for regions built with custom HTML/CSS only.
 Apply in this exact order:
 
 1. Inspect host page and global CSS -> existing theme or blank?
-2. Create or update a theme: `create_theme` with `platform: "blazor"` (Step 5b)
+2. Create or update a palette: `create_palette` with `platform: "blazor"` and `output: "css"` (Step 5b)
 3. For each Ignite UI component: `get_component_design_tokens` -> map image design tokens -> resolve values to design tokens or semantic CSS variables -> `create_component_theme` with `platform: "blazor"` (Step 5c)
 4. Use `get_color` after palette generation whenever a palette token can represent the final color intent
 
