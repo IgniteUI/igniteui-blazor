@@ -57,7 +57,7 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 
 ## UI Components
 
-- Use `IgniteUI.Blazor`.
+- Use `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts.
 - Components use the `Igb` prefix (e.g., `IgbGrid`, `IgbCombo`, `IgbDatePicker`).
 - Every component requires module registration in `Program.cs`: `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule))`.
 - Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`.
