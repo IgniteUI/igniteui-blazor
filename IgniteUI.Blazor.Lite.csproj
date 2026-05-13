@@ -90,11 +90,7 @@
   </ItemGroup>
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm run build&#xD;&#xA;" />
-  </Target>
-  
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /y /s /r /i &quot;./node_modules/igniteui-webcomponents/themes&quot; &quot;./wwwroot/themes&quot;" />
+    <Exec Command="npm run build" />
   </Target>
 
 </Project>
