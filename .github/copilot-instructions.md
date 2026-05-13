@@ -57,7 +57,7 @@ When you update a component, put the template markup in the `.razor` file, the l
 
 Here are some links to the essentials for building Blazor applications. Use these to get an understanding of how some of the core functionality works:
 https://learn.microsoft.com/en-us/aspnet/core/blazor/components/
-https://learn.microsoft.com/en-us/aspnet/core/blazor/state-management
+https://learn.microsoft.com/en-us/aspnet/core/blazor/state-management/
 https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/dependency-injection
 https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/
 
