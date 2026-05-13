@@ -90,7 +90,7 @@
   </ItemGroup>
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm run build" />
+    <Exec Command="npm run build &amp;&amp; npm run copythemes" />
   </Target>
 
 </Project>
