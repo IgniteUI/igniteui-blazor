@@ -11,7 +11,7 @@ user-invocable: true
 Before writing any implementation code, you must complete these steps in order:
 
 1. Analyze the image and identify all visible regions and UI patterns.
-2. Read [references/component-mapping.md](references/component-mapping.md) and [references/gotchas.md](references/gotchas.md).
+2. Read [references/component-mapping.md](references/component-mapping.md).
 3. This skill is Blazor-only. Check NuGet package (`IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and light-weight grid, or `IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` for specialized feature-rich grids and charts) only when theming or component availability depends on it.
 4. To apply a theme, use the theming workflow from this skill and the dedicated `igniteui-blazor-theming` skill; use the `igniteui-theming` MCP tools instead of styling from memory.
 5. Call `get_doc` for every chosen component family before using it.
