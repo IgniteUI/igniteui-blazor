@@ -1,0 +1,27 @@
+@attribute [Stories("Data Display/Icon")]
+
+<Stories TComponent="IgbIcon">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.IconName" Value='"home"' />
+            <Arg For="_ => _!.Collection" Value='"default"' />
+            <Arg For="_ => _!.Mirrored" Value="false" />
+        </Arguments>
+        <Template>
+            <IgbIcon @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Mirrored">
+        <Arguments>
+            <Arg For="_ => _!.IconName" Value='"home"' />
+            <Arg For="_ => _!.Collection" Value='"default"' />
+            <Arg For="_ => _!.Mirrored" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbIcon @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>

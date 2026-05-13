@@ -1,0 +1,54 @@
+@attribute [Stories("Forms/Input")]
+
+<Stories TComponent="IgbInput">
+
+    <ArgType For="_ => _!.DisplayType" Control="ControlType.Select" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Username"' />
+            <Arg For="_ => _!.Placeholder" Value='"Enter username"' />
+            <Arg For="_ => _!.Outlined" Value="false" />
+            <Arg For="_ => _!.Disabled" Value="false" />
+            <Arg For="_ => _!.Required" Value="false" />
+        </Arguments>
+        <Template>
+            <IgbInput @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Outlined">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Email"' />
+            <Arg For="_ => _!.Placeholder" Value='"Enter email"' />
+            <Arg For="_ => _!.Outlined" Value="true" />
+            <Arg For="_ => _!.DisplayType" Value="InputType.Email" />
+        </Arguments>
+        <Template>
+            <IgbInput @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Password">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Password"' />
+            <Arg For="_ => _!.DisplayType" Value="InputType.Password" />
+            <Arg For="_ => _!.Required" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbInput @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Disabled">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Disabled"' />
+            <Arg For="_ => _!.Value" Value='"Disabled input"' />
+            <Arg For="_ => _!.Disabled" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbInput @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>

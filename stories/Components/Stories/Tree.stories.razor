@@ -1,0 +1,42 @@
+@attribute [Stories("Data Display/Tree")]
+
+<Stories TComponent="IgbTree">
+
+    <ArgType For="_ => _!.Selection" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Selection" Value="TreeSelection.None" />
+            <Arg For="_ => _!.SingleBranchExpand" Value="false" />
+            <Arg For="_ => _!.ToggleNodeOnClick" Value="false" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbTree @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="With Selection">
+        <Arguments>
+            <Arg For="_ => _!.Selection" Value="TreeSelection.Multiple" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbTree @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>
+        <IgbTreeItem Label="Node 1">
+            <IgbTreeItem Label="Child 1.1" />
+            <IgbTreeItem Label="Child 1.2" />
+        </IgbTreeItem>
+        <IgbTreeItem Label="Node 2">
+            <IgbTreeItem Label="Child 2.1" />
+        </IgbTreeItem>
+        <IgbTreeItem Label="Node 3" />
+    </text>;
+}

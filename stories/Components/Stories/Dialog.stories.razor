@@ -1,0 +1,44 @@
+@attribute [Stories("Feedback/Dialog")]
+
+<Stories TComponent="IgbDialog">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Open" Value="true" />
+            <Arg For="_ => _!.Title" Value='"Confirmation"' />
+            <Arg For="_ => _!.CloseOnOutsideClick" Value="false" />
+            <Arg For="_ => _!.KeepOpenOnEscape" Value="false" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbDialog @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Without Default Action">
+        <Arguments>
+            <Arg For="_ => _!.Open" Value="true" />
+            <Arg For="_ => _!.Title" Value='"Custom Dialog"' />
+            <Arg For="_ => _!.HideDefaultAction" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_customContent" />
+        </Arguments>
+        <Template>
+            <IgbDialog @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>
+        <p>Are you sure you want to proceed?</p>
+    </text>;
+
+    private RenderFragment _customContent = @<text>
+        <p>This dialog has custom actions.</p>
+        <div slot="footer">
+            <IgbButton Variant="ButtonVariant.Flat">Cancel</IgbButton>
+            <IgbButton>Confirm</IgbButton>
+        </div>
+    </text>;
+}

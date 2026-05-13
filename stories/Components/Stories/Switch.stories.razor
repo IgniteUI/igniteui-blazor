@@ -1,0 +1,44 @@
+@attribute [Stories("Forms/Switch")]
+
+<Stories TComponent="IgbSwitch">
+
+    <ArgType For="_ => _!.LabelPosition" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Checked" Value="false" />
+            <Arg For="_ => _!.Disabled" Value="false" />
+            <Arg For="_ => _!.LabelPosition" Value="ToggleLabelPosition.After" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbSwitch @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Checked">
+        <Arguments>
+            <Arg For="_ => _!.Checked" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_enabledContent" />
+        </Arguments>
+        <Template>
+            <IgbSwitch @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Disabled">
+        <Arguments>
+            <Arg For="_ => _!.Disabled" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbSwitch @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>Dark Mode</text>;
+    private RenderFragment _enabledContent = @<text>Enabled</text>;
+}

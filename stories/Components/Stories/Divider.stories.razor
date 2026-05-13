@@ -1,0 +1,48 @@
+@attribute [Stories("Data Display/Divider")]
+
+<Stories TComponent="IgbDivider">
+
+    <ArgType For="_ => _!.LineType" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Vertical" Value="false" />
+            <Arg For="_ => _!.Middle" Value="false" />
+            <Arg For="_ => _!.LineType" Value="DividerType.Solid" />
+        </Arguments>
+        <Template>
+            <div style="width: 300px;">
+                <p>Content above</p>
+                <IgbDivider @attributes="context.Args" />
+                <p>Content below</p>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Dashed">
+        <Arguments>
+            <Arg For="_ => _!.LineType" Value="DividerType.Dashed" />
+        </Arguments>
+        <Template>
+            <div style="width: 300px;">
+                <p>Content above</p>
+                <IgbDivider @attributes="context.Args" />
+                <p>Content below</p>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Vertical">
+        <Arguments>
+            <Arg For="_ => _!.Vertical" Value="true" />
+        </Arguments>
+        <Template>
+            <div style="display: flex; align-items: center; height: 100px;">
+                <span>Left</span>
+                <IgbDivider @attributes="context.Args" />
+                <span>Right</span>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>

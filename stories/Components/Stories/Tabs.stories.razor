@@ -1,0 +1,37 @@
+@attribute [Stories("Layout/Tabs")]
+
+<Stories TComponent="IgbTabs">
+
+    <ArgType For="_ => _!.Alignment" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.Activation" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Alignment" Value="TabsAlignment.Start" />
+            <Arg For="_ => _!.Activation" Value="TabsActivation.Auto" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbTabs @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Justified">
+        <Arguments>
+            <Arg For="_ => _!.Alignment" Value="TabsAlignment.Justify" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbTabs @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>
+        <IgbTab Panel="panel1">Tab 1</IgbTab>
+        <IgbTab Panel="panel2">Tab 2</IgbTab>
+        <IgbTab Panel="panel3">Tab 3</IgbTab>
+    </text>;
+}

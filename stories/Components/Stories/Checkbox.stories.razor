@@ -1,0 +1,65 @@
+@attribute [Stories("Forms/Checkbox")]
+
+<Stories TComponent="IgbCheckbox">
+
+    <ArgType For="_ => _!.LabelPosition" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Checked" Value="false" />
+            <Arg For="_ => _!.Disabled" Value="false" />
+            <Arg For="_ => _!.Indeterminate" Value="false" />
+            <Arg For="_ => _!.LabelPosition" Value="ToggleLabelPosition.After" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbCheckbox @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Checked">
+        <Arguments>
+            <Arg For="_ => _!.Checked" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbCheckbox @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Indeterminate">
+        <Arguments>
+            <Arg For="_ => _!.Indeterminate" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbCheckbox @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Disabled">
+        <Arguments>
+            <Arg For="_ => _!.Disabled" Value="true" />
+            <Arg For="_ => _!.Checked" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbCheckbox @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Label Before">
+        <Arguments>
+            <Arg For="_ => _!.LabelPosition" Value="ToggleLabelPosition.Before" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbCheckbox @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>Accept terms</text>;
+}

@@ -1,0 +1,21 @@
+@attribute [Stories("Feedback/Banner")]
+
+<Stories TComponent="IgbBanner">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Open" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbBanner @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>
+        <span>This is an important notification banner message.</span>
+    </text>;
+}

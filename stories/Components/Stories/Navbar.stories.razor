@@ -1,0 +1,20 @@
+@attribute [Stories("Navigation/Navbar")]
+
+<Stories TComponent="IgbNavbar">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbNavbar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>
+        <h5>Application Title</h5>
+    </text>;
+}
