@@ -166,6 +166,29 @@ Build and run the Blazor app.
 
 <!-- ![](images/general/getting-started-blazor-card.jpg) -->
 
+## Running the Stories Project Locally
+
+The `stories/` directory contains a [Blazing Story](https://github.com/jsakamoto/BlazingStory) app that demonstrates Ignite UI for Blazor components. To run it locally, the JS interop bundle and component themes must be built first.
+
+**Prerequisites:** [Node.js](https://nodejs.org/) 22 or later.
+
+```bash
+# 1. Install Node dependencies
+npm install
+
+# 2. Build the JS interop bundle
+npm run build
+
+# 3. Copy component themes to wwwroot
+npm run copythemes
+```
+
+After the above steps, open the solution in Visual Studio or run the stories project with the .NET CLI:
+
+```bash
+dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
+```
+
 [Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Commercial]: https://www.infragistics.com/legal/license
 [MIT]: https://github.com/IgniteUI/igniteui-blazor/blob/master/LICENSE

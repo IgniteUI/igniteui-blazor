@@ -142,6 +142,7 @@ obj
 
 .vs
 .tfignore
+*.csproj.user
 gulpfile.js
 Building.md
 IgniteUI.Blazor.csproj
