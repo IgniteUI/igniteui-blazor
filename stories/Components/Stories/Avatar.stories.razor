@@ -1,0 +1,48 @@
+@attribute [Stories("Data Display/Avatar")]
+
+<Stories TComponent="IgbAvatar">
+
+    <ArgType For="_ => _!.Shape" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Initials" Value='"AB"' />
+            <Arg For="_ => _!.Shape" Value="AvatarShape.Circle" />
+        </Arguments>
+        <Template>
+            <IgbAvatar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="With Image">
+        <Arguments>
+            <Arg For="_ => _!.Src" Value='"https://via.placeholder.com/150"' />
+            <Arg For="_ => _!.Alt" Value='"User avatar"' />
+            <Arg For="_ => _!.Shape" Value="AvatarShape.Circle" />
+        </Arguments>
+        <Template>
+            <IgbAvatar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Square">
+        <Arguments>
+            <Arg For="_ => _!.Initials" Value='"AB"' />
+            <Arg For="_ => _!.Shape" Value="AvatarShape.Square" />
+        </Arguments>
+        <Template>
+            <IgbAvatar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Rounded">
+        <Arguments>
+            <Arg For="_ => _!.Initials" Value='"AB"' />
+            <Arg For="_ => _!.Shape" Value="AvatarShape.Rounded" />
+        </Arguments>
+        <Template>
+            <IgbAvatar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>

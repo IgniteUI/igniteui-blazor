@@ -1,0 +1,33 @@
+@attribute [Stories("Actions/ToggleButton")]
+
+<Stories TComponent="IgbToggleButton">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Selected" Value="false" />
+            <Arg For="_ => _!.Disabled" Value="false" />
+        </Arguments>
+        <Template>
+            <IgbToggleButton @attributes="context.Args">Toggle</IgbToggleButton>
+        </Template>
+    </Story>
+
+    <Story Name="Selected">
+        <Arguments>
+            <Arg For="_ => _!.Selected" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbToggleButton @attributes="context.Args">Toggle</IgbToggleButton>
+        </Template>
+    </Story>
+
+    <Story Name="Disabled">
+        <Arguments>
+            <Arg For="_ => _!.Disabled" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbToggleButton @attributes="context.Args">Toggle</IgbToggleButton>
+        </Template>
+    </Story>
+
+</Stories>

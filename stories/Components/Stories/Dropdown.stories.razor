@@ -1,0 +1,21 @@
+@attribute [Stories("Navigation/Dropdown")]
+
+<Stories TComponent="IgbDropdown">
+
+    <ArgType For="_ => _!.Placement" Control="ControlType.Select" />
+
+    <Story Name="Default">
+        <Template>
+            <div style="padding: 60px;">
+                <IgbDropdown @attributes="context.Args">
+                    <IgbButton slot="target">Open Dropdown</IgbButton>
+                    <IgbDropdownItem>Option 1</IgbDropdownItem>
+                    <IgbDropdownItem>Option 2</IgbDropdownItem>
+                    <IgbDropdownItem>Option 3</IgbDropdownItem>
+                    <IgbDropdownItem Disabled="true">Disabled Option</IgbDropdownItem>
+                </IgbDropdown>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>

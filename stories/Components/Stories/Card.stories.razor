@@ -1,0 +1,45 @@
+@attribute [Stories("Data Display/Card")]
+
+<Stories TComponent="IgbCard">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Elevated" Value="false" />
+        </Arguments>
+        <Template>
+            <IgbCard @attributes="context.Args">
+                <IgbCardHeader>
+                    <h3 slot="title">Card Title</h3>
+                    <h5 slot="subtitle">Card Subtitle</h5>
+                </IgbCardHeader>
+                <IgbCardContent>
+                    <p>This is some card content. You can put any information here.</p>
+                </IgbCardContent>
+                <IgbCardActions>
+                    <IgbButton Variant="ButtonVariant.Flat">Action</IgbButton>
+                </IgbCardActions>
+            </IgbCard>
+        </Template>
+    </Story>
+
+    <Story Name="Elevated">
+        <Arguments>
+            <Arg For="_ => _!.Elevated" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbCard @attributes="context.Args">
+                <IgbCardHeader>
+                    <h3 slot="title">Card Title</h3>
+                    <h5 slot="subtitle">Card Subtitle</h5>
+                </IgbCardHeader>
+                <IgbCardContent>
+                    <p>This is some card content. You can put any information here.</p>
+                </IgbCardContent>
+                <IgbCardActions>
+                    <IgbButton Variant="ButtonVariant.Flat">Action</IgbButton>
+                </IgbCardActions>
+            </IgbCard>
+        </Template>
+    </Story>
+
+</Stories>

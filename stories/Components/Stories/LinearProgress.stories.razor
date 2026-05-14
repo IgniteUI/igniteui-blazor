@@ -1,0 +1,47 @@
+@attribute [Stories("Feedback/LinearProgress")]
+
+<Stories TComponent="IgbLinearProgress">
+
+    <ArgType For="_ => _!.Variant" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.LabelAlign" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Value" Value="65" />
+            <Arg For="_ => _!.Max" Value="100" />
+            <Arg For="_ => _!.Variant" Value="StyleVariant.Primary" />
+            <Arg For="_ => _!.Indeterminate" Value="false" />
+            <Arg For="_ => _!.Striped" Value="false" />
+        </Arguments>
+        <Template>
+            <div style="width: 300px;">
+                <IgbLinearProgress @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Striped">
+        <Arguments>
+            <Arg For="_ => _!.Value" Value="50" />
+            <Arg For="_ => _!.Max" Value="100" />
+            <Arg For="_ => _!.Striped" Value="true" />
+        </Arguments>
+        <Template>
+            <div style="width: 300px;">
+                <IgbLinearProgress @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Indeterminate">
+        <Arguments>
+            <Arg For="_ => _!.Indeterminate" Value="true" />
+        </Arguments>
+        <Template>
+            <div style="width: 300px;">
+                <IgbLinearProgress @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+</Stories>

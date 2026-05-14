@@ -236,15 +236,6 @@ The component's `::part(base)` is always `position: fixed; transform: translateX
 
 To make the drawer occupy real layout space (pinned sidebar), override the parts in **global CSS**: set explicit width on the host, `position: relative; transform: none` on `::part(base)`, hide `::part(overlay)`, and strip `inert` from `::part(base)` via JS in `OnAfterRenderAsync`. See `layout.md` for the full pattern.
 
-### IgbTabs: Panel and Id pairing
-Each `IgbTab` must reference an `IgbTabPanel` via the `Panel` property matching the panel's `Id`:
-```razor
-<IgbTabs>
-    <IgbTab Panel="panel-1">Tab A</IgbTab>
-    <IgbTabPanel Id="panel-1">Content A</IgbTabPanel>
-</IgbTabs>
-```
-
 ### IgbTileManager: drag and resize modes
 Set `DragMode` and `ResizeMode` for interactive dashboards:
 ```razor

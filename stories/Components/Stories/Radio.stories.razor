@@ -1,0 +1,33 @@
+@attribute [Stories("Forms/Radio")]
+
+<Stories TComponent="IgbRadioGroup">
+
+    <ArgType For="_ => _!.Alignment" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Alignment" Value="ContentOrientation.Vertical" />
+        </Arguments>
+        <Template>
+            <IgbRadioGroup @attributes="context.Args">
+                <IgbRadio Value="option1">Option 1</IgbRadio>
+                <IgbRadio Value="option2">Option 2</IgbRadio>
+                <IgbRadio Value="option3">Option 3</IgbRadio>
+            </IgbRadioGroup>
+        </Template>
+    </Story>
+
+    <Story Name="Horizontal">
+        <Arguments>
+            <Arg For="_ => _!.Alignment" Value="ContentOrientation.Horizontal" />
+        </Arguments>
+        <Template>
+            <IgbRadioGroup @attributes="context.Args">
+                <IgbRadio Value="option1">Option 1</IgbRadio>
+                <IgbRadio Value="option2">Option 2</IgbRadio>
+                <IgbRadio Value="option3">Option 3</IgbRadio>
+            </IgbRadioGroup>
+        </Template>
+    </Story>
+
+</Stories>

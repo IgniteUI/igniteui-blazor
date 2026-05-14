@@ -1,0 +1,49 @@
+@attribute [Stories("Layout/Accordion")]
+
+<Stories TComponent="IgbAccordion">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.SingleExpand" Value="false" />
+        </Arguments>
+        <Template>
+            <IgbAccordion @attributes="context.Args">
+                <IgbExpansionPanel>
+                    <span slot="title">Panel 1</span>
+                    <p>Content for panel 1. This is some descriptive text.</p>
+                </IgbExpansionPanel>
+                <IgbExpansionPanel>
+                    <span slot="title">Panel 2</span>
+                    <p>Content for panel 2. More information here.</p>
+                </IgbExpansionPanel>
+                <IgbExpansionPanel>
+                    <span slot="title">Panel 3</span>
+                    <p>Content for panel 3. Additional details.</p>
+                </IgbExpansionPanel>
+            </IgbAccordion>
+        </Template>
+    </Story>
+
+    <Story Name="Single Expand">
+        <Arguments>
+            <Arg For="_ => _!.SingleExpand" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbAccordion @attributes="context.Args">
+                <IgbExpansionPanel>
+                    <span slot="title">Panel 1</span>
+                    <p>Content for panel 1. This is some descriptive text.</p>
+                </IgbExpansionPanel>
+                <IgbExpansionPanel>
+                    <span slot="title">Panel 2</span>
+                    <p>Content for panel 2. More information here.</p>
+                </IgbExpansionPanel>
+                <IgbExpansionPanel>
+                    <span slot="title">Panel 3</span>
+                    <p>Content for panel 3. Additional details.</p>
+                </IgbExpansionPanel>
+            </IgbAccordion>
+        </Template>
+    </Story>
+
+</Stories>
