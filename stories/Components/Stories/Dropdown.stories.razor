@@ -5,24 +5,17 @@
     <ArgType For="_ => _!.Placement" Control="ControlType.Select" />
 
     <Story Name="Default">
-        <Arguments>
-            <Arg For="_ => _!.ChildContent" Value="_content" />
-        </Arguments>
         <Template>
             <div style="padding: 60px;">
                 <IgbButton id="dropdown-target">Open Dropdown</IgbButton>
-                <IgbDropdown @attributes="context.Args" />
+                <IgbDropdown @attributes="context.Args">
+                    <IgbDropdownItem>Option 1</IgbDropdownItem>
+                    <IgbDropdownItem>Option 2</IgbDropdownItem>
+                    <IgbDropdownItem>Option 3</IgbDropdownItem>
+                    <IgbDropdownItem Disabled="true">Disabled Option</IgbDropdownItem>
+                </IgbDropdown>
             </div>
         </Template>
     </Story>
 
 </Stories>
-
-@code {
-    private RenderFragment _content = @<text>
-        <IgbDropdownItem>Option 1</IgbDropdownItem>
-        <IgbDropdownItem>Option 2</IgbDropdownItem>
-        <IgbDropdownItem>Option 3</IgbDropdownItem>
-        <IgbDropdownItem Disabled="true">Disabled Option</IgbDropdownItem>
-    </text>;
-}

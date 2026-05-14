@@ -10,10 +10,15 @@
             <Arg For="_ => _!.Placeholder" Value='"Select a country"' />
             <Arg For="_ => _!.Outlined" Value="false" />
             <Arg For="_ => _!.Disabled" Value="false" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args" />
+            <IgbSelect @attributes="context.Args">
+                <IgbSelectItem Value="us">United States</IgbSelectItem>
+                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
+                <IgbSelectItem Value="de">Germany</IgbSelectItem>
+                <IgbSelectItem Value="fr">France</IgbSelectItem>
+                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            </IgbSelect>
         </Template>
     </Story>
 
@@ -21,10 +26,15 @@
         <Arguments>
             <Arg For="_ => _!.Label" Value='"Country"' />
             <Arg For="_ => _!.Outlined" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args" />
+            <IgbSelect @attributes="context.Args">
+                <IgbSelectItem Value="us">United States</IgbSelectItem>
+                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
+                <IgbSelectItem Value="de">Germany</IgbSelectItem>
+                <IgbSelectItem Value="fr">France</IgbSelectItem>
+                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            </IgbSelect>
         </Template>
     </Story>
 
@@ -32,21 +42,16 @@
         <Arguments>
             <Arg For="_ => _!.Disabled" Value="true" />
             <Arg For="_ => _!.Label" Value='"Disabled"' />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args" />
+            <IgbSelect @attributes="context.Args">
+                <IgbSelectItem Value="us">United States</IgbSelectItem>
+                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
+                <IgbSelectItem Value="de">Germany</IgbSelectItem>
+                <IgbSelectItem Value="fr">France</IgbSelectItem>
+                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            </IgbSelect>
         </Template>
     </Story>
 
 </Stories>
-
-@code {
-    private RenderFragment _content = @<text>
-        <IgbSelectItem Value="us">United States</IgbSelectItem>
-        <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
-        <IgbSelectItem Value="de">Germany</IgbSelectItem>
-        <IgbSelectItem Value="fr">France</IgbSelectItem>
-        <IgbSelectItem Value="jp">Japan</IgbSelectItem>
-    </text>;
-}

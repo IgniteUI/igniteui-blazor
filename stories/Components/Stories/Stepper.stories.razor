@@ -11,48 +11,67 @@
             <Arg For="_ => _!.Orientation" Value="StepperOrientation.Horizontal" />
             <Arg For="_ => _!.StepType" Value="StepperStepType.Full" />
             <Arg For="_ => _!.Linear" Value="false" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbStepper @attributes="context.Args" />
+            <IgbStepper @attributes="context.Args">
+                <IgbStep>
+                    <span slot="title">Step 1</span>
+                    <p>Personal Information</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 2</span>
+                    <p>Address Details</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 3</span>
+                    <p>Confirmation</p>
+                </IgbStep>
+            </IgbStepper>
         </Template>
     </Story>
 
     <Story Name="Vertical">
         <Arguments>
             <Arg For="_ => _!.Orientation" Value="StepperOrientation.Vertical" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbStepper @attributes="context.Args" />
+            <IgbStepper @attributes="context.Args">
+                <IgbStep>
+                    <span slot="title">Step 1</span>
+                    <p>Personal Information</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 2</span>
+                    <p>Address Details</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 3</span>
+                    <p>Confirmation</p>
+                </IgbStep>
+            </IgbStepper>
         </Template>
     </Story>
 
     <Story Name="Linear">
         <Arguments>
             <Arg For="_ => _!.Linear" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbStepper @attributes="context.Args" />
+            <IgbStepper @attributes="context.Args">
+                <IgbStep>
+                    <span slot="title">Step 1</span>
+                    <p>Personal Information</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 2</span>
+                    <p>Address Details</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 3</span>
+                    <p>Confirmation</p>
+                </IgbStep>
+            </IgbStepper>
         </Template>
     </Story>
 
 </Stories>
-
-@code {
-    private RenderFragment _content = @<text>
-        <IgbStep>
-            <span slot="title">Step 1</span>
-            <p>Personal Information</p>
-        </IgbStep>
-        <IgbStep>
-            <span slot="title">Step 2</span>
-            <p>Address Details</p>
-        </IgbStep>
-        <IgbStep>
-            <span slot="title">Step 3</span>
-            <p>Confirmation</p>
-        </IgbStep>
-    </text>;
-}

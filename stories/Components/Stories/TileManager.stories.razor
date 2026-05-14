@@ -13,11 +13,29 @@
             <Arg For="_ => _!.Gap" Value='"8px"' />
             <Arg For="_ => _!.ResizeMode" Value="TileManagerResizeMode.None" />
             <Arg For="_ => _!.DragMode" Value="TileManagerDragMode.None" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
             <div style="width: 100%; height: 500px;">
-                <IgbTileManager @attributes="context.Args" />
+                <IgbTileManager @attributes="context.Args">
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 1</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 2</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 3</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 4</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 5</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 6</h4><p>Content</p></div>
+                    </IgbTile>
+                </IgbTileManager>
             </div>
         </Template>
     </Story>
@@ -26,11 +44,29 @@
         <Arguments>
             <Arg For="_ => _!.DragMode" Value="TileManagerDragMode.Tile" />
             <Arg For="_ => _!.ColumnCount" Value="3" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
             <div style="width: 100%; height: 500px;">
-                <IgbTileManager @attributes="context.Args" />
+                <IgbTileManager @attributes="context.Args">
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 1</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 2</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 3</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 4</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 5</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 6</h4><p>Content</p></div>
+                    </IgbTile>
+                </IgbTileManager>
             </div>
         </Template>
     </Story>
@@ -39,36 +75,31 @@
         <Arguments>
             <Arg For="_ => _!.ResizeMode" Value="TileManagerResizeMode.Hover" />
             <Arg For="_ => _!.ColumnCount" Value="3" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
             <div style="width: 100%; height: 500px;">
-                <IgbTileManager @attributes="context.Args" />
+                <IgbTileManager @attributes="context.Args">
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 1</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 2</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 3</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 4</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 5</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 6</h4><p>Content</p></div>
+                    </IgbTile>
+                </IgbTileManager>
             </div>
         </Template>
     </Story>
 
 </Stories>
-
-@code {
-    private RenderFragment _content = @<text>
-        <IgbTile>
-            <div style="padding: 16px;"><h4>Tile 1</h4><p>Content</p></div>
-        </IgbTile>
-        <IgbTile>
-            <div style="padding: 16px;"><h4>Tile 2</h4><p>Content</p></div>
-        </IgbTile>
-        <IgbTile>
-            <div style="padding: 16px;"><h4>Tile 3</h4><p>Content</p></div>
-        </IgbTile>
-        <IgbTile>
-            <div style="padding: 16px;"><h4>Tile 4</h4><p>Content</p></div>
-        </IgbTile>
-        <IgbTile>
-            <div style="padding: 16px;"><h4>Tile 5</h4><p>Content</p></div>
-        </IgbTile>
-        <IgbTile>
-            <div style="padding: 16px;"><h4>Tile 6</h4><p>Content</p></div>
-        </IgbTile>
-    </text>;
-}

@@ -20,10 +20,15 @@
             <Arg For="_ => _!.Open" Value="true" />
             <Arg For="_ => _!.Title" Value='"Custom Dialog"' />
             <Arg For="_ => _!.HideDefaultAction" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_customContent" />
         </Arguments>
         <Template>
-            <IgbDialog @attributes="context.Args" />
+            <IgbDialog @attributes="context.Args">
+                <p>This dialog has custom actions.</p>
+                <div slot="footer">
+                    <IgbButton Variant="ButtonVariant.Flat">Cancel</IgbButton>
+                    <IgbButton>Confirm</IgbButton>
+                </div>
+            </IgbDialog>
         </Template>
     </Story>
 
@@ -32,13 +37,5 @@
 @code {
     private RenderFragment _content = @<text>
         <p>Are you sure you want to proceed?</p>
-    </text>;
-
-    private RenderFragment _customContent = @<text>
-        <p>This dialog has custom actions.</p>
-        <div slot="footer">
-            <IgbButton Variant="ButtonVariant.Flat">Cancel</IgbButton>
-            <IgbButton>Confirm</IgbButton>
-        </div>
     </text>;
 }

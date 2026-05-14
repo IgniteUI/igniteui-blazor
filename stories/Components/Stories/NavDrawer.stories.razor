@@ -8,28 +8,23 @@
         <Arguments>
             <Arg For="_ => _!.Open" Value="true" />
             <Arg For="_ => _!.Position" Value="NavDrawerPosition.Start" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
             <div style="position: relative; height: 400px; overflow: hidden;">
-                <IgbNavDrawer @attributes="context.Args" />
+                <IgbNavDrawer @attributes="context.Args">
+                    <IgbNavDrawerHeaderItem>Navigation</IgbNavDrawerHeaderItem>
+                    <IgbNavDrawerItem>
+                        <span slot="content">Home</span>
+                    </IgbNavDrawerItem>
+                    <IgbNavDrawerItem>
+                        <span slot="content">About</span>
+                    </IgbNavDrawerItem>
+                    <IgbNavDrawerItem>
+                        <span slot="content">Settings</span>
+                    </IgbNavDrawerItem>
+                </IgbNavDrawer>
             </div>
         </Template>
     </Story>
 
 </Stories>
-
-@code {
-    private RenderFragment _content = @<text>
-        <IgbNavDrawerHeaderItem>Navigation</IgbNavDrawerHeaderItem>
-        <IgbNavDrawerItem>
-            <span slot="content">Home</span>
-        </IgbNavDrawerItem>
-        <IgbNavDrawerItem>
-            <span slot="content">About</span>
-        </IgbNavDrawerItem>
-        <IgbNavDrawerItem>
-            <span slot="content">Settings</span>
-        </IgbNavDrawerItem>
-    </text>;
-}
