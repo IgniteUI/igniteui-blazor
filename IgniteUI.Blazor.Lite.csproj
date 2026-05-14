@@ -89,8 +89,8 @@
     </None>
   </ItemGroup>
   
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+  <!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="npm run build &amp;&amp; npm run copythemes" />
-  </Target>
+  </Target>-->
 
 </Project>
