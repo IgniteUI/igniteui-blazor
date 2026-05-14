@@ -16,11 +16,11 @@
     -->
     <link rel="stylesheet" href="@Assets["css/blazor-ui.css"]" />
     <link rel="stylesheet" href="@Assets["IgniteUI.Blazor.Stories.styles.css"]" />
-    <link rel="stylesheet" href="_content/IgniteUI.Blazor/themes/dark/bootstrap.css" />
+    <link rel="stylesheet" href="@Assets["_content/IgniteUI.Blazor/themes/dark/bootstrap.css"]" />
     <HeadOutlet @rendermode="@InteractiveServer" />
 </head>
 
-<body style="margin: 0; min-height: 100vh;">
+<body style="margin: 0; min-height: 100vh;" class="ig-typography">
     <IgniteUI.Blazor.Stories.Components.App @rendermode="@InteractiveServer" />
 
     <div id="blazor-error-ui">

@@ -6,35 +6,28 @@
         <Arguments>
             <Arg For="_ => _!.Selected" Value="false" />
             <Arg For="_ => _!.Disabled" Value="false" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbToggleButton @attributes="context.Args" />
+            <IgbToggleButton @attributes="context.Args">Toggle</IgbToggleButton>
         </Template>
     </Story>
 
     <Story Name="Selected">
         <Arguments>
             <Arg For="_ => _!.Selected" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbToggleButton @attributes="context.Args" />
+            <IgbToggleButton @attributes="context.Args">Toggle</IgbToggleButton>
         </Template>
     </Story>
 
     <Story Name="Disabled">
         <Arguments>
             <Arg For="_ => _!.Disabled" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
-            <IgbToggleButton @attributes="context.Args" />
+            <IgbToggleButton @attributes="context.Args">Toggle</IgbToggleButton>
         </Template>
     </Story>
 
 </Stories>
-
-@code {
-    private RenderFragment _content = @<text>Toggle</text>;
-}
