@@ -166,9 +166,7 @@ Build and run the Blazor app.
 
 <!-- ![](images/general/getting-started-blazor-card.jpg) -->
 
-## Running the Stories Project Locally
-
-The `stories/` directory contains a [Blazing Story](https://github.com/jsakamoto/BlazingStory) app that demonstrates Ignite UI for Blazor components. To run it locally, the JS interop bundle and component themes must be built first.
+## Building and Running Locally
 
 **Prerequisites:** [Node.js](https://nodejs.org/) 22 or later.
 
@@ -182,6 +180,8 @@ npm run build
 # 3. Copy component themes to wwwroot
 npm run copythemes
 ```
+
+The `stories/` directory contains a [Blazing Story](https://github.com/jsakamoto/BlazingStory) app that demonstrates Ignite UI for Blazor components. To run it locally, the JS interop bundle and component themes must be built first.
 
 After the above steps, open the solution in Visual Studio or run the stories project with the .NET CLI:
 
