@@ -2,7 +2,7 @@
 
 <Stories TComponent="IgbChip">
 
-    <ArgType For="_ => _!.Variant" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.Variant" Control="ControlType.Select" />
 
     <Story Name="Default">
         <Arguments>
@@ -14,6 +14,32 @@
         </Arguments>
         <Template>
             <IgbChip @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Variants">
+        <Template>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <IgbChip>Default</IgbChip>
+                <IgbChip Variant="StyleVariant.Primary">Primary</IgbChip>
+                <IgbChip Variant="StyleVariant.Info">Info</IgbChip>
+                <IgbChip Variant="StyleVariant.Success">Success</IgbChip>
+                <IgbChip Variant="StyleVariant.Warning">Warning</IgbChip>
+                <IgbChip Variant="StyleVariant.Danger">Danger</IgbChip>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="States">
+        <Template>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <IgbChip>Default</IgbChip>
+                <IgbChip Selectable="true" Selected="true">Selected</IgbChip>
+                <IgbChip Disabled="true">Disabled</IgbChip>
+                <IgbChip Selectable="true" Selected="true" Disabled="true">Disabled &amp; Selected</IgbChip>
+                <IgbChip Removable="true">Removable</IgbChip>
+                <IgbChip Selectable="true">Selectable</IgbChip>
+            </div>
         </Template>
     </Story>
 
@@ -34,6 +60,26 @@
         </Arguments>
         <Template>
             <IgbChip @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Prefix and Suffix">
+        <Template>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <IgbChip>
+                    <span slot="prefix">📁</span>
+                    Prefix only
+                </IgbChip>
+                <IgbChip>
+                    Suffix only
+                    <span slot="suffix">🔖</span>
+                </IgbChip>
+                <IgbChip>
+                    <span slot="prefix">🎵</span>
+                    Both slots
+                    <span slot="suffix">▶</span>
+                </IgbChip>
+            </div>
         </Template>
     </Story>
 

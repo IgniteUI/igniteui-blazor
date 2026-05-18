@@ -12,36 +12,93 @@
         </Arguments>
         <Template>
             <IgbButtonGroup @attributes="context.Args">
-                <IgbToggleButton>Bold</IgbToggleButton>
-                <IgbToggleButton>Italic</IgbToggleButton>
-                <IgbToggleButton>Underline</IgbToggleButton>
+                <IgbToggleButton Value="bold">Bold</IgbToggleButton>
+                <IgbToggleButton Value="italic">Italic</IgbToggleButton>
+                <IgbToggleButton Value="underline">Underline</IgbToggleButton>
             </IgbButtonGroup>
         </Template>
     </Story>
 
-    <Story Name="Multiple Selection">
-        <Arguments>
-            <Arg For="_ => _!.Selection" Value="ButtonGroupSelection.Multiple" />
-        </Arguments>
+    <Story Name="Selection Modes">
         <Template>
-            <IgbButtonGroup @attributes="context.Args">
-                <IgbToggleButton>Bold</IgbToggleButton>
-                <IgbToggleButton>Italic</IgbToggleButton>
-                <IgbToggleButton>Underline</IgbToggleButton>
-            </IgbButtonGroup>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Single — one or none selected</p>
+                    <IgbButtonGroup Selection="ButtonGroupSelection.Single">
+                        <IgbToggleButton Value="day">Day</IgbToggleButton>
+                        <IgbToggleButton Value="week" Selected="true">Week</IgbToggleButton>
+                        <IgbToggleButton Value="month">Month</IgbToggleButton>
+                        <IgbToggleButton Value="year">Year</IgbToggleButton>
+                    </IgbButtonGroup>
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Single Required — exactly one always selected</p>
+                    <IgbButtonGroup Selection="ButtonGroupSelection.SingleRequired">
+                        <IgbToggleButton Value="xs">XS</IgbToggleButton>
+                        <IgbToggleButton Value="sm">SM</IgbToggleButton>
+                        <IgbToggleButton Value="md" Selected="true">MD</IgbToggleButton>
+                        <IgbToggleButton Value="lg">LG</IgbToggleButton>
+                        <IgbToggleButton Value="xl">XL</IgbToggleButton>
+                    </IgbButtonGroup>
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Multiple — any number selected</p>
+                    <IgbButtonGroup Selection="ButtonGroupSelection.Multiple">
+                        <IgbToggleButton Value="bold">Bold</IgbToggleButton>
+                        <IgbToggleButton Value="italic" Selected="true">Italic</IgbToggleButton>
+                        <IgbToggleButton Value="underline" Selected="true">Underline</IgbToggleButton>
+                    </IgbButtonGroup>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Alignment">
+        <Template>
+            <div style="display: flex; gap: 3rem; align-items: flex-start;">
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Horizontal</p>
+                    <IgbButtonGroup Alignment="ContentOrientation.Horizontal" Selection="ButtonGroupSelection.SingleRequired">
+                        <IgbToggleButton Value="left">Left</IgbToggleButton>
+                        <IgbToggleButton Value="center" Selected="true">Center</IgbToggleButton>
+                        <IgbToggleButton Value="right">Right</IgbToggleButton>
+                    </IgbButtonGroup>
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Vertical</p>
+                    <IgbButtonGroup Alignment="ContentOrientation.Vertical" Selection="ButtonGroupSelection.SingleRequired">
+                        <IgbToggleButton Value="left">Left</IgbToggleButton>
+                        <IgbToggleButton Value="center" Selected="true">Center</IgbToggleButton>
+                        <IgbToggleButton Value="right">Right</IgbToggleButton>
+                        <IgbToggleButton Value="justify">Justify</IgbToggleButton>
+                    </IgbButtonGroup>
+                </div>
+            </div>
         </Template>
     </Story>
 
     <Story Name="Disabled">
-        <Arguments>
-            <Arg For="_ => _!.Disabled" Value="true" />
-        </Arguments>
         <Template>
-            <IgbButtonGroup @attributes="context.Args">
-                <IgbToggleButton>Bold</IgbToggleButton>
-                <IgbToggleButton>Italic</IgbToggleButton>
-                <IgbToggleButton>Underline</IgbToggleButton>
-            </IgbButtonGroup>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Entire group disabled</p>
+                    <IgbButtonGroup Selection="ButtonGroupSelection.Single" Disabled="true">
+                        <IgbToggleButton Value="day" Selected="true">Day</IgbToggleButton>
+                        <IgbToggleButton Value="week">Week</IgbToggleButton>
+                        <IgbToggleButton Value="month">Month</IgbToggleButton>
+                    </IgbButtonGroup>
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Individual buttons disabled</p>
+                    <IgbButtonGroup Selection="ButtonGroupSelection.Single">
+                        <IgbToggleButton Value="xs">XS</IgbToggleButton>
+                        <IgbToggleButton Value="sm" Selected="true">SM</IgbToggleButton>
+                        <IgbToggleButton Value="md" Disabled="true">MD</IgbToggleButton>
+                        <IgbToggleButton Value="lg" Disabled="true">LG</IgbToggleButton>
+                        <IgbToggleButton Value="xl">XL</IgbToggleButton>
+                    </IgbButtonGroup>
+                </div>
+            </div>
         </Template>
     </Story>
 

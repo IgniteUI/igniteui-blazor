@@ -7,38 +7,84 @@
             <Arg For="_ => _!.Elevated" Value="false" />
         </Arguments>
         <Template>
-            <IgbCard @attributes="context.Args">
-                <IgbCardHeader>
-                    <h3 slot="title">Card Title</h3>
-                    <h5 slot="subtitle">Card Subtitle</h5>
-                </IgbCardHeader>
-                <IgbCardContent>
-                    <p>This is some card content. You can put any information here.</p>
-                </IgbCardContent>
-                <IgbCardActions>
-                    <IgbButton Variant="ButtonVariant.Flat">Action</IgbButton>
-                </IgbCardActions>
-            </IgbCard>
+            <div style="max-width: 344px;">
+                <IgbCard @attributes="context.Args">
+                    <IgbCardMedia style="max-height: 194px;">
+                        <img src="https://images.unsplash.com/photo-1518235506717-e1ed3306a89b?ixlib=rb-1.2.1&auto=format&fit=crop&w=640&q=80" alt="New York City" />
+                    </IgbCardMedia>
+                    <IgbCardHeader>
+                        <h3 slot="title">New York</h3>
+                        <h5 slot="subtitle">City that never sleeps</h5>
+                    </IgbCardHeader>
+                    <IgbCardContent>
+                        <p>New York City comprises 5 boroughs sitting where the Hudson River meets the Atlantic Ocean.</p>
+                    </IgbCardContent>
+                    <IgbCardActions>
+                        <IgbButton slot="start" Variant="ButtonVariant.Flat">Like</IgbButton>
+                        <IgbButton slot="start" Variant="ButtonVariant.Flat">Learn More</IgbButton>
+                    </IgbCardActions>
+                </IgbCard>
+            </div>
         </Template>
     </Story>
 
-    <Story Name="Elevated">
-        <Arguments>
-            <Arg For="_ => _!.Elevated" Value="true" />
-        </Arguments>
+    <Story Name="Outlined vs Elevated">
         <Template>
-            <IgbCard @attributes="context.Args">
-                <IgbCardHeader>
-                    <h3 slot="title">Card Title</h3>
-                    <h5 slot="subtitle">Card Subtitle</h5>
-                </IgbCardHeader>
-                <IgbCardContent>
-                    <p>This is some card content. You can put any information here.</p>
-                </IgbCardContent>
-                <IgbCardActions>
-                    <IgbButton Variant="ButtonVariant.Flat">Action</IgbButton>
-                </IgbCardActions>
-            </IgbCard>
+            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
+                <div style="max-width: 344px;">
+                    <p style="margin: 0 0 0.75rem; font-weight: 600;">Outlined (default)</p>
+                    <IgbCard>
+                        <IgbCardHeader>
+                            <h3 slot="title">Outlined</h3>
+                            <h5 slot="subtitle">Default appearance</h5>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <p>Outlined cards use a subtle border to define their boundary.</p>
+                        </IgbCardContent>
+                        <IgbCardActions>
+                            <IgbButton slot="start" Variant="ButtonVariant.Flat">Action</IgbButton>
+                        </IgbCardActions>
+                    </IgbCard>
+                </div>
+                <div style="max-width: 344px;">
+                    <p style="margin: 0 0 0.75rem; font-weight: 600;">Elevated</p>
+                    <IgbCard Elevated="true">
+                        <IgbCardHeader>
+                            <h3 slot="title">Elevated</h3>
+                            <h5 slot="subtitle">Shadow appearance</h5>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <p>Elevated cards use a drop shadow to lift them off the page.</p>
+                        </IgbCardContent>
+                        <IgbCardActions>
+                            <IgbButton slot="start" Variant="ButtonVariant.Flat">Action</IgbButton>
+                        </IgbCardActions>
+                    </IgbCard>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Horizontal">
+        <Template>
+            <IconRegistrar />
+            <div style="max-width: 500px;">
+                <IgbCard style="flex-direction: row;">
+                    <div style="flex: 1;">
+                        <IgbCardHeader>
+                            <IgbAvatar slot="thumbnail" Shape="AvatarShape.Rounded" Src="https://www.infragistics.com/angular-demos/assets/images/men/1.jpg" />
+                            <h3 slot="title">Rozes</h3>
+                            <h5 slot="subtitle">Under the Grave (2016)</h5>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <p>I write what's real and what's true, even if it means throwing myself under the bus.</p>
+                        </IgbCardContent>
+                    </div>
+                    <IgbCardActions Orientation="ContentOrientation.Vertical">
+                        <IgbIconButton slot="end" IconName="home" Collection="default" Variant="IconButtonVariant.Flat" />
+                    </IgbCardActions>
+                </IgbCard>
+            </div>
         </Template>
     </Story>
 
