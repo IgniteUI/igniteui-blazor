@@ -17,27 +17,25 @@
         </Template>
     </Story>
 
-    <Story Name="Outlined">
-        <Arguments>
-            <Arg For="_ => _!.Variant" Value="IconButtonVariant.Outlined" />
-            <Arg For="_ => _!.IconName" Value='"home"' />
-            <Arg For="_ => _!.Collection" Value='"default"' />
-        </Arguments>
+    <Story Name="Variants">
         <Template>
             <IconRegistrar />
-            <IgbIconButton @attributes="context.Args" />
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <IgbIconButton Variant="IconButtonVariant.Contained" IconName="home" Collection="default" />
+                <IgbIconButton Variant="IconButtonVariant.Outlined" IconName="home" Collection="default" />
+                <IgbIconButton Variant="IconButtonVariant.Flat" IconName="home" Collection="default" />
+            </div>
         </Template>
     </Story>
 
-    <Story Name="Flat">
-        <Arguments>
-            <Arg For="_ => _!.Variant" Value="IconButtonVariant.Flat" />
-            <Arg For="_ => _!.IconName" Value='"home"' />
-            <Arg For="_ => _!.Collection" Value='"default"' />
-        </Arguments>
+    <Story Name="Disabled">
         <Template>
             <IconRegistrar />
-            <IgbIconButton @attributes="context.Args" />
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <IgbIconButton Variant="IconButtonVariant.Contained" IconName="home" Collection="default" Disabled="true" />
+                <IgbIconButton Variant="IconButtonVariant.Outlined" IconName="home" Collection="default" Disabled="true" />
+                <IgbIconButton Variant="IconButtonVariant.Flat" IconName="home" Collection="default" Disabled="true" />
+            </div>
         </Template>
     </Story>
 

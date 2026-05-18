@@ -16,34 +16,67 @@
         </Template>
     </Story>
 
-    <Story Name="Outlined">
-        <Arguments>
-            <Arg For="_ => _!.Variant" Value="ButtonVariant.Outlined" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
-        </Arguments>
+    <Story Name="Variants">
         <Template>
-            <IgbButton @attributes="context.Args" />
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                <IgbButton Variant="ButtonVariant.Contained">Contained</IgbButton>
+                <IgbButton Variant="ButtonVariant.Outlined">Outlined</IgbButton>
+                <IgbButton Variant="ButtonVariant.Flat">Flat</IgbButton>
+                <IgbButton Variant="ButtonVariant.Fab">
+                    <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                    FAB
+                </IgbButton>
+            </div>
         </Template>
     </Story>
 
-    <Story Name="Flat">
-        <Arguments>
-            <Arg For="_ => _!.Variant" Value="ButtonVariant.Flat" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
-        </Arguments>
+    <Story Name="With Prefix and Suffix">
         <Template>
-            <IgbButton @attributes="context.Args" />
+            <IconRegistrar />
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                <IgbButton Variant="ButtonVariant.Contained">
+                    <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                    Home
+                </IgbButton>
+                <IgbButton Variant="ButtonVariant.Outlined">
+                    Download
+                    <IgbIcon slot="suffix" IconName="home" Collection="default" />
+                </IgbButton>
+                <IgbButton Variant="ButtonVariant.Flat">
+                    <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                    Both
+                    <IgbIcon slot="suffix" IconName="home" Collection="default" />
+                </IgbButton>
+            </div>
         </Template>
     </Story>
 
     <Story Name="Disabled">
-        <Arguments>
-            <Arg For="_ => _!.Variant" Value="ButtonVariant.Contained" />
-            <Arg For="_ => _!.Disabled" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
-        </Arguments>
         <Template>
-            <IgbButton @attributes="context.Args" />
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                <IgbButton Variant="ButtonVariant.Contained" Disabled="true">Contained</IgbButton>
+                <IgbButton Variant="ButtonVariant.Outlined" Disabled="true">Outlined</IgbButton>
+                <IgbButton Variant="ButtonVariant.Flat" Disabled="true">Flat</IgbButton>
+                <IgbButton Variant="ButtonVariant.Fab" Disabled="true">
+                    <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                    FAB
+                </IgbButton>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="As Link">
+        <Template>
+            <IconRegistrar />
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                <IgbButton Variant="ButtonVariant.Contained" Href="https://www.infragistics.com" Target="ButtonBaseTarget._blank">
+                    <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                    Visit Docs
+                </IgbButton>
+                <IgbButton Variant="ButtonVariant.Outlined" Href="https://www.infragistics.com" Target="ButtonBaseTarget._blank" Disabled="true">
+                    Disabled Link
+                </IgbButton>
+            </div>
         </Template>
     </Story>
 

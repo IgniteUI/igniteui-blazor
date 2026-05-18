@@ -16,23 +16,23 @@
         </Template>
     </Story>
 
-    <Story Name="Checked">
-        <Arguments>
-            <Arg For="_ => _!.Checked" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_enabledContent" />
-        </Arguments>
+    <Story Name="States">
         <Template>
-            <IgbSwitch @attributes="context.Args" />
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <IgbSwitch>Default</IgbSwitch>
+                <IgbSwitch Checked="true">Checked</IgbSwitch>
+                <IgbSwitch Disabled="true">Disabled</IgbSwitch>
+                <IgbSwitch Disabled="true" Checked="true">Disabled &amp; Checked</IgbSwitch>
+            </div>
         </Template>
     </Story>
 
-    <Story Name="Disabled">
-        <Arguments>
-            <Arg For="_ => _!.Disabled" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
-        </Arguments>
+    <Story Name="Label Position">
         <Template>
-            <IgbSwitch @attributes="context.Args" />
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <IgbSwitch LabelPosition="ToggleLabelPosition.After" Checked="true">Label after (default)</IgbSwitch>
+                <IgbSwitch LabelPosition="ToggleLabelPosition.Before">Label before</IgbSwitch>
+            </div>
         </Template>
     </Story>
 
@@ -40,5 +40,4 @@
 
 @code {
     private RenderFragment _content = @<text>Dark Mode</text>;
-    private RenderFragment _enabledContent = @<text>Enabled</text>;
 }
