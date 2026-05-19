@@ -2,7 +2,7 @@
 
 <Stories TComponent="IgbBadge">
 
-    <ArgType For="_ => _!.Variant" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.Variant" Control="ControlType.Select" />
     <ArgType For="_ => _!.Shape" Control="ControlType.Radio" />
 
     <Story Name="Default">
@@ -17,23 +17,129 @@
         </Template>
     </Story>
 
-    <Story Name="Outlined">
-        <Arguments>
-            <Arg For="_ => _!.Outlined" Value="true" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
-        </Arguments>
+    <Story Name="Variants">
         <Template>
-            <IgbBadge @attributes="context.Args" />
+            <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Primary">1</IgbBadge>
+                    <span style="font-size: 0.75rem;">Primary</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Info">2</IgbBadge>
+                    <span style="font-size: 0.75rem;">Info</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Success">3</IgbBadge>
+                    <span style="font-size: 0.75rem;">Success</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Warning">4</IgbBadge>
+                    <span style="font-size: 0.75rem;">Warning</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Danger">5</IgbBadge>
+                    <span style="font-size: 0.75rem;">Danger</span>
+                </div>
+            </div>
         </Template>
     </Story>
 
-    <Story Name="Square">
-        <Arguments>
-            <Arg For="_ => _!.Shape" Value="BadgeShape.Square" />
-            <Arg For="_ => _!.ChildContent" Value="_content" />
-        </Arguments>
+    <Story Name="Outlined">
         <Template>
-            <IgbBadge @attributes="context.Args" />
+            <div style="display: flex; gap: 2.5rem; flex-wrap: wrap; align-items: flex-start;">
+                <div>
+                    <p style="margin: 0 0 0.75rem; font-weight: 600;">Filled</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <IgbBadge Variant="StyleVariant.Primary">1</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Info">2</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Success">3</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Warning">4</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Danger">5</IgbBadge>
+                    </div>
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.75rem; font-weight: 600;">Outlined</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <IgbBadge Variant="StyleVariant.Primary" Outlined="true">1</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Info" Outlined="true">2</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Success" Outlined="true">3</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Warning" Outlined="true">4</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Danger" Outlined="true">5</IgbBadge>
+                    </div>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Shapes">
+        <Template>
+            <div style="display: flex; gap: 2.5rem; flex-wrap: wrap; align-items: flex-start;">
+                <div>
+                    <p style="margin: 0 0 0.75rem; font-weight: 600;">Rounded</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <IgbBadge Variant="StyleVariant.Primary" Shape="BadgeShape.Rounded">1</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Info" Shape="BadgeShape.Rounded">2</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Success" Shape="BadgeShape.Rounded">3</IgbBadge>
+                    </div>
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.75rem; font-weight: 600;">Square</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <IgbBadge Variant="StyleVariant.Primary" Shape="BadgeShape.Square">1</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Info" Shape="BadgeShape.Square">2</IgbBadge>
+                        <IgbBadge Variant="StyleVariant.Success" Shape="BadgeShape.Square">3</IgbBadge>
+                    </div>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Dot">
+        <Template>
+            <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Primary" Dot="true" />
+                    <span style="font-size: 0.75rem;">Primary</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Info" Dot="true" />
+                    <span style="font-size: 0.75rem;">Info</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Success" Dot="true" />
+                    <span style="font-size: 0.75rem;">Success</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Warning" Dot="true" />
+                    <span style="font-size: 0.75rem;">Warning</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <IgbBadge Variant="StyleVariant.Danger" Dot="true" />
+                    <span style="font-size: 0.75rem;">Danger</span>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="In Context">
+        <Template>
+            <IconRegistrar />
+            <div style="display: flex; gap: 3rem; align-items: flex-start; flex-wrap: wrap;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <div style="position: relative; display: inline-flex;">
+                        <IgbIcon IconName="home" Collection="default" style="font-size: 2rem;" />
+                        <IgbBadge Variant="StyleVariant.Danger" style="position: absolute; top: 0; right: 0; transform: translate(50%, -50%);">5</IgbBadge>
+                    </div>
+                    <span style="font-size: 0.75rem;">Notifications</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <div style="position: relative; display: inline-flex;">
+                        <IgbAvatar Initials="JD" Shape="AvatarShape.Circle" />
+                        <IgbBadge Variant="StyleVariant.Success" Dot="true" Outlined="true" style="position: absolute; bottom: 0; right: 0; transform: translate(25%, 25%);" />
+                    </div>
+                    <span style="font-size: 0.75rem;">Online status</span>
+                </div>
+            </div>
         </Template>
     </Story>
 

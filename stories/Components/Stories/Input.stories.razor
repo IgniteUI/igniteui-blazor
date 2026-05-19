@@ -17,6 +17,20 @@
         </Template>
     </Story>
 
+    <Story Name="Types">
+        <Template>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1.5rem; align-items: start;">
+                <IgbInput DisplayType="InputType.Text" Label="Text" Placeholder="Enter text" />
+                <IgbInput DisplayType="InputType.Email" Label="Email" Placeholder="name@example.com" />
+                <IgbInput DisplayType="InputType.Number" Label="Number" Placeholder="0" />
+                <IgbInput DisplayType="InputType.Password" Label="Password" Placeholder="••••••••" />
+                <IgbInput DisplayType="InputType.Search" Label="Search" Placeholder="Search…" />
+                <IgbInput DisplayType="InputType.Tel" Label="Tel" Placeholder="+1 (555) 000-0000" />
+                <IgbInput DisplayType="InputType.Url" Label="URL" Placeholder="https://example.com" />
+            </div>
+        </Template>
+    </Story>
+
     <Story Name="Outlined">
         <Arguments>
             <Arg For="_ => _!.Label" Value='"Email"' />
@@ -29,14 +43,14 @@
         </Template>
     </Story>
 
-    <Story Name="Password">
-        <Arguments>
-            <Arg For="_ => _!.Label" Value='"Password"' />
-            <Arg For="_ => _!.DisplayType" Value="InputType.Password" />
-            <Arg For="_ => _!.Required" Value="true" />
-        </Arguments>
+    <Story Name="Slots">
         <Template>
-            <IgbInput @attributes="context.Args" />
+            <IconRegistrar />
+            <IgbInput Label="Input with slots" Placeholder="Type something">
+                <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                <IgbIcon slot="suffix" IconName="home" Collection="default" />
+                <span slot="helper-text">Sample helper text.</span>
+            </IgbInput>
         </Template>
     </Story>
 
