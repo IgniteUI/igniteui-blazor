@@ -146,21 +146,24 @@ Users can drag column borders to resize. Combine with `MinWidth` and `MaxWidth` 
 
 ### Auto-size column to fit content
 
-Programmatically auto-size a column to fit its longest cell value:
+Programmatically auto-size a column to fit its longest visible cell value:
 
 ```razor
 @code {
     private IgbGrid grid = default!;
 
-    private async Task AutoSizeNameColumn()
+    private void AutoSizeNameColumn()
     {
         var column = grid.GetColumnByName("Name");
-        await grid.AutoSizeColumnWidthAsync(column);
+        column.Autosize(false); // false = include cell content, true = header only
     }
 
-    private async Task AutoSizeAllColumns()
+    private void AutoSizeAllColumns()
     {
-        await grid.AutoSizeColumnsWidthAsync();
+        foreach (var col in grid.Columns)
+        {
+            col.Autosize(false);
+        }
     }
 }
 ```
@@ -168,10 +171,10 @@ Programmatically auto-size a column to fit its longest cell value:
 ### Column auto-width on init
 
 ```razor
-<IgbColumn Field="Name" Header="Name" AutoSize="true" />
+<IgbColumn Field="Name" Header="Name" Width="auto" />
 ```
 
-When `AutoSize="true"`, the column width adjusts on initial render to fit the header and visible content.
+When `Width="auto"`, the column width adjusts on initial render to fit the header and visible content.
 
 ---
 
@@ -179,19 +182,19 @@ When `AutoSize="true"`, the column width adjusts on initial render to fit the he
 
 ### Default row height
 
-The default row height depends on the theme's display density. Use `DisplayDensity` on the grid:
+The default row height depends on the `--ig-size` CSS custom property. Set it on the grid or a parent element:
 
-```razor
-<IgbGrid Data="data" PrimaryKey="Id" DisplayDensity="DisplayDensity.Comfortable">
-    ...
-</IgbGrid>
+```css
+igc-grid {
+    --ig-size: var(--ig-size-large); /* default */
+}
 ```
 
-| Display Density | Approximate Row Height |
+| `--ig-size` value | Approximate Row Height |
 |---|---|
-| `Comfortable` | 50px (default) |
-| `Cosy` | 40px |
-| `Compact` | 32px |
+| `var(--ig-size-large)` | 50px (default) |
+| `var(--ig-size-medium)` | 40px |
+| `var(--ig-size-small)` | 32px |
 
 ### Custom row height
 
@@ -215,22 +218,11 @@ Or use `RowHeight` parameter:
 
 ## Cell Spacing (CSS Variables)
 
-Control cell padding and spacing using CSS custom properties:
-
-```css
-igc-grid {
-    --ig-grid-cell-padding-block: 12px;     /* top and bottom padding */
-    --ig-grid-cell-padding-inline: 16px;    /* left and right padding */
-}
-```
-
-### Available CSS variables for grid spacing
+The grid does not expose individual cell-padding CSS custom properties. Cell padding and row height are controlled by the `--ig-size` CSS variable:
 
 | CSS Variable | Description | Default |
 |---|---|---|
-| `--ig-grid-cell-padding-block` | Vertical cell padding | Theme-dependent |
-| `--ig-grid-cell-padding-inline` | Horizontal cell padding | Theme-dependent |
-| `--ig-size` | Overall component size (affects row height, cell padding) | `var(--ig-size-large)` |
+| `--ig-size` | Overall component size (affects row height, cell padding, header height) | `var(--ig-size-large)` |
 
 ### Sizing via `--ig-size`
 
@@ -280,5 +272,5 @@ Apply different sizing to a specific grid:
 5. **`MinWidth` and `MaxWidth` constrain resizing** - always set them when `Resizable="true"` for predictable UX.
 6. **`--ig-size` controls the overall density** - it affects row height, cell padding, header height, and internal spacing.
 7. **Column virtualization requires column widths** - without widths, the grid cannot calculate which columns are outside the viewport.
-8. **Auto-size is a one-time operation** - `AutoSize="true"` on a column fits content at initial render; it doesn't update dynamically as data changes.
+8. **Auto-size is a one-time operation** - `Width="auto"` on a column fits content at initial render; it doesn't update dynamically as data changes.
 9. **Row height consistency** - all rows in a grid have the same height. Variable row height is not supported.

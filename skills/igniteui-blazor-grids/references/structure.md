@@ -63,23 +63,21 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule));
          Width="100%" Height="500px" />
 ```
 
-When `AutoGenerate="true"`, the grid creates a column for each public property of the data type. You can hook `AutoGenerating` to customize or skip columns:
+When `AutoGenerate="true"`, the grid creates a column for each public property of the data type. You can hook `ColumnInit` to customize columns as they are created, or use `AutoGenerateExclude` to skip specific fields:
 
 ```razor
 <IgbGrid Data="employees" PrimaryKey="Id" AutoGenerate="true"
-         AutoGenerating="OnAutoGenerating" />
+         AutoGenerateExclude='@(new string[] { "InternalCode" })'
+         ColumnInit="OnColumnInit" />
 
 @code {
-    private void OnAutoGenerating(IgbColumnAutoGenerateEventArgs args)
+    private void OnColumnInit(IgbColumnComponentEventArgs args)
     {
-        if (args.Column.Field == "InternalCode")
+        var column = args.Detail;
+        if (column.Field == "Salary")
         {
-            args.Cancel = true; // skip this column
-        }
-        else if (args.Column.Field == "Salary")
-        {
-            args.Column.DataType = GridColumnDataType.Currency;
-            args.Column.Editable = false;
+            column.DataType = GridColumnDataType.Currency;
+            column.Editable = false;
         }
     }
 }
@@ -115,18 +113,16 @@ Use `GridColumnDataType` to set the type. This controls sorting, filtering, edit
 | `MinWidth` | `string` | - | Minimum column width |
 | `MaxWidth` | `string` | - | Maximum column width |
 | `Sortable` | `bool` | `false` | Enables sorting on this column |
-| `Filterable` | `bool` | `true` | Enables filtering on this column |
-| `Filterable` | `bool` | `false` | Disable filtering on this column |
+| `Filterable` | `bool` | `true` | Enables/disables filtering on this column |
 | `Editable` | `bool` | `false` | Enables editing on this column |
 | `Resizable` | `bool` | `false` | Enables column resizing |
-| `Movable` | `bool` | `false` | Enables column moving |
 | `Hidden` | `bool` | `false` | Hides the column |
 | `Pinned` | `bool` | `false` | Pins the column |
 | `Groupable` | `bool` | `false` | Enables grouping for this column (IgbGrid only) |
 | `HasSummary` | `bool` | `false` | Enables summaries for this column |
 | `DisablePinning` | `bool` | `false` | Disables pinning for this column |
 | `DisableHiding` | `bool` | `false` | Prevents hiding this column |
-| `CellClasses` | `string` | - | CSS class(es) to apply to cells |
+| `CellClasses` | `object` | - | CSS class rules to apply to cells |
 | `HeaderClasses` | `string` | - | CSS class(es) to apply to the header |
 
 ---
@@ -293,20 +289,27 @@ Control whether pinned columns appear at the start or end:
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `SortingMode` | `SortingMode` | `Single` | `Single` - one column at a time; `Multiple` - multi-column sort |
+| `SortingOptions` | `IgbSortingOptions` | - | `Mode = SortingOptionsMode.Single` - one column at a time; `Mode = SortingOptionsMode.Multiple` - multi-column sort |
 
 ```razor
-<IgbGrid Data="data" PrimaryKey="Id" SortingMode="SortingMode.Multiple">
+<IgbGrid Data="data" PrimaryKey="Id" SortingOptions="sortingOptions">
     <IgbColumn Field="Department" Sortable="true" />
     <IgbColumn Field="Name" Sortable="true" />
 </IgbGrid>
+
+@code {
+    private IgbSortingOptions sortingOptions = new IgbSortingOptions
+    {
+        Mode = SortingOptionsMode.Multiple
+    };
+}
 ```
 
 ### Sorting events
 
 | Event | Type | Description |
 |---|---|---|
-| `SortingDone` | `EventCallback<IgbSortingEventArgs>` | Fires after sorting is applied |
+| `SortingDone` | `EventCallback<IgbSortingExpressionEventArgs>` | Fires after sorting is applied |
 
 ```razor
 <IgbGrid Data="data" PrimaryKey="Id" SortingDone="OnSortingDone">
@@ -314,9 +317,9 @@ Control whether pinned columns appear at the start or end:
 </IgbGrid>
 
 @code {
-    private void OnSortingDone(IgbSortingEventArgs args)
+    private void OnSortingDone(IgbSortingExpressionEventArgs args)
     {
-        // React to sorting changes
+        // args.Detail contains IgbSortingExpression[]
     }
 }
 ```
@@ -400,14 +403,14 @@ The filter condition depends on the column's `DataType`:
 ```razor
 <IgbGrid Data="data" PrimaryKey="Id"
          RowSelection="GridSelectionMode.Multiple"
-         RowSelectionChanged="OnRowSelection">
+         RowSelectionChanging="OnRowSelection">
     ...
 </IgbGrid>
 
 @code {
     private void OnRowSelection(IgbRowSelectionEventArgs args)
     {
-        var newSelection = args.NewSelection; // selected row data
+        var newSelection = args.Detail.NewSelection; // selected row keys
     }
 }
 ```
@@ -429,7 +432,7 @@ The filter condition depends on the column's `DataType`:
 </IgbGrid>
 
 @code {
-    private void OnRangeSelected(IgbGridForOfState<IgbCellType> args)
+    private void OnRangeSelected(IgbGridSelectionRangeEventArgs args)
     {
         // Handle range selection
     }
