@@ -1,0 +1,41 @@
+﻿@inject NavigationManager NavigationManager
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IgniteUI.Blazor.Stories</title>
+    <base href="@(new Uri(NavigationManager.BaseUri).AbsolutePath)" />
+    <ResourcePreloader />
+    <ImportMap />
+    <!--
+    If you need to add <link> or <script> elements to include CSS 
+    or JavaScript files for canvas views of your Stories,
+    YOU SHOULD PLACE THEM HERE, not in the "IndexPage.razor" file.
+    -->
+    <link rel="stylesheet" href="@Assets["css/blazor-ui.css"]" />
+    <link rel="stylesheet" href="@Assets["IgniteUI.Blazor.Stories.styles.css"]" />
+    <link rel="stylesheet" href="@Assets["_content/IgniteUI.Blazor/themes/dark/bootstrap.css"]" />
+    <HeadOutlet @rendermode="@InteractiveServer" />
+</head>
+
+<body style="margin: 0; padding: 16px; min-height: calc(100vh - 32px); font-family: var(--ig-font-family); color: var(--ig-surface-500-contrast);" class="ig-typography">
+    <IgniteUI.Blazor.Stories.Components.App @rendermode="@InteractiveServer" />
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <!--
+    If you need to add <script> elements to include 
+    JavaScript files for canvas views of your Stories,
+    YOU SHOULD PLACE THEM HERE, not in the "IndexPage.razor" file.
+    -->
+    <script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+</body>
+
+</html>

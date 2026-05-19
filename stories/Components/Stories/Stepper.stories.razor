@@ -1,0 +1,77 @@
+@attribute [Stories("Layout/Stepper")]
+
+<Stories TComponent="IgbStepper">
+
+    <ArgType For="_ => _!.Orientation" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.StepType" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.TitlePosition" Control="ControlType.Select" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Orientation" Value="StepperOrientation.Horizontal" />
+            <Arg For="_ => _!.StepType" Value="StepperStepType.Full" />
+            <Arg For="_ => _!.Linear" Value="false" />
+        </Arguments>
+        <Template>
+            <IgbStepper @attributes="context.Args">
+                <IgbStep>
+                    <span slot="title">Step 1</span>
+                    <p>Personal Information</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 2</span>
+                    <p>Address Details</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 3</span>
+                    <p>Confirmation</p>
+                </IgbStep>
+            </IgbStepper>
+        </Template>
+    </Story>
+
+    <Story Name="Vertical">
+        <Arguments>
+            <Arg For="_ => _!.Orientation" Value="StepperOrientation.Vertical" />
+        </Arguments>
+        <Template>
+            <IgbStepper @attributes="context.Args">
+                <IgbStep>
+                    <span slot="title">Step 1</span>
+                    <p>Personal Information</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 2</span>
+                    <p>Address Details</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 3</span>
+                    <p>Confirmation</p>
+                </IgbStep>
+            </IgbStepper>
+        </Template>
+    </Story>
+
+    <Story Name="Linear">
+        <Arguments>
+            <Arg For="_ => _!.Linear" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbStepper @attributes="context.Args">
+                <IgbStep>
+                    <span slot="title">Step 1</span>
+                    <p>Personal Information</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 2</span>
+                    <p>Address Details</p>
+                </IgbStep>
+                <IgbStep>
+                    <span slot="title">Step 3</span>
+                    <p>Confirmation</p>
+                </IgbStep>
+            </IgbStepper>
+        </Template>
+    </Story>
+
+</Stories>

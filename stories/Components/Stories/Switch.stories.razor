@@ -1,0 +1,43 @@
+@attribute [Stories("Forms/Switch")]
+
+<Stories TComponent="IgbSwitch">
+
+    <ArgType For="_ => _!.LabelPosition" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Checked" Value="false" />
+            <Arg For="_ => _!.Disabled" Value="false" />
+            <Arg For="_ => _!.LabelPosition" Value="ToggleLabelPosition.After" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbSwitch @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="States">
+        <Template>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <IgbSwitch>Default</IgbSwitch>
+                <IgbSwitch Checked="true">Checked</IgbSwitch>
+                <IgbSwitch Disabled="true">Disabled</IgbSwitch>
+                <IgbSwitch Disabled="true" Checked="true">Disabled &amp; Checked</IgbSwitch>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Label Position">
+        <Template>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <IgbSwitch LabelPosition="ToggleLabelPosition.After" Checked="true">Label after (default)</IgbSwitch>
+                <IgbSwitch LabelPosition="ToggleLabelPosition.Before">Label before</IgbSwitch>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>Dark Mode</text>;
+}

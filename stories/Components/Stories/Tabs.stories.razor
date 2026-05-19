@@ -1,0 +1,35 @@
+@attribute [Stories("Layout/Tabs")]
+
+<Stories TComponent="IgbTabs">
+
+    <ArgType For="_ => _!.Alignment" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.Activation" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Alignment" Value="TabsAlignment.Start" />
+            <Arg For="_ => _!.Activation" Value="TabsActivation.Auto" />
+        </Arguments>
+        <Template>
+            <IgbTabs @attributes="context.Args">
+                <IgbTab Label="Tab 1">Home panel content</IgbTab>
+                <IgbTab Label="Tab 2">Search panel content</IgbTab>
+                <IgbTab Label="Tab 3">Favorites panel content</IgbTab>
+            </IgbTabs>
+        </Template>
+    </Story>
+
+    <Story Name="Justified">
+        <Arguments>
+            <Arg For="_ => _!.Alignment" Value="TabsAlignment.Justify" />
+        </Arguments>
+        <Template>
+            <IgbTabs @attributes="context.Args">
+                <IgbTab Label="Tab 1">Home panel content</IgbTab>
+                <IgbTab Label="Tab 2">Search panel content</IgbTab>
+                <IgbTab Label="Tab 3">Favorites panel content</IgbTab>
+            </IgbTabs>
+        </Template>
+    </Story>
+
+</Stories>

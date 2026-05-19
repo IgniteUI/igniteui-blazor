@@ -1,0 +1,35 @@
+@attribute [Stories("Feedback/Snackbar")]
+
+<Stories TComponent="IgbSnackbar">
+
+    <ArgType For="_ => _!.Position" Control="ControlType.Select" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Open" Value="true" />
+            <Arg For="_ => _!.KeepOpen" Value="true" />
+            <Arg For="_ => _!.ActionText" Value='"UNDO"' />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <div style="position: relative; height: 200px;">
+                <IgbSnackbar @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Positions">
+        <Template>
+            <div style="position: relative; height: 300px;">
+                <IgbSnackbar Open="true" KeepOpen="true" Position="AbsolutePosition.Top" ActionText="Dismiss">Snackbar — top</IgbSnackbar>
+                <IgbSnackbar Open="true" KeepOpen="true" Position="AbsolutePosition.Middle" ActionText="Dismiss">Snackbar — middle</IgbSnackbar>
+                <IgbSnackbar Open="true" KeepOpen="true" Position="AbsolutePosition.Bottom" ActionText="Dismiss">Snackbar — bottom</IgbSnackbar>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>Item deleted successfully</text>;
+}

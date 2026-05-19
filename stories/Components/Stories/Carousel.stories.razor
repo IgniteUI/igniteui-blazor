@@ -1,0 +1,93 @@
+@attribute [Stories("Layout/Carousel")]
+
+<Stories TComponent="IgbCarousel">
+
+    <ArgType For="_ => _!.AnimationType" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.IndicatorsOrientation" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.DisableLoop" Value="false" />
+            <Arg For="_ => _!.HideNavigation" Value="false" />
+            <Arg For="_ => _!.HideIndicators" Value="false" />
+            <Arg For="_ => _!.Vertical" Value="false" />
+        </Arguments>
+        <Template>
+            <div style="width: 400px; height: 250px;">
+                <IgbCarousel @attributes="context.Args">
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #e3f2fd;">
+                            <h3>Slide 1</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f3e5f5;">
+                            <h3>Slide 2</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #e8f5e9;">
+                            <h3>Slide 3</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                </IgbCarousel>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Vertical">
+        <Arguments>
+            <Arg For="_ => _!.Vertical" Value="true" />
+        </Arguments>
+        <Template>
+            <div style="width: 400px; height: 250px;">
+                <IgbCarousel @attributes="context.Args">
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #e3f2fd;">
+                            <h3>Slide 1</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f3e5f5;">
+                            <h3>Slide 2</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #e8f5e9;">
+                            <h3>Slide 3</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                </IgbCarousel>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="No Navigation">
+        <Arguments>
+            <Arg For="_ => _!.HideNavigation" Value="true" />
+            <Arg For="_ => _!.Interval" Value="3000" />
+        </Arguments>
+        <Template>
+            <div style="width: 400px; height: 250px;">
+                <IgbCarousel @attributes="context.Args">
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #e3f2fd;">
+                            <h3>Slide 1</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f3e5f5;">
+                            <h3>Slide 2</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                    <IgbCarouselSlide>
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #e8f5e9;">
+                            <h3>Slide 3</h3>
+                        </div>
+                    </IgbCarouselSlide>
+                </IgbCarousel>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>

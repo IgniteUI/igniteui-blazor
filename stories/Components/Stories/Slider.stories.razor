@@ -1,0 +1,65 @@
+@attribute [Stories("Forms/Slider")]
+
+<Stories TComponent="IgbSlider">
+
+    <ArgType For="_ => _!.TickOrientation" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Value" Value="50" />
+            <Arg For="_ => _!.Min" Value="0" />
+            <Arg For="_ => _!.Max" Value="100" />
+            <Arg For="_ => _!.Step" Value="1" />
+            <Arg For="_ => _!.Disabled" Value="false" />
+        </Arguments>
+        <Template>
+            <div style="padding: 3rem 1.5rem;">
+                <IgbSlider @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Ticks">
+        <Template>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <label style="font-size: 0.875rem; font-weight: 600;">Primary ticks (end)</label>
+                <div style="padding-inline: 1.5rem; padding-block: 3.5rem;">
+                    <IgbSlider Value="40" PrimaryTicks="5" />
+                </div>
+                <label style="font-size: 0.875rem; font-weight: 600;">Primary + secondary ticks (mirror)</label>
+                <div style="padding-inline: 1.5rem; padding-block: 3.5rem;">
+                    <IgbSlider Value="40" PrimaryTicks="5" SecondaryTicks="4" TickOrientation="SliderTickOrientation.Mirror" />
+                </div>
+                <label style="font-size: 0.875rem; font-weight: 600;">Discrete track with ticks</label>
+                <div style="padding-inline: 1.5rem; padding-block: 3.5rem;">
+                    <IgbSlider Value="40" Step="10" DiscreteTrack="true" PrimaryTicks="2" SecondaryTicks="4" />
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Labels">
+        <Template>
+            <div style="padding: 2.5rem 1.5rem;">
+                <IgbSlider DiscreteTrack="true" PrimaryTicks="1" style="max-width: 300px;">
+                    <IgbSliderLabel>Low</IgbSliderLabel>
+                    <IgbSliderLabel>Medium</IgbSliderLabel>
+                    <IgbSliderLabel>High</IgbSliderLabel>
+                </IgbSlider>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Disabled">
+        <Arguments>
+            <Arg For="_ => _!.Value" Value="30" />
+            <Arg For="_ => _!.Disabled" Value="true" />
+        </Arguments>
+        <Template>
+            <div style="padding: 3rem 1.5rem;">
+                <IgbSlider @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+</Stories>

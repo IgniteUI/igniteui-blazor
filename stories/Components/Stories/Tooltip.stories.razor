@@ -1,0 +1,26 @@
+@attribute [Stories("Feedback/Tooltip")]
+
+<Stories TComponent="IgbTooltip">
+
+    <ArgType For="_ => _!.Placement" Control="ControlType.Select" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Open" Value="true" />
+            <Arg For="_ => _!.Placement" Value="PopoverPlacement.Top" />
+            <Arg For="_ => _!.WithArrow" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <div style="padding: 60px; display: flex; justify-content: center;">
+                <IgbButton id="tooltip-target">Hover me</IgbButton>
+                <IgbTooltip Anchor="tooltip-target" @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>This is a tooltip</text>;
+}

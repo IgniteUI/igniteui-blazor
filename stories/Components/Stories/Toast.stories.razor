@@ -1,0 +1,34 @@
+@attribute [Stories("Feedback/Toast")]
+
+<Stories TComponent="IgbToast">
+
+    <ArgType For="_ => _!.Position" Control="ControlType.Select" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Open" Value="true" />
+            <Arg For="_ => _!.KeepOpen" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <div style="position: relative; height: 200px;">
+                <IgbToast @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Positions">
+        <Template>
+            <div style="position: relative; height: 300px;">
+                <IgbToast Open="true" KeepOpen="true" Position="AbsolutePosition.Top">Top toast</IgbToast>
+                <IgbToast Open="true" KeepOpen="true" Position="AbsolutePosition.Middle">Middle toast</IgbToast>
+                <IgbToast Open="true" KeepOpen="true" Position="AbsolutePosition.Bottom">Bottom toast</IgbToast>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>Operation completed</text>;
+}

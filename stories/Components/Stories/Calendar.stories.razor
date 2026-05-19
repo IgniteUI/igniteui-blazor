@@ -1,0 +1,58 @@
+@attribute [Stories("Forms/Calendar")]
+
+<Stories TComponent="IgbCalendar">
+
+    <ArgType For="_ => _!.Selection" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.HeaderOrientation" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.ActiveView" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Selection" Value="CalendarSelection.Single" />
+            <Arg For="_ => _!.ShowWeekNumbers" Value="false" />
+            <Arg For="_ => _!.HideHeader" Value="false" />
+            <Arg For="_ => _!.HideOutsideDays" Value="false" />
+        </Arguments>
+        <Template>
+            <IgbCalendar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Multiple Selection">
+        <Arguments>
+            <Arg For="_ => _!.Selection" Value="CalendarSelection.Multiple" />
+        </Arguments>
+        <Template>
+            <IgbCalendar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Range Selection">
+        <Arguments>
+            <Arg For="_ => _!.Selection" Value="CalendarSelection.Range" />
+        </Arguments>
+        <Template>
+            <IgbCalendar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="With Week Numbers">
+        <Arguments>
+            <Arg For="_ => _!.ShowWeekNumbers" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbCalendar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Multiple Months">
+        <Arguments>
+            <Arg For="_ => _!.VisibleMonths" Value="2" />
+            <Arg For="_ => _!.Orientation" Value="ContentOrientation.Horizontal" />
+        </Arguments>
+        <Template>
+            <IgbCalendar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>

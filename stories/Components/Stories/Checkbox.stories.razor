@@ -1,0 +1,58 @@
+@attribute [Stories("Forms/Checkbox")]
+
+<Stories TComponent="IgbCheckbox">
+
+    <ArgType For="_ => _!.LabelPosition" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Checked" Value="false" />
+            <Arg For="_ => _!.Disabled" Value="false" />
+            <Arg For="_ => _!.Indeterminate" Value="false" />
+            <Arg For="_ => _!.LabelPosition" Value="ToggleLabelPosition.After" />
+            <Arg For="_ => _!.ChildContent" Value="_content" />
+        </Arguments>
+        <Template>
+            <IgbCheckbox @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="States">
+        <Template>
+            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
+                <IgbCheckbox>Unchecked</IgbCheckbox>
+                <IgbCheckbox Checked="true">Checked</IgbCheckbox>
+                <IgbCheckbox Indeterminate="true">Indeterminate</IgbCheckbox>
+                <IgbCheckbox Disabled="true">Disabled</IgbCheckbox>
+                <IgbCheckbox Checked="true" Disabled="true">Checked &amp; Disabled</IgbCheckbox>
+                <IgbCheckbox Invalid="true">Invalid</IgbCheckbox>
+                <IgbCheckbox Checked="true" Invalid="true">Checked &amp; Invalid</IgbCheckbox>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Label Position">
+        <Template>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <IgbCheckbox LabelPosition="ToggleLabelPosition.After">Label after (default)</IgbCheckbox>
+                <IgbCheckbox LabelPosition="ToggleLabelPosition.Before">Label before</IgbCheckbox>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Indeterminate">
+        <Arguments>
+            <Arg For="_ => _!.Indeterminate" Value="true" />
+            <Arg For="_ => _!.ChildContent" Value="_selectAll" />
+        </Arguments>
+        <Template>
+            <IgbCheckbox @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private RenderFragment _content = @<text>Accept terms</text>;
+    private RenderFragment _selectAll = @<text>Select all</text>;
+}

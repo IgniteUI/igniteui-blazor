@@ -1,0 +1,105 @@
+@attribute [Stories("Layout/TileManager")]
+
+<Stories TComponent="IgbTileManager">
+
+    <ArgType For="_ => _!.ResizeMode" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.DragMode" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.ColumnCount" Value="3" />
+            <Arg For="_ => _!.MinColumnWidth" Value='"200px"' />
+            <Arg For="_ => _!.MinRowHeight" Value='"150px"' />
+            <Arg For="_ => _!.Gap" Value='"8px"' />
+            <Arg For="_ => _!.ResizeMode" Value="TileManagerResizeMode.None" />
+            <Arg For="_ => _!.DragMode" Value="TileManagerDragMode.None" />
+        </Arguments>
+        <Template>
+            <div style="width: 100%; height: 500px;">
+                <IgbTileManager @attributes="context.Args">
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 1</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 2</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 3</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 4</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 5</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 6</h4><p>Content</p></div>
+                    </IgbTile>
+                </IgbTileManager>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Draggable">
+        <Arguments>
+            <Arg For="_ => _!.DragMode" Value="TileManagerDragMode.Tile" />
+            <Arg For="_ => _!.ColumnCount" Value="3" />
+        </Arguments>
+        <Template>
+            <div style="width: 100%; height: 500px;">
+                <IgbTileManager @attributes="context.Args">
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 1</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 2</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 3</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 4</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 5</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 6</h4><p>Content</p></div>
+                    </IgbTile>
+                </IgbTileManager>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Resizable">
+        <Arguments>
+            <Arg For="_ => _!.ResizeMode" Value="TileManagerResizeMode.Hover" />
+            <Arg For="_ => _!.ColumnCount" Value="3" />
+        </Arguments>
+        <Template>
+            <div style="width: 100%; height: 500px;">
+                <IgbTileManager @attributes="context.Args">
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 1</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 2</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 3</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 4</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 5</h4><p>Content</p></div>
+                    </IgbTile>
+                    <IgbTile>
+                        <div style="padding: 16px;"><h4>Tile 6</h4><p>Content</p></div>
+                    </IgbTile>
+                </IgbTileManager>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>

@@ -1,0 +1,37 @@
+@attribute [Stories("Forms/RangeSlider")]
+
+<Stories TComponent="IgbRangeSlider">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Lower" Value="20" />
+            <Arg For="_ => _!.Upper" Value="80" />
+            <Arg For="_ => _!.Min" Value="0" />
+            <Arg For="_ => _!.Max" Value="100" />
+            <Arg For="_ => _!.Step" Value="1" />
+            <Arg For="_ => _!.Disabled" Value="false" />
+        </Arguments>
+        <Template>
+            <div style="width: 300px; padding: 20px;">
+                <IgbRangeSlider @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="With Ticks">
+        <Arguments>
+            <Arg For="_ => _!.Lower" Value="20" />
+            <Arg For="_ => _!.Upper" Value="80" />
+            <Arg For="_ => _!.Min" Value="0" />
+            <Arg For="_ => _!.Max" Value="100" />
+            <Arg For="_ => _!.DiscreteTrack" Value="true" />
+            <Arg For="_ => _!.PrimaryTicks" Value="5" />
+        </Arguments>
+        <Template>
+            <div style="width: 300px; padding: 20px;">
+                <IgbRangeSlider @attributes="context.Args" />
+            </div>
+        </Template>
+    </Story>
+
+</Stories>

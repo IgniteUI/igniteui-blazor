@@ -1,0 +1,76 @@
+@attribute [Stories("Data Display/Avatar")]
+
+<Stories TComponent="IgbAvatar">
+
+    <ArgType For="_ => _!.Shape" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Initials" Value='"AB"' />
+            <Arg For="_ => _!.Shape" Value="AvatarShape.Circle" />
+        </Arguments>
+        <Template>
+            <IgbAvatar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Shapes">
+        <Template>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Image</p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <IgbAvatar Shape="AvatarShape.Square" Src="https://www.infragistics.com/angular-demos/assets/images/men/1.jpg" Alt="Square" />
+                        <IgbAvatar Shape="AvatarShape.Rounded" Src="https://www.infragistics.com/angular-demos/assets/images/men/2.jpg" Alt="Rounded" />
+                        <IgbAvatar Shape="AvatarShape.Circle" Src="https://www.infragistics.com/angular-demos/assets/images/men/3.jpg" Alt="Circle" />
+                    </div>
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Initials</p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <IgbAvatar Shape="AvatarShape.Square" Initials="AB" />
+                        <IgbAvatar Shape="AvatarShape.Rounded" Initials="CD" />
+                        <IgbAvatar Shape="AvatarShape.Circle" Initials="EF" />
+                    </div>
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Icon</p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <IconRegistrar />
+                        <IgbAvatar Shape="AvatarShape.Square">
+                            <IgbIcon IconName="home" Collection="default" />
+                        </IgbAvatar>
+                        <IgbAvatar Shape="AvatarShape.Rounded">
+                            <IgbIcon IconName="home" Collection="default" />
+                        </IgbAvatar>
+                        <IgbAvatar Shape="AvatarShape.Circle">
+                            <IgbIcon IconName="home" Collection="default" />
+                        </IgbAvatar>
+                    </div>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Sizes">
+        <Template>
+            <div style="display: flex; align-items: flex-end; gap: 1rem;">
+                <IgbAvatar Shape="AvatarShape.Circle" Initials="SM" style="--ig-size: 1" />
+                <IgbAvatar Shape="AvatarShape.Circle" Initials="MD" style="--ig-size: 2" />
+                <IgbAvatar Shape="AvatarShape.Circle" Initials="LG" style="--ig-size: 3" />
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="With Image">
+        <Arguments>
+            <Arg For="_ => _!.Src" Value='"https://www.infragistics.com/angular-demos/assets/images/men/1.jpg"' />
+            <Arg For="_ => _!.Alt" Value='"User avatar"' />
+            <Arg For="_ => _!.Shape" Value="AvatarShape.Circle" />
+        </Arguments>
+        <Template>
+            <IgbAvatar @attributes="context.Args" />
+        </Template>
+    </Story>
+
+</Stories>
