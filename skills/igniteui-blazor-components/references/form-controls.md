@@ -45,13 +45,13 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbInputModule));
 }
 ```
 
-Key attributes: `Label`, `Placeholder`, `DisplayType` (`InputType.Text / Email / Password / Tel / Number`), `Required`, `Disabled`, `Readonly`, `MinLength`, `MaxLength`.
+Key attributes: `Label`, `Placeholder`, `DisplayType` (`InputType.Text / Email / Password / Tel / Number`), `Required`, `Disabled`, `ReadOnly`, `MinLength`, `MaxLength`.
 
 Slots: `prefix`, `suffix`, `helper-text`.
 
 > **AGENT INSTRUCTION - Icons in slots:** Always use `IgbIcon` in `prefix`/`suffix` slots, never `<span class="material-icons">`. Font spans are `display: inline` so `vertical-align` is ignored inside the slot's flex context - the icon floats to the top. `IgbIcon` (`igc-icon`) is `display: inline-flex; align-items: center` and self-centers automatically. Register the icon in `OnAfterRenderAsync(firstRender)` after `EnsureReady()`.
 
-Events: `IgbInput` (fires while typing), `Change` (fires on commit/blur).
+Events: `InputOcurred` (fires while typing), `Change` (fires on commit/blur).
 
 > **AGENT INSTRUCTION:** `IgbInput` has **no** `GetValueAsync()` method. Read values via the synchronous `Value` property or, preferably, use `@bind-Value` bound directly to a model property - that is the correct Blazor pattern and avoids the need to imperatively read the value at all.
 
@@ -82,7 +82,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbComboModule));
 
 Key attributes: `Data`, `ValueKey` (required for complex objects), `DisplayKey`, `T` (type parameter - must match `ValueKey` property type or `"object"` if no `ValueKey`), `Label`, `Placeholder`, `SingleSelect` (for single-selection mode), `Disabled`, `Required`.
 
-Events: `Opening`, `Opened`, `Closing`, `Closed`, `SelectionChanging`.
+Events: `Opening`, `Opened`, `Closing`, `Closed`, `Change` (IgbComboChangeEventArgs).
 
 > **AGENT INSTRUCTION:** `IgbCombo` does **not** work inside a standard HTML `<form>`. Use `<EditForm>` with `@bind-Value` instead.
 
@@ -131,7 +131,7 @@ Key attributes: `Value` (DateTime), `Min`, `Max`, `InputFormat`, `DisplayFormat`
 
 Slots: `calendar`, `clear`, `prefix`, `suffix`, `actions` (custom footer buttons).
 
-Methods: `StepUp(DatePart)`, `StepDown(DatePart)`, `Clear()`, `Show()`, `Hide()`, `Toggle()`.
+Methods: `StepUp(DatePart)`, `StepDown(DatePart)`, `Clear()`.
 
 ---
 
@@ -189,7 +189,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDateTimeInputModule));
 }
 ```
 
-Key attributes: `Value` (DateTime?), `InputFormat`, `DisplayFormat`, `Min`, `Max`, `MinutesStep`, `SpinLoop`.
+Key attributes: `Value` (DateTime?), `InputFormat`, `DisplayFormat`, `Min`, `Max`, `SpinLoop`.
 
 Methods: `StepUp()`, `StepDown()`, `Clear()`.
 
@@ -209,7 +209,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbMaskInputModule));
               Placeholder="(555) 123-4567" />
 ```
 
-Key attributes: `Mask` (pattern string: `0` = digit, `L` = letter, `A` = alphanumeric), `Placeholder`, `Prompt` (fill character, default `_`), `ValueMode` (`raw` or `withFormatting`).
+Key attributes: `Mask` (pattern string: `0` = digit, `L` = letter, `A` = alphanumeric), `Placeholder`, `Prompt` (fill character, default `_`), `ValueMode` (`MaskInputValueMode.Raw` or `MaskInputValueMode.WithFormatting`).
 
 ---
 
@@ -302,7 +302,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSliderModule), typeof(IgbRangeSlide
 
 Key attributes on `IgbSlider`: `Value`, `Min`, `Max`, `Step`, `Disabled`, `HideTooltip`. On `IgbRangeSlider`: `Lower`, `Upper`, `Min`, `Max`, `Step`.
 
-Events (both): `IgbInput` (fires while dragging), `Change` (fires on commit).
+Events (both): `Input` (fires while dragging), `Change` (fires on commit).
 
 ---
 
@@ -322,7 +322,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbRatingModule));
 }
 ```
 
-Key attributes: `Value`, `Max`, `Step` (for half-star: `0.5`), `Disabled`, `Readonly`, `Label`, `ValueFormat`.
+Key attributes: `Value`, `Max`, `Step` (for half-star: `0.5`), `Disabled`, `ReadOnly`, `Label`, `ValueFormat`.
 
 Events: `Change`, `Hover`.
 

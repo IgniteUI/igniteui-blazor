@@ -56,7 +56,7 @@ Slots: `footer` (action buttons). The default slot is the dialog body.
 
 Methods: `ShowAsync()`, `HideAsync()`, `ToggleAsync()`.
 
-Events: `Opening` (cancellable), `Opened`, `Closing` (cancellable), `Closed`.
+Events: `Closing` (cancellable), `Closed`.
 
 CSS parts: `base`, `title`, `footer`, `content`.
 
@@ -144,7 +144,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbBannerModule));
 
 ```razor
 <IgbBanner @ref="BannerRef">
-    <IgbIcon slot="illustration" IconName="wifi_off" Collection="material" />
+    <IgbIcon slot="prefix" IconName="wifi_off" Collection="material" />
     You are currently offline.
     <IgbButton slot="actions" @onclick="RetryConnection">Retry</IgbButton>
 </IgbBanner>
@@ -158,13 +158,13 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbBannerModule));
 }
 ```
 
-Slots: `illustration` (icon or image), `actions` (buttons shown at the right or bottom). Default slot = message text.
+Slots: `prefix` (icon or image), `actions` (buttons shown at the right or bottom). Default slot = message text.
 
 Methods: `ShowAsync()`, `HideAsync()`, `ToggleAsync()`.
 
-Events: `Opening` (cancellable), `Opened`, `Closing` (cancellable), `Closed`.
+Events: `Closing` (cancellable), `Closed`.
 
-CSS parts: `spacer`, `message`, `illustration`, `actions`.
+CSS parts: `base`, `spacer`, `message`, `illustration`, `content`, `actions`.
 
 ---
 

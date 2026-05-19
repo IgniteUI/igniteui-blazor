@@ -28,6 +28,32 @@ Dock Manager provides an IDE-like dockable pane layout. Users can drag panes to 
 builder.Services.AddIgniteUIBlazor(typeof(IgbDockManagerModule));
 ```
 
+Key properties on `IgbDockManager`:
+
+| Property | Type | Description |
+|---|---|---|
+| `Layout` | `IgbDockManagerLayout` | Gets/sets the layout configuration |
+| `ActivePane` | `IgbContentPane` | Gets/sets the currently active (focused) pane |
+| `MaximizedPane` | `IgbDockManagerPane` | Gets/sets the maximized pane |
+| `AllowFloatingPanesResize` | `bool` | Allows resizing floating panes (default: `true`) |
+| `AllowInnerDock` | `bool` | Allows inner-docking panes (default: `true`) |
+| `AllowMaximize` | `bool` | Allows maximizing panes (default: `true`) |
+| `AllowSplitterDock` | `bool` | Allows docking by dragging over a splitter (default: `false`) |
+| `CloseBehavior` | `PaneActionBehavior` | `AllPanes` or `SelectedPane` — which pane(s) close when clicking close in a TabGroup (default: `AllPanes`) |
+| `UnpinBehavior` | `PaneActionBehavior` | `AllPanes` or `SelectedPane` — which pane(s) unpin when clicking unpin (default: `AllPanes`) |
+| `ContainedInBoundaries` | `bool` | Keeps floating panes inside the Dock Manager bounds (default: `false`) |
+| `ProximityDock` | `bool` | Enables docking by proximity instead of indicators (default: `false`) |
+| `ShowPaneHeaders` | `DockManagerShowPaneHeaders` | `Always` or `OnHoverOnly` (default: `Always`) |
+| `ShowHeaderIconOnHover` | `DockManagerShowHeaderIconOnHover` | Which tab icons show on hover: `None`, `All`, `CloseOnly`, `MoreOptionsOnly` (default: `None`) |
+| `DisableKeyboardNavigation` | `bool` | Disables built-in keyboard shortcuts (default: `false`) |
+
+Key methods on `IgbDockManager`:
+
+| Method | Returns | Description |
+|---|---|---|
+| `FocusPane(string contentId)` | `void` | Programmatically focuses a pane by its content ID |
+| `GetCurrentLayout()` | `IgbDockManagerLayout` | Returns the current layout object reflecting runtime state |
+
 ### Basic Setup
 
 Dock Manager uses a C# layout object graph to define pane structure. Pane content is projected via named slots.
@@ -43,6 +69,9 @@ Dock Manager uses a C# layout object graph to define pane structure. Pane conten
 @code {
     IgbDockManager DockRef { get; set; }
 
+    // IgbDockManagerLayout has two top-level properties:
+    //   RootPane (IgbSplitPane) - the main docked layout
+    //   FloatingPanes (IgbSplitPaneCollection) - initially floating panes
     IgbDockManagerLayout DockLayout { get; set; } = new IgbDockManagerLayout
     {
         RootPane = new IgbSplitPane
@@ -54,7 +83,7 @@ Dock Manager uses a C# layout object graph to define pane structure. Pane conten
                 new IgbTabGroupPane
                 {
                     PaneType = DockManagerPaneType.TabGroupPane,
-                    Panes = new List<IgbContentPane>
+                    Panes = new()
                     {
                         new IgbContentPane
                         {
@@ -90,6 +119,7 @@ Dock Manager uses a C# layout object graph to define pane structure. Pane conten
 | `IgbSplitPane` | Container that splits horizontally or vertically into child panes |
 | `IgbTabGroupPane` | Container that groups content panes into tabs |
 | `IgbContentPane` | Leaf pane with actual content (maps to a named slot) |
+| `IgbDocumentHost` | Special container for document-style tabbed panes (like an IDE editor area). Contains a `RootPane` (`IgbSplitPane`) |
 
 Key properties on `IgbContentPane`:
 
@@ -97,24 +127,56 @@ Key properties on `IgbContentPane`:
 |---|---|---|
 | `ContentId` | `string` | Must match the `slot` name on the projected content element |
 | `Header` | `string` | Pane tab header title |
-| `Size` | `double` | Initial size (pixels or percentage depending on parent) |
+| `HeaderId` | `string` | Slot name for a custom header template element. Falls back to `Header` text if not set |
+| `Size` | `double` | Size relative to sibling panes (default: `100`) |
 | `AllowClose` | `bool` | Shows/hides the close button (default: `true`) |
 | `AllowPinning` | `bool` | Allows pin/unpin (default: `true`) |
-| `AllowMaximize` | `bool` | Allows maximize (default: `true`) |
+| `AllowMaximize` | `bool` | Allows maximize |
 | `AllowFloating` | `bool` | Allows tearing off into a floating window (default: `true`) |
+| `AllowDocking` | `bool` | Allows the user to dock the pane (default: `true`) |
 | `IsPinned` | `bool` | Set to `false` to start as an unpinned (collapsed to edge) pane |
-| `Floating` | `bool` | Starts as a floating window |
-| `FloatingLocation` | `IgbDockManagerPoint` | Initial position of a floating pane |
-| `FloatingWidth` | `double` | Initial width of a floating pane |
-| `FloatingHeight` | `double` | Initial height of a floating pane |
+| `IsMaximized` | `bool` | Whether the pane is maximized (default: `false`) |
+| `Hidden` | `bool` | Hides the pane from the UI (default: `false`) |
+| `Disabled` | `bool` | Disables the pane (default: `false`) |
+| `DocumentOnly` | `bool` | Restricts the pane so it can only be docked inside a document host |
+| `UnpinnedLocation` | `UnpinnedLocation` | Edge where the unpinned flyout appears. Auto-calculated from document host if not set |
+| `UnpinnedSize` | `double` | Absolute size of the pane when unpinned (default: `200`) |
+| `Id` | `string` | Pane identifier. Auto-generated if not set |
 
 Key properties on `IgbSplitPane`:
 
 | Property | Type | Description |
 |---|---|---|
 | `Orientation` | `SplitPaneOrientation` | `Horizontal` or `Vertical` |
-| `Panes` | pane collection | Child panes. Use the exact collection type and initialization style shown in the current MCP docs. |
-| `Size` | `double` | Size in parent context |
+| `Panes` | `IgbDockManagerPaneCollection` | Child panes |
+| `Size` | `double` | Size relative to sibling panes (default: `100`) |
+| `FloatingLocation` | `IgbDockManagerPoint` | Absolute position of a floating pane |
+| `FloatingWidth` | `double` | Absolute width of a floating pane (default: `100`) |
+| `FloatingHeight` | `double` | Absolute height of a floating pane (default: `100`) |
+| `FloatingResizable` | `bool` | Whether floating pane resizing is allowed |
+| `AllowEmpty` | `bool` | Whether the pane stays in the UI when it has no children |
+| `IsMaximized` | `bool` | Whether the split pane is maximized (default: `false`) |
+| `UseFixedSize` | `bool` | Sizes children in pixels instead of relative; allows scrollable overflow (default: `false`) |
+| `Id` | `string` | Pane identifier. Auto-generated if not set |
+
+Key properties on `IgbTabGroupPane`:
+
+| Property | Type | Description |
+|---|---|---|
+| `Panes` | `IgbContentPaneCollection` | Child content panes displayed as tabs |
+| `SelectedIndex` | `double` | Index of the initially selected tab |
+| `Size` | `double` | Size relative to sibling panes (default: `100`) |
+| `AllowEmpty` | `bool` | Whether the tab group stays in the UI when it has no children |
+| `IsMaximized` | `bool` | Whether the tab group is maximized (default: `false`) |
+| `Id` | `string` | Pane identifier. Auto-generated if not set |
+
+Key properties on `IgbDocumentHost`:
+
+| Property | Type | Description |
+|---|---|---|
+| `RootPane` | `IgbSplitPane` | The root split pane inside the document host |
+| `Size` | `double` | Size relative to sibling panes (default: `100`) |
+| `Id` | `string` | Pane identifier. Auto-generated if not set |
 
 ### Layout Serialization
 
@@ -124,12 +186,21 @@ Persisting a Dock Manager layout is version-sensitive. The current `dock-manager
 
 ### Events
 
+**Blazor EventCallbacks** (direct Blazor binding):
+
+| Event | Type | Description |
+|---|---|---|
+| `LayoutChange` | `EventCallback<IgbLayoutChangeEventArgs>` | Fires when the layout is modified by user interaction (drag, close, resize) |
+| `LayoutChanged` | `EventCallback<IgbDockManagerLayout>` | Fires after the layout has changed; provides the updated layout object |
+
+**Web-component-level events** (accessible via JavaScript interop, not as Blazor EventCallbacks):
+
 | Event | Description |
 |---|---|
-| `LayoutChange` | Fires when the layout is modified by user interaction (drag, close, resize) |
-| `PaneClose` | Fires when a pane is closed; `e.Detail.Panes` contains the closed pane(s) |
-| `ActivePaneChange` | Fires when the active (focused) pane changes |
-| `Splitter Resize` | Fires while a splitter is being dragged |
+| `paneClose` | Fires when a pane is closed; detail contains the closed pane(s) |
+| `activePaneChanged` | Fires when the active (focused) pane changes |
+| `splitterResizeStart` | Fires when a splitter drag begins |
+| `splitterResizeEnd` | Fires when a splitter drag ends |
 
 ---
 
@@ -162,11 +233,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTileManagerModule));
 
 Key attributes on `IgbTileManager`: `ColumnCount`, `Gap` (CSS length string such as `"8px"`), `MinColumnWidth`, `MinRowHeight`, `ResizeMode` (`TileManagerResizeMode.*`), `DragMode` (`TileManagerDragMode.*`).
 
-Key attributes on `IgbTile`: `ColSpan`, `RowSpan`, `ColStart`, `RowStart`, `DisableFullscreen`, `DisableMaximize`, `DisableResize`.
+Key attributes on `IgbTile`: `ColSpan`, `RowSpan`, `ColStart`, `RowStart`, `Maximized`, `Position`, `DisableFullscreen`, `DisableMaximize`, `DisableResize`.
 
 Slots on `IgbTile`: `title` (header), `actions` (header action buttons), `fullscreen-action`, `maximize-action`, `side-adorner`, `corner-adorner`, `bottom-adorner`. Default slot = tile body content.
 
-Methods on `IgbTileManager`: `SaveLayout()` and `LoadLayout(string)` persist tile order, size, and position. Tile content is not serialized.
+Methods on `IgbTileManager`: `SaveLayout()` and `LoadLayout(string)` persist tile order, size, and position. `GetTiles()` returns the current `IgbTile[]` array. Tile content is not serialized.
 
 ---
 
