@@ -143,6 +143,7 @@ obj
 .vs
 .tfignore
 *.csproj.user
+*.lscache
 gulpfile.js
 Building.md
 IgniteUI.Blazor.csproj
