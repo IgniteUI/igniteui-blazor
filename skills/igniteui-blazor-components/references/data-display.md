@@ -40,7 +40,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbButtonModule), typeof(IgbButtonGrou
 <IgbButton Variant="@ButtonVariant.Flat">Flat</IgbButton>
 
 <!-- Button Group (toggle buttons) -->
-<IgbButtonGroup Selection="ButtonGroupSelection.Single">
+<IgbButtonGroup Selection="@ButtonGroupSelection.Single">
     <IgbToggleButton Value="left">Left</IgbToggleButton>
     <IgbToggleButton Value="center" Selected="true">Center</IgbToggleButton>
     <IgbToggleButton Value="right">Right</IgbToggleButton>
@@ -202,11 +202,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbBadgeModule));
 ```
 
 ```razor
-<IgbBadge Variant="@BadgeVariant.Primary">5</IgbBadge>
-<IgbBadge Variant="@BadgeVariant.Danger" Shape="@BadgeShape.Dot" />
+<IgbBadge Variant="@StyleVariant.Primary">5</IgbBadge>
+<IgbBadge Variant="@StyleVariant.Danger" Shape="@BadgeShape.Square" />
 ```
 
-Key attributes: `Variant` (`BadgeVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`), `Shape` (`BadgeShape.Rounded` / `Square` / `Dot`), `Outlined`.
+Key attributes: `Variant` (`StyleVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`), `Shape` (`BadgeShape.Rounded` / `Square`), `Outlined`.
 
 ---
 
@@ -229,7 +229,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbChipModule));
 }
 ```
 
-Key attributes: `Selectable`, `Selected`, `Removable`, `Disabled`, `Variant` (`ChipVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`).
+Key attributes: `Selectable`, `Selected`, `Removable`, `Disabled`, `Variant` (`StyleVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`).
 
 Slots: `start`, `end` (prefix/suffix icons).
 
@@ -255,7 +255,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCircularProgressModule));
 <IgbCircularProgress Indeterminate="true" />
 ```
 
-Key attributes: `Value`, `Max`, `Indeterminate`, `AnimationDuration`, `Variant` (`ProgressBaseVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`).
+Key attributes: `Value`, `Max`, `Indeterminate`, `AnimationDuration`, `Variant` (`StyleVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`).
 
 ---
 
