@@ -70,7 +70,7 @@ Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `
 
 > **AGENT INSTRUCTION:** `CategoryChartType.Bar` does **not** exist. For a horizontal bar-style chart, use `CategoryChartType.Column` (vertical) or switch to `IgbDataChart` with `IgbBarSeries` for true horizontal bars. Never generate `ChartType="CategoryChartType.Bar"`.
 
-> **AGENT INSTRUCTION:** The `XAxisLabel` parameter on `IgbCategoryChart` is not a plain string property name. To control which data field is used as the X-axis label, set `XAxisMemberPath` with the property name string (e.g., `XAxisMemberPath="Month"`).
+> **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects which string or date property in the data to use as X-axis labels. To control which data properties are charted, use `IncludedProperties` or `ExcludedProperties` (string arrays).
 
 Brush list properties such as `Brushes`, `Outlines`, `MarkerBrushes`, and `MarkerOutlines` are **string** parameters. Separate multiple colors with spaces, as in `Brushes="DodgerBlue IndianRed"`.
 
