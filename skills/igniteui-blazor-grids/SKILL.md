@@ -62,7 +62,7 @@ Before using any Ignite UI for Blazor grid component you must have:
 | NuGet package | `IgniteUI.Blazor` (licensed) for all full-featured grids; `IgniteUI.Blazor.GridLite` (MIT, separate NuGet) for Grid Lite only - grids are **not** included in `IgniteUI.Blazor.Lite` |
 | Service registration | `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule), ...)` in **Program.cs** with required module types |
 | Using directive | `@using IgniteUI.Blazor.Controls` in **_Imports.razor** |
-| CSS theme | Two stylesheets are required in **index.html** or **_Host.cshtml**: <br/>`<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />` (base theme for all components) <br/>`<link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />` (grid-specific styles — **must always be added when any grid component is used**) |
+| CSS theme | `<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />` (base theme) and `<link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />` (grid-specific — **always required when any grid is used**) in **index.html** or **_Host.cshtml** |
 | JS interop script | `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` in **index.html** or **_Host.cshtml** |
 | Ignite UI CLI MCP | The **Ignite UI CLI MCP server** (`igniteui-cli`) available as a tool provider - see [`references/mcp-setup.md`](./references/mcp-setup.md) |
 
