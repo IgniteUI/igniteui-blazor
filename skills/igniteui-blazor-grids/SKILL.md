@@ -62,7 +62,8 @@ Before using any Ignite UI for Blazor grid component you must have:
 | NuGet package | `IgniteUI.Blazor` (licensed) for all full-featured grids; `IgniteUI.Blazor.GridLite` (MIT, separate NuGet) for Grid Lite only - grids are **not** included in `IgniteUI.Blazor.Lite` |
 | Service registration | `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule), ...)` in **Program.cs** with required module types |
 | Using directive | `@using IgniteUI.Blazor.Controls` in **_Imports.razor** |
-| CSS theme | `<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />` (base theme) and `<link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />` (grid-specific — **always required when any grid is used**) in **index.html** or **_Host.cshtml** |
+| CSS theme (IgbGrid / IgbTreeGrid / IgbHierarchicalGrid / IgbPivotGrid) | Add **both** in **index.html** / **_Host.cshtml**: base theme `<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />` **and** grid-specific `<link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />` (always required when any full-featured grid is used) |
+| CSS theme (IgbGridLite) | `<link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />` — from the `IgniteUI.Blazor.GridLite` package; do **not** use the paths above |
 | JS interop script | `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` in **index.html** or **_Host.cshtml** |
 | Ignite UI CLI MCP | The **Ignite UI CLI MCP server** (`igniteui-cli`) available as a tool provider - see [`references/mcp-setup.md`](./references/mcp-setup.md) |
 
