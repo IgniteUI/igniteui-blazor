@@ -329,3 +329,4 @@ Use Dashboard Tile when the requested component should infer or render compact d
 6. **`IncludedProperties` and `ExcludedProperties` are `string[]` arrays.** Bind with `@(new string[] { "Prop1", "Prop2" })`. Do not pass a plain string.
 7. **`CategoryChartType.Bar` does not exist.** Use `Column` for vertical bars in `IgbCategoryChart`. For horizontal bars, use `IgbDataChart` with `IgbBarSeries`.
 8. **Do not use `XAxisLabel` to specify a data field.** It controls label formatting only. Use `IncludedProperties`/`ExcludedProperties` on `IgbCategoryChart`, or `Label` on `IgbCategoryXAxis` for `IgbDataChart`.
+9. **Scatter and bubble series use `XMemberPath`/`YMemberPath`, not `XAxisMemberPath`.** For `IgbScatterSeries` and `IgbBubbleSeries`, map data fields with `XMemberPath="FieldX"` and `YMemberPath="FieldY"`. `IgbBubbleSeries` additionally requires `RadiusMemberPath`.
