@@ -154,7 +154,7 @@ builder.Services.AddIgniteUIBlazor(
 | State persistence | ❌ | ✅ | ✅ | ✅ | ✅ |
 | Virtualization | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Cell merging | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Load on demand | ❌ | ❌ | ✅ (JS interop) | ✅ (via GridCreatedScript) | ❌ |
+| Load on demand | ❌ | ❌ | ✅ (JS interop) | ❌ | ❌ |
 | Remote data ops | `DataPipelineConfiguration` | Events + noop strategies | Events + noop strategies | Events + noop strategies | N/A |
 
 ---
