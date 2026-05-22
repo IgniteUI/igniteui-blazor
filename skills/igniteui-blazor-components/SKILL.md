@@ -12,7 +12,7 @@ user-invocable: true
 - The correct NuGet package installed: `IgniteUI.Blazor.Lite` (NuGet.org, MIT) for general purpose UI components; `IgniteUI.Blazor.GridLite` (NuGet.org, MIT) for the lightweight grid; `IgniteUI.Blazor` (Infragistics private feed, licensed) for the full suite including charts, maps, gauges, and enterprise grids; or `IgniteUI.Blazor.Trial` (NuGet.org) for evaluation of the full suite
 - `builder.Services.AddIgniteUIBlazor(...)` called in `Program.cs`
 - `@using IgniteUI.Blazor.Controls` added to `_Imports.razor`
-- A theme CSS file linked in the host page (see [`references/setup.md`](./references/setup.md))
+- A theme CSS file and `_content/IgniteUI.Blazor/app.bundle.js` runtime script linked in the host page (see [`references/setup.md`](./references/setup.md))
 - The **Ignite UI CLI MCP server** (`igniteui-cli`) is available as a tool provider
 
 > **AGENT INSTRUCTION - MCP Server Setup (REQUIRED)**
@@ -78,7 +78,7 @@ Base your code and explanation exclusively on what you read. If the reference fi
 | `IgniteUI.Blazor` | Infragistics private NuGet feed (`https://packages.infragistics.com/nuget/licensed/`) | Licensed / enterprise users that need the full component suite (grids, charts, maps, gauges, Dock Manager) |
 | `IgniteUI.Blazor.Trial` | NuGet.org | Evaluation users — same full suite as `IgniteUI.Blazor` but with a trial watermark |
 
-`IgniteUI.Blazor.Lite` contains the open-source UI component set, while `IgniteUI.Blazor.GridLite` contains the free `IgbGridLite` data grid package. Both use the `IgniteUI.Blazor.Controls` namespace. Do **not** mix the licensed `IgniteUI.Blazor` package with `IgniteUI.Blazor.Lite` in the same project; they use the same namespaces and duplicate some components.
+`IgniteUI.Blazor.Lite` contains the open-source UI component set, while `IgniteUI.Blazor.GridLite` contains the free `IgbGridLite` data grid package. Both use the `IgniteUI.Blazor.Controls` namespace. Do **not** mix the licensed `IgniteUI.Blazor` package with `IgniteUI.Blazor.Lite` in the same project; they use the same namespaces and duplicate some components. If full `IgniteUI.Blazor` is already referenced, do not add Lite/GridLite unless the user explicitly asks to switch package strategy.
 
 ## Key Blazor-Specific Notes
 

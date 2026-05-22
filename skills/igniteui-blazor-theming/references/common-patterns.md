@@ -46,6 +46,14 @@ Add a single `<link>` tag in your host page:
 <link href="_content/IgniteUI.Blazor/themes/light/material.css" rel="stylesheet" />
 ```
 
+### Additional
+
+Also add the Ignite UI runtime script before the Blazor framework script:
+
+```html
+<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
+```
+
 ### .NET 9+ Web App - use `Assets` collection
 
 ```razor
