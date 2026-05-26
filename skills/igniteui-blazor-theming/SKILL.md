@@ -13,7 +13,7 @@ This skill teaches AI agents how to theme Ignite UI for Blazor applications usin
 ## Prerequisites
 
 - A Blazor project using Ignite UI for Blazor components
-- A theme CSS file linked in the host page (see [`references/common-patterns.md`](./references/common-patterns.md))
+- A theme CSS file and `_content/IgniteUI.Blazor/app.bundle.js` runtime script linked in the host page (see [`references/common-patterns.md`](./references/common-patterns.md))
 - The **Ignite UI Theming MCP server** (`igniteui-theming`) available as a tool provider
 
 > **AGENT INSTRUCTION - MCP Server Setup (REQUIRED)**
@@ -182,6 +182,7 @@ Place generated CSS in an app stylesheet loaded after the Ignite UI theme CSS, s
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
 <link href="css/app.css" rel="stylesheet" />
+<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
 ```
 
 Palette and global layout CSS normally go in `:root`. Component theme CSS goes on the generated `igc-*` selector or under a scoped wrapper selector.
