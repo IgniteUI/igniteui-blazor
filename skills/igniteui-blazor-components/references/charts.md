@@ -70,7 +70,7 @@ Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `
 
 > **AGENT INSTRUCTION:** `CategoryChartType.Bar` does **not** exist. For a horizontal bar-style chart, use `CategoryChartType.Column` (vertical) or switch to `IgbDataChart` with `IgbBarSeries` for true horizontal bars. Never generate `ChartType="CategoryChartType.Bar"`.
 
-> **AGENT INSTRUCTION:** The `XAxisLabel` parameter on `IgbCategoryChart` is not a plain string property name. To control which data field is used as the X-axis label, set `XAxisMemberPath` with the property name string (e.g., `XAxisMemberPath="Month"`).
+> **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects which string or date property in the data to use as X-axis labels. To control which data properties are charted, use `IncludedProperties` or `ExcludedProperties` (string arrays).
 
 Brush list properties such as `Brushes`, `Outlines`, `MarkerBrushes`, and `MarkerOutlines` are **string** parameters. Separate multiple colors with spaces, as in `Brushes="DodgerBlue IndianRed"`.
 
@@ -328,4 +328,5 @@ Use Dashboard Tile when the requested component should infer or render compact d
 5. **`IgbDataChart` series must match axes by name.** The `XAxisName` / `YAxisName` on each series must match the `Name` attribute of the axis component.
 6. **`IncludedProperties` and `ExcludedProperties` are `string[]` arrays.** Bind with `@(new string[] { "Prop1", "Prop2" })`. Do not pass a plain string.
 7. **`CategoryChartType.Bar` does not exist.** Use `Column` for vertical bars in `IgbCategoryChart`. For horizontal bars, use `IgbDataChart` with `IgbBarSeries`.
-8. **Use `XAxisMemberPath` to set the X-axis label field**, not `XAxisLabel`. Passing a property name string to `XAxisLabel` is evaluated as a C# expression and silently fails.
+8. **Do not use `XAxisLabel` to specify a data field.** It controls label formatting only. Use `IncludedProperties`/`ExcludedProperties` on `IgbCategoryChart`, or `Label` on `IgbCategoryXAxis` for `IgbDataChart`.
+9. **Scatter and bubble series use `XMemberPath`/`YMemberPath`, not `XAxisMemberPath`.** For `IgbScatterSeries` and `IgbBubbleSeries`, map data fields with `XMemberPath="FieldX"` and `YMemberPath="FieldY"`. `IgbBubbleSeries` additionally requires `RadiusMemberPath`.
