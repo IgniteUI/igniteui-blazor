@@ -378,6 +378,22 @@ Switch the theme `<link>` from light to dark:
 <link href="_content/IgniteUI.Blazor/themes/dark/bootstrap.css" rel="stylesheet" />
 ```
 
+> **If the view includes any full-featured grid**, switch the grid-specific stylesheet variant too:
+> ```html
+> <!-- Light -->
+> <link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />
+> <!-- Dark -->
+> <link href="_content/IgniteUI.Blazor/themes/grid/dark/bootstrap.css" rel="stylesheet" />
+> ```
+>
+> **If the view uses `IgbGridLite`**, switch its single stylesheet instead:
+> ```html
+> <!-- Light -->
+> <link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
+> <!-- Dark -->
+> <link href="_content/IgniteUI.Blazor.GridLite/css/themes/dark/bootstrap.css" rel="stylesheet" />
+> ```
+
 ### CSS custom properties for dark panels
 When the design has multiple dark surface depths (e.g., sidebar darker than content area), define semantic tokens:
 ```css
