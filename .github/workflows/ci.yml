@@ -45,6 +45,9 @@ jobs:
       - name: Build .NET library
         run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=false
 
+      - name: Build VS Templates
+        run: dotnet pack templates/IgniteUI.Blazor.Templates/
+
       - name: Run .NET tests with coverage
         run: >
           dotnet test --no-build --configuration Release --verbosity normal
