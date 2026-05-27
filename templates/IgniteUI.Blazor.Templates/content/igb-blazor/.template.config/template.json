@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Infragistics",
+  "classifications": [ "Web", "Blazor", "IgniteUI" ],
+  "identity": "IgniteUI.Blazor.Templates.BlazorWebApp",
+  "name": "Blazor Web App (IgniteUI)",
+  "description": "A project template for creating a Blazor Web App that uses Ignite UI for Blazor (Lite) components. Choose Server, WebAssembly, or Auto hosting, and one of four IgniteUI theme variants.",
+  "shortName": "igb-blazor",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "IgniteBlazorApp",
+  "preferNameDirectory": true,
+  "symbols": {
+    "Hosting": {
+      "type": "parameter",
+      "datatype": "choice",
+      "description": "Interactivity hosting model. Server runs components on the server via SignalR. Wasm runs components in the browser via WebAssembly with a thin server host. Auto starts on the server, then transitions to WebAssembly once the .Client bundle is downloaded.",
+      "choices": [
+        { "choice": "Server", "description": "Interactive Server (SignalR)" },
+        { "choice": "Wasm", "description": "Interactive WebAssembly" },
+        { "choice": "Auto", "description": "Interactive Auto (Server then WebAssembly)" }
+      ],
+      "defaultValue": "Server"
+    },
+    "HostingIsServer": {
+      "type": "computed",
+      "value": "(Hosting == \"Server\")"
+    },
+    "HostingHasClient": {
+      "type": "computed",
+      "value": "(Hosting != \"Server\")"
+    },
+    "HostingIsAuto": {
+      "type": "computed",
+      "value": "(Hosting == \"Auto\")"
+    },
+    "HostIdentifier": {
+      "type": "bind",
+      "binding": "HostIdentifier"
+    },
+    "IsCli": {
+      "type": "computed",
+      "value": "(HostIdentifier == \"dotnetcli\" || HostIdentifier == \"dotnetcli-preview\")"
+    },
+    "RenderModeName": {
+      "type": "generated",
+      "generator": "switch",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(Hosting == \"Wasm\")", "value": "InteractiveWebAssembly" },
+          { "condition": "(Hosting == \"Auto\")", "value": "InteractiveAuto" },
+          { "condition": "(true)",                "value": "InteractiveServer" }
+        ]
+      },
+      "replaces": "IGB_RENDER_MODE"
+    },
+    "Theme": {
+      "type": "parameter",
+      "datatype": "choice",
+      "description": "The IgniteUI design theme.",
+      "choices": [
+        { "choice": "bootstrap", "description": "Bootstrap-flavored IgniteUI theme" },
+        { "choice": "material", "description": "Material-flavored IgniteUI theme" },
+        { "choice": "fluent", "description": "Fluent-flavored IgniteUI theme" },
+        { "choice": "indigo", "description": "Indigo-flavored IgniteUI theme" }
+      ],
+      "defaultValue": "bootstrap",
+      "replaces": "IGB_THEME"
+    },
+    "Variant": {
+      "type": "parameter",
+      "datatype": "choice",
+      "description": "The light or dark color variant of the chosen theme.",
+      "choices": [
+        { "choice": "light", "description": "Light variant" },
+        { "choice": "dark", "description": "Dark variant" }
+      ],
+      "defaultValue": "light",
+      "replaces": "IGB_VARIANT"
+    },
+    "ChartMode": {
+      "type": "generated",
+      "generator": "switch",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(Variant == \"dark\")", "value": "Dark" },
+          { "condition": "(true)", "value": "Light" }
+        ]
+      },
+      "replaces": "IGB_CHART_MODE"
+    },
+    "IncludeWeatherSample": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Include the Weather page (IgbGridLite + ApexCharts demo) and its supporting model/service.",
+      "defaultValue": "true"
+    },
+    "SkipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "If specified, skips the automatic restore of the project on create.",
+      "defaultValue": "false"
+    },
+    "NsSegment": {
+      "type": "generated",
+      "generator": "switch",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(HostingHasClient)", "value": ".Client" },
+          { "condition": "(true)",             "value": "" }
+        ]
+      },
+      "replaces": "IGB_NS_SEGMENT"
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "(HostingIsServer)",
+          "exclude": [
+            "IgniteBlazorApp.Client/**",
+            "IgniteBlazorApp.sln"
+          ]
+        },
+        {
+          "condition": "(HostingHasClient && !IsCli)",
+          "exclude": [
+            "IgniteBlazorApp.sln"
+          ]
+        },
+        {
+          "condition": "(HostingHasClient)",
+          "rename": {
+            "IgniteBlazorApp/Components/Routes.razor": "IgniteBlazorApp.Client/Routes.razor",
+            "IgniteBlazorApp/Components/Layout/MainLayout.razor": "IgniteBlazorApp.Client/Layout/MainLayout.razor",
+            "IgniteBlazorApp/Components/Layout/MainLayout.razor.css": "IgniteBlazorApp.Client/Layout/MainLayout.razor.css",
+            "IgniteBlazorApp/Components/Layout/NavMenu.razor": "IgniteBlazorApp.Client/Layout/NavMenu.razor",
+            "IgniteBlazorApp/Components/Pages/Home.razor": "IgniteBlazorApp.Client/Pages/Home.razor",
+            "IgniteBlazorApp/Components/Pages/Counter.razor": "IgniteBlazorApp.Client/Pages/Counter.razor",
+            "IgniteBlazorApp/Components/Pages/Weather.razor": "IgniteBlazorApp.Client/Pages/Weather.razor",
+            "IgniteBlazorApp/Components/Pages/NotFound.razor": "IgniteBlazorApp.Client/Pages/NotFound.razor",
+            "IgniteBlazorApp/Models/": "IgniteBlazorApp.Client/Models/",
+            "IgniteBlazorApp/Services/": "IgniteBlazorApp.Client/Services/"
+          }
+        },
+        {
+          "condition": "(!HostingIsServer)",
+          "exclude": [
+            "IgniteBlazorApp/Components/Layout/ReconnectModal.razor",
+            "IgniteBlazorApp/Components/Layout/ReconnectModal.razor.css",
+            "IgniteBlazorApp/Components/Layout/ReconnectModal.razor.js"
+          ]
+        },
+        {
+          "condition": "(!IncludeWeatherSample)",
+          "exclude": [
+            "IgniteBlazorApp/Components/Pages/Weather.razor",
+            "IgniteBlazorApp/Models/WeatherForecast.cs",
+            "IgniteBlazorApp/Services/WeatherForecastService.cs"
+          ]
+        }
+      ]
+    }
+  ],
+  "primaryOutputs": [
+    { "condition": "(HostingHasClient && IsCli)",   "path": "IgniteBlazorApp.sln" },
+    { "condition": "(!HostingHasClient || !IsCli)", "path": "IgniteBlazorApp/IgniteBlazorApp.csproj" },
+    { "condition": "(HostingHasClient && !IsCli)",  "path": "IgniteBlazorApp.Client/IgniteBlazorApp.Client.csproj" }
+  ],
+  "postActions": [
+    {
+      "id": "restore",
+      "condition": "(!SkipRestore)",
+      "description": "Restore NuGet packages required by this project.",
+      "manualInstructions": [
+        { "text": "Run 'dotnet restore'" }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
+    }
+  ]
+}

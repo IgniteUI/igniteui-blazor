@@ -1,0 +1,44 @@
+@inject NavigationManager Nav
+@implements IDisposable
+
+<IgbNavDrawerItem Active="@IsActive("")" @onclick=@(() => Nav.NavigateTo(""))>
+    <span slot="icon">
+        <span class="material-icons icon">
+            home
+        </span>
+    </span>
+    <div slot="content">Home</div>
+</IgbNavDrawerItem>
+<IgbNavDrawerItem Active="@IsActive("counter")" @onclick=@(() => Nav.NavigateTo("counter"))>
+    <span slot="icon">
+        <span class="material-icons icon">
+            add
+        </span>
+    </span>
+    <div slot="content">Counter</div>
+</IgbNavDrawerItem>
+@*#if (IncludeWeatherSample) *@
+<IgbNavDrawerItem Active="@IsActive("weather")" @onclick=@(() => Nav.NavigateTo("weather"))>
+    <span slot="icon">
+        <span class="material-icons icon">
+            list
+        </span>
+    </span>
+    <div slot="content">Weather</div>
+</IgbNavDrawerItem>
+@*#endif *@
+
+@code {
+    private bool IsActive(string href)
+    {
+        var current = Nav.ToBaseRelativePath(Nav.Uri).TrimEnd('/');
+        return string.Equals(current, href, StringComparison.OrdinalIgnoreCase);
+    }
+
+    protected override void OnInitialized() => Nav.LocationChanged += OnLocationChanged;
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+        => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
+}

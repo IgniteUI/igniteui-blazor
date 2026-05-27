@@ -1,0 +1,113 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.layout-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+main {
+    flex: 1;
+    min-width: 0;
+}
+
+article.content {
+    padding: 1.5rem;
+}
+
+::deep igc-nav-drawer {
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: width 200ms ease;
+    width: 0;
+}
+
+::deep igc-nav-drawer[open] {
+    width: 250px;
+}
+
+::deep igc-button,
+::deep igc-icon-button,
+::deep igc-nav-drawer-item {
+    cursor: pointer;
+}
+
+::deep igc-navbar .material-icons {
+    cursor: pointer;
+}
+
+::deep igc-navbar h1,
+::deep igc-navbar h2,
+::deep igc-navbar h3,
+::deep igc-navbar h4,
+::deep igc-navbar h5,
+::deep igc-navbar h6 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+::deep .grid {
+    --ig-size: var(--ig-size-medium);
+    min-width: 600px;
+    min-height: 350px;
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-top: 2rem;
+}
+
+::deep .chart {
+    --ig-size: var(--ig-size-medium);
+    min-width: 600px;
+    min-height: 350px;
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-top: 2rem;
+}
+
+::deep .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+::deep .loading igc-circular-progress {
+    --diameter: 16rem;
+    --stroke-thickness: 12px;
+}
+
+::deep igc-nav-drawer::part(overlay) {
+    display: none;
+}
+
+::deep igc-nav-drawer::part(base) {
+    position: relative;
+    transform: none;
+    box-shadow: none;
+    border-right: 1px solid var(--ig-gray-300, #ddd);
+}
+
+#blazor-error-ui {
+    color-scheme: light only;
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}

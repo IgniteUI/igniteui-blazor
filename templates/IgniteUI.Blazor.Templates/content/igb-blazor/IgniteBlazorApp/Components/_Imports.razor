@@ -1,0 +1,23 @@
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using IgniteBlazorApp
+@using IgniteBlazorApp.Components
+@*#if (HostingIsServer) *@
+@using IgniteBlazorApp.Components.Layout
+@using IgniteBlazorApp.Components.Pages
+@*#endif *@
+@*#if (HostingHasClient) *@
+@using IgniteBlazorApp.Client
+@*#endif *@
+@using IgniteUI.Blazor.Controls
+@*#if (HostingIsServer && IncludeWeatherSample) *@
+@using IgniteBlazorAppIGB_NS_SEGMENT.Models
+@using IgniteBlazorAppIGB_NS_SEGMENT.Services
+@using ApexCharts
+@*#endif *@
