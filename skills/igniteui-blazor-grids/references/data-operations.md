@@ -118,14 +118,34 @@ Pass multiple expressions in a single call:
 @code {
     private IgbGrid grid = default!;
 
-    private async Task FilterSalaryAbove50k()
+    private void FilterSalaryAbove50k()
     {
-        await grid.FilterAsync("Salary", 50000, IgbFilteringCondition.GreaterThan);
+        var tree = new IgbFilteringExpressionsTree() { Operator = FilteringLogic.And };
+        tree.FilteringOperands = new IgbFilteringExpression[]
+        {
+            new IgbFilteringExpression
+            {
+                FieldName = "Salary",
+                ConditionName = "greaterThan",
+                SearchVal = 50000
+            }
+        };
+        grid.FilteringExpressionsTree = tree;
     }
 
-    private async Task FilterActiveEmployees()
+    private void FilterActiveEmployees()
     {
-        await grid.FilterAsync("IsActive", true, IgbFilteringCondition.True);
+        var tree = new IgbFilteringExpressionsTree() { Operator = FilteringLogic.And };
+        tree.FilteringOperands = new IgbFilteringExpression[]
+        {
+            new IgbFilteringExpression
+            {
+                FieldName = "IsActive",
+                ConditionName = "true",
+                SearchVal = true
+            }
+        };
+        grid.FilteringExpressionsTree = tree;
     }
 
     private async Task ClearFilters()
@@ -154,30 +174,34 @@ For AND/OR grouped conditions, build a `FilteringExpressionsTree`:
 @code {
     private async Task ApplyComplexFilter()
     {
-        var tree = new IgbFilteringExpressionsTree(FilteringLogic.And);
-
-        tree.FilteringOperands.Add(new IgbFilteringExpression
+        var deptExpr = new IgbFilteringExpression
         {
             FieldName = "Department",
-            Condition = IgbFilteringCondition.Equals,
+            ConditionName = "equals",
+            IgnoreCase = true,
             SearchVal = "Engineering"
-        });
+        };
 
-        var salaryGroup = new IgbFilteringExpressionsTree(FilteringLogic.Or);
-        salaryGroup.FilteringOperands.Add(new IgbFilteringExpression
+        var salaryExpr = new IgbFilteringExpression
         {
             FieldName = "Salary",
-            Condition = IgbFilteringCondition.GreaterThan,
+            ConditionName = "greaterThan",
             SearchVal = 80000
-        });
-        salaryGroup.FilteringOperands.Add(new IgbFilteringExpression
+        };
+
+        var titleExpr = new IgbFilteringExpression
         {
             FieldName = "Title",
-            Condition = IgbFilteringCondition.Contains,
+            ConditionName = "contains",
+            IgnoreCase = true,
             SearchVal = "Senior"
-        });
+        };
 
-        tree.FilteringOperands.Add(salaryGroup);
+        var salaryOrTitleGroup = new IgbFilteringExpressionsTree() { Operator = FilteringLogic.Or };
+        salaryOrTitleGroup.FilteringOperands = new IgbFilteringExpression[] { salaryExpr, titleExpr };
+
+        var tree = new IgbFilteringExpressionsTree() { Operator = FilteringLogic.And };
+        tree.FilteringOperands = new IgbFilteringExpression[] { deptExpr };
 
         grid.AdvancedFilteringExpressionsTree = tree;
     }
@@ -207,10 +231,13 @@ Grouping is exclusive to the flat grid. Tree Grid and Hierarchical Grid do not s
 
     private async Task GroupByDepartment()
     {
-        await grid.GroupByAsync(new IgbGroupingExpression
+        await grid.GroupByAsync(new IgbGroupingExpression[]
         {
-            FieldName = "Department",
-            Dir = SortingDirection.Asc
+            new IgbGroupingExpression
+            {
+                FieldName = "Department",
+                Dir = SortingDirection.Asc
+            }
         });
     }
 

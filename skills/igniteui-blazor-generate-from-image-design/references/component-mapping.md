@@ -270,6 +270,16 @@ builder.Services.AddIgniteUIBlazor(
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
 ```
 
+> **If the generated view includes any full-featured grid** (`IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`), also add the grid-specific stylesheet immediately after:
+> ```html
+> <link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />
+> ```
+>
+> **If the generated view includes `IgbGridLite`**, replace both links above with the single Grid Lite stylesheet (from the `IgniteUI.Blazor.GridLite` package):
+> ```html
+> <link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
+> ```
+
 ### 5. JS interop script (`wwwroot/index.html` or `App.razor`)
 
 ```html

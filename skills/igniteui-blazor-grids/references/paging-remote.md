@@ -33,17 +33,17 @@ The grid does not have built-in paging. Instead, place an `IgbPaginator` compone
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `PerPage` | `int` | `15` | Rows per page |
-| `TotalRecords` | `int` | - | Total record count (required for remote paging) |
-| `SelectOptions` | `int[]` | `[5, 10, 15, 25, 50]` | Page size dropdown options |
+| `PerPage` | `double` | `15` | Rows per page |
+| `TotalRecords` | `double` | - | Total record count (required for remote paging) |
+| `SelectOptions` | `double[]` | `[5, 10, 15, 25, 50]` | Page size dropdown options |
 
 ### Paginator events
 
 | Event | Type | Description |
 |---|---|---|
-| `PerPageChanged` | `EventCallback<int>` | Fires when page size changes |
-| `PageChanged` | `EventCallback<int>` | Fires when current page changes |
-| `PagingDone` | `EventCallback<IgbPagingEventArgs>` | Fires after paging completes |
+| `PerPageChange` | `EventCallback<IgbNumberEventArgs>` | Fires when page size changes |
+| `PageChange` | `EventCallback<IgbNumberEventArgs>` | Fires when current page changes |
+| `PagingDone` | `EventCallback<IgbPageEventArgs>` | Fires after paging completes |
 
 ### Programmatic paging
 
@@ -76,7 +76,7 @@ The grid does not have built-in paging. Instead, place an `IgbPaginator` compone
 
 | Method | Description |
 |---|---|
-| `PaginateAsync(int page)` | Go to a specific page (0-based index) |
+| `PaginateAsync(double page)` | Go to a specific page (0-based index) |
 | `NextPageAsync()` | Go to the next page |
 | `PreviousPageAsync()` | Go to the previous page |
 
@@ -94,8 +94,8 @@ When data lives on a server, fetch only the current page:
     <IgbColumn Field="Department" Header="Department" />
     <IgbPaginator PerPage="@pageSize"
                    TotalRecords="@totalRecords"
-                   PageChanged="OnPageChanged"
-                   PerPageChanged="OnPerPageChanged" />
+                   PageChange="OnPageChange"
+                   PerPageChange="OnPerPageChange" />
 </IgbGrid>
 
 @code {
@@ -110,15 +110,15 @@ When data lives on a server, fetch only the current page:
         await LoadPageAsync();
     }
 
-    private async Task OnPageChanged(int page)
+    private async Task OnPageChange(IgbNumberEventArgs args)
     {
-        currentPage = page;
+        currentPage = (int)args.Detail;
         await LoadPageAsync();
     }
 
-    private async Task OnPerPageChanged(int newPageSize)
+    private async Task OnPerPageChange(IgbNumberEventArgs args)
     {
-        pageSize = newPageSize;
+        pageSize = (int)args.Detail;
         currentPage = 0;
         await LoadPageAsync();
     }
@@ -137,7 +137,7 @@ When data lives on a server, fetch only the current page:
 
 1. **Set `TotalRecords`** on the paginator - this tells it the total number of records on the server.
 2. **Bind `Data` to the current page** - only the current page's data is in memory.
-3. **Handle `PageChanged` and `PerPageChanged`** - fetch new data from the server on each event.
+3. **Handle `PageChange` and `PerPageChange`** - fetch new data from the server on each event.
 
 ---
 
@@ -154,7 +154,7 @@ For large datasets, disable client-side sorting/filtering and handle them on the
     <IgbColumn Field="Department" Sortable="true" />
     <IgbColumn Field="Salary" Sortable="true" DataType="GridColumnDataType.Number" />
     <IgbPaginator PerPage="@pageSize" TotalRecords="@totalRecords"
-                   PageChanged="OnPageChanged" />
+                   PageChange="OnPageChange" />
 </IgbGrid>
 
 @code {
@@ -165,16 +165,16 @@ For large datasets, disable client-side sorting/filtering and handle them on the
     private int currentPage = 0;
     private IgbSortingExpression[]? currentSort;
 
-    private async Task OnSortingDone(IgbSortingEventArgs args)
+    private async Task OnSortingDone(IgbSortingExpressionEventArgs args)
     {
-        currentSort = args.SortingExpressions;
+        currentSort = args.Detail;
         currentPage = 0;
         await LoadDataAsync();
     }
 
-    private async Task OnPageChanged(int page)
+    private async Task OnPageChange(IgbNumberEventArgs args)
     {
-        currentPage = page;
+        currentPage = (int)args.Detail;
         await LoadDataAsync();
     }
 
@@ -207,11 +207,11 @@ For large datasets, disable client-side sorting/filtering and handle them on the
     private IgbGrid grid = default!;
     private List<Employee> data = new();
 
-    private async Task OnFilteringDone(IgbFilteringEventArgs args)
+    private async Task OnFilteringDone(IgbFilteringExpressionsTreeEventArgs args)
     {
         // Extract filter information and send to server
-        var filterExpressions = args.FilteringExpressions;
-        var result = await Api.GetEmployeesFilteredAsync(filterExpressions);
+        var filterDetail = args.Detail;
+        var result = await Api.GetEmployeesFilteredAsync(filterDetail);
         data = result.Items;
         StateHasChanged();
     }
@@ -291,7 +291,7 @@ With 50 columns at 150px each (7500px total) in an 800px wide grid, only the vis
 
 1. **`IgbPaginator` goes inside the grid** - it is a child component, not a sibling.
 2. **Remote paging requires `TotalRecords`** - without it, the paginator cannot calculate page count.
-3. **Handle events for remote operations** - `SortingDone`, `FilteringDone`, `PageChanged` are your hooks to fetch server data.
+3. **Handle events for remote operations** - `SortingDone`, `FilteringDone`, `PageChange` are your hooks to fetch server data.
 4. **Virtualization needs a fixed `Height`** - this is the #1 performance requirement.
 5. **Do not use `.Skip().Take()` on `IQueryable` directly on the grid** - the grid expects a materialized collection (`List<T>` or `T[]`). Fetch data asynchronously and set it as the `Data` property.
 6. **`StateHasChanged()` after data updates** - call it after reassigning the `Data` property from an async operation.

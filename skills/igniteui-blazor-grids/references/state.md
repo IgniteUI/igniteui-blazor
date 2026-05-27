@@ -21,6 +21,7 @@ Save and restore the full grid state (sorting, filtering, grouping, paging, sele
 
 <IgbGrid @ref="grid" Data="data" PrimaryKey="Id" AutoGenerate="false"
          Width="100%" Height="500px">
+    <IgbGridState @ref="gridState"></IgbGridState>
     <IgbColumn Field="Name" Sortable="true" Filterable="true" />
     <IgbColumn Field="Department" Sortable="true" Groupable="true" />
     <IgbColumn Field="Salary" DataType="GridColumnDataType.Currency" HasSummary="true" />
@@ -32,11 +33,11 @@ Save and restore the full grid state (sorting, filtering, grouping, paging, sele
 
 @code {
     private IgbGrid grid = default!;
+    private IgbGridState gridState = default!;
 
     private async Task SaveState()
     {
-        var state = await grid.GetStateAsync();
-        var json = state.ToJson();
+        string json = await gridState.GetStateAsStringAsync(new string[0]);
         await JS.InvokeVoidAsync("localStorage.setItem", "gridState", json);
     }
 
@@ -45,8 +46,7 @@ Save and restore the full grid state (sorting, filtering, grouping, paging, sele
         var json = await JS.InvokeAsync<string>("localStorage.getItem", "gridState");
         if (!string.IsNullOrEmpty(json))
         {
-            var state = IgbGridState.FromJson(json);
-            await grid.SetStateAsync(state);
+            await gridState.ApplyStateFromStringAsync(json, new string[0]);
         }
     }
 }
@@ -69,40 +69,39 @@ Save and restore the full grid state (sorting, filtering, grouping, paging, sele
 ### Auto-save on navigation
 
 ```razor
-@implements IAsyncDisposable
+@implements IDisposable
 
-<IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+<IgbGrid @ref="grid" Data="data" PrimaryKey="Id" Rendered="OnGridRendered">
+    <IgbGridState @ref="gridState"></IgbGridState>
     ...
 </IgbGrid>
 
 @code {
     private IgbGrid grid = default!;
+    private IgbGridState gridState = default!;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    void OnGridRendered()
     {
-        if (firstRender)
+        RestoreGridState();
+    }
+
+    void IDisposable.Dispose()
+    {
+        SaveGridState();
+    }
+
+    async void SaveGridState()
+    {
+        string state = await gridState.GetStateAsStringAsync(new string[0]);
+        await JS.InvokeVoidAsync("localStorage.setItem", "gridState", state);
+    }
+
+    async void RestoreGridState()
+    {
+        string state = await JS.InvokeAsync<string>("localStorage.getItem", "gridState");
+        if (!string.IsNullOrEmpty(state))
         {
-            await RestoreState();
-        }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await SaveState();
-    }
-
-    private async Task SaveState()
-    {
-        var state = await grid.GetStateAsync();
-        await JS.InvokeVoidAsync("localStorage.setItem", "gridState", state.ToJson());
-    }
-
-    private async Task RestoreState()
-    {
-        var json = await JS.InvokeAsync<string>("localStorage.getItem", "gridState");
-        if (!string.IsNullOrEmpty(json))
-        {
-            await grid.SetStateAsync(IgbGridState.FromJson(json));
+            await gridState.ApplyStateFromStringAsync(state, new string[0]);
         }
     }
 }
@@ -110,21 +109,33 @@ Save and restore the full grid state (sorting, filtering, grouping, paging, sele
 
 ### Selective state save/restore
 
-Save only specific parts of the state:
+Save only specific parts of the state by passing feature name strings:
 
 ```razor
 @code {
+    private IgbGridState gridState = default!;
+
     private async Task SaveSortingOnly()
     {
-        var state = await grid.GetStateAsync(new IgbGridStateOptions
+        string state = await gridState.GetStateAsStringAsync(new string[] { "sorting" });
+        await JS.InvokeVoidAsync("localStorage.setItem", "gridSorting", state);
+    }
+}
+```
+
+To disable specific features from being tracked, set `Options` on the `IgbGridState` component:
+
+```razor
+@code {
+    private IgbGridState gridState = default!;
+
+    protected override void OnInitialized()
+    {
+        gridState.Options = new IgbGridStateOptions
         {
-            Sorting = true,
-            Filtering = false,
-            Paging = false,
-            Selection = false,
-            Columns = false
-        });
-        await JS.InvokeVoidAsync("localStorage.setItem", "gridSorting", state.ToJson());
+            CellSelection = false,
+            Sorting = false
+        };
     }
 }
 ```
@@ -133,10 +144,11 @@ Save only specific parts of the state:
 
 ```razor
 @code {
+    private IgbGridState gridState = default!;
+
     private async Task SaveToServer()
     {
-        var state = await grid.GetStateAsync();
-        var json = state.ToJson();
+        string json = await gridState.GetStateAsStringAsync(new string[0]);
         await UserPreferencesApi.SaveGridStateAsync(userId, "employeesGrid", json);
     }
 
@@ -145,7 +157,7 @@ Save only specific parts of the state:
         var json = await UserPreferencesApi.GetGridStateAsync(userId, "employeesGrid");
         if (!string.IsNullOrEmpty(json))
         {
-            await grid.SetStateAsync(IgbGridState.FromJson(json));
+            await gridState.ApplyStateFromStringAsync(json, new string[0]);
         }
     }
 }
@@ -156,5 +168,6 @@ Save only specific parts of the state:
 ## Key Rules
 
 1. **`PrimaryKey` must be set on the grid** for state persistence to work reliably (especially for selection and row pinning).
-2. **State serialization is JSON** - `GetStateAsync()` returns an object that can be serialized with `ToJson()`.
-3. **Restore state in `OnAfterRenderAsync`** - the grid must be rendered before you can call `SetStateAsync`.
+2. **`IgbGridState` is a child component of the grid** - add `<IgbGridState @ref="gridState">` inside the grid markup and use its methods.
+3. **Use `GetStateAsStringAsync` / `ApplyStateFromStringAsync`** - these accept/return JSON strings directly. Pass `new string[0]` for all features, or specific feature names like `new string[] { "sorting", "filtering" }`.
+4. **Restore state in the grid's `Rendered` event** - the grid must be fully rendered before you can call `ApplyStateFromStringAsync`.

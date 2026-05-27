@@ -70,7 +70,7 @@ Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `
 
 > **AGENT INSTRUCTION:** `CategoryChartType.Bar` does **not** exist. For a horizontal bar-style chart, use `CategoryChartType.Column` (vertical) or switch to `IgbDataChart` with `IgbBarSeries` for true horizontal bars. Never generate `ChartType="CategoryChartType.Bar"`.
 
-> **AGENT INSTRUCTION:** The `XAxisLabel` parameter on `IgbCategoryChart` is not a plain string property name. To control which data field is used as the X-axis label, set `XAxisMemberPath` with the property name string (e.g., `XAxisMemberPath="Month"`).
+> **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects which string or date property in the data to use as X-axis labels. To control which data properties are charted, use `IncludedProperties` or `ExcludedProperties` (string arrays).
 
 Brush list properties such as `Brushes`, `Outlines`, `MarkerBrushes`, and `MarkerOutlines` are **string** parameters. Separate multiple colors with spaces, as in `Brushes="DodgerBlue IndianRed"`.
 
@@ -92,7 +92,8 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDataChartCoreModule), typeof(IgbDat
 ```
 
 ```razor
-<IgbDataChart Height="500px" Width="100%" IsHorizontalZoomEnabled="true">
+<IgbLegend @ref="Legend" Orientation="LegendOrientation.Horizontal" />
+<IgbDataChart Legend="Legend" Height="500px" Width="100%" IsHorizontalZoomEnabled="true">
     <IgbCategoryXAxis Name="xAxis" DataSource="ChartData" Label="Month" />
     <IgbNumericYAxis Name="yAxis" />
     <IgbLineSeries DataSource="ChartData"
@@ -105,11 +106,17 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDataChartCoreModule), typeof(IgbDat
                      YAxisName="yAxis"
                      ValueMemberPath="Expenses"
                      Title="Expenses" />
-    <IgbChartLegend Name="legend" />
 </IgbDataChart>
 
 @code {
     public List<MonthData> ChartData { get; set; } = SampleData.GetMonthly();
+
+    private IgbLegend _legend;
+    private IgbLegend Legend
+    {
+        get { return _legend; }
+        set { _legend = value; StateHasChanged(); } // triggers re-render so Legend="Legend" receives the ref
+    }
 }
 ```
 
@@ -143,7 +150,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbFinancialChartModule));
 }
 ```
 
-The data source must contain `Open`, `High`, `Low`, `Close`, and `Volume` numeric fields plus a `Date`/`Time` field. Key attributes: `ChartType` (`FinancialChartType.Candle` / `Bar` / `Line`), `ZoomSliderType`, `IsTooltipVisible`, `VolumeType`.
+The data source must contain `Open`, `High`, `Low`, `Close`, and `Volume` numeric fields plus a `Date`/`Time` field. Key attributes: `ChartType` (`FinancialChartType.Candle` / `Bar` / `Line`), `ZoomSliderType`, `VolumeType`.
 
 ---
 
@@ -152,20 +159,29 @@ The data source must contain `Open`, `High`, `Low`, `Close`, and `Volume` numeri
 > **Docs:** [Pie Chart](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/pie-chart)
 
 ```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbPieChartModule));
+builder.Services.AddIgniteUIBlazor(typeof(IgbPieChartModule), typeof(IgbItemLegendModule));
 ```
 
 ```razor
+<IgbItemLegend @ref="PieLegend" Orientation="LegendOrientation.Horizontal" />
 <IgbPieChart DataSource="SliceData"
              LabelMemberPath="Department"
              ValueMemberPath="Budget"
              Width="500px"
              Height="400px"
              LegendLabelMemberPath="Department"
+             Legend="PieLegend"
              SliceClick="OnSliceClick" />
 
 @code {
     public List<BudgetSlice> SliceData { get; set; } = SampleData.GetBudget();
+
+    private IgbItemLegend _pieLegend;
+    private IgbItemLegend PieLegend
+    {
+        get { return _pieLegend; }
+        set { _pieLegend = value; StateHasChanged(); }
+    }
 
     void OnSliceClick(IgbSliceClickEventArgs e) { /* handle click */ }
 }
@@ -211,11 +227,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSparklineModule));
               DisplayType="SparklineDisplayType.Line"
               Width="120px"
               Height="40px"
-              Brushes="DodgerBlue"
+              Brush="DodgerBlue"
               LineThickness="2" />
 ```
 
-Key attributes: `DataSource`, `ValueMemberPath`, `DisplayType` (`SparklineDisplayType.Line` / `Area` / `Column` / `WinLoss`), `Width`, `Height`, `Brushes`, `LineThickness`, `MarkerVisibility`, `FirstMarkerVisibility`, `LastMarkerVisibility`, `HighMarkerVisibility`, `LowMarkerVisibility`.
+Key attributes: `DataSource`, `ValueMemberPath`, `DisplayType` (`SparklineDisplayType.Line` / `Area` / `Column` / `WinLoss`), `Width`, `Height`, `Brush`, `LineThickness`, `MarkerVisibility`, `FirstMarkerVisibility`, `LastMarkerVisibility`, `HighMarkerVisibility`, `LowMarkerVisibility`.
 
 ---
 
@@ -256,15 +272,27 @@ Use Dashboard Tile when the requested component should infer or render compact d
 ### Legends
 
 ```razor
-<IgbLegend @ref="Legend" Orientation="LandmarkOrientation.Horizontal" />
+<IgbLegend @ref="Legend" Orientation="LegendOrientation.Horizontal" />
 <IgbCategoryChart DataSource="Data" Legend="Legend" />
+
+@code {
+    private IgbLegend _legend;
+    private IgbLegend Legend
+    {
+        get { return _legend; }
+        set { _legend = value; StateHasChanged(); } // triggers re-render so Legend="Legend" receives the ref
+    }
+}
 ```
 
 ### Tooltips
 
 ```razor
-<IgbCategoryChart IsDefaultTooltipEnabled="true" />
-<!-- Or custom tooltip via ToolTipTemplate slot -->
+<!-- Default tooltip is shown automatically on hover — no property needed -->
+<IgbCategoryChart DataSource="Data" />
+
+<!-- Custom tooltip via TooltipTemplate -->
+<IgbCategoryChart DataSource="Data" TooltipTemplate="@TooltipFragment" />
 ```
 
 ### Animations
@@ -277,7 +305,8 @@ Use Dashboard Tile when the requested component should infer or render compact d
 
 ```razor
 <IgbCategoryChart IsSeriesHighlightingEnabled="true"
-                  HighlightingBehavior="SeriesHighlightingBehavior.BrightenSpecificItemsAndDarkenOthers" />
+                  HighlightingMode="SeriesHighlightingMode.FadeOthers"
+                  HighlightingBehavior="SeriesHighlightingBehavior.NearestItemsAndSeries" />
 ```
 
 ### Zooming and Panning
@@ -299,4 +328,5 @@ Use Dashboard Tile when the requested component should infer or render compact d
 5. **`IgbDataChart` series must match axes by name.** The `XAxisName` / `YAxisName` on each series must match the `Name` attribute of the axis component.
 6. **`IncludedProperties` and `ExcludedProperties` are `string[]` arrays.** Bind with `@(new string[] { "Prop1", "Prop2" })`. Do not pass a plain string.
 7. **`CategoryChartType.Bar` does not exist.** Use `Column` for vertical bars in `IgbCategoryChart`. For horizontal bars, use `IgbDataChart` with `IgbBarSeries`.
-8. **Use `XAxisMemberPath` to set the X-axis label field**, not `XAxisLabel`. Passing a property name string to `XAxisLabel` is evaluated as a C# expression and silently fails.
+8. **Do not use `XAxisLabel` to specify a data field.** It controls label formatting only. Use `IncludedProperties`/`ExcludedProperties` on `IgbCategoryChart`, or `Label` on `IgbCategoryXAxis` for `IgbDataChart`.
+9. **Scatter and bubble series use `XMemberPath`/`YMemberPath`, not `XAxisMemberPath`.** For `IgbScatterSeries` and `IgbBubbleSeries`, map data fields with `XMemberPath="FieldX"` and `YMemberPath="FieldY"`. `IgbBubbleSeries` additionally requires `RadiusMemberPath`.

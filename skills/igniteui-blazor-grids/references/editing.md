@@ -57,7 +57,7 @@ Mark columns as editable:
 | `CellEditEnter` | `EventCallback<IgbGridEditEventArgs>` | Fires when a cell enters edit mode |
 | `CellEdit` | `EventCallback<IgbGridEditEventArgs>` | Fires before a cell value is committed - set `args.Cancel = true` to reject |
 | `CellEditDone` | `EventCallback<IgbGridEditDoneEventArgs>` | Fires after a cell value is committed |
-| `CellEditExit` | `EventCallback<IgbGridEditEventArgs>` | Fires when a cell exits edit mode |
+| `CellEditExit` | `EventCallback<IgbGridEditDoneEventArgs>` | Fires when a cell exits edit mode |
 
 ### Example: Validate before commit
 
@@ -126,7 +126,7 @@ Mark columns as editable:
 | `RowEditEnter` | `EventCallback<IgbGridEditEventArgs>` | Fires when a row enters edit mode |
 | `RowEdit` | `EventCallback<IgbGridEditEventArgs>` | Fires before row changes are committed - set `args.Cancel = true` to reject |
 | `RowEditDone` | `EventCallback<IgbGridEditDoneEventArgs>` | Fires after row changes are committed |
-| `RowEditExit` | `EventCallback<IgbGridEditEventArgs>` | Fires when a row exits edit mode |
+| `RowEditExit` | `EventCallback<IgbGridEditDoneEventArgs>` | Fires when a row exits edit mode |
 
 ### Example: Save row on confirm
 
@@ -201,40 +201,32 @@ Add inline add/edit/delete actions:
 
 ## Validation
 
-### Built-in validation
+### Custom validation via editing events
 
-Columns support built-in validators that run during editing:
-
-```razor
-<IgbColumn Field="Name" Editable="true" Required="true" />
-<IgbColumn Field="Email" Editable="true" DataType="GridColumnDataType.String" MinLength="5" MaxLength="100" />
-<IgbColumn Field="Age" Editable="true" DataType="GridColumnDataType.Number" Min="18" Max="120" />
-```
-
-| Validator Parameter | Type | Description |
-|---|---|---|
-| `Required` | `bool` | Value cannot be empty |
-| `MinLength` | `int` | Minimum string length |
-| `MaxLength` | `int` | Maximum string length |
-| `Min` | `object` | Minimum numeric/date value |
-| `Max` | `object` | Maximum numeric/date value |
-
-### Validation display
-
-When a validation rule is violated, the cell shows a red border and a tooltip with the error message. The row cannot be committed while validation errors exist in row editing mode.
-
-### Custom validation
-
-Implement custom logic in the `CellEdit` or `RowEdit` event:
+Use the `CellEdit` or `RowEdit` event to validate values before commit. Set `args.Cancel = true` to reject invalid input:
 
 ```razor
 <IgbGrid Data="data" PrimaryKey="Id" RowEditable="true"
-         RowEdit="OnRowEdit">
+         RowEdit="OnRowEdit" CellEdit="OnCellEdit">
+    <IgbColumn Field="Name" Editable="true" DataType="GridColumnDataType.String" />
+    <IgbColumn Field="Age" Editable="true" DataType="GridColumnDataType.Number" />
     <IgbColumn Field="StartDate" Editable="true" DataType="GridColumnDataType.Date" />
     <IgbColumn Field="EndDate" Editable="true" DataType="GridColumnDataType.Date" />
 </IgbGrid>
 
 @code {
+    private void OnCellEdit(IgbGridEditEventArgs args)
+    {
+        if (args.Column.Field == "Age")
+        {
+            var newValue = Convert.ToInt32(args.NewValue);
+            if (newValue < 18 || newValue > 120)
+            {
+                args.Cancel = true; // reject out-of-range age
+            }
+        }
+    }
+
     private void OnRowEdit(IgbGridEditEventArgs args)
     {
         var rowData = args.NewValue as ProjectTask;
@@ -245,6 +237,21 @@ Implement custom logic in the `CellEdit` or `RowEdit` event:
         }
     }
 }
+```
+
+### Validation error template
+
+Use `ErrorTemplate` on a column to display a custom message when validation fails:
+
+```razor
+<IgbColumn Field="Age" Editable="true" DataType="GridColumnDataType.Number">
+    <ErrorTemplate>
+        @{
+            var cell = (IgbCellTemplateContext)context;
+        }
+        <span style="color: red;">Invalid value</span>
+    </ErrorTemplate>
+</IgbColumn>
 ```
 
 ---

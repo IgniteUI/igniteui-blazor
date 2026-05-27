@@ -68,18 +68,26 @@ Customize the group row:
             var groupRow = (IgbGroupByRowTemplateContext)context;
         }
         <span>
-            <strong>@groupRow.GroupRow.Expression.FieldName</strong>:
-            @groupRow.GroupRow.Value
-            (@groupRow.GroupRow.Records.Count items)
+            <strong>@groupRow.Implicit.Expression.FieldName</strong>:
+            @groupRow.Implicit.Value
+            (@groupRow.Implicit.Records.Length items)
         </span>
     </GroupRowTemplate>
 </IgbGrid>
 ```
 
-### Hide group area
+### Hide grouped columns from the grid
 
 ```razor
 <IgbGrid Data="data" PrimaryKey="Id" HideGroupedColumns="true">
+    ...
+</IgbGrid>
+```
+
+### Hide the group area
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" ShowGroupArea="false">
     ...
 </IgbGrid>
 ```
@@ -115,14 +123,9 @@ Enable with `HasSummary="true"` on a column. The built-in summaries depend on th
 
 ### Custom summary operands
 
-Extend `IgbNumberSummaryOperand` (or `IgbDateSummaryOperand`, `IgbSummaryOperand`) and override `Operate()` to return `IgbSummaryResult[]`. Apply via `Summaries` parameter:
+Custom summaries in Blazor are implemented via JavaScript using `ColumnInitScript`. Define a JavaScript class with an `operate(data, allData, fieldName)` method that returns an array of `{ key, label, summaryResult }` objects, then assign it during column initialization.
 
-```razor
-<IgbColumn Field="Salary" Header="Salary" HasSummary="true"
-           Summaries="typeof(MySalarySummary)" />
-```
-
-> For full custom summary class syntax, call `get_doc(framework: "blazor", slug: "grids/grid/summaries")` and use `get_api_reference` for the exact API contract.
+> For full custom summary class syntax, call `get_doc(framework: "blazor", name: "grid-summaries")` for the JavaScript pattern and template usage.
 
 ### Summary position
 
@@ -227,11 +230,15 @@ The grid toolbar provides built-in UI for column hiding, column pinning, exporti
 
 ### Programmatic export
 
-```razor
-@inject IgbExcelExporterService ExcelExporter
-@inject IgbCsvExporterService CsvExporter
+Use a `@ref` on the `IgbGridToolbarExporter` to trigger export from code:
 
+```razor
 <IgbGrid @ref="grid" Data="data" PrimaryKey="Id">
+    <IgbGridToolbar>
+        <IgbGridToolbarActions>
+            <IgbGridToolbarExporter @ref="exporter" ExportExcel="true" ExportCSV="true" Filename="employees" />
+        </IgbGridToolbarActions>
+    </IgbGridToolbar>
     ...
 </IgbGrid>
 
@@ -240,23 +247,52 @@ The grid toolbar provides built-in UI for column hiding, column pinning, exporti
 
 @code {
     private IgbGrid grid = default!;
+    private IgbGridToolbarExporter exporter = default!;
 
     private async Task ExportToExcel()
     {
-        var options = new IgbExcelExporterOptions("employees");
-        await ExcelExporter.ExportAsync(grid, options);
+        await exporter.ExportGridAsync(GridToolbarExporterType.Excel);
     }
 
     private async Task ExportToCsv()
     {
-        var options = new IgbCsvExporterOptions("employees");
-        options.FileType = CsvFileTypes.CSV;
-        await CsvExporter.ExportAsync(grid, options);
+        await exporter.ExportGridAsync(GridToolbarExporterType.CSV);
     }
 }
 ```
 
+### Customize export via events
+
+Handle `ToolbarExporting` on the grid to modify options or cancel the export:
+
+```razor
+<IgbGrid Data="data" PrimaryKey="Id" ToolbarExportingScript="OnToolbarExporting">
+    <IgbGridToolbar>
+        <IgbGridToolbarActions>
+            <IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" />
+        </IgbGridToolbarActions>
+    </IgbGridToolbar>
+    ...
+</IgbGrid>
+```
+
+```javascript
+// In JavaScript
+igRegisterScript("OnToolbarExporting", (evt) => {
+    const args = evt.detail;
+    args.options.fileName = `Report_${new Date().toDateString()}`;
+    // args.cancel = true; // to cancel export
+    args.exporter.columnExporting.subscribe((colArgs) => {
+        if (colArgs.header === "ID") {
+            colArgs.cancel = true; // skip this column
+        }
+    });
+}, false);
+```
+
 ### Export options
+
+These properties exist on `IgbExporterOptionsBase`, accessible via the `ToolbarExporting` event args:
 
 | Option | Type | Description |
 |---|---|---|
@@ -264,16 +300,19 @@ The grid toolbar provides built-in UI for column hiding, column pinning, exporti
 | `IgnoreFiltering` | `bool` | Export all data, not just filtered |
 | `IgnoreSorting` | `bool` | Export in original data order |
 | `IgnoreColumnsVisibility` | `bool` | Include hidden columns in export |
-| `ExportGroupedRows` | `bool` | Include group rows in export (IgbGrid only) |
+| `IgnoreGrouping` | `bool` | Ignore grouping in export (IgbGrid only) |
+| `AlwaysExportHeaders` | `bool` | Export headers even if there is no data |
+| `ExportSummaries` | `bool` | Include column summaries in export |
 
 ### Export events
 
-| Event | Description |
-|---|---|
-| `ExportStarted` | Fires before export begins - cancel or configure here |
-| `ExportEnded` | Fires after export completes |
-| `ColumnExporting` | Fires for each column - skip or modify |
-| `RowExporting` | Fires for each row - skip or modify |
+| Event | On | Description |
+|---|---|---|
+| `ExportStarted` | `IgbGridToolbarExporter` | Fires before export begins |
+| `ExportEnded` | `IgbGridToolbarExporter` | Fires after export completes |
+| `ToolbarExporting` | Grid (`IgbGrid` etc.) | Fires when toolbar export is triggered - configure options or cancel |
+| `ColumnExporting` | `IgbBaseExporter` (via event args) | Fires for each column - skip or modify |
+| `RowExporting` | `IgbBaseExporter` (via event args) | Fires for each row - skip or modify |
 
 ---
 
@@ -324,14 +363,14 @@ Enable row reordering or drag-to-external targets:
 
 ```razor
 <IgbGrid Data="data" PrimaryKey="Id" RowDraggable="true">
-    <DragGhostTemplate>
+    <DragGhostCustomTemplate>
         @{
             var row = (IgbGridRowDragGhostContext)context;
         }
         <div class="custom-ghost">
-            Moving: @row.RowData
+            Moving: @row.Data
         </div>
-    </DragGhostTemplate>
+    </DragGhostCustomTemplate>
     ...
 </IgbGrid>
 ```
@@ -385,7 +424,8 @@ Show a detail view for each expanded row. This is specific to the flat grid - fo
     <IgbColumn Field="Country" Header="Country" />
     <DetailTemplate>
         @{
-            var customer = (Customer)context;
+            var ctx = (IgbGridMasterDetailContext)context;
+            var customer = (Customer)ctx.Implicit;
         }
         <div style="padding: 16px;">
             <h4>Orders for @customer.Name</h4>

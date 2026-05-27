@@ -53,7 +53,9 @@ For icon tabs, use the `label` slot inside `IgbTab`:
 
 Key attributes on `IgbTabs`: `Alignment` (`TabsAlignment.Start` / `End` / `Center` / `Justify`), `Activation` (`TabsActivation.Auto` / `Manual`). On `IgbTab`: `Label`, `Disabled`, `Selected`.
 
-Events on `IgbTabs`: `Change` - fires when the selected tab changes.
+Events on `IgbTabs`: `Change` (`EventCallback<IgbTabComponentEventArgs>`) - fires when the selected tab changes.
+
+Methods on `IgbTabs`: `Select(string id)` — selects a tab by id; `GetSelected()` — returns the id of the currently selected tab.
 
 CSS parts: `headers`, `headers-content`, `headers-wrapper`, `header`, `selected-indicator`, `content`.
 
@@ -92,7 +94,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbStepperModule));
 }
 ```
 
-Key attributes on `IgbStepper`: `Linear` (prevents skipping steps), `Orientation` (`StepperOrientation.Horizontal` / `Vertical`), `StepType` (`StepperStepType.Indicator` / `Title` / `Full`), `TitlePosition` (`StepperTitlePosition.Bottom` / `Top` / `End` / `Start`), `HorizontalAnimation`, `VerticalAnimation`, `AnimationDuration`.
+Key attributes on `IgbStepper`: `Linear` (prevents skipping steps), `Orientation` (`StepperOrientation.Horizontal` / `Vertical`), `StepType` (`StepperStepType.Indicator` / `Title` / `Full`), `TitlePosition` (`StepperTitlePosition.Auto` / `Bottom` / `Top` / `End` / `Start`), `ContentTop` (renders step content above the header), `HorizontalAnimation` (`HorizontalTransitionAnimation.Slide` / `Fade` / `None`), `VerticalAnimation` (`StepperVerticalAnimation.Grow` / `Fade` / `None`), `AnimationDuration`.
 
 Key attributes on `IgbStep`: `Complete`, `Optional`, `Disabled`, `Invalid`, `Active`.
 
@@ -139,13 +141,13 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbAccordionModule));
 }
 ```
 
-Key attributes on `IgbAccordion`: `SingleExpand` (only one panel open at a time). On `IgbExpansionPanel`: `Open`, `Disabled`.
+Key attributes on `IgbAccordion`: `SingleExpand` (only one panel open at a time). On `IgbExpansionPanel`: `Open`, `Disabled`, `IndicatorPosition` (`ExpansionPanelIndicatorPosition.Start` / `End` / `None`).
 
 Slots on `IgbExpansionPanel`: `title`, `subtitle`, `indicator` (custom expand icon).
 
-Events on `IgbExpansionPanel`: `Opening` (cancellable), `Opened`, `Closing` (cancellable), `Closed`.
+Events on `IgbExpansionPanel`: `Opening` (cancellable), `Opened`, `Closing` (cancellable), `Closed`. These same events also fire on `IgbAccordion` at the accordion level.
 
-Methods: `Show()`, `Hide()`, `Toggle()`.
+Methods on `IgbExpansionPanel`: `Show()`, `Hide()`, `Toggle()`. Methods on `IgbAccordion`: `ShowAll()`, `HideAll()`.
 
 ---
 
@@ -187,7 +189,6 @@ Required theme CSS:
 ```csharp
 builder.Services.AddIgniteUIBlazor(
     typeof(IgbNavDrawerModule),
-    typeof(IgbNavDrawerItemModule),
     typeof(IgbNavDrawerHeaderItemModule)
 );
 ```
@@ -267,7 +268,7 @@ Mini variant:
 </IgbNavDrawer>
 ```
 
-Key attributes on `IgbNavDrawer`: `Open`, `Position` (`NavDrawerPosition.Start` / `End` / `Top` / `Bottom`). Use the `mini` slot to provide collapsed icon-only content.
+Key attributes on `IgbNavDrawer`: `Open`, `Position` (`NavDrawerPosition.Start` / `End` / `Top` / `Bottom` / `Relative`). On `IgbNavDrawerItem`: `Active`, `Disabled`. Use the `mini` slot to provide collapsed icon-only content.
 
 Methods: `Show()`, `Hide()`, `Toggle()`.
 
@@ -291,7 +292,7 @@ CSS parts: `base`, `main`, `mini`.
 > **Docs:** [Tree](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree)
 
 ```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule));
+builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule), typeof(IgbTreeItemModule));
 ```
 
 ```razor
@@ -306,11 +307,13 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule));
 </IgbTree>
 ```
 
-Key attributes on `IgbTree`: `Selection` (`TreeSelection.None` / `Multiple` / `Cascade`). On `IgbTreeItem`: `Label`, `Expanded`, `Selected`, `Disabled`, `Active`.
+Key attributes on `IgbTree`: `Selection` (`TreeSelection.None` / `Multiple` / `Cascade`), `SingleBranchExpand` (only one branch expanded at a time), `ToggleNodeOnClick` (toggle expand on click). On `IgbTreeItem`: `Label`, `Value`, `Expanded`, `Selected`, `Disabled`, `Active`, `Loading`.
 
 Slots on `IgbTreeItem`: `label` (custom label content), `indicator` (expand/collapse icon override). Nest `IgbTreeItem` children directly inside a parent `IgbTreeItem`.
 
-Events on `IgbTree`: `NodeSelectionChanging` (cancellable), `NodeSelectionChanged`, `NodeExpanded`, `NodeCollapsed`.
+Methods on `IgbTree`: `ExpandToItem(IgbTreeItem)`. Methods on `IgbTreeItem`: `Expand()`, `Collapse()`, `Toggle()`, `GetPath()` (returns ancestor chain).
+
+Events on `IgbTree`: `SelectionChanged` (`EventCallback<IgbTreeSelectionEventArgs>`), `ItemExpanding` (cancellable), `ItemExpanded`, `ItemCollapsing` (cancellable), `ItemCollapsed`, `ActiveItem`.
 
 ---
 

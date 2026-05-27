@@ -219,37 +219,7 @@ Control how many levels are expanded by default:
 
 ### Load on Demand
 
-Load child data lazily when a parent row is expanded:
-
-```razor
-<IgbTreeGrid Data="rootData" PrimaryKey="Id" HasChildrenKey="HasChildren"
-             LoadChildrenOnDemand="OnLoadChildren">
-    <IgbColumn Field="Name" Header="Name" />
-    <IgbColumn Field="EmployeeCount" Header="Count" />
-</IgbTreeGrid>
-
-@code {
-    private List<Department> rootData = new();
-
-    private async Task OnLoadChildren(IgbTreeGridLoadOnDemandEventArgs args)
-    {
-        var parentId = (int)args.ParentID;
-        var children = await DepartmentService.GetChildrenAsync(parentId);
-        args.ChildData = children.ToArray();
-    }
-
-    public class Department
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public int EmployeeCount { get; set; }
-        public bool HasChildren { get; set; }
-    }
-}
-```
-
-- `HasChildrenKey` tells the grid which rows have children (so it shows the expand arrow).
-- `LoadChildrenOnDemand` is the callback that fetches and supplies children.
+> **Note:** Load-on-demand in the Blazor Tree Grid is handled via **JavaScript interop** only. There is no pure-C# `LoadChildrenOnDemand` callback. Use `HasChildrenKey` to indicate which rows have children, and register a JS handler via `LoadChildrenOnDemandScript` to fetch and supply child data when a row is expanded.
 
 ### Tree Grid key parameters
 
@@ -259,9 +229,9 @@ Load child data lazily when a parent row is expanded:
 | `ForeignKey` | `string` | Parent reference field (flat data) |
 | `ChildDataKey` | `string` | Child collection property (nested data) |
 | `HasChildrenKey` | `string` | Boolean field for load-on-demand |
-| `ExpansionDepth` | `int` | Initial expansion level |
-| `LoadChildrenOnDemand` | `EventCallback<IgbTreeGridLoadOnDemandEventArgs>` | Lazy-load callback |
-| `CascadeOnDelete` | `CascadeOnDelete` | `CascadeOnDelete.None` or `CascadeOnDelete.Cascade` - controls whether deleting a parent deletes children |
+| `ExpansionDepth` | `double` | Initial expansion level |
+| `HasChildrenKey` | `string` | Boolean field indicating which rows have children (for load-on-demand) |
+| `CascadeOnDelete` | `bool` | Whether deleting a parent also deletes its children |
 
 ---
 
@@ -284,12 +254,12 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbHierarchicalGridModule));
     <IgbColumn Field="CompanyName" Header="Company" DataType="GridColumnDataType.String" />
     <IgbColumn Field="ContactName" Header="Contact" DataType="GridColumnDataType.String" />
 
-    <IgbRowIsland Key="Orders" PrimaryKey="OrderId" AutoGenerate="false">
+    <IgbRowIsland ChildDataKey="Orders" PrimaryKey="OrderId" AutoGenerate="false">
         <IgbColumn Field="OrderId" Header="Order ID" DataType="GridColumnDataType.Number" />
         <IgbColumn Field="OrderDate" Header="Date" DataType="GridColumnDataType.Date" />
         <IgbColumn Field="ShipCountry" Header="Ship Country" DataType="GridColumnDataType.String" />
 
-        <IgbRowIsland Key="OrderDetails" PrimaryKey="DetailId" AutoGenerate="false">
+        <IgbRowIsland ChildDataKey="OrderDetails" PrimaryKey="DetailId" AutoGenerate="false">
             <IgbColumn Field="DetailId" Header="Detail ID" DataType="GridColumnDataType.Number" />
             <IgbColumn Field="ProductName" Header="Product" DataType="GridColumnDataType.String" />
             <IgbColumn Field="Quantity" Header="Qty" DataType="GridColumnDataType.Number" />
@@ -334,7 +304,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbHierarchicalGridModule));
 
 ### How `IgbRowIsland` works
 
-- The `Key` property matches the collection property name on the parent data object (e.g., `Key="Orders"` matches `Customer.Orders`).
+- The `ChildDataKey` property matches the collection property name on the parent data object (e.g., `ChildDataKey="Orders"` matches `Customer.Orders`).
 - Each `IgbRowIsland` is a **template** - it defines columns and features for all child grids at that level.
 - Row islands can be nested to any depth.
 - Each child grid instance is independent - it has its own sorting, filtering, selection, and paging state.
@@ -347,7 +317,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbHierarchicalGridModule));
                       AllowFiltering="true">
     <IgbColumn Field="CompanyName" Sortable="true" Filterable="true" />
 
-    <IgbRowIsland Key="Orders" PrimaryKey="OrderId"
+    <IgbRowIsland ChildDataKey="Orders" PrimaryKey="OrderId"
                    RowSelection="GridSelectionMode.Single"
                    AllowFiltering="true"
                    FilterMode="FilterMode.ExcelStyleFilter">
@@ -364,7 +334,7 @@ When a user expands a row, a child grid instance is created. Access it via the `
 ```razor
 <IgbHierarchicalGrid Data="customers" PrimaryKey="CustomerId">
     <IgbColumn Field="CompanyName" />
-    <IgbRowIsland Key="Orders" PrimaryKey="OrderId"
+    <IgbRowIsland ChildDataKey="Orders" PrimaryKey="OrderId"
                    GridCreated="OnChildGridCreated">
         <IgbColumn Field="OrderId" />
         <IgbColumn Field="Total" />
@@ -374,8 +344,8 @@ When a user expands a row, a child grid instance is created. Access it via the `
 @code {
     private void OnChildGridCreated(IgbGridCreatedEventArgs args)
     {
-        var childGrid = args.Owner; // the IgbGrid instance for this child level
-        // Perform operations on the child grid
+        var childGrid = args.Detail.Grid;  // the IgbHierarchicalGrid instance for this child level
+        var rowIsland = args.Detail.Owner; // the IgbRowIsland template that created it
     }
 }
 ```
@@ -392,7 +362,7 @@ When a user expands a row, a child grid instance is created. Access it via the `
 
 | Parameter | Type | Description |
 |---|---|---|
-| `Key` | `string` | Property name of the child collection on the parent object |
+| `ChildDataKey` | `string` | Property name of the child collection on the parent object |
 | `PrimaryKey` | `string` | Unique identifier for this level |
 | `AutoGenerate` | `bool` | Auto-generate columns |
 | `GridCreated` | `EventCallback<IgbGridCreatedEventArgs>` | Fires when a child grid is created on expand |
@@ -428,25 +398,25 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbPivotGridModule));
 
         pivotConfig = new IgbPivotConfiguration
         {
-            Rows = new List<IgbPivotDimension>
+            Rows = new IgbPivotDimension[]
             {
                 new IgbPivotDimension { MemberName = "Country", Enabled = true },
                 new IgbPivotDimension { MemberName = "City", Enabled = true }
             },
-            Columns = new List<IgbPivotDimension>
+            Columns = new IgbPivotDimension[]
             {
                 new IgbPivotDimension { MemberName = "Year", Enabled = true }
             },
-            Values = new List<IgbPivotValue>
+            Values = new IgbPivotValue[]
             {
                 new IgbPivotValue
                 {
                     Member = "Revenue",
-                    Aggregate = new IgbPivotAggregation { AggregatorName = PivotAggregationType.SUM, Key = "SUM", Label = "Sum of Revenue" },
+                    Aggregate = new IgbPivotAggregator { AggregatorName = PivotAggregationType.SUM, Key = "SUM", Label = "Sum of Revenue" },
                     Enabled = true
                 }
             },
-            Filters = new List<IgbPivotDimension>
+            Filters = new IgbPivotDimension[]
             {
                 new IgbPivotDimension { MemberName = "ProductCategory", Enabled = true }
             }
@@ -469,10 +439,10 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbPivotGridModule));
 
 | Property | Type | Description |
 |---|---|---|
-| `Rows` | `List<IgbPivotDimension>` | Dimensions placed on rows |
-| `Columns` | `List<IgbPivotDimension>` | Dimensions placed on columns |
-| `Values` | `List<IgbPivotValue>` | Measures/aggregations |
-| `Filters` | `List<IgbPivotDimension>` | Dimensions used as filters (shown in filter chip area) |
+| `Rows` | `IgbPivotDimension[]` | Dimensions placed on rows |
+| `Columns` | `IgbPivotDimension[]` | Dimensions placed on columns |
+| `Values` | `IgbPivotValue[]` | Measures/aggregations |
+| `Filters` | `IgbPivotDimension[]` | Dimensions used as filters (shown in filter chip area) |
 
 ### IgbPivotDimension
 
@@ -489,10 +459,10 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbPivotGridModule));
 | Property | Type | Description |
 |---|---|---|
 | `Member` | `string` | Data property to aggregate |
-| `Aggregate` | `IgbPivotAggregation` | Aggregation function |
+| `Aggregate` | `IgbPivotAggregator` | Aggregation function |
 | `Enabled` | `bool` | Whether this value is active |
 | `DisplayName` | `string` | Custom display label |
-| `Formatter` | `Func<object, string>?` | Custom value formatter |
+| `FormatterScript` | `string` | JS interop formatter function name (register via `igRegisterScript`) |
 
 ### Built-in aggregation types
 
@@ -503,6 +473,8 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbPivotGridModule));
 | `MIN` | Minimum value |
 | `MAX` | Maximum value |
 | `AVG` | Average value |
+| `EARLIEST` | Earliest date/time value |
+| `LATEST` | Latest date/time value |
 
 ### Pivot Data Selector
 
@@ -535,11 +507,11 @@ The Pivot Grid does not support cell editing, row editing, or batch editing. It 
 2. `PrimaryKey` is required.
 3. Root rows have `null`/`0`/default in the foreign key field, or are the top-level objects in a nested collection.
 4. `MultipleCascade` selection cascades to all descendants.
-5. Load-on-demand requires both `HasChildrenKey` and `LoadChildrenOnDemand`.
+5. Load-on-demand requires `HasChildrenKey` and a JS interop handler via `LoadChildrenOnDemandScript`.
 
 ### Hierarchical Grid rules
 
-1. `IgbRowIsland.Key` must exactly match the collection property name on the parent data class (case-sensitive).
+1. `IgbRowIsland.ChildDataKey` must exactly match the collection property name on the parent data class (case-sensitive).
 2. Each level is independent - it has its own columns, sorting, filtering, and editing state.
 3. Access child grid instances via `GridCreated`, never assume a child grid exists before expansion.
 4. Nesting depth is unlimited - nest `IgbRowIsland` within `IgbRowIsland`.

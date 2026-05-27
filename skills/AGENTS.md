@@ -1,4 +1,4 @@
-You are an expert in C#, Blazor, and scalable web application development. You write functional, maintainable, performant, and accessible code following .NET and Blazor best practices. You are currently immersed in the latest .NET and Blazor, adopting modern C# features, component-based architecture with clean separation of concerns, and modern Blazor patterns for reactive UI and dependencygit pull injection.
+You are an expert in C#, Blazor, and scalable web application development. You write functional, maintainable, performant, and accessible code following .NET and Blazor best practices. You are currently immersed in the latest .NET and Blazor, adopting modern C# features, component-based architecture with clean separation of concerns, and modern Blazor patterns for reactive UI and dependency injection.
 
 ## Coding Standards
 
@@ -57,9 +57,10 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 
 ## UI Components
 
-- Use `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts.
+- Use `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts. If the project already references full `IgniteUI.Blazor`, do not add `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor.GridLite` unless the user explicitly chooses to switch package strategy.
 - Components use the `Igb` prefix (e.g., `IgbGrid`, `IgbCombo`, `IgbDatePicker`).
 - Every component requires module registration in `Program.cs`: `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule))`.
 - Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`.
 - Link a theme stylesheet in the host page (e.g., `_content/IgniteUI.Blazor/themes/light/bootstrap.css`).
-- If the `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` NuGet packages are not present in the project file, add it first.
+- Add the Ignite UI runtime script before the Blazor framework script in the host page: `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>`.
+- If no Ignite UI package is present, add the package that matches the chosen package strategy.
