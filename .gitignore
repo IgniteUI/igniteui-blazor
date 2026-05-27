@@ -136,7 +136,7 @@ dist
 node_modules
 src/ig
 components
-wwwroot
+/wwwroot/
 bin
 obj
 

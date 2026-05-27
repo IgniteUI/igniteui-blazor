@@ -10,12 +10,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddIgniteUIBlazor(
-    typeof(IgbNavbarModule),
-    typeof(IgbButton),
-    typeof(IgbIconButtonModule),
-    typeof(IgbNavDrawerModule)
-);
+builder.Services.AddIgniteUIBlazor();
 #if (IncludeWeatherSample)
 builder.Services.AddApexCharts();
 builder.Services.AddSingleton<WeatherForecastService>();
