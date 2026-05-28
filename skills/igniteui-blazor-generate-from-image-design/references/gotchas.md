@@ -451,7 +451,7 @@ Move the class logic into a C# helper method that returns the complete string:
 }
 ```
 
-This applies to **any** `Igb*` component. Never concatenate class values inside a component attribute - always return the full class string from a C# method.
+This applies to **any** `Igb*` component. The `RZ9986` issue is caused by **complex attribute content** on components (for example, mixing literal text with `@(...)` blocks in the same attribute). To avoid it, make the entire `class` value a single C# expression - either by using a helper method as shown above or by returning the full class string from one inline expression.
 
 ### Always register modules in `Program.cs`
 Every `Igb*` component needs its `IgbXxxModule` registered via `AddIgniteUIBlazor()`. If a component silently fails to render, the most common cause is a missing module registration:
