@@ -17,7 +17,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (!value.Equals(EventCallback<bool>.Empty))
                 {
                     if (!CompareEventCallbacks(value, _selectedChanged, ref eventCallbacksCache))
                     {

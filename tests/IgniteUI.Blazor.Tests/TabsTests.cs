@@ -1,5 +1,7 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using Microsoft.AspNetCore.Components;
+using System.Reflection;
 
 namespace IgniteUI.Blazor.Tests;
 
@@ -89,5 +91,17 @@ public class TabTests : BlazorComponentTestBase
             parameters.AddChildContent("Tab Label"));
 
         Assert.Contains("Tab Label", cut.Markup);
+    }
+
+    [Fact]
+    public void Tab_SelectedChanged_EmptyCallback_ClearsBackingField()
+    {
+        var tab = new IgbTab();
+        tab.SelectedChanged = EventCallback.Factory.Create<bool>(this, static _ => { });
+        tab.SelectedChanged = EventCallback<bool>.Empty;
+
+        var field = typeof(IgbTab).GetField("_selectedChanged", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(field);
+        Assert.Null(field!.GetValue(tab));
     }
 }
