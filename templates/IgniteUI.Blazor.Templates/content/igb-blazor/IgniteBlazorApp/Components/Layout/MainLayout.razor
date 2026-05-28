@@ -1,0 +1,33 @@
+@inherits LayoutComponentBase
+
+<div class="page">
+    <IgbNavbar>
+        <IgbIconButton Variant="IconButtonVariant.Flat" slot="start" @onclick=@(e => _navDrawer!.ToggleAsync())>
+            <span class="material-icons">
+                menu
+            </span>
+        </IgbIconButton>
+        <h3 style="margin-left: 0.75rem;">IgniteBlazorApp</h3>
+    </IgbNavbar>
+
+    <div class="layout-body">
+        <IgbNavDrawer @ref=_navDrawer Open="true">
+            <NavMenu />
+        </IgbNavDrawer>
+        <main>
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    private IgbNavDrawer? _navDrawer;
+}

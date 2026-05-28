@@ -1,0 +1,77 @@
+@page "/weather"
+@inject WeatherForecastService Forecasts
+@inject IJSRuntime JS
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>
+    This page combines two visualizations of the same forecast data: an <code>IgbGridLite</code>
+    table with sortable, filterable, and resizable columns, and an <code>ApexChart</code>
+    line series plotting the daily Celsius temperature. Both bind to the same
+    <code>WeatherForecast[]</code> array, so refreshing the page regenerates the data and
+    keeps the two views in sync. The chart's <code>theme.mode</code> is set from the body's
+    computed background luminance so it follows whichever IgniteUI theme is active.
+</p>
+
+@if (_forecasts is null)
+{
+    <div class="loading">
+        <IgbCircularProgress Indeterminate="true" class="ig-typography" />
+    </div>
+}
+else
+{
+    <IgbGridLite Data="@_forecasts" class="ig-typography grid">
+        <IgbGridLiteColumn Field="@nameof(WeatherForecast.Date)"
+                           Header="Date"
+                           DataType="GridLiteColumnDataType.Date"
+                           Width="140px"
+                           Sortable />
+        <IgbGridLiteColumn Field="@nameof(WeatherForecast.TemperatureC)"
+                           Header="Temp. (°C)"
+                           DataType="GridLiteColumnDataType.Number"
+                           Resizable
+                           Sortable />
+        <IgbGridLiteColumn Field="@nameof(WeatherForecast.TemperatureF)"
+                           Header="Temp. (°F)"
+                           DataType="GridLiteColumnDataType.Number"
+                           Resizable
+                           Sortable />
+        <IgbGridLiteColumn Field="@nameof(WeatherForecast.Summary)"
+                           Header="Summary"
+                           DataType="GridLiteColumnDataType.String"
+                           Sortable
+                           Filterable
+                           Resizable />
+    </IgbGridLite>
+
+    <div class="chart">
+        <ApexChart @ref="_chart"
+                   TItem="WeatherForecast"
+                   Title="Temperature trend"
+                   Options="_options"
+                   Height="640">
+            <ApexPointSeries TItem="WeatherForecast"
+                             Items="_forecasts.Skip(Math.Max(0, _forecasts.Count() - 20))"
+                             Name="Temp. (°C)"
+                             SeriesType="SeriesType.Line"
+                             XValue="@(f => f.Date.ToShortDateString())"
+                             YValue="@(f => (decimal)f.TemperatureC)" />
+        </ApexChart>
+    </div>
+}
+
+@code {
+    private WeatherForecast[]? _forecasts;
+    private ApexChart<WeatherForecast>? _chart;
+    private ApexChartOptions<WeatherForecast> _options = new()
+    {
+        Theme = new Theme { Mode = Mode.IGB_CHART_MODE },
+        Chart = new Chart { Background = "transparent" },
+    };
+
+    protected override async Task OnInitializedAsync()
+        => _forecasts = await Forecasts.GetForecastsAsync(DateOnly.FromDateTime(DateTime.Now));
+}
