@@ -110,11 +110,12 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCardModule));
     <IgbCardActions>
         <IgbButton slot="start" Variant="@ButtonVariant.Flat">Like</IgbButton>
         <IgbButton slot="start" Variant="@ButtonVariant.Flat">Share</IgbButton>
+        <IgbButton slot="end" Variant="@ButtonVariant.Contained">Buy Now</IgbButton>
     </IgbCardActions>
 </IgbCard>
 ```
 
-Sub-components: `IgbCardMedia`, `IgbCardHeader`, `IgbCardContent`, `IgbCardActions`. Slots on `IgbCardHeader`: `thumbnail`, `title`, `subtitle`.
+Sub-components: `IgbCardMedia`, `IgbCardHeader`, `IgbCardContent`, `IgbCardActions`. Slots on `IgbCardHeader`: `thumbnail`, `title`, `subtitle`. Slots on `IgbCardActions`: `start` (left-aligned actions) and `end` (right-aligned actions).
 
 ---
 

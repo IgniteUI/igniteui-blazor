@@ -94,11 +94,11 @@ Brushes="#FF6B6B #4ECDC4 #45B7D1"
 ### `AreaFillOpacity` exists on `IgbCategoryChart`
 It does **NOT** exist on `IgbSparkline`. For sparkline fill, use the `Brush` parameter.
 
-### `IgbSparkline` has no SplineArea type — use `IgbCategoryChart` for smooth area sparklines
+### `IgbSparkline` has no SplineArea type - use `IgbCategoryChart` for smooth area sparklines
 `IgbSparkline` supports only `Line`, `Area`, `Column`, and `WinLoss` display types. `Area` renders as angular polygon fills, not smooth curves. If the design shows smooth mountain-shaped area sparklines, use a small `IgbCategoryChart` with `ChartType="CategoryChartType.SplineArea"`:
 
 ```razor
-<!-- ❌ Angular fill — no smooth curves available on IgbSparkline -->
+<!-- ❌ Angular fill - no smooth curves available on IgbSparkline -->
 <IgbSparkline DisplayType="SparklineDisplayType.Area" Brush="#5B57E8" ... />
 
 <!-- ✅ Smooth spline area sparkline -->
@@ -121,7 +121,7 @@ Pass them as bound parameters:
 <IgbCategoryChart IncludedProperties='@(new string[] { "Month", "Revenue" })' ... />
 ```
 
-### `InnerExtent` is a chart-level property — never a series-level property
+### `InnerExtent` is a chart-level property - never a series-level property
 
 `InnerExtent` controls the hole size at the center of a donut/pie chart. It is a property of the **chart** component (`IgbDoughnutChart`, `IgbPieChart`, `IgbDataPieChart`), not of any series child. Placing it on `IgbRingSeries` causes a runtime crash:
 
@@ -140,12 +140,12 @@ Correct usage:
 <IgbRingSeries InnerExtent="0.45" ... />
 ```
 
-### Set `Brushes`, `Outlines`, and visual parameters inline — not via `@ref` in `OnAfterRenderAsync`
+### Set `Brushes`, `Outlines`, and visual parameters inline - not via `@ref` in `OnAfterRenderAsync`
 
 Setting visual parameters via `@ref` property assignment in `OnAfterRenderAsync` triggers Blazor warning **BL0005** (*Component parameter should not be set outside of its component*). Always pass them as **inline Razor markup attributes** instead.
 
 ```razor
-<!-- ✅ Inline markup — no BL0005 -->
+<!-- ✅ Inline markup - no BL0005 -->
 <IgbRingSeries Brushes="#CF6E7A #6C74DC #D4A84B" Outlines="#13131F #13131F #13131F" ... />
 
 <!-- ❌ BL0005 warning -->
@@ -160,7 +160,7 @@ Match `ChartType` to the curve shape in the screenshot:
 
 Do not default to `Line` or `Area` when the screenshot shows smooth curves. The difference is immediately visible and is the most common chart fidelity mistake.
 
-### Circular ring with centered percentage — choosing the right component
+### Circular ring with centered percentage - choosing the right component
 - **Thick static ring with a centred label and no needle** → `IgbDoughnutChart` + `IgbRingSeries`. Place `InnerExtent` on the chart, not the series. Overlay the label with `position: absolute` inside a `position: relative` wrapper.
 - **Thin animated spinner / loading progress** → `IgbCircularProgress`. Not a data visualisation.
 - **Needle pointer on a scale arc** → `IgbRadialGauge`.
@@ -429,6 +429,29 @@ Or toggle a CSS class with variable overrides (see `igniteui-blazor-theming` ski
 ---
 
 ## Blazor-specific Gotchas
+
+### RZ9986 - Dynamic CSS class on Ignite UI components
+
+Blazor raises **RZ9986: Component attributes do not support complex content** when a CSS class string is built inline on an Ignite UI component:
+
+```razor
+@* WRONG - RZ9986 build failure *@
+<IgbChip class="chip @(item == selected ? "chip-active" : "")" />
+```
+
+Move the class logic into a C# helper method that returns the complete string:
+
+```razor
+@* RIGHT - no RZ9986 *@
+<IgbChip class="@ChipClass(item)" />
+
+@code {
+    private string ChipClass(Item item) =>
+        item == _selected ? "chip chip-active" : "chip";
+}
+```
+
+This applies to **any** `Igb*` component. Never concatenate class values inside a component attribute - always return the full class string from a C# method.
 
 ### Always register modules in `Program.cs`
 Every `Igb*` component needs its `IgbXxxModule` registered via `AddIgniteUIBlazor()`. If a component silently fails to render, the most common cause is a missing module registration:
