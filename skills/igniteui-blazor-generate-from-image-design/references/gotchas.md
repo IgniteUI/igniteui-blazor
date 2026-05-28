@@ -436,7 +436,7 @@ Blazor raises **RZ9986: Component attributes do not support complex content** wh
 
 ```razor
 @* WRONG - RZ9986 build failure *@
-<IgbChip class="chip @(item == selected ? "chip-active" : "")" />
+<IgbChip class="chip @(item == _selected ? "chip-active" : "")" />
 ```
 
 Move the class logic into a C# helper method that returns the complete string:
