@@ -18,8 +18,6 @@ This reference gives high-level guidance on feedback and overlay components, the
 
 ## Dialog
 
-> **Docs:** [Dialog](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/dialog)
-
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbDialogModule));
 ```
@@ -50,21 +48,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDialogModule));
 }
 ```
 
-Key attributes: `Title`, `KeepOpenOnEscape` (default: `false`; set `true` to prevent closing on ESC), `CloseOnOutsideClick` (default: `false`), `Open`, `HideDefaultAction`.
-
-Slots: `footer` (action buttons). The default slot is the dialog body.
-
-Methods: `ShowAsync()`, `HideAsync()`, `ToggleAsync()`.
-
-Events: `Closing` (cancellable), `Closed`.
-
-CSS parts: `base`, `title`, `footer`, `content`.
-
 ---
 
 ## Snackbar
-
-> **Docs:** [Snackbar](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/snackbar)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbSnackbarModule));
@@ -93,21 +79,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSnackbarModule));
 }
 ```
 
-Key attributes: `DisplayTime` (ms, default 4000; 0 keeps it open), `KeepOpen` (overrides `DisplayTime`), `ActionText` (text for the action button).
-
-Methods: `ShowAsync()`, `HideAsync()`.
-
-Events: `Action` - fires when the action button is clicked.
-
-CSS parts: `base`, `message`, `action`, `action-container`.
-
 > **TIP - JS interop shortcut:** Add `id="snackbar"` to `IgbSnackbar` and `onclick="snackbar.show()"` to the trigger button as a lightweight alternative when you don't need C# event handling.
 
 ---
 
 ## Toast
-
-> **Docs:** [Toast](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/toast)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbToastModule));
@@ -126,17 +102,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbToastModule));
 }
 ```
 
-Key attributes: `DisplayTime` (ms), `KeepOpen`.
-
-Methods: `ShowAsync()`, `HideAsync()`.
-
 > **AGENT INSTRUCTION - Toast vs Snackbar:** `IgbToast` is a simple auto-dismissing notification with no action button. Use `IgbSnackbar` when you need an action button (e.g., "Undo"). Check the doc via `get_doc` for the current difference, as these components evolve.
 
 ---
 
 ## Banner
-
-> **Docs:** [Banner](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/notifications/banner)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbBannerModule));
@@ -157,14 +127,6 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbBannerModule));
     void RetryConnection() { /* retry logic */ }
 }
 ```
-
-Slots: `prefix` (icon or image), `actions` (buttons shown at the right or bottom). Default slot = message text.
-
-Methods: `ShowAsync()`, `HideAsync()`, `ToggleAsync()`.
-
-Events: `Closing` (cancellable), `Closed`.
-
-CSS parts: `base`, `spacer`, `message`, `illustration`, `content`, `actions`.
 
 ---
 

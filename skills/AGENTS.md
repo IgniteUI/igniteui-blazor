@@ -58,9 +58,4 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 ## UI Components
 
 - Use `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts. If the project already references full `IgniteUI.Blazor`, do not add `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor.GridLite` unless the user explicitly chooses to switch package strategy.
-- Components use the `Igb` prefix (e.g., `IgbGrid`, `IgbCombo`, `IgbDatePicker`).
-- Every component requires module registration in `Program.cs`: `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule))`.
-- Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`.
-- Link a theme stylesheet in the host page (e.g., `_content/IgniteUI.Blazor/themes/light/bootstrap.css`).
-- Add the Ignite UI runtime script before the Blazor framework script in the host page: `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>`. **If this script is missing, web components will not register and the app will render blank or broken - verify this is present in every new project.**
 - If no Ignite UI package is present, add the package that matches the chosen package strategy.

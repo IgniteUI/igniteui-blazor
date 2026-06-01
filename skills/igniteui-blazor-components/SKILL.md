@@ -82,6 +82,8 @@ Base your code and explanation exclusively on what you read. If the reference fi
 
 ## Key Blazor-Specific Notes
 
+Add the Ignite UI runtime script before the Blazor framework script in the host page: `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>`. **If this script is missing, web components will not register and the app will render blank or broken - verify this is present in every new project.**
+
 > **AGENT INSTRUCTION - Module Registration**
 >
 > Every Ignite UI for Blazor component **and its sub-components** has a corresponding module. Register **all** modules for every component used on the page in `Program.cs`:

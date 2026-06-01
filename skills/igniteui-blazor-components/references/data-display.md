@@ -27,8 +27,6 @@ This reference gives high-level guidance on data display and action components, 
 
 ## Button & Button Group
 
-> **Docs:** [Button](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button), [Button Group](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/button-group)
-
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbButtonModule), typeof(IgbButtonGroupModule));
 ```
@@ -47,15 +45,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbButtonModule), typeof(IgbButtonGrou
 </IgbButtonGroup>
 ```
 
-Key attributes on `IgbButton`: `Variant` (`ButtonVariant.Contained` / `Outlined` / `Flat` / `Fab`), `Disabled`, `DisplayType` (`ButtonBaseType.Button` / `Submit` / `Reset`), `Href` (renders as `<a>`).
-
-Key attributes on `IgbButtonGroup`: `Selection` (`ButtonGroupSelection.Single` / `SingleRequired` / `Multiple`), `Alignment` (`ContentOrientation.Horizontal` / `ContentOrientation.Vertical`).
-
 ---
 
 ## Icon & Icon Button
-
-> **Docs:** [Icon](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/icon), [Icon Button](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/icon-button)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbIconModule), typeof(IgbIconButtonModule));
@@ -81,15 +73,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbIconModule), typeof(IgbIconButtonMo
 }
 ```
 
-Key attributes: `IconName`, `Collection`, `Mirrored` (for RTL). Size is controlled via CSS `--ig-size: var(--ig-size-small | --ig-size-medium | --ig-size-large)`.
-
 > **AGENT INSTRUCTION - Icon Registration:** Icons are registered by name+collection. Registration must happen in `OnAfterRenderAsync(bool firstRender)` after calling `EnsureReady()`. Re-use the same collection name across the app for consistency.
 
 ---
 
 ## Card
-
-> **Docs:** [Card](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/card)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbCardModule));
@@ -115,13 +103,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCardModule));
 </IgbCard>
 ```
 
-Sub-components: `IgbCardMedia`, `IgbCardHeader`, `IgbCardContent`, `IgbCardActions`. Slots on `IgbCardHeader`: `thumbnail`, `title`, `subtitle`. Slots on `IgbCardActions`: `start` (left-aligned actions) and `end` (right-aligned actions).
-
 ---
 
 ## Carousel
-
-> **Docs:** [Carousel](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/carousel)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbCarouselModule));
@@ -144,8 +128,6 @@ Use Carousel for image/content slides, banners, onboarding panels, or media gall
 
 ## List
 
-> **Docs:** [List](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/list)
-
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbListModule), typeof(IgbListItemModule), typeof(IgbListHeaderModule));
 ```
@@ -165,13 +147,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbListModule), typeof(IgbListItemModu
 </IgbList>
 ```
 
-Slots on `IgbListItem`: `start`, `end`, `title`, `subtitle`.
-
 ---
 
 ## Avatar
-
-> **Docs:** [Avatar](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/avatar)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbAvatarModule));
@@ -190,13 +168,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbAvatarModule));
 </IgbAvatar>
 ```
 
-Key attributes: `Src`, `Alt`, `Initials`, `Shape` (`AvatarShape.Circle` / `Square` / `Rounded`). Size is controlled via CSS `--ig-size: var(--ig-size-small | --ig-size-medium | --ig-size-large)`.
-
 ---
 
 ## Badge
-
-> **Docs:** [Badge](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/badge)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbBadgeModule));
@@ -207,13 +181,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbBadgeModule));
 <IgbBadge Variant="@StyleVariant.Danger" Shape="@BadgeShape.Square" />
 ```
 
-Key attributes: `Variant` (`StyleVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`), `Shape` (`BadgeShape.Rounded` / `Square`), `Outlined`.
-
 ---
 
 ## Chip
-
-> **Docs:** [Chip](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/chip)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbChipModule));
@@ -230,17 +200,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbChipModule));
 }
 ```
 
-Key attributes: `Selectable`, `Selected`, `Removable`, `Disabled`, `Variant` (`StyleVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`).
-
-Slots: `start`, `end` (prefix/suffix icons).
-
-Events: `Select`, `Remove`.
-
 ---
 
 ## Circular Progress
-
-> **Docs:** [Circular Progress](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/circular-progress)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbCircularProgressModule));
@@ -256,13 +218,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCircularProgressModule));
 <IgbCircularProgress Indeterminate="true" />
 ```
 
-Key attributes: `Value`, `Max`, `Indeterminate`, `AnimationDuration`, `Variant` (`StyleVariant.Primary` / `Info` / `Success` / `Warning` / `Danger`).
-
 ---
 
 ## Linear Progress
-
-> **Docs:** [Linear Progress](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/linear-progress)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbLinearProgressModule));
@@ -273,13 +231,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbLinearProgressModule));
 <IgbLinearProgress Indeterminate="true" />
 ```
 
-Key attributes: `Value`, `Max`, `Indeterminate`, `Striped`, `Variant`, `LabelAlign` (`LinearProgressLabelAlign.TopStart` / `Top` / `TopEnd` / `BottomStart` / `Bottom` / `BottomEnd`).
-
 ---
 
 ## Dropdown
-
-> **Docs:** [Dropdown](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/dropdown)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbDropdownModule));
@@ -298,13 +252,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDropdownModule));
 
 ```
 
-Key attributes on `IgbDropdown`: `Placement` (`PopoverPlacement.*`), `Flip`, `Distance`, `SameWidth`, `KeepOpenOnOutsideClick`, `KeepOpenOnSelect`. Key attributes on `IgbDropdownItem`: `Value`, `Selected`, `Disabled`. Events on `IgbDropdown`: `Opening`, `Opened`, `Closing`, `Closed`, `Change`.
-
 ---
 
 ## Tooltip
-
-> **Docs:** [Tooltip](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/tooltip)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbTooltipModule));
@@ -317,13 +267,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTooltipModule));
 </IgbTooltip>
 ```
 
-Key attributes: `Anchor` (target element ID string), `Placement` (`PopoverPlacement.Top` / `Bottom` / `Left` / `Right` and start/end variants), `ShowDelay`, `HideDelay`, `ShowTriggers`, `HideTriggers`, `Sticky`, `WithArrow`, `Open`.
-
 ---
 
 ## Ripple
-
-> **Docs:** [Ripple](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/ripple)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbRippleModule));

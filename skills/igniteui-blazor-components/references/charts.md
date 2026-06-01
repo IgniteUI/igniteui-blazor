@@ -32,14 +32,14 @@ This reference gives high-level guidance on when to use some of the chart types,
 |---|---|
 | Simple line/area/column/point/spline/waterfall charts with minimal config | `IgbCategoryChart` |
 | Multiple series types on the same chart, custom axes, annotations | `IgbDataChart` |
-| Candlestick / OHLC financial data with range selector | `IgbFinancialChart` / stock chart docs |
+| Candlestick / OHLC financial data with range selector | `IgbFinancialChart` |
 | Part-to-whole proportions (slices) | `IgbPieChart` |
 | Donut with center label | `IgbDoughnutChart` |
 | Inline sparkline for tables or cards | `IgbSparkline` |
-| Hierarchical part-to-whole data | Treemap docs |
-| Geographic points, shapes, map markers | Geographic Map docs |
-| KPI values, ranges, scales, bullet comparisons | Gauge docs |
-| Auto-generated dashboard visualization from data | Dashboard Tile docs |
+| Hierarchical part-to-whole data | `IgbTreemap` |
+| Geographic points, shapes, map markers | `IgbGeographicMap` |
+| KPI values, ranges, scales, bullet comparisons | `IgbLinearGauge` / `IgbRadialGauge` / `IgbBulletGraph` |
+| Auto-generated dashboard visualization from data | `IgbDashboardTile` |
 
 ---
 
@@ -65,8 +65,6 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCategoryChartModule));
     public List<SalesRecord> SalesData { get; set; } = SampleData.GetSales();
 }
 ```
-
-Key attributes: `DataSource`, `ChartType` (`CategoryChartType.Line` / `Area` / `Column` / `Point` / `Spline` / `SplineArea` / `StepLine` / `StepArea` / `Waterfall` / `Auto`), `Height`, `Width`, `YAxisTitle`, `XAxisTitle`, `Brushes`, `Outlines`, `MarkerBrushes`, `IsTransitionInEnabled`, `IsHorizontalZoomEnabled`, `IsVerticalZoomEnabled`.
 
 > **AGENT INSTRUCTION:** `CategoryChartType.Bar` does **not** exist. For a horizontal bar-style chart, use `CategoryChartType.Column` (vertical) or switch to `IgbDataChart` with `IgbBarSeries` for true horizontal bars. Never generate `ChartType="CategoryChartType.Bar"`.
 
@@ -120,10 +118,6 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDataChartCoreModule), typeof(IgbDat
 }
 ```
 
-Common axis types: `IgbCategoryXAxis`, `IgbNumericXAxis`, `IgbNumericYAxis`, `IgbCategoryYAxis`, `IgbTimeXAxis`, `IgbOrdinalTimeXAxis`.
-
-Common series types: `IgbLineSeries`, `IgbAreaSeries`, `IgbColumnSeries`, `IgbBarSeries`, `IgbSplineSeries`, `IgbBubbleSeries`, `IgbScatterSeries`.
-
 Every series must reference its axes by matching `Name` and `XAxisName` / `YAxisName`.
 
 > **AGENT INSTRUCTION:** `IgbDataChart` requires separate NuGet module registrations for each category of series. Always check `get_doc` to find the exact module names, for example category, scatter, polar, radial, stacked, or financial modules.
@@ -131,8 +125,6 @@ Every series must reference its axes by matching `Name` and `XAxisName` / `YAxis
 ---
 
 ## Financial / Stock Chart
-
-> **Docs:** [Financial Chart](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/stock-chart)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbFinancialChartModule));
@@ -150,13 +142,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbFinancialChartModule));
 }
 ```
 
-The data source must contain `Open`, `High`, `Low`, `Close`, and `Volume` numeric fields plus a `Date`/`Time` field. Key attributes: `ChartType` (`FinancialChartType.Candle` / `Bar` / `Line`), `ZoomSliderType`, `VolumeType`.
+The data source must contain `Open`, `High`, `Low`, `Close`, and `Volume` numeric fields plus a `Date`/`Time` field.
 
 ---
 
 ## Pie Chart
-
-> **Docs:** [Pie Chart](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/pie-chart)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbPieChartModule), typeof(IgbItemLegendModule));
@@ -187,15 +177,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbPieChartModule), typeof(IgbItemLege
 }
 ```
 
-Key attributes: `DataSource`, `LabelMemberPath`, `ValueMemberPath`, `RadiusFactor` (0-1), `StartAngle`, `OthersCategoryThreshold`, `OthersCategoryType`, `LegendLabelMemberPath`, `LegendItemTemplate`.
-
-Events: `SliceClick`.
-
 ---
 
 ## Donut Chart
-
-> **Docs:** [Doughnut Chart](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/donut-chart)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbDoughnutChartModule), typeof(IgbRingSeriesModule));
@@ -215,8 +199,6 @@ Supports multiple `IgbRingSeries` for concentric rings.
 
 ## Sparkline
 
-> **Docs:** [Sparkline](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/sparkline-chart)
-
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbSparklineModule));
 ```
@@ -231,21 +213,15 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSparklineModule));
               LineThickness="2" />
 ```
 
-Key attributes: `DataSource`, `ValueMemberPath`, `DisplayType` (`SparklineDisplayType.Line` / `Area` / `Column` / `WinLoss`), `Width`, `Height`, `Brush`, `LineThickness`, `MarkerVisibility`, `FirstMarkerVisibility`, `LastMarkerVisibility`, `HighMarkerVisibility`, `LowMarkerVisibility`.
-
 ---
 
 ## Treemap
 
-> **Docs:** [Treemap](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/treemap-chart)
-
-Use Treemap for hierarchical, weighted, part-to-whole data. Always call `get_doc("treemap-chart")` before writing markup because hierarchy binding, member paths, and layout options are component-specific.
+Always call `get_doc("treemap-chart")` before writing markup because hierarchy binding, member paths, and layout options are component-specific.
 
 ---
 
 ## Geographic Map
-
-> **Docs:** [Geographic Map](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-scatter-area-series)
 
 Use Geographic Map for map backgrounds, shape files, geographic points, bubbles, and marker layers. Do not adapt Data Chart axis or series examples to maps unless the Blazor Geographic Map docs explicitly show the same API.
 
@@ -253,15 +229,11 @@ Use Geographic Map for map backgrounds, shape files, geographic points, bubbles,
 
 ## Gauges
 
-> **Docs:** [Radial Gauge](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/radial-gauge), [Linear Gauge](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/linear-gauge), [Bullet Graph](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/bullet-graph)
-
 Use gauges for KPI values, ranges, thresholds, progress-style numeric summaries, and bullet comparisons. Select the exact gauge doc first, then use the MCP-documented property names for ranges, labels, scale, and value binding.
 
 ---
 
 ## Dashboard Tile
-
-> **Docs:** [Dashboard Tile](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/dashboard-tile)
 
 Use Dashboard Tile when the requested component should infer or render compact dashboard visualizations from bound data. Verify supported chart modes and binding shape with MCP before producing code.
 
