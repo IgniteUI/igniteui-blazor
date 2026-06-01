@@ -122,7 +122,7 @@ Use this as the lightweight availability check and platform reference for Blazor
 
 ### Step 2 - Generate a Palette
 
-> **Note:** For Blazor (CSS-first, no Sass pipeline), use `create_palette` with `output: "css"` to get CSS custom properties directly. Do NOT use `create_theme` for Blazor — it always outputs Sass which requires a compilation step not present in standard Blazor projects. The `create_palette` param names are `primary`/`secondary`/`surface` (not `primaryColor`/`secondaryColor`/`surfaceColor` — those belong to `create_theme`).
+> **Note:** For Blazor (CSS-first, no Sass pipeline), use `create_palette` with `output: "css"` to get CSS custom properties directly. Do NOT use `create_theme` for Blazor - it always outputs Sass which requires a compilation step not present in standard Blazor projects. **Even passing `platform: "blazor"` to `create_theme` will still produce Sass output - the platform parameter does not change the output format.** The `create_palette` param names are `primary`/`secondary`/`surface` (not `primaryColor`/`secondaryColor`/`surfaceColor` - those belong to `create_theme`).
 
 ```
 Tool: create_palette

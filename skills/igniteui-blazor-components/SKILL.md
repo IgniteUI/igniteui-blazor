@@ -76,7 +76,7 @@ Base your code and explanation exclusively on what you read. If the reference fi
 | `IgniteUI.Blazor.Lite` | NuGet.org | Open-source / MIT users needing core UI components (forms, layout, navigation, data display, feedback) |
 | `IgniteUI.Blazor.GridLite` | NuGet.org | Open-source / MIT users needing the lightweight `IgbGridLite` data grid |
 | `IgniteUI.Blazor` | Infragistics private NuGet feed (`https://packages.infragistics.com/nuget/licensed/`) | Licensed / enterprise users that need the full component suite (grids, charts, maps, gauges, Dock Manager) |
-| `IgniteUI.Blazor.Trial` | NuGet.org | Evaluation users — same full suite as `IgniteUI.Blazor` but with a trial watermark |
+| `IgniteUI.Blazor.Trial` | NuGet.org | Evaluation users - same full suite as `IgniteUI.Blazor` but with a trial watermark |
 
 `IgniteUI.Blazor.Lite` contains the open-source UI component set, while `IgniteUI.Blazor.GridLite` contains the free `IgbGridLite` data grid package. Both use the `IgniteUI.Blazor.Controls` namespace. Do **not** mix the licensed `IgniteUI.Blazor` package with `IgniteUI.Blazor.Lite` in the same project; they use the same namespaces and duplicate some components. If full `IgniteUI.Blazor` is already referenced, do not add Lite/GridLite unless the user explicitly asks to switch package strategy.
 

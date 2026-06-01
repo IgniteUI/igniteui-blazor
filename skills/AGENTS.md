@@ -62,5 +62,5 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 - Every component requires module registration in `Program.cs`: `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule))`.
 - Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`.
 - Link a theme stylesheet in the host page (e.g., `_content/IgniteUI.Blazor/themes/light/bootstrap.css`).
-- Add the Ignite UI runtime script before the Blazor framework script in the host page: `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>`.
+- Add the Ignite UI runtime script before the Blazor framework script in the host page: `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>`. **If this script is missing, web components will not register and the app will render blank or broken - verify this is present in every new project.**
 - If no Ignite UI package is present, add the package that matches the chosen package strategy.
