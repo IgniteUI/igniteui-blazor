@@ -252,7 +252,7 @@ Base CSS and instructions on what the MCP tools return and what the reference fi
 7. **Use `igc-*` selectors in CSS**, not Razor component names such as `IgbButton`
 8. **Use `::part()` only after confirming part names with Blazor docs**, and prefer design tokens when a token exists
 9. **Surface color must match the variant**; use a light surface for `light` and a dark surface for `dark`
-10. **Only one built-in theme CSS file should be active at a time** to avoid conflicting variables and component styles
+10. **Only one built-in theme CSS file should be active at a time**; link only one theme stylesheet in the host page (e.g., `_content/IgniteUI.Blazor/themes/light/bootstrap.css`) to avoid conflicts
 
 ## Related Skills
 

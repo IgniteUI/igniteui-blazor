@@ -28,8 +28,6 @@ This reference gives high-level guidance on form controls, their key features, a
 
 ## Input
 
-> **Docs:** [Input](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/input)
-
 ```csharp
 // Program.cs
 builder.Services.AddIgniteUIBlazor(typeof(IgbInputModule));
@@ -45,10 +43,6 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbInputModule));
 }
 ```
 
-Key attributes: `Label`, `Placeholder`, `DisplayType` (`InputType.Text / Email / Password / Tel / Number`), `Required`, `Disabled`, `ReadOnly`, `MinLength`, `MaxLength`.
-
-Slots: `prefix`, `suffix`, `helper-text`.
-
 > **AGENT INSTRUCTION - Icons in slots:** Always use `IgbIcon` in `prefix`/`suffix` slots, never `<span class="material-icons">`. Font spans are `display: inline` so `vertical-align` is ignored inside the slot's flex context - the icon floats to the top. `IgbIcon` (`igc-icon`) is `display: inline-flex; align-items: center` and self-centers automatically. Register the icon in `OnAfterRenderAsync(firstRender)` after `EnsureReady()`.
 
 Events: `InputOcurred` (fires while typing), `Change` (fires on commit/blur).
@@ -58,8 +52,6 @@ Events: `InputOcurred` (fires while typing), `Change` (fires on commit/blur).
 ---
 
 ## Combo Box
-
-> **Docs:** [Combo Box](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/combo/overview)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbComboModule));
@@ -80,17 +72,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbComboModule));
 }
 ```
 
-Key attributes: `Data`, `ValueKey` (required for complex objects), `DisplayKey`, `T` (type parameter - must match `ValueKey` property type or `"object"` if no `ValueKey`), `Label`, `Placeholder`, `SingleSelect` (for single-selection mode), `Disabled`, `Required`.
-
-Events: `Opening`, `Opened`, `Closing`, `Closed`, `Change` (IgbComboChangeEventArgs).
-
 > **AGENT INSTRUCTION:** `IgbCombo` does **not** work inside a standard HTML `<form>`. Use `<EditForm>` with `@bind-Value` instead.
 
 ---
 
 ## Select
-
-> **Docs:** [Select](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/select)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbSelectModule));
@@ -104,15 +90,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSelectModule));
 </IgbSelect>
 ```
 
-For grouped options use `IgbSelectHeader` and `IgbSelectGroup`. Key attributes on `IgbSelect`: `Label`, `Placeholder`, `Outlined`, `Disabled`, `Required`, `Name`. On `IgbSelectItem`: `Value`, `Selected`, `Disabled`.
-
-Slots on `IgbSelect`: `header`, `footer`, `helper-text`, `prefix`, `suffix`, `toggle-icon`.
-
 ---
 
 ## Date Picker
-
-> **Docs:** [Date Picker](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/date-picker)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbDatePickerModule));
@@ -127,17 +107,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDatePickerModule));
 }
 ```
 
-Key attributes: `Value` (DateTime), `Min`, `Max`, `InputFormat`, `DisplayFormat`, `Locale`, `Mode` (`PickerMode.Dropdown` / `PickerMode.Dialog`), `ShowWeekNumbers`, `WeekStart`, `Disabled`, `Required`.
-
-Slots: `calendar`, `clear`, `prefix`, `suffix`, `actions` (custom footer buttons).
-
-Methods: `StepUp(DatePart)`, `StepDown(DatePart)`, `Clear()`.
-
 ---
 
 ## Date Range Picker
-
-> **Docs:** [Date Range Picker](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/date-range-picker)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbDateRangePickerModule));
@@ -151,13 +123,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDateRangePickerModule));
 }
 ```
 
-Returns a start and end `DateTime`. Key attributes: `Min`, `Max`, `InputFormat`, `Locale`, `Mode`.
-
 ---
 
 ## Calendar
-
-> **Docs:** [Calendar](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/calendar)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbCalendarModule));
@@ -173,8 +141,6 @@ Use Calendar when the UI needs an always-visible date picker rather than an inpu
 
 ## Date Time Input
 
-> **Docs:** [Date Time Input](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/date-time-input)
-
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbDateTimeInputModule));
 ```
@@ -189,15 +155,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDateTimeInputModule));
 }
 ```
 
-Key attributes: `Value` (DateTime?), `InputFormat`, `DisplayFormat`, `Min`, `Max`, `SpinLoop`.
-
-Methods: `StepUp()`, `StepDown()`, `Clear()`.
-
 ---
 
 ## Mask Input
-
-> **Docs:** [Mask Input](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/mask-input)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbMaskInputModule));
@@ -209,13 +169,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbMaskInputModule));
               Placeholder="(555) 123-4567" />
 ```
 
-Key attributes: `Mask` (pattern string: `0` = digit, `L` = letter, `A` = alphanumeric), `Placeholder`, `Prompt` (fill character, default `_`), `ValueMode` (`MaskInputValueMode.Raw` or `MaskInputValueMode.WithFormatting`).
-
 ---
 
 ## Checkbox
-
-> **Docs:** [Checkbox](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/checkbox)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbCheckboxModule));
@@ -229,15 +185,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbCheckboxModule));
 }
 ```
 
-Key attributes: `Checked`, `Indeterminate`, `Disabled`, `Required`, `Invalid`, `LabelPosition` (`ToggleLabelPosition.After` / `Before`), `Name`, `Value`.
-
-CSS parts: `base`, `control`, `indicator`, `label`.
-
 ---
 
 ## Radio / Radio Group
-
-> **Docs:** [Radio & Radio Group](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbRadioModule), typeof(IgbRadioGroupModule));
@@ -251,13 +201,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbRadioModule), typeof(IgbRadioGroupM
 </IgbRadioGroup>
 ```
 
-Key attributes on `IgbRadioGroup`: `Alignment` (`ContentOrientation.Horizontal` / `ContentOrientation.Vertical`), `Name`. On `IgbRadio`: `Value`, `Checked`, `Disabled`, `Invalid`, `LabelPosition`.
-
 ---
 
 ## Switch
-
-> **Docs:** [Switch](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/switch)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbSwitchModule));
@@ -271,13 +217,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSwitchModule));
 }
 ```
 
-Key attributes: `Checked`, `Disabled`, `Required`, `LabelPosition`.
-
 ---
 
 ## Slider / Range Slider
-
-> **Docs:** [Slider & Range Slider](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/slider)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbSliderModule), typeof(IgbRangeSliderModule));
@@ -300,15 +242,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSliderModule), typeof(IgbRangeSlide
 }
 ```
 
-Key attributes on `IgbSlider`: `Value`, `Min`, `Max`, `Step`, `Disabled`, `HideTooltip`. On `IgbRangeSlider`: `Lower`, `Upper`, `Min`, `Max`, `Step`.
-
-Events (both): `Input` (fires while dragging), `Change` (fires on commit).
-
 ---
 
 ## Rating
-
-> **Docs:** [Rating](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/rating)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbRatingModule));
@@ -321,10 +257,6 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbRatingModule));
     double StarRating { get; set; } = 3;
 }
 ```
-
-Key attributes: `Value`, `Max`, `Step` (for half-star: `0.5`), `Disabled`, `ReadOnly`, `Label`, `ValueFormat`.
-
-Events: `Change`, `Hover`.
 
 ---
 

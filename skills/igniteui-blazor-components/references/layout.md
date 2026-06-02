@@ -20,8 +20,6 @@ This reference gives high-level guidance on layout and navigation components, th
 
 ## Tabs
 
-> **Docs:** [Tabs](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tabs)
-
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbTabsModule));
 ```
@@ -51,19 +49,9 @@ For icon tabs, use the `label` slot inside `IgbTab`:
 </IgbTab>
 ```
 
-Key attributes on `IgbTabs`: `Alignment` (`TabsAlignment.Start` / `End` / `Center` / `Justify`), `Activation` (`TabsActivation.Auto` / `Manual`). On `IgbTab`: `Label`, `Disabled`, `Selected`.
-
-Events on `IgbTabs`: `Change` (`EventCallback<IgbTabComponentEventArgs>`) - fires when the selected tab changes.
-
-Methods on `IgbTabs`: `Select(string id)` — selects a tab by id; `GetSelected()` — returns the id of the currently selected tab.
-
-CSS parts: `headers`, `headers-content`, `headers-wrapper`, `header`, `selected-indicator`, `content`.
-
 ---
 
 ## Stepper
-
-> **Docs:** [Stepper](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/stepper)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbStepperModule));
@@ -94,21 +82,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbStepperModule));
 }
 ```
 
-Key attributes on `IgbStepper`: `Linear` (prevents skipping steps), `Orientation` (`StepperOrientation.Horizontal` / `Vertical`), `StepType` (`StepperStepType.Indicator` / `Title` / `Full`), `TitlePosition` (`StepperTitlePosition.Auto` / `Bottom` / `Top` / `End` / `Start`), `ContentTop` (renders step content above the header), `HorizontalAnimation` (`HorizontalTransitionAnimation.Slide` / `Fade` / `None`), `VerticalAnimation` (`StepperVerticalAnimation.Grow` / `Fade` / `None`), `AnimationDuration`.
-
-Key attributes on `IgbStep`: `Complete`, `Optional`, `Disabled`, `Invalid`, `Active`.
-
-Slots on `IgbStep`: `indicator` (custom icon/number), `title`, `subtitle`.
-
-Methods on `IgbStepper`: `Next()`, `Prev()`, `NavigateTo(index)`, `Reset()`.
-
-Events: `ActiveStepChanging` (cancellable), `ActiveStepChanged`.
-
 ---
 
 ## Accordion & Expansion Panel
-
-> **Docs:** [Accordion](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/accordion), [Expansion Panel](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/expansion-panel)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbAccordionModule));
@@ -141,19 +117,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbAccordionModule));
 }
 ```
 
-Key attributes on `IgbAccordion`: `SingleExpand` (only one panel open at a time). On `IgbExpansionPanel`: `Open`, `Disabled`, `IndicatorPosition` (`ExpansionPanelIndicatorPosition.Start` / `End` / `None`).
-
-Slots on `IgbExpansionPanel`: `title`, `subtitle`, `indicator` (custom expand icon).
-
-Events on `IgbExpansionPanel`: `Opening` (cancellable), `Opened`, `Closing` (cancellable), `Closed`. These same events also fire on `IgbAccordion` at the accordion level.
-
-Methods on `IgbExpansionPanel`: `Show()`, `Hide()`, `Toggle()`. Methods on `IgbAccordion`: `ShowAll()`, `HideAll()`.
-
 ---
 
 ## Navbar
-
-> **Docs:** [Navbar](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/navbar)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbNavbarModule));
@@ -168,23 +134,11 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbNavbarModule));
 </IgbNavbar>
 ```
 
-Slots: `start` (left content, e.g., menu button), `end` (right content, e.g., action icons). The default slot is used for the title.
-
-CSS parts: `base`, `start`, `middle`, `end`.
-
-Required theme CSS:
-
-```html
-<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
-```
-
 > **AGENT INSTRUCTION:** Register icons used by `IgbNavbar` and `IgbIconButton` before relying on them in samples. Call `await iconRef.EnsureReady()` before `RegisterIconAsync()` or `RegisterIconFromTextAsync()`.
 
 ---
 
 ## Navigation Drawer
-
-> **Docs:** [Navigation Drawer](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/navigation-drawer)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(
@@ -268,12 +222,6 @@ Mini variant:
 </IgbNavDrawer>
 ```
 
-Key attributes on `IgbNavDrawer`: `Open`, `Position` (`NavDrawerPosition.Start` / `End` / `Top` / `Bottom` / `Relative`). On `IgbNavDrawerItem`: `Active`, `Disabled`. Use the `mini` slot to provide collapsed icon-only content.
-
-Methods: `Show()`, `Hide()`, `Toggle()`.
-
-CSS parts: `base`, `main`, `mini`.
-
 > **AGENT INSTRUCTION - IgbNavDrawer shadow DOM mechanics:**
 >
 > Regardless of `Open` state or `style` on the host, `::part(base)` is always rendered as `position: fixed; transform: translateX(-Npx)`. When the component considers itself closed it also sets `inert` on `::part(base)`. The host element itself contributes `width: 0` to the layout because the fixed part takes no space.
@@ -288,8 +236,6 @@ CSS parts: `base`, `main`, `mini`.
 ---
 
 ## Tree
-
-> **Docs:** [Tree](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree)
 
 ```csharp
 builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule), typeof(IgbTreeItemModule));
@@ -306,14 +252,6 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule), typeof(IgbTreeItemModu
     </IgbTreeItem>
 </IgbTree>
 ```
-
-Key attributes on `IgbTree`: `Selection` (`TreeSelection.None` / `Multiple` / `Cascade`), `SingleBranchExpand` (only one branch expanded at a time), `ToggleNodeOnClick` (toggle expand on click). On `IgbTreeItem`: `Label`, `Value`, `Expanded`, `Selected`, `Disabled`, `Active`, `Loading`.
-
-Slots on `IgbTreeItem`: `label` (custom label content), `indicator` (expand/collapse icon override). Nest `IgbTreeItem` children directly inside a parent `IgbTreeItem`.
-
-Methods on `IgbTree`: `ExpandToItem(IgbTreeItem)`. Methods on `IgbTreeItem`: `Expand()`, `Collapse()`, `Toggle()`, `GetPath()` (returns ancestor chain).
-
-Events on `IgbTree`: `SelectionChanged` (`EventCallback<IgbTreeSelectionEventArgs>`), `ItemExpanding` (cancellable), `ItemExpanded`, `ItemCollapsing` (cancellable), `ItemCollapsed`, `ActiveItem`.
 
 ---
 
