@@ -1,5 +1,6 @@
 html, body {
     font-family: var(--ig-font-family);
     color: var(--ig-surface-500-contrast);
+    background-color: var(--ig-surface-500); 
     margin: 0;
 }
