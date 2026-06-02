@@ -217,7 +217,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSparklineModule));
 
 ## Treemap
 
-Always call `get_doc("treemap-chart")` before writing markup because hierarchy binding, member paths, and layout options are component-specific.
+Always call `get_doc("blazor", "treemap-chart")` before writing markup because hierarchy binding, member paths, and layout options are component-specific.
 
 ---
 
