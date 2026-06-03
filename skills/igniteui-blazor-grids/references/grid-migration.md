@@ -28,7 +28,7 @@ Migrate when you need any of the following features (not available in `IgbGridLi
 | Feature | Grid Lite | Premium Grid (`IgbGrid`) |
 |---|---|---|
 | Cell editing | ✗ | ✓ `Editable` on column, `RowEditable` on grid |
-| Batch editing (with undo) | ✗ | ✓ Transaction service |
+| Batch editing (with undo) | ✗ | ✗ (not supported in Blazor) |
 | Row adding / deleting | ✗ | ✓ `RowEditable` + `IgbActionStrip` |
 | Row selection | ✗ | ✓ `RowSelection="GridSelectionMode.Single|Multiple"` |
 | Cell selection | ✗ | ✓ `CellSelection` |
