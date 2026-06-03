@@ -179,13 +179,6 @@ For server-side sort/filter, handle the `SortingDone` / `FilteringDone` events t
     private IgbGrid grid = default!;
     private List<MyItem> data = new();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender) return;
-        // Disable local processing so the grid does not sort/filter data in memory
-        await grid.SetSortStrategyAsync(new IgbNoopSortingStrategy());
-        await grid.SetFilterStrategyAsync(new IgbNoopFilteringStrategy());
-    }
 
     private async Task OnSortingDone()
     {
