@@ -317,6 +317,6 @@ See [`features.md`](./features.md) for toolbar customization, export events, gro
 - `Height` (or a CSS-constrained container) is required for row virtualization in `IgbGrid`.
 - `AllowFiltering="true"` must be set on the grid to show the filter row; `Filterable="true"` on a column opts that column in.
 - Cell and header templates use Blazor render fragments (`BodyTemplate`, `HeaderTemplate`, `InlineEditorTemplate`) — not callbacks or delegates.
-- For remote data, disable local strategies with `IgbNoopSortingStrategy` / `IgbNoopFilteringStrategy` before binding events.
+- For remote data, handle `SortingDone` / `FilteringDone` and reload `Data` from your server.
 - `IgbColumn.FieldName` (in expression objects) replaces `IgbGridLiteColumn.Key` used in Grid Lite sort/filter expressions.
 
