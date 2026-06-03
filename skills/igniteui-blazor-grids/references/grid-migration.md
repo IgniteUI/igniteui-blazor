@@ -172,8 +172,7 @@ Grid Lite has no header templates. In `IgbGrid`, use the `HeaderTemplate` render
 For server-side sort/filter, handle the `SortingDone` / `FilteringDone` events to reload data:
 ```razor
 <IgbGrid @ref="grid" Data="@data" PrimaryKey="Id" Height="600px"
-         SortingDoneScript="onSortingDone" FilteringDoneScript="onFilteringDone">
-    <IgbColumn Field="Name" Sortable="true" Filterable="true" />
+         SortingDone="OnSortingDone" FilteringDone="OnFilteringDone">
 </IgbGrid>
 
 @code {
