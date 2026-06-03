@@ -1,4 +1,4 @@
-﻿# Grid Migration - Grid Lite → Premium IgbGrid
+# Grid Migration - Grid Lite → Premium IgbGrid
 
 > **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
 > For `IgbGrid` setup and column configuration — see [`structure.md`](./structure.md).
