@@ -180,15 +180,15 @@ For server-side sort/filter, handle the `SortingDone` / `FilteringDone` events t
     private List<MyItem> data = new();
 
 
-    private async Task OnSortingDone()
+    private async Task OnSortingDone(IgbSortingExpressionEventArgs args)
     {
-        data = await DataService.SortAsync(grid.SortingExpressions);
+        data = await DataService.SortAsync(args.Detail);
         StateHasChanged();
     }
 
-    private async Task OnFilteringDone()
+    private async Task OnFilteringDone(IgbFilteringExpressionsTreeEventArgs args)
     {
-        data = await DataService.FilterAsync(grid.FilteringExpressionsTree);
+        data = await DataService.FilterAsync(args.Detail);
         StateHasChanged();
     }
 }
