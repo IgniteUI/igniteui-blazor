@@ -70,6 +70,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule));
 
 <!-- Add: -->
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+<link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />
 ```
 
 ### 3. Update `_Imports.razor`
