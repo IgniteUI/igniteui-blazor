@@ -9,6 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddIgniteUIBlazor();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
