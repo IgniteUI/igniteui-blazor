@@ -2,21 +2,77 @@
 
 # Current Milestone
 
-## Milestone 5, (Due by Mar, 2024)
+## Milestone 11 (Due Jun 2026)
 
-1. Hierarchical grid [#97](https://github.com/IgniteUI/igniteui-blazor/issues/97)
+1. Agent Skills for Blazor
+2. CLI MCP server support for Blazor
+3. AI Chat component
+4. Splitter component
+5. Dock Manager 2.0
+6. Dock Manager - two-way binding for the layout properties
 
 ## Going down the road
 
-1. Query Builder Component [#93](https://github.com/IgniteUI/igniteui-blazor/issues/93)
+1. Grids performance improvements using a new and faster virtualizalization component
+2. Color picker component
 
 # Previous Milestone
 
-## Milestone 4, version 23.1 (Released Dec 15, 2023)
+## Milestone 10, version 25.2.77 (Released Mar 2026)
+
+1. **[DONE]** `IgbQueryBuilder` — visual query builder for complex filtering conditions
+2. **[DONE]** `IgbThemeProvider` — scoped theming via Lit context API; multiple themes per page; Shadow and Light DOM
+3. **[DONE]** Grid PDF export — `IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid` (`IgbPivotGrid` not covered in this release)
+4. **[DONE]** Grids rendering performance — dynamic scroll throttle across all four grid types
+5. **[DONE]** `IgbCombo` — new `disableClear` property
+6. **[DONE]** Badge — new dot type; WCAG AA outline; theme-based sizing
+7. **[DONE]** Checkbox — new `--tick-width` CSS custom property
+8. **[DONE]** Accessibility improvements — Button, Button Group, Calendar, Checkbox, Date Picker, Date Range Picker, Nav Drawer, Radio Group, Stepper
+
+## Milestone 9, version 25.2.32 (Released Nov 2025)
+
+1. **[DONE]** Grids cell merging — configurable per-column; `OnSort` and `Always` modes
+2. **[DONE]** Bilateral column pinning — columns can be pinned to start or end independently
+3. **[DONE]** Grids sorting and grouping performance — Schwartzian transform; iterative sort and grouping algorithms
+4. **[DONE]** `IgbDateRangePicker` — new component
+5. **[DONE]** Chart user annotations — slice, strip, and point annotations at runtime via toolbar; `IgbDataChart` integration
+6. **[DONE]** Chart axis annotation collision detection — `ShouldAvoidAnnotationCollisions`, `ShouldAutoTruncateAnnotations`
+7. **[DONE]** `IgbTooltip` — new component (`Anchor` property, `ShowDelay`/`HideDelay`, `Placement`, `Show`/`HideTriggers`)
+
+## Milestone 8, version 25.1.x (Released Jun 2025)
+
+1. **[DONE]** Chart Data Annotations — Band, Line, Rect, Slice, Strip layers with `OverlayText` support
+2. **[DONE]** Trendline Layer — per-series trend line; multiple trend lines per series
+3. **[DONE]** Azure Map Imagery — GA (`IgbAzureMapsImagery`; Bing Maps being phased out)
+4. **[DONE]** `IgbGrid` cell suffix content — `SuffixText`, `SuffixIconName`, and related styling properties on columns
+5. **[DONE]** `IgbTabs` — simplified configuration; content assigned directly to `IgbTab`; `Label` property; `TabPanel` removed
+6. **[DONE]** Companion Axis for `IgbDataChart` — `CompanionAxisEnabled` clones an axis to the opposite position
+
+## Milestone 7, version 24.2 (Released Dec 2024)
+
+1. **[DONE]** `IgbBanner` — new component
+2. **[DONE]** `IgbDatePicker` — new component (old `IgbDatePicker` renamed to `IgbXDatePicker`)
+3. **[DONE]** `IgbDivider` — new component
+4. **[DONE]** `IgbCarousel` — new component
+5. **[DONE]** `IgbTileManager` — new component
+6. **[DONE]** Dashboard Tile — `IgbDashboardTile` container with built-in toolbar, auto-selects visualization from bound data
+7. **[DONE]** Color Editor — standalone color picker; integrated into Toolbar `ToolAction`
+8. **[DONE]** `IgbDataPieChart` — new component
+9. **[DONE]** Proportional Category Angle Axis — radial pie series support in `IgbDataChart`
+10. **[DONE]** Chart selection — series click styling; `SelectedSeriesItemsChanged` event
+
+## Milestone 6, version 23.2.189 (Released Mar 2024)
+
+1. **[DONE]** Hierarchical Grid [#97](https://github.com/IgniteUI/igniteui-blazor/issues/97)
+2. **[DONE]** Text Area component
+3. **[DONE]** Button Group component
+4. **[DONE]** `IgbDockManager` — `ProximityDock`, `ContainedInBoundaries`, `ShowPaneHeaders` properties
+
+## Milestone 5, version 23.1 (Released Dec 15, 2023)
 
 1. **[DONE]** IgrDataGrid - Declarative Filtering [#48](https://github.com/IgniteUI/igniteui-react/issues/48)
 
-## Milestone 3, version 23.1 (Released Jun 28, 2023) [Release Blog 23.1.0](https://www.infragistics.com/community/blogs/b/infragistics/posts/ignite-ui-for-blazor-23-1-release)
+## Milestone 4, version 23.1 (Released Jun 28, 2023) [Release Blog 23.1.0](https://www.infragistics.com/community/blogs/b/infragistics/posts/ignite-ui-for-blazor-23-1-release)
 
 1. **[DONE]** IgbPivotGrid - Pivot Grid
 2. **[DONE]** ComboBox
