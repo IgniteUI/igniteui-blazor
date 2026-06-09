@@ -1,0 +1,40 @@
+@page "/IgbIconButtonComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbIconButtonComponent</PageTitle>
+
+<h3>IgbIconButtonComponent</h3>
+
+<div class="component-host">
+    <IgbIcon @ref="_iconRef" />
+    <IgbIconButton IconName="thumb-up" Collection="material" Variant="IconButtonVariant.Contained" />
+</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+    private IgbIcon _iconRef = default!;
+
+    private const string ThumbUpSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z'></path></svg>";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _iconRef is not null)
+        {
+            await _iconRef.EnsureReady();
+            await _iconRef.RegisterIconFromTextAsync("thumb-up", ThumbUpSvg, "material");
+        }
+    }
+}

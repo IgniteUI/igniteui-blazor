@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json.schemastore.org/ide.host",
+  "appliesTo": "(Blazor | Web)",
+  "defaultItemExtension": "razor",
+  "itemHierarchyPaths": [
+    "Ignite UI for Blazor",
+    "Ignite UI for Blazor\\Date & Time"
+  ],
+  "icon": "icon.png",
+  "unsupportedHosts": [
+    {
+      "id": "vs",
+      "version": "(,17.3)"
+    }
+  ]
+}

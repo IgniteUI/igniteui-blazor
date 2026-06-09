@@ -1,0 +1,9 @@
+h3 {
+    margin-bottom: 0.5rem;
+}
+
+.grid-host {
+    display: block;
+    height: 500px;
+    width: 100%;
+}
