@@ -1,0 +1,40 @@
+@page "/IgbTileManagerComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbTileManagerComponent</PageTitle>
+
+<h3>IgbTileManagerComponent</h3>
+
+<div class="component-host">
+    <IgbTileManager ColumnCount="3" Gap="16px">
+        <IgbTile>
+            <h3 slot="title">Tile one</h3>
+            <div>Content for the first tile.</div>
+        </IgbTile>
+        <IgbTile>
+            <h3 slot="title">Tile two</h3>
+            <div>Content for the second tile.</div>
+        </IgbTile>
+        <IgbTile ColSpan="2">
+            <h3 slot="title">Tile three</h3>
+            <div>This tile spans two columns.</div>
+        </IgbTile>
+    </IgbTileManager>
+</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+}

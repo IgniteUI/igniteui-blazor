@@ -1,0 +1,54 @@
+@page "/ApexChartComponent"
+@using ApexCharts
+
+<PageTitle>ApexChartComponent</PageTitle>
+
+<h3>ApexChartComponent</h3>
+
+<div class="chart-host">
+    <ApexChart TItem="DataPoint"
+               Title="Sample series"
+               Options="_options"
+               Height="400">
+        <ApexPointSeries TItem="DataPoint"
+                         Items="Items"
+                         Name="Value"
+                         SeriesType="SeriesType.Line"
+                         XValue="@(p => p.Label)"
+                         YValue="@(p => (decimal)p.Value)" />
+    </ApexChart>
+</div>
+
+@code {
+    /*
+     * Apex Chart setup (Blazor-ApexCharts — https://apexcharts.github.io/Blazor-ApexCharts).
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package Blazor-ApexCharts
+     * 2. _Imports.razor:          @using ApexCharts
+     * 3. Register (Program.cs, optional — enables global options/DI):
+     *    builder.Services.AddApexCharts();
+     * 4. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * The package loads its own JS via a static web asset; no manual <script> tag is required.
+     */
+    private ApexChartOptions<DataPoint> _options = new()
+    {
+        Chart = new Chart { Background = "transparent" }
+    };
+
+    private List<DataPoint> Items { get; set; } = new()
+    {
+        new DataPoint { Label = "Jan", Value = 30 },
+        new DataPoint { Label = "Feb", Value = 45 },
+        new DataPoint { Label = "Mar", Value = 38 },
+        new DataPoint { Label = "Apr", Value = 52 }
+    };
+
+    public class DataPoint
+    {
+        public string Label { get; set; } = string.Empty;
+        public double Value { get; set; }
+    }
+}

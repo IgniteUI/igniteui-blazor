@@ -5,7 +5,7 @@ This directory contains `IgniteUI.Blazor.Templates`, a `dotnet new` template pac
 ## Prerequisites
 
 - .NET SDK 10 on PATH. The template targets `net10.0` only.
-- Access to nuget.org and the Infragistics licensed feed (`IgniteUI.Blazor.GridLite` is published there).
+- Access to nuget.org (all packages, including `IgniteUI.Blazor.GridLite`, are published there).
 
 ## 1. Pack the template
 
@@ -14,7 +14,7 @@ cd templates/IgniteUI.Blazor.Templates
 dotnet pack -c Release -o ./bin/packed
 ```
 
-Produces `./bin/packed/IgniteUI.Blazor.Templates.<version>.nupkg` (current version `0.5.1`).
+Produces `./bin/packed/IgniteUI.Blazor.Templates.<version>.nupkg` (current version `0.0.1`).
 
 ## 2. Install (or reinstall) into the local template engine
 
@@ -22,13 +22,13 @@ Two options. **Install from the packed nupkg** for a release-shape test:
 
 ```bash
 dotnet new uninstall IgniteUI.Blazor.Templates    # ignore errors if not installed
-dotnet new install ./bin/packed/IgniteUI.Blazor.Templates.0.5.1.nupkg
+dotnet new install ./bin/packed/IgniteUI.Blazor.Templates.0.0.1.nupkg
 ```
 
 **Install from the source folder** for fast iteration (skip `dotnet pack`):
 
 ```bash
-dotnet new install ./content/igb-blazor
+dotnet new install ./templates/project/igb-blazor
 ```
 
 If both a folder install and a NuGet install of the same identity (`IgniteUI.Blazor.Templates.BlazorWebApp`) coexist, `dotnet new install` warns and the most recently installed wins. Uninstall the other to silence the warning.
@@ -110,14 +110,13 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:5148/_content/IgniteUI
 ```bash
 dotnet new uninstall IgniteUI.Blazor.Templates    # if installed from a nupkg
 # or
-dotnet new uninstall ./content/igb-blazor          # if installed from folder
+dotnet new uninstall ./templates/project/igb-blazor   # if installed from folder
 rm -rf ./_smoketest
 ```
 
 ## Troubleshooting
 
 - **`dotnet new` doesn't list `igb-blazor`** — install step failed. Run `dotnet new uninstall` (no args) to confirm `IgniteUI.Blazor.Templates` (or the folder path) shows up; reinstall if not.
-- **`NU1101: Unable to find package IgniteUI.Blazor.GridLite`** — your NuGet config doesn't have the Infragistics licensed feed. Add it before restoring the generated project.
 - **Port already taken** — the generated `Properties/launchSettings.json` pins it. Either stop the other process or override with `dotnet run --urls http://localhost:5901`.
-- **Rapidly iterating on the template content from a nupkg** — bump `<Version>` in `IgniteUI.Blazor.Templates.csproj` so `dotnet new install` doesn't quietly reuse a cached copy of the previous nupkg. (If installing from `./content/igb-blazor` directly, version doesn't matter — uninstall + reinstall the same path each iteration.)
+- **Rapidly iterating on the template content from a nupkg** — bump `<Version>` in `IgniteUI.Blazor.Templates.csproj` so `dotnet new install` doesn't quietly reuse a cached copy of the previous nupkg. (If installing from `./templates/project/igb-blazor` directly, version doesn't matter — uninstall + reinstall the same path each iteration.)
 - **Two installs of the same template identity** — the warning at install time is harmless; the most recent install wins. Uninstall whichever you don't want.

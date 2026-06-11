@@ -1,0 +1,40 @@
+@page "/IgbGridComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbGridComponent</PageTitle>
+
+<h3>IgbGridComponent</h3>
+
+<div class="grid-host">
+    <IgbGridLite TItem="GridRow" Data="@Items">
+        <IgbGridLiteColumn Field="@nameof(GridRow.Id)" Header="Id" DataType="GridLiteColumnDataType.Number" Sortable />
+        <IgbGridLiteColumn Field="@nameof(GridRow.Name)" Header="Name" DataType="GridLiteColumnDataType.String" Sortable Filterable />
+        <IgbGridLiteColumn Field="@nameof(GridRow.Value)" Header="Value" DataType="GridLiteColumnDataType.Number" Sortable />
+    </IgbGridLite>
+</div>
+
+@code {
+    /*
+     * Ignite UI Grid Lite setup (open-source, MIT — IgniteUI.Blazor.GridLite).
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.GridLite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     */
+    private List<GridRow> Items { get; set; } = new()
+    {
+        new GridRow { Id = 1, Name = "Sample", Value = 100 }
+    };
+
+    public class GridRow
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public double Value { get; set; }
+    }
+}

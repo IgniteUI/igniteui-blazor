@@ -1,0 +1,29 @@
+@page "/IgbMaskInputComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbMaskInputComponent</PageTitle>
+
+<h3>IgbMaskInputComponent</h3>
+
+<div class="component-host">
+    <IgbMaskInput Mask="(####) 000-0000">
+        <span slot="helper-text">Phone number</span>
+    </IgbMaskInput>
+</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+}
