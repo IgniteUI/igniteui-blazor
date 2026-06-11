@@ -265,12 +265,13 @@ Apply different sizing to a specific grid:
 
 ## Key Rules
 
-1. **Always set `Height` for performance** - without it, virtualization is disabled and all rows render to the DOM.
+1. **Do not add column `Width` unless explicitly requested** — omitting `Width` causes the grid to distribute available space proportionally across all columns, producing a responsive layout with no empty space. Only set explicit pixel or percentage widths when the user specifically asks for fixed column sizing.
+2. **Always set `Height` for performance** - without it, virtualization is disabled and all rows render to the DOM.
 2. **Percentage height needs a sized parent** - `Height="100%"` only works if the parent element has an explicit height.
 3. **Box model is border-box** - column widths include padding and borders.
 4. **Horizontal scroll triggers when columns overflow** - if total column width > grid width, a horizontal scrollbar appears.
 5. **`MinWidth` and `MaxWidth` constrain resizing** - always set them when `Resizable="true"` for predictable UX.
 6. **`--ig-size` controls the overall density** - it affects row height, cell padding, header height, and internal spacing.
-7. **Column virtualization requires column widths** - without widths, the grid cannot calculate which columns are outside the viewport.
+7. **Column virtualization works without explicit per-column widths** — when no `Width` is set on a column, the grid distributes available space across all columns (minimum 136px per column). If columns cannot fit at that minimum, a horizontal scrollbar appears and horizontal virtualization activates automatically. You can also set a grid-level default with `ColumnWidth` on `IgbGrid` instead of setting per-column widths. Only set per-column `Width` when a specific column needs a fixed or percentage size.
 8. **Auto-size is a one-time operation** - `Width="auto"` on a column fits content at initial render; it doesn't update dynamically as data changes.
 9. **Row height consistency** - all rows in a grid have the same height. Variable row height is not supported.

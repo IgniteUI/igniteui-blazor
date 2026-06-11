@@ -40,7 +40,7 @@ Columns are declared as child elements (`<IgbGridLiteColumn>`), not via a `Colum
 <IgbGridLite TItem="Employee" Data="@employees">
     <IgbGridLiteColumn Field="@nameof(Employee.Name)" Header="Name" DataType="GridLiteColumnDataType.String" Sortable Filterable Resizable />
     <IgbGridLiteColumn Field="@nameof(Employee.Department)" Header="Department" Sortable />
-    <IgbGridLiteColumn Field="@nameof(Employee.Salary)" Header="Salary" DataType="GridLiteColumnDataType.Number" Width="150px" />
+    <IgbGridLiteColumn Field="@nameof(Employee.Salary)" Header="Salary" DataType="GridLiteColumnDataType.Number" Sortable />
     <IgbGridLiteColumn Field="@nameof(Employee.HireDate)" Header="Hire Date" DataType="GridLiteColumnDataType.Date" Sortable />
 </IgbGridLite>
 ```
@@ -67,7 +67,7 @@ Columns are declared as child elements (`<IgbGridLiteColumn>`), not via a `Colum
 ```razor
 <IgbGridLite TItem="ProductInfo" Data="@products" SortingOptions="@sortingOptions">
     <IgbGridLiteColumn Field="Name" Header="Name" DataType="GridLiteColumnDataType.String" Sortable />
-    <IgbGridLiteColumn Field="Price" Header="Price" DataType="GridLiteColumnDataType.Number" Width="150px" Sortable />
+    <IgbGridLiteColumn Field="Price" Header="Price" DataType="GridLiteColumnDataType.Number" Sortable />
 </IgbGridLite>
 
 @code {
