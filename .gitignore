@@ -163,3 +163,8 @@ src/*.*
 !src/Loader.ts
 !src/public_path.ts
 !src/refs-state.ts
+
+
+**/tmp/*
+templates/MudBlazor/*
+.idea/*
