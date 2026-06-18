@@ -6,3 +6,18 @@ h3 {
     display: block;
     padding: 1rem 0;
 }
+
+.radio-groups {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.radio-group {
+    margin-right: 2rem;
+}
+
+.radio-group-container {
+    padding: 0.5rem;
+    border: 1px solid gainsboro;
+}
