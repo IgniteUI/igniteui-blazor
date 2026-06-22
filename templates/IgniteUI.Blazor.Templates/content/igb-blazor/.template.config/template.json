@@ -10,9 +10,20 @@
     "language": "C#",
     "type": "project"
   },
-  "sourceName": "IgniteBlazorApp",
+  "sourceName": "IgniteBlazorApp.1",
   "preferNameDirectory": true,
   "symbols": {
+    "StyleBundleName": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "StyleBundleName",
+      "parameters": {
+        "source": "name",
+        "steps": [
+          { "regex": " ", "replacement": "_" }
+        ]
+      }
+    },
     "Hosting": {
       "type": "parameter",
       "datatype": "choice",
@@ -127,54 +138,54 @@
         {
           "condition": "(HostingIsServer)",
           "exclude": [
-            "IgniteBlazorApp.Client/**",
-            "IgniteBlazorApp.sln"
+            "IgniteBlazorApp.1.Client/**",
+            "IgniteBlazorApp.1.sln"
           ]
         },
         {
           "condition": "(HostingHasClient && !IsCli)",
           "exclude": [
-            "IgniteBlazorApp.sln"
+            "IgniteBlazorApp.1.sln"
           ]
         },
         {
           "condition": "(HostingHasClient)",
           "rename": {
-            "IgniteBlazorApp/Components/Routes.razor": "IgniteBlazorApp.Client/Routes.razor",
-            "IgniteBlazorApp/Components/Layout/MainLayout.razor": "IgniteBlazorApp.Client/Layout/MainLayout.razor",
-            "IgniteBlazorApp/Components/Layout/MainLayout.razor.css": "IgniteBlazorApp.Client/Layout/MainLayout.razor.css",
-            "IgniteBlazorApp/Components/Layout/NavMenu.razor": "IgniteBlazorApp.Client/Layout/NavMenu.razor",
-            "IgniteBlazorApp/Components/Pages/Home.razor": "IgniteBlazorApp.Client/Pages/Home.razor",
-            "IgniteBlazorApp/Components/Pages/Counter.razor": "IgniteBlazorApp.Client/Pages/Counter.razor",
-            "IgniteBlazorApp/Components/Pages/Weather.razor": "IgniteBlazorApp.Client/Pages/Weather.razor",
-            "IgniteBlazorApp/Components/Pages/NotFound.razor": "IgniteBlazorApp.Client/Pages/NotFound.razor",
-            "IgniteBlazorApp/Models/": "IgniteBlazorApp.Client/Models/",
-            "IgniteBlazorApp/Services/": "IgniteBlazorApp.Client/Services/"
+            "IgniteBlazorApp.1/Components/Routes.razor": "IgniteBlazorApp.1.Client/Routes.razor",
+            "IgniteBlazorApp.1/Components/Layout/MainLayout.razor": "IgniteBlazorApp.1.Client/Layout/MainLayout.razor",
+            "IgniteBlazorApp.1/Components/Layout/MainLayout.razor.css": "IgniteBlazorApp.1.Client/Layout/MainLayout.razor.css",
+            "IgniteBlazorApp.1/Components/Layout/NavMenu.razor": "IgniteBlazorApp.1.Client/Layout/NavMenu.razor",
+            "IgniteBlazorApp.1/Components/Pages/Home.razor": "IgniteBlazorApp.1.Client/Pages/Home.razor",
+            "IgniteBlazorApp.1/Components/Pages/Counter.razor": "IgniteBlazorApp.1.Client/Pages/Counter.razor",
+            "IgniteBlazorApp.1/Components/Pages/Weather.razor": "IgniteBlazorApp.1.Client/Pages/Weather.razor",
+            "IgniteBlazorApp.1/Components/Pages/NotFound.razor": "IgniteBlazorApp.1.Client/Pages/NotFound.razor",
+            "IgniteBlazorApp.1/Models/": "IgniteBlazorApp.1.Client/Models/",
+            "IgniteBlazorApp.1/Services/": "IgniteBlazorApp.1.Client/Services/"
           }
         },
         {
           "condition": "(!HostingIsServer)",
           "exclude": [
-            "IgniteBlazorApp/Components/Layout/ReconnectModal.razor",
-            "IgniteBlazorApp/Components/Layout/ReconnectModal.razor.css",
-            "IgniteBlazorApp/Components/Layout/ReconnectModal.razor.js"
+            "IgniteBlazorApp.1/Components/Layout/ReconnectModal.razor",
+            "IgniteBlazorApp.1/Components/Layout/ReconnectModal.razor.css",
+            "IgniteBlazorApp.1/Components/Layout/ReconnectModal.razor.js"
           ]
         },
         {
           "condition": "(!IncludeWeatherSample)",
           "exclude": [
-            "IgniteBlazorApp/Components/Pages/Weather.razor",
-            "IgniteBlazorApp/Models/WeatherForecast.cs",
-            "IgniteBlazorApp/Services/WeatherForecastService.cs"
+            "IgniteBlazorApp.1/Components/Pages/Weather.razor",
+            "IgniteBlazorApp.1/Models/WeatherForecast.cs",
+            "IgniteBlazorApp.1/Services/WeatherForecastService.cs"
           ]
         }
       ]
     }
   ],
   "primaryOutputs": [
-    { "condition": "(HostingHasClient && IsCli)",   "path": "IgniteBlazorApp.sln" },
-    { "condition": "(!HostingHasClient || !IsCli)", "path": "IgniteBlazorApp/IgniteBlazorApp.csproj" },
-    { "condition": "(HostingHasClient && !IsCli)",  "path": "IgniteBlazorApp.Client/IgniteBlazorApp.Client.csproj" }
+    { "condition": "(HostingHasClient && IsCli)",   "path": "IgniteBlazorApp.1.sln" },
+    { "condition": "(!HostingHasClient || !IsCli)", "path": "IgniteBlazorApp.1/IgniteBlazorApp.1.csproj" },
+    { "condition": "(HostingHasClient && !IsCli)",  "path": "IgniteBlazorApp.1.Client/IgniteBlazorApp.1.Client.csproj" }
   ],
   "postActions": [
     {
