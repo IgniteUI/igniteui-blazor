@@ -1,6 +1,6 @@
-using IgniteBlazorAppIGB_NS_SEGMENT.Models;
+using IgniteBlazorApp._1IGB_NS_SEGMENT.Models;
 
-namespace IgniteBlazorAppIGB_NS_SEGMENT.Services;
+namespace IgniteBlazorApp._1IGB_NS_SEGMENT.Services;
 
 public class WeatherForecastService
 {
