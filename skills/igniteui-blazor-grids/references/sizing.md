@@ -266,12 +266,13 @@ Apply different sizing to a specific grid:
 ## Key Rules
 
 1. **Do not add column `Width` unless explicitly requested** — omitting `Width` causes the grid to distribute available space proportionally across all columns, producing a responsive layout with no empty space. Only set explicit pixel or percentage widths when the user specifically asks for fixed column sizing.
-2. **Always set `Height` for performance** - without it, virtualization is disabled and all rows render to the DOM.
-3. **Percentage height needs a sized parent** - `Height="100%"` only works if the parent element has an explicit height.
-4. **Box model is border-box** - column widths include padding and borders.
-5. **Horizontal scroll triggers when columns overflow** - if total column width > grid width, a horizontal scrollbar appears.
-6. **`MinWidth` and `MaxWidth` constrain resizing** - always set them when `Resizable="true"` for predictable UX.
-7. **`--ig-size` controls the overall density** - it affects row height, cell padding, header height, and internal spacing.
-8. **Column virtualization works without explicit per-column widths** — when no `Width` is set on a column, the grid distributes available space across all columns (minimum 136px per column). If columns cannot fit at that minimum, a horizontal scrollbar appears and horizontal virtualization activates automatically. You can also set a grid-level default with `ColumnWidth` on `IgbGrid` instead of setting per-column widths. Only set per-column `Width` when a specific column needs a fixed or percentage size.
-9. **Auto-size is a one-time operation** - `Width="auto"` on a column fits content at initial render; it doesn't update dynamically as data changes.
-10. **Row height consistency** - all rows in a grid have the same height. Variable row height is not supported.
+2. **If column widths are used, at least one column should not have a specified `Width`** — so that it fills the remaining space in the grid.
+3. **Always set `Height` for performance** - without it, virtualization is disabled and all rows render to the DOM.
+4. **Percentage height needs a sized parent** - `Height="100%"` only works if the parent element has an explicit height.
+5. **Box model is border-box** - column widths include padding and borders.
+6. **Horizontal scroll triggers when columns overflow** - if total column width > grid width, a horizontal scrollbar appears.
+7. **`MinWidth` and `MaxWidth` constrain resizing** - always set them when `Resizable="true"` for predictable UX.
+8. **`--ig-size` controls the overall density** - it affects row height, cell padding, header height, and internal spacing.
+9. **Column virtualization works without explicit per-column widths** — when no `Width` is set on a column, the grid distributes available space across all columns (minimum 136px per column). If columns cannot fit at that minimum, a horizontal scrollbar appears and horizontal virtualization activates automatically. You can also set a grid-level default with `ColumnWidth` on `IgbGrid` instead of setting per-column widths. Only set per-column `Width` when a specific column needs a fixed or percentage size.
+10. **Auto-size is a one-time operation** - `Width="auto"` on a column fits content at initial render; it doesn't update dynamically as data changes.
+11. **Row height consistency** - all rows in a grid have the same height. Variable row height is not supported.
