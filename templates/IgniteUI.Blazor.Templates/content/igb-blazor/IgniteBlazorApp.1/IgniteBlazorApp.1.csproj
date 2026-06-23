@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace Condition="'$(name)' != '$(name{-VALUE-FORMS-}safe_namespace)'">IgniteBlazorApp._1</RootNamespace>
+    <AssemblyName Condition="'$(name)' != '$(name{-VALUE-FORMS-}safe_namespace)'">$(AssemblyName.Replace(' ', '_'))</AssemblyName>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
@@ -22,7 +24,7 @@
 
   <!--#if (HostingHasClient) -->
   <ItemGroup>
-    <ProjectReference Include="..\IgniteBlazorApp.Client\IgniteBlazorApp.Client.csproj" />
+    <ProjectReference Include="..\IgniteBlazorApp.1.Client\IgniteBlazorApp.1.Client.csproj" />
   </ItemGroup>
   <!--#endif -->
 

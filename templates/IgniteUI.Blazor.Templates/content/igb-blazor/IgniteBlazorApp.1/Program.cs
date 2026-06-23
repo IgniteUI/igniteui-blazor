@@ -1,9 +1,9 @@
 #if (IncludeWeatherSample)
 using ApexCharts;
 #endif
-using IgniteBlazorApp.Components;
+using IgniteBlazorApp._1.Components;
 #if (IncludeWeatherSample)
-using IgniteBlazorAppIGB_NS_SEGMENT.Services;
+using IgniteBlazorApp._1IGB_NS_SEGMENT.Services;
 #endif
 using IgniteUI.Blazor.Controls;
 
@@ -53,12 +53,12 @@ app.MapRazorComponents<App>()
 #endif
 #if (Hosting == "Wasm")
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(IgniteBlazorApp.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(IgniteBlazorApp._1.Client._Imports).Assembly);
 #endif
 #if (HostingIsAuto)
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(IgniteBlazorApp.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(IgniteBlazorApp._1.Client._Imports).Assembly);
 #endif
 
 app.Run();

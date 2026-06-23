@@ -5,19 +5,14 @@
 @using Microsoft.AspNetCore.Components.Web
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.JSInterop
-@using IgniteBlazorApp
-@using IgniteBlazorApp.Components
-@*#if (HostingIsServer) *@
-@using IgniteBlazorApp.Components.Layout
-@using IgniteBlazorApp.Components.Pages
-@*#endif *@
-@*#if (HostingHasClient) *@
-@using IgniteBlazorApp.Client
-@*#endif *@
+@using IgniteBlazorApp._1.Client
+@using IgniteBlazorApp._1.Client.Layout
+@using IgniteBlazorApp._1.Client.Pages
 @using IgniteUI.Blazor.Controls
-@*#if (HostingIsServer && IncludeWeatherSample) *@
-@using IgniteBlazorAppIGB_NS_SEGMENT.Models
-@using IgniteBlazorAppIGB_NS_SEGMENT.Services
+@*#if (IncludeWeatherSample) *@
+@using IgniteBlazorApp._1IGB_NS_SEGMENT.Models
+@using IgniteBlazorApp._1IGB_NS_SEGMENT.Services
 @using ApexCharts
 @*#endif *@
