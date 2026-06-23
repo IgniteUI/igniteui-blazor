@@ -266,7 +266,7 @@ Apply different sizing to a specific grid:
 ## Key Rules
 
 1. **Do not add column `Width` unless explicitly requested** — omitting `Width` causes the grid to distribute available space proportionally across all columns, producing a responsive layout with no empty space. Only set explicit pixel or percentage widths when the user specifically asks for fixed column sizing.
-2. **If column widths are used, at least one column should not have a specified `Width`** — so that it fills the remaining space in the grid.
+2. **If any column has a specified `Width`, leave at least one column without `Width`** - so it fills the remaining space in the grid.
 3. **Always set `Height` for performance** - without it, virtualization is disabled and all rows render to the DOM.
 4. **Percentage height needs a sized parent** - `Height="100%"` only works if the parent element has an explicit height.
 5. **Box model is border-box** - column widths include padding and borders.
