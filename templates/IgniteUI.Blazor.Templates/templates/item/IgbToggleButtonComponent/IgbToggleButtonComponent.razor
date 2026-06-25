@@ -5,13 +5,36 @@
 
 <h3>IgbToggleButtonComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Group selection</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
+                <IgbRadio Value="Single">Single</IgbRadio>
+                <IgbRadio Value="SingleRequired">SingleRequired</IgbRadio>
+                <IgbRadio Value="Multiple">Multiple</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
     @* Toggle buttons live inside an IgbButtonGroup, which owns the selection. *@
-    <IgbButtonGroup Selection="ButtonGroupSelection.SingleRequired">
-        <IgbToggleButton Value="list" Selected="true">List</IgbToggleButton>
-        <IgbToggleButton Value="grid">Grid</IgbToggleButton>
+    <IgbButtonGroup Selection="Selection" Disabled="Disabled" Select="OnSelect" Deselect="OnDeselect">
+        <IgbToggleButton Value="bold">Bold</IgbToggleButton>
+        <IgbToggleButton Value="italic">Italic</IgbToggleButton>
+        <IgbToggleButton Value="underline">Underline</IgbToggleButton>
     </IgbButtonGroup>
 </div>
+
+<div class="state">Selected: @(Selected.Count == 0 ? "(none)" : string.Join(", ", Selected))</div>
 
 @code {
     /*
@@ -28,4 +51,21 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string SelectionName { get; set; } = "Multiple";
+    private ButtonGroupSelection Selection => Enum.Parse<ButtonGroupSelection>(SelectionName);
+
+    private bool Disabled { get; set; }
+    private readonly HashSet<string> Selected = new();
+
+    private void OnSelect(IgbComponentValueChangedEventArgs args)
+    {
+        if (Selection != ButtonGroupSelection.Multiple)
+        {
+            Selected.Clear();
+        }
+        Selected.Add(args.Detail);
+    }
+
+    private void OnDeselect(IgbComponentValueChangedEventArgs args) => Selected.Remove(args.Detail);
 }

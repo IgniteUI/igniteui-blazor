@@ -5,15 +5,23 @@
 
 <h3>IgbBannerComponent</h3>
 
-<div class="component-host">
-    <IgbButton @onclick="OnShow" Variant="ButtonVariant.Contained">Show Banner</IgbButton>
-    <IgbBanner @ref="_banner">
-        <span>You have lost connection to the internet. This app is offline.</span>
+<div class="banner-host">
+    <IgbBanner @ref="_banner" Closed="OnClosed">
+        You are currently offline. Some features may be unavailable.
         <div slot="actions">
             <IgbButton Variant="ButtonVariant.Flat" @onclick="OnHide">Dismiss</IgbButton>
+            <IgbButton Variant="ButtonVariant.Contained" @onclick="OnHide">Retry</IgbButton>
         </div>
     </IgbBanner>
 </div>
+
+<div class="component-host">
+    <IgbButton Variant="ButtonVariant.Contained" @onclick="OnShow">Show</IgbButton>
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnHide">Hide</IgbButton>
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnToggle">Toggle</IgbButton>
+</div>
+
+<div class="state">Dismiss count: @DismissCount</div>
 
 @code {
     /*
@@ -30,15 +38,13 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
     private IgbBanner _banner = default!;
+    private int DismissCount { get; set; }
 
-    private async Task OnShow()
-    {
-        if (_banner is not null) await _banner.ShowAsync();
-    }
+    private async Task OnShow() => await _banner.ShowAsync();
+    private async Task OnHide() => await _banner.HideAsync();
+    private async Task OnToggle() => await _banner.ToggleAsync();
 
-    private async Task OnHide()
-    {
-        if (_banner is not null) await _banner.HideAsync();
-    }
+    private void OnClosed(IgbVoidEventArgs args) => DismissCount++;
 }

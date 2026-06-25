@@ -5,20 +5,43 @@
 
 <h3>IgbNavDrawerComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Position</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PositionName">
+                <IgbRadio Value="Relative">Relative</IgbRadio>
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="Top">Top</IgbRadio>
+                <IgbRadio Value="Bottom">Bottom</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbNavDrawer Open="true">
-        <IgbNavDrawerHeaderItem>Sample Drawer</IgbNavDrawerHeaderItem>
-        <IgbNavDrawerItem>
-            <span slot="content">Home</span>
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnShow">Show</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnHide">Hide</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnToggle">Toggle</IgbButton>
+    </div>
+
+    <IgbNavDrawer @ref="_drawer" Position="Position" Open="true">
+        <IgbNavDrawerHeaderItem>Mailbox</IgbNavDrawerHeaderItem>
+        <IgbNavDrawerItem Active="@(Selected == "Inbox")" @onclick="@(() => Selected = "Inbox")">
+            <span slot="content">Inbox</span>
         </IgbNavDrawerItem>
-        <IgbNavDrawerItem>
-            <span slot="content">Search</span>
+        <IgbNavDrawerItem Active="@(Selected == "Drafts")" @onclick="@(() => Selected = "Drafts")">
+            <span slot="content">Drafts</span>
         </IgbNavDrawerItem>
-        <IgbNavDrawerItem>
-            <span slot="content">Settings</span>
+        <IgbNavDrawerItem Active="@(Selected == "Sent")" @onclick="@(() => Selected = "Sent")">
+            <span slot="content">Sent</span>
         </IgbNavDrawerItem>
     </IgbNavDrawer>
 </div>
+
+<div class="state">Selected item: @Selected</div>
 
 @code {
     /*
@@ -35,4 +58,15 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private IgbNavDrawer _drawer = default!;
+
+    private string PositionName { get; set; } = "Relative";
+    private NavDrawerPosition Position => Enum.Parse<NavDrawerPosition>(PositionName);
+
+    private string Selected { get; set; } = "Inbox";
+
+    private async Task OnShow() => await _drawer.ShowAsync();
+    private async Task OnHide() => await _drawer.HideAsync();
+    private async Task OnToggle() => await _drawer.ToggleAsync();
 }

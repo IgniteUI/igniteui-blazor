@@ -5,10 +5,49 @@
 
 <h3>IgbTooltipComponent</h3>
 
-<div class="component-host">
-    <span id="tooltip-anchor">Hover me</span>
-    <IgbTooltip Anchor="tooltip-anchor">Tooltip text</IgbTooltip>
+<div class="controls">
+    <div class="control">
+        <label>Placement</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PlacementName">
+                <IgbRadio Value="Top">Top</IgbRadio>
+                <IgbRadio Value="Bottom">Bottom</IgbRadio>
+                <IgbRadio Value="Left">Left</IgbRadio>
+                <IgbRadio Value="Right">Right</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Offset: @Offset px</label>
+        <div class="control-box">
+            <IgbSlider class="value-slider" @bind-Value="Offset" Min="0" Max="24" Step="2" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="ShowTip">Show</IgbSwitch>
+            <IgbSwitch @bind-Checked="WithArrow">With arrow</IgbSwitch>
+            <IgbSwitch @bind-Checked="Sticky">Sticky</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host tooltip-host">
+    <IgbButton id="tooltip-anchor" Variant="ButtonVariant.Contained">Anchor</IgbButton>
+    <IgbTooltip Anchor="tooltip-anchor"
+                Open="ShowTip"
+                Placement="Placement"
+                Offset="Offset"
+                WithArrow="WithArrow"
+                Sticky="Sticky">
+        Helpful hint about this button.
+    </IgbTooltip>
+</div>
+
+<div class="state">Placement: @PlacementName &nbsp;|&nbsp; Offset: @Offset</div>
 
 @code {
     /*
@@ -25,4 +64,12 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string PlacementName { get; set; } = "Top";
+    private PopoverPlacement Placement => Enum.Parse<PopoverPlacement>(PlacementName);
+
+    private double Offset { get; set; } = 6;
+    private bool ShowTip { get; set; } = true;
+    private bool WithArrow { get; set; } = true;
+    private bool Sticky { get; set; } = true;
 }

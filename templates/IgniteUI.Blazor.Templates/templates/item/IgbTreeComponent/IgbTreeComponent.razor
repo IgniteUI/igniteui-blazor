@@ -5,9 +5,34 @@
 
 <h3>IgbTreeComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Selection</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
+                <IgbRadio Value="None">None</IgbRadio>
+                <IgbRadio Value="Multiple">Multiple</IgbRadio>
+                <IgbRadio Value="Cascade">Cascade</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="SingleBranchExpand">Single branch expand</IgbSwitch>
+            <IgbSwitch @bind-Checked="ToggleNodeOnClick">Toggle node on click</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbTree>
-        <IgbTreeItem Label="North America">
+    <IgbTree class="demo-tree"
+             Selection="Selection"
+             SingleBranchExpand="SingleBranchExpand"
+             ToggleNodeOnClick="ToggleNodeOnClick"
+             SelectionChanged="OnSelectionChanged">
+        <IgbTreeItem Label="North America" Expanded="true">
             <IgbTreeItem Label="United States" />
             <IgbTreeItem Label="Canada" />
             <IgbTreeItem Label="Mexico" />
@@ -17,8 +42,14 @@
             <IgbTreeItem Label="Germany" />
             <IgbTreeItem Label="Bulgaria" />
         </IgbTreeItem>
+        <IgbTreeItem Label="Asia">
+            <IgbTreeItem Label="Japan" />
+            <IgbTreeItem Label="Singapore" />
+        </IgbTreeItem>
     </IgbTree>
 </div>
+
+<div class="state">Selected: @Selected</div>
 
 @code {
     /*
@@ -35,4 +66,20 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string SelectionName { get; set; } = "Multiple";
+    private TreeSelection Selection => Enum.Parse<TreeSelection>(SelectionName);
+
+    private bool SingleBranchExpand { get; set; }
+    private bool ToggleNodeOnClick { get; set; }
+
+    private string Selected { get; set; } = "(none)";
+
+    private void OnSelectionChanged(IgbTreeSelectionEventArgs args)
+    {
+        var items = args.Detail?.NewSelection;
+        Selected = items is null || items.Length == 0
+            ? "(none)"
+            : string.Join(", ", items.Select(i => i.Label));
+    }
 }

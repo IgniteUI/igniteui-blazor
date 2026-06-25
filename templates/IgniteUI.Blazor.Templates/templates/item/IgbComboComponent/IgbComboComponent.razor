@@ -5,16 +5,33 @@
 
 <h3>IgbComboComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="SingleSelect">Single select</IgbSwitch>
+            <IgbSwitch @bind-Checked="DisableFiltering">Disable filtering</IgbSwitch>
+            <IgbSwitch @bind-Checked="Grouped">Group by region</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
     <IgbCombo T="string"
+              class="demo-combo"
               Data="Data"
               ValueKey="Id"
               DisplayKey="Name"
+              GroupKey="@(Grouped ? "Region" : null)"
+              SingleSelect="SingleSelect"
+              DisableFiltering="DisableFiltering"
               Label="Cities"
               Placeholder="Pick a city"
-              SingleSelect>
+              @bind-Value="Selected">
     </IgbCombo>
 </div>
+
+<div class="state">Selected: @SelectedNames</div>
 
 @code {
     /*
@@ -31,16 +48,32 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private bool SingleSelect { get; set; }
+    private bool DisableFiltering { get; set; }
+    private bool Grouped { get; set; } = true;
+
+    private string[] Selected { get; set; } = Array.Empty<string>();
+
+    private string SelectedNames => Selected.Length == 0
+        ? "(none)"
+        : string.Join(", ", Data.Where(c => Selected.Contains(c.Id)).Select(c => c.Name));
+
     private List<City> Data { get; set; } = new()
     {
-        new City { Id = "1", Name = "London" },
-        new City { Id = "2", Name = "Paris" },
-        new City { Id = "3", Name = "New York" }
+        new City { Id = "1", Name = "London", Region = "Europe" },
+        new City { Id = "2", Name = "Paris", Region = "Europe" },
+        new City { Id = "3", Name = "Berlin", Region = "Europe" },
+        new City { Id = "4", Name = "New York", Region = "Americas" },
+        new City { Id = "5", Name = "Toronto", Region = "Americas" },
+        new City { Id = "6", Name = "Tokyo", Region = "Asia" },
+        new City { Id = "7", Name = "Singapore", Region = "Asia" }
     };
 
     public class City
     {
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
     }
 }

@@ -5,13 +5,52 @@
 
 <h3>IgbExpansionPanelComponent</h3>
 
-<div class="component-host">
-    <IgbExpansionPanel>
+<div class="controls">
+    <div class="control">
+        <label>Indicator position</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorPositionName">
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="None">None</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host expansion-host">
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="ExpandAll">Expand all</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="CollapseAll">Collapse all</IgbButton>
+    </div>
+
+    <IgbExpansionPanel @ref="_p1" IndicatorPosition="IndicatorPosition" Disabled="Disabled" Open="true">
         <span slot="title">Golden Retriever</span>
         <span slot="subtitle">Medium-large gun dog</span>
-        <span>The Golden Retriever is a medium-large gun dog that retrieves shot waterfowl during hunting.</span>
+        <span>The Golden Retriever is a friendly, intelligent breed that retrieves shot waterfowl during hunting.</span>
+    </IgbExpansionPanel>
+
+    <IgbExpansionPanel @ref="_p2" IndicatorPosition="IndicatorPosition" Disabled="Disabled">
+        <span slot="title">Labrador Retriever</span>
+        <span slot="subtitle">Sporting group</span>
+        <span>The Labrador Retriever is an even-tempered, outgoing breed and a popular family companion.</span>
+    </IgbExpansionPanel>
+
+    <IgbExpansionPanel @ref="_p3" IndicatorPosition="IndicatorPosition" Disabled="Disabled">
+        <span slot="title">German Shepherd</span>
+        <span slot="subtitle">Herding group</span>
+        <span>The German Shepherd is a working dog known for its intelligence, loyalty and versatility.</span>
     </IgbExpansionPanel>
 </div>
+
+<div class="state">Indicator: @IndicatorPositionName &nbsp;|&nbsp; Disabled: @Disabled</div>
 
 @code {
     /*
@@ -28,4 +67,29 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private IgbExpansionPanel _p1 = default!;
+    private IgbExpansionPanel _p2 = default!;
+    private IgbExpansionPanel _p3 = default!;
+
+    private string IndicatorPositionName { get; set; } = "Start";
+    private ExpansionPanelIndicatorPosition IndicatorPosition => Enum.Parse<ExpansionPanelIndicatorPosition>(IndicatorPositionName);
+
+    private bool Disabled { get; set; }
+
+    private async Task ExpandAll()
+    {
+        foreach (var panel in new[] { _p1, _p2, _p3 })
+        {
+            await panel.ShowAsync();
+        }
+    }
+
+    private async Task CollapseAll()
+    {
+        foreach (var panel in new[] { _p1, _p2, _p3 })
+        {
+            await panel.HideAsync();
+        }
+    }
 }

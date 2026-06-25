@@ -5,9 +5,36 @@
 
 <h3>IgbCheckboxComponent</h3>
 
-<div class="component-host">
-    <IgbCheckbox Checked="true">Label</IgbCheckbox>
+<div class="controls">
+    <div class="control">
+        <label>Label position</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="LabelPositionName">
+                <IgbRadio Value="After">After</IgbRadio>
+                <IgbRadio Value="Before">Before</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Indeterminate">Indeterminate</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbCheckbox @bind-Checked="Checked"
+                 Indeterminate="Indeterminate"
+                 LabelPosition="LabelPosition"
+                 Disabled="Disabled">
+        I agree to the terms
+    </IgbCheckbox>
+</div>
+
+<div class="state">Checked: @Checked &nbsp;|&nbsp; Indeterminate: @Indeterminate</div>
 
 @code {
     /*
@@ -24,4 +51,11 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string LabelPositionName { get; set; } = "After";
+    private ToggleLabelPosition LabelPosition => Enum.Parse<ToggleLabelPosition>(LabelPositionName);
+
+    private bool Checked { get; set; } = true;
+    private bool Indeterminate { get; set; }
+    private bool Disabled { get; set; }
 }

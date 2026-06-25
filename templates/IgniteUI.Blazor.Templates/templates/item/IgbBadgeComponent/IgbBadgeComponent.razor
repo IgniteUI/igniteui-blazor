@@ -5,9 +5,48 @@
 
 <h3>IgbBadgeComponent</h3>
 
-<div class="component-host">
-    <IgbBadge Variant="StyleVariant.Success">5</IgbBadge>
+<div class="controls">
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Primary">Primary</IgbRadio>
+                <IgbRadio Value="Info">Info</IgbRadio>
+                <IgbRadio Value="Success">Success</IgbRadio>
+                <IgbRadio Value="Warning">Warning</IgbRadio>
+                <IgbRadio Value="Danger">Danger</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Shape</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ShapeName">
+                <IgbRadio Value="Rounded">Rounded</IgbRadio>
+                <IgbRadio Value="Square">Square</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Outlined">Outlined</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <span class="badge-anchor">
+        <IgbAvatar Initials="JD" Shape="AvatarShape.Circle" />
+        <IgbBadge class="anchored" Variant="Variant" Shape="Shape" Outlined="Outlined">5</IgbBadge>
+    </span>
+
+    <IgbBadge Variant="Variant" Shape="Shape" Outlined="Outlined">NEW</IgbBadge>
+</div>
+
+<div class="state">Variant: @VariantName &nbsp;|&nbsp; Shape: @ShapeName &nbsp;|&nbsp; Outlined: @Outlined</div>
 
 @code {
     /*
@@ -24,4 +63,12 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string VariantName { get; set; } = "Primary";
+    private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
+
+    private string ShapeName { get; set; } = "Rounded";
+    private BadgeShape Shape => Enum.Parse<BadgeShape>(ShapeName);
+
+    private bool Outlined { get; set; }
 }

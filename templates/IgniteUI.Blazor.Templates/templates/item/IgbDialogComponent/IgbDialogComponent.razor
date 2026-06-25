@@ -5,14 +5,31 @@
 
 <h3>IgbDialogComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="CloseOnOutsideClick">Close on outside click</IgbSwitch>
+            <IgbSwitch @bind-Checked="KeepOpenOnEscape">Keep open on escape</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbButton @onclick="OnShow" Variant="ButtonVariant.Contained">Show Dialog</IgbButton>
-    <IgbDialog @ref="_dialog" Title="Confirmation">
-        <p>Are you sure you want to continue?</p>
-        <IgbButton slot="footer" @onclick="OnHide" Variant="ButtonVariant.Flat">Cancel</IgbButton>
-        <IgbButton slot="footer" @onclick="OnHide" Variant="ButtonVariant.Flat">OK</IgbButton>
+    <IgbButton Variant="ButtonVariant.Contained" @onclick="OnShow">Show dialog</IgbButton>
+
+    <IgbDialog @ref="_dialog"
+               Title="Delete item"
+               CloseOnOutsideClick="CloseOnOutsideClick"
+               KeepOpenOnEscape="KeepOpenOnEscape"
+               Closed="OnClosed">
+        <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+        <IgbButton slot="footer" Variant="ButtonVariant.Flat" @onclick="@(() => Close("Cancelled"))">Cancel</IgbButton>
+        <IgbButton slot="footer" Variant="ButtonVariant.Contained" @onclick="@(() => Close("Deleted"))">Delete</IgbButton>
     </IgbDialog>
 </div>
+
+<div class="state">Last result: @LastResult</div>
 
 @code {
     /*
@@ -29,15 +46,33 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
     private IgbDialog _dialog = default!;
+
+    private bool CloseOnOutsideClick { get; set; }
+    private bool KeepOpenOnEscape { get; set; }
+    private string LastResult { get; set; } = "(none)";
 
     private async Task OnShow()
     {
-        if (_dialog is not null) await _dialog.ShowAsync();
+        // A second Esc lets the browser force-close the native dialog without the
+        // component clearing its open state, leaving the backdrop stuck. Hiding
+        // first resets that stale state; it is a no-op when already closed.
+        await _dialog.HideAsync();
+        await _dialog.ShowAsync();
     }
 
-    private async Task OnHide()
+    private async Task Close(string result)
     {
-        if (_dialog is not null) await _dialog.HideAsync();
+        LastResult = result;
+        await _dialog.HideAsync();
+    }
+
+    private void OnClosed(IgbVoidEventArgs args)
+    {
+        if (LastResult == "(none)")
+        {
+            LastResult = "Dismissed";
+        }
     }
 }

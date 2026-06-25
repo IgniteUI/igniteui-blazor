@@ -5,9 +5,38 @@
 
 <h3>IgbRatingComponent</h3>
 
-<div class="component-host">
-    <IgbRating Label="Rate experience" Max="5" />
+<div class="controls">
+    <div class="control">
+        <label>Max: @Max</label>
+        <div class="control-box">
+            <IgbSlider class="max-slider" @bind-Value="Max" Min="3" Max="10" Step="1" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="HalfSteps">Half steps</IgbSwitch>
+            <IgbSwitch @bind-Checked="HoverPreview">Hover preview</IgbSwitch>
+            <IgbSwitch @bind-Checked="AllowReset">Allow reset</IgbSwitch>
+            <IgbSwitch @bind-Checked="ReadOnly">Read-only</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbRating @bind-Value="Value"
+               Label="Rate your experience"
+               Max="Max"
+               Step="Step"
+               HoverPreview="HoverPreview"
+               AllowReset="AllowReset"
+               ReadOnly="ReadOnly"
+               Disabled="Disabled" />
+</div>
+
+<div class="state">Value: @Value / @Max</div>
 
 @code {
     /*
@@ -24,4 +53,15 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private double Value { get; set; } = 3;
+    private double Max { get; set; } = 5;
+
+    private bool HalfSteps { get; set; }
+    private double Step => HalfSteps ? 0.5 : 1;
+
+    private bool HoverPreview { get; set; } = true;
+    private bool AllowReset { get; set; } = true;
+    private bool ReadOnly { get; set; }
+    private bool Disabled { get; set; }
 }

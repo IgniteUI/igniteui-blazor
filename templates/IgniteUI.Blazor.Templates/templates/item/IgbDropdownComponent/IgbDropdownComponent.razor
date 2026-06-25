@@ -5,14 +5,47 @@
 
 <h3>IgbDropdownComponent</h3>
 
-<div class="component-host">
-    <IgbDropdown>
-        <IgbButton slot="target">Options</IgbButton>
-        <IgbDropdownItem>Option 1</IgbDropdownItem>
-        <IgbDropdownItem>Option 2</IgbDropdownItem>
-        <IgbDropdownItem>Option 3</IgbDropdownItem>
-    </IgbDropdown>
+<div class="controls">
+    <div class="control">
+        <label>Placement</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PlacementName">
+                <IgbRadio Value="BottomStart">BottomStart</IgbRadio>
+                <IgbRadio Value="Bottom">Bottom</IgbRadio>
+                <IgbRadio Value="TopStart">TopStart</IgbRadio>
+                <IgbRadio Value="Top">Top</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Flip">Flip</IgbSwitch>
+            <IgbSwitch @bind-Checked="SameWidth">Same width</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbDropdown @ref="_dropdown"
+                 Placement="Placement"
+                 Flip="Flip"
+                 SameWidth="SameWidth"
+                 Change="OnChange">
+        <IgbButton slot="target">Choose an action</IgbButton>
+        <IgbDropdownItem Value="edit">Edit</IgbDropdownItem>
+        <IgbDropdownItem Value="duplicate">Duplicate</IgbDropdownItem>
+        <IgbDropdownItem Value="archive">Archive</IgbDropdownItem>
+        <IgbDropdownItem Value="delete">Delete</IgbDropdownItem>
+    </IgbDropdown>
+
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnToggle">Toggle</IgbButton>
+    </div>
+</div>
+
+<div class="state">Selected: @Selected</div>
 
 @code {
     /*
@@ -29,4 +62,17 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private IgbDropdown _dropdown = default!;
+
+    private string PlacementName { get; set; } = "BottomStart";
+    private PopoverPlacement Placement => Enum.Parse<PopoverPlacement>(PlacementName);
+
+    private bool Flip { get; set; } = true;
+    private bool SameWidth { get; set; }
+    private string Selected { get; set; } = "(none)";
+
+    private async Task OnToggle() => await _dropdown.ToggleAsync();
+
+    private void OnChange(IgbDropdownItemComponentEventArgs args) => Selected = args.Detail?.Value ?? "(none)";
 }

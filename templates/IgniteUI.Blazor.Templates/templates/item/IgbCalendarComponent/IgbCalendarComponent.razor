@@ -5,9 +5,50 @@
 
 <h3>IgbCalendarComponent</h3>
 
-<div class="component-host">
-    <IgbCalendar />
+<div class="controls">
+    <div class="control">
+        <label>Selection</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
+                <IgbRadio Value="Single">Single</IgbRadio>
+                <IgbRadio Value="Multiple">Multiple</IgbRadio>
+                <IgbRadio Value="Range">Range</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Active view</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActiveViewName">
+                <IgbRadio Value="Days">Days</IgbRadio>
+                <IgbRadio Value="Months">Months</IgbRadio>
+                <IgbRadio Value="Years">Years</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="TwoMonths">Two months</IgbSwitch>
+            <IgbSwitch @bind-Checked="ShowWeekNumbers">Week numbers</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideOutsideDays">Hide outside days</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbCalendar Selection="Selection"
+                 ActiveView="ActiveView"
+                 VisibleMonths="@(TwoMonths ? 2 : 1)"
+                 ShowWeekNumbers="ShowWeekNumbers"
+                 HideOutsideDays="HideOutsideDays"
+                 ValueChanged="OnValueChanged"
+                 ValuesChanged="OnValuesChanged" />
+</div>
+
+<div class="state">Selected: @Selected</div>
 
 @code {
     /*
@@ -24,4 +65,21 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string SelectionName { get; set; } = "Single";
+    private CalendarSelection Selection => Enum.Parse<CalendarSelection>(SelectionName);
+
+    private string ActiveViewName { get; set; } = "Days";
+    private CalendarActiveView ActiveView => Enum.Parse<CalendarActiveView>(ActiveViewName);
+
+    private bool TwoMonths { get; set; }
+    private bool ShowWeekNumbers { get; set; }
+    private bool HideOutsideDays { get; set; }
+
+    private string Selected { get; set; } = "(none)";
+
+    private void OnValueChanged(DateTime value) => Selected = value.ToString("d");
+
+    private void OnValuesChanged(DateTime[] values) =>
+        Selected = values.Length == 0 ? "(none)" : string.Join(", ", values.Select(d => d.ToString("d")));
 }

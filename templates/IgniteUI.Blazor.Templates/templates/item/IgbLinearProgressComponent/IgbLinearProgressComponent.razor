@@ -5,9 +5,62 @@
 
 <h3>IgbLinearProgressComponent</h3>
 
-<div class="component-host">
-    <IgbLinearProgress Value="75" />
+<div class="controls">
+    <div class="control">
+        <label>Value: @Value</label>
+        <div class="control-box">
+            <IgbSlider class="value-slider" @bind-Value="Value" Min="0" Max="100" Step="1" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Primary">Primary</IgbRadio>
+                <IgbRadio Value="Info">Info</IgbRadio>
+                <IgbRadio Value="Success">Success</IgbRadio>
+                <IgbRadio Value="Warning">Warning</IgbRadio>
+                <IgbRadio Value="Danger">Danger</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Label align</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="LabelAlignName">
+                <IgbRadio Value="TopStart">TopStart</IgbRadio>
+                <IgbRadio Value="Top">Top</IgbRadio>
+                <IgbRadio Value="TopEnd">TopEnd</IgbRadio>
+                <IgbRadio Value="BottomStart">BottomStart</IgbRadio>
+                <IgbRadio Value="Bottom">Bottom</IgbRadio>
+                <IgbRadio Value="BottomEnd">BottomEnd</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Striped">Striped</IgbSwitch>
+            <IgbSwitch @bind-Checked="Indeterminate">Indeterminate</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideLabel">Hide label</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbLinearProgress class="demo-progress"
+                       Value="Value"
+                       Variant="Variant"
+                       LabelAlign="LabelAlign"
+                       Striped="Striped"
+                       Indeterminate="Indeterminate"
+                       HideLabel="HideLabel" />
+</div>
+
+<div class="state">Value: @Value% &nbsp;|&nbsp; Variant: @VariantName</div>
 
 @code {
     /*
@@ -24,4 +77,16 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private double Value { get; set; } = 75;
+
+    private string VariantName { get; set; } = "Primary";
+    private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
+
+    private string LabelAlignName { get; set; } = "TopStart";
+    private LinearProgressLabelAlign LabelAlign => Enum.Parse<LinearProgressLabelAlign>(LabelAlignName);
+
+    private bool Striped { get; set; }
+    private bool Indeterminate { get; set; }
+    private bool HideLabel { get; set; }
 }

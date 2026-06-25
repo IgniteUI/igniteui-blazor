@@ -5,9 +5,36 @@
 
 <h3>IgbSwitchComponent</h3>
 
-<div class="component-host">
-    <IgbSwitch Checked="true">Label</IgbSwitch>
+<div class="controls">
+    <div class="control">
+        <label>Label position</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="LabelPositionName">
+                <IgbRadio Value="After">After</IgbRadio>
+                <IgbRadio Value="Before">Before</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+            <IgbSwitch @bind-Checked="Required">Required</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbSwitch @bind-Checked="Checked"
+               LabelPosition="LabelPosition"
+               Disabled="Disabled"
+               Required="Required">
+        Enable notifications
+    </IgbSwitch>
+</div>
+
+<div class="state">Checked: @Checked</div>
 
 @code {
     /*
@@ -24,4 +51,11 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string LabelPositionName { get; set; } = "After";
+    private ToggleLabelPosition LabelPosition => Enum.Parse<ToggleLabelPosition>(LabelPositionName);
+
+    private bool Checked { get; set; } = true;
+    private bool Disabled { get; set; }
+    private bool Required { get; set; }
 }

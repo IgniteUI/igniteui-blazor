@@ -5,9 +5,43 @@
 
 <h3>IgbRangeSliderComponent</h3>
 
-<div class="component-host">
-    <IgbRangeSlider Lower="20" Upper="70" />
+<div class="controls">
+    <div class="control">
+        <label>Tick orientation</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TickOrientationName">
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="Mirror">Mirror</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="DiscreteTrack">Discrete track</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideTooltip">Hide tooltip</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbRangeSlider class="demo-slider"
+                    Lower="Lower"
+                    Upper="Upper"
+                    Min="0"
+                    Max="100"
+                    Step="5"
+                    PrimaryTicks="5"
+                    SecondaryTicks="1"
+                    DiscreteTrack="DiscreteTrack"
+                    HideTooltip="HideTooltip"
+                    TickOrientation="TickOrientation"
+                    Change="OnChange" />
+</div>
+
+<div class="state">Range: @Lower – @Upper</div>
 
 @code {
     /*
@@ -24,4 +58,19 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private double Lower { get; set; } = 20;
+    private double Upper { get; set; } = 70;
+
+    private string TickOrientationName { get; set; } = "End";
+    private SliderTickOrientation TickOrientation => Enum.Parse<SliderTickOrientation>(TickOrientationName);
+
+    private bool DiscreteTrack { get; set; }
+    private bool HideTooltip { get; set; }
+
+    private void OnChange(IgbRangeSliderValueEventArgs args)
+    {
+        Lower = args.Detail.Lower;
+        Upper = args.Detail.Upper;
+    }
 }

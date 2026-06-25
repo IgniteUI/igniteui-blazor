@@ -78,6 +78,51 @@ This drops `ButtonsDemo.razor` into the current directory. In Visual Studio they
 
 See each template's options with `dotnet new <short-name> -h`.
 
+## Smoke-testing the templates
+
+Two equivalent scripts live next to this README and exercise the whole pack end to end — use `test-templates.ps1` on Windows/PowerShell and `test-templates.sh` on Linux/macOS/bash. They have identical behavior; pick whichever matches your shell.
+
+Each run:
+
+1. Installs the templates from this source folder (`dotnet new install . --force`).
+2. Scaffolds a fresh Blazor **Server** project under `./tmp` via `dotnet new igb-blazor`.
+3. Generates **every** item template (`igb-*`, `apexchart`) into the project's `Components/Pages` folder.
+4. Wires each generated page into `Components/Layout/NavMenu.razor` as an `IgbNavDrawerItem`, so every demo is reachable from the nav drawer.
+
+The result is a single project that hosts every component page — handy for verifying that the templates install, scaffold, and compile together after a change.
+
+```bash
+# bash (Linux/macOS)
+./test-templates.sh
+
+# PowerShell (Windows/cross-platform)
+./test-templates.ps1
+```
+
+When it finishes it prints the generated project path and the `dotnet run` command to launch it.
+
+### Configuration
+
+Both scripts accept the same three settings. The PowerShell script exposes them as parameters (and also honors the env vars for parity); the bash script reads the env vars.
+
+| Setting | PowerShell parameter | Env var (both) | Default | Description |
+|---------|----------------------|----------------|---------|-------------|
+| Project name | `-ProjectName` | `PROJECT_NAME` | `IgbTemplateTest` | Name of the generated project. |
+| Nav icon | `-NavIcon` | `NAV_ICON` | `widgets` | `material-icons` name used for each generated nav item. |
+| Skip restore | `-SkipRestore` | `SKIP_RESTORE` | `true` / `1` | Skip NuGet restore when creating the project (faster). |
+
+```bash
+# bash — override via env vars
+PROJECT_NAME=MyDemo NAV_ICON=star SKIP_RESTORE=0 ./test-templates.sh
+```
+
+```powershell
+# PowerShell — override via parameters
+./test-templates.ps1 -ProjectName MyDemo -NavIcon star -SkipRestore $false
+```
+
+> The scripts wipe and recreate the `./tmp` folder on every run, so the generated project is disposable. Re-run after editing a template to regenerate from scratch.
+
 ## Uninstall
 
 ```bash

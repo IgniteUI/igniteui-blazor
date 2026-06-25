@@ -5,9 +5,44 @@
 
 <h3>IgbInputComponent</h3>
 
-<div class="component-host">
-    <IgbInput @bind-value="Value" Label="Label" Placeholder="Enter text" />
+<div class="controls">
+    <div class="control">
+        <label>Type</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TypeName">
+                <IgbRadio Value="Text">Text</IgbRadio>
+                <IgbRadio Value="Email">Email</IgbRadio>
+                <IgbRadio Value="Number">Number</IgbRadio>
+                <IgbRadio Value="Password">Password</IgbRadio>
+                <IgbRadio Value="Search">Search</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Outlined">Outlined</IgbSwitch>
+            <IgbSwitch @bind-Checked="Required">Required</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbInput class="demo-input"
+              @bind-Value="Value"
+              DisplayType="DisplayType"
+              Label="Your input"
+              Placeholder="Type here"
+              Outlined="Outlined"
+              Required="Required"
+              Disabled="Disabled">
+        <span slot="helper-text">Helper text shown below the field.</span>
+    </IgbInput>
+</div>
+
+<div class="state">Value: @(string.IsNullOrEmpty(Value) ? "(empty)" : Value)</div>
 
 @code {
     /*
@@ -24,5 +59,13 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
     private string Value { get; set; } = string.Empty;
+
+    private string TypeName { get; set; } = "Text";
+    private InputType DisplayType => Enum.Parse<InputType>(TypeName);
+
+    private bool Outlined { get; set; }
+    private bool Required { get; set; }
+    private bool Disabled { get; set; }
 }

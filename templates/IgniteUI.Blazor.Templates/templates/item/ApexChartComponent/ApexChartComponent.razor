@@ -1,23 +1,67 @@
 @page "/ApexChartComponent"
 @using ApexCharts
+@using IgniteUI.Blazor.Controls
 
 <PageTitle>ApexChartComponent</PageTitle>
 
 <h3>ApexChartComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Series type</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ChartTypeName">
+                <IgbRadio Value="Line">Line</IgbRadio>
+                <IgbRadio Value="Area">Area</IgbRadio>
+                <IgbRadio Value="Bar">Bar</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Series</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Show2023">2023</IgbSwitch>
+            <IgbSwitch @bind-Checked="Show2024">2024</IgbSwitch>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Theme</label>
+        <div class="control-box switches">
+            <IgbSwitch Checked="Dark" CheckedChanged="OnThemeChanged">Dark</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="chart-host">
-    <ApexChart TItem="DataPoint"
-               Title="Sample series"
+    <ApexChart @key="@($"{ChartTypeName}-{Dark}-{Show2023}-{Show2024}")"
+               TItem="DataPoint"
+               Title="Monthly revenue"
                Options="_options"
-               Height="400">
-        <ApexPointSeries TItem="DataPoint"
-                         Items="Items"
-                         Name="Value"
-                         SeriesType="SeriesType.Line"
-                         XValue="@(p => p.Label)"
-                         YValue="@(p => (decimal)p.Value)" />
+               Height="360">
+        @if (Show2023)
+        {
+            <ApexPointSeries TItem="DataPoint"
+                             Items="_2023"
+                             Name="2023"
+                             SeriesType="ChartType"
+                             XValue="@(p => p.Label)"
+                             YValue="@(p => (decimal)p.Value)" />
+        }
+        @if (Show2024)
+        {
+            <ApexPointSeries TItem="DataPoint"
+                             Items="_2024"
+                             Name="2024"
+                             SeriesType="ChartType"
+                             XValue="@(p => p.Label)"
+                             YValue="@(p => (decimal)p.Value)" />
+        }
     </ApexChart>
 </div>
+
+<div class="state">Type: @ChartTypeName &nbsp;|&nbsp; Theme: @(Dark ? "Dark" : "Light") &nbsp;|&nbsp; Series: @SeriesLabel</div>
 
 @code {
     /*
@@ -35,15 +79,51 @@
      */
     private ApexChartOptions<DataPoint> _options = new()
     {
-        Chart = new Chart { Background = "transparent" }
+        Chart = new Chart { Background = "transparent" },
+        Theme = new Theme { Mode = Mode.Light }
     };
 
-    private List<DataPoint> Items { get; set; } = new()
+    private string ChartTypeName { get; set; } = "Line";
+    private SeriesType ChartType => Enum.Parse<SeriesType>(ChartTypeName);
+
+    private bool Show2023 { get; set; } = true;
+    private bool Show2024 { get; set; } = true;
+    private bool Dark { get; set; }
+
+    private string SeriesLabel => (Show2023, Show2024) switch
     {
-        new DataPoint { Label = "Jan", Value = 30 },
-        new DataPoint { Label = "Feb", Value = 45 },
-        new DataPoint { Label = "Mar", Value = 38 },
-        new DataPoint { Label = "Apr", Value = 52 }
+        (true, true) => "2023, 2024",
+        (true, false) => "2023",
+        (false, true) => "2024",
+        _ => "(none)"
+    };
+
+    private void OnThemeChanged(bool dark)
+    {
+        Dark = dark;
+        // ApexCharts has its own theme; it does not read the IgniteUI theme CSS.
+        _options.Theme = new Theme { Mode = dark ? Mode.Dark : Mode.Light };
+        _options.Chart.Background = dark ? "#1e1e1e" : "transparent";
+    }
+
+    private readonly List<DataPoint> _2023 = new()
+    {
+        new() { Label = "Jan", Value = 30 }, new() { Label = "Feb", Value = 45 },
+        new() { Label = "Mar", Value = 38 }, new() { Label = "Apr", Value = 52 },
+        new() { Label = "May", Value = 49 }, new() { Label = "Jun", Value = 63 },
+        new() { Label = "Jul", Value = 58 }, new() { Label = "Aug", Value = 71 },
+        new() { Label = "Sep", Value = 66 }, new() { Label = "Oct", Value = 74 },
+        new() { Label = "Nov", Value = 69 }, new() { Label = "Dec", Value = 82 }
+    };
+
+    private readonly List<DataPoint> _2024 = new()
+    {
+        new() { Label = "Jan", Value = 41 }, new() { Label = "Feb", Value = 50 },
+        new() { Label = "Mar", Value = 47 }, new() { Label = "Apr", Value = 60 },
+        new() { Label = "May", Value = 58 }, new() { Label = "Jun", Value = 72 },
+        new() { Label = "Jul", Value = 69 }, new() { Label = "Aug", Value = 84 },
+        new() { Label = "Sep", Value = 78 }, new() { Label = "Oct", Value = 90 },
+        new() { Label = "Nov", Value = 85 }, new() { Label = "Dec", Value = 97 }
     };
 
     public class DataPoint

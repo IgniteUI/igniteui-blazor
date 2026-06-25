@@ -5,9 +5,33 @@
 
 <h3>IgbButtonComponent</h3>
 
-<div class="component-host">
-    <IgbButton Variant="ButtonVariant.Contained" @onclick="OnClick">@Label</IgbButton>
+<div class="controls">
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Contained">Contained</IgbRadio>
+                <IgbRadio Value="Flat">Flat</IgbRadio>
+                <IgbRadio Value="Outlined">Outlined</IgbRadio>
+                <IgbRadio Value="Fab">Fab</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbButton @ref="button" Variant="Variant" Disabled="Disabled" @onclick="OnClick">@Label</IgbButton>
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="SimulateClick">Simulate Click()</IgbButton>
+</div>
+
+<div class="state">Variant: @VariantName &nbsp;|&nbsp; Clicks: @Clicks</div>
 
 @code {
     /*
@@ -24,7 +48,21 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
-    private string Label { get; set; } = "Click me";
 
-    private void OnClick() => Label = "Clicked";
+    private IgbButton button = default!;
+
+    private string VariantName { get; set; } = "Contained";
+    private ButtonVariant Variant => Enum.Parse<ButtonVariant>(VariantName);
+
+    private bool Disabled { get; set; }
+    private string Label { get; set; } = "Click me";
+    private int Clicks { get; set; }
+
+    private void OnClick()
+    {
+        Clicks++;
+        Label = $"Clicked {Clicks}";
+    }
+
+    private async Task SimulateClick() => await button.ClickAsync();
 }

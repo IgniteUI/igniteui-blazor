@@ -5,9 +5,36 @@
 
 <h3>IgbDateRangePickerComponent</h3>
 
-<div class="component-host">
-    <IgbDateRangePicker Label="Date Range" />
+<div class="controls">
+    <div class="control">
+        <label>Mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ModeName">
+                <IgbRadio Value="Dropdown">Dropdown</IgbRadio>
+                <IgbRadio Value="Dialog">Dialog</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="UseTwoInputs">Two inputs</IgbSwitch>
+            <IgbSwitch @bind-Checked="UsePredefinedRanges">Predefined ranges</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbDateRangePicker class="demo-input"
+                        @bind-Value="Range"
+                        Mode="Mode"
+                        UseTwoInputs="UseTwoInputs"
+                        UsePredefinedRanges="UsePredefinedRanges"
+                        Label="Trip dates" />
+</div>
+
+<div class="state">Range: @RangeText</div>
 
 @code {
     /*
@@ -24,4 +51,16 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private IgbDateRangeValue? Range { get; set; }
+
+    private string ModeName { get; set; } = "Dropdown";
+    private PickerMode Mode => Enum.Parse<PickerMode>(ModeName);
+
+    private bool UseTwoInputs { get; set; } = true;
+    private bool UsePredefinedRanges { get; set; }
+
+    private string RangeText => Range is null
+        ? "(none)"
+        : $"{Range.Start:d} – {Range.End:d}";
 }

@@ -5,9 +5,45 @@
 
 <h3>IgbCircularProgressComponent</h3>
 
-<div class="component-host">
-    <IgbCircularProgress Value="75" />
+<div class="controls">
+    <div class="control">
+        <label>Value: @Value</label>
+        <div class="control-box">
+            <IgbSlider class="value-slider" @bind-Value="Value" Min="0" Max="100" Step="1" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Primary">Primary</IgbRadio>
+                <IgbRadio Value="Info">Info</IgbRadio>
+                <IgbRadio Value="Success">Success</IgbRadio>
+                <IgbRadio Value="Warning">Warning</IgbRadio>
+                <IgbRadio Value="Danger">Danger</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Indeterminate">Indeterminate</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideLabel">Hide label</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbCircularProgress class="demo-progress"
+                         Value="Value"
+                         Variant="Variant"
+                         Indeterminate="Indeterminate"
+                         HideLabel="HideLabel" />
+</div>
+
+<div class="state">Value: @Value% &nbsp;|&nbsp; Variant: @VariantName</div>
 
 @code {
     /*
@@ -24,4 +60,12 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private double Value { get; set; } = 75;
+
+    private string VariantName { get; set; } = "Primary";
+    private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
+
+    private bool Indeterminate { get; set; }
+    private bool HideLabel { get; set; }
 }

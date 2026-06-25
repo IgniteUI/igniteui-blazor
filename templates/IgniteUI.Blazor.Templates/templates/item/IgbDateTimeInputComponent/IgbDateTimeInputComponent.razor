@@ -5,9 +5,43 @@
 
 <h3>IgbDateTimeInputComponent</h3>
 
-<div class="component-host">
-    <IgbDateTimeInput Label="Date and time" />
+<div class="controls">
+    <div class="control">
+        <label>Input format</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="InputFormat">
+                <IgbRadio Value="dd/MM/yyyy">dd/MM/yyyy</IgbRadio>
+                <IgbRadio Value="MM/dd/yyyy HH:mm">MM/dd/yyyy HH:mm</IgbRadio>
+                <IgbRadio Value="yyyy-MM-dd">yyyy-MM-dd</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="SpinLoop">Spin loop</IgbSwitch>
+            <IgbSwitch @bind-Checked="Outlined">Outlined</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbDateTimeInput @ref="_input"
+                      class="demo-input"
+                      @bind-Value="Value"
+                      InputFormat="@InputFormat"
+                      SpinLoop="SpinLoop"
+                      Outlined="Outlined"
+                      Label="Appointment" />
+
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="DayUp">Day +1</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="DayDown">Day -1</IgbButton>
+    </div>
+</div>
+
+<div class="state">Value: @(Value?.ToString("g") ?? "(none)")</div>
 
 @code {
     /*
@@ -24,4 +58,14 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private IgbDateTimeInput _input = default!;
+
+    private DateTime? Value { get; set; } = DateTime.Now;
+    private string InputFormat { get; set; } = "dd/MM/yyyy";
+    private bool SpinLoop { get; set; }
+    private bool Outlined { get; set; }
+
+    private async Task DayUp() => await _input.StepUpAsync(DatePart.Date, 1);
+    private async Task DayDown() => await _input.StepDownAsync(DatePart.Date, 1);
 }

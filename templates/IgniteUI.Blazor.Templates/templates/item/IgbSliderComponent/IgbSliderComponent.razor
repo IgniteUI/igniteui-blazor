@@ -5,9 +5,41 @@
 
 <h3>IgbSliderComponent</h3>
 
-<div class="component-host">
-    <IgbSlider Min="0" Max="100" Value="40" />
+<div class="controls">
+    <div class="control">
+        <label>Tick orientation</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TickOrientationName">
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="Mirror">Mirror</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="DiscreteTrack">Discrete track</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideTooltip">Hide tooltip</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbSlider class="demo-slider"
+               @bind-Value="Value"
+               Min="0"
+               Max="100"
+               Step="10"
+               PrimaryTicks="5"
+               SecondaryTicks="1"
+               DiscreteTrack="DiscreteTrack"
+               HideTooltip="HideTooltip"
+               TickOrientation="TickOrientation" />
+</div>
+
+<div class="state">Value: @Value</div>
 
 @code {
     /*
@@ -24,4 +56,12 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private double Value { get; set; } = 40;
+
+    private string TickOrientationName { get; set; } = "End";
+    private SliderTickOrientation TickOrientation => Enum.Parse<SliderTickOrientation>(TickOrientationName);
+
+    private bool DiscreteTrack { get; set; }
+    private bool HideTooltip { get; set; }
 }

@@ -5,22 +5,48 @@
 
 <h3>IgbTabsComponent</h3>
 
-<div class="component-host">
-    <IgbTabs>
+<div class="controls">
+    <div class="control">
+        <label>Alignment</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="AlignmentName">
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="Center">Center</IgbRadio>
+                <IgbRadio Value="Justify">Justify</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Activation</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActivationName">
+                <IgbRadio Value="Auto">Auto</IgbRadio>
+                <IgbRadio Value="Manual">Manual</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
+<div class="component-host tabs-host">
+    <IgbTabs Alignment="Alignment" Activation="Activation" Change="OnTabChange">
         <IgbTab>
             <span slot="label">Home</span>
-            Home tab panel
+            Welcome to the home tab.
         </IgbTab>
         <IgbTab>
             <span slot="label">Search</span>
-            Search tab panel
+            Search across your content here.
         </IgbTab>
         <IgbTab>
             <span slot="label">Settings</span>
-            Settings tab panel
+            Adjust your preferences in the settings tab.
         </IgbTab>
     </IgbTabs>
 </div>
+
+<div class="state">Selected tab: @SelectedTab</div>
 
 @code {
     /*
@@ -37,4 +63,14 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string AlignmentName { get; set; } = "Start";
+    private TabsAlignment Alignment => Enum.Parse<TabsAlignment>(AlignmentName);
+
+    private string ActivationName { get; set; } = "Auto";
+    private TabsActivation Activation => Enum.Parse<TabsActivation>(ActivationName);
+
+    private string SelectedTab { get; set; } = "Home";
+
+    private void OnTabChange(IgbTabComponentEventArgs args) => SelectedTab = args.Detail?.Label ?? "(none)";
 }

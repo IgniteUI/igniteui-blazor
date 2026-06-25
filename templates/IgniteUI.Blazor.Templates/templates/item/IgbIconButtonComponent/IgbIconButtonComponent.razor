@@ -5,10 +5,38 @@
 
 <h3>IgbIconButtonComponent</h3>
 
-<div class="component-host">
-    <IgbIcon @ref="_iconRef" />
-    <IgbIconButton IconName="thumb-up" Collection="material" Variant="IconButtonVariant.Contained" />
+<div class="controls">
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Contained">Contained</IgbRadio>
+                <IgbRadio Value="Flat">Flat</IgbRadio>
+                <IgbRadio Value="Outlined">Outlined</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Mirrored">Mirrored</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbIconButton @ref="_iconButtonRef"
+                   IconName="login"
+                   Collection="material"
+                   Variant="Variant"
+                   Mirrored="Mirrored"
+                   Disabled="Disabled"
+                   @onclick="OnClick" />
+</div>
+
+<div class="state">Variant: @VariantName &nbsp;|&nbsp; Clicks: @Clicks</div>
 
 @code {
     /*
@@ -25,16 +53,26 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
-    private IgbIcon _iconRef = default!;
 
-    private const string ThumbUpSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z'></path></svg>";
+    private IgbIconButton _iconButtonRef = default!;
+
+    private string VariantName { get; set; } = "Contained";
+    private IconButtonVariant Variant => Enum.Parse<IconButtonVariant>(VariantName);
+
+    private bool Mirrored { get; set; }
+    private bool Disabled { get; set; }
+    private int Clicks { get; set; }
+
+    private const string LoginSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M11 7l-1.41 1.41L12.17 11H3v2h9.17l-2.58 2.58L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z'/></svg>";
+
+    private void OnClick() => Clicks++;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && _iconRef is not null)
+        if (firstRender && _iconButtonRef is not null)
         {
-            await _iconRef.EnsureReady();
-            await _iconRef.RegisterIconFromTextAsync("thumb-up", ThumbUpSvg, "material");
+            await _iconButtonRef.EnsureReady();
+            await _iconButtonRef.RegisterIconFromTextAsync("login", LoginSvg, "material");
         }
     }
 }

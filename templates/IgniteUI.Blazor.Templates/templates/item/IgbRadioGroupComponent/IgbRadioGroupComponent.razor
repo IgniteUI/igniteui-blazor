@@ -5,13 +5,34 @@
 
 <h3>IgbRadioGroupComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Alignment</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="AlignmentName">
+                <IgbRadio Value="Horizontal">Horizontal</IgbRadio>
+                <IgbRadio Value="Vertical">Vertical</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="DisableExpress">Disable "Express"</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbRadioGroup>
-        <IgbRadio name="option">Option 1</IgbRadio>
-        <IgbRadio name="option" Checked="true">Option 2</IgbRadio>
-        <IgbRadio name="option">Option 3</IgbRadio>
+    <IgbRadioGroup Alignment="Alignment" @bind-Value="Selected">
+        <IgbRadio Value="standard">Standard</IgbRadio>
+        <IgbRadio Value="express" Disabled="DisableExpress">Express</IgbRadio>
+        <IgbRadio Value="overnight">Overnight</IgbRadio>
     </IgbRadioGroup>
 </div>
+
+<div class="state">Selected: @(string.IsNullOrEmpty(Selected) ? "(none)" : Selected)</div>
 
 @code {
     /*
@@ -28,4 +49,10 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string AlignmentName { get; set; } = "Horizontal";
+    private ContentOrientation Alignment => Enum.Parse<ContentOrientation>(AlignmentName);
+
+    private string Selected { get; set; } = "standard";
+    private bool DisableExpress { get; set; }
 }

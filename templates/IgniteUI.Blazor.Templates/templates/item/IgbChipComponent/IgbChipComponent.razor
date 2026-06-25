@@ -5,9 +5,50 @@
 
 <h3>IgbChipComponent</h3>
 
-<div class="component-host">
-    <IgbChip Selectable="true" Removable="true">@Label</IgbChip>
+<div class="controls">
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Primary">Primary</IgbRadio>
+                <IgbRadio Value="Info">Info</IgbRadio>
+                <IgbRadio Value="Success">Success</IgbRadio>
+                <IgbRadio Value="Warning">Warning</IgbRadio>
+                <IgbRadio Value="Danger">Danger</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Selectable">Selectable</IgbSwitch>
+            <IgbSwitch @bind-Checked="Removable">Removable</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    @if (!Removed)
+    {
+        <IgbChip Variant="Variant"
+                 Selectable="Selectable"
+                 Removable="Removable"
+                 Disabled="Disabled"
+                 @bind-Selected="Selected"
+                 Remove="OnRemove">
+            <IgbAvatar slot="start" Initials="A" Shape="AvatarShape.Circle" />
+            Filter chip
+        </IgbChip>
+    }
+    else
+    {
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Restore">Restore chip</IgbButton>
+    }
+</div>
+
+<div class="state">Selected: @Selected &nbsp;|&nbsp; Removed: @Removed</div>
 
 @code {
     /*
@@ -24,5 +65,21 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
-    private string Label { get; set; } = "Chip";
+
+    private string VariantName { get; set; } = "Primary";
+    private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
+
+    private bool Selectable { get; set; } = true;
+    private bool Removable { get; set; } = true;
+    private bool Disabled { get; set; }
+    private bool Selected { get; set; }
+    private bool Removed { get; set; }
+
+    private void OnRemove(IgbComponentBoolValueChangedEventArgs args) => Removed = true;
+
+    private void Restore()
+    {
+        Removed = false;
+        Selected = false;
+    }
 }

@@ -5,26 +5,40 @@
 
 <h3>IgbListComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Filter</label>
+        <div class="control-box">
+            <IgbInput class="filter-input" @bind-Value="Filter" Placeholder="Search contacts" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="ShowAvatars">Show avatars</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbList>
+    <IgbList class="contacts">
         <IgbListHeader>Contacts</IgbListHeader>
-        <IgbListItem>
-            <IgbAvatar slot="start" Initials="TO" Shape="AvatarShape.Circle" />
-            <span slot="title">Terrance Orta</span>
-            <span slot="subtitle">770-504-2217</span>
-        </IgbListItem>
-        <IgbListItem>
-            <IgbAvatar slot="start" Initials="RM" Shape="AvatarShape.Circle" />
-            <span slot="title">Richard Mahoney</span>
-            <span slot="subtitle">423-676-2869</span>
-        </IgbListItem>
-        <IgbListItem>
-            <IgbAvatar slot="start" Initials="DP" Shape="AvatarShape.Circle" />
-            <span slot="title">Donna Price</span>
-            <span slot="subtitle">859-496-2817</span>
-        </IgbListItem>
+        @foreach (var c in Filtered)
+        {
+            <IgbListItem Selected="@(c.Name == SelectedName)" @onclick="@(() => SelectedName = c.Name)">
+                @if (ShowAvatars)
+                {
+                    <IgbAvatar slot="start" Initials="@c.Initials" Shape="AvatarShape.Circle" />
+                }
+                <span slot="title">@c.Name</span>
+                <span slot="subtitle">@c.Phone</span>
+            </IgbListItem>
+        }
     </IgbList>
 </div>
+
+<div class="state">Showing @Filtered.Count of @Contacts.Count &nbsp;|&nbsp; Selected: @(SelectedName ?? "(none)")</div>
 
 @code {
     /*
@@ -41,4 +55,23 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string Filter { get; set; } = string.Empty;
+    private bool ShowAvatars { get; set; } = true;
+    private string? SelectedName { get; set; }
+
+    private List<Contact> Contacts { get; } = new()
+    {
+        new("Terrance Orta", "770-504-2217", "TO"),
+        new("Richard Mahoney", "423-676-2869", "RM"),
+        new("Donna Price", "859-496-2817", "DP"),
+        new("Lisa Landers", "901-747-3428", "LL"),
+        new("Dorothy Spencer", "573-394-9254", "DS")
+    };
+
+    private List<Contact> Filtered => Contacts
+        .Where(c => string.IsNullOrEmpty(Filter) || c.Name.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+
+    private record Contact(string Name, string Phone, string Initials);
 }

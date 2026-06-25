@@ -5,13 +5,31 @@
 
 <h3>IgbGridComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="InStockOnly">In stock only</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="grid-host">
-    <IgbGridLite TItem="GridRow" Data="@Items">
-        <IgbGridLiteColumn Field="@nameof(GridRow.Id)" Header="Id" DataType="GridLiteColumnDataType.Number" Sortable />
-        <IgbGridLiteColumn Field="@nameof(GridRow.Name)" Header="Name" DataType="GridLiteColumnDataType.String" Sortable Filterable />
-        <IgbGridLiteColumn Field="@nameof(GridRow.Value)" Header="Value" DataType="GridLiteColumnDataType.Number" Sortable />
+    <IgbGridLite class="demo-grid" TItem="Product" Data="@Visible">
+        <IgbGridLiteColumn Field="@nameof(Product.Name)" Header="Product"
+                           DataType="GridLiteColumnDataType.String" Sortable Filterable Resizable />
+        <IgbGridLiteColumn Field="@nameof(Product.Category)" Header="Category"
+                           DataType="GridLiteColumnDataType.String" Sortable Filterable />
+        <IgbGridLiteColumn Field="@nameof(Product.Price)" Header="Price"
+                           DataType="GridLiteColumnDataType.Number" Sortable />
+        <IgbGridLiteColumn Field="@nameof(Product.Released)" Header="Released"
+                           DataType="GridLiteColumnDataType.Date" Sortable />
+        <IgbGridLiteColumn Field="@nameof(Product.InStock)" Header="In stock"
+                           DataType="GridLiteColumnDataType.Boolean" Sortable />
     </IgbGridLite>
 </div>
+
+<div class="state">Showing @Visible.Count of @Products.Count products</div>
 
 @code {
     /*
@@ -26,15 +44,40 @@
      * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
      *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
      */
-    private List<GridRow> Items { get; set; } = new()
+
+    private bool InStockOnly { get; set; }
+
+    private List<Product> Visible => InStockOnly
+        ? Products.Where(p => p.InStock).ToList()
+        : Products;
+
+    private List<Product> Products { get; } = new()
     {
-        new GridRow { Id = 1, Name = "Sample", Value = 100 }
+        new("Aspen Desk Lamp", "Lighting", 49.99, new DateTime(2023, 3, 14), true),
+        new("Birch Office Chair", "Furniture", 189.00, new DateTime(2022, 11, 2), true),
+        new("Cobalt Mouse", "Electronics", 24.50, new DateTime(2024, 1, 20), true),
+        new("Delta Keyboard", "Electronics", 79.95, new DateTime(2023, 7, 8), false),
+        new("Echo Monitor 27\"", "Electronics", 329.00, new DateTime(2024, 5, 30), true),
+        new("Fjord Bookshelf", "Furniture", 149.99, new DateTime(2021, 9, 17), true),
+        new("Glacier Water Bottle", "Accessories", 18.00, new DateTime(2023, 2, 11), false),
+        new("Harbor Notebook", "Stationery", 9.99, new DateTime(2024, 4, 1), true),
+        new("Ivory Desk Mat", "Accessories", 29.95, new DateTime(2023, 10, 5), true),
+        new("Juniper Pen Set", "Stationery", 14.50, new DateTime(2022, 6, 22), false),
+        new("Kelvin Smart Bulb", "Lighting", 22.99, new DateTime(2024, 2, 18), true),
+        new("Larch Standing Desk", "Furniture", 459.00, new DateTime(2023, 8, 9), true),
+        new("Maple Webcam", "Electronics", 64.00, new DateTime(2024, 3, 27), true),
+        new("Nimbus Headphones", "Electronics", 119.99, new DateTime(2023, 12, 1), false),
+        new("Onyx Desk Organizer", "Accessories", 34.95, new DateTime(2022, 5, 14), true),
+        new("Pine Filing Cabinet", "Furniture", 209.00, new DateTime(2021, 12, 30), true),
+        new("Quartz Mousepad", "Accessories", 12.99, new DateTime(2024, 1, 5), true),
+        new("Raven USB Hub", "Electronics", 39.99, new DateTime(2023, 6, 19), false),
+        new("Slate Whiteboard", "Office", 89.00, new DateTime(2022, 8, 23), true),
+        new("Timber Stool", "Furniture", 74.50, new DateTime(2023, 4, 12), true),
+        new("Umber Cable Tray", "Accessories", 27.00, new DateTime(2024, 5, 2), true),
+        new("Verde Plant Pot", "Decor", 19.99, new DateTime(2023, 3, 28), false),
+        new("Willow Floor Lamp", "Lighting", 99.00, new DateTime(2022, 10, 16), true),
+        new("Zephyr Air Purifier", "Appliances", 159.00, new DateTime(2024, 4, 21), true)
     };
 
-    public class GridRow
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public double Value { get; set; }
-    }
+    private record Product(string Name, string Category, double Price, DateTime Released, bool InStock);
 }

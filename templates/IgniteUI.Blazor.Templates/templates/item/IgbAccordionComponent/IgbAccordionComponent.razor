@@ -5,22 +5,38 @@
 
 <h3>IgbAccordionComponent</h3>
 
-<div class="component-host">
-    <IgbAccordion>
-        <IgbExpansionPanel>
-            <span slot="title">Panel one</span>
-            <span>Content for the first panel.</span>
+<div class="controls">
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="SingleExpand">Single expand</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host accordion-host">
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="ExpandAll" Disabled="SingleExpand">Expand all</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="CollapseAll">Collapse all</IgbButton>
+    </div>
+
+    <IgbAccordion @ref="_accordion" SingleExpand="SingleExpand">
+        <IgbExpansionPanel Open="true">
+            <span slot="title">Shipping</span>
+            <span>Orders ship within 1–2 business days and arrive in 3–5 days.</span>
         </IgbExpansionPanel>
         <IgbExpansionPanel>
-            <span slot="title">Panel two</span>
-            <span>Content for the second panel.</span>
+            <span slot="title">Returns</span>
+            <span>Items can be returned within 30 days of delivery for a full refund.</span>
         </IgbExpansionPanel>
         <IgbExpansionPanel>
-            <span slot="title">Panel three</span>
-            <span>Content for the third panel.</span>
+            <span slot="title">Warranty</span>
+            <span>All products include a two-year limited manufacturer warranty.</span>
         </IgbExpansionPanel>
     </IgbAccordion>
 </div>
+
+<div class="state">Single expand: @SingleExpand</div>
 
 @code {
     /*
@@ -37,4 +53,10 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private IgbAccordion _accordion = default!;
+    private bool SingleExpand { get; set; }
+
+    private async Task ExpandAll() => await _accordion.ShowAllAsync();
+    private async Task CollapseAll() => await _accordion.HideAllAsync();
 }

@@ -5,9 +5,38 @@
 
 <h3>IgbDatePickerComponent</h3>
 
-<div class="component-host">
-    <IgbDatePicker Label="Pick a date" />
+<div class="controls">
+    <div class="control">
+        <label>Mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ModeName">
+                <IgbRadio Value="Dropdown">Dropdown</IgbRadio>
+                <IgbRadio Value="Dialog">Dialog</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Outlined">Outlined</IgbSwitch>
+            <IgbSwitch @bind-Checked="ShowWeekNumbers">Show week numbers</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideHeader">Hide header</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbDatePicker class="demo-input"
+                   @bind-Value="Value"
+                   Mode="Mode"
+                   Outlined="Outlined"
+                   ShowWeekNumbers="ShowWeekNumbers"
+                   HideHeader="HideHeader"
+                   Label="Pick a date" />
+</div>
+
+<div class="state">Value: @(Value?.ToString("d") ?? "(none)")</div>
 
 @code {
     /*
@@ -24,4 +53,13 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private DateTime? Value { get; set; }
+
+    private string ModeName { get; set; } = "Dropdown";
+    private PickerMode Mode => Enum.Parse<PickerMode>(ModeName);
+
+    private bool Outlined { get; set; }
+    private bool ShowWeekNumbers { get; set; }
+    private bool HideHeader { get; set; }
 }

@@ -5,10 +5,19 @@
 
 <h3>IgbCardComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Elevated">Elevated</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbCard style="max-width: 20rem;">
+    <IgbCard class="demo-card" Elevated="Elevated">
         <IgbCardMedia Height="10rem">
-            <img src="https://images.unsplash.com/photo-1518235506717-e1ed3306a89b?auto=format&fit=crop&w=640&q=50" />
+            <img src="https://images.unsplash.com/photo-1518235506717-e1ed3306a89b?auto=format&fit=crop&w=640&q=50" alt="Coastline" />
         </IgbCardMedia>
         <IgbCardHeader>
             <h3 slot="title">New York City</h3>
@@ -18,10 +27,13 @@
             <p>New York City comprises 5 boroughs sitting where the Hudson River meets the Atlantic Ocean.</p>
         </IgbCardContent>
         <IgbCardActions>
-            <IgbButton slot="start">Read more</IgbButton>
+            <IgbButton slot="start" Variant="ButtonVariant.Flat" @onclick="OnReadMore">Read more</IgbButton>
+            <IgbButton slot="end" Variant="ButtonVariant.Outlined" @onclick="OnLike">Like (@Likes)</IgbButton>
         </IgbCardActions>
     </IgbCard>
 </div>
+
+<div class="state">Elevated: @Elevated &nbsp;|&nbsp; Read more clicks: @ReadMoreClicks</div>
 
 @code {
     /*
@@ -38,4 +50,11 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private bool Elevated { get; set; } = true;
+    private int Likes { get; set; }
+    private int ReadMoreClicks { get; set; }
+
+    private void OnLike() => Likes++;
+    private void OnReadMore() => ReadMoreClicks++;
 }

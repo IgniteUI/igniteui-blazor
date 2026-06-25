@@ -5,22 +5,68 @@
 
 <h3>IgbTileManagerComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Columns: @ColumnCount</label>
+        <div class="control-box">
+            <IgbSlider class="value-slider" @bind-Value="ColumnCount" Min="1" Max="4" Step="1" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Resize mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ResizeModeName">
+                <IgbRadio Value="None">None</IgbRadio>
+                <IgbRadio Value="Hover">Hover</IgbRadio>
+                <IgbRadio Value="Always">Always</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Drag mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DragModeName">
+                <IgbRadio Value="None">None</IgbRadio>
+                <IgbRadio Value="TileHeader">TileHeader</IgbRadio>
+                <IgbRadio Value="Tile">Tile</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbTileManager ColumnCount="3" Gap="16px">
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="SaveLayout">Save layout</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" Disabled="@(_savedLayout is null)" @onclick="LoadLayout">Restore layout</IgbButton>
+    </div>
+
+    <IgbTileManager @ref="_tileManager"
+                    ColumnCount="(int)ColumnCount"
+                    ResizeMode="ResizeMode"
+                    DragMode="DragMode"
+                    Gap="16px">
         <IgbTile>
-            <h3 slot="title">Tile one</h3>
-            <div>Content for the first tile.</div>
+            <h3 slot="title">Sales</h3>
+            <div>Quarter-to-date revenue overview.</div>
         </IgbTile>
         <IgbTile>
-            <h3 slot="title">Tile two</h3>
-            <div>Content for the second tile.</div>
+            <h3 slot="title">Traffic</h3>
+            <div>Daily active users.</div>
         </IgbTile>
         <IgbTile ColSpan="2">
-            <h3 slot="title">Tile three</h3>
+            <h3 slot="title">Pipeline</h3>
             <div>This tile spans two columns.</div>
+        </IgbTile>
+        <IgbTile RowSpan="2">
+            <h3 slot="title">Tasks</h3>
+            <div>This tile spans two rows.</div>
         </IgbTile>
     </IgbTileManager>
 </div>
+
+<div class="state">Columns: @ColumnCount &nbsp;|&nbsp; @LayoutStatus</div>
 
 @code {
     /*
@@ -37,4 +83,32 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private IgbTileManager _tileManager = default!;
+    private string? _savedLayout;
+
+    private double ColumnCount { get; set; } = 3;
+
+    private string ResizeModeName { get; set; } = "Hover";
+    private TileManagerResizeMode ResizeMode => Enum.Parse<TileManagerResizeMode>(ResizeModeName);
+
+    private string DragModeName { get; set; } = "TileHeader";
+    private TileManagerDragMode DragMode => Enum.Parse<TileManagerDragMode>(DragModeName);
+
+    private string LayoutStatus { get; set; } = "No saved layout";
+
+    private async Task SaveLayout()
+    {
+        _savedLayout = await _tileManager.SaveLayoutAsync();
+        LayoutStatus = "Layout saved";
+    }
+
+    private async Task LoadLayout()
+    {
+        if (_savedLayout is not null)
+        {
+            await _tileManager.LoadLayoutAsync(_savedLayout);
+            LayoutStatus = "Layout restored";
+        }
+    }
 }

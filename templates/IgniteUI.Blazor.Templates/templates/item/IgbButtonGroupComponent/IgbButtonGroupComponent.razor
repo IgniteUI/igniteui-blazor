@@ -5,13 +5,49 @@
 
 <h3>IgbButtonGroupComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Selection</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
+                <IgbRadio Value="Single">Single</IgbRadio>
+                <IgbRadio Value="SingleRequired">SingleRequired</IgbRadio>
+                <IgbRadio Value="Multiple">Multiple</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Alignment</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="AlignmentName">
+                <IgbRadio Value="Horizontal">Horizontal</IgbRadio>
+                <IgbRadio Value="Vertical">Vertical</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbButtonGroup Selection="ButtonGroupSelection.Single">
+    <IgbButtonGroup Selection="Selection"
+                    Alignment="Alignment"
+                    Disabled="Disabled"
+                    Select="OnSelect"
+                    Deselect="OnDeselect">
         <IgbToggleButton Value="left">Left</IgbToggleButton>
         <IgbToggleButton Value="center" Selected="true">Center</IgbToggleButton>
         <IgbToggleButton Value="right">Right</IgbToggleButton>
     </IgbButtonGroup>
 </div>
+
+<div class="state">Selected: @(Selected.Count == 0 ? "(none)" : string.Join(", ", Selected))</div>
 
 @code {
     /*
@@ -28,4 +64,24 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string SelectionName { get; set; } = "Single";
+    private ButtonGroupSelection Selection => Enum.Parse<ButtonGroupSelection>(SelectionName);
+
+    private string AlignmentName { get; set; } = "Horizontal";
+    private ContentOrientation Alignment => Enum.Parse<ContentOrientation>(AlignmentName);
+
+    private bool Disabled { get; set; }
+    private readonly HashSet<string> Selected = new() { "center" };
+
+    private void OnSelect(IgbComponentValueChangedEventArgs args)
+    {
+        if (Selection != ButtonGroupSelection.Multiple)
+        {
+            Selected.Clear();
+        }
+        Selected.Add(args.Detail);
+    }
+
+    private void OnDeselect(IgbComponentValueChangedEventArgs args) => Selected.Remove(args.Detail);
 }

@@ -5,11 +5,40 @@
 
 <h3>IgbMaskInputComponent</h3>
 
+<div class="controls">
+    <div class="control">
+        <label>Mask</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="MaskName">
+                <IgbRadio Value="Phone">Phone</IgbRadio>
+                <IgbRadio Value="SSN">SSN</IgbRadio>
+                <IgbRadio Value="Date">Date</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Value mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ValueModeName">
+                <IgbRadio Value="Raw">Raw</IgbRadio>
+                <IgbRadio Value="WithFormatting">WithFormatting</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
 <div class="component-host">
-    <IgbMaskInput Mask="(####) 000-0000">
-        <span slot="helper-text">Phone number</span>
+    <IgbMaskInput class="demo-input"
+                  @bind-Value="Value"
+                  Mask="@Mask"
+                  ValueMode="ValueMode"
+                  Label="Masked input">
+        <span slot="helper-text">Mask: @Mask</span>
     </IgbMaskInput>
 </div>
+
+<div class="state">Value (@ValueModeName): @(string.IsNullOrEmpty(Value) ? "(empty)" : Value)</div>
 
 @code {
     /*
@@ -26,4 +55,17 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private string Value { get; set; } = string.Empty;
+
+    private string MaskName { get; set; } = "Phone";
+    private string Mask => MaskName switch
+    {
+        "SSN" => "000-00-0000",
+        "Date" => "00/00/0000",
+        _ => "(####) 000-0000"
+    };
+
+    private string ValueModeName { get; set; } = "Raw";
+    private MaskInputValueMode ValueMode => Enum.Parse<MaskInputValueMode>(ValueModeName);
 }

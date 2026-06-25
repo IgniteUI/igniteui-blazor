@@ -5,19 +5,56 @@
 
 <h3>IgbCarouselComponent</h3>
 
-<div class="component-host">
-    <IgbCarousel style="max-width: 40rem;">
+<div class="controls">
+    <div class="control">
+        <label>Indicators orientation</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorsOrientationName">
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Vertical">Vertical</IgbSwitch>
+            <IgbSwitch @bind-Checked="DisableLoop">Disable loop</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideNavigation">Hide navigation</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideIndicators">Hide indicators</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host carousel-host">
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Prev">Prev</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Next">Next</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Play">Play</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Pause">Pause</IgbButton>
+    </div>
+
+    <IgbCarousel @ref="_carousel"
+                 class="demo-carousel"
+                 Vertical="Vertical"
+                 DisableLoop="DisableLoop"
+                 HideNavigation="HideNavigation"
+                 HideIndicators="HideIndicators"
+                 IndicatorsOrientation="IndicatorsOrientation">
         <IgbCarouselSlide>
-            <img src="https://dl.infragistics.com/x/img/carousel/ignite-ui-angular-indigo-design.png" />
+            <img src="https://dl.infragistics.com/x/img/carousel/ignite-ui-angular-indigo-design.png" alt="Slide 1" />
         </IgbCarouselSlide>
         <IgbCarouselSlide>
-            <img src="https://dl.infragistics.com/x/img/carousel/slider-image-chart.png" />
+            <img src="https://dl.infragistics.com/x/img/carousel/slider-image-chart.png" alt="Slide 2" />
         </IgbCarouselSlide>
         <IgbCarouselSlide>
-            <img src="https://dl.infragistics.com/x/img/carousel/ignite-ui-angular-charts.png" />
+            <img src="https://dl.infragistics.com/x/img/carousel/ignite-ui-angular-charts.png" alt="Slide 3" />
         </IgbCarouselSlide>
     </IgbCarousel>
 </div>
+
+<div class="state">Orientation: @IndicatorsOrientationName &nbsp;|&nbsp; Vertical: @Vertical</div>
 
 @code {
     /*
@@ -34,4 +71,19 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
+    private IgbCarousel _carousel = default!;
+
+    private string IndicatorsOrientationName { get; set; } = "End";
+    private CarouselIndicatorsOrientation IndicatorsOrientation => Enum.Parse<CarouselIndicatorsOrientation>(IndicatorsOrientationName);
+
+    private bool Vertical { get; set; }
+    private bool DisableLoop { get; set; }
+    private bool HideNavigation { get; set; }
+    private bool HideIndicators { get; set; }
+
+    private async Task Prev() => await _carousel.PrevAsync();
+    private async Task Next() => await _carousel.NextAsync();
+    private async Task Play() => await _carousel.PlayAsync();
+    private async Task Pause() => await _carousel.PauseAsync();
 }

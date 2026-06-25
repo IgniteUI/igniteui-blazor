@@ -5,10 +5,47 @@
 
 <h3>IgbToastComponent</h3>
 
-<div class="component-host">
-    <IgbButton @onclick="OnShow" Variant="ButtonVariant.Contained">Show Toast</IgbButton>
-    <IgbToast @ref="_toast">Toast message</IgbToast>
+<div class="controls">
+    <div class="control">
+        <label>Position</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PositionName">
+                <IgbRadio Value="Bottom">Bottom</IgbRadio>
+                <IgbRadio Value="Middle">Middle</IgbRadio>
+                <IgbRadio Value="Top">Top</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Display time: @DisplayTime ms</label>
+        <div class="control-box">
+            <IgbSlider class="value-slider" @bind-Value="DisplayTime" Min="1000" Max="8000" Step="500" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="KeepOpen">Keep open</IgbSwitch>
+        </div>
+    </div>
 </div>
+
+<div class="component-host">
+    <IgbButton Variant="ButtonVariant.Contained" @onclick="OnShow">Show</IgbButton>
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnHide">Hide</IgbButton>
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnToggle">Toggle</IgbButton>
+
+    <IgbToast @ref="_toast"
+              Position="Position"
+              DisplayTime="DisplayTime"
+              KeepOpen="KeepOpen">
+        Changes saved successfully.
+    </IgbToast>
+</div>
+
+<div class="state">Position: @PositionName &nbsp;|&nbsp; Keep open: @KeepOpen</div>
 
 @code {
     /*
@@ -25,10 +62,16 @@
      *
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
+
     private IgbToast _toast = default!;
 
-    private async Task OnShow()
-    {
-        if (_toast is not null) await _toast.ShowAsync();
-    }
+    private string PositionName { get; set; } = "Bottom";
+    private AbsolutePosition Position => Enum.Parse<AbsolutePosition>(PositionName);
+
+    private double DisplayTime { get; set; } = 4000;
+    private bool KeepOpen { get; set; }
+
+    private async Task OnShow() => await _toast.ShowAsync();
+    private async Task OnHide() => await _toast.HideAsync();
+    private async Task OnToggle() => await _toast.ToggleAsync();
 }
