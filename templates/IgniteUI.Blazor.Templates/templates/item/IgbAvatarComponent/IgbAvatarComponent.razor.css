@@ -59,3 +59,17 @@ h3 {
 .component-host ::deep .avatar.large {
     --ig-size: var(--ig-size-large);
 }
+
+/* A slotted igc-icon keeps its own default --size, so it won't follow the
+   avatar's size. Scale it explicitly per size class. */
+.component-host ::deep .avatar.small igc-icon {
+    --size: 1rem;
+}
+
+.component-host ::deep .avatar.medium igc-icon {
+    --size: 2rem;
+}
+
+.component-host ::deep .avatar.large igc-icon {
+    --size: 3rem;
+}

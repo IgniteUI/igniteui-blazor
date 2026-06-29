@@ -30,8 +30,12 @@
 
     <div class="control">
         <label>Content</label>
-        <div class="control-box switches">
-            <IgbSwitch @bind-Checked="ShowImage">Image (vs. initials)</IgbSwitch>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ContentKind">
+                <IgbRadio Value="Image">Image</IgbRadio>
+                <IgbRadio Value="Initials">Initials</IgbRadio>
+                <IgbRadio Value="Icon">Icon</IgbRadio>
+            </IgbRadioGroup>
         </div>
     </div>
 </div>
@@ -39,12 +43,17 @@
 <div class="component-host">
     <IgbAvatar class="@($"avatar {Size}")"
                Shape="Shape"
-               Src="@(ShowImage ? ImageUrl : null)"
-               Initials="@(ShowImage ? null : "JD")"
-               Alt="A user avatar." />
+               Src="@(ContentKind == "Image" ? ImageUrl : null)"
+               Initials="@(ContentKind == "Initials" ? "JD" : null)"
+               Alt="A user avatar.">
+        @if (ContentKind == "Icon")
+        {
+            <IgbIcon @ref="_iconRef" IconName="person" Collection="material" />
+        }
+    </IgbAvatar>
 </div>
 
-<div class="state">Shape: @ShapeName &nbsp;|&nbsp; Size: @Size &nbsp;|&nbsp; Image: @ShowImage</div>
+<div class="state">Shape: @ShapeName &nbsp;|&nbsp; Size: @Size &nbsp;|&nbsp; Content: @ContentKind</div>
 
 @code {
     /*
@@ -64,9 +73,24 @@
 
     private const string ImageUrl = "https://dl.infragistics.com/x/img/people/men/11.png";
 
+    private const string PersonSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+
+    private IgbIcon _iconRef = default!;
+    private bool _iconRegistered;
+
     private string ShapeName { get; set; } = "Circle";
     private AvatarShape Shape => Enum.Parse<AvatarShape>(ShapeName);
 
     private string Size { get; set; } = "large";
-    private bool ShowImage { get; set; } = true;
+    private string ContentKind { get; set; } = "Image";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_iconRegistered && _iconRef is not null)
+        {
+            await _iconRef.EnsureReady();
+            await _iconRef.RegisterIconFromTextAsync("person", PersonSvg, "material");
+            _iconRegistered = true;
+        }
+    }
 }
