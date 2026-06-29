@@ -60,8 +60,6 @@ h3 {
     --ig-size: var(--ig-size-large);
 }
 
-/* A slotted igc-icon keeps its own default --size, so it won't follow the
-   avatar's size. Scale it explicitly per size class. */
 .component-host ::deep .avatar.small igc-icon {
     --size: 1rem;
 }

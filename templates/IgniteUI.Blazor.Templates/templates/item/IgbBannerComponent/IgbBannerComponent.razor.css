@@ -49,3 +49,15 @@ h3 {
 .banner-host {
     margin-bottom: 1rem;
 }
+
+.banner-host ::deep igc-banner::part(spacer) {
+  background: var(--ig-surface-600);
+}
+
+.banner-host ::deep igc-banner::part(illustration) {
+  color: var(--ig-surface-600-contrast);
+}
+
+.banner-host ::deep igc-banner::part(content) {
+  color: var(--ig-gray-900);
+}
