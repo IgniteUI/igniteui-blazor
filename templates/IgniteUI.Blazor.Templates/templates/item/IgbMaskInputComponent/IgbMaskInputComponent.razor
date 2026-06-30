@@ -58,7 +58,17 @@
 
     private string Value { get; set; } = string.Empty;
 
-    private string MaskName { get; set; } = "Phone";
+    private string _maskName = "Phone";
+    private string MaskName
+    {
+        get => _maskName;
+        set
+        {
+            if (_maskName == value) return;
+            _maskName = value;
+            Value = string.Empty; // a value entered for the old mask won't fit the new one; clear it
+        }
+    }
     private string Mask => MaskName switch
     {
         "SSN" => "000-00-0000",
@@ -66,6 +76,16 @@
         _ => "(####) 000-0000"
     };
 
-    private string ValueModeName { get; set; } = "Raw";
+    private string _valueModeName = "Raw";
+    private string ValueModeName
+    {
+        get => _valueModeName;
+        set
+        {
+            if (_valueModeName == value) return;
+            _valueModeName = value;
+            Value = string.Empty; // ValueMode only changes how Value is reported, not the stored value; clear it so the user enters fresh input
+        }
+    }
     private MaskInputValueMode ValueMode => Enum.Parse<MaskInputValueMode>(ValueModeName);
 }

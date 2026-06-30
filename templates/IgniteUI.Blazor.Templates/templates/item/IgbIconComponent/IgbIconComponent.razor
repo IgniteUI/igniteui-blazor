@@ -19,6 +19,17 @@
     </div>
 
     <div class="control">
+        <label>Size</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Size">
+                <IgbRadio Value="small">Small</IgbRadio>
+                <IgbRadio Value="medium">Medium</IgbRadio>
+                <IgbRadio Value="large">Large</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
         <label>Options</label>
         <div class="control-box switches">
             <IgbSwitch @bind-Checked="Mirrored">Mirrored</IgbSwitch>
@@ -27,10 +38,10 @@
 </div>
 
 <div class="component-host">
-    <IgbIcon @ref="_iconRef" class="demo-icon" IconName="@IconName" Collection="material" Mirrored="Mirrored" />
+    <IgbIcon @ref="_iconRef" class="@($"demo-icon {Size}")" IconName="@IconName" Collection="material" Mirrored="Mirrored" />
 </div>
 
-<div class="state">IconName: @IconName &nbsp;|&nbsp; Mirrored: @Mirrored</div>
+<div class="state">IconName: @IconName &nbsp;|&nbsp; Size: @Size &nbsp;|&nbsp; Mirrored: @Mirrored</div>
 
 @code {
     /*
@@ -50,6 +61,7 @@
 
     private IgbIcon _iconRef = default!;
     private string IconName { get; set; } = "home";
+    private string Size { get; set; } = "medium";
     private bool Mirrored { get; set; }
 
     private static readonly Dictionary<string, string> Icons = new()

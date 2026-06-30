@@ -47,9 +47,21 @@ h3 {
 }
 
 /* IgbIcon renders its own <igc-icon>, outside this file's isolation scope.
-   Anchor on .component-host and reach in with ::deep to size it up. */
-.component-host ::deep .demo-icon {
-    --ig-size: var(--ig-size-large);
-    width: 3rem;
-    height: 3rem;
+   The icon glyph is sized as 1em, so drive --size per class and apply it
+   as font-size. */
+.component-host ::deep .demo-icon.small {
+    --size: 1.5rem;
+}
+
+.component-host ::deep .demo-icon.medium {
+    --size: 3rem;
+}
+
+.component-host ::deep .demo-icon.large {
+    --size: 4.5rem;
+}
+
+.component-host ::deep igc-icon,
+.component-host ::deep svg {
+    font-size: var(--size);
 }

@@ -29,10 +29,22 @@ h3 {
     gap: 0.5rem;
 }
 
+.rows-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rows-value {
+    min-width: 1.5rem;
+    text-align: center;
+    font-family: ui-monospace, monospace;
+}
+
 .component-host {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 1rem;
     padding: 1rem 0;
 }
@@ -46,11 +58,6 @@ h3 {
     font-size: 0.85rem;
 }
 
-.component-host ::deep .demo-select {
-    width: 260px;
-}
-
-.actions {
-    display: flex;
-    gap: 0.5rem;
+.component-host ::deep .demo-textarea {
+    width: 360px;
 }

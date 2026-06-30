@@ -10,11 +10,10 @@
         <label>Type</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TypeName">
-                <IgbRadio Value="Text">Text</IgbRadio>
-                <IgbRadio Value="Email">Email</IgbRadio>
-                <IgbRadio Value="Number">Number</IgbRadio>
-                <IgbRadio Value="Password">Password</IgbRadio>
-                <IgbRadio Value="Search">Search</IgbRadio>
+                @foreach (var type in Types)
+                {
+                    <IgbRadio Value="@type.ToString()">@type.ToString()</IgbRadio>
+                }
             </IgbRadioGroup>
         </div>
     </div>
@@ -30,11 +29,12 @@
 </div>
 
 <div class="component-host">
-    <IgbInput class="demo-input"
+    <IgbInput @key="TypeName"
+              class="demo-input"
               @bind-Value="Value"
               DisplayType="DisplayType"
               Label="Your input"
-              Placeholder="Type here"
+              Placeholder="@Placeholders[DisplayType]"
               Outlined="Outlined"
               Required="Required"
               Disabled="Disabled">
@@ -60,9 +60,32 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
+    private static readonly InputType[] Types = Enum.GetValues<InputType>();
+
+    private static readonly Dictionary<InputType, string> Placeholders = new()
+    {
+        [InputType.Text] = "Enter text",
+        [InputType.Email] = "name@example.com",
+        [InputType.Number] = "0",
+        [InputType.Password] = "Enter password",
+        [InputType.Search] = "Search…",
+        [InputType.Tel] = "+1 (555) 000-0000",
+        [InputType.Url] = "https://example.com"
+    };
+
     private string Value { get; set; } = string.Empty;
 
-    private string TypeName { get; set; } = "Text";
+    private string _typeName = "Text";
+    private string TypeName
+    {
+        get => _typeName;
+        set
+        {
+            if (_typeName == value) return;
+            _typeName = value;
+            Value = string.Empty; // reset value; @key recreates the input, clearing validation state
+        }
+    }
     private InputType DisplayType => Enum.Parse<InputType>(TypeName);
 
     private bool Outlined { get; set; }

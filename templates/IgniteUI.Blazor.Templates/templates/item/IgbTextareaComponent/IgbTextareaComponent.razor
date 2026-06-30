@@ -1,0 +1,116 @@
+@page "/IgbTextareaComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbTextareaComponent</PageTitle>
+
+<h3>IgbTextareaComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Resize</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ResizeName">
+                @foreach (var resize in Resizes)
+                {
+                    <IgbRadio Value="@resize.ToString()">@resize.ToString()</IgbRadio>
+                }
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Wrap</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="WrapName">
+                @foreach (var wrap in Wraps)
+                {
+                    <IgbRadio Value="@wrap.ToString()">@wrap.ToString()</IgbRadio>
+                }
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Rows</label>
+        <div class="control-box rows-box">
+            <IgbButton Variant="ButtonVariant.Outlined" @onclick="RowsDown">−</IgbButton>
+            <span class="rows-value">@Rows</span>
+            <IgbButton Variant="ButtonVariant.Outlined" @onclick="RowsUp">+</IgbButton>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Outlined">Outlined</IgbSwitch>
+            <IgbSwitch @bind-Checked="Required">Required</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+            <IgbSwitch @bind-Checked="Spellcheck">Spellcheck</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbTextarea class="demo-textarea"
+                 @bind-Value="Value"
+                 Input="OnInput"
+                 Resize="Resize"
+                 Wrap="Wrap"
+                 Rows="Rows"
+                 MaxLength="MaxLength"
+                 Label="Your message"
+                 Placeholder="Type a few lines…"
+                 Outlined="Outlined"
+                 Required="Required"
+                 Disabled="Disabled"
+                 Spellcheck="Spellcheck">
+        <span slot="helper-text">@Length / @((int)MaxLength) characters</span>
+    </IgbTextarea>
+</div>
+
+<div class="state">Resize: @ResizeName &nbsp;|&nbsp; Wrap: @WrapName &nbsp;|&nbsp; Rows: @Rows &nbsp;|&nbsp; Length: @Length</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private const double MaxLength = 200;
+
+    private static readonly TextareaResize[] Resizes = Enum.GetValues<TextareaResize>();
+    private static readonly TextareaWrap[] Wraps = Enum.GetValues<TextareaWrap>();
+
+    private string Value { get; set; } = string.Empty;
+
+    // @bind-Value commits on change (blur); the Input event fires per keystroke, so
+    // track the live length separately to keep the counter current as the user types.
+    private int Length { get; set; }
+    private void OnInput(IgbComponentValueChangedEventArgs args) => Length = args.Detail?.Length ?? 0;
+
+    private string ResizeName { get; set; } = "Vertical";
+    private TextareaResize Resize => Enum.Parse<TextareaResize>(ResizeName);
+
+    private string WrapName { get; set; } = "Soft";
+    private TextareaWrap Wrap => Enum.Parse<TextareaWrap>(WrapName);
+
+    private double Rows { get; set; } = 4;
+
+    private bool Outlined { get; set; }
+    private bool Required { get; set; }
+    private bool Disabled { get; set; }
+    private bool Spellcheck { get; set; } = true;
+
+    private void RowsUp() => Rows = Math.Min(Rows + 1, 12);
+    private void RowsDown() => Rows = Math.Max(Rows - 1, 2);
+}

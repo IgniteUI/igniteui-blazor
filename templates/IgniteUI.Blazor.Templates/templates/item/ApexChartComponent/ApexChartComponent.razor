@@ -150,17 +150,27 @@
 
 @code {
     /*
-     * Apex Chart setup (Blazor-ApexCharts — https://apexcharts.github.io/Blazor-ApexCharts).
-     * An item template can't modify project files, so do this once per project:
+     * This sample uses two packages — Ignite UI for Blazor (the controls) and
+     * Blazor-ApexCharts (the chart). An item template can't modify project files,
+     * so do this once per project:
      *
-     * 1. Install:   dotnet add package Blazor-ApexCharts
-     * 2. _Imports.razor:          @using ApexCharts
-     * 3. Register (Program.cs, optional — enables global options/DI):
+     * Ignite UI for Blazor (open-source, MIT — IgniteUI.Blazor.Lite):
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     *    Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     *
+     * Apex Chart (Blazor-ApexCharts — https://apexcharts.github.io/Blazor-ApexCharts):
+     * 5. Install:   dotnet add package Blazor-ApexCharts
+     * 6. _Imports.razor:          @using ApexCharts
+     * 7. Register (Program.cs, optional — enables global options/DI):
      *    builder.Services.AddApexCharts();
-     * 4. Blazor Web App (.NET 8+): add an interactive render mode to this page,
-     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *    The package loads its own JS via a static web asset; no <script> tag is required.
      *
-     * The package loads its own JS via a static web asset; no manual <script> tag is required.
+     * 8. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
      */
 
     // The chart kinds shown in the dropdown. Most map to a single-value point series; the rest
