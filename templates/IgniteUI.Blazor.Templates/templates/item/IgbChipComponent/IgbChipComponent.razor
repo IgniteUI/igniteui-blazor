@@ -10,6 +10,7 @@
         <label>Variant</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Default">Default</IgbRadio>
                 <IgbRadio Value="Primary">Primary</IgbRadio>
                 <IgbRadio Value="Info">Info</IgbRadio>
                 <IgbRadio Value="Success">Success</IgbRadio>
@@ -32,15 +33,28 @@
 <div class="component-host">
     @if (!Removed)
     {
-        <IgbChip Variant="Variant"
-                 Selectable="Selectable"
-                 Removable="Removable"
-                 Disabled="Disabled"
-                 @bind-Selected="Selected"
-                 Remove="OnRemove">
-            <IgbAvatar slot="start" Initials="A" Shape="AvatarShape.Circle" />
-            Filter chip
-        </IgbChip>
+        @if (VariantName == "Default"){
+            <IgbChip 
+                    Selectable="Selectable"
+                    Removable="Removable"
+                    Disabled="Disabled"
+                    @bind-Selected="Selected"
+                    Remove="OnRemove">
+                <IgbAvatar slot="start" Initials="A" Shape="AvatarShape.Circle" />
+                Filter chip
+            </IgbChip>
+
+        } else {
+            <IgbChip Variant="Variant"
+                    Selectable="Selectable"
+                    Removable="Removable"
+                    Disabled="Disabled"
+                    @bind-Selected="Selected"
+                    Remove="OnRemove">
+                <IgbAvatar slot="start" Initials="A" Shape="AvatarShape.Circle" />
+                Filter chip
+            </IgbChip>
+        }
     }
     else
     {
@@ -66,7 +80,7 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string VariantName { get; set; } = "Primary";
+    private string VariantName { get; set; } = "Default";
     private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
 
     private bool Selectable { get; set; } = true;

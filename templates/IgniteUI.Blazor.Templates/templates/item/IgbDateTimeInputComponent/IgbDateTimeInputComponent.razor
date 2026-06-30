@@ -66,6 +66,16 @@
     private bool SpinLoop { get; set; }
     private bool Outlined { get; set; }
 
-    private async Task DayUp() => await _input.StepUpAsync(DatePart.Date, 1);
-    private async Task DayDown() => await _input.StepDownAsync(DatePart.Date, 1);
+    // StepUp/StepDown don't raise ValueChanged, so read the value back to resync.
+    private async Task DayUp()
+    {
+        await _input.StepUpAsync(DatePart.Date, 1);
+        Value = await _input.GetCurrentValueAsync();
+    }
+
+    private async Task DayDown()
+    {
+        await _input.StepDownAsync(DatePart.Date, 1);
+        Value = await _input.GetCurrentValueAsync();
+    }
 }
