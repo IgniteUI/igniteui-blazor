@@ -158,6 +158,8 @@
      * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
      * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
      * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
      * 4. Host page theme (index.html / App.razor / _Host.cshtml):
      *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
      *    Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
@@ -165,6 +167,8 @@
      * Apex Chart (Blazor-ApexCharts — https://apexcharts.github.io/Blazor-ApexCharts):
      * 5. Install:   dotnet add package Blazor-ApexCharts
      * 6. _Imports.razor:          @using ApexCharts
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
      * 7. Register (Program.cs, optional — enables global options/DI):
      *    builder.Services.AddApexCharts();
      *    The package loads its own JS via a static web asset; no <script> tag is required.
