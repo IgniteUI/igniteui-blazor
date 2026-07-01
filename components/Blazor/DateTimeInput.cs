@@ -12,9 +12,8 @@ namespace IgniteUI.Blazor.Controls
 /// A date time input is an input field that lets you set and edit the date and time in a chosen input element
 /// using customizable display and input formats.
 /// </summary>
-public partial class IgbDateTimeInput: IgbMaskInputBase {
+public partial class IgbDateTimeInput: IgbDateTimeInputBase {
                                 public override string Type { get { return "WebDateTimeInput"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -36,22 +35,6 @@ public partial class IgbDateTimeInput: IgbMaskInputBase {
 	                            return true;
                                 }
                         }
-
-                            protected override bool UseDirectRender
-                        {
-                                get 
-                                {
-	                            return true;
-                                }
-                        }
-
-                            protected override string DirectRenderElementName
-                        {
-                                get 
-                                {
-	                            return "igc-date-time-input";
-                                }
-                        }
 	
 	    public IgbDateTimeInput(): base() {
 	        OnCreatedIgbDateTimeInput();
@@ -61,21 +44,6 @@ public partial class IgbDateTimeInput: IgbMaskInputBase {
 	
 	    partial void OnCreatedIgbDateTimeInput();
 	    
-	private string _inputFormat;
-	
-	partial void OnInputFormatChanging(ref string newValue);
-	[Parameter]
-	public string InputFormat 
-	{
-	get { return this._inputFormat; }
-	set { 
-	                if (this._inputFormat != value || !IsPropDirty("InputFormat")) {
-	                        MarkPropDirty("InputFormat");
-	                } 
-	                this._inputFormat = value;
-	                 
-	                }
-	}
 	private DateTime? _value = DateTime.MinValue;
 	
 	partial void OnValueChanging(ref DateTime? newValue);
@@ -104,121 +72,6 @@ public partial class IgbDateTimeInput: IgbMaskInputBase {
 		var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
 		return ReturnToDate(iv);
 	}
-	private DateTime? _min = DateTime.MinValue;
-	
-	partial void OnMinChanging(ref DateTime? newValue);
-	/// <summary>
-	/// The minimum value required for the input to remain valid.
-	/// </summary>
-	[Parameter]
-	public DateTime? Min 
-	{
-	get { return this._min; }
-	set { 
-	                if (this._min != value || !IsPropDirty("Min")) {
-	                        MarkPropDirty("Min");
-	                } 
-	                this._min = value;
-	                 
-	                }
-	}
-	private DateTime? _max = DateTime.MinValue;
-	
-	partial void OnMaxChanging(ref DateTime? newValue);
-	/// <summary>
-	/// The maximum value required for the input to remain valid.
-	/// </summary>
-	[Parameter]
-	public DateTime? Max 
-	{
-	get { return this._max; }
-	set { 
-	                if (this._max != value || !IsPropDirty("Max")) {
-	                        MarkPropDirty("Max");
-	                } 
-	                this._max = value;
-	                 
-	                }
-	}
-	private string _displayFormat;
-	
-	partial void OnDisplayFormatChanging(ref string newValue);
-	/// <summary>
-	/// Format to display the value in when not editing.
-	/// Defaults to the input format if not set.
-	/// </summary>
-	[Parameter]
-	public string DisplayFormat 
-	{
-	get { return this._displayFormat; }
-	set { 
-	                if (this._displayFormat != value || !IsPropDirty("DisplayFormat")) {
-	                        MarkPropDirty("DisplayFormat");
-	                } 
-	                this._displayFormat = value;
-	                 
-	                }
-	}
-	private IgbDatePartDeltas _spinDelta;
-	
-	partial void OnSpinDeltaChanging(ref IgbDatePartDeltas newValue);
-	/// <summary>
-	/// Delta values used to increment or decrement each date part on step actions.
-	/// All values default to `1`.
-	/// </summary>
-	[Parameter]
-	public IgbDatePartDeltas SpinDelta 
-	{
-	get { return this._spinDelta; }
-	set { 
-	                        OnSpinDeltaChanging(ref value);
-	                        MarkPropDirty("SpinDelta"); 
-	                        if (this._spinDelta != null) {
-	                            this.DetachChild(this._spinDelta);
-	                        }
-	                        if (value != null) {
-	                            this.AttachChild(value);
-	                        }
-	                        this._spinDelta = value; 
-	                    }
-	                    
-	}
-	private bool _spinLoop = false;
-	
-	partial void OnSpinLoopChanging(ref bool newValue);
-	/// <summary>
-	/// Sets whether to loop over the currently spun segment.
-	/// </summary>
-	[Parameter]
-	public bool SpinLoop 
-	{
-	get { return this._spinLoop; }
-	set { 
-	                if (this._spinLoop != value || !IsPropDirty("SpinLoop")) {
-	                        MarkPropDirty("SpinLoop");
-	                } 
-	                this._spinLoop = value;
-	                 
-	                }
-	}
-	private string _locale;
-	
-	partial void OnLocaleChanging(ref string newValue);
-	/// <summary>
-	/// The locale settings used to display the value.
-	/// </summary>
-	[Parameter]
-	public string Locale 
-	{
-	get { return this._locale; }
-	set { 
-	                if (this._locale != value || !IsPropDirty("Locale")) {
-	                        MarkPropDirty("Locale");
-	                } 
-	                this._locale = value;
-	                 
-	                }
-	}
 	
 	    partial void FindByNameDateTimeInput(string name, ref object item);
 	    public override object FindByName(string name)
@@ -239,27 +92,19 @@ public partial class IgbDateTimeInput: IgbMaskInputBase {
 	
 	        return null;
 	    }
-	public async  Task ConnectedCallbackAsync() 
-	                    {
-		await InvokeMethod("connectedCallback", new object[] {  }, new string[] {  });
-	}
-	                    public  void ConnectedCallback() 
-	                    {
-		InvokeMethodSync("connectedCallback", new object[] {  }, new string[] {  });
-	}
-	public async  Task StepUpAsync(DatePart datePart, double delta = -1) 
+	public async  Task StepUpAsync(DatePart? datePart = null, double delta = -1) 
 	                    {
 		await InvokeMethod("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
 	}
-	                    public  void StepUp(DatePart datePart, double delta = -1) 
+	                    public  void StepUp(DatePart? datePart = null, double delta = -1) 
 	                    {
 		InvokeMethodSync("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
 	}
-	public async  Task StepDownAsync(DatePart datePart, double delta = -1) 
+	public async  Task StepDownAsync(DatePart? datePart = null, double delta = -1) 
 	                    {
 		await InvokeMethod("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
 	}
-	                    public  void StepDown(DatePart datePart, double delta = -1) 
+	                    public  void StepDown(DatePart? datePart = null, double delta = -1) 
 	                    {
 		InvokeMethodSync("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
 	}
@@ -301,6 +146,66 @@ public partial class IgbDateTimeInput: IgbMaskInputBase {
 	    }
 	    }
 	
+	    private string _inputOcurredRef = null;
+	    private string _inputOcurredScript = null;
+	    [Parameter]
+	    public string InputOcurredScript { 
+	    
+	        set 
+	        {
+	            if (value != this._inputOcurredScript)
+	            {
+	                this._inputOcurredScript = value;
+	                this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._inputOcurredRef = refName;
+	                    this.MarkPropDirty("InputOcurredRef");	
+	                });
+	            }
+	        }
+	        get 
+	        {
+	            return this._inputOcurredScript;
+	        }
+	    }
+	
+	    partial void OnHandlingInputOcurred(IgbComponentValueChangedEventArgs args);
+	    private EventCallback<IgbComponentValueChangedEventArgs>? _inputOcurred = null;
+	    [Parameter]
+	    public EventCallback<IgbComponentValueChangedEventArgs> InputOcurred
+	    {
+	        get 
+	        {
+	            return this._inputOcurred != null ? this._inputOcurred.Value : EventCallback<IgbComponentValueChangedEventArgs>.Empty;
+	        }
+	        set
+	        { 
+	            if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty)) 
+	            {
+	                if (!CompareEventCallbacks(value, _inputOcurred, ref eventCallbacksCache))
+	                {
+	                    _inputOcurred = value;
+	                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", value, (args) => {
+	                        OnHandlingInputOcurred(args);
+	                        
+	                    });
+	        this.OnRefChanged("InputOcurred", null, "event:::InputOcurred", true, false, (refName, oldValue, newValue) => {
+	                        this._inputOcurredRef = refName;
+	                        this.MarkPropDirty("InputOcurredRef");	
+	                });
+	                }
+	    }
+	        else 
+	            {
+	                _inputOcurred = null;
+	                this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", null);
+	    this.OnRefChanged("InputOcurred", null, null, true, false, (refName, oldValue, newValue) => {
+	                    this._inputOcurredRef = null;
+	                    this.MarkPropDirty("InputOcurredRef");	
+	            });
+	    }
+	    }
+	    }
+	
 	    private string _changeRef = null;
 	    private string _changeScript = null;
 	    [Parameter]
@@ -308,10 +213,14 @@ public partial class IgbDateTimeInput: IgbMaskInputBase {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -390,6 +299,126 @@ public partial class IgbDateTimeInput: IgbMaskInputBase {
 	    }
 	
 	
+	    private string _focusRef = null;
+	    private string _focusScript = null;
+	    [Parameter]
+	    public string FocusScript { 
+	    
+	        set 
+	        {
+	            if (value != this._focusScript)
+	            {
+	                this._focusScript = value;
+	                this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._focusRef = refName;
+	                    this.MarkPropDirty("FocusRef");	
+	                });
+	            }
+	        }
+	        get 
+	        {
+	            return this._focusScript;
+	        }
+	    }
+	
+	    partial void OnHandlingFocus(IgbVoidEventArgs args);
+	    private EventCallback<IgbVoidEventArgs>? _focus = null;
+	    [Parameter]
+	    public EventCallback<IgbVoidEventArgs> Focus
+	    {
+	        get 
+	        {
+	            return this._focus != null ? this._focus.Value : EventCallback<IgbVoidEventArgs>.Empty;
+	        }
+	        set
+	        { 
+	            if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty)) 
+	            {
+	                if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
+	                {
+	                    _focus = value;
+	                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value, (args) => {
+	                        OnHandlingFocus(args);
+	                        
+	                    });
+	        this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) => {
+	                        this._focusRef = refName;
+	                        this.MarkPropDirty("FocusRef");	
+	                });
+	                }
+	    }
+	        else 
+	            {
+	                _focus = null;
+	                this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", null);
+	    this.OnRefChanged("Focus", null, null, true, false, (refName, oldValue, newValue) => {
+	                    this._focusRef = null;
+	                    this.MarkPropDirty("FocusRef");	
+	            });
+	    }
+	    }
+	    }
+	
+	    private string _blurRef = null;
+	    private string _blurScript = null;
+	    [Parameter]
+	    public string BlurScript { 
+	    
+	        set 
+	        {
+	            if (value != this._blurScript)
+	            {
+	                this._blurScript = value;
+	                this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._blurRef = refName;
+	                    this.MarkPropDirty("BlurRef");	
+	                });
+	            }
+	        }
+	        get 
+	        {
+	            return this._blurScript;
+	        }
+	    }
+	
+	    partial void OnHandlingBlur(IgbVoidEventArgs args);
+	    private EventCallback<IgbVoidEventArgs>? _blur = null;
+	    [Parameter]
+	    public EventCallback<IgbVoidEventArgs> Blur
+	    {
+	        get 
+	        {
+	            return this._blur != null ? this._blur.Value : EventCallback<IgbVoidEventArgs>.Empty;
+	        }
+	        set
+	        { 
+	            if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty)) 
+	            {
+	                if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
+	                {
+	                    _blur = value;
+	                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value, (args) => {
+	                        OnHandlingBlur(args);
+	                        
+	                    });
+	        this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) => {
+	                        this._blurRef = refName;
+	                        this.MarkPropDirty("BlurRef");	
+	                });
+	                }
+	    }
+	        else 
+	            {
+	                _blur = null;
+	                this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", null);
+	    this.OnRefChanged("Blur", null, null, true, false, (refName, oldValue, newValue) => {
+	                    this._blurRef = null;
+	                    this.MarkPropDirty("BlurRef");	
+	            });
+	    }
+	    }
+	    }
+	
 	                            partial void OnEventUpdatingValue(DateTime? oldValue, ref DateTime? newValue);
 	
 	    partial void SerializeCoreIgbDateTimeInput(RendererSerializer ser);
@@ -400,15 +429,11 @@ public partial class IgbDateTimeInput: IgbMaskInputBase {
 	
 	        SerializeCoreIgbDateTimeInput(ser);
 	
-	if (IsPropDirty("InputFormat")) { ser.AddStringProp("inputFormat", this._inputFormat); }
 	if (IsPropDirty("Value")) { ser.AddDateTimeProp("value", this._value); }
-	if (IsPropDirty("Min")) { ser.AddDateTimeProp("min", this._min); }
-	if (IsPropDirty("Max")) { ser.AddDateTimeProp("max", this._max); }
-	if (IsPropDirty("DisplayFormat")) { ser.AddStringProp("displayFormat", this._displayFormat); }
-	if (IsPropDirty("SpinDelta")) { ser.AddSerializableProp("spinDelta", this._spinDelta); }
-	if (IsPropDirty("SpinLoop")) { ser.AddBooleanProp("spinLoop", this._spinLoop); }
-	if (IsPropDirty("Locale")) { ser.AddStringProp("locale", this._locale); }
+	if (IsPropDirty("InputOcurredRef")) { ser.AddStringProp("inputOcurredRef", this._inputOcurredRef); }
 	if (IsPropDirty("ChangeRef")) { ser.AddStringProp("changeRef", this._changeRef); }
+	if (IsPropDirty("FocusRef")) { ser.AddStringProp("focusRef", this._focusRef); }
+	if (IsPropDirty("BlurRef")) { ser.AddStringProp("blurRef", this._blurRef); }
 	
 	    }
 	

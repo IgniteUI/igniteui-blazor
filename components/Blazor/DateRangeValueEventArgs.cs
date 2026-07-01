@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbDateRangeValueEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebDateRangeValueEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

@@ -1192,6 +1192,43 @@ public partial class BaseRendererControl: ComponentBase, RefSink, JsonSerializab
             newValue = ((RemoteJson)newValue).ToRef();
         }
 
+        // Check if the incoming object has BlazorPlainObjectAttribute
+        if (newValue != null)
+        {
+            var valueType = newValue.GetType();
+            // Use IsDefined for better performance and only check if it implements JsonSerializable
+            if (newValue is JsonSerializable && Attribute.IsDefined(valueType, typeof(BlazorPlainObjectAttribute), true))
+            {
+                try
+                {
+                    using (var stream = new System.IO.MemoryStream())
+                    using (var writer = new System.Text.Json.Utf8JsonWriter(stream))
+                    {
+                        var context = new SerializationContext(writer, null);
+                        ((JsonSerializable)newValue).Serialize(context, null);
+                        writer.Flush();
+                        var json = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+                        
+                        // Ensure we always send syntactically valid JSON, even if nothing was written
+                        if (string.IsNullOrWhiteSpace(json))
+                        {
+                            json = "null";
+                        }
+                        
+                        // Use LocalJson to ensure proper escaping
+                        newValue = new LocalJson(json).ToRef();
+                        isScript = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(
+                        $"Failed to serialize BlazorPlainObject of type {valueType.Name} for property '{propertyName}': {ex.Message}", 
+                        ex);
+                }
+            }
+        }
+
        
         if (!isElement && !isScript)
         {
@@ -1976,10 +2013,14 @@ public partial class BaseRendererControl: ComponentBase, RefSink, JsonSerializab
     }
 
     internal T ReturnToObject<T>(object val) {
+        return ReturnToObject<T>(val, null);
+    }
+
+    internal T ReturnToObject<T>(object val, string? typeGuess) {
         if (val == null) {
             return default(T);
         }
-        val = ConvertReturnValue(val);
+        val = ConvertReturnValue(val, false, typeGuess);
 
         return (T)val;
     }
@@ -2347,20 +2388,16 @@ public partial class BaseRendererControl: ComponentBase, RefSink, JsonSerializab
     {
         if (type.IsEnum)
         {
-            foreach (var f in type.GetFields())
+            if (val == null)
             {
-                if (f.IsPublic && !f.IsSpecialName && f.Name == val.ToString())
-                {
-                    foreach (var attr in f.GetCustomAttributes(true))
-                    {
-                        if (attr.GetType().Name == "WCEnumNameAttribute")
-                        {
-                            var wc = (WCEnumNameAttribute)attr;
-                            c.Writer.WriteStringValue(wc.Name);
-                            return;
-                        }
-                    }
-                }
+                ObjectToParam(c, val);
+                return;
+            }
+
+            if (Utils.TryGetWCEnumName(type, val.ToString(), out var wcName))
+            {
+                c.Writer.WriteStringValue(wcName);
+                return;
             }
 
             if (UseCamelEnumValues)
@@ -2566,6 +2603,10 @@ public partial class BaseRendererControl: ComponentBase, RefSink, JsonSerializab
     }
 
     internal T[] ReturnToObjectArray<T>(object val) {
+        return ReturnToObjectArray<T>(val, null);
+    }
+
+    internal T[] ReturnToObjectArray<T>(object val, string typeGuess) {
         if (val == null) {
             return null;
         }
@@ -2578,7 +2619,7 @@ public partial class BaseRendererControl: ComponentBase, RefSink, JsonSerializab
                 Object ele = arr[i];
                 //Console.WriteLine("converting obj");
                 //Console.WriteLine(ele);
-                ele = ConvertReturnValue(ele);
+                ele = ConvertReturnValue(ele,false, typeGuess);
                 ret[i] = (T)ele;
             }
             return ret;
@@ -2881,6 +2922,14 @@ public partial class BaseRendererControl: ComponentBase, RefSink, JsonSerializab
             }
 
             disposedValue = true;
+        }
+    }
+
+    internal void RefreshDynamicContent()
+    {
+        if (Holder != null)
+        {
+            Holder.Refresh();
         }
     }
 

@@ -88,7 +88,6 @@ public partial class IgbIcon: BaseRendererControl {
 	partial void OnCollectionChanging(ref string newValue);
 	/// <summary>
 	/// The name of the registered collection for look up of icons.
-	/// Defaults to `default`.
 	/// </summary>
 	[Parameter]
 	public string Collection 
@@ -106,7 +105,7 @@ public partial class IgbIcon: BaseRendererControl {
 	
 	partial void OnMirroredChanging(ref bool newValue);
 	/// <summary>
-	/// Whether to flip the icon. Useful for RTL layouts.
+	/// Whether to flip the icon horizontally. Useful for RTL (right-to-left) layouts.
 	/// </summary>
 	[Parameter]
 	public bool Mirrored 
@@ -147,22 +146,6 @@ public partial class IgbIcon: BaseRendererControl {
 	                    public  void SetNativeElement(Object element) 
 	                    {
 		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-	}
-	public async  Task ConnectedCallbackAsync() 
-	                    {
-		await InvokeMethod("connectedCallback", new object[] {  }, new string[] {  });
-	}
-	                    public  void ConnectedCallback() 
-	                    {
-		InvokeMethodSync("connectedCallback", new object[] {  }, new string[] {  });
-	}
-	public async  Task DisconnectedCallbackAsync() 
-	                    {
-		await InvokeMethod("disconnectedCallback", new object[] {  }, new string[] {  });
-	}
-	                    public  void DisconnectedCallback() 
-	                    {
-		InvokeMethodSync("disconnectedCallback", new object[] {  }, new string[] {  });
 	}
 	public async  Task RegisterIconAsync(String name, String url, String collection = null) 
 	                    {

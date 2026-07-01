@@ -16,6 +16,11 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbTabComponentEventArgs args) {
             var selectedTab = args.Detail;
+            // add check in case something triggers event without args.
+            if (selectedTab == null) {
+                return;
+            }
+
             foreach (var item in this.ActualTabsCollection.ToArray())
             {
                 if (item == args.Detail)

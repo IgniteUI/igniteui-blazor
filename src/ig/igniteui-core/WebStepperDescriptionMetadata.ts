@@ -1,7 +1,6 @@
 import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
-import { WebStepDescriptionMetadata } from "./WebStepDescriptionMetadata";
 import { WebActiveStepChangingEventArgsDescriptionMetadata } from "./WebActiveStepChangingEventArgsDescriptionMetadata";
 import { WebActiveStepChangedEventArgsDescriptionMetadata } from "./WebActiveStepChangedEventArgsDescriptionMetadata";
 import { WebStepperDescription } from "./WebStepperDescription";
@@ -21,7 +20,6 @@ export class WebStepperDescriptionMetadata extends Base {
 			return;
 		}
 		context.markSeen(WebStepperDescriptionMetadata._metadata);
-		WebStepDescriptionMetadata.register(context);
 		WebActiveStepChangingEventArgsDescriptionMetadata.register(context);
 		WebActiveStepChangedEventArgsDescriptionMetadata.register(context);
 	}
@@ -30,7 +28,6 @@ export class WebStepperDescriptionMetadata extends Base {
 		metadata.item("__tagNameWC", "String:igc-stepper");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
-		metadata.item("Steps", "Array:WebStepDescription:Step");
 		metadata.item("Orientation", "ExportedType:string:StepperOrientation");
 		metadata.item("Orientation@stringUnion", "WebComponents;React");
 		metadata.item("Orientation@names", "Horizontal;Vertical");

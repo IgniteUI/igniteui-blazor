@@ -185,7 +185,7 @@ export class DescriptionTreeReconciler extends Base {
 						let oldTreeNode = <DescriptionTreeNode>curr.value;
 						let newTreeNode = <DescriptionTreeNode>newProp.value;
 						if (oldTreeNode.type == newTreeNode.type) {
-							if ((!oldTreeNode.has("Name") && !newTreeNode.has("Name")) || (oldTreeNode.has("Name") && newTreeNode.has("Name") && (oldTreeNode.get("Name").value == newTreeNode.get("Name").value))) {
+							if ((!oldTreeNode.has("Name") && !newTreeNode.has("Name")) || (oldTreeNode.has("Name") && newTreeNode.has("Name") && (<string>oldTreeNode.get("Name").value == <string>newTreeNode.get("Name").value))) {
 								DescriptionTreeReconciler.diffTreesHelper(actions, oldTreeNode, newTreeNode, isDelta);
 							} else {
 								updatedValues.add(newTree.get(curr.propertyName));

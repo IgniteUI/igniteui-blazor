@@ -8,10 +8,7 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// The `igc-banner` component displays important and concise message(s) for a user to address, that is specific to a page or feature.
-/// </summary>
-public partial class IgbBanner: BaseRendererControl {
+                            public partial class IgbBanner: BaseRendererControl {
                                 public override string Type { get { return "WebBanner"; } }
 
                                 protected override void EnsureModulesLoaded()
@@ -68,7 +65,11 @@ public partial class IgbBanner: BaseRendererControl {
 	
 	partial void OnOpenChanging(ref bool newValue);
 	/// <summary>
-	/// Determines whether the banner is being shown/hidden.
+	/// Whether the banner is open.
+	/// Setting this property programmatically will immediately show or hide the
+	/// banner without animation and without emitting close events.
+	/// Prefer the `show()`, `hide()`, and `toggle()` methods for animated
+	/// transitions.
 	/// </summary>
 	[Parameter]
 	public bool Open 
@@ -111,7 +112,9 @@ public partial class IgbBanner: BaseRendererControl {
 		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
 	}
 	/// <summary>
-	/// Shows the banner if not already shown. Returns `true` when the animation has completed.
+	/// Opens the banner with an animated grow-in transition.
+	/// Returns `true` when the banner was successfully opened, or `false` if
+	/// it was already open.
 	/// </summary>
 	public async Task<bool> ShowAsync() 
 	                    {
@@ -124,7 +127,9 @@ public partial class IgbBanner: BaseRendererControl {
 		return ReturnToBoolean(iv);
 	}
 	/// <summary>
-	/// Hides the banner if not already hidden. Returns `true` when the animation has completed.
+	/// Closes the banner with an animated grow-out transition.
+	/// Returns `true` when the banner was successfully closed, or `false` if
+	/// it was already closed.
 	/// </summary>
 	public async Task<bool> HideAsync() 
 	                    {
@@ -137,7 +142,9 @@ public partial class IgbBanner: BaseRendererControl {
 		return ReturnToBoolean(iv);
 	}
 	/// <summary>
-	/// Toggles between shown/hidden state. Returns `true` when the animation has completed.
+	/// Toggles the banner open or closed depending on its current state.
+	/// Equivalent to calling `show()` when closed and `hide()` when open.
+	/// Returns `true` when the transition completed successfully.
 	/// </summary>
 	public async Task<bool> ToggleAsync() 
 	                    {
@@ -157,10 +164,14 @@ public partial class IgbBanner: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closingRef = refName;
-	                this.MarkPropDirty("ClosingRef");	
-	        }); 
+	            if (value != this._closingScript)
+	            {
+	                this._closingScript = value;
+	                this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closingRef = refName;
+	                    this.MarkPropDirty("ClosingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -213,10 +224,14 @@ public partial class IgbBanner: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closedRef = refName;
-	                this.MarkPropDirty("ClosedRef");	
-	        }); 
+	            if (value != this._closedScript)
+	            {
+	                this._closedScript = value;
+	                this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closedRef = refName;
+	                    this.MarkPropDirty("ClosedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

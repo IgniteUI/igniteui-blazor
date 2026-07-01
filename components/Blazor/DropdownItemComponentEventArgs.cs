@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbDropdownItemComponentEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebDropdownItemComponentEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

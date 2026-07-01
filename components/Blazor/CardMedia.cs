@@ -9,7 +9,8 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// A container for card's media - could be an image, gif, video
+/// A container component for card media content such as images, GIFs, or videos.
+/// This component should be used within an igc-card element to display visual content.
 /// </summary>
 public partial class IgbCardMedia: BaseRendererControl {
                                 public override string Type { get { return "WebCardMedia"; } }

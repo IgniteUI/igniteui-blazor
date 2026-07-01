@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbRangeSliderValue: BaseRendererElement {
                                 public override string Type { get { return "WebRangeSliderValue"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

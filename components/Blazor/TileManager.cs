@@ -10,10 +10,6 @@ namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
 /// The tile manager component enables the dynamic arrangement, resizing, and interaction of tiles.
-/// @cssproperty --column-count - The number of columns for the tile manager. The `column-count` attribute sets this variable.
-/// @cssproperty --min-col-width - The minimum size of the columns in the tile-manager. The `min-column-width` attribute sets this variable.
-/// @cssproperty --min-row-height - The minimum size of the rows in the tile-manager. The `min-row-height` attribute sets this variable.
-/// @cssproperty --grid-gap - The gap size of the underlying CSS grid container. The `gap` attributes sts this variable.
 /// </summary>
 public partial class IgbTileManager: BaseRendererControl {
                                 public override string Type { get { return "WebTileManager"; } }
@@ -73,7 +69,6 @@ public partial class IgbTileManager: BaseRendererControl {
 	partial void OnResizeModeChanging(ref TileManagerResizeMode newValue);
 	/// <summary>
 	/// Whether resize operations are enabled.
-	/// @default none
 	/// </summary>
 	[Parameter]
 	public TileManagerResizeMode ResizeMode 
@@ -92,7 +87,6 @@ public partial class IgbTileManager: BaseRendererControl {
 	partial void OnDragModeChanging(ref TileManagerDragMode newValue);
 	/// <summary>
 	/// Whether drag and drop operations are enabled.
-	/// @default none
 	/// </summary>
 	[Parameter]
 	public TileManagerDragMode DragMode 
@@ -237,9 +231,6 @@ public partial class IgbTileManager: BaseRendererControl {
 	}
 	/// <summary>
 	/// Returns the properties of the current tile collections as a JSON payload.
-	/// @remarks
-	/// The content of the tiles is not serialized or saved. Only tile properties
-	/// are serialized.
 	/// </summary>
 	public async Task<String> SaveLayoutAsync() 
 	                    {
@@ -270,10 +261,14 @@ public partial class IgbTileManager: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("TileFullscreen", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._tileFullscreenRef = refName;
-	                this.MarkPropDirty("TileFullscreenRef");	
-	        }); 
+	            if (value != this._tileFullscreenScript)
+	            {
+	                this._tileFullscreenScript = value;
+	                this.OnRefChanged("TileFullscreen", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._tileFullscreenRef = refName;
+	                    this.MarkPropDirty("TileFullscreenRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -326,10 +321,14 @@ public partial class IgbTileManager: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("TileMaximize", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._tileMaximizeRef = refName;
-	                this.MarkPropDirty("TileMaximizeRef");	
-	        }); 
+	            if (value != this._tileMaximizeScript)
+	            {
+	                this._tileMaximizeScript = value;
+	                this.OnRefChanged("TileMaximize", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._tileMaximizeRef = refName;
+	                    this.MarkPropDirty("TileMaximizeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -382,10 +381,14 @@ public partial class IgbTileManager: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("TileDragStart", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._tileDragStartRef = refName;
-	                this.MarkPropDirty("TileDragStartRef");	
-	        }); 
+	            if (value != this._tileDragStartScript)
+	            {
+	                this._tileDragStartScript = value;
+	                this.OnRefChanged("TileDragStart", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._tileDragStartRef = refName;
+	                    this.MarkPropDirty("TileDragStartRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -438,10 +441,14 @@ public partial class IgbTileManager: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("TileDragEnd", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._tileDragEndRef = refName;
-	                this.MarkPropDirty("TileDragEndRef");	
-	        }); 
+	            if (value != this._tileDragEndScript)
+	            {
+	                this._tileDragEndScript = value;
+	                this.OnRefChanged("TileDragEnd", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._tileDragEndRef = refName;
+	                    this.MarkPropDirty("TileDragEndRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -494,10 +501,14 @@ public partial class IgbTileManager: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("TileDragCancel", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._tileDragCancelRef = refName;
-	                this.MarkPropDirty("TileDragCancelRef");	
-	        }); 
+	            if (value != this._tileDragCancelScript)
+	            {
+	                this._tileDragCancelScript = value;
+	                this.OnRefChanged("TileDragCancel", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._tileDragCancelRef = refName;
+	                    this.MarkPropDirty("TileDragCancelRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -550,10 +561,14 @@ public partial class IgbTileManager: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("TileResizeStart", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._tileResizeStartRef = refName;
-	                this.MarkPropDirty("TileResizeStartRef");	
-	        }); 
+	            if (value != this._tileResizeStartScript)
+	            {
+	                this._tileResizeStartScript = value;
+	                this.OnRefChanged("TileResizeStart", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._tileResizeStartRef = refName;
+	                    this.MarkPropDirty("TileResizeStartRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -606,10 +621,14 @@ public partial class IgbTileManager: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("TileResizeEnd", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._tileResizeEndRef = refName;
-	                this.MarkPropDirty("TileResizeEndRef");	
-	        }); 
+	            if (value != this._tileResizeEndScript)
+	            {
+	                this._tileResizeEndScript = value;
+	                this.OnRefChanged("TileResizeEnd", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._tileResizeEndRef = refName;
+	                    this.MarkPropDirty("TileResizeEndRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -662,10 +681,14 @@ public partial class IgbTileManager: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("TileResizeCancel", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._tileResizeCancelRef = refName;
-	                this.MarkPropDirty("TileResizeCancelRef");	
-	        }); 
+	            if (value != this._tileResizeCancelScript)
+	            {
+	                this._tileResizeCancelScript = value;
+	                this.OnRefChanged("TileResizeCancel", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._tileResizeCancelRef = refName;
+	                    this.MarkPropDirty("TileResizeCancelRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

@@ -13,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
 /// </summary>
 public partial class IgbCheckbox: IgbCheckboxBase {
                                 public override string Type { get { return "WebCheckbox"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {

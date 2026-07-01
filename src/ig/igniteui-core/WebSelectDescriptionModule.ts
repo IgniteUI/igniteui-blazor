@@ -1,6 +1,5 @@
 import { Base, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
-import { WebBaseComboBoxLikeDescriptionModule } from "./WebBaseComboBoxLikeDescriptionModule";
 import { WebIconDescriptionModule } from "./WebIconDescriptionModule";
 import { WebInputDescriptionModule } from "./WebInputDescriptionModule";
 import { WebSelectGroupDescriptionModule } from "./WebSelectGroupDescriptionModule";
@@ -15,7 +14,6 @@ import { WebSelectDescriptionMetadata } from "./WebSelectDescriptionMetadata";
 export class WebSelectDescriptionModule extends Base {
 	static $t: Type = markType(WebSelectDescriptionModule, 'WebSelectDescriptionModule');
 	static register(context: TypeDescriptionContext): void {
-		WebBaseComboBoxLikeDescriptionModule.register(context);
 		WebIconDescriptionModule.register(context);
 		WebInputDescriptionModule.register(context);
 		WebSelectGroupDescriptionModule.register(context);

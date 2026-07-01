@@ -9,13 +9,9 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// Rating provides insight regarding others' opinions and experiences,
-/// and can allow the user to submit a rating of their own
-/// @cssproperty --symbol-size - The size of the symbols.
-/// @cssproperty --symbol-full-color - The color of the filled symbol.
-/// @cssproperty --symbol-empty-color - The color of the empty symbol.
-/// @cssproperty --symbol-full-filter - The filter(s) used for the filled symbol.
-/// @cssproperty --symbol-empty-filter - The filter(s) used for the empty symbol.
+/// A rating component that allows users to view and provide ratings using customizable symbols.
+/// It supports fractional values, hover previews, keyboard navigation, single-selection mode,
+/// and integrates with forms as a number input.
 /// </summary>
 public partial class IgbRating: BaseRendererControl {
                                 public override string Type { get { return "WebRating"; } }
@@ -77,7 +73,6 @@ public partial class IgbRating: BaseRendererControl {
 	/// The maximum value for the rating.
 	/// If there are projected symbols, the maximum value will be resolved
 	/// based on the number of symbols.
-	/// @default 5
 	/// </summary>
 	[Parameter]
 	public double Max 
@@ -97,7 +92,6 @@ public partial class IgbRating: BaseRendererControl {
 	/// <summary>
 	/// The minimum value change allowed.
 	/// Valid values are in the interval between 0 and 1 inclusive.
-	/// @default 1
 	/// </summary>
 	[Parameter]
 	public double Step 
@@ -154,7 +148,6 @@ public partial class IgbRating: BaseRendererControl {
 	partial void OnValueChanging(ref double newValue);
 	/// <summary>
 	/// The current value of the component
-	/// @default 0
 	/// </summary>
 	[Parameter]
 	public double Value 
@@ -220,7 +213,6 @@ public partial class IgbRating: BaseRendererControl {
 	partial void OnSingleChanging(ref bool newValue);
 	/// <summary>
 	/// Toggles single selection visual mode.
-	/// @default false
 	/// </summary>
 	[Parameter]
 	public bool Single 
@@ -320,11 +312,11 @@ public partial class IgbRating: BaseRendererControl {
 	/// Increments the value of the control by `n` steps multiplied by the
 	/// step factor.
 	/// </summary>
-	public async  Task StepUpAsync(double n = -1) 
+	public async  Task StepUpAsync(double n = 1) 
 	                    {
 		await InvokeMethod("stepUp", new object[] { n }, new string[] { "Number" });
 	}
-	                    public  void StepUp(double n = -1) 
+	                    public  void StepUp(double n = 1) 
 	                    {
 		InvokeMethodSync("stepUp", new object[] { n }, new string[] { "Number" });
 	}
@@ -332,11 +324,11 @@ public partial class IgbRating: BaseRendererControl {
 	/// Decrements the value of the control by `n` steps multiplied by
 	/// the step factor.
 	/// </summary>
-	public async  Task StepDownAsync(double n = -1) 
+	public async  Task StepDownAsync(double n = 1) 
 	                    {
 		await InvokeMethod("stepDown", new object[] { n }, new string[] { "Number" });
 	}
-	                    public  void StepDown(double n = -1) 
+	                    public  void StepDown(double n = 1) 
 	                    {
 		InvokeMethodSync("stepDown", new object[] { n }, new string[] { "Number" });
 	}
@@ -408,10 +400,14 @@ public partial class IgbRating: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -497,10 +493,14 @@ public partial class IgbRating: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Hover", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._hoverRef = refName;
-	                this.MarkPropDirty("HoverRef");	
-	        }); 
+	            if (value != this._hoverScript)
+	            {
+	                this._hoverScript = value;
+	                this.OnRefChanged("Hover", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._hoverRef = refName;
+	                    this.MarkPropDirty("HoverRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

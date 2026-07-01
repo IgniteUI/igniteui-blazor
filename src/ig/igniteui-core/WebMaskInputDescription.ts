@@ -1,12 +1,12 @@
-import { WebMaskInputBaseDescription } from "./WebMaskInputBaseDescription";
+import { WebInputBaseDescription } from "./WebInputBaseDescription";
 import { Description } from "./Description";
 import { Base, Type, markType } from "./type";
 
 /**
  * @hidden 
  */
-export class WebMaskInputDescription extends WebMaskInputBaseDescription {
-	static $t: Type = markType(WebMaskInputDescription, 'WebMaskInputDescription', (<any>WebMaskInputBaseDescription).$type);
+export class WebMaskInputDescription extends WebInputBaseDescription {
+	static $t: Type = markType(WebMaskInputDescription, 'WebMaskInputDescription', (<any>WebInputBaseDescription).$type);
 	protected get_type(): string {
 		return "WebMaskInput";
 	}
@@ -36,6 +36,22 @@ export class WebMaskInputDescription extends WebMaskInputBaseDescription {
 	set mask(value: string) {
 		this._mask = value;
 		this.markDirty("Mask");
+	}
+	private _prompt: string = null;
+	get prompt(): string {
+		return this._prompt;
+	}
+	set prompt(value: string) {
+		this._prompt = value;
+		this.markDirty("Prompt");
+	}
+	private _readOnly: boolean = false;
+	get readOnly(): boolean {
+		return this._readOnly;
+	}
+	set readOnly(value: boolean) {
+		this._readOnly = value;
+		this.markDirty("ReadOnly");
 	}
 	private _change: string = null;
 	get changeRef(): string {

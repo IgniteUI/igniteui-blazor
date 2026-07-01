@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbCalendarDate: BaseRendererElement {
                                 public override string Type { get { return "CalendarDate"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

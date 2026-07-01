@@ -150,6 +150,7 @@ namespace IgniteUI.Blazor.Controls
                         currControl.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
                     }
                 }
+                control.RefreshDynamicContent();
             }
         }
     }

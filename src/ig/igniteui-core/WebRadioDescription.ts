@@ -15,6 +15,14 @@ export class WebRadioDescription extends Description {
 	constructor() {
 		super();
 	}
+	private _required: boolean = false;
+	get required(): boolean {
+		return this._required;
+	}
+	set required(value: boolean) {
+		this._required = value;
+		this.markDirty("Required");
+	}
 	private _value: string = null;
 	get value(): string {
 		return this._value;
@@ -46,14 +54,6 @@ export class WebRadioDescription extends Description {
 	set disabled(value: boolean) {
 		this._disabled = value;
 		this.markDirty("Disabled");
-	}
-	private _required: boolean = false;
-	get required(): boolean {
-		return this._required;
-	}
-	set required(value: boolean) {
-		this._required = value;
-		this.markDirty("Required");
 	}
 	private _defaultChecked: boolean = false;
 	get defaultChecked(): boolean {

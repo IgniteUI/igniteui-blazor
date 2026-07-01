@@ -520,11 +520,15 @@ namespace IgniteUI.Blazor.Controls
         } 
 
         internal T ReturnToObject<T>(Object val) {
+            return ReturnToObject<T>(val, null);
+        }
+
+        internal T ReturnToObject<T>(Object val, string? typeGuess) {
             EnsureValid();
             if (CurrParent is BaseRendererElement) {
-                return ((BaseRendererElement) CurrParent).ReturnToObject<T>(val);
+                return ((BaseRendererElement) CurrParent).ReturnToObject<T>(val, typeGuess);
             } else {
-                return ((BaseRendererControl) CurrParent).ReturnToObject<T>(val);
+                return ((BaseRendererControl) CurrParent).ReturnToObject<T>(val, typeGuess);
             }
         }
 
@@ -627,12 +631,15 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    internal T[] ReturnToObjectArray<T>(Object val) {
+  internal T[] ReturnToObjectArray<T>(Object val) {
+        return ReturnToObjectArray<T>(val, null);
+    }
+    internal T[] ReturnToObjectArray<T>(Object val, string typeGuess) {
         EnsureValid();
         if (CurrParent is BaseRendererElement) {
-            return ((BaseRendererElement) CurrParent).ReturnToObjectArray<T>(val);
+            return ((BaseRendererElement) CurrParent).ReturnToObjectArray<T>(val, typeGuess);
         } else {
-            return ((BaseRendererControl) CurrParent).ReturnToObjectArray<T>(val);
+            return ((BaseRendererControl) CurrParent).ReturnToObjectArray<T>(val, typeGuess);
         }
     }
 

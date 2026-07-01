@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbNumberEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebNumberEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

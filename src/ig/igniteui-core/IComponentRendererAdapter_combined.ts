@@ -37,6 +37,7 @@ flushChanges(container: any): void;
 executeMethod(target: any, methodName: string, argumentValues: any[], argumentMetadata: TypeDescriptionMetadata[], value: (arg1: any) => void): void;
 createHandler(eventName: string, eventHandlerTypeName: string, eventArgsTypeName: string, context: TypeDescriptionContext, callback: (arg1: any, arg2: any) => void): any;
 disposeHandler(callback: (arg1: any, arg2: any) => void): void;
+destroyObject(obj: any): void;
 serializeBrush(value: any): any;
 serializeColor(value: any): any;
 serializeBrushCollection(value: any): any;
@@ -171,6 +172,7 @@ export class TypeDescriptionContext extends Base {
 						metadata.addMapping(TypeDescriptionPlatform.XamarinForms, platName);
 						metadata.addMapping(TypeDescriptionPlatform.UWP, platName);
 						metadata.addMapping(TypeDescriptionPlatform.WinUI, platName);
+						metadata.addMapping(TypeDescriptionPlatform.GTK, platName);
 						continue;
 
 						case "w":
@@ -234,7 +236,12 @@ export class TypeDescriptionContext extends Base {
 						metadata.addMapping(TypeDescriptionPlatform.WindowsForms, platName);
 						metadata.addMapping(TypeDescriptionPlatform.Kotlin, platName);
 						metadata.addMapping(TypeDescriptionPlatform.Swift, platName);
+						metadata.addMapping(TypeDescriptionPlatform.GTK, platName);
 						continue;
+
+						case "gtk":
+						platform = TypeDescriptionPlatform.GTK;
+						break;
 
 					}
 

@@ -9,7 +9,8 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// A container for card's header
+/// A container component for the card's header section.
+/// Displays header content including an optional thumbnail, title, subtitle, and additional content.
 /// </summary>
 public partial class IgbCardHeader: BaseRendererControl {
                                 public override string Type { get { return "WebCardHeader"; } }

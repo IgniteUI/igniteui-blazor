@@ -213,7 +213,6 @@ public partial class IgbTreeItem: BaseRendererControl {
 	partial void OnValueChanging(ref object newValue);
 	/// <summary>
 	/// The value entry that the tree item is visualizing. Required for searching through items.
-	/// @type any
 	/// </summary>
 	[Parameter]
 	public object Value 
@@ -303,10 +302,6 @@ public partial class IgbTreeItem: BaseRendererControl {
 	                    {
 		InvokeMethodSync("disconnectedCallback", new object[] {  }, new string[] {  });
 	}
-	/// <summary>
-	/// @private
-	/// Expands the tree item.
-	/// </summary>
 	public async  Task ExpandWithEventAsync() 
 	                    {
 		await InvokeMethod("expandWithEvent", new object[] {  }, new string[] {  });
@@ -315,10 +310,6 @@ public partial class IgbTreeItem: BaseRendererControl {
 	                    {
 		InvokeMethodSync("expandWithEvent", new object[] {  }, new string[] {  });
 	}
-	/// <summary>
-	/// @private
-	/// Collapses the tree item.
-	/// </summary>
 	public async  Task CollapseWithEventAsync() 
 	                    {
 		await InvokeMethod("collapseWithEvent", new object[] {  }, new string[] {  });

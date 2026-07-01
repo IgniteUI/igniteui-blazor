@@ -24,7 +24,7 @@ protected createImplementation() : FormatSpecifier_internal
 	}
 	constructor() {
 	this._implementation = this.createImplementation();
-	(<any>this._implementation).externalObject = this;
+	Object.defineProperty((<any>this._implementation), 'externalObject', { value: this, enumerable: false, configurable: true, writable: true });
 	this.onImplementationCreated();
 	                                if ((this as any)._initializeAdapters) {
 	                                    (this as any)._initializeAdapters();
@@ -33,7 +33,7 @@ protected createImplementation() : FormatSpecifier_internal
 	}
 	protected _provideImplementation(i: any) {
 	    this._implementation = i;
-	    (<any>this._implementation).externalObject = this;
+	    Object.defineProperty((<any>this._implementation), 'externalObject', { value: this, enumerable: false, configurable: true, writable: true });
 	this.onImplementationCreated();
 	                                if ((this as any)._initializeAdapters) {
 	                                    (this as any)._initializeAdapters();

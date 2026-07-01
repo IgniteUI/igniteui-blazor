@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbExpansionPanelComponentEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebExpansionPanelComponentEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

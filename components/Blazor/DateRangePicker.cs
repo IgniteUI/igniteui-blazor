@@ -13,9 +13,8 @@ namespace IgniteUI.Blazor.Controls
                             /// <summary>
 /// The igc-date-range-picker allows the user to select a range of dates.
 /// </summary>
-public partial class IgbDateRangePicker: IgbBaseComboBoxLike {
+public partial class IgbDateRangePicker: IgbComboBoxBaseLike {
                                 public override string Type { get { return "WebDateRangePicker"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -400,7 +399,7 @@ public partial class IgbDateRangePicker: IgbBaseComboBoxLike {
 	partial void OnDisplayFormatChanging(ref string newValue);
 	/// <summary>
 	/// Format to display the value in when not editing.
-	/// Defaults to the input format if not set.
+	/// Defaults to the locale format if not set.
 	/// </summary>
 	[Parameter]
 	public string DisplayFormat 
@@ -811,10 +810,14 @@ public partial class IgbDateRangePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openingRef = refName;
-	                this.MarkPropDirty("OpeningRef");	
-	        }); 
+	            if (value != this._openingScript)
+	            {
+	                this._openingScript = value;
+	                this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openingRef = refName;
+	                    this.MarkPropDirty("OpeningRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -867,10 +870,14 @@ public partial class IgbDateRangePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openedRef = refName;
-	                this.MarkPropDirty("OpenedRef");	
-	        }); 
+	            if (value != this._openedScript)
+	            {
+	                this._openedScript = value;
+	                this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openedRef = refName;
+	                    this.MarkPropDirty("OpenedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -923,10 +930,14 @@ public partial class IgbDateRangePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closingRef = refName;
-	                this.MarkPropDirty("ClosingRef");	
-	        }); 
+	            if (value != this._closingScript)
+	            {
+	                this._closingScript = value;
+	                this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closingRef = refName;
+	                    this.MarkPropDirty("ClosingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -979,10 +990,14 @@ public partial class IgbDateRangePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closedRef = refName;
-	                this.MarkPropDirty("ClosedRef");	
-	        }); 
+	            if (value != this._closedScript)
+	            {
+	                this._closedScript = value;
+	                this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closedRef = refName;
+	                    this.MarkPropDirty("ClosedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -1035,10 +1050,14 @@ public partial class IgbDateRangePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -1128,10 +1147,14 @@ public partial class IgbDateRangePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._inputRef = refName;
-	                this.MarkPropDirty("InputRef");	
-	        }); 
+	            if (value != this._inputScript)
+	            {
+	                this._inputScript = value;
+	                this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._inputRef = refName;
+	                    this.MarkPropDirty("InputRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

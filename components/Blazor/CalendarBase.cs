@@ -109,6 +109,29 @@ namespace IgniteUI.Blazor.Controls
 	                 
 	                }
 	}
+	private IgbCalendarResourceStrings _resourceStrings;
+	
+	partial void OnResourceStringsChanging(ref IgbCalendarResourceStrings newValue);
+	/// <summary>
+	/// The resource strings for localization.
+	/// </summary>
+	[Parameter]
+	public IgbCalendarResourceStrings ResourceStrings 
+	{
+	get { return this._resourceStrings; }
+	set { 
+	                        OnResourceStringsChanging(ref value);
+	                        MarkPropDirty("ResourceStrings"); 
+	                        if (this._resourceStrings != null) {
+	                            this.DetachChild(this._resourceStrings);
+	                        }
+	                        if (value != null) {
+	                            this.AttachChild(value);
+	                        }
+	                        this._resourceStrings = value; 
+	                    }
+	                    
+	}
 	private IgbDateRangeDescriptor[]? _specialDates;
 	
 	partial void OnSpecialDatesChanging(ref IgbDateRangeDescriptor[]? newValue);
@@ -186,6 +209,7 @@ namespace IgniteUI.Blazor.Controls
 	if (IsPropDirty("ShowWeekNumbers")) { ser.AddBooleanProp("showWeekNumbers", this._showWeekNumbers); }
 	if (IsPropDirty("WeekStart")) { ser.AddEnumProp("weekStart", this._weekStart); }
 	if (IsPropDirty("Locale")) { ser.AddStringProp("locale", this._locale); }
+	if (IsPropDirty("ResourceStrings")) { ser.AddSerializableProp("resourceStrings", this._resourceStrings); }
 	if (IsPropDirty("SpecialDates")) { ser.AddSerializableArrayProp("specialDates", this._specialDates); }
 	if (IsPropDirty("DisabledDates")) { ser.AddSerializableArrayProp("disabledDates", this._disabledDates); }
 	

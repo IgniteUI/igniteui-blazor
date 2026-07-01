@@ -1,8 +1,10 @@
 import { JsonDictionaryItem } from "./JsonDictionaryItem";
 import { Dictionary$2 } from "./Dictionary$2";
 import { List$1 } from "./List$1";
+import { JsonDictionaryValue } from "./JsonDictionaryValue";
 import { JsonWriter } from "./JsonWriter";
-import { Base, String_$type, Type, markType } from "./type";
+import { Base, String_$type, typeCast, Type, markType } from "./type";
+import { JsonDictionaryValueType } from "./JsonDictionaryValueType";
 
 /**
  * @hidden 
@@ -13,6 +15,33 @@ export class JsonDictionaryObject extends JsonDictionaryItem {
 	private _items: Dictionary$2<string, JsonDictionaryItem> = new Dictionary$2<string, JsonDictionaryItem>(String_$type, (<any>JsonDictionaryItem).$type, 0);
 	constructor() {
 		super();
+	}
+	hasString(key: string): boolean {
+		return this._items.containsKey(key) && typeCast<JsonDictionaryValue>((<any>JsonDictionaryValue).$type, this._items.item(key)) !== null && (<JsonDictionaryValue>this._items.item(key)).type == JsonDictionaryValueType.StringValue;
+	}
+	hasNumber(key: string): boolean {
+		return this._items.containsKey(key) && typeCast<JsonDictionaryValue>((<any>JsonDictionaryValue).$type, this._items.item(key)) !== null && (<JsonDictionaryValue>this._items.item(key)).type == JsonDictionaryValueType.NumberValue;
+	}
+	hasBoolean(key: string): boolean {
+		return this._items.containsKey(key) && typeCast<JsonDictionaryValue>((<any>JsonDictionaryValue).$type, this._items.item(key)) !== null && (<JsonDictionaryValue>this._items.item(key)).type == JsonDictionaryValueType.BooleanValue;
+	}
+	getString(key: string): string {
+		if (!this.hasString(key)) {
+			return null;
+		}
+		return <string>(<JsonDictionaryValue>this._items.item(key)).value;
+	}
+	getNumber(key: string): number {
+		if (!this.hasNumber(key)) {
+			return NaN;
+		}
+		return <number>(<JsonDictionaryValue>this._items.item(key)).value;
+	}
+	getBoolean(key: string): boolean {
+		if (!this.hasBoolean(key)) {
+			return false;
+		}
+		return <boolean>(<JsonDictionaryValue>this._items.item(key)).value;
 	}
 	addItem(key: string, item: JsonDictionaryItem): void {
 		if (!this._items.containsKey(key)) {

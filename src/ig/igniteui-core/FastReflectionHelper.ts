@@ -30,11 +30,13 @@ export class FastReflectionHelper extends Base {
 			this.updatePropertyName(value);
 		}
 	}
+	private _camelPropertyName: string = null;
 	private _innerHelper: FastReflectionHelper = null;
 	private _isIntIndexer: boolean = false;
 	private _isStringIndexer: boolean = false;
 	private _index: number = -1;
 	private _fullPath: string = null;
+	private _hasCamelPropertyName: boolean = false;
 	private updatePropertyName(propertyName: string): void {
 		this._fullPath = propertyName;
 		this._propertyName = propertyName;
@@ -92,6 +94,19 @@ export class FastReflectionHelper extends Base {
 			this._isStringIndexer = false;
 		}
 		this._propertyName = propertyName;
+		this._camelPropertyName = this.toCamel(this._propertyName);
+		if (this._camelPropertyName != null && !Base.equalsStatic(this._camelPropertyName, this._propertyName)) {
+			this._hasCamelPropertyName = true;
+		}
+	}
+	private toCamel(propertyName: string): string {
+		if (propertyName == null) {
+			return null;
+		}
+		if (propertyName.length < 1) {
+			return propertyName;
+		}
+		return propertyName.substr(0, 1).toLowerCase() + propertyName.substr(1);
 	}
 	private isInteger(propertyName: string): boolean {
 		if (propertyName == null) {
@@ -128,6 +143,9 @@ export class FastReflectionHelper extends Base {
 			ret = from_[this._index];
 		} else {
 			ret = from_[this._propertyName];
+			if (this._hasCamelPropertyName && <boolean>(ret === undefined)) {
+				ret = from_[this._camelPropertyName];
+			}
 		}
 		if (this._innerHelper != null && <boolean>(ret !== undefined)) {
 			return this._innerHelper.getPropertyValue(ret);

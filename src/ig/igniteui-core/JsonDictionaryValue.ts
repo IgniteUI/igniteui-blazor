@@ -48,7 +48,8 @@ export class JsonDictionaryValue extends JsonDictionaryItem {
 			break;
 
 			case JsonDictionaryValueType.StringValue:
-			writer.write("\"" + this.escape(<string>this.value) + "\"");
+			let escaped = this.value != null ? this.escape(<string>this.value) : "";
+			writer.write("\"" + escaped + "\"");
 			break;
 
 		}

@@ -13,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
 /// </summary>
 public partial class IgbSelectItem: IgbBaseOptionLike {
                                 public override string Type { get { return "WebSelectItem"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {

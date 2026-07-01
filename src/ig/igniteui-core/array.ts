@@ -1,5 +1,13 @@
 import { IList, ICollection, IEnumerable, IEnumerable$1, IEnumerator, IEnumerator$1, IteratorWrapper, IList$1, getEnumerator, getEnumeratorObject, Base, Type, Array_$type } from "./type";
 
+	export function arrayCreate(length?: number): any[] {
+		if (length === undefined) {
+			length = 0;
+		}
+		let arr: any[] = new Array(length);
+		return arr;
+	}
+
 	export function arrayCopyTo(source: any[], dest: any[], index: number) {
 		for (var i = 0; i < source.length; i++) {
 			dest[ index++ ] = source[ i ];
@@ -15,6 +23,10 @@ import { IList, ICollection, IEnumerable, IEnumerable$1, IEnumerator, IEnumerato
     }
     export function arrayRemoveAt(target: any[], index: number) {
 		target.splice(index, 1);
+	}
+	export function arrayAdd(target: any[], item: any): number {
+		target.push(item);
+		return target.length - 1;
 	}
 
 	export function arrayRemoveItem(target: any[], item: any) {
@@ -66,6 +78,22 @@ import { IList, ICollection, IEnumerable, IEnumerable$1, IEnumerator, IEnumerato
 		} else {
 			for (i = 0; i < items.length; i++) {
 				target.splice(index++, 0, items[ i ]);
+			}
+		}
+	}
+
+	export function arrayRemoveRange(target: any[], index: number, count: number) {
+		target.splice(index, count);
+	}
+
+	export function arrayRemoveAllInList(target: any[], other: any[]) {
+		let toRemove: Set<any> = new Set();
+		for (let i = 0; i < other.length; i++) {
+			toRemove.add(other[i]);
+		}
+		for (let i = target.length - 1; i >= 0; i--) {
+			if (toRemove.has(target[i])) {
+				target.splice(i, 1);
 			}
 		}
 	}
@@ -314,6 +342,14 @@ export class ArrayBox$1<T> implements IList, IList$1<T>, ICollection, IEnumerabl
             this._target[i] = swap;
         }    
     }
+
+	sort(comparer?: (a: T, b: T) => number): void {
+		if (comparer) {
+			this._target.sort(comparer);
+		} else {
+			this._target.sort();
+		}
+	}
 }
 
 	

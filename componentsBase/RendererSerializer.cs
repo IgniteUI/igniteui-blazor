@@ -287,8 +287,13 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
+            if (Utils.TryGetWCEnumName(value.GetType(), value.ToString(), out var wcName))
+            {
+                _context.Writer.WriteString(propertyName, wcName);
+                return;
+            }
+
             _context.Writer.WriteString(propertyName, Camelize(value.ToString()));
-            //_properties.Add("\"" + propertyName + "\"" + ": \"" + (value.ToString()) + "\"" );
         }
 
         // private String toPascal(String name) {
