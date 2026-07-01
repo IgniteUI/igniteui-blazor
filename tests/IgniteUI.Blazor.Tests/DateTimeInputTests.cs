@@ -83,10 +83,4 @@ public class DateTimeInputTests : BlazorComponentTestBase
 
         Assert.NotNull(cut.Find("igc-date-time-input").GetAttribute("outlined"));
     }
-
-    [Fact]
-    public void DateTimeInput_InheritsFromMaskInputBase()
-    {
-        Assert.True(typeof(IgbDateTimeInput).IsSubclassOf(typeof(IgbMaskInputBase)));
-    }
 }

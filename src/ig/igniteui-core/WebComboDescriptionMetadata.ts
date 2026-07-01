@@ -4,6 +4,7 @@ import { Dictionary$2 } from "./Dictionary$2";
 import { WebFilteringOptionsDescriptionMetadata } from "./WebFilteringOptionsDescriptionMetadata";
 import { WebComboChangeEventArgsDescriptionMetadata } from "./WebComboChangeEventArgsDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
+import { WebBaseComboBoxDescriptionMetadata } from "./WebBaseComboBoxDescriptionMetadata";
 import { WebComboDescription } from "./WebComboDescription";
 
 /**
@@ -26,6 +27,7 @@ export class WebComboDescriptionMetadata extends Base {
 		VoidEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
+		WebBaseComboBoxDescriptionMetadata.fillMetadata(metadata);
 		metadata.item("__qualifiedNameTS", "String:Combo");
 		metadata.item("__tagNameWC", "String:igc-combo");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
@@ -35,10 +37,10 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("SingleSelect", "Boolean");
 		metadata.item("Autofocus", "Boolean");
 		metadata.item("AutofocusList", "Boolean");
+		metadata.item("Locale", "String");
 		metadata.item("Label", "String");
 		metadata.item("Placeholder", "String");
 		metadata.item("PlaceholderSearch", "String");
-		metadata.item("Open", "Boolean");
 		metadata.item("ValueKey", "String");
 		metadata.item("DisplayKey", "String");
 		metadata.item("GroupKey", "String");
@@ -48,6 +50,7 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("FilteringOptions", "ExportedType:WebFilteringOptions");
 		metadata.item("CaseSensitiveIcon", "Boolean");
 		metadata.item("DisableFiltering", "Boolean");
+		metadata.item("DisableClear", "Boolean");
 		metadata.item("Value", "Array:object");
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
@@ -72,6 +75,7 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("ClosedRef@args", "VoidEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
+		WebBaseComboBoxDescriptionMetadata.register(context);
 		WebComboDescriptionMetadata.ensureMetadata(context);
 		context.registerDescriptionConstructor("WebCombo", () => new WebComboDescription());
 		context.register("WebCombo", WebComboDescriptionMetadata._metadata);

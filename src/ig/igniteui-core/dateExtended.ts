@@ -194,6 +194,8 @@ export function dateToStringFormat(value: Date, format: string, provider?: Cultu
         case "Y": // year/month
         case "y":
             return applyFormat(format, { year: "numeric", month: "long" });
+        case "o": // ISO 8601
+            return value.toISOString();
     }
     result = format;
     var year = value.getFullYear().toString();

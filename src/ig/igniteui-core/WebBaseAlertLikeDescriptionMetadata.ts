@@ -28,6 +28,9 @@ export class WebBaseAlertLikeDescriptionMetadata extends Base {
 		metadata.item("Position", "ExportedType:string:AbsolutePosition");
 		metadata.item("Position@stringUnion", "WebComponents;React");
 		metadata.item("Position@names", "Bottom;Middle;Top");
+		metadata.item("Positioning", "ExportedType:string:NotificationPositioning");
+		metadata.item("Positioning@stringUnion", "WebComponents;React");
+		metadata.item("Positioning@names", "Viewport;Container");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebBaseAlertLikeDescriptionMetadata.ensureMetadata(context);

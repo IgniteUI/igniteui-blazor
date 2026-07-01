@@ -28,13 +28,13 @@ export class WebRadioDescriptionMetadata extends Base {
 		metadata.item("__tagNameWC", "String:igc-radio");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
+		metadata.item("Required", "Boolean");
 		metadata.item("Value", "String");
 		metadata.item("Checked", "Boolean");
 		metadata.item("LabelPosition", "ExportedType:string:ToggleLabelPosition");
 		metadata.item("LabelPosition@stringUnion", "WebComponents;React");
 		metadata.item("LabelPosition@names", "After;Before");
 		metadata.item("Disabled", "Boolean");
-		metadata.item("Required", "Boolean");
 		metadata.item("DefaultChecked", "Boolean");
 		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");

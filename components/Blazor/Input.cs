@@ -8,12 +8,8 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// 
-/// </summary>
-public partial class IgbInput: IgbInputBase {
+                            public partial class IgbInput: IgbInputBase {
                                 public override string Type { get { return "WebInput"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -104,6 +100,25 @@ public partial class IgbInput: IgbInputBase {
 	                        MarkPropDirty("DisplayType");
 	                } 
 	                this._displayType = value;
+	                 
+	                }
+	}
+	private bool _readOnly = false;
+	
+	partial void OnReadOnlyChanging(ref bool newValue);
+	/// <summary>
+	/// Makes the control a readonly field.
+	/// </summary>
+	[Parameter]
+	[WCAttributeName("readonly")]
+	public bool ReadOnly 
+	{
+	get { return this._readOnly; }
+	set { 
+	                if (this._readOnly != value || !IsPropDirty("ReadOnly")) {
+	                        MarkPropDirty("ReadOnly");
+	                } 
+	                this._readOnly = value;
 	                 
 	                }
 	}
@@ -313,17 +328,6 @@ public partial class IgbInput: IgbInputBase {
 	        return null;
 	    }
 	/// <summary>
-	/// Selects all text within the input.
-	/// </summary>
-	public async  Task SelectAsync() 
-	                    {
-		await InvokeMethod("select", new object[] {  }, new string[] {  });
-	}
-	                    public  void Select() 
-	                    {
-		InvokeMethodSync("select", new object[] {  }, new string[] {  });
-	}
-	/// <summary>
 	/// Increments the numeric value of the input by one or more steps.
 	/// </summary>
 	public async  Task StepUpAsync(double n = -1) 
@@ -379,10 +383,14 @@ public partial class IgbInput: IgbInputBase {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -473,6 +481,7 @@ public partial class IgbInput: IgbInputBase {
 	
 	if (IsPropDirty("Value")) { ser.AddStringProp("value", this._value); }
 	if (IsPropDirty("DisplayType")) { ser.AddEnumProp("displayType", this._displayType); }
+	if (IsPropDirty("ReadOnly")) { ser.AddBooleanProp("readOnly", this._readOnly); }
 	if (IsPropDirty("InputMode")) { ser.AddStringProp("inputMode", this._inputMode); }
 	if (IsPropDirty("Pattern")) { ser.AddStringProp("pattern", this._pattern); }
 	if (IsPropDirty("MinLength")) { ser.AddNumberProp("minLength", this._minLength); }

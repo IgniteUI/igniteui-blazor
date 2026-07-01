@@ -1,4 +1,5 @@
 import { Description } from "./Description";
+import { WebCalendarResourceStringsDescription } from "./WebCalendarResourceStringsDescription";
 import { DateRangeDescriptorDescription } from "./DateRangeDescriptorDescription";
 import { Base, Type, markType } from "./type";
 
@@ -47,6 +48,14 @@ export class WebCalendarBaseDescription extends Description {
 	set locale(value: string) {
 		this._locale = value;
 		this.markDirty("Locale");
+	}
+	private _resourceStrings: WebCalendarResourceStringsDescription = null;
+	get resourceStrings(): WebCalendarResourceStringsDescription {
+		return this._resourceStrings;
+	}
+	set resourceStrings(value: WebCalendarResourceStringsDescription) {
+		this._resourceStrings = value;
+		this.markDirty("ResourceStrings");
 	}
 	private _specialDates: DateRangeDescriptorDescription[] = null;
 	get specialDates(): DateRangeDescriptorDescription[] {

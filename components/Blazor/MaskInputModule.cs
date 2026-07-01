@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
         public static void Register(IIgniteUIBlazor runtime) {
             ModuleLoader.Load(runtime, "WebMaskInputModule");
 
-            IgbMaskInputBaseModule.MarkIsLoadRequested(runtime);
+            IgbInputBaseModule.MarkIsLoadRequested(runtime);
 
         }
 

@@ -2,7 +2,6 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { CalendarFormatOptionsDescriptionMetadata } from "./CalendarFormatOptionsDescriptionMetadata";
-import { WebCalendarResourceStringsDescriptionMetadata } from "./WebCalendarResourceStringsDescriptionMetadata";
 import { WebComponentDataValueChangedEventArgsDescriptionMetadata } from "./WebComponentDataValueChangedEventArgsDescriptionMetadata";
 import { WebCalendarBaseDescriptionMetadata } from "./WebCalendarBaseDescriptionMetadata";
 import { WebCalendarDescription } from "./WebCalendarDescription";
@@ -23,7 +22,6 @@ export class WebCalendarDescriptionMetadata extends Base {
 		}
 		context.markSeen(WebCalendarDescriptionMetadata._metadata);
 		CalendarFormatOptionsDescriptionMetadata.register(context);
-		WebCalendarResourceStringsDescriptionMetadata.register(context);
 		WebComponentDataValueChangedEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
@@ -48,7 +46,6 @@ export class WebCalendarDescriptionMetadata extends Base {
 		metadata.item("ActiveView@stringUnion", "WebComponents;React");
 		metadata.item("ActiveView@names", "Days;Months;Years");
 		metadata.item("FormatOptions", "ExportedType:CalendarFormatOptions");
-		metadata.item("ResourceStrings", "ExportedType:WebCalendarResourceStrings");
 		metadata.item("ChangeRef", "EventRef:ComponentDataValueChangedEventHandler:change");
 		metadata.item("ChangeRef@args", "ComponentDataValueChangedEventArgs");
 	}

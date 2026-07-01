@@ -31,6 +31,7 @@ export class WebBadgeDescriptionMetadata extends Base {
 		metadata.item("Shape", "ExportedType:string:BadgeShape");
 		metadata.item("Shape@stringUnion", "WebComponents;React");
 		metadata.item("Shape@names", "Rounded;Square");
+		metadata.item("Dot", "Boolean");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebBadgeDescriptionMetadata.ensureMetadata(context);

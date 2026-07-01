@@ -916,6 +916,8 @@ export class ComponentRendererAdapter implements IComponentRendererAdapter {
     disposeHandler(callback: (arg1: any, arg2: any) => void) {
 
     }
+    destroyObject(obj: any): void {
+    }
 
 }
 

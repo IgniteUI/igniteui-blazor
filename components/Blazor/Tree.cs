@@ -155,17 +155,6 @@ public partial class IgbTree: BaseRendererControl {
 	                    {
 		InvokeMethodSync("connectedCallback", new object[] {  }, new string[] {  });
 	}
-	/// <summary>
-	/// @private
-	/// </summary>
-	public async  Task ExpandToItemAsync(IgbTreeItem item) 
-	                    {
-		await InvokeMethod("expandToItem", new object[] { ObjectToParam(item) }, new string[] { "Json" });
-	}
-	                    public  void ExpandToItem(IgbTreeItem item) 
-	                    {
-		InvokeMethodSync("expandToItem", new object[] { ObjectToParam(item) }, new string[] { "Json" });
-	}
 	
 	    private string _selectionChangedRef = null;
 	    private string _selectionChangedScript = null;
@@ -174,10 +163,14 @@ public partial class IgbTree: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("SelectionChanged", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._selectionChangedRef = refName;
-	                this.MarkPropDirty("SelectionChangedRef");	
-	        }); 
+	            if (value != this._selectionChangedScript)
+	            {
+	                this._selectionChangedScript = value;
+	                this.OnRefChanged("SelectionChanged", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._selectionChangedRef = refName;
+	                    this.MarkPropDirty("SelectionChangedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -230,10 +223,14 @@ public partial class IgbTree: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("ItemExpanding", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._itemExpandingRef = refName;
-	                this.MarkPropDirty("ItemExpandingRef");	
-	        }); 
+	            if (value != this._itemExpandingScript)
+	            {
+	                this._itemExpandingScript = value;
+	                this.OnRefChanged("ItemExpanding", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._itemExpandingRef = refName;
+	                    this.MarkPropDirty("ItemExpandingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -286,10 +283,14 @@ public partial class IgbTree: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("ItemExpanded", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._itemExpandedRef = refName;
-	                this.MarkPropDirty("ItemExpandedRef");	
-	        }); 
+	            if (value != this._itemExpandedScript)
+	            {
+	                this._itemExpandedScript = value;
+	                this.OnRefChanged("ItemExpanded", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._itemExpandedRef = refName;
+	                    this.MarkPropDirty("ItemExpandedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -342,10 +343,14 @@ public partial class IgbTree: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("ItemCollapsing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._itemCollapsingRef = refName;
-	                this.MarkPropDirty("ItemCollapsingRef");	
-	        }); 
+	            if (value != this._itemCollapsingScript)
+	            {
+	                this._itemCollapsingScript = value;
+	                this.OnRefChanged("ItemCollapsing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._itemCollapsingRef = refName;
+	                    this.MarkPropDirty("ItemCollapsingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -398,10 +403,14 @@ public partial class IgbTree: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("ItemCollapsed", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._itemCollapsedRef = refName;
-	                this.MarkPropDirty("ItemCollapsedRef");	
-	        }); 
+	            if (value != this._itemCollapsedScript)
+	            {
+	                this._itemCollapsedScript = value;
+	                this.OnRefChanged("ItemCollapsed", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._itemCollapsedRef = refName;
+	                    this.MarkPropDirty("ItemCollapsedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -454,10 +463,14 @@ public partial class IgbTree: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("ActiveItem", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._activeItemRef = refName;
-	                this.MarkPropDirty("ActiveItemRef");	
-	        }); 
+	            if (value != this._activeItemScript)
+	            {
+	                this._activeItemScript = value;
+	                this.OnRefChanged("ActiveItem", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._activeItemRef = refName;
+	                    this.MarkPropDirty("ActiveItemRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

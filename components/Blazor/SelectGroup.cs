@@ -8,10 +8,7 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// 
-/// </summary>
-public partial class IgbSelectGroup: BaseRendererControl {
+                            public partial class IgbSelectGroup: BaseRendererControl {
                                 public override string Type { get { return "WebSelectGroup"; } }
 
                                 protected override void EnsureModulesLoaded()

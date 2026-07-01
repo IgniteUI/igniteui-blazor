@@ -9,7 +9,9 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// A container which wraps different elements related to a single subject
+/// A container component that wraps different elements related to a single subject.
+/// The card component provides a flexible container for organizing content such as headers,
+/// media, text content, and actions.
 /// </summary>
 public partial class IgbCard: BaseRendererControl {
                                 public override string Type { get { return "WebCard"; } }
@@ -68,7 +70,8 @@ public partial class IgbCard: BaseRendererControl {
 	
 	partial void OnElevatedChanging(ref bool newValue);
 	/// <summary>
-	/// Sets card elevated style, otherwise card looks outlined.
+	/// Sets the card to have an elevated appearance with shadow.
+	/// When false, the card uses an outlined style with a border.
 	/// </summary>
 	[Parameter]
 	public bool Elevated 

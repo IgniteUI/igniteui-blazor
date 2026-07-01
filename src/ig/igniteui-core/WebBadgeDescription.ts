@@ -39,6 +39,14 @@ export class WebBadgeDescription extends Description {
 		this._shape = value;
 		this.markDirty("Shape");
 	}
+	private _dot: boolean = false;
+	get dot(): boolean {
+		return this._dot;
+	}
+	set dot(value: boolean) {
+		this._dot = value;
+		this.markDirty("Dot");
+	}
 }
 
 

@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbComponentDateValueChangedEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebComponentDateValueChangedEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

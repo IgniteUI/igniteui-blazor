@@ -11,9 +11,8 @@ namespace IgniteUI.Blazor.Controls
                             /// <summary>
 /// Represents a DropDown component.
 /// </summary>
-public partial class IgbDropdown: IgbBaseComboBoxLike {
+public partial class IgbDropdown: IgbComboBoxBaseLike {
                                 public override string Type { get { return "WebDropdown"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -364,10 +363,14 @@ public partial class IgbDropdown: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openingRef = refName;
-	                this.MarkPropDirty("OpeningRef");	
-	        }); 
+	            if (value != this._openingScript)
+	            {
+	                this._openingScript = value;
+	                this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openingRef = refName;
+	                    this.MarkPropDirty("OpeningRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -420,10 +423,14 @@ public partial class IgbDropdown: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openedRef = refName;
-	                this.MarkPropDirty("OpenedRef");	
-	        }); 
+	            if (value != this._openedScript)
+	            {
+	                this._openedScript = value;
+	                this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openedRef = refName;
+	                    this.MarkPropDirty("OpenedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -476,10 +483,14 @@ public partial class IgbDropdown: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closingRef = refName;
-	                this.MarkPropDirty("ClosingRef");	
-	        }); 
+	            if (value != this._closingScript)
+	            {
+	                this._closingScript = value;
+	                this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closingRef = refName;
+	                    this.MarkPropDirty("ClosingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -532,10 +543,14 @@ public partial class IgbDropdown: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closedRef = refName;
-	                this.MarkPropDirty("ClosedRef");	
-	        }); 
+	            if (value != this._closedScript)
+	            {
+	                this._closedScript = value;
+	                this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closedRef = refName;
+	                    this.MarkPropDirty("ClosedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -588,10 +603,14 @@ public partial class IgbDropdown: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

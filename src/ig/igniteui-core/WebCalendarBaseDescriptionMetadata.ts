@@ -1,6 +1,7 @@
 import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
+import { WebCalendarResourceStringsDescriptionMetadata } from "./WebCalendarResourceStringsDescriptionMetadata";
 import { DateRangeDescriptorDescriptionMetadata } from "./DateRangeDescriptorDescriptionMetadata";
 import { WebCalendarBaseDescription } from "./WebCalendarBaseDescription";
 
@@ -19,6 +20,7 @@ export class WebCalendarBaseDescriptionMetadata extends Base {
 			return;
 		}
 		context.markSeen(WebCalendarBaseDescriptionMetadata._metadata);
+		WebCalendarResourceStringsDescriptionMetadata.register(context);
 		DateRangeDescriptorDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
@@ -34,6 +36,7 @@ export class WebCalendarBaseDescriptionMetadata extends Base {
 		metadata.item("WeekStart@stringUnion", "WebComponents;React");
 		metadata.item("WeekStart@names", "Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday");
 		metadata.item("Locale", "String");
+		metadata.item("ResourceStrings", "ExportedType:WebCalendarResourceStrings");
 		metadata.item("SpecialDates", "Array:DateRangeDescriptorDescription:IDateRangeDescriptor");
 		metadata.item("DisabledDates", "Array:DateRangeDescriptorDescription:IDateRangeDescriptor");
 	}

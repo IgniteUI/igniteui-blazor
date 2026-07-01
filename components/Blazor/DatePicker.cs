@@ -12,9 +12,8 @@ namespace IgniteUI.Blazor.Controls
 /// igc-date-picker is a feature rich component used for entering a date through manual text input or
 /// choosing date values from a calendar dialog that pops up.
 /// </summary>
-public partial class IgbDatePicker: IgbBaseComboBoxLike {
+public partial class IgbDatePicker: IgbComboBoxBaseLike {
                                 public override string Type { get { return "WebDatePicker"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -386,7 +385,7 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	partial void OnDisplayFormatChanging(ref string newValue);
 	/// <summary>
 	/// Format to display the value in when not editing.
-	/// Defaults to the input format if not set.
+	/// Defaults to the locale format if not set.
 	/// </summary>
 	[Parameter]
 	public string DisplayFormat 
@@ -419,24 +418,6 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	                 
 	                }
 	}
-	private string _locale;
-	
-	partial void OnLocaleChanging(ref string newValue);
-	/// <summary>
-	/// The locale settings used to display the value.
-	/// </summary>
-	[Parameter]
-	public string Locale 
-	{
-	get { return this._locale; }
-	set { 
-	                if (this._locale != value || !IsPropDirty("Locale")) {
-	                        MarkPropDirty("Locale");
-	                } 
-	                this._locale = value;
-	                 
-	                }
-	}
 	private string _prompt;
 	
 	partial void OnPromptChanging(ref string newValue);
@@ -455,11 +436,29 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	                 
 	                }
 	}
+	private string _locale;
+	
+	partial void OnLocaleChanging(ref string newValue);
+	/// <summary>
+	/// Gets/Sets the locale used for formatting the display value.
+	/// </summary>
+	[Parameter]
+	public string Locale 
+	{
+	get { return this._locale; }
+	set { 
+	                if (this._locale != value || !IsPropDirty("Locale")) {
+	                        MarkPropDirty("Locale");
+	                } 
+	                this._locale = value;
+	                 
+	                }
+	}
 	private IgbCalendarResourceStrings _resourceStrings;
 	
 	partial void OnResourceStringsChanging(ref IgbCalendarResourceStrings newValue);
 	/// <summary>
-	/// The resource strings of the calendar.
+	/// The resource strings for localization.
 	/// </summary>
 	[Parameter]
 	public IgbCalendarResourceStrings ResourceStrings 
@@ -581,19 +580,19 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	                    {
 		InvokeMethodSync("clear", new object[] {  }, new string[] {  });
 	}
-	public async  Task StepUpAsync(DatePart datePart, double delta = -1) 
+	public async  Task StepUpAsync(DatePart? datePart = null, double delta = -1) 
 	                    {
 		await InvokeMethod("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
 	}
-	                    public  void StepUp(DatePart datePart, double delta = -1) 
+	                    public  void StepUp(DatePart? datePart = null, double delta = -1) 
 	                    {
 		InvokeMethodSync("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
 	}
-	public async  Task StepDownAsync(DatePart datePart, double delta = -1) 
+	public async  Task StepDownAsync(DatePart? datePart = null, double delta = -1) 
 	                    {
 		await InvokeMethod("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
 	}
-	                    public  void StepDown(DatePart datePart, double delta = -1) 
+	                    public  void StepDown(DatePart? datePart = null, double delta = -1) 
 	                    {
 		InvokeMethodSync("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
 	}
@@ -607,22 +606,6 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	                    public  void Select() 
 	                    {
 		InvokeMethodSync("select", new object[] {  }, new string[] {  });
-	}
-	public async  Task SetSelectionRangeAsync(double start, double end, SelectionRangeDirection direction) 
-	                    {
-		await InvokeMethod("setSelectionRange", new object[] { start, end, ObjectToParam(direction, typeof(SelectionRangeDirection)) }, new string[] { "Number", "Number", "Json" });
-	}
-	                    public  void SetSelectionRange(double start, double end, SelectionRangeDirection direction) 
-	                    {
-		InvokeMethodSync("setSelectionRange", new object[] { start, end, ObjectToParam(direction, typeof(SelectionRangeDirection)) }, new string[] { "Number", "Number", "Json" });
-	}
-	public async  Task SetRangeTextAsync(String replacement, double start, double end, RangeTextSelectMode mode) 
-	                    {
-		await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, ObjectToParam(mode, typeof(RangeTextSelectMode)) }, new string[] { "String", "Number", "Number", "Json" });
-	}
-	                    public  void SetRangeText(String replacement, double start, double end, RangeTextSelectMode mode) 
-	                    {
-		InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, ObjectToParam(mode, typeof(RangeTextSelectMode)) }, new string[] { "String", "Number", "Number", "Json" });
 	}
 	/// <summary>
 	/// Checks for validity of the control and shows the browser message if it invalid.
@@ -692,10 +675,14 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openingRef = refName;
-	                this.MarkPropDirty("OpeningRef");	
-	        }); 
+	            if (value != this._openingScript)
+	            {
+	                this._openingScript = value;
+	                this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openingRef = refName;
+	                    this.MarkPropDirty("OpeningRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -748,10 +735,14 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openedRef = refName;
-	                this.MarkPropDirty("OpenedRef");	
-	        }); 
+	            if (value != this._openedScript)
+	            {
+	                this._openedScript = value;
+	                this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openedRef = refName;
+	                    this.MarkPropDirty("OpenedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -804,10 +795,14 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closingRef = refName;
-	                this.MarkPropDirty("ClosingRef");	
-	        }); 
+	            if (value != this._closingScript)
+	            {
+	                this._closingScript = value;
+	                this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closingRef = refName;
+	                    this.MarkPropDirty("ClosingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -860,10 +855,14 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closedRef = refName;
-	                this.MarkPropDirty("ClosedRef");	
-	        }); 
+	            if (value != this._closedScript)
+	            {
+	                this._closedScript = value;
+	                this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closedRef = refName;
+	                    this.MarkPropDirty("ClosedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -916,10 +915,14 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -1005,10 +1008,14 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._inputRef = refName;
-	                this.MarkPropDirty("InputRef");	
-	        }); 
+	            if (value != this._inputScript)
+	            {
+	                this._inputScript = value;
+	                this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._inputRef = refName;
+	                    this.MarkPropDirty("InputRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -1084,8 +1091,8 @@ public partial class IgbDatePicker: IgbBaseComboBoxLike {
 	if (IsPropDirty("ShowWeekNumbers")) { ser.AddBooleanProp("showWeekNumbers", this._showWeekNumbers); }
 	if (IsPropDirty("DisplayFormat")) { ser.AddStringProp("displayFormat", this._displayFormat); }
 	if (IsPropDirty("InputFormat")) { ser.AddStringProp("inputFormat", this._inputFormat); }
-	if (IsPropDirty("Locale")) { ser.AddStringProp("locale", this._locale); }
 	if (IsPropDirty("Prompt")) { ser.AddStringProp("prompt", this._prompt); }
+	if (IsPropDirty("Locale")) { ser.AddStringProp("locale", this._locale); }
 	if (IsPropDirty("ResourceStrings")) { ser.AddSerializableProp("resourceStrings", this._resourceStrings); }
 	if (IsPropDirty("WeekStart")) { ser.AddEnumProp("weekStart", this._weekStart); }
 	if (IsPropDirty("Disabled")) { ser.AddBooleanProp("disabled", this._disabled); }

@@ -1,3 +1,4 @@
+import { WebBaseComboBoxDescription } from "./WebBaseComboBoxDescription";
 import { Description } from "./Description";
 import { WebFilteringOptionsDescription } from "./WebFilteringOptionsDescription";
 import { Base, Type, markType } from "./type";
@@ -5,13 +6,10 @@ import { Base, Type, markType } from "./type";
 /**
  * @hidden 
  */
-export class WebComboDescription extends Description {
-	static $t: Type = markType(WebComboDescription, 'WebComboDescription', (<any>Description).$type);
+export class WebComboDescription extends WebBaseComboBoxDescription {
+	static $t: Type = markType(WebComboDescription, 'WebComboDescription', (<any>WebBaseComboBoxDescription).$type);
 	protected get_type(): string {
 		return "WebCombo";
-	}
-	get type(): string {
-		return this.get_type();
 	}
 	constructor() {
 		super();
@@ -56,6 +54,14 @@ export class WebComboDescription extends Description {
 		this._autofocusList = value;
 		this.markDirty("AutofocusList");
 	}
+	private _locale: string = null;
+	get locale(): string {
+		return this._locale;
+	}
+	set locale(value: string) {
+		this._locale = value;
+		this.markDirty("Locale");
+	}
 	private _label: string = null;
 	get label(): string {
 		return this._label;
@@ -79,14 +85,6 @@ export class WebComboDescription extends Description {
 	set placeholderSearch(value: string) {
 		this._placeholderSearch = value;
 		this.markDirty("PlaceholderSearch");
-	}
-	private _open: boolean = false;
-	get open(): boolean {
-		return this._open;
-	}
-	set open(value: boolean) {
-		this._open = value;
-		this.markDirty("Open");
 	}
 	private _valueKey: string = null;
 	get valueKey(): string {
@@ -143,6 +141,14 @@ export class WebComboDescription extends Description {
 	set disableFiltering(value: boolean) {
 		this._disableFiltering = value;
 		this.markDirty("DisableFiltering");
+	}
+	private _disableClear: boolean = false;
+	get disableClear(): boolean {
+		return this._disableClear;
+	}
+	set disableClear(value: boolean) {
+		this._disableClear = value;
+		this.markDirty("DisableClear");
 	}
 	private _value: any[] = null;
 	get value(): any[] {

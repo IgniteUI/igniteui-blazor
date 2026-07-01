@@ -11,9 +11,6 @@ namespace IgniteUI.Blazor.Controls
                             /// <summary>
 /// Allows formatting the values of the slider as string values.
 /// The text content of the slider labels is used for thumb and tick labels.
-/// @remarks
-/// When slider labels are provided, the `min`, `max` and `step` properties are automatically
-/// calculated so that they do not allow values that do not map to the provided labels.
 /// </summary>
 public partial class IgbSliderLabel: BaseRendererControl {
                                 public override string Type { get { return "WebSliderLabel"; } }

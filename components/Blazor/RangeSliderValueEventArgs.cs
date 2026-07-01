@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbRangeSliderValueEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebRangeSliderValueEventArgs"; } }
+
 	
 	    public IgbRangeSliderValueEventArgs(): base() {
 	        OnCreatedIgbRangeSliderValueEventArgs();

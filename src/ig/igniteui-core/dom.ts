@@ -39,6 +39,8 @@ export let DomRenderer_$type = new Type(null, "DomRenderer");
 
 export interface DomWrapper {
     getNativeElement(): any;
+    extractElement(index: number): HTMLElement;
+    injectElement(index: number, element: HTMLElement): void;
     addClass(className: string): DomWrapper
     removeClass(className: string): DomWrapper
     setProperty(propertyName: string, value: any): DomWrapper;
@@ -82,6 +84,20 @@ export interface DomWrapper {
     destroy(): void;
 }
 export let DomWrapper_$type = new Type(null, "DomWrapper");
+
+export function extractNativeElement(wrapper: DomWrapper): HTMLElement {
+    if (wrapper == null) {
+        return null;
+    }
+    return <HTMLElement>wrapper.getNativeElement();
+}
+
+export function extractNativeElementCount(wrapper: DomWrapper): number {
+    if (wrapper == null) {
+        return 0;
+    }
+    return wrapper.getNativeElement() ? 1 : 0;
+}
 
 export interface DomPortal {
     componentRef: any;

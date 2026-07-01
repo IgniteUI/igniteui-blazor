@@ -9,10 +9,7 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// IgxStepper provides a wizard-like workflow by dividing content into logical steps.
-/// @remarks
-/// The stepper component allows the user to navigate between multiple steps.
-/// It supports horizontal and vertical orientation as well as keyboard navigation and provides API methods to control the active step.
+/// A stepper component that provides a wizard-like workflow by dividing content into logical steps.
 /// </summary>
 public partial class IgbStepper: BaseRendererControl {
                                 public override string Type { get { return "WebStepper"; } }
@@ -67,31 +64,43 @@ public partial class IgbStepper: BaseRendererControl {
 	
 	    partial void OnCreatedIgbStepper();
 	    
-	private IgbStep[] _steps;
+	public async Task<IgbStep[]> GetStepsAsync()
+	                    {
+		var iv = await InvokeMethod("p:Steps", new object[] { }, new string[] { });
+		
+	    if (iv == null) 
+	    {
+	        return default(IgbStep[]);
+	    }
+	    var retVal = ReturnToObjectArray<IgbStep>(iv);
+	    if (retVal == null) 
+	    {
+	        return default(IgbStep[]);
+	    }
+	    return retVal;
 	
-	partial void OnStepsChanging(ref IgbStep[] newValue);
-	/// <summary>
-	/// Returns all of the stepper's steps.
-	/// </summary>
-	[Parameter]
-	public IgbStep[] Steps 
-	{
-	get { return this._steps; }
-	set { 
-	                if (this._steps != value || !IsPropDirty("Steps")) {
-	                        MarkPropDirty("Steps");
-	                } 
-	                this._steps = value;
-	                 
-	                }
+	}
+	                    public IgbStep[] GetSteps()
+	                    {
+		var iv = InvokeMethodSync("p:Steps", new object[] { }, new string[] { });
+		
+	    if (iv == null) 
+	    {
+	        return default(IgbStep[]);
+	    }
+	    var retVal = ReturnToObjectArray<IgbStep>(iv);
+	    if (retVal == null) 
+	    {
+	        return default(IgbStep[]);
+	    }
+	    return retVal;
+	
 	}
 	private StepperOrientation _orientation = StepperOrientation.Horizontal;
 	
 	partial void OnOrientationChanging(ref StepperOrientation newValue);
 	/// <summary>
-	/// Gets/Sets the orientation of the stepper.
-	/// @remarks
-	/// Default value is `horizontal`.
+	/// The orientation of the stepper.
 	/// </summary>
 	[Parameter]
 	public StepperOrientation Orientation 
@@ -109,9 +118,7 @@ public partial class IgbStepper: BaseRendererControl {
 	
 	partial void OnStepTypeChanging(ref StepperStepType newValue);
 	/// <summary>
-	/// Get/Set the type of the steps.
-	/// @remarks
-	/// Default value is `full`.
+	/// The visual type of the steps.
 	/// </summary>
 	[Parameter]
 	public StepperStepType StepType 
@@ -129,9 +136,7 @@ public partial class IgbStepper: BaseRendererControl {
 	
 	partial void OnLinearChanging(ref bool newValue);
 	/// <summary>
-	/// Get/Set whether the stepper is linear.
-	/// @remarks
-	/// If the stepper is in linear mode and if the active step is valid only then the user is able to move forward.
+	/// Whether the stepper is linear.
 	/// </summary>
 	[Parameter]
 	public bool Linear 
@@ -149,9 +154,7 @@ public partial class IgbStepper: BaseRendererControl {
 	
 	partial void OnContentTopChanging(ref bool newValue);
 	/// <summary>
-	/// Get/Set whether the content is displayed above the steps.
-	/// @remarks
-	/// Default value is `false` and the content is below the steps.
+	/// Whether the content is displayed above the steps.
 	/// </summary>
 	[Parameter]
 	public bool ContentTop 
@@ -205,7 +208,7 @@ public partial class IgbStepper: BaseRendererControl {
 	
 	partial void OnAnimationDurationChanging(ref double newValue);
 	/// <summary>
-	/// The animation duration in either vertical or horizontal mode.
+	/// The animation duration in either vertical or horizontal mode in milliseconds.
 	/// </summary>
 	[Parameter]
 	public double AnimationDuration 
@@ -223,11 +226,7 @@ public partial class IgbStepper: BaseRendererControl {
 	
 	partial void OnTitlePositionChanging(ref StepperTitlePosition newValue);
 	/// <summary>
-	/// Get/Set the position of the steps title.
-	/// @remarks
-	/// The default value is auto.
-	/// When the stepper is horizontally orientated the title is positioned below the indicator.
-	/// When the stepper is horizontally orientated the title is positioned on the right side of the indicator.
+	/// The position of the steps title.
 	/// </summary>
 	[Parameter]
 	public StepperTitlePosition TitlePosition 
@@ -269,14 +268,6 @@ public partial class IgbStepper: BaseRendererControl {
 	                    {
 		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
 	}
-	public async  Task ConnectedCallbackAsync() 
-	                    {
-		await InvokeMethod("connectedCallback", new object[] {  }, new string[] {  });
-	}
-	                    public  void ConnectedCallback() 
-	                    {
-		InvokeMethodSync("connectedCallback", new object[] {  }, new string[] {  });
-	}
 	/// <summary>
 	/// Activates the step at a given index.
 	/// </summary>
@@ -312,8 +303,6 @@ public partial class IgbStepper: BaseRendererControl {
 	}
 	/// <summary>
 	/// Resets the stepper to its initial state i.e. activates the first step.
-	/// @remarks
-	/// The steps' content will not be automatically reset.
 	/// </summary>
 	public async  Task ResetAsync() 
 	                    {
@@ -331,10 +320,14 @@ public partial class IgbStepper: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("ActiveStepChanging", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._activeStepChangingRef = refName;
-	                this.MarkPropDirty("ActiveStepChangingRef");	
-	        }); 
+	            if (value != this._activeStepChangingScript)
+	            {
+	                this._activeStepChangingScript = value;
+	                this.OnRefChanged("ActiveStepChanging", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._activeStepChangingRef = refName;
+	                    this.MarkPropDirty("ActiveStepChangingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -387,10 +380,14 @@ public partial class IgbStepper: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("ActiveStepChanged", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._activeStepChangedRef = refName;
-	                this.MarkPropDirty("ActiveStepChangedRef");	
-	        }); 
+	            if (value != this._activeStepChangedScript)
+	            {
+	                this._activeStepChangedScript = value;
+	                this.OnRefChanged("ActiveStepChanged", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._activeStepChangedRef = refName;
+	                    this.MarkPropDirty("ActiveStepChangedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -444,7 +441,6 @@ public partial class IgbStepper: BaseRendererControl {
 	
 	        SerializeCoreIgbStepper(ser);
 	
-	if (IsPropDirty("Steps")) { ser.AddSerializableArrayProp("steps", this._steps); }
 	if (IsPropDirty("Orientation")) { ser.AddEnumProp("orientation", this._orientation); }
 	if (IsPropDirty("StepType")) { ser.AddEnumProp("stepType", this._stepType); }
 	if (IsPropDirty("Linear")) { ser.AddBooleanProp("linear", this._linear); }

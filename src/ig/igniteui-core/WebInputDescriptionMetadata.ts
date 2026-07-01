@@ -32,6 +32,7 @@ export class WebInputDescriptionMetadata extends Base {
 		metadata.item("DisplayType", "(wc:Type)ExportedType:string:InputType");
 		metadata.item("DisplayType@stringUnion", "WebComponents;React");
 		metadata.item("DisplayType@names", "Text;Email;Number;Password;Search;Tel;Url");
+		metadata.item("ReadOnly", "Boolean");
 		metadata.item("InputMode", "String");
 		metadata.item("Pattern", "String");
 		metadata.item("MinLength", "Number:double");

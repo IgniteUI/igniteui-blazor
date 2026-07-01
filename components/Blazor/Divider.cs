@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
 /// The igc-divider allows the content author to easily create a horizontal/vertical rule as a break between content to better organize information on a page.
-/// @cssproperty --color - Sets the color of the divider.
-/// @cssproperty --inset - Shrinks the divider by the given amount from the start. If `middle` is set it will shrink from both sides.
 /// </summary>
 public partial class IgbDivider: BaseRendererControl {
                                 public override string Type { get { return "WebDivider"; } }
@@ -71,7 +69,6 @@ public partial class IgbDivider: BaseRendererControl {
 	partial void OnVerticalChanging(ref bool newValue);
 	/// <summary>
 	/// Whether to render a vertical divider line.
-	/// @default false
 	/// </summary>
 	[Parameter]
 	public bool Vertical 
@@ -90,7 +87,6 @@ public partial class IgbDivider: BaseRendererControl {
 	partial void OnMiddleChanging(ref bool newValue);
 	/// <summary>
 	/// When set and inset is provided, it will shrink the divider line from both sides.
-	/// @default false
 	/// </summary>
 	[Parameter]
 	public bool Middle 
@@ -109,7 +105,6 @@ public partial class IgbDivider: BaseRendererControl {
 	partial void OnLineTypeChanging(ref DividerType newValue);
 	/// <summary>
 	/// Whether to render a solid or a dashed divider line.
-	/// @default 'solid'
 	/// </summary>
 	[Parameter]
 	[WCWidgetMemberName("Type")]

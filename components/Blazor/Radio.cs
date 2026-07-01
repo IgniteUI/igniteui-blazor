@@ -8,10 +8,7 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// 
-/// </summary>
-public partial class IgbRadio: BaseRendererControl {
+                            public partial class IgbRadio: BaseRendererControl {
                                 public override string Type { get { return "WebRadio"; } }
 
                                 protected override void EnsureModulesLoaded()
@@ -64,6 +61,21 @@ public partial class IgbRadio: BaseRendererControl {
 	
 	    partial void OnCreatedIgbRadio();
 	    
+	private bool _required = false;
+	
+	partial void OnRequiredChanging(ref bool newValue);
+	[Parameter]
+	public bool Required 
+	{
+	get { return this._required; }
+	set { 
+	                if (this._required != value || !IsPropDirty("Required")) {
+	                        MarkPropDirty("Required");
+	                } 
+	                this._required = value;
+	                 
+	                }
+	}
 	private string _value;
 	
 	partial void OnValueChanging(ref string newValue);
@@ -143,24 +155,6 @@ public partial class IgbRadio: BaseRendererControl {
 	                        MarkPropDirty("Disabled");
 	                } 
 	                this._disabled = value;
-	                 
-	                }
-	}
-	private bool _required = false;
-	
-	partial void OnRequiredChanging(ref bool newValue);
-	/// <summary>
-	/// Makes the control a required field in a form context.
-	/// </summary>
-	[Parameter]
-	public bool Required 
-	{
-	get { return this._required; }
-	set { 
-	                if (this._required != value || !IsPropDirty("Required")) {
-	                        MarkPropDirty("Required");
-	                } 
-	                this._required = value;
 	                 
 	                }
 	}
@@ -252,6 +246,19 @@ public partial class IgbRadio: BaseRendererControl {
 		InvokeMethodSync("blur", new object[] {  }, new string[] {  });
 	}
 	/// <summary>
+	/// Checks for validity of the control and emits the invalid event if it invalid.
+	/// </summary>
+	public async Task<bool> CheckValidityAsync() 
+	                    {
+		var iv = await InvokeMethod("checkValidity", new object[] {  }, new string[] {  });
+		return ReturnToBoolean(iv);
+	}
+	                    public bool CheckValidity() 
+	                    {
+		var iv = InvokeMethodSync("checkValidity", new object[] {  }, new string[] {  });
+		return ReturnToBoolean(iv);
+	}
+	/// <summary>
 	/// Checks for validity of the control and shows the browser message if it invalid.
 	/// </summary>
 	public async Task<bool> ReportValidityAsync() 
@@ -275,17 +282,6 @@ public partial class IgbRadio: BaseRendererControl {
 	                    public  void SetCustomValidity(String message) 
 	                    {
 		InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
-	}
-	/// <summary>
-	/// Checks for validity of the control and emits the invalid event if it invalid.
-	/// </summary>
-	public async  Task CheckValidityAsync() 
-	                    {
-		await InvokeMethod("checkValidity", new object[] {  }, new string[] {  });
-	}
-	                    public  void CheckValidity() 
-	                    {
-		InvokeMethodSync("checkValidity", new object[] {  }, new string[] {  });
 	}
 	
 	    private EventCallback<bool>? _checkedChanged = null;
@@ -321,10 +317,14 @@ public partial class IgbRadio: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -410,10 +410,14 @@ public partial class IgbRadio: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._focusRef = refName;
-	                this.MarkPropDirty("FocusRef");	
-	        }); 
+	            if (value != this._focusScript)
+	            {
+	                this._focusScript = value;
+	                this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._focusRef = refName;
+	                    this.MarkPropDirty("FocusRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -466,10 +470,14 @@ public partial class IgbRadio: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._blurRef = refName;
-	                this.MarkPropDirty("BlurRef");	
-	        }); 
+	            if (value != this._blurScript)
+	            {
+	                this._blurScript = value;
+	                this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._blurRef = refName;
+	                    this.MarkPropDirty("BlurRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -525,11 +533,11 @@ public partial class IgbRadio: BaseRendererControl {
 	
 	        SerializeCoreIgbRadio(ser);
 	
+	if (IsPropDirty("Required")) { ser.AddBooleanProp("required", this._required); }
 	if (IsPropDirty("Value")) { ser.AddStringProp("value", this._value); }
 	if (IsPropDirty("Checked")) { ser.AddBooleanProp("checked", this._checked); }
 	if (IsPropDirty("LabelPosition")) { ser.AddEnumProp("labelPosition", this._labelPosition); }
 	if (IsPropDirty("Disabled")) { ser.AddBooleanProp("disabled", this._disabled); }
-	if (IsPropDirty("Required")) { ser.AddBooleanProp("required", this._required); }
 	if (IsPropDirty("Invalid")) { ser.AddBooleanProp("invalid", this._invalid); }
 	if (IsPropDirty("ChangeRef")) { ser.AddStringProp("changeRef", this._changeRef); }
 	if (IsPropDirty("FocusRef")) { ser.AddStringProp("focusRef", this._focusRef); }

@@ -8,13 +8,8 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// Represents a clickable button, used to submit forms or anywhere in a
-/// document for accessible, standard button functionality.
-/// </summary>
-public partial class IgbButton: IgbButtonBase {
+                            public partial class IgbButton: IgbButtonBase {
                                 public override string Type { get { return "WebButton"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -65,7 +60,11 @@ public partial class IgbButton: IgbButtonBase {
 	
 	partial void OnVariantChanging(ref ButtonVariant newValue);
 	/// <summary>
-	/// Sets the variant of the button.
+	/// The variant of the button which determines its visual appearance.
+	/// - `contained` – filled background; highest visual emphasis (default).
+	/// - `outlined` – transparent background with a visible border.
+	/// - `flat` – no background or border; lowest visual emphasis.
+	/// - `fab` – floating action button shape; typically used for primary actions.
 	/// </summary>
 	[Parameter]
 	public ButtonVariant Variant 

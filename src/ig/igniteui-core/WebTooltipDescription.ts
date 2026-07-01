@@ -23,14 +23,6 @@ export class WebTooltipDescription extends Description {
 		this._open = value;
 		this.markDirty("Open");
 	}
-	private _disableArrow: boolean = false;
-	get disableArrow(): boolean {
-		return this._disableArrow;
-	}
-	set disableArrow(value: boolean) {
-		this._disableArrow = value;
-		this.markDirty("DisableArrow");
-	}
 	private _withArrow: boolean = false;
 	get withArrow(): boolean {
 		return this._withArrow;

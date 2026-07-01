@@ -63,6 +63,22 @@ export abstract class WebButtonBaseDescription extends Description {
 		this._disabled = value;
 		this.markDirty("Disabled");
 	}
+	private _command: string = null;
+	get command(): string {
+		return this._command;
+	}
+	set command(value: string) {
+		this._command = value;
+		this.markDirty("Command");
+	}
+	private _commandfor: string = null;
+	get commandfor(): string {
+		return this._commandfor;
+	}
+	set commandfor(value: string) {
+		this._commandfor = value;
+		this.markDirty("Commandfor");
+	}
 	private _clicked: string = null;
 	get clickedRef(): string {
 		return this._clicked;
