@@ -498,3 +498,4 @@ Or grid-wide:
 5. **Use PascalCase for all parameters** - Blazor parameters use PascalCase (`Sortable`, `Filterable`), not kebab-case.
 6. **Data must be a C# collection** - `List<T>`, `T[]`, or `IEnumerable<T>`. Not a JSON string or JavaScript object.
 7. **Use `@ref` for programmatic access** - declare `private IgbGrid grid = default!;` and use `@ref="grid"` on the component.
+8. **Do not add column `Width` unless explicitly requested** - omitting `Width` lets the grid distribute available space proportionally, filling the container with no empty right-side gap. Only set pixel or percentage widths when the user specifically asks for fixed column sizing.
