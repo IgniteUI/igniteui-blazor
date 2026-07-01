@@ -80,8 +80,17 @@
 
     private string Selected { get; set; } = "(none)";
 
-    private void OnValueChanged(DateTime value) => Selected = value.ToString("d");
+    private void OnValueChanged(DateTime value) {
+        if (Selection == CalendarSelection.Single) {
+            Selected = value.ToString("d");
+        }
+    }
 
-    private void OnValuesChanged(DateTime[] values) =>
-        Selected = values.Length == 0 ? "(none)" : string.Join(", ", values.Select(d => d.ToString("d")));
+    private void OnValuesChanged(DateTime[] values) {
+        if (Selection != CalendarSelection.Single) {
+            Selected = values is { Length: > 0 }
+                ? string.Join(", ", values.Select(d => d.ToString("d")))
+                : "(none)";
+        }
+    }
 }
