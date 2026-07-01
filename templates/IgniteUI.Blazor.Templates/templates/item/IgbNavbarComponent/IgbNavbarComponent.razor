@@ -1,0 +1,76 @@
+@page "/IgbNavbarComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbNavbarComponent</PageTitle>
+
+<h3>IgbNavbarComponent</h3>
+
+<div class="component-host navbar-host">
+    <IgbIcon @ref="_iconRef" class="icon-registrar" />
+
+    <IgbNavbar>
+        <IgbIconButton slot="start"
+                       IconName="menu"
+                       Collection="material"
+                       Variant="IconButtonVariant.Flat"
+                       @onclick="@(() => SetAction("Menu"))" />
+
+        <h3 class="navbar-title">Mailbox</h3>
+
+        <IgbIconButton slot="end"
+                       IconName="search"
+                       Collection="material"
+                       Variant="IconButtonVariant.Flat"
+                       @onclick="@(() => SetAction("Search"))" />
+        <IgbIconButton slot="end"
+                       IconName="account"
+                       Collection="material"
+                       Variant="IconButtonVariant.Flat"
+                       @onclick="@(() => SetAction("Account"))" />
+    </IgbNavbar>
+</div>
+
+<div class="state">Last action: @LastAction</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private IgbIcon _iconRef = default!;
+    private string LastAction { get; set; } = "(none)";
+
+    private void SetAction(string action) => LastAction = action;
+
+    private static readonly Dictionary<string, string> Icons = new()
+    {
+        ["menu"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'/></svg>",
+        ["search"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z'/></svg>",
+        ["account"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>"
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _iconRef is not null)
+        {
+            await _iconRef.EnsureReady();
+            foreach (var (name, svg) in Icons)
+            {
+                await _iconRef.RegisterIconFromTextAsync(name, svg, "material");
+            }
+        }
+    }
+}

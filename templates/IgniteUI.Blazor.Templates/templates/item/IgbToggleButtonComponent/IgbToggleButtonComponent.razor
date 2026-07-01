@@ -1,0 +1,73 @@
+@page "/IgbToggleButtonComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbToggleButtonComponent</PageTitle>
+
+<h3>IgbToggleButtonComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Group selection</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
+                <IgbRadio Value="Single">Single</IgbRadio>
+                <IgbRadio Value="SingleRequired">SingleRequired</IgbRadio>
+                <IgbRadio Value="Multiple">Multiple</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    @* Toggle buttons live inside an IgbButtonGroup, which owns the selection. *@
+    <IgbButtonGroup Selection="Selection" Disabled="Disabled" Select="OnSelect" Deselect="OnDeselect">
+        <IgbToggleButton Value="bold">Bold</IgbToggleButton>
+        <IgbToggleButton Value="italic">Italic</IgbToggleButton>
+        <IgbToggleButton Value="underline">Underline</IgbToggleButton>
+    </IgbButtonGroup>
+</div>
+
+<div class="state">Selected: @(Selected.Count == 0 ? "(none)" : string.Join(", ", Selected))</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private string SelectionName { get; set; } = "Multiple";
+    private ButtonGroupSelection Selection => Enum.Parse<ButtonGroupSelection>(SelectionName);
+
+    private bool Disabled { get; set; }
+    private readonly HashSet<string> Selected = new();
+
+    private void OnSelect(IgbComponentValueChangedEventArgs args)
+    {
+        if (Selection != ButtonGroupSelection.Multiple)
+        {
+            Selected.Clear();
+        }
+        Selected.Add(args.Detail);
+    }
+
+    private void OnDeselect(IgbComponentValueChangedEventArgs args) => Selected.Remove(args.Detail);
+}

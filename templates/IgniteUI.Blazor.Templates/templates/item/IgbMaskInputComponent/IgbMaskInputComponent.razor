@@ -1,0 +1,93 @@
+@page "/IgbMaskInputComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbMaskInputComponent</PageTitle>
+
+<h3>IgbMaskInputComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Mask</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="MaskName">
+                <IgbRadio Value="Phone">Phone</IgbRadio>
+                <IgbRadio Value="SSN">SSN</IgbRadio>
+                <IgbRadio Value="Date">Date</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Value mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ValueModeName">
+                <IgbRadio Value="Raw">Raw</IgbRadio>
+                <IgbRadio Value="WithFormatting">WithFormatting</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbMaskInput class="demo-input"
+                  @bind-Value="Value"
+                  Mask="@Mask"
+                  ValueMode="ValueMode"
+                  Label="Masked input">
+        <span slot="helper-text">Mask: @Mask</span>
+    </IgbMaskInput>
+</div>
+
+<div class="state">Value (@ValueModeName): @(string.IsNullOrEmpty(Value) ? "(empty)" : Value)</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private string Value { get; set; } = string.Empty;
+
+    private string _maskName = "Phone";
+    private string MaskName
+    {
+        get => _maskName;
+        set
+        {
+            if (_maskName == value) return;
+            _maskName = value;
+            Value = string.Empty; // a value entered for the old mask won't fit the new one; clear it
+        }
+    }
+    private string Mask => MaskName switch
+    {
+        "SSN" => "000-00-0000",
+        "Date" => "00/00/0000",
+        _ => "(####) 000-0000"
+    };
+
+    private string _valueModeName = "Raw";
+    private string ValueModeName
+    {
+        get => _valueModeName;
+        set
+        {
+            if (_valueModeName == value) return;
+            _valueModeName = value;
+            Value = string.Empty; // ValueMode only changes how Value is reported, not the stored value; clear it so the user enters fresh input
+        }
+    }
+    private MaskInputValueMode ValueMode => Enum.Parse<MaskInputValueMode>(ValueModeName);
+}

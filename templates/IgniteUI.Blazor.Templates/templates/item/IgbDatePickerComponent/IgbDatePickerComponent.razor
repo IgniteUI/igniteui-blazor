@@ -1,0 +1,67 @@
+@page "/IgbDatePickerComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbDatePickerComponent</PageTitle>
+
+<h3>IgbDatePickerComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ModeName">
+                <IgbRadio Value="Dropdown">Dropdown</IgbRadio>
+                <IgbRadio Value="Dialog">Dialog</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Outlined">Outlined</IgbSwitch>
+            <IgbSwitch @bind-Checked="ShowWeekNumbers">Show week numbers</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideHeader">Hide header</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbDatePicker class="demo-input"
+                   @bind-Value="Value"
+                   Mode="Mode"
+                   Outlined="Outlined"
+                   ShowWeekNumbers="ShowWeekNumbers"
+                   HideHeader="HideHeader"
+                   Label="Pick a date" />
+</div>
+
+<div class="state">Value: @(Value?.ToString("d") ?? "(none)")</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private DateTime? Value { get; set; }
+
+    private string ModeName { get; set; } = "Dropdown";
+    private PickerMode Mode => Enum.Parse<PickerMode>(ModeName);
+
+    private bool Outlined { get; set; }
+    private bool ShowWeekNumbers { get; set; }
+    private bool HideHeader { get; set; }
+}

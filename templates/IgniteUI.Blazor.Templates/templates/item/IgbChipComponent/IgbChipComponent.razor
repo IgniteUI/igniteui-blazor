@@ -1,0 +1,101 @@
+@page "/IgbChipComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbChipComponent</PageTitle>
+
+<h3>IgbChipComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Default">Default</IgbRadio>
+                <IgbRadio Value="Primary">Primary</IgbRadio>
+                <IgbRadio Value="Info">Info</IgbRadio>
+                <IgbRadio Value="Success">Success</IgbRadio>
+                <IgbRadio Value="Warning">Warning</IgbRadio>
+                <IgbRadio Value="Danger">Danger</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Selectable">Selectable</IgbSwitch>
+            <IgbSwitch @bind-Checked="Removable">Removable</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    @if (!Removed)
+    {
+        @if (VariantName == "Default"){
+            <IgbChip 
+                    Selectable="Selectable"
+                    Removable="Removable"
+                    Disabled="Disabled"
+                    @bind-Selected="Selected"
+                    Remove="OnRemove">
+                <IgbAvatar slot="start" Initials="A" Shape="AvatarShape.Circle" />
+                Filter chip
+            </IgbChip>
+
+        } else {
+            <IgbChip Variant="Variant"
+                    Selectable="Selectable"
+                    Removable="Removable"
+                    Disabled="Disabled"
+                    @bind-Selected="Selected"
+                    Remove="OnRemove">
+                <IgbAvatar slot="start" Initials="A" Shape="AvatarShape.Circle" />
+                Filter chip
+            </IgbChip>
+        }
+    }
+    else
+    {
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Restore">Restore chip</IgbButton>
+    }
+</div>
+
+<div class="state">Selected: @Selected &nbsp;|&nbsp; Removed: @Removed</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private string VariantName { get; set; } = "Default";
+    private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
+
+    private bool Selectable { get; set; } = true;
+    private bool Removable { get; set; } = true;
+    private bool Disabled { get; set; }
+    private bool Selected { get; set; }
+    private bool Removed { get; set; }
+
+    private void OnRemove(IgbComponentBoolValueChangedEventArgs args) => Removed = true;
+
+    private void Restore()
+    {
+        Removed = false;
+        Selected = false;
+    }
+}

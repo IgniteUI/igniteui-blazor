@@ -1,0 +1,135 @@
+@page "/IgbStepperComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbStepperComponent</PageTitle>
+
+<h3>IgbStepperComponent</h3>
+
+<div class="component-host">
+   <div class="radio-groups">
+        <div class="radio-group">
+            <label>Title position</label>
+            <div class="radio-group-container">
+                <IgbRadioGroup Alignment="ContentOrientation.Horizontal">
+                    <IgbRadio name="alignment" Value="top" Change="onTitlePositionChange">Top</IgbRadio>
+                    <IgbRadio name="alignment" Value="bottom" Change="onTitlePositionChange">Bottom</IgbRadio>
+                    <IgbRadio name="alignment" Value="start" Change="onTitlePositionChange">Start</IgbRadio>
+                    <IgbRadio name="alignment" Value="end" Change="onTitlePositionChange">End</IgbRadio>
+                    <IgbRadio name="alignment" Value="" Checked="true" Change="onTitlePositionChange">Default</IgbRadio>
+                </IgbRadioGroup>
+            </div>
+        </div>
+
+        <div class="radio-group">
+            <label>Orientation</label>
+            <div class="radio-group-container">
+                <IgbRadioGroup Alignment="ContentOrientation.Horizontal">
+                    <IgbRadio name="orientation" Value="horizontal" Checked="true" Change="onOrientationChange">Horizontal</IgbRadio>
+                    <IgbRadio name="orientation" Value="vertical" Change="onOrientationChange">Vertical</IgbRadio>
+                </IgbRadioGroup>
+            </div>
+        </div>
+   </div>
+
+   <IgbStepper Name="stepper" @ref="stepper" Orientation="@Orientation" TitlePosition="@TitlePosition">
+        <IgbStep>
+            <span slot="title">Order</span>
+             <IgbButton DisplayType="ButtonBaseType.Button" @onclick="Next">NEXT</IgbButton>
+
+        </IgbStep>
+        <IgbStep>
+            <span slot="title">Payment</span>
+            <IgbButton DisplayType="ButtonBaseType.Button" @onclick="Previous">PREVIOUS</IgbButton>
+            <IgbButton DisplayType="ButtonBaseType.Button" @onclick="Next">NEXT</IgbButton>
+        </IgbStep>
+        <IgbStep>
+            <span slot="title">Confirmation</span>
+                 <IgbButton DisplayType="ButtonBaseType.Button" @onclick="Previous">PREVIOUS</IgbButton>
+                 <IgbButton DisplayType="ButtonBaseType.Button" @onclick="Reset">RESET</IgbButton>
+        </IgbStep>
+    </IgbStepper>
+</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    public IgbStepper stepper = default!;
+    public StepperOrientation Orientation = StepperOrientation.Horizontal;
+    public StepperTitlePosition TitlePosition;
+
+    private bool IsDefaultTitlePosition;
+
+    public void onTitlePositionChange(IgbRadioChangeEventArgs args)
+    {
+        if(args.Detail.Checked)
+        {
+            var value = (args.Parent as IgbRadio)?.Value?.ToString();
+            if (String.IsNullOrEmpty(value))
+            {
+                IsDefaultTitlePosition = true;
+                setDefaultTitleOrientation(stepper.Orientation);
+
+            } else
+            {
+                IsDefaultTitlePosition = false;
+                TitlePosition = (StepperTitlePosition)System.Enum.Parse(typeof(StepperTitlePosition), value, true);
+            }
+        }
+    }
+
+    public void onOrientationChange(IgbRadioChangeEventArgs args)
+    {
+        if(args.Detail.Checked)
+        {
+            var value = (args.Parent as IgbRadio)?.Value?.ToString();
+            if (!String.IsNullOrEmpty(value))
+            {
+                Orientation = (StepperOrientation)System.Enum.Parse(typeof(StepperOrientation), value, true);
+            } 
+
+            if (IsDefaultTitlePosition)
+                setDefaultTitleOrientation(Orientation);
+
+        }
+    }
+
+    public async Task Previous()
+    {
+        await this.stepper.PrevAsync();
+    }
+
+    public async Task Next()
+    {
+        await this.stepper.NextAsync();
+    }
+
+    public async Task Reset()
+    {
+        await this.stepper.ResetAsync();
+    }
+
+    private void setDefaultTitleOrientation(StepperOrientation orientation)
+    {
+        if( orientation == StepperOrientation.Horizontal )
+        {
+            TitlePosition = StepperTitlePosition.Bottom;
+        } else {
+            TitlePosition = StepperTitlePosition.End;
+        }
+    }
+}

@@ -1,0 +1,92 @@
+@page "/IgbCarouselComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbCarouselComponent</PageTitle>
+
+<h3>IgbCarouselComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Indicators orientation</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorsOrientationName">
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Vertical">Vertical</IgbSwitch>
+            <IgbSwitch @bind-Checked="DisableLoop">Disable loop</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideNavigation">Hide navigation</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideIndicators">Hide indicators</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host carousel-host">
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Prev">Prev</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Next">Next</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Play">Play</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="Pause">Pause</IgbButton>
+    </div>
+
+    <IgbCarousel @ref="_carousel"
+                 class="demo-carousel"
+                 Vertical="Vertical"
+                 DisableLoop="DisableLoop"
+                 HideNavigation="HideNavigation"
+                 HideIndicators="HideIndicators"
+                 Interval="1500"
+                 IndicatorsOrientation="IndicatorsOrientation">
+        <IgbCarouselSlide>
+            <img src="https://dl.infragistics.com/x/img/carousel/ignite-ui-angular-indigo-design.png" alt="Slide 1" />
+        </IgbCarouselSlide>
+        <IgbCarouselSlide>
+            <img src="https://dl.infragistics.com/x/img/carousel/slider-image-chart.png" alt="Slide 2" />
+        </IgbCarouselSlide>
+        <IgbCarouselSlide>
+            <img src="https://dl.infragistics.com/x/img/carousel/ignite-ui-angular-charts.png" alt="Slide 3" />
+        </IgbCarouselSlide>
+    </IgbCarousel>
+</div>
+
+<div class="state">Orientation: @IndicatorsOrientationName &nbsp;|&nbsp; Vertical: @Vertical</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private IgbCarousel _carousel = default!;
+
+    private string IndicatorsOrientationName { get; set; } = "End";
+    private CarouselIndicatorsOrientation IndicatorsOrientation => Enum.Parse<CarouselIndicatorsOrientation>(IndicatorsOrientationName);
+
+    private bool Vertical { get; set; }
+    private bool DisableLoop { get; set; }
+    private bool HideNavigation { get; set; }
+    private bool HideIndicators { get; set; }
+
+    private async Task Prev() => await _carousel.PrevAsync();
+    private async Task Next() => await _carousel.NextAsync();
+    private async Task Play() => await _carousel.PlayAsync();
+    private async Task Pause() => await _carousel.PauseAsync();
+}

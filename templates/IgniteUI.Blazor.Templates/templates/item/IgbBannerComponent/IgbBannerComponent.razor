@@ -1,0 +1,82 @@
+@page "/IgbBannerComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbBannerComponent</PageTitle>
+
+<h3>IgbBannerComponent</h3>
+
+<div class="banner-host">
+    <IgbBanner @ref="_banner">
+        <IgbIcon @ref="_icon" slot="prefix" IconName="signal_wifi_off" Collection="material"></IgbIcon>
+        You are currently offline. Some features may be unavailable.
+        <div slot="actions">
+            <IgbButton Variant="ButtonVariant.Flat" @onclick="OnHide">Dismiss</IgbButton>
+            <IgbButton Variant="ButtonVariant.Contained" @onclick="OnHide">Retry</IgbButton>
+        </div>
+    </IgbBanner>
+</div>
+
+<div class="component-host">
+    <IgbButton Variant="ButtonVariant.Contained" @onclick="OnShow">Show</IgbButton>
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnHide">Hide</IgbButton>
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnToggle">Toggle</IgbButton>
+</div>
+
+<div class="state">Dismiss count: @DismissCount</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private const string WifiOffSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M23.64 7c-.45-.34-4.93-4-11.64-4-1.5 0-2.89.19-4.15.48L18.18 13.8 23.64 7zm-6.6 8.22L3.27 1.44 2 2.72l2.05 2.06C1.91 5.76.59 6.82.36 7l11.63 14.49.01.01.01-.01 3.9-4.86 3.32 3.32 1.27-1.27-6.46-6.46z'/></svg>";
+    private int DismissCount { get; set; } = 0;
+    private IgbBanner _banner = default!;
+    private IgbIcon _icon = default!;
+    private bool _iconRegistered;
+
+    private bool _isOpen;
+
+    private async Task OnShow()
+    {
+        await _banner.ShowAsync();
+        _isOpen = true;
+    }
+
+    private async Task OnHide()
+    {
+        if (_isOpen) DismissCount++;
+        await _banner.HideAsync();
+        _isOpen = false;
+    }
+
+    private async Task OnToggle()
+    {
+        if (_isOpen) DismissCount++;
+        await _banner.ToggleAsync();
+        _isOpen = !_isOpen;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_iconRegistered && _icon is not null)
+        {
+            await _icon.EnsureReady();
+            await _icon.RegisterIconFromTextAsync("signal_wifi_off", WifiOffSvg, "material");
+            _iconRegistered = true;
+        }
+    }
+}

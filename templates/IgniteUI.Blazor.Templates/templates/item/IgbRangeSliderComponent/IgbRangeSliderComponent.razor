@@ -1,0 +1,78 @@
+@page "/IgbRangeSliderComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbRangeSliderComponent</PageTitle>
+
+<h3>IgbRangeSliderComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Tick orientation</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TickOrientationName">
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="Mirror">Mirror</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="DiscreteTrack">Discrete track</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideTooltip">Hide tooltip</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbRangeSlider class="demo-slider"
+                    Lower="Lower"
+                    Upper="Upper"
+                    Min="0"
+                    Max="100"
+                    Step="5"
+                    PrimaryTicks="5"
+                    SecondaryTicks="1"
+                    DiscreteTrack="DiscreteTrack"
+                    HideTooltip="HideTooltip"
+                    TickOrientation="TickOrientation"
+                    Change="OnChange" />
+</div>
+
+<div class="state">Range: @Lower – @Upper</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private double Lower { get; set; } = 20;
+    private double Upper { get; set; } = 70;
+
+    private string TickOrientationName { get; set; } = "End";
+    private SliderTickOrientation TickOrientation => Enum.Parse<SliderTickOrientation>(TickOrientationName);
+
+    private bool DiscreteTrack { get; set; }
+    private bool HideTooltip { get; set; }
+
+    private void OnChange(IgbRangeSliderValueEventArgs args)
+    {
+        Lower = args.Detail.Lower;
+        Upper = args.Detail.Upper;
+    }
+}

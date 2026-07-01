@@ -1,0 +1,23 @@
+h3 {
+    margin-bottom: 0.5rem;
+}
+
+.component-host {
+    display: block;
+    padding: 1rem 0;
+}
+
+.radio-groups {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.radio-group {
+    margin-right: 2rem;
+}
+
+.radio-group-container {
+    padding: 0.5rem;
+    border: 1px solid var(--ig-gray-300, gainsboro);
+}

@@ -1,0 +1,75 @@
+@page "/IgbTabsComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbTabsComponent</PageTitle>
+
+<h3>IgbTabsComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Alignment</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="AlignmentName">
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="Center">Center</IgbRadio>
+                <IgbRadio Value="Justify">Justify</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Activation</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActivationName">
+                <IgbRadio Value="Auto">Auto</IgbRadio>
+                <IgbRadio Value="Manual">Manual</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
+<div class="component-host tabs-host">
+    <IgbTabs Alignment="Alignment" Activation="Activation" Change="OnTabChange">
+        <IgbTab Label="Home">
+            Welcome to the home tab.
+        </IgbTab>
+        <IgbTab Label="Search">
+            Search across your content here.
+        </IgbTab>
+        <IgbTab Label="Settings">
+            Adjust your preferences in the settings tab.
+        </IgbTab>
+    </IgbTabs>
+</div>
+
+<div class="state">Selected tab: @SelectedTab</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private string AlignmentName { get; set; } = "Start";
+    private TabsAlignment Alignment => Enum.Parse<TabsAlignment>(AlignmentName);
+
+    private string ActivationName { get; set; } = "Auto";
+    private TabsActivation Activation => Enum.Parse<TabsActivation>(ActivationName);
+
+    private string SelectedTab { get; set; } = "Home";
+
+    private void OnTabChange(IgbTabComponentEventArgs args) => SelectedTab = args.Detail?.Label ?? "(none)";
+}
