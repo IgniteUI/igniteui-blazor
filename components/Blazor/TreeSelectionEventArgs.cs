@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbTreeSelectionEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebTreeSelectionEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

@@ -262,7 +262,7 @@ public partial class IgbTextarea: BaseRendererControl {
 	partial void OnRowsChanging(ref double newValue);
 	/// <summary>
 	/// The number of visible text lines for the control. If it is specified, it must be a positive integer.
-	/// If it is not specified, the default value is 2.
+	/// If it is not specified, the default value is 3.
 	/// </summary>
 	[Parameter]
 	public double Rows 
@@ -454,22 +454,6 @@ public partial class IgbTextarea: BaseRendererControl {
 	                    {
 		InvokeMethodSync("select", new object[] {  }, new string[] {  });
 	}
-	public async  Task SetSelectionRangeAsync(double start, double end, SelectionRangeDirection direction) 
-	                    {
-		await InvokeMethod("setSelectionRange", new object[] { start, end, ObjectToParam(direction, typeof(SelectionRangeDirection)) }, new string[] { "Number", "Number", "Json" });
-	}
-	                    public  void SetSelectionRange(double start, double end, SelectionRangeDirection direction) 
-	                    {
-		InvokeMethodSync("setSelectionRange", new object[] { start, end, ObjectToParam(direction, typeof(SelectionRangeDirection)) }, new string[] { "Number", "Number", "Json" });
-	}
-	public async  Task SetRangeTextAsync(String replacement, double start, double end, RangeTextSelectMode selectMode) 
-	                    {
-		await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, ObjectToParam(selectMode, typeof(RangeTextSelectMode)) }, new string[] { "String", "Number", "Number", "Json" });
-	}
-	                    public  void SetRangeText(String replacement, double start, double end, RangeTextSelectMode selectMode) 
-	                    {
-		InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, ObjectToParam(selectMode, typeof(RangeTextSelectMode)) }, new string[] { "String", "Number", "Number", "Json" });
-	}
 	/// <summary>
 	/// Checks for validity of the control and shows the browser message if it invalid.
 	/// </summary>
@@ -538,10 +522,14 @@ public partial class IgbTextarea: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._inputRef = refName;
-	                this.MarkPropDirty("InputRef");	
-	        }); 
+	            if (value != this._inputScript)
+	            {
+	                this._inputScript = value;
+	                this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._inputRef = refName;
+	                    this.MarkPropDirty("InputRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -594,10 +582,14 @@ public partial class IgbTextarea: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -683,10 +675,14 @@ public partial class IgbTextarea: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._focusRef = refName;
-	                this.MarkPropDirty("FocusRef");	
-	        }); 
+	            if (value != this._focusScript)
+	            {
+	                this._focusScript = value;
+	                this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._focusRef = refName;
+	                    this.MarkPropDirty("FocusRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -739,10 +735,14 @@ public partial class IgbTextarea: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._blurRef = refName;
-	                this.MarkPropDirty("BlurRef");	
-	        }); 
+	            if (value != this._blurScript)
+	            {
+	                this._blurScript = value;
+	                this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._blurRef = refName;
+	                    this.MarkPropDirty("BlurRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

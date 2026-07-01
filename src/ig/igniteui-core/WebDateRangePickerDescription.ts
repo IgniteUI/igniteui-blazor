@@ -1,4 +1,4 @@
-import { WebBaseComboBoxLikeDescription } from "./WebBaseComboBoxLikeDescription";
+import { WebComboBoxBaseLikeDescription } from "./WebComboBoxBaseLikeDescription";
 import { WebDateRangeValueDescription } from "./WebDateRangeValueDescription";
 import { Description } from "./Description";
 import { WebCustomDateRangeDescription } from "./WebCustomDateRangeDescription";
@@ -9,8 +9,8 @@ import { Base, Type, markType } from "./type";
 /**
  * @hidden 
  */
-export class WebDateRangePickerDescription extends WebBaseComboBoxLikeDescription {
-	static $t: Type = markType(WebDateRangePickerDescription, 'WebDateRangePickerDescription', (<any>WebBaseComboBoxLikeDescription).$type);
+export class WebDateRangePickerDescription extends WebComboBoxBaseLikeDescription {
+	static $t: Type = markType(WebDateRangePickerDescription, 'WebDateRangePickerDescription', (<any>WebComboBoxBaseLikeDescription).$type);
 	protected get_type(): string {
 		return "WebDateRangePicker";
 	}

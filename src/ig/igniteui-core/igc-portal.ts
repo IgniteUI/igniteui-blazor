@@ -74,8 +74,8 @@ export class IgcPortalEntranceComponent extends IgcHTMLElement {
 
     private getPortalContent(): any[] {
         let useMoveOnce = this.moveOnceMode;
-        let children = Array.from(this.children);
-        let items = children.filter((c) => c instanceof IgcPortalItemComponent);
+        let children = Array.from(this.childNodes);
+        let items: any[] = (children as Node[]).filter((c): c is IgcPortalItemComponent => c instanceof IgcPortalItemComponent);
         if (useMoveOnce) {
             items = children as any;
         }

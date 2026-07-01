@@ -23,14 +23,6 @@ export abstract class WebInputBaseDescription extends Description {
 		this._outlined = value;
 		this.markDirty("Outlined");
 	}
-	private _readOnly: boolean = false;
-	get readOnly(): boolean {
-		return this._readOnly;
-	}
-	set readOnly(value: boolean) {
-		this._readOnly = value;
-		this.markDirty("ReadOnly");
-	}
 	private _placeholder: string = null;
 	get placeholder(): string {
 		return this._placeholder;

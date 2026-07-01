@@ -9,7 +9,8 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// A container for card's text content
+/// A container component for the card's main text content.
+/// This component should be used within an igc-card element to display the primary content.
 /// </summary>
 public partial class IgbCardContent: BaseRendererControl {
                                 public override string Type { get { return "WebCardContent"; } }

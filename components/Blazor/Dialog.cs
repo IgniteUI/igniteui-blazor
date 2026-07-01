@@ -8,10 +8,7 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// Represents a Dialog component.
-/// </summary>
-public partial class IgbDialog: BaseRendererControl {
+                            public partial class IgbDialog: BaseRendererControl {
                                 public override string Type { get { return "WebDialog"; } }
 
                                 protected override void EnsureModulesLoaded()
@@ -68,7 +65,10 @@ public partial class IgbDialog: BaseRendererControl {
 	
 	partial void OnKeepOpenOnEscapeChanging(ref bool newValue);
 	/// <summary>
-	/// Whether the dialog should be kept open when pressing the 'Escape' button.
+	/// When set, pressing the `Escape` key will not close the dialog.
+	/// By default the browser closes a modal dialog on `Escape`. Enable this
+	/// option when the dialog guards unsaved work and should require an explicit
+	/// user action to dismiss.
 	/// </summary>
 	[Parameter]
 	public bool KeepOpenOnEscape 
@@ -86,7 +86,9 @@ public partial class IgbDialog: BaseRendererControl {
 	
 	partial void OnCloseOnOutsideClickChanging(ref bool newValue);
 	/// <summary>
-	/// Whether the dialog should be closed when clicking outside of it.
+	/// When set, clicking on the backdrop area outside the dialog surface
+	/// will close it (emitting close events).
+	/// Has no effect when the dialog is not yet open.
 	/// </summary>
 	[Parameter]
 	public bool CloseOnOutsideClick 
@@ -104,9 +106,9 @@ public partial class IgbDialog: BaseRendererControl {
 	
 	partial void OnHideDefaultActionChanging(ref bool newValue);
 	/// <summary>
-	/// Whether to hide the default action button for the dialog.
-	/// When there is projected content in the `footer` slot this property
-	/// has no effect.
+	/// When set, the built-in "OK" close button in the footer is not rendered.
+	/// Has no effect when content is projected into the `footer` slot, since
+	/// the slot content replaces the default button entirely.
 	/// </summary>
 	[Parameter]
 	public bool HideDefaultAction 
@@ -124,7 +126,11 @@ public partial class IgbDialog: BaseRendererControl {
 	
 	partial void OnOpenChanging(ref bool newValue);
 	/// <summary>
-	/// Whether the dialog is opened.
+	/// Whether the dialog is open.
+	/// Setting this property programmatically will open or close the dialog
+	/// without animation and without emitting close events.
+	/// Prefer the `show()`, `hide()`, and `toggle()` methods for animated
+	/// transitions.
 	/// </summary>
 	[Parameter]
 	public bool Open 
@@ -142,7 +148,8 @@ public partial class IgbDialog: BaseRendererControl {
 	
 	partial void OnTitleChanging(ref string newValue);
 	/// <summary>
-	/// Sets the title of the dialog.
+	/// The title displayed in the dialog header.
+	/// Overridden by any content projected into the `title` slot.
 	/// </summary>
 	[Parameter]
 	public string Title 
@@ -159,9 +166,6 @@ public partial class IgbDialog: BaseRendererControl {
 	private string _returnValue;
 	
 	partial void OnReturnValueChanging(ref string newValue);
-	/// <summary>
-	/// Sets the return value for the dialog.
-	/// </summary>
 	[Parameter]
 	public string ReturnValue 
 	{
@@ -203,7 +207,9 @@ public partial class IgbDialog: BaseRendererControl {
 		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
 	}
 	/// <summary>
-	/// Opens the dialog.
+	/// Opens the dialog with an animated fade-in transition.
+	/// Returns `true` when the dialog was successfully opened, or `false` if
+	/// it was already open.
 	/// </summary>
 	public async Task<bool> ShowAsync() 
 	                    {
@@ -216,7 +222,9 @@ public partial class IgbDialog: BaseRendererControl {
 		return ReturnToBoolean(iv);
 	}
 	/// <summary>
-	/// Closes the dialog.
+	/// Closes the dialog with an animated fade-out transition.
+	/// Returns `true` when the dialog was successfully closed, or `false` if
+	/// it was already closed.
 	/// </summary>
 	public async Task<bool> HideAsync() 
 	                    {
@@ -229,7 +237,9 @@ public partial class IgbDialog: BaseRendererControl {
 		return ReturnToBoolean(iv);
 	}
 	/// <summary>
-	/// Toggles the open state of the dialog.
+	/// Toggles the dialog open or closed depending on its current state.
+	/// Equivalent to calling `show()` when closed and `hide()` when open.
+	/// Returns `true` when the transition completed successfully.
 	/// </summary>
 	public async Task<bool> ToggleAsync() 
 	                    {
@@ -249,10 +259,14 @@ public partial class IgbDialog: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closingRef = refName;
-	                this.MarkPropDirty("ClosingRef");	
-	        }); 
+	            if (value != this._closingScript)
+	            {
+	                this._closingScript = value;
+	                this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closingRef = refName;
+	                    this.MarkPropDirty("ClosingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -305,10 +319,14 @@ public partial class IgbDialog: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closedRef = refName;
-	                this.MarkPropDirty("ClosedRef");	
-	        }); 
+	            if (value != this._closedScript)
+	            {
+	                this._closedScript = value;
+	                this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closedRef = refName;
+	                    this.MarkPropDirty("ClosedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

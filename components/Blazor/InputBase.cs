@@ -24,25 +24,9 @@ namespace IgniteUI.Blazor.Controls
                                 }
                         }
 
-                            protected override bool UseDirectRender
-                        {
-                                get 
-                                {
-                            return true;
-                                }
-                        }
-
-                            protected override string DirectRenderElementName
-                        {
-                                get 
-                                {
-                            return "igc-input-base";
-                                }
-                        }
-
                             protected override ControlEventBehavior DefaultEventBehavior
                             {
-                                get { return ControlEventBehavior.Immediate; }
+                                get { return ControlEventBehavior.Queued; }
                             }
 	
 	    public IgbInputBase(): base() {
@@ -68,25 +52,6 @@ namespace IgniteUI.Blazor.Controls
 	                        MarkPropDirty("Outlined");
 	                } 
 	                this._outlined = value;
-	                 
-	                }
-	}
-	private bool _readOnly = false;
-	
-	partial void OnReadOnlyChanging(ref bool newValue);
-	/// <summary>
-	/// Makes the control a readonly field.
-	/// </summary>
-	[Parameter]
-	[WCAttributeName("readonly")]
-	public bool ReadOnly 
-	{
-	get { return this._readOnly; }
-	set { 
-	                if (this._readOnly != value || !IsPropDirty("ReadOnly")) {
-	                        MarkPropDirty("ReadOnly");
-	                } 
-	                this._readOnly = value;
 	                 
 	                }
 	}
@@ -209,6 +174,17 @@ namespace IgniteUI.Blazor.Controls
 		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
 	}
 	/// <summary>
+	/// Selects all the text inside the input.
+	/// </summary>
+	public async  Task SelectAsync() 
+	                    {
+		await InvokeMethod("select", new object[] {  }, new string[] {  });
+	}
+	                    public  void Select() 
+	                    {
+		InvokeMethodSync("select", new object[] {  }, new string[] {  });
+	}
+	/// <summary>
 	/// Sets focus on the control.
 	/// </summary>
 	
@@ -237,22 +213,6 @@ namespace IgniteUI.Blazor.Controls
 	public  void BlurComponent() 
 	                    {
 		InvokeMethodSync("blur", new object[] {  }, new string[] {  });
-	}
-	public async  Task SetSelectionRangeAsync(double start, double end, SelectionRangeDirection direction) 
-	                    {
-		await InvokeMethod("setSelectionRange", new object[] { start, end, ObjectToParam(direction, typeof(SelectionRangeDirection)) }, new string[] { "Number", "Number", "Json" });
-	}
-	                    public  void SetSelectionRange(double start, double end, SelectionRangeDirection direction) 
-	                    {
-		InvokeMethodSync("setSelectionRange", new object[] { start, end, ObjectToParam(direction, typeof(SelectionRangeDirection)) }, new string[] { "Number", "Number", "Json" });
-	}
-	public async  Task SetRangeTextAsync(String replacement, double start, double end, RangeTextSelectMode selectMode) 
-	                    {
-		await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, ObjectToParam(selectMode, typeof(RangeTextSelectMode)) }, new string[] { "String", "Number", "Number", "Json" });
-	}
-	                    public  void SetRangeText(String replacement, double start, double end, RangeTextSelectMode selectMode) 
-	                    {
-		InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, ObjectToParam(selectMode, typeof(RangeTextSelectMode)) }, new string[] { "String", "Number", "Number", "Json" });
 	}
 	/// <summary>
 	/// Checks for validity of the control and shows the browser message if it invalid.
@@ -296,10 +256,14 @@ namespace IgniteUI.Blazor.Controls
 	    
 	        set 
 	        {
-	            this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._inputOcurredRef = refName;
-	                this.MarkPropDirty("InputOcurredRef");	
-	        }); 
+	            if (value != this._inputOcurredScript)
+	            {
+	                this._inputOcurredScript = value;
+	                this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._inputOcurredRef = refName;
+	                    this.MarkPropDirty("InputOcurredRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -352,10 +316,14 @@ namespace IgniteUI.Blazor.Controls
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._focusRef = refName;
-	                this.MarkPropDirty("FocusRef");	
-	        }); 
+	            if (value != this._focusScript)
+	            {
+	                this._focusScript = value;
+	                this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._focusRef = refName;
+	                    this.MarkPropDirty("FocusRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -408,10 +376,14 @@ namespace IgniteUI.Blazor.Controls
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._blurRef = refName;
-	                this.MarkPropDirty("BlurRef");	
-	        }); 
+	            if (value != this._blurScript)
+	            {
+	                this._blurScript = value;
+	                this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._blurRef = refName;
+	                    this.MarkPropDirty("BlurRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -466,7 +438,6 @@ namespace IgniteUI.Blazor.Controls
 	        SerializeCoreIgbInputBase(ser);
 	
 	if (IsPropDirty("Outlined")) { ser.AddBooleanProp("outlined", this._outlined); }
-	if (IsPropDirty("ReadOnly")) { ser.AddBooleanProp("readOnly", this._readOnly); }
 	if (IsPropDirty("Placeholder")) { ser.AddStringProp("placeholder", this._placeholder); }
 	if (IsPropDirty("Label")) { ser.AddStringProp("label", this._label); }
 	if (IsPropDirty("Disabled")) { ser.AddBooleanProp("disabled", this._disabled); }

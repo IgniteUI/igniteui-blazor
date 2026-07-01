@@ -34,7 +34,7 @@ export class JsonWriter extends Base {
 	}
 	newLine(): void {
 		this.ensureIndent();
-		this._builder.appendLine();
+		this._builder.appendLine1("");
 		this._isNewLine = true;
 	}
 	toString(): string {

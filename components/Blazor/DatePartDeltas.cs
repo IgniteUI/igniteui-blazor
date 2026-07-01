@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbDatePartDeltas: BaseRendererElement {
                                 public override string Type { get { return "DatePartDeltas"; } }
+
 	
 	    public IgbDatePartDeltas(): base() {
 	        OnCreatedIgbDatePartDeltas();

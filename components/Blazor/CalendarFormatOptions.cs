@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbCalendarFormatOptions: BaseRendererElement {
                                 public override string Type { get { return "CalendarFormatOptions"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

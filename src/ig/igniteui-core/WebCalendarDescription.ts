@@ -1,7 +1,6 @@
 import { WebCalendarBaseDescription } from "./WebCalendarBaseDescription";
 import { Description } from "./Description";
 import { CalendarFormatOptionsDescription } from "./CalendarFormatOptionsDescription";
-import { WebCalendarResourceStringsDescription } from "./WebCalendarResourceStringsDescription";
 import { Base, Type, markType } from "./type";
 
 /**
@@ -94,14 +93,6 @@ export class WebCalendarDescription extends WebCalendarBaseDescription {
 	set formatOptions(value: CalendarFormatOptionsDescription) {
 		this._formatOptions = value;
 		this.markDirty("FormatOptions");
-	}
-	private _resourceStrings: WebCalendarResourceStringsDescription = null;
-	get resourceStrings(): WebCalendarResourceStringsDescription {
-		return this._resourceStrings;
-	}
-	set resourceStrings(value: WebCalendarResourceStringsDescription) {
-		this._resourceStrings = value;
-		this.markDirty("ResourceStrings");
 	}
 	private _change: string = null;
 	get changeRef(): string {

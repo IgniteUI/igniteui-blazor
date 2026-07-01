@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbActiveStepChangingEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebActiveStepChangingEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

@@ -8,13 +8,8 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// A snackbar component is used to provide feedback about an operation
-/// by showing a brief message at the bottom of the screen.
-/// </summary>
-public partial class IgbSnackbar: IgbBaseAlertLike {
+                            public partial class IgbSnackbar: IgbBaseAlertLike {
                                 public override string Type { get { return "WebSnackbar"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -65,7 +60,7 @@ public partial class IgbSnackbar: IgbBaseAlertLike {
 	
 	partial void OnActionTextChanging(ref string newValue);
 	/// <summary>
-	/// The snackbar action button.
+	/// The text of the action button.
 	/// </summary>
 	[Parameter]
 	public string ActionText 
@@ -107,10 +102,14 @@ public partial class IgbSnackbar: IgbBaseAlertLike {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Action", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._actionRef = refName;
-	                this.MarkPropDirty("ActionRef");	
-	        }); 
+	            if (value != this._actionScript)
+	            {
+	                this._actionScript = value;
+	                this.OnRefChanged("Action", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._actionRef = refName;
+	                    this.MarkPropDirty("ActionRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

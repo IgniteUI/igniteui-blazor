@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbVoidEventArgs: BaseRendererElement {
                                 public override string Type { get { return "VoidEventArgs"; } }
+
 	
 	    public IgbVoidEventArgs(): base() {
 	        OnCreatedIgbVoidEventArgs();

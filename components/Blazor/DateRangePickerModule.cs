@@ -10,8 +10,7 @@ namespace IgniteUI.Blazor.Controls
         public static void Register(IIgniteUIBlazor runtime) {
             ModuleLoader.Load(runtime, "WebDateRangePickerModule");
 
-            IgbBaseComboBoxLikeModule.MarkIsLoadRequested(runtime);
-IgbCalendarModule.MarkIsLoadRequested(runtime);
+            IgbCalendarModule.MarkIsLoadRequested(runtime);
 IgbDateTimeInputModule.MarkIsLoadRequested(runtime);
 IgbDialogModule.MarkIsLoadRequested(runtime);
 IgbIconModule.MarkIsLoadRequested(runtime);

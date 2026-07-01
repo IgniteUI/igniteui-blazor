@@ -23,6 +23,10 @@ export class WebFilteringOptionsDescriptionMetadata extends Base {
 		metadata.item("__qualifiedNameTS", "String:FilteringOptions");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
+		metadata.item("__isPlainObject", "Boolean");
+		metadata.item("FilterKey", "String");
+		metadata.item("CaseSensitive", "Boolean");
+		metadata.item("MatchDiacritics", "Boolean");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebFilteringOptionsDescriptionMetadata.ensureMetadata(context);

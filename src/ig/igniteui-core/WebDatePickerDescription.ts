@@ -1,4 +1,4 @@
-import { WebBaseComboBoxLikeDescription } from "./WebBaseComboBoxLikeDescription";
+import { WebComboBoxBaseLikeDescription } from "./WebComboBoxBaseLikeDescription";
 import { Description } from "./Description";
 import { DateRangeDescriptorDescription } from "./DateRangeDescriptorDescription";
 import { WebCalendarResourceStringsDescription } from "./WebCalendarResourceStringsDescription";
@@ -7,8 +7,8 @@ import { Base, Type, markType } from "./type";
 /**
  * @hidden 
  */
-export class WebDatePickerDescription extends WebBaseComboBoxLikeDescription {
-	static $t: Type = markType(WebDatePickerDescription, 'WebDatePickerDescription', (<any>WebBaseComboBoxLikeDescription).$type);
+export class WebDatePickerDescription extends WebComboBoxBaseLikeDescription {
+	static $t: Type = markType(WebDatePickerDescription, 'WebDatePickerDescription', (<any>WebComboBoxBaseLikeDescription).$type);
 	protected get_type(): string {
 		return "WebDatePicker";
 	}
@@ -175,14 +175,6 @@ export class WebDatePickerDescription extends WebBaseComboBoxLikeDescription {
 		this._inputFormat = value;
 		this.markDirty("InputFormat");
 	}
-	private _locale: string = null;
-	get locale(): string {
-		return this._locale;
-	}
-	set locale(value: string) {
-		this._locale = value;
-		this.markDirty("Locale");
-	}
 	private _prompt: string = null;
 	get prompt(): string {
 		return this._prompt;
@@ -190,6 +182,14 @@ export class WebDatePickerDescription extends WebBaseComboBoxLikeDescription {
 	set prompt(value: string) {
 		this._prompt = value;
 		this.markDirty("Prompt");
+	}
+	private _locale: string = null;
+	get locale(): string {
+		return this._locale;
+	}
+	set locale(value: string) {
+		this._locale = value;
+		this.markDirty("Locale");
 	}
 	private _resourceStrings: WebCalendarResourceStringsDescription = null;
 	get resourceStrings(): WebCalendarResourceStringsDescription {

@@ -49,6 +49,23 @@ cr.addNamespaceLookupListener(getContainerId);
 cr.shouldNamespaceSystemRefValues = true;
 
 
+cr.addPropertyUpdatingListener("options", (p, t, v) => {
+  /* hack to prevent igc-chat from automatically storing new messages in its internal collection
+  * which causes problems with the sync between Blazor and the web component.
+  */
+  if (t.tagName === "IGC-CHAT") {
+    if (t.addEventListener) {
+      let chat = t as any;
+      if (!chat.___igcMessageCreatedPreventDefaultHandler) {
+        chat.___igcMessageCreatedPreventDefaultHandler = (e: Event) => {
+          e.preventDefault();
+        };
+        chat.addEventListener("igcMessageCreated", chat.___igcMessageCreatedPreventDefaultHandler);
+      }
+    }
+  }
+});
+
 cr.addReferenceLookupListener((container, refType, value) => {
   if (refType == "uuid") {
     var retVal = null;
@@ -646,6 +663,15 @@ function ensureExternalObject(target: any) {
   }
 
   return target;
+}
+
+function updateAngularElement(element: any) {
+  if (element.markForCheck) {
+    element.markForCheck();
+    if (element.ngElementStrategy && element.tagName.toLowerCase().includes('grid')) {
+      element.ngElementStrategy.componentRef?.instance?.verticalScrollContainer?.resolveDataDiff();
+    }
+  }
 }
 
 (window as any).igSendMessage = function (containerId: string, json: string, webCallback: any, nativeElements: any[]) {
@@ -1265,8 +1291,8 @@ function ensureExternalObject(target: any) {
           } else {
             child.notifyInsertItem(refValue, index, newItem);
           }
-        } else if (child.markForCheck) {
-          child.markForCheck();
+        } else {
+          updateAngularElement(child);
         }
       }
       break;
@@ -1291,8 +1317,8 @@ function ensureExternalObject(target: any) {
             } else {
               child.notifyRemoveItem(refValue, index, oldItem);
             }
-          } else if (child.markForCheck) {
-            child.markForCheck();
+          } else {
+            updateAngularElement(child);
           }
         }
         break;
@@ -1337,8 +1363,8 @@ function ensureExternalObject(target: any) {
             } else {
               child.notifyClearItems(refValue);
             }
-          } else if (child.markForCheck) {
-            child.markForCheck();
+          } else {
+            updateAngularElement(child);
           }
         }
         break;
@@ -1376,8 +1402,8 @@ function ensureExternalObject(target: any) {
             } else {
               child.notifySetItem(refValue, index, oldItem, newItem);
             }
-          } else if (child.markForCheck) {
-            child.markForCheck();
+          } else {
+            updateAngularElement(child);
           }
         }
         break;
@@ -1407,8 +1433,8 @@ function ensureExternalObject(target: any) {
             } else {
               child.notifySetItem(refValue, index, oldItem, oldItem);
             }
-          } else if (child.markForCheck) {
-            child.markForCheck();
+          } else {
+            updateAngularElement(child);
           }
         }
         break;
@@ -2292,8 +2318,8 @@ function getArrayDataPtr(value: any): any {
           } else {
             child.notifyInsertItem(refValue, index, item);
           }
-        } else if (child.markForCheck) {
-          child.markForCheck();
+        } else {
+          updateAngularElement(child);
         }
         isSyncMethodInvoke = false;
       }
@@ -2334,8 +2360,8 @@ function getArrayDataPtr(value: any): any {
         } else {
           child.notifySetItem(refValue, index, oldVal, currVal);
         }
-      } else if (child.markForCheck) {
-        child.markForCheck();
+      } else {
+        updateAngularElement(child);
       }
       isSyncMethodInvoke = false;
     }
@@ -2369,8 +2395,8 @@ function getArrayDataPtr(value: any): any {
         } else {
           child.notifyRemoveItem(refValue, index, oldVAl);
         }
-      } else if (child.markForCheck) {
-        child.markForCheck();
+      } else {
+        updateAngularElement(child);
       }
       isSyncMethodInvoke = false;
     }
@@ -2406,7 +2432,7 @@ function getArrayDataPtr(value: any): any {
           child.notifyClearItems(refValue);
         }
       } else if (child.markForCheck) {
-        child.markForCheck();
+        updateAngularElement(child);
       }
       isSyncMethodInvoke = false;
     }

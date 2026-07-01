@@ -31,6 +31,38 @@ export class WebNavDrawerDescription extends Description {
 		this._open = value;
 		this.markDirty("Open");
 	}
+	private _keepOpenOnEscape: boolean = false;
+	get keepOpenOnEscape(): boolean {
+		return this._keepOpenOnEscape;
+	}
+	set keepOpenOnEscape(value: boolean) {
+		this._keepOpenOnEscape = value;
+		this.markDirty("KeepOpenOnEscape");
+	}
+	private _label: string = null;
+	get label(): string {
+		return this._label;
+	}
+	set label(value: string) {
+		this._label = value;
+		this.markDirty("Label");
+	}
+	private _closing: string = null;
+	get closingRef(): string {
+		return this._closing;
+	}
+	set closingRef(value: string) {
+		this._closing = value;
+		this.markDirty("ClosingRef");
+	}
+	private _closed: string = null;
+	get closedRef(): string {
+		return this._closed;
+	}
+	set closedRef(value: string) {
+		this._closed = value;
+		this.markDirty("ClosedRef");
+	}
 }
 
 

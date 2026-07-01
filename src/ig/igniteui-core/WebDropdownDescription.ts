@@ -1,12 +1,12 @@
-import { WebBaseComboBoxLikeDescription } from "./WebBaseComboBoxLikeDescription";
+import { WebComboBoxBaseLikeDescription } from "./WebComboBoxBaseLikeDescription";
 import { Description } from "./Description";
 import { Base, Type, markType } from "./type";
 
 /**
  * @hidden 
  */
-export class WebDropdownDescription extends WebBaseComboBoxLikeDescription {
-	static $t: Type = markType(WebDropdownDescription, 'WebDropdownDescription', (<any>WebBaseComboBoxLikeDescription).$type);
+export class WebDropdownDescription extends WebComboBoxBaseLikeDescription {
+	static $t: Type = markType(WebDropdownDescription, 'WebDropdownDescription', (<any>WebComboBoxBaseLikeDescription).$type);
 	protected get_type(): string {
 		return "WebDropdown";
 	}

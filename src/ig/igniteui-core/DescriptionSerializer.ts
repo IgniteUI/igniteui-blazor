@@ -24,6 +24,7 @@ import { NotImplementedException } from "./NotImplementedException";
 import { Convert } from "./Convert";
 import { truncate, isNaN_, isPositiveInfinity, isNegativeInfinity } from "./number";
 import { stringEndsWith, stringStartsWith, stringReplace } from "./string";
+import { dateMinValue } from "./date";
 
 /**
  * @hidden 
@@ -388,7 +389,7 @@ export class DescriptionSerializer extends Base {
 				}
 				return <number>v.value;
 
-				case "timespan": return <number>truncate(<number>v.value);
+				case "timespan": return <number>v.value;
 				case "short": return <number>truncate(<number>v.value);
 				case "long": return <number>truncate(<number>v.value);
 				case "float":
@@ -711,7 +712,7 @@ export class DescriptionSerializer extends Base {
 			break;
 
 			case "datetime":
-			if (v == null) {
+			if (v == null || +(<Date>v) == +(dateMinValue())) {
 				builder.append("null");
 			} else {
 				let v_ = v;

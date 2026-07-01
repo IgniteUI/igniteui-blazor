@@ -69,7 +69,7 @@ public partial class IgbBadge: BaseRendererControl {
 	
 	partial void OnVariantChanging(ref StyleVariant newValue);
 	/// <summary>
-	/// The type of badge.
+	/// The type (style variant) of the badge.
 	/// </summary>
 	[Parameter]
 	public StyleVariant Variant 
@@ -119,6 +119,25 @@ public partial class IgbBadge: BaseRendererControl {
 	                 
 	                }
 	}
+	private bool _dot = false;
+	
+	partial void OnDotChanging(ref bool newValue);
+	/// <summary>
+	/// Sets whether to render a dot type badge.
+	/// When enabled, the badge appears as a small dot without any content.
+	/// </summary>
+	[Parameter]
+	public bool Dot 
+	{
+	get { return this._dot; }
+	set { 
+	                if (this._dot != value || !IsPropDirty("Dot")) {
+	                        MarkPropDirty("Dot");
+	                } 
+	                this._dot = value;
+	                 
+	                }
+	}
 	
 	    partial void FindByNameBadge(string name, ref object item);
 	    public override object FindByName(string name)
@@ -159,6 +178,7 @@ public partial class IgbBadge: BaseRendererControl {
 	if (IsPropDirty("Variant")) { ser.AddEnumProp("variant", this._variant); }
 	if (IsPropDirty("Outlined")) { ser.AddBooleanProp("outlined", this._outlined); }
 	if (IsPropDirty("Shape")) { ser.AddEnumProp("shape", this._shape); }
+	if (IsPropDirty("Dot")) { ser.AddBooleanProp("dot", this._dot); }
 	
 	    }
 	

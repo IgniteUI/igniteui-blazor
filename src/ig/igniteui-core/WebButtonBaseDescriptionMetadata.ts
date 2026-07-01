@@ -34,6 +34,8 @@ export class WebButtonBaseDescriptionMetadata extends Base {
 		metadata.item("Target@names", "_blank;_parent;_self;_top");
 		metadata.item("Rel", "String");
 		metadata.item("Disabled", "Boolean");
+		metadata.item("Command", "String");
+		metadata.item("Commandfor", "String");
 		metadata.item("ClickedRef", "EventRef:VoidHandler:clicked");
 		metadata.item("ClickedRef@args", "VoidEventArgs");
 		metadata.item("FocusRef", "EventRef:VoidHandler:focus:skipWCPrefix");

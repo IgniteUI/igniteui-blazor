@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbSelectItemComponentEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebSelectItemComponentEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

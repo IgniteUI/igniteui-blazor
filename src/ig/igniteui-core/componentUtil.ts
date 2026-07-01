@@ -928,8 +928,18 @@ export function initializePropertiesFromCss(ele: Element, comp: any, cssPrefix: 
             } else {
                 cssName = toCssPropertyName(prop);
             }
+
+            let cssValue: any = undefined;
+            if (!prefixRequired) {
+                // check if custom property is set without a prefix
+                cssValue = styles.getPropertyValue("--" + cssName);
+                if (cssValue && cssValue.length && cssValue.length > 0) {
+                    comp[prop] = resolveUnits(cssValue.trim());
+                }
+            }
+
             // check if custom property is set with a prefix
-            let cssValue = styles.getPropertyValue("--" + cssPrefix + cssName);
+            cssValue = styles.getPropertyValue("--" + cssPrefix + cssName);
             if (cssValue && cssValue.length && cssValue.length > 0 ) {
                 comp[prop] = resolveUnits( cssValue.trim() );
             }
@@ -941,14 +951,6 @@ export function initializePropertiesFromCss(ele: Element, comp: any, cssPrefix: 
                     if (cssValue && cssValue.length && cssValue.length > 0 ) {
                         comp[prop] = resolveUnits( cssValue.trim() );
                     }
-                }
-            }
-
-            if (!prefixRequired) {
-                // check if custom property is set without a prefix
-                cssValue = styles.getPropertyValue("--" + cssName);
-                if (cssValue && cssValue.length && cssValue.length > 0) {
-                    comp[prop] = resolveUnits(cssValue.trim());
                 }
             }
 
@@ -1060,5 +1062,110 @@ export class NamePatcher {
             this.ensurePatched(base, nameFilter);
         }
     }
+}
+
+export function moveFocusNext(element: HTMLElement, ignoreChildren?: boolean) {
+    let focusableSelector = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex], [contenteditable]';
+    let all = Array.from(element.ownerDocument.querySelectorAll<HTMLElement>(focusableSelector))
+        .filter(el => {
+            let tabIndex = el.tabIndex;
+            if (tabIndex < 0) {
+                return false;
+            }
+            if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') {
+                return false;
+            }
+            return true;
+        });
+
+    all.sort((a, b) => {
+        let aTab = a.tabIndex > 0 ? a.tabIndex : 0;
+        let bTab = b.tabIndex > 0 ? b.tabIndex : 0;
+        if (aTab === bTab) return 0;
+        if (aTab === 0) return 1;
+        if (bTab === 0) return -1;
+        return aTab - bTab;
+    });
+
+    let currentIndex = all.indexOf(element);
+    if (currentIndex < 0) {
+        // element not in the list, find the closest match by DOM order
+        for (let i = 0; i < all.length; i++) {
+            if (element.compareDocumentPosition(all[i]) & Node.DOCUMENT_POSITION_FOLLOWING) {
+                if (ignoreChildren && element.contains(all[i])) {
+                    continue;
+                }
+                all[i].focus();
+                return;
+            }
+        }
+        if (all.length > 0) {
+            all[0].focus();
+        }
+        return;
+    }
+
+    for (let i = currentIndex + 1; i < all.length; i++) {
+        if (ignoreChildren && element.contains(all[i])) {
+            continue;
+        }
+        all[i].focus();
+        return;
+    }
+
+    // Wrap around to the beginning
+    for (let i = 0; i < currentIndex; i++) {
+        if (ignoreChildren && element.contains(all[i])) {
+            continue;
+        }
+        all[i].focus();
+        return;
+    }
+}
+
+export function moveFocusPrevious(element: HTMLElement) {
+    let focusableSelector = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex], [contenteditable]';
+    let all = Array.from(element.ownerDocument.querySelectorAll<HTMLElement>(focusableSelector))
+        .filter(el => {
+            let tabIndex = el.tabIndex;
+            if (tabIndex < 0) {
+                return false;
+            }
+            if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') {
+                return false;
+            }
+            return true;
+        });
+
+    all.sort((a, b) => {
+        let aTab = a.tabIndex > 0 ? a.tabIndex : 0;
+        let bTab = b.tabIndex > 0 ? b.tabIndex : 0;
+        if (aTab === bTab) return 0;
+        if (aTab === 0) return 1;
+        if (bTab === 0) return -1;
+        return aTab - bTab;
+    });
+
+    let currentIndex = all.indexOf(element);
+    if (currentIndex < 0) {
+        for (let i = all.length - 1; i >= 0; i--) {
+            if (element.compareDocumentPosition(all[i]) & Node.DOCUMENT_POSITION_PRECEDING) {
+                all[i].focus();
+                return;
+            }
+        }
+        if (all.length > 0) {
+            all[all.length - 1].focus();
+        }
+        return;
+    }
+
+    if (currentIndex > 0) {
+        all[currentIndex - 1].focus();
+        return;
+    }
+
+    // Wrap around to the end
+    all[all.length - 1].focus();
 }
 

@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbDateRangeValue: BaseRendererElement {
                                 public override string Type { get { return "WebDateRangeValue"; } }
+
 	
 	    public IgbDateRangeValue(): base() {
 	        OnCreatedIgbDateRangeValue();
@@ -69,6 +70,14 @@ namespace IgniteUI.Blazor.Controls
 	
 	        return null;
 	    }
+	public async  Task SetNativeElementAsync(Object element) 
+	                    {
+		await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+	}
+	                    public  void SetNativeElement(Object element) 
+	                    {
+		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+	}
 	
 	    partial void SerializeCoreIgbDateRangeValue(RendererSerializer ser);
 	

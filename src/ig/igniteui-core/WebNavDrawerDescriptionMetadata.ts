@@ -1,6 +1,7 @@
 import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
+import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
 import { WebNavDrawerDescription } from "./WebNavDrawerDescription";
 
 /**
@@ -18,6 +19,7 @@ export class WebNavDrawerDescriptionMetadata extends Base {
 			return;
 		}
 		context.markSeen(WebNavDrawerDescriptionMetadata._metadata);
+		VoidEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:NavDrawer");
@@ -28,6 +30,12 @@ export class WebNavDrawerDescriptionMetadata extends Base {
 		metadata.item("Position@stringUnion", "WebComponents;React");
 		metadata.item("Position@names", "Start;End;Top;Bottom;Relative");
 		metadata.item("Open", "Boolean");
+		metadata.item("KeepOpenOnEscape", "Boolean");
+		metadata.item("Label", "String");
+		metadata.item("ClosingRef", "EventRef:VoidHandler:closing");
+		metadata.item("ClosingRef@args", "VoidEventArgs");
+		metadata.item("ClosedRef", "EventRef:VoidHandler:closed");
+		metadata.item("ClosedRef@args", "VoidEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebNavDrawerDescriptionMetadata.ensureMetadata(context);

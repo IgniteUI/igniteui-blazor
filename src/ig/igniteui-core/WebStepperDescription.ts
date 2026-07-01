@@ -1,5 +1,4 @@
 import { Description } from "./Description";
-import { WebStepDescription } from "./WebStepDescription";
 import { Base, Type, markType } from "./type";
 
 /**
@@ -15,14 +14,6 @@ export class WebStepperDescription extends Description {
 	}
 	constructor() {
 		super();
-	}
-	private _steps: WebStepDescription[] = null;
-	get steps(): WebStepDescription[] {
-		return this._steps;
-	}
-	set steps(value: WebStepDescription[]) {
-		this._steps = value;
-		this.markDirty("Steps");
 	}
 	private _orientation: string = null;
 	get orientation(): string {

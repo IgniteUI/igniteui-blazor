@@ -2,7 +2,7 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebComponentValueChangedEventArgsDescriptionMetadata } from "./WebComponentValueChangedEventArgsDescriptionMetadata";
-import { WebMaskInputBaseDescriptionMetadata } from "./WebMaskInputBaseDescriptionMetadata";
+import { WebInputBaseDescriptionMetadata } from "./WebInputBaseDescriptionMetadata";
 import { WebMaskInputDescription } from "./WebMaskInputDescription";
 
 /**
@@ -23,7 +23,7 @@ export class WebMaskInputDescriptionMetadata extends Base {
 		WebComponentValueChangedEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
-		WebMaskInputBaseDescriptionMetadata.fillMetadata(metadata);
+		WebInputBaseDescriptionMetadata.fillMetadata(metadata);
 		metadata.item("__qualifiedNameTS", "String:MaskInput");
 		metadata.item("__tagNameWC", "String:igc-mask-input");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
@@ -33,11 +33,13 @@ export class WebMaskInputDescriptionMetadata extends Base {
 		metadata.item("ValueMode@names", "Raw;WithFormatting");
 		metadata.item("Value", "String");
 		metadata.item("Mask", "String");
+		metadata.item("Prompt", "String");
+		metadata.item("ReadOnly", "Boolean");
 		metadata.item("ChangeRef", "EventRef:ComponentValueChangedEventHandler:change");
 		metadata.item("ChangeRef@args", "ComponentValueChangedEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
-		WebMaskInputBaseDescriptionMetadata.register(context);
+		WebInputBaseDescriptionMetadata.register(context);
 		WebMaskInputDescriptionMetadata.ensureMetadata(context);
 		context.registerDescriptionConstructor("WebMaskInput", () => new WebMaskInputDescription());
 		context.register("WebMaskInput", WebMaskInputDescriptionMetadata._metadata);

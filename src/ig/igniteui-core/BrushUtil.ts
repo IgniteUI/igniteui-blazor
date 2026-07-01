@@ -217,6 +217,26 @@ export class BrushUtil extends Base {
 			})());
 		}
 	}
+	static changeOpacity(brush: Brush, opacity: number): Brush {
+		if (brush == null) {
+			return brush;
+		}
+		if (brush.isGradient) {
+			let newBrush = (<LinearGradientBrush>brush).clone();
+			for (let i = 0; i < newBrush.gradientStops.length; i++) {
+				let currentStop = newBrush.gradientStops[i];
+				currentStop.color = Color.fromArgb(<number>truncate(Math.round(255 * opacity)), currentStop.color.r, currentStop.color.g, currentStop.color.b);
+			}
+			return newBrush;
+		} else {
+			let l = Color.fromArgb(<number>truncate(Math.round(255 * opacity)), brush.color.r, brush.color.g, brush.color.b);
+			return ((() => {
+				let $ret = new Brush();
+				$ret.color = l;
+				return $ret;
+			})());
+		}
+	}
 	static getInterpolation(minimum: Brush, interpolation: number, maximum: Brush, interpolationMode: InterpolationMode): Brush {
 		let target: Brush = new Brush();
 		if (minimum == null && maximum == null) {
@@ -541,6 +561,17 @@ export class BrushUtil extends Base {
 		} else {
 			return ColorUtil.toHex(brush.color);
 		}
+	}
+	static composite(bottom: Brush, top: Brush): Brush {
+		let bottomColor = bottom.color;
+		let topColor = top.color;
+		let a1: number = bottomColor.a / 255;
+		let a2: number = topColor.a / 255;
+		let aOut: number = a2 + a1 * (1 - a2);
+		let r: number = (topColor.r * a2 + bottomColor.r * a1 * (1 - a2)) / aOut;
+		let g: number = (topColor.g * a2 + bottomColor.g * a1 * (1 - a2)) / aOut;
+		let b: number = (topColor.b * a2 + bottomColor.b * a1 * (1 - a2)) / aOut;
+		return BrushUtil.fromArgb(<number>truncate((aOut * 255)), <number>truncate(r), <number>truncate(g), <number>truncate(b));
 	}
 }
 

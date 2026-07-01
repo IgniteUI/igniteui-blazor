@@ -5,7 +5,7 @@ import { DateRangeDescriptorDescriptionMetadata } from "./DateRangeDescriptorDes
 import { WebCalendarResourceStringsDescriptionMetadata } from "./WebCalendarResourceStringsDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
 import { WebComponentDateValueChangedEventArgsDescriptionMetadata } from "./WebComponentDateValueChangedEventArgsDescriptionMetadata";
-import { WebBaseComboBoxLikeDescriptionMetadata } from "./WebBaseComboBoxLikeDescriptionMetadata";
+import { WebComboBoxBaseLikeDescriptionMetadata } from "./WebComboBoxBaseLikeDescriptionMetadata";
 import { WebDatePickerDescription } from "./WebDatePickerDescription";
 
 /**
@@ -29,7 +29,7 @@ export class WebDatePickerDescriptionMetadata extends Base {
 		WebComponentDateValueChangedEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
-		WebBaseComboBoxLikeDescriptionMetadata.fillMetadata(metadata);
+		WebComboBoxBaseLikeDescriptionMetadata.fillMetadata(metadata);
 		metadata.item("__qualifiedNameTS", "String:DatePicker");
 		metadata.item("__tagNameWC", "String:igc-date-picker");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
@@ -60,8 +60,8 @@ export class WebDatePickerDescriptionMetadata extends Base {
 		metadata.item("ShowWeekNumbers", "Boolean");
 		metadata.item("DisplayFormat", "String");
 		metadata.item("InputFormat", "String");
-		metadata.item("Locale", "String");
 		metadata.item("Prompt", "String");
+		metadata.item("Locale", "String");
 		metadata.item("ResourceStrings", "ExportedType:WebCalendarResourceStrings");
 		metadata.item("WeekStart", "ExportedType:string:WeekDays");
 		metadata.item("WeekStart@stringUnion", "WebComponents;React");
@@ -85,7 +85,7 @@ export class WebDatePickerDescriptionMetadata extends Base {
 		metadata.item("InputRef@args", "ComponentDateValueChangedEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
-		WebBaseComboBoxLikeDescriptionMetadata.register(context);
+		WebComboBoxBaseLikeDescriptionMetadata.register(context);
 		WebDatePickerDescriptionMetadata.ensureMetadata(context);
 		context.registerDescriptionConstructor("WebDatePicker", () => new WebDatePickerDescription());
 		context.register("WebDatePicker", WebDatePickerDescriptionMetadata._metadata);

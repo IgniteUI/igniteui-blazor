@@ -1,12 +1,12 @@
-import { WebBaseComboBoxLikeDescription } from "./WebBaseComboBoxLikeDescription";
+import { WebComboBoxBaseLikeDescription } from "./WebComboBoxBaseLikeDescription";
 import { Description } from "./Description";
 import { Base, Type, markType } from "./type";
 
 /**
  * @hidden 
  */
-export class WebSelectDescription extends WebBaseComboBoxLikeDescription {
-	static $t: Type = markType(WebSelectDescription, 'WebSelectDescription', (<any>WebBaseComboBoxLikeDescription).$type);
+export class WebSelectDescription extends WebComboBoxBaseLikeDescription {
+	static $t: Type = markType(WebSelectDescription, 'WebSelectDescription', (<any>WebComboBoxBaseLikeDescription).$type);
 	protected get_type(): string {
 		return "WebSelect";
 	}

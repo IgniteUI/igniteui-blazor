@@ -27,7 +27,6 @@ export class WebTooltipDescriptionMetadata extends Base {
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
 		metadata.item("Open", "Boolean");
-		metadata.item("DisableArrow", "Boolean");
 		metadata.item("WithArrow", "Boolean");
 		metadata.item("Offset", "Number:double");
 		metadata.item("Placement", "ExportedType:string:PopoverPlacement");

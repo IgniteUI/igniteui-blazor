@@ -34,6 +34,27 @@ case "WebActiveStepChangingEventArgs":
 case "ActiveStepChangingEventArgsDetail":
 case "WebActiveStepChangingEventArgsDetail":
                 return true;
+case "ChatDraftMessage":
+case "WebChatDraftMessage":
+                return true;
+case "ChatMessage":
+case "WebChatMessage":
+                return true;
+case "ChatMessageAttachment":
+case "WebChatMessageAttachment":
+                return true;
+case "ChatMessageAttachmentEventArgs":
+case "WebChatMessageAttachmentEventArgs":
+                return true;
+case "ChatMessageEventArgs":
+case "WebChatMessageEventArgs":
+                return true;
+case "ChatMessageReaction":
+case "WebChatMessageReaction":
+                return true;
+case "ChatMessageReactionEventArgs":
+case "WebChatMessageReactionEventArgs":
+                return true;
 case "CheckboxChangeEventArgs":
 case "WebCheckboxChangeEventArgs":
                 return true;
@@ -67,6 +88,9 @@ case "WebDropdownItemComponentEventArgs":
 case "ExpansionPanelComponentEventArgs":
 case "WebExpansionPanelComponentEventArgs":
                 return true;
+case "HighlightNavigation":
+case "WebHighlightNavigation":
+                return true;
 case "IconMeta":
 case "WebIconMeta":
                 return true;
@@ -85,11 +109,14 @@ case "WebRangeSliderValue":
 case "SelectItemComponentEventArgs":
 case "WebSelectItemComponentEventArgs":
                 return true;
+case "SplitterResizeEventArgs":
+case "WebSplitterResizeEventArgs":
+                return true;
+case "SplitterResizeEventArgsDetail":
+case "WebSplitterResizeEventArgsDetail":
+                return true;
 case "TabComponentEventArgs":
 case "WebTabComponentEventArgs":
-                return true;
-case "TabHeaderElement":
-case "WebTabHeaderElement":
                 return true;
 case "TileChangeStateEventArgs":
 case "WebTileChangeStateEventArgs":
@@ -151,6 +178,34 @@ case "ActiveStepChangingEventArgsDetail":
             case "WebActiveStepChangingEventArgsDetail":
                 return new IgbActiveStepChangingEventArgsDetail();
             break;
+case "ChatDraftMessage":
+            case "WebChatDraftMessage":
+                return new IgbChatDraftMessage();
+            break;
+case "ChatMessage":
+            case "WebChatMessage":
+                return new IgbChatMessage();
+            break;
+case "ChatMessageAttachment":
+            case "WebChatMessageAttachment":
+                return new IgbChatMessageAttachment();
+            break;
+case "ChatMessageAttachmentEventArgs":
+            case "WebChatMessageAttachmentEventArgs":
+                return new IgbChatMessageAttachmentEventArgs();
+            break;
+case "ChatMessageEventArgs":
+            case "WebChatMessageEventArgs":
+                return new IgbChatMessageEventArgs();
+            break;
+case "ChatMessageReaction":
+            case "WebChatMessageReaction":
+                return new IgbChatMessageReaction();
+            break;
+case "ChatMessageReactionEventArgs":
+            case "WebChatMessageReactionEventArgs":
+                return new IgbChatMessageReactionEventArgs();
+            break;
 case "CheckboxChangeEventArgs":
             case "WebCheckboxChangeEventArgs":
                 return new IgbCheckboxChangeEventArgs();
@@ -195,6 +250,10 @@ case "ExpansionPanelComponentEventArgs":
             case "WebExpansionPanelComponentEventArgs":
                 return new IgbExpansionPanelComponentEventArgs();
             break;
+case "HighlightNavigation":
+            case "WebHighlightNavigation":
+                return new IgbHighlightNavigation();
+            break;
 case "IconMeta":
             case "WebIconMeta":
                 return new IgbIconMeta();
@@ -219,13 +278,17 @@ case "SelectItemComponentEventArgs":
             case "WebSelectItemComponentEventArgs":
                 return new IgbSelectItemComponentEventArgs();
             break;
+case "SplitterResizeEventArgs":
+            case "WebSplitterResizeEventArgs":
+                return new IgbSplitterResizeEventArgs();
+            break;
+case "SplitterResizeEventArgsDetail":
+            case "WebSplitterResizeEventArgsDetail":
+                return new IgbSplitterResizeEventArgsDetail();
+            break;
 case "TabComponentEventArgs":
             case "WebTabComponentEventArgs":
                 return new IgbTabComponentEventArgs();
-            break;
-case "TabHeaderElement":
-            case "WebTabHeaderElement":
-                return new IgbTabHeaderElement();
             break;
 case "TileChangeStateEventArgs":
             case "WebTileChangeStateEventArgs":

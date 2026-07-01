@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbTabComponentEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebTabComponentEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

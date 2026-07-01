@@ -9,11 +9,15 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// 
+/// A button that displays a single icon, designed for compact, icon-only
+/// interactions such as toolbar actions, floating action buttons, or inline
+/// controls.
+/// The icon is sourced from the icon registry via the `name` and `collection`
+/// attributes. Like the normal button, it can render as an anchor element when
+/// `href` is set and is fully form-associated.
 /// </summary>
 public partial class IgbIconButton: IgbButtonBase {
                                 public override string Type { get { return "WebIconButton"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -64,7 +68,7 @@ public partial class IgbIconButton: IgbButtonBase {
 	
 	partial void OnIconNameChanging(ref string newValue);
 	/// <summary>
-	/// The name of the icon.
+	/// The name of the icon to display.
 	/// </summary>
 	[Parameter]
 	[WCWidgetMemberName("Name")]
@@ -83,7 +87,7 @@ public partial class IgbIconButton: IgbButtonBase {
 	
 	partial void OnCollectionChanging(ref string newValue);
 	/// <summary>
-	/// The name of the icon collection.
+	/// The collection the icon belongs to.
 	/// </summary>
 	[Parameter]
 	public string Collection 
@@ -101,7 +105,7 @@ public partial class IgbIconButton: IgbButtonBase {
 	
 	partial void OnMirroredChanging(ref bool newValue);
 	/// <summary>
-	/// Whether to flip the icon button. Useful for RTL layouts.
+	/// Determines whether the icon should be mirrored in right-to-left contexts.
 	/// </summary>
 	[Parameter]
 	public bool Mirrored 
@@ -119,7 +123,10 @@ public partial class IgbIconButton: IgbButtonBase {
 	
 	partial void OnVariantChanging(ref IconButtonVariant newValue);
 	/// <summary>
-	/// The visual variant of the icon button.
+	/// The variant of the button which determines its visual appearance.
+	/// - `contained` – filled background; highest visual emphasis (default).
+	/// - `outlined` – transparent background with a visible border.
+	/// - `flat` – no background or border; lowest visual emphasis.
 	/// </summary>
 	[Parameter]
 	public IconButtonVariant Variant 
