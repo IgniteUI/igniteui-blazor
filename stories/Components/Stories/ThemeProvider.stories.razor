@@ -1,0 +1,178 @@
+@attribute [Stories("Theming/Theme Provider")]
+@inject IWebHostEnvironment Env
+
+<Stories TComponent="IgbThemeProvider">
+
+    <ArgType For="_ => _!.Theme" Control="ControlType.Select" />
+    <ArgType For="_ => _!.Variant" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Theme" Value="Theme.Bootstrap" />
+            <Arg For="_ => _!.Variant" Value="ThemeVariant.Light" />
+        </Arguments>
+        <Template>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1.5rem; align-items: start;">
+                <IgbCard>
+                    <IgbCardHeader>
+                        <h3 slot="title">Global canvas</h3>
+                        <h5 slot="subtitle">Unaffected by the scoped provider</h5>
+                    </IgbCardHeader>
+                    <IgbCardContent>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <IgbInput Label="Username" Placeholder="Enter username..." Outlined="true" />
+                            <IgbInput Label="Password" Placeholder="Enter password..." Outlined="true" />
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <IgbButton>Sign In</IgbButton>
+                                <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                            </div>
+                        </div>
+                    </IgbCardContent>
+                </IgbCard>
+
+                <IgbThemeProvider @attributes="context.Args">
+                    <IgbCard>
+                        <IgbCardHeader>
+                            <h3 slot="title">Scoped preview</h3>
+                            <h5 slot="subtitle">Updated through the Controls panel</h5>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <IgbInput Label="Username" Placeholder="Enter username..." Outlined="true" />
+                                <IgbInput Label="Password" Placeholder="Enter password..." Outlined="true" />
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <IgbButton>Sign In</IgbButton>
+                                    <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                                </div>
+                            </div>
+                        </IgbCardContent>
+                    </IgbCard>
+                </IgbThemeProvider>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="All Themes">
+        <Arguments></Arguments>
+        <Template>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <IgbThemeProvider Theme="Theme.Bootstrap" Variant="ThemeVariant.Light">
+                    <IgbCard>
+                        <IgbCardHeader>
+                            <h3 slot="title">Bootstrap</h3>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <IgbInput Label="Username" Outlined="true" />
+                            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                                <IgbButton>Submit</IgbButton>
+                                <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                            </div>
+                        </IgbCardContent>
+                    </IgbCard>
+                </IgbThemeProvider>
+
+                <IgbThemeProvider Theme="Theme.Material" Variant="ThemeVariant.Light">
+                    <IgbCard>
+                        <IgbCardHeader>
+                            <h3 slot="title">Material</h3>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <IgbInput Label="Username" Outlined="true" />
+                            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                                <IgbButton>Submit</IgbButton>
+                                <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                            </div>
+                        </IgbCardContent>
+                    </IgbCard>
+                </IgbThemeProvider>
+
+                <IgbThemeProvider Theme="Theme.Fluent" Variant="ThemeVariant.Light">
+                    <IgbCard>
+                        <IgbCardHeader>
+                            <h3 slot="title">Fluent</h3>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <IgbInput Label="Username" Outlined="true" />
+                            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                                <IgbButton>Submit</IgbButton>
+                                <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                            </div>
+                        </IgbCardContent>
+                    </IgbCard>
+                </IgbThemeProvider>
+
+                <IgbThemeProvider Theme="Theme.Indigo" Variant="ThemeVariant.Light">
+                    <IgbCard>
+                        <IgbCardHeader>
+                            <h3 slot="title">Indigo</h3>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <IgbInput Label="Username" Outlined="true" />
+                            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                                <IgbButton>Submit</IgbButton>
+                                <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                            </div>
+                        </IgbCardContent>
+                    </IgbCard>
+                </IgbThemeProvider>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Light And Dark">
+        <Arguments></Arguments>
+        <Template>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1.5rem; align-items: start;">
+                <IgbThemeProvider Theme="Theme.Bootstrap" Variant="ThemeVariant.Light">
+                    <style>
+                        @@scope {
+                            @bootstrapLightScopedCSS
+                        }
+                    </style>
+                    <IgbCard>
+                        <IgbCardHeader>
+                            <h3 slot="title">Bootstrap / Light</h3>
+                            <h5 slot="subtitle">Scoped light theme</h5>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <IgbInput Label="Username" Outlined="true" />
+                            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <IgbButton>Submit</IgbButton>
+                                <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                            </div>
+                        </IgbCardContent>
+                    </IgbCard>
+                </IgbThemeProvider>
+
+                <IgbThemeProvider Theme="Theme.Bootstrap" Variant="ThemeVariant.Dark">
+                    <IgbCard>
+                        <IgbCardHeader>
+                            <h3 slot="title">Bootstrap / Dark</h3>
+                            <h5 slot="subtitle">Scoped dark theme</h5>
+                        </IgbCardHeader>
+                        <IgbCardContent>
+                            <IgbInput Label="Username" Outlined="true" />
+                            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <IgbButton>Submit</IgbButton>
+                                <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                            </div>
+                        </IgbCardContent>
+                    </IgbCard>
+                </IgbThemeProvider>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private string bootstrapLightScopedCSS = string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+        // The theme file uses :root selectors for CSS custom properties. Replace them
+        // with :scope so they are set on the igc-theme-provider element instead of the
+        // document root, allowing them to cascade into its Shadow DOM descendants.
+        bootstrapLightScopedCSS = File.ReadAllText(Env.WebRootFileProvider.GetFileInfo("_content/IgniteUI.Blazor/themes/light/bootstrap.css").PhysicalPath!)
+            .Replace(":root", ":scope");
+    }
+}
