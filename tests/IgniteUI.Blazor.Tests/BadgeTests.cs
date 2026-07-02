@@ -30,6 +30,16 @@ public class BadgeTests : BlazorComponentTestBase
     }
 
     [Fact]
+    public void Badge_Dot_RendersAttribute()
+    {
+        var cut = RenderComponent<IgbBadge>(parameters =>
+            parameters.Add(p => p.Dot, true));
+
+        var element = cut.Find("igc-badge");
+        Assert.NotNull(element.GetAttribute("dot"));
+    }
+
+    [Fact]
     public void Badge_Shape_Rounded()
     {
         var cut = RenderComponent<IgbBadge>(parameters =>
