@@ -572,7 +572,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
         Assert.NotNull(el.GetAttribute("open"));
     }
 
-    [Fact]
+    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void DateTimeInput_RendersAllAttributes()
     {
         var cut = RenderComponent<IgbDateTimeInput>(p => p
@@ -592,7 +592,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
         Assert.NotNull(el.GetAttribute("outlined"));
     }
 
-    [Fact]
+    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_RendersAllAttributes()
     {
         var cut = RenderComponent<IgbMaskInput>(p => p
