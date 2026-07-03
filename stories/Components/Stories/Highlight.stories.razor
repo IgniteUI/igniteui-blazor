@@ -1,0 +1,449 @@
+@attribute [Stories("Data Display/Highlight")]
+
+<Stories TComponent="IgbHighlight">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.CaseSensitive" Value="false" />
+            <Arg For="_ => _!.SearchText" Value='"lorem"' />
+        </Arguments>
+        <Template>
+            <IgbHighlight @attributes="context.Args">
+                <p>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quae doloribus
+                    odit id excepturi ipsum provident eaque dignissimos beatae! Rerum vero
+                    distinctio libero, quasi magni quod natus nesciunt doloremque temporibus
+                    voluptate?
+                </p>
+            </IgbHighlight>
+        </Template>
+    </Story>
+
+    <Story Name="Custom Styling">
+        <Template>
+            <style>
+                .blue-highlight {
+                    --background: royalblue;
+                    --foreground: white;
+                    --background-active: dodgerblue;
+                    --foreground-active: white;
+                }
+
+                .dark-highlight {
+                    --foreground-active: #000;
+                    --foreground: yellow;
+                    --background-active: yellow;
+                    --background: #000;
+                }
+            </style>
+
+            <IgbHighlight SearchText="lorem" class="blue-highlight">
+                <p>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quae doloribus
+                    odit id excepturi ipsum provident eaque dignissimos beatae! Rerum vero
+                    distinctio libero, quasi magni quod natus nesciunt doloremque temporibus
+                    voluptate?
+                </p>
+            </IgbHighlight>
+
+            <IgbDivider />
+
+            <IgbHighlight SearchText="dolor" class="dark-highlight">
+                <p>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quae doloribus
+                    odit id excepturi ipsum provident eaque dignissimos beatae! Rerum vero
+                    distinctio libero, quasi magni quod natus nesciunt doloremque temporibus
+                    voluptate?
+                </p>
+            </IgbHighlight>
+        </Template>
+    </Story>
+
+    <Story Name="Search UI">
+        <Template>
+            <style>
+                .search-bar {
+                    position: sticky;
+                    top: 0;
+                    z-index: 1;
+                }
+            </style>
+
+            <div class="search-bar">
+                <IgbInput type="text" value="@_searchUiText" InputOcurred="OnSearchUiInput" Label="Search">
+                    <IgbButton slot="suffix" Variant="ButtonVariant.Flat" @onclick="SearchUiPrevious">Previous</IgbButton>
+                    <IgbButton slot="suffix" Variant="ButtonVariant.Flat" @onclick="SearchUiNext">Next</IgbButton>
+                    <span slot="helper-text">@_searchUiStatus</span>
+                </IgbInput>
+                <IgbDivider style="margin-top: 0.5rem;"></IgbDivider>
+            </div>
+
+            <IgbHighlight @ref="_searchUiHighlight" SearchText="@_searchUiText" CaseSensitive="@_searchUiCaseSensitive">
+                <h1>Document Object Model</h1>
+                <p>
+                    <em>Source: <a href="https://en.wikipedia.org/wiki/Document_Object_Model">Wikipedia</a></em>
+                </p>
+
+                <IgbExpansionPanel Open="true">
+                    <h2 slot="title">Overview</h2>
+                    <section>
+                        <p>
+                            The Document Object Model (DOM) is a cross-platform and language-independent interface
+                            that treats an HTML or XML document as a tree structure wherein each node is an object.
+                        </p>
+                        <p>
+                            DOM methods allow programmatic access to the tree; with them one can change structure,
+                            style, or content of a document.
+                        </p>
+                    </section>
+                </IgbExpansionPanel>
+
+                <IgbExpansionPanel Open="true">
+                    <h2 slot="title">History</h2>
+                    <section>
+                        <p>
+                            JavaScript and JScript allowed developers to create web pages with client-side
+                            interactivity, leading to early and incompatible DOM implementations.
+                        </p>
+                        <p>
+                            Later standards improved interoperability and enabled broad browser support.
+                        </p>
+                    </section>
+                </IgbExpansionPanel>
+            </IgbHighlight>
+        </Template>
+    </Story>
+
+    <Story Name="Performance">
+        <Template>
+            <style>
+                .perf-highlight {
+                    --foreground-active: #222;
+                    --background-active: yellow;
+                    --foreground: yellow;
+                    --background: #222;
+                }
+
+                .search-bar {
+                    position: sticky;
+                    top: 0;
+                    z-index: 1;
+                    padding: .5rem;
+                    background-color: var(--ig-surface-500);
+                }
+            </style>
+
+            <div class="search-bar">
+                <IgbInput type="text" value="@_perfSearchText" InputOcurred="OnPerfInput" Label="Search">
+                    <IgbButton slot="suffix" Variant="ButtonVariant.Flat" @onclick="PerfPrevious">Previous</IgbButton>
+                    <IgbButton slot="suffix" Variant="ButtonVariant.Flat" @onclick="PerfNext">Next</IgbButton>
+                    <span slot="helper-text">@_perfStatus</span>
+                </IgbInput>
+                <IgbDivider style="margin-top: 0.5rem;"></IgbDivider>
+            </div>
+
+            <IgbHighlight @ref="_performanceHighlight" SearchText="@_perfSearchText" class="perf-highlight">
+                @foreach (var paragraph in _perfParagraphs)
+                {
+                    <p>@paragraph</p>
+                }
+            </IgbHighlight>
+        </Template>
+    </Story>
+
+    <Story Name="Knowledge Base">
+        <Template>
+            <style>
+                .kb-layout {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2rem;
+                    padding: 1rem 0;
+                }
+
+                .kb-section-title {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    margin: 0 0 0.75rem;
+                }
+
+                .kb-card-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                    gap: 1rem;
+                }
+
+                .kb-card-excerpt {
+                    font-size: 0.875rem;
+                    line-height: 1.6;
+                    margin: 0;
+                }
+
+                .kb-tags {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 4px;
+                    margin-top: 0.75rem;
+                }
+
+                .search-bar {
+                    position: sticky;
+                    top: 0;
+                    z-index: 1;
+                    padding: .5rem;
+                    background-color: var(--ig-surface-500);
+                }
+            </style>
+
+            <div class="search-bar">
+                <IgbInput type="text" value="@_kbSearchText" InputOcurred="OnKbInput" Label="Search">
+                    <IgbButton slot="suffix" Variant="ButtonVariant.Flat" @onclick="KbPrevious">Previous</IgbButton>
+                    <IgbButton slot="suffix" Variant="ButtonVariant.Flat" @onclick="KbNext">Next</IgbButton>
+                    <span slot="helper-text">@_kbStatus</span>
+                </IgbInput>
+                <IgbDivider style="margin-top: 0.5rem;"></IgbDivider>
+            </div>
+
+            <IgbHighlight @ref="_kbHighlight" SearchText="@_kbSearchText">
+                <div class="kb-layout">
+                    <section>
+                        <p class="kb-section-title">Article Index</p>
+                        <IgbList>
+                            <IgbListHeader><h4>Recent Publications</h4></IgbListHeader>
+                            @foreach (var article in _articles)
+                            {
+                                <IgbListItem>
+                                    <IgbAvatar slot="start" Initials="@article.Initials" Shape="AvatarShape.Circle" />
+                                    <span slot="title">@article.Title</span>
+                                    <span slot="subtitle">@article.Author · @article.Date · @article.Category</span>
+                                </IgbListItem>
+                            }
+                        </IgbList>
+                    </section>
+
+                    <IgbDivider></IgbDivider>
+
+                    <section>
+                        <p class="kb-section-title">Featured Articles</p>
+                        <div class="kb-card-grid">
+                            @foreach (var article in _articles)
+                            {
+                                <IgbCard>
+                                    <IgbCardHeader>
+                                        <IgbAvatar slot="thumbnail" Initials="@article.Initials" Shape="AvatarShape.Circle" />
+                                        <h3 slot="title">@article.Title</h3>
+                                        <h5 slot="subtitle">@article.Author · @article.Date</h5>
+                                    </IgbCardHeader>
+                                    <IgbCardContent>
+                                        <p class="kb-card-excerpt">@article.Excerpt</p>
+                                        <div class="kb-tags">
+                                            @foreach (var tag in article.Tags)
+                                            {
+                                                <IgbChip tabindex="-1">@tag</IgbChip>
+                                            }
+                                        </div>
+                                    </IgbCardContent>
+                                    <IgbCardActions>
+                                        <IgbButton slot="start" Variant="ButtonVariant.Flat">Read More</IgbButton>
+                                        <span slot="end">@article.Category</span>
+                                    </IgbCardActions>
+                                </IgbCard>
+                            }
+                        </div>
+                    </section>
+                </div>
+            </IgbHighlight>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private readonly IgbHighlightNavigation _noScrollNavigation = new() { PreventScroll = true };
+    private readonly IgbHighlightNavigation _scrollNavigation = new();
+
+    private IgbHighlight? _searchUiHighlight;
+    private IgbHighlight? _performanceHighlight;
+    private IgbHighlight? _kbHighlight;
+
+    private string _searchUiText = "document";
+    private bool _searchUiCaseSensitive;
+    private string _searchUiStatus = string.Empty;
+
+    private string _perfSearchText = "lorem";
+    private string _perfStatus = string.Empty;
+
+    private string _kbSearchText = "component";
+    private string _kbStatus = string.Empty;
+
+    private readonly string[] _perfParagraphs = GenerateParagraphs(250);
+
+    private readonly Article[] _articles =
+    [
+        new("AJ", "Getting Started with Web Components", "Alice Johnson", "Mar 15, 2026", "Tutorial", ["web-components", "custom-elements", "beginner"], "Web Components are platform APIs for reusable custom elements with encapsulated behavior."),
+        new("ML", "Reactive Rendering with Lit", "Marcus Lee", "Mar 10, 2026", "Framework", ["lit", "reactive", "performance"], "Lit layers a reactive template system on top of web components for efficient updates."),
+        new("ST", "Accessibility in Component Design", "Sarah Torres", "Mar 5, 2026", "Accessibility", ["accessibility", "aria", "wcag"], "Accessible components need keyboard support, clear semantics, and robust focus management."),
+        new("DK", "Deep Dive into Shadow DOM", "David Kim", "Feb 28, 2026", "Web Standards", ["shadow-dom", "encapsulation", "css"], "Shadow DOM provides isolation while allowing opt-in theming through CSS custom properties."),
+        new("EC", "TypeScript Patterns for Lit Components", "Emily Chen", "Feb 22, 2026", "TypeScript", ["typescript", "decorators", "types"], "Strong typing improves refactors and event safety in larger component libraries."),
+        new("JR", "Theming with CSS Custom Properties", "James Rivera", "Feb 18, 2026", "Styling", ["css", "custom-properties", "design-tokens"], "Design tokens mapped to CSS variables make light, dark, and brand themes easy to maintain.")
+    ];
+
+    private async Task OnSearchUiInput(IgbComponentValueChangedEventArgs e)
+    {
+        _searchUiText = e.Detail?.ToString() ?? string.Empty;
+        await RefreshSearchUiStatusAsync();
+    }
+
+    private async Task SearchUiPrevious()
+    {
+        if (_searchUiHighlight == null)
+        {
+            return;
+        }
+
+        await _searchUiHighlight.PreviousAsync(_noScrollNavigation);
+        await RefreshSearchUiStatusAsync();
+    }
+
+    private async Task SearchUiNext()
+    {
+        if (_searchUiHighlight == null)
+        {
+            return;
+        }
+
+        await _searchUiHighlight.NextAsync(_noScrollNavigation);
+        await RefreshSearchUiStatusAsync();
+    }
+
+    private async Task RefreshSearchUiStatusAsync()
+    {
+        if (_searchUiHighlight == null)
+        {
+            _searchUiStatus = string.Empty;
+            return;
+        }
+
+        var size = (int)await _searchUiHighlight.GetSizeAsync();
+        var current = (int)await _searchUiHighlight.GetCurrentAsync();
+        _searchUiStatus = size > 0 ? $"{current + 1} of {size} matches" : string.Empty;
+    }
+
+    private async Task OnPerfInput(IgbComponentValueChangedEventArgs e)
+    {
+        _perfSearchText = e.Detail?.ToString() ?? string.Empty;
+        await RefreshPerfStatusAsync();
+    }
+
+    private async Task PerfPrevious()
+    {
+        if (_performanceHighlight == null)
+        {
+            return;
+        }
+
+        await _performanceHighlight.PreviousAsync(_scrollNavigation);
+        await RefreshPerfStatusAsync();
+    }
+
+    private async Task PerfNext()
+    {
+        if (_performanceHighlight == null)
+        {
+            return;
+        }
+
+        await _performanceHighlight.NextAsync(_scrollNavigation);
+        await RefreshPerfStatusAsync();
+    }
+
+    private async Task RefreshPerfStatusAsync()
+    {
+        if (_performanceHighlight == null)
+        {
+            _perfStatus = string.Empty;
+            return;
+        }
+
+        var size = (int)await _performanceHighlight.GetSizeAsync();
+        var current = (int)await _performanceHighlight.GetCurrentAsync();
+        _perfStatus = size > 0 ? $"{current + 1} of {size} matches" : string.Empty;
+    }
+
+    private async Task OnKbInput(IgbComponentValueChangedEventArgs e)
+    {
+        _kbSearchText = e.Detail?.ToString() ?? string.Empty;
+        await RefreshKbStatusAsync();
+    }
+
+    private async Task KbPrevious()
+    {
+        if (_kbHighlight == null)
+        {
+            return;
+        }
+
+        await _kbHighlight.PreviousAsync(_scrollNavigation);
+        await RefreshKbStatusAsync();
+    }
+
+    private async Task KbNext()
+    {
+        if (_kbHighlight == null)
+        {
+            return;
+        }
+
+        await _kbHighlight.NextAsync(_scrollNavigation);
+        await RefreshKbStatusAsync();
+    }
+
+    private async Task RefreshKbStatusAsync()
+    {
+        if (_kbHighlight == null)
+        {
+            _kbStatus = string.Empty;
+            return;
+        }
+
+        var size = (int)await _kbHighlight.GetSizeAsync();
+        var current = (int)await _kbHighlight.GetCurrentAsync();
+        _kbStatus = size > 0 ? $"{current + 1} of {size} matches" : string.Empty;
+    }
+
+    private static string[] GenerateParagraphs(int count)
+    {
+        var words = new[]
+        {
+            "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", "sed", "do",
+            "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua"
+        };
+
+        var random = new Random(42);
+        var result = new string[count];
+
+        for (var i = 0; i < count; i++)
+        {
+            var wordCount = random.Next(40, 70);
+            var buffer = new string[wordCount];
+
+            for (var j = 0; j < wordCount; j++)
+            {
+                buffer[j] = words[random.Next(words.Length)];
+            }
+
+            result[i] = string.Join(' ', buffer);
+        }
+
+        return result;
+    }
+
+    private record Article(
+        string Initials,
+        string Title,
+        string Author,
+        string Date,
+        string Category,
+        string[] Tags,
+        string Excerpt);
+}
