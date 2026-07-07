@@ -1,0 +1,96 @@
+@page "/IgbInputComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbInputComponent</PageTitle>
+
+<h3>IgbInputComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Type</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TypeName">
+                @foreach (var type in Types)
+                {
+                    <IgbRadio Value="@type.ToString()">@type.ToString()</IgbRadio>
+                }
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Outlined">Outlined</IgbSwitch>
+            <IgbSwitch @bind-Checked="Required">Required</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbInput @key="TypeName"
+              class="demo-input"
+              @bind-Value="Value"
+              DisplayType="DisplayType"
+              Label="Your input"
+              Placeholder="@Placeholders[DisplayType]"
+              Outlined="Outlined"
+              Required="Required"
+              Disabled="Disabled">
+        <span slot="helper-text">Helper text shown below the field.</span>
+    </IgbInput>
+</div>
+
+<div class="state">Value: @(string.IsNullOrEmpty(Value) ? "(empty)" : Value)</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private static readonly InputType[] Types = Enum.GetValues<InputType>();
+
+    private static readonly Dictionary<InputType, string> Placeholders = new()
+    {
+        [InputType.Text] = "Enter text",
+        [InputType.Email] = "name@example.com",
+        [InputType.Number] = "0",
+        [InputType.Password] = "Enter password",
+        [InputType.Search] = "Search…",
+        [InputType.Tel] = "+1 (555) 000-0000",
+        [InputType.Url] = "https://example.com"
+    };
+
+    private string Value { get; set; } = string.Empty;
+
+    private string _typeName = "Text";
+    private string TypeName
+    {
+        get => _typeName;
+        set
+        {
+            if (_typeName == value) return;
+            _typeName = value;
+            Value = string.Empty; // reset value; @key recreates the input, clearing validation state
+        }
+    }
+    private InputType DisplayType => Enum.Parse<InputType>(TypeName);
+
+    private bool Outlined { get; set; }
+    private bool Required { get; set; }
+    private bool Disabled { get; set; }
+}

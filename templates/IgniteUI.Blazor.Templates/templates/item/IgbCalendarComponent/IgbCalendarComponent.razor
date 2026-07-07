@@ -1,0 +1,96 @@
+@page "/IgbCalendarComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbCalendarComponent</PageTitle>
+
+<h3>IgbCalendarComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Selection</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
+                <IgbRadio Value="Single">Single</IgbRadio>
+                <IgbRadio Value="Multiple">Multiple</IgbRadio>
+                <IgbRadio Value="Range">Range</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Active view</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActiveViewName">
+                <IgbRadio Value="Days">Days</IgbRadio>
+                <IgbRadio Value="Months">Months</IgbRadio>
+                <IgbRadio Value="Years">Years</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="TwoMonths">Two months</IgbSwitch>
+            <IgbSwitch @bind-Checked="ShowWeekNumbers">Week numbers</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideOutsideDays">Hide outside days</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbCalendar Selection="Selection"
+                 ActiveView="ActiveView"
+                 VisibleMonths="@(TwoMonths ? 2 : 1)"
+                 ShowWeekNumbers="ShowWeekNumbers"
+                 HideOutsideDays="HideOutsideDays"
+                 ValueChanged="OnValueChanged"
+                 ValuesChanged="OnValuesChanged" />
+</div>
+
+<div class="state">Selected: @Selected</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private string SelectionName { get; set; } = "Single";
+    private CalendarSelection Selection => Enum.Parse<CalendarSelection>(SelectionName);
+
+    private string ActiveViewName { get; set; } = "Days";
+    private CalendarActiveView ActiveView => Enum.Parse<CalendarActiveView>(ActiveViewName);
+
+    private bool TwoMonths { get; set; }
+    private bool ShowWeekNumbers { get; set; }
+    private bool HideOutsideDays { get; set; }
+
+    private string Selected { get; set; } = "(none)";
+
+    private void OnValueChanged(DateTime value) {
+        if (Selection == CalendarSelection.Single) {
+            Selected = value.ToString("d");
+        }
+    }
+
+    private void OnValuesChanged(DateTime[] values) {
+        if (Selection != CalendarSelection.Single) {
+            Selected = values is { Length: > 0 }
+                ? string.Join(", ", values.Select(d => d.ToString("d")))
+                : "(none)";
+        }
+    }
+}

@@ -1,0 +1,70 @@
+@page "/IgbButtonComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbButtonComponent</PageTitle>
+
+<h3>IgbButtonComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Contained">Contained</IgbRadio>
+                <IgbRadio Value="Flat">Flat</IgbRadio>
+                <IgbRadio Value="Outlined">Outlined</IgbRadio>
+                <IgbRadio Value="Fab">Fab</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbButton @ref="button" Variant="Variant" Disabled="Disabled" @onclick="OnClick">@Label</IgbButton>
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="SimulateClick">Simulate Click()</IgbButton>
+</div>
+
+<div class="state">Variant: @VariantName &nbsp;|&nbsp; Clicks: @Clicks</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private IgbButton button = default!;
+
+    private string VariantName { get; set; } = "Contained";
+    private ButtonVariant Variant => Enum.Parse<ButtonVariant>(VariantName);
+
+    private bool Disabled { get; set; }
+    private string Label { get; set; } = "Click me";
+    private int Clicks { get; set; }
+
+    private void OnClick()
+    {
+        Clicks++;
+        Label = $"Clicked {Clicks}";
+    }
+
+    private async Task SimulateClick() => await button.ClickAsync();
+}

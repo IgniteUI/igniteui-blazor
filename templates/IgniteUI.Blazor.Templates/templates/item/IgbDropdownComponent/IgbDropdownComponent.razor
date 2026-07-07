@@ -1,0 +1,161 @@
+@page "/IgbDropdownComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbDropdownComponent</PageTitle>
+
+<h3>IgbDropdownComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Placement</label>
+        <IgbSelect @bind-Value="PlacementName">
+            @foreach (var placement in Placements)
+            {
+                <IgbSelectItem Value="@placement.ToString()">@placement.ToString()</IgbSelectItem>
+            }
+        </IgbSelect>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Flip">Flip</IgbSwitch>
+            <IgbSwitch @bind-Checked="SameWidth">Same width</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbDropdown @ref="_dropdown"
+                 Placement="Placement"
+                 Flip="Flip"
+                 SameWidth="SameWidth"
+                 Change="OnChange">
+        <IgbButton slot="target">Choose an action</IgbButton>
+
+        <IgbDropdownGroup>
+            <span slot="label">Edit</span>
+            <IgbDropdownItem Value="edit">
+                <IgbIcon @ref="_icon" slot="prefix" IconName="edit" Collection="material"></IgbIcon>
+                Edit
+                <span slot="suffix">Ctrl+E</span>
+            </IgbDropdownItem>
+            <IgbDropdownItem Value="duplicate">
+                <IgbIcon slot="prefix" IconName="content_copy" Collection="material"></IgbIcon>
+                Duplicate
+                <span slot="suffix">Ctrl+D</span>
+            </IgbDropdownItem>
+            <IgbDropdownItem Value="move">
+                <IgbIcon slot="prefix" IconName="folder" Collection="material"></IgbIcon>
+                Move
+                <span slot="suffix">Ctrl+M</span>
+            </IgbDropdownItem>
+        </IgbDropdownGroup>
+
+        <IgbDropdownGroup>
+            <span slot="label">Share</span>
+            <IgbDropdownItem Value="copy-link">
+                <IgbIcon slot="prefix" IconName="link" Collection="material"></IgbIcon>
+                Copy link
+                <span slot="suffix">Ctrl+L</span>
+            </IgbDropdownItem>
+            <IgbDropdownItem Value="share">
+                <IgbIcon slot="prefix" IconName="share" Collection="material"></IgbIcon>
+                Share
+                <span slot="suffix">Ctrl+Shift+S</span>
+            </IgbDropdownItem>
+            <IgbDropdownItem Value="download">
+                <IgbIcon slot="prefix" IconName="download" Collection="material"></IgbIcon>
+                Download
+                <span slot="suffix">Ctrl+J</span>
+            </IgbDropdownItem>
+        </IgbDropdownGroup>
+
+        <IgbDropdownGroup>
+            <span slot="label">Organize</span>
+            <IgbDropdownItem Value="favorite">
+                <IgbIcon slot="prefix" IconName="star" Collection="material"></IgbIcon>
+                Favorite
+                <span slot="suffix">Ctrl+B</span>
+            </IgbDropdownItem>
+            <IgbDropdownItem Value="archive">
+                <IgbIcon slot="prefix" IconName="archive" Collection="material"></IgbIcon>
+                Archive
+                <span slot="suffix">Ctrl+Shift+A</span>
+            </IgbDropdownItem>
+            <IgbDropdownItem Value="delete">
+                <IgbIcon slot="prefix" IconName="delete" Collection="material"></IgbIcon>
+                Delete
+                <span slot="suffix">Del</span>
+            </IgbDropdownItem>
+        </IgbDropdownGroup>
+    </IgbDropdown>
+
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnToggle">Toggle</IgbButton>
+    </div>
+</div>
+
+<div class="state">Selected: @Selected</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private IgbDropdown _dropdown = default!;
+    private IgbIcon _icon = default!;
+    private bool _iconsRegistered;
+
+    private static readonly Dictionary<string, string> Icons = new()
+    {
+        ["edit"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/></svg>",
+        ["content_copy"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'/></svg>",
+        ["folder"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z'/></svg>",
+        ["link"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z'/></svg>",
+        ["share"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z'/></svg>",
+        ["download"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/></svg>",
+        ["star"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/></svg>",
+        ["archive"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z'/></svg>",
+        ["delete"] = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z'/></svg>"
+    };
+
+    private static readonly PopoverPlacement[] Placements = Enum.GetValues<PopoverPlacement>();
+
+    private string PlacementName { get; set; } = "BottomStart";
+    private PopoverPlacement Placement => Enum.Parse<PopoverPlacement>(PlacementName);
+
+    private bool Flip { get; set; }
+    private bool SameWidth { get; set; }
+    private string Selected { get; set; } = "(none)";
+
+    private async Task OnToggle() => await _dropdown.ToggleAsync();
+
+    private void OnChange(IgbDropdownItemComponentEventArgs args) => Selected = args.Detail?.Value ?? "(none)";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_iconsRegistered && _icon is not null)
+        {
+            await _icon.EnsureReady();
+            foreach (var (name, svg) in Icons)
+            {
+                await _icon.RegisterIconFromTextAsync(name, svg, "material");
+            }
+            _iconsRegistered = true;
+        }
+    }
+}

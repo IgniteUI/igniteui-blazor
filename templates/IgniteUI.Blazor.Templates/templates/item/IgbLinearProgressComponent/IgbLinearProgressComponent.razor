@@ -1,0 +1,94 @@
+@page "/IgbLinearProgressComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbLinearProgressComponent</PageTitle>
+
+<h3>IgbLinearProgressComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Value: @Value</label>
+        <div class="control-box">
+            <IgbSlider class="value-slider" @bind-Value="Value" Min="0" Max="100" Step="1" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Primary">Primary</IgbRadio>
+                <IgbRadio Value="Info">Info</IgbRadio>
+                <IgbRadio Value="Success">Success</IgbRadio>
+                <IgbRadio Value="Warning">Warning</IgbRadio>
+                <IgbRadio Value="Danger">Danger</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Label align</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="LabelAlignName">
+                <IgbRadio Value="TopStart">TopStart</IgbRadio>
+                <IgbRadio Value="Top">Top</IgbRadio>
+                <IgbRadio Value="TopEnd">TopEnd</IgbRadio>
+                <IgbRadio Value="BottomStart">BottomStart</IgbRadio>
+                <IgbRadio Value="Bottom">Bottom</IgbRadio>
+                <IgbRadio Value="BottomEnd">BottomEnd</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Striped">Striped</IgbSwitch>
+            <IgbSwitch @bind-Checked="Indeterminate">Indeterminate</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideLabel">Hide label</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbLinearProgress class="demo-progress"
+                       Value="Value"
+                       Variant="Variant"
+                       LabelAlign="LabelAlign"
+                       Striped="Striped"
+                       Indeterminate="Indeterminate"
+                       HideLabel="HideLabel" />
+</div>
+
+<div class="state">Value: @Value% &nbsp;|&nbsp; Variant: @VariantName</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private double Value { get; set; } = 75;
+
+    private string VariantName { get; set; } = "Primary";
+    private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
+
+    private string LabelAlignName { get; set; } = "TopStart";
+    private LinearProgressLabelAlign LabelAlign => Enum.Parse<LinearProgressLabelAlign>(LabelAlignName);
+
+    private bool Striped { get; set; }
+    private bool Indeterminate { get; set; }
+    private bool HideLabel { get; set; }
+}

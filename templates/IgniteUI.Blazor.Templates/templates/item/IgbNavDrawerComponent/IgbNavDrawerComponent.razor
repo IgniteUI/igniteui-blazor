@@ -1,0 +1,74 @@
+@page "/IgbNavDrawerComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbNavDrawerComponent</PageTitle>
+
+<h3>IgbNavDrawerComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Position</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PositionName">
+                <IgbRadio Value="Relative">Relative</IgbRadio>
+                <IgbRadio Value="Start">Start</IgbRadio>
+                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="Top">Top</IgbRadio>
+                <IgbRadio Value="Bottom">Bottom</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnShow">Show</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnHide">Hide</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="OnToggle">Toggle</IgbButton>
+    </div>
+
+    <IgbNavDrawer @ref="_drawer" Position="Position" Open="true">
+        <IgbNavDrawerHeaderItem>Mailbox</IgbNavDrawerHeaderItem>
+        <IgbNavDrawerItem Active="@(Selected == "Inbox")" @onclick="@(() => Selected = "Inbox")">
+            <span slot="content">Inbox</span>
+        </IgbNavDrawerItem>
+        <IgbNavDrawerItem Active="@(Selected == "Drafts")" @onclick="@(() => Selected = "Drafts")">
+            <span slot="content">Drafts</span>
+        </IgbNavDrawerItem>
+        <IgbNavDrawerItem Active="@(Selected == "Sent")" @onclick="@(() => Selected = "Sent")">
+            <span slot="content">Sent</span>
+        </IgbNavDrawerItem>
+    </IgbNavDrawer>
+</div>
+
+<div class="state">Selected item: @Selected</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private IgbNavDrawer _drawer = default!;
+
+    private string PositionName { get; set; } = "Relative";
+    private NavDrawerPosition Position => Enum.Parse<NavDrawerPosition>(PositionName);
+
+    private string Selected { get; set; } = "Inbox";
+
+    private async Task OnShow() => await _drawer.ShowAsync();
+    private async Task OnHide() => await _drawer.HideAsync();
+    private async Task OnToggle() => await _drawer.ToggleAsync();
+}

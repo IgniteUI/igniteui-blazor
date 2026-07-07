@@ -1,0 +1,64 @@
+@page "/IgbAccordionComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbAccordionComponent</PageTitle>
+
+<h3>IgbAccordionComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="SingleExpand">Single expand</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host accordion-host">
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="ExpandAll" Disabled="SingleExpand">Expand all</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="CollapseAll">Collapse all</IgbButton>
+    </div>
+
+    <IgbAccordion @ref="_accordion" SingleExpand="SingleExpand">
+        <IgbExpansionPanel Open="true">
+            <span slot="title">Shipping</span>
+            <span>Orders ship within 1–2 business days and arrive in 3–5 days.</span>
+        </IgbExpansionPanel>
+        <IgbExpansionPanel>
+            <span slot="title">Returns</span>
+            <span>Items can be returned within 30 days of delivery for a full refund.</span>
+        </IgbExpansionPanel>
+        <IgbExpansionPanel>
+            <span slot="title">Warranty</span>
+            <span>All products include a two-year limited manufacturer warranty.</span>
+        </IgbExpansionPanel>
+    </IgbAccordion>
+</div>
+
+<div class="state">Single expand: @SingleExpand</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private IgbAccordion _accordion = default!;
+    private bool SingleExpand { get; set; }
+
+    private async Task ExpandAll() => await _accordion.ShowAllAsync();
+    private async Task CollapseAll() => await _accordion.HideAllAsync();
+}
