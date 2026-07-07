@@ -1,0 +1,116 @@
+@page "/IgbTileManagerComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbTileManagerComponent</PageTitle>
+
+<h3>IgbTileManagerComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Columns: @ColumnCount</label>
+        <div class="control-box">
+            <IgbSlider class="value-slider" @bind-Value="ColumnCount" Min="1" Max="4" Step="1" />
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Resize mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ResizeModeName">
+                <IgbRadio Value="None">None</IgbRadio>
+                <IgbRadio Value="Hover">Hover</IgbRadio>
+                <IgbRadio Value="Always">Always</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Drag mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DragModeName">
+                <IgbRadio Value="None">None</IgbRadio>
+                <IgbRadio Value="TileHeader">TileHeader</IgbRadio>
+                <IgbRadio Value="Tile">Tile</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <div class="actions">
+        <IgbButton Variant="ButtonVariant.Outlined" @onclick="SaveLayout">Save layout</IgbButton>
+        <IgbButton Variant="ButtonVariant.Outlined" Disabled="@(_savedLayout is null)" @onclick="LoadLayout">Restore layout</IgbButton>
+    </div>
+
+    <IgbTileManager @ref="_tileManager"
+                    ColumnCount="(int)ColumnCount"
+                    ResizeMode="ResizeMode"
+                    DragMode="DragMode"
+                    Gap="16px">
+        <IgbTile>
+            <h3 slot="title">Sales</h3>
+            <div>Quarter-to-date revenue overview.</div>
+        </IgbTile>
+        <IgbTile>
+            <h3 slot="title">Traffic</h3>
+            <div>Daily active users.</div>
+        </IgbTile>
+        <IgbTile ColSpan="2">
+            <h3 slot="title">Pipeline</h3>
+            <div>This tile spans two columns.</div>
+        </IgbTile>
+        <IgbTile RowSpan="2">
+            <h3 slot="title">Tasks</h3>
+            <div>This tile spans two rows.</div>
+        </IgbTile>
+    </IgbTileManager>
+</div>
+
+<div class="state">Columns: @ColumnCount &nbsp;|&nbsp; @LayoutStatus</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private IgbTileManager _tileManager = default!;
+    private string? _savedLayout;
+
+    private double ColumnCount { get; set; } = 3;
+
+    private string ResizeModeName { get; set; } = "Hover";
+    private TileManagerResizeMode ResizeMode => Enum.Parse<TileManagerResizeMode>(ResizeModeName);
+
+    private string DragModeName { get; set; } = "TileHeader";
+    private TileManagerDragMode DragMode => Enum.Parse<TileManagerDragMode>(DragModeName);
+
+    private string LayoutStatus { get; set; } = "No saved layout";
+
+    private async Task SaveLayout()
+    {
+        _savedLayout = await _tileManager.SaveLayoutAsync();
+        LayoutStatus = "Layout saved";
+    }
+
+    private async Task LoadLayout()
+    {
+        if (_savedLayout is not null)
+        {
+            await _tileManager.LoadLayoutAsync(_savedLayout);
+            LayoutStatus = "Layout restored";
+        }
+    }
+}

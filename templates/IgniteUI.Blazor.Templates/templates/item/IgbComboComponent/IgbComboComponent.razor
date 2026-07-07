@@ -1,0 +1,81 @@
+@page "/IgbComboComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbComboComponent</PageTitle>
+
+<h3>IgbComboComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="SingleSelect">Single select</IgbSwitch>
+            <IgbSwitch @bind-Checked="DisableFiltering">Disable filtering</IgbSwitch>
+            <IgbSwitch @bind-Checked="Grouped">Group by region</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbCombo T="string"
+              class="demo-combo"
+              Data="Data"
+              ValueKey="Id"
+              DisplayKey="Name"
+              GroupKey="@(Grouped ? "Region" : null)"
+              SingleSelect="SingleSelect"
+              DisableFiltering="DisableFiltering"
+              Label="Cities"
+              Placeholder="Pick a city"
+              @bind-Value="Selected">
+    </IgbCombo>
+</div>
+
+<div class="state">Selected: @SelectedNames</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private bool SingleSelect { get; set; }
+    private bool DisableFiltering { get; set; }
+    private bool Grouped { get; set; } = true;
+
+    private string[] Selected { get; set; } = Array.Empty<string>();
+
+    private string SelectedNames => Selected.Length == 0
+        ? "(none)"
+        : string.Join(", ", Data.Where(c => Selected.Contains(c.Id)).Select(c => c.Name));
+
+    private List<City> Data { get; set; } = new()
+    {
+        new City { Id = "1", Name = "London", Region = "Europe" },
+        new City { Id = "2", Name = "Paris", Region = "Europe" },
+        new City { Id = "3", Name = "Berlin", Region = "Europe" },
+        new City { Id = "4", Name = "New York", Region = "Americas" },
+        new City { Id = "5", Name = "Toronto", Region = "Americas" },
+        new City { Id = "6", Name = "Tokyo", Region = "Asia" },
+        new City { Id = "7", Name = "Singapore", Region = "Asia" }
+    };
+
+    public class City
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
+    }
+}

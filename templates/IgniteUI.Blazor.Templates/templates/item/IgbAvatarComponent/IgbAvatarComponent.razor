@@ -1,0 +1,98 @@
+@page "/IgbAvatarComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbAvatarComponent</PageTitle>
+
+<h3>IgbAvatarComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Shape</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ShapeName">
+                <IgbRadio Value="Circle">Circle</IgbRadio>
+                <IgbRadio Value="Rounded">Rounded</IgbRadio>
+                <IgbRadio Value="Square">Square</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Size</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Size">
+                <IgbRadio Value="small">Small</IgbRadio>
+                <IgbRadio Value="medium">Medium</IgbRadio>
+                <IgbRadio Value="large">Large</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Content</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ContentKind">
+                <IgbRadio Value="Image">Image</IgbRadio>
+                <IgbRadio Value="Initials">Initials</IgbRadio>
+                <IgbRadio Value="Icon">Icon</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbAvatar class="@($"avatar {Size}")"
+               Shape="Shape"
+               Src="@(ContentKind == "Image" ? ImageUrl : null)"
+               Initials="@(ContentKind == "Initials" ? "JD" : null)"
+               Alt="A user avatar.">
+        @if (ContentKind == "Icon")
+        {
+            <IgbIcon @ref="_iconRef" IconName="person" Collection="material" />
+        }
+    </IgbAvatar>
+</div>
+
+<div class="state">Shape: @ShapeName &nbsp;|&nbsp; Size: @Size &nbsp;|&nbsp; Content: @ContentKind</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private const string ImageUrl = "https://dl.infragistics.com/x/img/people/men/11.png";
+
+    private const string PersonSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+
+    private IgbIcon _iconRef = default!;
+    private bool _iconRegistered;
+
+    private string ShapeName { get; set; } = "Circle";
+    private AvatarShape Shape => Enum.Parse<AvatarShape>(ShapeName);
+
+    private string Size { get; set; } = "large";
+    private string ContentKind { get; set; } = "Image";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_iconRegistered && _iconRef is not null)
+        {
+            await _iconRef.EnsureReady();
+            await _iconRef.RegisterIconFromTextAsync("person", PersonSvg, "material");
+            _iconRegistered = true;
+        }
+    }
+}

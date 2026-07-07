@@ -1,0 +1,80 @@
+@page "/IgbIconButtonComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbIconButtonComponent</PageTitle>
+
+<h3>IgbIconButtonComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Variant</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
+                <IgbRadio Value="Contained">Contained</IgbRadio>
+                <IgbRadio Value="Flat">Flat</IgbRadio>
+                <IgbRadio Value="Outlined">Outlined</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Mirrored">Mirrored</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host">
+    <IgbIconButton @ref="_iconButtonRef"
+                   IconName="login"
+                   Collection="material"
+                   Variant="Variant"
+                   Mirrored="Mirrored"
+                   Disabled="Disabled"
+                   @onclick="OnClick" />
+</div>
+
+<div class="state">Variant: @VariantName &nbsp;|&nbsp; Clicks: @Clicks</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private IgbIconButton _iconButtonRef = default!;
+
+    private string VariantName { get; set; } = "Contained";
+    private IconButtonVariant Variant => Enum.Parse<IconButtonVariant>(VariantName);
+
+    private bool Mirrored { get; set; }
+    private bool Disabled { get; set; }
+    private int Clicks { get; set; }
+
+    private const string LoginSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M11 7l-1.41 1.41L12.17 11H3v2h9.17l-2.58 2.58L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z'/></svg>";
+
+    private void OnClick() => Clicks++;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _iconButtonRef is not null)
+        {
+            await _iconButtonRef.EnsureReady();
+            await _iconButtonRef.RegisterIconFromTextAsync("login", LoginSvg, "material");
+        }
+    }
+}

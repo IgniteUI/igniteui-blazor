@@ -1,0 +1,272 @@
+@page "/ApexChartComponent"
+@using System.Linq
+@using ApexCharts
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>ApexChartComponent</PageTitle>
+
+<h3>ApexChartComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Chart type</label>
+        <IgbSelect @bind-Value="KindName">
+            @foreach (var kind in ChartKinds)
+            {
+                <IgbSelectItem Value="@kind.ToString()">@kind.ToString()</IgbSelectItem>
+            }
+        </IgbSelect>
+    </div>
+
+    <div class="control">
+        <label>Series</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Show2025">2025</IgbSwitch>
+            <IgbSwitch @bind-Checked="Show2026">2026</IgbSwitch>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Theme</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="Dark">Dark</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="chart-host">
+    <ApexChart @key="@($"{KindName}-{Dark}-{Show2025}-{Show2026}")"
+               TItem="DataPoint"
+               Title="Monthly revenue"
+               Options="BuildOptions()">
+        @* Single-value point series: covers Line/Area/Bar/Scatter/Radar/Heatmap/Treemap, the
+           circular types, and Slope (Line + a plot option set in BuildOptions). *@
+        @if (IsPointKind)
+        {
+            @if (Show2025)
+            {
+                <ApexPointSeries TItem="DataPoint" Items="_2025" Name="2025"
+                                 SeriesType="PointType"
+                                 XValue="@(p => p.Label)"
+                                 YValue="@(p => (decimal)p.Value)" />
+            }
+            @if (Show2026 && !(IsSingleSeries && Show2025))
+            {
+                <ApexPointSeries TItem="DataPoint" Items="_2026" Name="2026"
+                                 SeriesType="PointType"
+                                 XValue="@(p => p.Label)"
+                                 YValue="@(p => (decimal)p.Value)" />
+            }
+        }
+        else if (Kind == ChartKind.Mixed)
+        {
+            @if (Show2025)
+            {
+                <ApexPointSeries TItem="DataPoint" Items="_2025" Name="2025"
+                                 SeriesType="SeriesType.Bar"
+                                 XValue="@(p => p.Label)"
+                                 YValue="@(p => (decimal)p.Value)" />
+            }
+            @if (Show2026)
+            {
+                <ApexPointSeries TItem="DataPoint" Items="_2026" Name="2026"
+                                 SeriesType="SeriesType.Line"
+                                 XValue="@(p => p.Label)"
+                                 YValue="@(p => (decimal)p.Value)" />
+            }
+        }
+        else if (Kind == ChartKind.Funnel)
+        {
+            <ApexPointSeries TItem="DataPoint" Items="_2025" Name="2025"
+                             SeriesType="SeriesType.Bar"
+                             XValue="@(p => p.Label)"
+                             YValue="@(p => (decimal)p.Value)"
+                             OrderByDescending="@(p => p.Y)" />
+        }
+        else if (Kind == ChartKind.Bubble)
+        {
+            @if (Show2025)
+            {
+                <ApexBubbleSeries TItem="DataPoint" Items="_2025" Name="2025"
+                                  XValue="@(p => p.Label)"
+                                  YAggregate="@(g => g.Sum(p => (decimal)p.Value))"
+                                  ZAggregate="@(g => g.Sum(p => (decimal)p.Value) / 4)" />
+            }
+            @if (Show2026)
+            {
+                <ApexBubbleSeries TItem="DataPoint" Items="_2026" Name="2026"
+                                  XValue="@(p => p.Label)"
+                                  YAggregate="@(g => g.Sum(p => (decimal)p.Value))"
+                                  ZAggregate="@(g => g.Sum(p => (decimal)p.Value) / 4)" />
+            }
+        }
+        else if (Kind == ChartKind.Candlestick)
+        {
+            <ApexCandleSeries TItem="DataPoint" Items="_2025" Name="2025"
+                              XValue="@(p => p.Label)"
+                              Open="@(p => (decimal)p.Value)"
+                              High="@(p => (decimal)(p.Value + 8))"
+                              Low="@(p => (decimal)(p.Value - 8))"
+                              Close="@(p => (decimal)(p.Value + (p.Value % 2 == 0 ? 6 : -6)))" />
+        }
+        else if (Kind == ChartKind.BoxPlot)
+        {
+            <ApexBoxPlotSeries TItem="DataPoint" Items="_2025" Name="2025"
+                               XValue="@(p => p.Label)"
+                               Min="@(p => (decimal)(p.Value - 15))"
+                               Quantile1="@(p => (decimal)(p.Value - 7))"
+                               Median="@(p => (decimal)p.Value)"
+                               Quantile3="@(p => (decimal)(p.Value + 7))"
+                               Max="@(p => (decimal)(p.Value + 15))" />
+        }
+        else if (Kind == ChartKind.RangeBar)
+        {
+            <ApexRangeSeries TItem="DataPoint" Items="_2025" Name="2025"
+                             XValue="@(p => p.Label)"
+                             YMinValue="@(p => (decimal)(p.Value - 10))"
+                             YMaxValue="@(p => (decimal)(p.Value + 10))" />
+        }
+        else if (Kind == ChartKind.RangeArea)
+        {
+            @if (Show2025)
+            {
+                <ApexRangeAreaSeries TItem="DataPoint" Items="_2025" Name="2025"
+                                     XValue="@(p => p.Label)"
+                                     Top="@(p => (decimal)(p.Value + 12))"
+                                     Bottom="@(p => (decimal)(p.Value - 12))" />
+            }
+            @if (Show2026)
+            {
+                <ApexRangeAreaSeries TItem="DataPoint" Items="_2026" Name="2026"
+                                     XValue="@(p => p.Label)"
+                                     Top="@(p => (decimal)(p.Value + 12))"
+                                     Bottom="@(p => (decimal)(p.Value - 12))" />
+            }
+        }
+    </ApexChart>
+</div>
+
+<div class="state">Type: @KindName &nbsp;|&nbsp; Theme: @(Dark ? "Dark" : "Light") &nbsp;|&nbsp; Series: @SeriesLabel</div>
+
+@code {
+    /*
+     * This sample uses two packages — Ignite UI for Blazor (the controls) and
+     * Blazor-ApexCharts (the chart). An item template can't modify project files,
+     * so do this once per project:
+     *
+     * Ignite UI for Blazor (open-source, MIT — IgniteUI.Blazor.Lite):
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     *    Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     *
+     * Apex Chart (Blazor-ApexCharts — https://apexcharts.github.io/Blazor-ApexCharts):
+     * 5. Install:   dotnet add package Blazor-ApexCharts
+     * 6. _Imports.razor:          @using ApexCharts
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 7. Register (Program.cs, optional — enables global options/DI):
+     *    builder.Services.AddApexCharts();
+     *    The package loads its own JS via a static web asset; no <script> tag is required.
+     *
+     * 8. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     */
+
+    // The chart kinds shown in the dropdown. Most map to a single-value point series; the rest
+    // use a dedicated series component below because they need a different data shape.
+    private enum ChartKind
+    {
+        Area, Bar, BoxPlot, Bubble, Candlestick, Donut, Funnel, Heatmap, Line, Mixed,
+        Pie, PolarArea, Radar, RadialBar, RangeArea, RangeBar, Scatter, Slope, Treemap
+    }
+
+    private static readonly ChartKind[] ChartKinds = Enum.GetValues<ChartKind>();
+
+    private string KindName { get; set; } = ChartKind.Line.ToString();
+    private ChartKind Kind => Enum.Parse<ChartKind>(KindName);
+
+    // Kinds drawn with ApexPointSeries (single Y value). Slope is a Line with a plot option.
+    private bool IsPointKind => Kind is ChartKind.Line or ChartKind.Area or ChartKind.Bar
+        or ChartKind.Slope or ChartKind.Scatter or ChartKind.Radar or ChartKind.Heatmap
+        or ChartKind.Treemap or ChartKind.Pie or ChartKind.Donut or ChartKind.PolarArea
+        or ChartKind.RadialBar;
+
+    private SeriesType PointType => Kind switch
+    {
+        ChartKind.Area => SeriesType.Area,
+        ChartKind.Bar => SeriesType.Bar,
+        ChartKind.Scatter => SeriesType.Scatter,
+        ChartKind.Radar => SeriesType.Radar,
+        ChartKind.Heatmap => SeriesType.Heatmap,
+        ChartKind.Treemap => SeriesType.Treemap,
+        ChartKind.Pie => SeriesType.Pie,
+        ChartKind.Donut => SeriesType.Donut,
+        ChartKind.PolarArea => SeriesType.PolarArea,
+        ChartKind.RadialBar => SeriesType.RadialBar,
+        _ => SeriesType.Line // Line, Slope
+    };
+
+    // Types that throw or make no sense with more than one series, so only the first is drawn.
+    private bool IsCircular => Kind
+        is ChartKind.Pie or ChartKind.Donut or ChartKind.PolarArea or ChartKind.RadialBar;
+    private bool IsSingleSeries => IsCircular
+        || Kind is ChartKind.Funnel or ChartKind.Candlestick or ChartKind.BoxPlot or ChartKind.RangeBar;
+
+    private ApexChartOptions<DataPoint> BuildOptions() => new()
+    {
+        // Build a fresh options object per render. The chart mutates the instance it is given, so
+        // sharing one long-lived field across renders corrupts later ones (radar shows off-center).
+        Chart = new Chart { Background = Dark ? "#1e1e1e" : "transparent" },
+        Theme = new Theme { Mode = Dark ? Mode.Dark : Mode.Light },
+        PlotOptions = new PlotOptions
+        {
+            Bar = Kind == ChartKind.Funnel
+                ? new PlotOptionsBar { IsFunnel = true, Horizontal = true, Distributed = true }
+                : null,
+            Line = Kind == ChartKind.Slope ? new PlotOptionsLine { IsSlopeChart = true } : null
+        }
+    };
+
+    private bool Show2025 { get; set; } = true;
+    private bool Show2026 { get; set; } = true;
+    private bool Dark { get; set; }
+
+    private string SeriesLabel => (Show2025, Show2026 && !(IsSingleSeries && Show2025)) switch
+    {
+        (true, true) => "2025, 2026",
+        (true, false) => "2025",
+        (false, true) => "2026",
+        _ => "(none)"
+    };
+
+    private readonly List<DataPoint> _2025 = new()
+    {
+        new() { Label = "Jan", Value = 42 }, new() { Label = "Feb", Value = 58 },
+        new() { Label = "Mar", Value = 34 }, new() { Label = "Apr", Value = 67 },
+        new() { Label = "May", Value = 49 }, new() { Label = "Jun", Value = 81 },
+        new() { Label = "Jul", Value = 53 }, new() { Label = "Aug", Value = 39 },
+        new() { Label = "Sep", Value = 72 }, new() { Label = "Oct", Value = 61 },
+        new() { Label = "Nov", Value = 88 }, new() { Label = "Dec", Value = 47 }
+    };
+
+    private readonly List<DataPoint> _2026 = new()
+    {
+        new() { Label = "Jan", Value = 55 }, new() { Label = "Feb", Value = 33 },
+        new() { Label = "Mar", Value = 64 }, new() { Label = "Apr", Value = 48 },
+        new() { Label = "May", Value = 92 }, new() { Label = "Jun", Value = 57 },
+        new() { Label = "Jul", Value = 76 }, new() { Label = "Aug", Value = 41 },
+        new() { Label = "Sep", Value = 69 }, new() { Label = "Oct", Value = 99 },
+        new() { Label = "Nov", Value = 52 }, new() { Label = "Dec", Value = 83 }
+    };
+
+    public class DataPoint
+    {
+        public string Label { get; set; } = string.Empty;
+        public int Value { get; set; }
+    }
+}
