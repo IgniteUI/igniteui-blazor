@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+env:
+  VERSION: ${{ github.ref_name }}
+
+jobs:
+  release:
+    name: Build & Pack NuGet
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false  # never use caching in release builds
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build TypeScript/Webpack assets
+        run: npm run build
+
+      - name: Restore .NET dependencies
+        run: dotnet restore
+
+      - name: Build .NET library
+        run: dotnet build --no-restore --configuration Release /p:Version=${{ env.VERSION }} /p:TreatWarningsAsErrors=false
+
+      - name: Pack NuGet package
+        run: dotnet pack --no-build --configuration Release --output ./nupkg /p:Version=${{ env.VERSION }}
+
+      - name: Upload NuGet artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget-package
+          path: ./nupkg/*.nupkg
+          if-no-files-found: error
+          retention-days: 1
