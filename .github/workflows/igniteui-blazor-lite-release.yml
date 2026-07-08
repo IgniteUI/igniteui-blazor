@@ -36,14 +36,60 @@ jobs:
       - name: Build TypeScript/Webpack assets
         run: npm run build
 
+      - name: Copy component themes to wwwroot
+        run: npm run copythemes
+
       - name: Restore .NET dependencies
         run: dotnet restore
 
       - name: Build .NET library
         run: dotnet build --no-restore --configuration Release /p:Version=${{ env.VERSION }} /p:TreatWarningsAsErrors=false
 
+      - name: Authenticate to Azure
+        uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43  # v3.0.0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Sign DLLs
+        shell: pwsh
+        run: >
+          dotnet tool run sign code azure-key-vault "**/*.dll"
+          --base-directory "${{ github.workspace }}/bin/${{ env.BUILD_CONFIGURATION }}"
+          --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
+          --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERTIFICATE }}"
+
+      - name: Validate DLL signatures
+        shell: pwsh
+        run: |
+          $dlls = Get-ChildItem -Path "${{ github.workspace }}\bin\${{ env.BUILD_CONFIGURATION }}" -Filter "*.dll" -Recurse
+          $failed = @()
+          foreach ($dll in $dlls) {
+            $sig = Get-AuthenticodeSignature $dll.FullName
+            if ($sig.Status -ne 'Valid') {
+              $failed += $dll.FullName
+            }
+          }
+          if ($failed.Count -gt 0) {
+            Write-Error "Unsigned DLLs found:`n$($failed -join "`n")"
+            exit 1
+          }
+          Write-Host "All DLLs signed successfully."
+
       - name: Pack NuGet package
         run: dotnet pack --no-build --configuration Release --output ./nupkg /p:Version=${{ env.VERSION }}
+
+      - name: Sign NuGet package
+        shell: pwsh
+        run: >
+          dotnet tool run sign code azure-key-vault "*.nupkg"
+          --base-directory "${{ github.workspace }}/nupkg"
+          --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
+          --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERTIFICATE }}"
+
+      - name: Validate NuGet package signature
+        run: dotnet nuget verify "${{ github.workspace }}/nupkg/Infragistics.QueryBuilder.Executor.${{ env.VERSION }}.nupkg" -v q
 
       - name: Upload NuGet artifact
         uses: actions/upload-artifact@v7
