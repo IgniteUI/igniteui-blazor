@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbFocusOptions: BaseRendererElement {
                                 public override string Type { get { return "FocusOptions"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

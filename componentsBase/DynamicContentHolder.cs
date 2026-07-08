@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
 
     public class DynamicContentHolder: ComponentBase
     {
-        protected List<DynamicContentInfo> DynamicContentInfo
+        protected LinkedList<DynamicContentInfo> DynamicContentInfo
         {
             get;
             set;
@@ -19,16 +19,21 @@ namespace IgniteUI.Blazor.Controls
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            DynamicContentInfo = new List<DynamicContentInfo>();
+            DynamicContentInfo = new LinkedList<DynamicContentInfo>();
         }
 
+        private bool _isDirty = false;
+
         private Dictionary<string, DynamicContentInfo> _contentInfos = new Dictionary<string, DynamicContentInfo>();
+
+        // Keep a reference to the linked list node so we can easily remove it without needing to iterate the whole list to find it.
+        private Dictionary<string, LinkedListNode<DynamicContentInfo>> _contentInfoNode = new Dictionary<string, LinkedListNode<DynamicContentInfo>>();
 
         public void AddDynamicContent(DynamicContentInfo content)
         {
             _contentInfos[content.RefName] = content;
-            DynamicContentInfo.Add(content);
-            StateHasChanged();
+            _contentInfoNode[content.RefName] = DynamicContentInfo.AddLast(content);
+            _isDirty = true;
         }
 
         public void RemoveDynamicContent(DynamicContentInfo content)
@@ -36,9 +41,12 @@ namespace IgniteUI.Blazor.Controls
             if (_contentInfos.ContainsKey(content.RefName))
             {
                 _contentInfos.Remove(content.RefName);
+
+                DynamicContentInfo.Remove(_contentInfoNode[content.RefName]);
+                _contentInfoNode.Remove(content.RefName);
+
+                _isDirty = true;
             }
-            DynamicContentInfo.Remove(content);
-            StateHasChanged();
         }
 
         protected void OnDynamicChildRef(string refName, object child)
@@ -50,14 +58,25 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        public void Refresh()
+        {
+            if (_isDirty)
+            {
+                _isDirty = false;
+                StateHasChanged();
+            }
+        }
+
         protected override void BuildRenderTree(RenderTreeBuilder __builder)
         {
             __builder.OpenElement(0, "div");
             __builder.AddAttribute(1, "class", "ig-dynamic-content-holder");
             __builder.AddAttribute(2, "style", "display: none");
             __builder.AddMarkupContent(3, "\r\n");
-            foreach (DynamicContentInfo item in DynamicContentInfo)
+            var current = DynamicContentInfo.First;
+            while (current != null)
             {
+                var item = current.Value;
                 __builder.AddContent(4, "        ");
                 __builder.OpenElement(5, "div");
                 __builder.AddAttribute(6, "id", item.RefDivName);
@@ -78,6 +97,8 @@ namespace IgniteUI.Blazor.Controls
                 __builder.AddMarkupContent(14, "\r\n        ");
                 __builder.CloseElement();
                 __builder.AddMarkupContent(15, "\r\n");
+
+                current = current.Next;
             }
             __builder.CloseElement();
         }

@@ -75,7 +75,7 @@ namespace IgniteUI.Blazor.Controls
 	
 	partial void OnDisplayTimeChanging(ref double newValue);
 	/// <summary>
-	/// Determines the duration in ms in which the component will be visible.
+	/// Determines the duration in milliseconds in which the component will be visible.
 	/// </summary>
 	[Parameter]
 	public double DisplayTime 
@@ -112,6 +112,9 @@ namespace IgniteUI.Blazor.Controls
 	partial void OnPositionChanging(ref AbsolutePosition newValue);
 	/// <summary>
 	/// Sets the position of the component in the viewport.
+	/// `bottom` - positions the component at the bottom. This is the default.
+	/// `middle` - positions the component at the center.
+	/// `top` - positions the component at the top.
 	/// </summary>
 	[Parameter]
 	public AbsolutePosition Position 
@@ -122,6 +125,26 @@ namespace IgniteUI.Blazor.Controls
 	                        MarkPropDirty("Position");
 	                } 
 	                this._position = value;
+	                 
+	                }
+	}
+	private NotificationPositioning _positioning = NotificationPositioning.Viewport;
+	
+	partial void OnPositioningChanging(ref NotificationPositioning newValue);
+	/// <summary>
+	/// Sets the positioning strategy of the component.
+	/// `viewport` - positions the component relative to the viewport, ignoring any ancestor elements. This is the default behavior.
+	/// `container` - positions the component relative to the nearest visible ancestor. In this mode, the component will be constrained within the bounding box of the ancestor and will be positioned according to the `position` attribute.
+	/// </summary>
+	[Parameter]
+	public NotificationPositioning Positioning 
+	{
+	get { return this._positioning; }
+	set { 
+	                if (this._positioning != value || !IsPropDirty("Positioning")) {
+	                        MarkPropDirty("Positioning");
+	                } 
+	                this._positioning = value;
 	                 
 	                }
 	}
@@ -153,8 +176,18 @@ namespace IgniteUI.Blazor.Controls
 	                    {
 		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
 	}
+	public async  Task ConnectedCallbackAsync() 
+	                    {
+		await InvokeMethod("connectedCallback", new object[] {  }, new string[] {  });
+	}
+	                    public  void ConnectedCallback() 
+	                    {
+		InvokeMethodSync("connectedCallback", new object[] {  }, new string[] {  });
+	}
 	/// <summary>
 	/// Opens the component.
+	/// Returns a promise that resolves to `true` if the component was successfully opened, or `false`
+	/// if it was already open or could not be shown (e.g., in `container` positioning mode with no visible ancestors).
 	/// </summary>
 	public async Task<bool> ShowAsync() 
 	                    {
@@ -168,6 +201,8 @@ namespace IgniteUI.Blazor.Controls
 	}
 	/// <summary>
 	/// Closes the component.
+	/// Returns a promise that resolves to `true` if the component was successfully closed, or `false`
+	/// if it was already closed.
 	/// </summary>
 	public async Task<bool> HideAsync() 
 	                    {
@@ -181,6 +216,8 @@ namespace IgniteUI.Blazor.Controls
 	}
 	/// <summary>
 	/// Toggles the open state of the component.
+	/// Returns a promise that resolves to `true` if the operation completed successfully, or `false`
+	/// if it was already in the desired state.
 	/// </summary>
 	public async Task<bool> ToggleAsync() 
 	                    {
@@ -205,6 +242,7 @@ namespace IgniteUI.Blazor.Controls
 	if (IsPropDirty("DisplayTime")) { ser.AddNumberProp("displayTime", this._displayTime); }
 	if (IsPropDirty("KeepOpen")) { ser.AddBooleanProp("keepOpen", this._keepOpen); }
 	if (IsPropDirty("Position")) { ser.AddEnumProp("position", this._position); }
+	if (IsPropDirty("Positioning")) { ser.AddEnumProp("positioning", this._positioning); }
 	
 	    }
 	

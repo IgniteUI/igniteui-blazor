@@ -47,6 +47,14 @@ export abstract class WebBaseAlertLikeDescription extends Description {
 		this._position = value;
 		this.markDirty("Position");
 	}
+	private _positioning: string = null;
+	get positioning(): string {
+		return this._positioning;
+	}
+	set positioning(value: string) {
+		this._positioning = value;
+		this.markDirty("Positioning");
+	}
 }
 
 

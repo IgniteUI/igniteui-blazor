@@ -12,9 +12,8 @@ namespace IgniteUI.Blazor.Controls
 /// A masked input is an input field where a developer can control user input and format the visible value,
 /// based on configurable rules
 /// </summary>
-public partial class IgbMaskInput: IgbMaskInputBase {
+public partial class IgbMaskInput: IgbInputBase {
                                 public override string Type { get { return "WebMaskInput"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -36,22 +35,6 @@ public partial class IgbMaskInput: IgbMaskInputBase {
 	                            return true;
                                 }
                         }
-
-                            protected override bool UseDirectRender
-                        {
-                                get 
-                                {
-	                            return true;
-                                }
-                        }
-
-                            protected override string DirectRenderElementName
-                        {
-                                get 
-                                {
-	                            return "igc-mask-input";
-                                }
-                        }
 	
 	    public IgbMaskInput(): base() {
 	        OnCreatedIgbMaskInput();
@@ -66,8 +49,9 @@ public partial class IgbMaskInput: IgbMaskInputBase {
 	partial void OnValueModeChanging(ref MaskInputValueMode newValue);
 	/// <summary>
 	/// Dictates the behavior when retrieving the value of the control:
-	/// - `raw` will return the clean user input.
-	/// - `withFormatting` will return the value with all literals and prompts.
+	/// - `raw`: Returns clean input (e.g. "5551234567")
+	/// - `withFormatting`: Returns with mask formatting (e.g. "(555) 123-4567")
+	/// Empty values always return an empty string, regardless of the value mode.
 	/// </summary>
 	[Parameter]
 	public MaskInputValueMode ValueMode 
@@ -84,6 +68,10 @@ public partial class IgbMaskInput: IgbMaskInputBase {
 	private string _value;
 	
 	partial void OnValueChanging(ref string newValue);
+	/// <summary>
+	/// The value of the input.
+	/// Regardless of the currently set `value-mode`, an empty value will return an empty string.
+	/// </summary>
 	[Parameter]
 	public string Value 
 	{
@@ -110,7 +98,7 @@ public partial class IgbMaskInput: IgbMaskInputBase {
 	
 	partial void OnMaskChanging(ref string newValue);
 	/// <summary>
-	/// The mask pattern to apply on the input.
+	/// The masked pattern of the component.
 	/// </summary>
 	[Parameter]
 	public string Mask 
@@ -121,6 +109,43 @@ public partial class IgbMaskInput: IgbMaskInputBase {
 	                        MarkPropDirty("Mask");
 	                } 
 	                this._mask = value;
+	                 
+	                }
+	}
+	private string _prompt;
+	
+	partial void OnPromptChanging(ref string newValue);
+	/// <summary>
+	/// The prompt symbol to use for unfilled parts of the mask pattern.
+	/// </summary>
+	[Parameter]
+	public string Prompt 
+	{
+	get { return this._prompt; }
+	set { 
+	                if (this._prompt != value || !IsPropDirty("Prompt")) {
+	                        MarkPropDirty("Prompt");
+	                } 
+	                this._prompt = value;
+	                 
+	                }
+	}
+	private bool _readOnly = false;
+	
+	partial void OnReadOnlyChanging(ref bool newValue);
+	/// <summary>
+	/// Makes the control a readonly field.
+	/// @default false
+	/// </summary>
+	[Parameter]
+	public bool ReadOnly 
+	{
+	get { return this._readOnly; }
+	set { 
+	                if (this._readOnly != value || !IsPropDirty("ReadOnly")) {
+	                        MarkPropDirty("ReadOnly");
+	                } 
+	                this._readOnly = value;
 	                 
 	                }
 	}
@@ -144,6 +169,22 @@ public partial class IgbMaskInput: IgbMaskInputBase {
 	
 	        return null;
 	    }
+	public async  Task SetSelectionRangeAsync(double start = -1, double end = -1, String direction = null) 
+	                    {
+		await InvokeMethod("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
+	}
+	                    public  void SetSelectionRange(double start = -1, double end = -1, String direction = null) 
+	                    {
+		InvokeMethodSync("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
+	}
+	public async  Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String selectMode = null) 
+	                    {
+		await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
+	}
+	                    public  void SetRangeText(String replacement, double start = -1, double end = -1, String selectMode = null) 
+	                    {
+		InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
+	}
 	
 	    private EventCallback<string>? _valueChanged = null;
 	    [Parameter]
@@ -178,10 +219,14 @@ public partial class IgbMaskInput: IgbMaskInputBase {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -273,6 +318,8 @@ public partial class IgbMaskInput: IgbMaskInputBase {
 	if (IsPropDirty("ValueMode")) { ser.AddEnumProp("valueMode", this._valueMode); }
 	if (IsPropDirty("Value")) { ser.AddStringProp("value", this._value); }
 	if (IsPropDirty("Mask")) { ser.AddStringProp("mask", this._mask); }
+	if (IsPropDirty("Prompt")) { ser.AddStringProp("prompt", this._prompt); }
+	if (IsPropDirty("ReadOnly")) { ser.AddBooleanProp("readOnly", this._readOnly); }
 	if (IsPropDirty("ChangeRef")) { ser.AddStringProp("changeRef", this._changeRef); }
 	
 	    }

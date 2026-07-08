@@ -13,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
 /// </summary>
 public partial class IgbSlider: IgbSliderBase {
                                 public override string Type { get { return "WebSlider"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -131,11 +130,11 @@ public partial class IgbSlider: IgbSliderBase {
 	/// stepIncrement Optional step increment. If no parameter is passed, it defaults to 1.
 	/// </summary>
 	/// <param name="stepIncrement">Optional step increment. If no parameter is passed, it defaults to 1.</param>
-	public async  Task StepUpAsync(double stepIncrement = -1) 
+	public async  Task StepUpAsync(double stepIncrement = 1) 
 	                    {
 		await InvokeMethod("stepUp", new object[] { stepIncrement }, new string[] { "Number" });
 	}
-	                    public  void StepUp(double stepIncrement = -1) 
+	                    public  void StepUp(double stepIncrement = 1) 
 	                    {
 		InvokeMethodSync("stepUp", new object[] { stepIncrement }, new string[] { "Number" });
 	}
@@ -144,11 +143,11 @@ public partial class IgbSlider: IgbSliderBase {
 	/// stepDecrement Optional step decrement. If no parameter is passed, it defaults to 1.
 	/// </summary>
 	/// <param name="stepDecrement">Optional step decrement. If no parameter is passed, it defaults to 1.</param>
-	public async  Task StepDownAsync(double stepDecrement = -1) 
+	public async  Task StepDownAsync(double stepDecrement = 1) 
 	                    {
 		await InvokeMethod("stepDown", new object[] { stepDecrement }, new string[] { "Number" });
 	}
-	                    public  void StepDown(double stepDecrement = -1) 
+	                    public  void StepDown(double stepDecrement = 1) 
 	                    {
 		InvokeMethodSync("stepDown", new object[] { stepDecrement }, new string[] { "Number" });
 	}
@@ -220,10 +219,14 @@ public partial class IgbSlider: IgbSliderBase {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._inputRef = refName;
-	                this.MarkPropDirty("InputRef");	
-	        }); 
+	            if (value != this._inputScript)
+	            {
+	                this._inputScript = value;
+	                this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._inputRef = refName;
+	                    this.MarkPropDirty("InputRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -276,10 +279,14 @@ public partial class IgbSlider: IgbSliderBase {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

@@ -1,0 +1,175 @@
+@attribute [Stories("Layout/Splitter")]
+
+<Stories TComponent="IgbSplitter">
+
+    <ArgType For="_ => _!.Orientation" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Orientation" Value="SplitterOrientation.Horizontal" />
+            <Arg For="_ => _!.DisableCollapse" Value="false" />
+            <Arg For="_ => _!.HideCollapseButtons" Value="false" />
+            <Arg For="_ => _!.HideDragHandle" Value="false" />
+            <Arg For="_ => _!.DisableResize" Value="false" />
+            <Arg For="_ => _!.StartSize" Value='"auto"' />
+            <Arg For="_ => _!.EndSize" Value='"auto"' />
+        </Arguments>
+        <Template>
+            <IgbSplitter @attributes="context.Args" style="height: 400px;">
+                <div slot="start" style="padding: 1rem; box-sizing: border-box;">
+                    @_lorem
+                </div>
+                <div slot="end" style="padding: 1rem; box-sizing: border-box;">
+                    @_loremLong
+                </div>
+            </IgbSplitter>
+        </Template>
+    </Story>
+
+    <Story Name="Vertical">
+        <Template>
+            <IgbSplitter Orientation="SplitterOrientation.Vertical" style="height: 500px;">
+                <div slot="start" style="padding: 1rem; box-sizing: border-box;">
+                    <strong>Top panel</strong>
+                    <p>@_lorem</p>
+                </div>
+                <div slot="end" style="padding: 1rem; box-sizing: border-box;">
+                    <strong>Bottom panel</strong>
+                    <p>@_loremLong</p>
+                </div>
+            </IgbSplitter>
+        </Template>
+    </Story>
+
+    <Story Name="With Constraints">
+        <Template>
+            <IgbSplitter @ref="_constrainedSplitter" style="height: 400px;">
+                <div slot="start" style="padding: 1rem; box-sizing: border-box;">
+                    <strong>Start panel</strong>
+                    <p>@_lorem</p>
+                </div>
+                <div slot="end" style="padding: 1rem; box-sizing: border-box;">
+                    <strong>End panel</strong>
+                    <p>@_loremLong</p>
+                </div>
+            </IgbSplitter>
+
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <IgbButton Variant="ButtonVariant.Outlined" @onclick="ApplyPxConstraints">Apply px constraints</IgbButton>
+                <IgbButton Variant="ButtonVariant.Outlined" @onclick="ApplyPercentConstraints">Apply % constraints</IgbButton>
+                <IgbButton Variant="ButtonVariant.Outlined" @onclick="ClearConstraints">Clear constraints</IgbButton>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Programmatic Collapse">
+        <Template>
+            <IgbSplitter @ref="_toggleSplitter" style="height: 400px;">
+                <div slot="start" style="padding: 1rem; box-sizing: border-box;">
+                    <strong>Start panel</strong>
+                    <p>@_lorem</p>
+                </div>
+                <div slot="end" style="padding: 1rem; box-sizing: border-box;">
+                    <strong>End panel</strong>
+                    <p>@_loremLong</p>
+                </div>
+            </IgbSplitter>
+
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <IgbButton Variant="ButtonVariant.Outlined" @onclick="() => TogglePane(PanePosition.Start)">Toggle start panel</IgbButton>
+                <IgbButton Variant="ButtonVariant.Outlined" @onclick="() => TogglePane(PanePosition.End)">Toggle end panel</IgbButton>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Nested Splitters">
+        <Template>
+            <IgbSplitter Orientation="SplitterOrientation.Horizontal" style="height: 600px;">
+                <IgbSplitter slot="start" Orientation="SplitterOrientation.Vertical" style="height: 100%;">
+                    <div slot="start" style="padding: 1rem; box-sizing: border-box; height: 100%;">
+                        <strong>Top left</strong>
+                        <p>@_lorem</p>
+                    </div>
+                    <div slot="end" style="padding: 1rem; box-sizing: border-box; height: 100%;">
+                        <strong>Bottom left</strong>
+                        <p>@_lorem</p>
+                    </div>
+                </IgbSplitter>
+
+                <IgbSplitter slot="end" Orientation="SplitterOrientation.Vertical" style="height: 100%;">
+                    <div slot="start" style="padding: 1rem; box-sizing: border-box; height: 100%;">
+                        <strong>Top right</strong>
+                        <p>@_loremLong</p>
+                    </div>
+                    <div slot="end" style="padding: 1rem; box-sizing: border-box; height: 100%;">
+                        <strong>Bottom right</strong>
+                        <p>@_loremLong</p>
+                    </div>
+                </IgbSplitter>
+            </IgbSplitter>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private readonly string _lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque scelerisque elementum ante, et tincidunt eros ultrices sit amet. Mauris non consectetur nunc. In hac habitasse platea dictumst.";
+
+    private readonly string _loremLong = "Maecenas sit amet ipsum non ipsum scelerisque varius. Maecenas scelerisque nisl scelerisque nulla ultricies eleifend. Aliquam sit amet velit mauris. Duis at nulla vitae risus condimentum semper. Nam ornare arcu vitae euismod pharetra.";
+
+    private IgbSplitter? _constrainedSplitter;
+    private IgbSplitter? _toggleSplitter;
+
+    private void ApplyPxConstraints()
+    {
+        if (_constrainedSplitter == null)
+        {
+            return;
+        }
+
+        _constrainedSplitter.StartMinSize = "50px";
+        _constrainedSplitter.StartMaxSize = "200px";
+        _constrainedSplitter.EndMinSize = "100px";
+        _constrainedSplitter.EndMaxSize = "300px";
+    }
+
+    private void ApplyPercentConstraints()
+    {
+        if (_constrainedSplitter == null)
+        {
+            return;
+        }
+
+        _constrainedSplitter.StartMinSize = "10%";
+        _constrainedSplitter.StartMaxSize = "80%";
+        _constrainedSplitter.EndMinSize = "20%";
+        _constrainedSplitter.EndMaxSize = "90%";
+        _constrainedSplitter.StartSize = "30%";
+        _constrainedSplitter.EndSize = "70%";
+    }
+
+    private void ClearConstraints()
+    {
+        if (_constrainedSplitter == null)
+        {
+            return;
+        }
+
+        _constrainedSplitter.StartMinSize = null;
+        _constrainedSplitter.StartMaxSize = null;
+        _constrainedSplitter.EndMinSize = null;
+        _constrainedSplitter.EndMaxSize = null;
+        _constrainedSplitter.StartSize = "auto";
+        _constrainedSplitter.EndSize = "auto";
+    }
+
+    private async Task TogglePane(PanePosition position)
+    {
+        if (_toggleSplitter == null)
+        {
+            return;
+        }
+
+        await _toggleSplitter.ToggleAsync(position);
+    }
+}

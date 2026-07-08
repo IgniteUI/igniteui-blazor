@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbCalendarDateEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebCalendarDateEventArgs"; } }
+
 	
 	    public IgbCalendarDateEventArgs(): base() {
 	        OnCreatedIgbCalendarDateEventArgs();

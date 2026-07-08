@@ -29,6 +29,14 @@ export class WebInputDescription extends WebInputBaseDescription {
 		this._displayType = value;
 		this.markDirty("DisplayType");
 	}
+	private _readOnly: boolean = false;
+	get readOnly(): boolean {
+		return this._readOnly;
+	}
+	set readOnly(value: boolean) {
+		this._readOnly = value;
+		this.markDirty("ReadOnly");
+	}
 	private _inputMode: string = null;
 	get inputMode(): string {
 		return this._inputMode;

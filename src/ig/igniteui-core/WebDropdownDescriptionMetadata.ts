@@ -3,7 +3,7 @@ import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
 import { WebDropdownItemComponentEventArgsDescriptionMetadata } from "./WebDropdownItemComponentEventArgsDescriptionMetadata";
-import { WebBaseComboBoxLikeDescriptionMetadata } from "./WebBaseComboBoxLikeDescriptionMetadata";
+import { WebComboBoxBaseLikeDescriptionMetadata } from "./WebComboBoxBaseLikeDescriptionMetadata";
 import { WebDropdownDescription } from "./WebDropdownDescription";
 
 /**
@@ -25,7 +25,7 @@ export class WebDropdownDescriptionMetadata extends Base {
 		WebDropdownItemComponentEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
-		WebBaseComboBoxLikeDescriptionMetadata.fillMetadata(metadata);
+		WebComboBoxBaseLikeDescriptionMetadata.fillMetadata(metadata);
 		metadata.item("__qualifiedNameTS", "String:Dropdown");
 		metadata.item("__tagNameWC", "String:igc-dropdown");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
@@ -51,7 +51,7 @@ export class WebDropdownDescriptionMetadata extends Base {
 		metadata.item("ChangeRef@args", "DropdownItemComponentEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
-		WebBaseComboBoxLikeDescriptionMetadata.register(context);
+		WebComboBoxBaseLikeDescriptionMetadata.register(context);
 		WebDropdownDescriptionMetadata.ensureMetadata(context);
 		context.registerDescriptionConstructor("WebDropdown", () => new WebDropdownDescription());
 		context.register("WebDropdown", WebDropdownDescriptionMetadata._metadata);

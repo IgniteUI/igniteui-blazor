@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbIconMeta: BaseRendererElement {
                                 public override string Type { get { return "WebIconMeta"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

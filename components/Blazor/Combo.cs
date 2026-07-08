@@ -15,9 +15,9 @@ namespace IgniteUI.Blazor.Controls
 /// Additionally, users can create custom item templates, allowing for robust data visualization.
 /// The Combo component features case-sensitive filtering, grouping, complex data binding, dynamic addition of values and more.
 /// </summary>
-public partial class IgbCombo<T>: BaseRendererControl {
+public partial class IgbCombo<T>: IgbBaseComboBox {
                                 public override string Type { get { return "WebCombo"; } }
-
+							
                                 protected override void EnsureModulesLoaded()
                                 {
                                     if (!IgbComboModule.IsLoadRequested(IgBlazor))
@@ -28,21 +28,16 @@ public partial class IgbCombo<T>: BaseRendererControl {
 
                             protected override string ResolveDisplay()
                         {
-                        return "inline-block";
+	                        return "inline-block";
                         }
 
                             protected override bool SupportsVisualChildren
                         {
                                 get 
                                 {
-                            return true;
+	                            return true;
                                 }
                         }
-
-                            protected override ControlEventBehavior DefaultEventBehavior
-                            {
-                                get { return ControlEventBehavior.Queued; }
-                            }
 	
 	    public IgbCombo(): base() {
 	        OnCreatedIgbCombo();
@@ -96,6 +91,7 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	        var oldValue = this._dataScript; 
 	        if (oldValue != value || !IsPropDirty("Data"))
 	        {
+	            this._dataScript = value;
 	            MarkPropDirty("Data"); 
 	            this.OnRefChanged("Data", oldValue, value, true, false, (string refName, object old, object newValue) => {
 	        	    this._dataRef = refName;
@@ -127,7 +123,6 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	partial void OnSingleSelectChanging(ref bool newValue);
 	/// <summary>
 	/// Enables single selection mode and moves item filtering to the main input.
-	/// @default false
 	/// </summary>
 	[Parameter]
 	public bool SingleSelect 
@@ -174,6 +169,24 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	                        MarkPropDirty("AutofocusList");
 	                } 
 	                this._autofocusList = value;
+	                 
+	                }
+	}
+	private string _locale;
+	
+	partial void OnLocaleChanging(ref string newValue);
+	/// <summary>
+	/// Gets/Sets the locale used for getting language, affecting resource strings.
+	/// </summary>
+	[Parameter]
+	public string Locale 
+	{
+	get { return this._locale; }
+	set { 
+	                if (this._locale != value || !IsPropDirty("Locale")) {
+	                        MarkPropDirty("Locale");
+	                } 
+	                this._locale = value;
 	                 
 	                }
 	}
@@ -231,24 +244,6 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	                 
 	                }
 	}
-	private bool _open = false;
-	
-	partial void OnOpenChanging(ref bool newValue);
-	/// <summary>
-	/// Sets the open state of the component.
-	/// </summary>
-	[Parameter]
-	public bool Open 
-	{
-	get { return this._open; }
-	set { 
-	                if (this._open != value || !IsPropDirty("Open")) {
-	                        MarkPropDirty("Open");
-	                } 
-	                this._open = value;
-	                 
-	                }
-	}
 	private string? _valueKey;
 	
 	partial void OnValueKeyChanging(ref string? newValue);
@@ -285,14 +280,14 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	                 
 	                }
 	}
-	private string? _groupKey;
+	private string _groupKey;
 	
-	partial void OnGroupKeyChanging(ref string? newValue);
+	partial void OnGroupKeyChanging(ref string newValue);
 	/// <summary>
 	/// The key in the data source used to group items in the list.
 	/// </summary>
 	[Parameter]
-	public string? GroupKey 
+	public string GroupKey 
 	{
 	get { return this._groupKey; }
 	set { 
@@ -308,8 +303,6 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	partial void OnGroupSortingChanging(ref GroupingDirection newValue);
 	/// <summary>
 	/// Sorts the items in each group by ascending or descending order.
-	/// @default asc
-	/// @type {"asc" | "desc" | "none"}
 	/// </summary>
 	[Parameter]
 	public GroupingDirection GroupSorting 
@@ -326,6 +319,9 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	private IgbFilteringOptions _filteringOptions;
 	
 	partial void OnFilteringOptionsChanging(ref IgbFilteringOptions newValue);
+	/// <summary>
+	/// An object that configures the filtering of the combo.
+	/// </summary>
 	[Parameter]
 	public IgbFilteringOptions FilteringOptions 
 	{
@@ -366,7 +362,6 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	partial void OnDisableFilteringChanging(ref bool newValue);
 	/// <summary>
 	/// Disables the filtering of the list of options.
-	/// @default false
 	/// </summary>
 	[Parameter]
 	public bool DisableFiltering 
@@ -380,9 +375,32 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	                 
 	                }
 	}
+	private bool _disableClear = false;
+	
+	partial void OnDisableClearChanging(ref bool newValue);
+	/// <summary>
+	/// Hides the clear button.
+	/// </summary>
+	[Parameter]
+	public bool DisableClear 
+	{
+	get { return this._disableClear; }
+	set { 
+	                if (this._disableClear != value || !IsPropDirty("DisableClear")) {
+	                        MarkPropDirty("DisableClear");
+	                } 
+	                this._disableClear = value;
+	                 
+	                }
+	}
 	private T[] _value;
 	
 	partial void OnValueChanging(ref T[] newValue);
+	/// <summary>
+	/// Sets the value (selected items). The passed value must be a valid JSON array.
+	/// If the data source is an array of complex objects, the `valueKey` attribute must be set.
+	/// Note that when `displayKey` is not explicitly set, it will fall back to the value of `valueKey`.
+	/// </summary>
 	[Parameter]
 	public T[] Value 
 	{
@@ -512,6 +530,7 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	        var oldValue = this._itemTemplateScript; 
 	        if (oldValue != value || !IsPropDirty("ItemTemplate"))
 	        {
+	            this._itemTemplateScript = value;
 	            MarkPropDirty("ItemTemplate"); 
 	            this.OnRefChanged("ItemTemplate", oldValue, value, true, false, (string refName, object old, object newValue) => {
 	        	    this._itemTemplateRef = refName;
@@ -562,6 +581,7 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	        var oldValue = this._groupHeaderTemplateScript; 
 	        if (oldValue != value || !IsPropDirty("GroupHeaderTemplate"))
 	        {
+	            this._groupHeaderTemplateScript = value;
 	            MarkPropDirty("GroupHeaderTemplate"); 
 	            this.OnRefChanged("GroupHeaderTemplate", oldValue, value, true, false, (string refName, object old, object newValue) => {
 	        	    this._groupHeaderTemplateRef = refName;
@@ -590,14 +610,6 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	
 	        return null;
 	    }
-	public async  Task SetNativeElementAsync(Object element) 
-	                    {
-		await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-	}
-	                    public  void SetNativeElement(Object element) 
-	                    {
-		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-	}
 	/// <summary>
 	/// Sets focus on the component.
 	/// </summary>
@@ -643,45 +655,6 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	                    public  void Deselect(object[] items) 
 	                    {
 		InvokeMethodSync("deselect", new object[] { ObjectArrayToParam(items) }, new string[] { "" });
-	}
-	/// <summary>
-	/// Shows the list of options.
-	/// </summary>
-	public async Task<bool> ShowAsync() 
-	                    {
-		var iv = await InvokeMethod("show", new object[] {  }, new string[] {  });
-		return ReturnToBoolean(iv);
-	}
-	                    public bool Show() 
-	                    {
-		var iv = InvokeMethodSync("show", new object[] {  }, new string[] {  });
-		return ReturnToBoolean(iv);
-	}
-	/// <summary>
-	/// Hides the list of options.
-	/// </summary>
-	public async Task<bool> HideAsync() 
-	                    {
-		var iv = await InvokeMethod("hide", new object[] {  }, new string[] {  });
-		return ReturnToBoolean(iv);
-	}
-	                    public bool Hide() 
-	                    {
-		var iv = InvokeMethodSync("hide", new object[] {  }, new string[] {  });
-		return ReturnToBoolean(iv);
-	}
-	/// <summary>
-	/// Toggles the list of options.
-	/// </summary>
-	public async Task<bool> ToggleAsync() 
-	                    {
-		var iv = await InvokeMethod("toggle", new object[] {  }, new string[] {  });
-		return ReturnToBoolean(iv);
-	}
-	                    public bool Toggle() 
-	                    {
-		var iv = InvokeMethodSync("toggle", new object[] {  }, new string[] {  });
-		return ReturnToBoolean(iv);
 	}
 	/// <summary>
 	/// Checks for validity of the control and shows the browser message if it invalid.
@@ -751,10 +724,14 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -840,10 +817,14 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._focusRef = refName;
-	                this.MarkPropDirty("FocusRef");	
-	        }); 
+	            if (value != this._focusScript)
+	            {
+	                this._focusScript = value;
+	                this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._focusRef = refName;
+	                    this.MarkPropDirty("FocusRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -896,10 +877,14 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._blurRef = refName;
-	                this.MarkPropDirty("BlurRef");	
-	        }); 
+	            if (value != this._blurScript)
+	            {
+	                this._blurScript = value;
+	                this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._blurRef = refName;
+	                    this.MarkPropDirty("BlurRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -952,10 +937,14 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openingRef = refName;
-	                this.MarkPropDirty("OpeningRef");	
-	        }); 
+	            if (value != this._openingScript)
+	            {
+	                this._openingScript = value;
+	                this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openingRef = refName;
+	                    this.MarkPropDirty("OpeningRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -1008,10 +997,14 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openedRef = refName;
-	                this.MarkPropDirty("OpenedRef");	
-	        }); 
+	            if (value != this._openedScript)
+	            {
+	                this._openedScript = value;
+	                this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openedRef = refName;
+	                    this.MarkPropDirty("OpenedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -1064,10 +1057,14 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closingRef = refName;
-	                this.MarkPropDirty("ClosingRef");	
-	        }); 
+	            if (value != this._closingScript)
+	            {
+	                this._closingScript = value;
+	                this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closingRef = refName;
+	                    this.MarkPropDirty("ClosingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -1120,10 +1117,14 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closedRef = refName;
-	                this.MarkPropDirty("ClosedRef");	
-	        }); 
+	            if (value != this._closedScript)
+	            {
+	                this._closedScript = value;
+	                this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closedRef = refName;
+	                    this.MarkPropDirty("ClosedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -1184,10 +1185,10 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	if (IsPropDirty("SingleSelect")) { ser.AddBooleanProp("singleSelect", this._singleSelect); }
 	if (IsPropDirty("Autofocus")) { ser.AddBooleanProp("autofocus", this._autofocus); }
 	if (IsPropDirty("AutofocusList")) { ser.AddBooleanProp("autofocusList", this._autofocusList); }
+	if (IsPropDirty("Locale")) { ser.AddStringProp("locale", this._locale); }
 	if (IsPropDirty("Label")) { ser.AddStringProp("label", this._label); }
 	if (IsPropDirty("Placeholder")) { ser.AddStringProp("placeholder", this._placeholder); }
 	if (IsPropDirty("PlaceholderSearch")) { ser.AddStringProp("placeholderSearch", this._placeholderSearch); }
-	if (IsPropDirty("Open")) { ser.AddBooleanProp("open", this._open); }
 	if (IsPropDirty("ValueKey")) { ser.AddStringProp("valueKey", this._valueKey); }
 	if (IsPropDirty("DisplayKey")) { ser.AddStringProp("displayKey", this._displayKey); }
 	if (IsPropDirty("GroupKey")) { ser.AddStringProp("groupKey", this._groupKey); }
@@ -1195,6 +1196,7 @@ public partial class IgbCombo<T>: BaseRendererControl {
 	if (IsPropDirty("FilteringOptions")) { ser.AddSerializableProp("filteringOptions", this._filteringOptions); }
 	if (IsPropDirty("CaseSensitiveIcon")) { ser.AddBooleanProp("caseSensitiveIcon", this._caseSensitiveIcon); }
 	if (IsPropDirty("DisableFiltering")) { ser.AddBooleanProp("disableFiltering", this._disableFiltering); }
+	if (IsPropDirty("DisableClear")) { ser.AddBooleanProp("disableClear", this._disableClear); }
 	if (IsPropDirty("Value")) { ser.AddArrayProp("value", this._value); }
 	if (IsPropDirty("Disabled")) { ser.AddBooleanProp("disabled", this._disabled); }
 	if (IsPropDirty("Required")) { ser.AddBooleanProp("required", this._required); }

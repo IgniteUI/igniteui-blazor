@@ -3,7 +3,7 @@ import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebSelectItemComponentEventArgsDescriptionMetadata } from "./WebSelectItemComponentEventArgsDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
-import { WebBaseComboBoxLikeDescriptionMetadata } from "./WebBaseComboBoxLikeDescriptionMetadata";
+import { WebComboBoxBaseLikeDescriptionMetadata } from "./WebComboBoxBaseLikeDescriptionMetadata";
 import { WebSelectDescription } from "./WebSelectDescription";
 
 /**
@@ -25,7 +25,7 @@ export class WebSelectDescriptionMetadata extends Base {
 		VoidEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
-		WebBaseComboBoxLikeDescriptionMetadata.fillMetadata(metadata);
+		WebComboBoxBaseLikeDescriptionMetadata.fillMetadata(metadata);
 		metadata.item("__qualifiedNameTS", "String:Select");
 		metadata.item("__tagNameWC", "String:igc-select");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
@@ -63,7 +63,7 @@ export class WebSelectDescriptionMetadata extends Base {
 		metadata.item("ClosedRef@args", "VoidEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
-		WebBaseComboBoxLikeDescriptionMetadata.register(context);
+		WebComboBoxBaseLikeDescriptionMetadata.register(context);
 		WebSelectDescriptionMetadata.ensureMetadata(context);
 		context.registerDescriptionConstructor("WebSelect", () => new WebSelectDescription());
 		context.register("WebSelect", WebSelectDescriptionMetadata._metadata);

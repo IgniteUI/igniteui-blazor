@@ -9,8 +9,7 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// The step component is used within the `igc-stepper` element and it holds the content of each step.
-/// It also supports custom indicators, title and subtitle.
+/// A step component used within an `igc-stepper` to represent an individual step in a wizard-like workflow.
 /// </summary>
 public partial class IgbStep: BaseRendererControl {
                                 public override string Type { get { return "WebStep"; } }
@@ -69,7 +68,9 @@ public partial class IgbStep: BaseRendererControl {
 	
 	partial void OnInvalidChanging(ref bool newValue);
 	/// <summary>
-	/// Gets/sets whether the step is invalid.
+	/// Whether the step is invalid.
+	/// Invalid steps are styled with an error state and are not
+	/// interactive when the stepper is in linear mode.
 	/// </summary>
 	[Parameter]
 	public bool Invalid 
@@ -87,7 +88,8 @@ public partial class IgbStep: BaseRendererControl {
 	
 	partial void OnActiveChanging(ref bool newValue);
 	/// <summary>
-	/// Gets/sets whether the step is activе.
+	/// Whether the step is active.
+	/// Active steps are styled with an active state and their content is visible.
 	/// </summary>
 	[Parameter]
 	public bool Active 
@@ -105,8 +107,7 @@ public partial class IgbStep: BaseRendererControl {
 	
 	partial void OnOptionalChanging(ref bool newValue);
 	/// <summary>
-	/// Gets/sets whether the step is optional.
-	/// @remarks
+	/// Whether the step is optional.
 	/// Optional steps validity does not affect the default behavior when the stepper is in linear mode i.e.
 	/// if optional step is invalid the user could still move to the next step.
 	/// </summary>
@@ -126,7 +127,8 @@ public partial class IgbStep: BaseRendererControl {
 	
 	partial void OnDisabledChanging(ref bool newValue);
 	/// <summary>
-	/// Gets/sets whether the step is interactable.
+	/// Whether the step is disabled.
+	/// Disabled steps are styled with a disabled state and are not interactive.
 	/// </summary>
 	[Parameter]
 	public bool Disabled 
@@ -144,9 +146,7 @@ public partial class IgbStep: BaseRendererControl {
 	
 	partial void OnCompleteChanging(ref bool newValue);
 	/// <summary>
-	/// Gets/sets whether the step is completed.
-	/// @remarks
-	/// When set to `true` the following separator is styled `solid`.
+	/// Whether the step is completed.
 	/// </summary>
 	[Parameter]
 	public bool Complete 

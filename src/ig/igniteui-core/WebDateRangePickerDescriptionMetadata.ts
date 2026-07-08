@@ -7,7 +7,7 @@ import { WebDateRangePickerResourceStringsDescriptionMetadata } from "./WebDateR
 import { DateRangeDescriptorDescriptionMetadata } from "./DateRangeDescriptorDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
 import { WebDateRangeValueEventArgsDescriptionMetadata } from "./WebDateRangeValueEventArgsDescriptionMetadata";
-import { WebBaseComboBoxLikeDescriptionMetadata } from "./WebBaseComboBoxLikeDescriptionMetadata";
+import { WebComboBoxBaseLikeDescriptionMetadata } from "./WebComboBoxBaseLikeDescriptionMetadata";
 import { WebDateRangePickerDescription } from "./WebDateRangePickerDescription";
 
 /**
@@ -33,7 +33,7 @@ export class WebDateRangePickerDescriptionMetadata extends Base {
 		WebDateRangeValueEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
-		WebBaseComboBoxLikeDescriptionMetadata.fillMetadata(metadata);
+		WebComboBoxBaseLikeDescriptionMetadata.fillMetadata(metadata);
 		metadata.item("__qualifiedNameTS", "String:DateRangePicker");
 		metadata.item("__tagNameWC", "String:igc-date-range-picker");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
@@ -96,7 +96,7 @@ export class WebDateRangePickerDescriptionMetadata extends Base {
 		metadata.item("InputRef@args", "DateRangeValueEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
-		WebBaseComboBoxLikeDescriptionMetadata.register(context);
+		WebComboBoxBaseLikeDescriptionMetadata.register(context);
 		WebDateRangePickerDescriptionMetadata.ensureMetadata(context);
 		context.registerDescriptionConstructor("WebDateRangePicker", () => new WebDateRangePickerDescription());
 		context.register("WebDateRangePicker", WebDateRangePickerDescriptionMetadata._metadata);

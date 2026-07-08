@@ -382,12 +382,12 @@ public partial class IgbCarousel: BaseRendererControl {
 		var iv = InvokeMethodSync("prev", new object[] {  }, new string[] {  });
 		return ReturnToBoolean(iv);
 	}
-	public async Task<bool> SelectAsync(double index, CarouselAnimationDirection animationDirection) 
+	public async Task<bool> SelectAsync(double index, CarouselAnimationDirection? animationDirection = null) 
 	                    {
 		var iv = await InvokeMethod("select", new object[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
 		return ReturnToBoolean(iv);
 	}
-	                    public bool Select(double index, CarouselAnimationDirection animationDirection) 
+	                    public bool Select(double index, CarouselAnimationDirection? animationDirection = null) 
 	                    {
 		var iv = InvokeMethodSync("select", new object[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
 		return ReturnToBoolean(iv);
@@ -400,10 +400,14 @@ public partial class IgbCarousel: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("SlideChanged", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._slideChangedRef = refName;
-	                this.MarkPropDirty("SlideChangedRef");	
-	        }); 
+	            if (value != this._slideChangedScript)
+	            {
+	                this._slideChangedScript = value;
+	                this.OnRefChanged("SlideChanged", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._slideChangedRef = refName;
+	                    this.MarkPropDirty("SlideChangedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -456,10 +460,14 @@ public partial class IgbCarousel: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Playing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._playingRef = refName;
-	                this.MarkPropDirty("PlayingRef");	
-	        }); 
+	            if (value != this._playingScript)
+	            {
+	                this._playingScript = value;
+	                this.OnRefChanged("Playing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._playingRef = refName;
+	                    this.MarkPropDirty("PlayingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -512,10 +520,14 @@ public partial class IgbCarousel: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Paused", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._pausedRef = refName;
-	                this.MarkPropDirty("PausedRef");	
-	        }); 
+	            if (value != this._pausedScript)
+	            {
+	                this._pausedScript = value;
+	                this.OnRefChanged("Paused", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._pausedRef = refName;
+	                    this.MarkPropDirty("PausedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {

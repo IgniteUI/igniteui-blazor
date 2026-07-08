@@ -1,6 +1,5 @@
 import { Base, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
-import { WebBaseComboBoxLikeDescriptionModule } from "./WebBaseComboBoxLikeDescriptionModule";
 import { WebCalendarDescriptionModule } from "./WebCalendarDescriptionModule";
 import { WebDateTimeInputDescriptionModule } from "./WebDateTimeInputDescriptionModule";
 import { WebDialogDescriptionModule } from "./WebDialogDescriptionModule";
@@ -16,7 +15,6 @@ import { WebDateRangePickerDescriptionMetadata } from "./WebDateRangePickerDescr
 export class WebDateRangePickerDescriptionModule extends Base {
 	static $t: Type = markType(WebDateRangePickerDescriptionModule, 'WebDateRangePickerDescriptionModule');
 	static register(context: TypeDescriptionContext): void {
-		WebBaseComboBoxLikeDescriptionModule.register(context);
 		WebCalendarDescriptionModule.register(context);
 		WebDateTimeInputDescriptionModule.register(context);
 		WebDialogDescriptionModule.register(context);

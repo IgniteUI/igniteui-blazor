@@ -299,6 +299,21 @@ export class Loader {
             break;
         }
             
+    case "WebChatModule":
+        {
+            let { IgcChatComponent } = await import('igniteui-webcomponents');
+            let { WebChatDescriptionModule } = await import('igniteui-core/WebChatDescriptionModule');
+
+            this._loadingSet.delete(module);
+
+            IgcChatComponent.register();
+            TypeRegistrar.registerCons('IgcChatComponent', IgcChatComponent);
+
+            WebChatDescriptionModule.register(cr.context);
+            this.checkDone();
+            break;
+        }
+            
     case "WebCheckboxModule":
         {
             let { IgcCheckboxComponent } = await import('igniteui-webcomponents');
@@ -534,6 +549,21 @@ export class Loader {
         FormatSpecifierDescriptionModule.register(cr.context);
         this.checkDone();
         break;
+            
+    case "WebHighlightModule":
+        {
+            let { IgcHighlightComponent } = await import('igniteui-webcomponents');
+            let { WebHighlightDescriptionModule } = await import('igniteui-core/WebHighlightDescriptionModule');
+
+            this._loadingSet.delete(module);
+
+            IgcHighlightComponent.register();
+            TypeRegistrar.registerCons('IgcHighlightComponent', IgcHighlightComponent);
+
+            WebHighlightDescriptionModule.register(cr.context);
+            this.checkDone();
+            break;
+        }
             
     case "WebIconButtonModule":
         {
@@ -921,6 +951,21 @@ export class Loader {
             break;
         }
             
+    case "WebSplitterModule":
+        {
+            let { IgcSplitterComponent } = await import('igniteui-webcomponents');
+            let { WebSplitterDescriptionModule } = await import('igniteui-core/WebSplitterDescriptionModule');
+
+            this._loadingSet.delete(module);
+
+            IgcSplitterComponent.register();
+            TypeRegistrar.registerCons('IgcSplitterComponent', IgcSplitterComponent);
+
+            WebSplitterDescriptionModule.register(cr.context);
+            this.checkDone();
+            break;
+        }
+            
     case "WebStepModule":
         {
             let { IgcStepComponent } = await import('igniteui-webcomponents');
@@ -1007,6 +1052,21 @@ export class Loader {
             TypeRegistrar.registerCons('IgcTextareaComponent', IgcTextareaComponent);
 
             WebTextareaDescriptionModule.register(cr.context);
+            this.checkDone();
+            break;
+        }
+            
+    case "WebThemeProviderModule":
+        {
+            let { IgcThemeProviderComponent } = await import('igniteui-webcomponents');
+            let { WebThemeProviderDescriptionModule } = await import('igniteui-core/WebThemeProviderDescriptionModule');
+
+            this._loadingSet.delete(module);
+
+            IgcThemeProviderComponent.register();
+            TypeRegistrar.registerCons('IgcThemeProviderComponent', IgcThemeProviderComponent);
+
+            WebThemeProviderDescriptionModule.register(cr.context);
             this.checkDone();
             break;
         }
@@ -1188,6 +1248,20 @@ Loader.marshalByValueSet.add('ActiveStepChangingEventArgs');
 Loader.marshalByValueSet.add('WebActiveStepChangingEventArgs');
 Loader.marshalByValueSet.add('ActiveStepChangingEventArgsDetail');
 Loader.marshalByValueSet.add('WebActiveStepChangingEventArgsDetail');
+Loader.marshalByValueSet.add('ChatDraftMessage');
+Loader.marshalByValueSet.add('WebChatDraftMessage');
+Loader.marshalByValueSet.add('ChatMessage');
+Loader.marshalByValueSet.add('WebChatMessage');
+Loader.marshalByValueSet.add('ChatMessageAttachment');
+Loader.marshalByValueSet.add('WebChatMessageAttachment');
+Loader.marshalByValueSet.add('ChatMessageAttachmentEventArgs');
+Loader.marshalByValueSet.add('WebChatMessageAttachmentEventArgs');
+Loader.marshalByValueSet.add('ChatMessageEventArgs');
+Loader.marshalByValueSet.add('WebChatMessageEventArgs');
+Loader.marshalByValueSet.add('ChatMessageReaction');
+Loader.marshalByValueSet.add('WebChatMessageReaction');
+Loader.marshalByValueSet.add('ChatMessageReactionEventArgs');
+Loader.marshalByValueSet.add('WebChatMessageReactionEventArgs');
 Loader.marshalByValueSet.add('CheckboxChangeEventArgs');
 Loader.marshalByValueSet.add('WebCheckboxChangeEventArgs');
 Loader.marshalByValueSet.add('CheckboxChangeEventArgsDetail');
@@ -1210,6 +1284,8 @@ Loader.marshalByValueSet.add('DropdownItemComponentEventArgs');
 Loader.marshalByValueSet.add('WebDropdownItemComponentEventArgs');
 Loader.marshalByValueSet.add('ExpansionPanelComponentEventArgs');
 Loader.marshalByValueSet.add('WebExpansionPanelComponentEventArgs');
+Loader.marshalByValueSet.add('HighlightNavigation');
+Loader.marshalByValueSet.add('WebHighlightNavigation');
 Loader.marshalByValueSet.add('IconMeta');
 Loader.marshalByValueSet.add('WebIconMeta');
 Loader.marshalByValueSet.add('NumberEventArgs');
@@ -1222,10 +1298,12 @@ Loader.marshalByValueSet.add('RangeSliderValue');
 Loader.marshalByValueSet.add('WebRangeSliderValue');
 Loader.marshalByValueSet.add('SelectItemComponentEventArgs');
 Loader.marshalByValueSet.add('WebSelectItemComponentEventArgs');
+Loader.marshalByValueSet.add('SplitterResizeEventArgs');
+Loader.marshalByValueSet.add('WebSplitterResizeEventArgs');
+Loader.marshalByValueSet.add('SplitterResizeEventArgsDetail');
+Loader.marshalByValueSet.add('WebSplitterResizeEventArgsDetail');
 Loader.marshalByValueSet.add('TabComponentEventArgs');
 Loader.marshalByValueSet.add('WebTabComponentEventArgs');
-Loader.marshalByValueSet.add('TabHeaderElement');
-Loader.marshalByValueSet.add('WebTabHeaderElement');
 Loader.marshalByValueSet.add('TileChangeStateEventArgs');
 Loader.marshalByValueSet.add('WebTileChangeStateEventArgs');
 Loader.marshalByValueSet.add('TileChangeStateEventArgsDetail');

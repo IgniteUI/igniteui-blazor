@@ -765,6 +765,10 @@ export function markDep(depProp: Function, PropMeta: Function, t: Function, chan
     return names;
 }
 
+export function createSimpleObject(): any {
+    return {};
+}
+
 export function typeGetValue(v: any): any {
     if (v !== null && v.$type && v.$type.isEnumType) {
         return v.value;
@@ -815,6 +819,9 @@ export function typeCast<T>(targetType: Type | Function, obj: any): T {
     if (obj instanceof Array) {
         type = Array_$type;
     }
+    if (obj instanceof Map) {
+        type = NativeStringMap_$type;
+    }
 
     if (Type.canAssignSimple(<Type>targetType, type)) {
         return obj;
@@ -829,6 +836,38 @@ export function typeCast<T>(targetType: Type | Function, obj: any): T {
         return <T><any>toNullable(targetType, null);
     }
     return null;
+}
+
+export function isRunningInSafari(): boolean {
+    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+}
+
+export function nativeRectMake(x?: number, y?: number, width?: number, height?: number): { x: number; y: number; width: number; height: number } {
+    if (x === undefined) {
+        width = 0;
+    }
+    if (y === undefined) {
+        height = 0;
+    }
+    if (width === undefined) {
+        width = 0;
+    }
+    if (height === undefined) {
+        height = 0;
+    }
+    return { x: x, y: y, width: width, height: height };
+}
+export function nativePointMake(x: number, y: number): { x: number; y: number; } {
+    return { x: x, y: y };
+}
+export function nativeSizeMake(width?: number, height?: number): { width: number; height: number } {
+    if (width === undefined) {
+        width = 0;
+    }
+    if (height === undefined) {
+        height = 0;
+    }
+    return { width: width, height: height };
 }
 
 export function typeCastObjTo$t<T>($t: Type, v: any) {
@@ -873,8 +912,8 @@ export interface EnumInfo {
     mustCoerceToInt: Boolean
 }
 
-/* #__PURE__ */
-export function markEnum(name: string, encodedDef: string, mustCoerceToInt: Boolean = false): Type {
+
+export /* #__PURE__ */ function markEnum(name: string, encodedDef: string, mustCoerceToInt: Boolean = false): Type {
     let t = new Type(null, name, Base.prototype.$type, [ IConvertible_$type ]);
     t.isEnumType = true;
 
@@ -1477,6 +1516,19 @@ export class IterableWrapper<T> implements IEnumerable$1<T>, IEnumerable {
     }
 }
 
+export class EnumerableIteratorWrapper<T> implements IEnumerable$1<T>, IEnumerable {
+    private _inner: () => Iterator<T> = null;
+    constructor (inner: () => Iterator<T>) {
+        this._inner = inner;
+    }
+    getEnumerator() : IEnumerator$1<T> {
+        return new IteratorWrapper<T>(this._inner(), () => this._inner());
+    }
+    getEnumeratorObject(): IEnumerator {
+        return new IteratorWrapper<T>(this._inner(), () => this._inner());
+    }
+}
+
 export class EnumeratorWrapper<T> implements Iterator<T> {
     private _inner: IEnumerator$1<T> = null;
     
@@ -1579,7 +1631,11 @@ export function toEn(v: () => Iterable<any>): IEnumerable {
     return new IterableWrapper<any>(v);
 }
     
-export function fromEn<T>(v: IEnumerable): Iterable<T> {
+export function fromEn<T>(v: IEnumerable | any[]): Iterable<T> {
+    if (Array.isArray(v)) {
+        let arr = <any[]>v;
+        return new EnumerableWrapperObject(new IterableWrapper<any>(() => arr));
+    }
     return new EnumerableWrapperObject(v);
 }
 
@@ -1596,6 +1652,7 @@ export let String_$type: Type = new Type(String, "String", Base.prototype.$type,
 export let Date_$type: Type = new Type(Date, "Date", Base.prototype.$type, [IComparable_$type, IConvertible_$type]);
 export let Boolean_$type: Type = new Type(Boolean, "Boolean", Base.prototype.$type, [IComparable_$type, IConvertible_$type]);
 export let Void_$type: Type = new Type(null, "Void", Base.prototype.$type);
+
 export let n$ = Number_$type;
 export let s$ = String_$type;
 export let d$ = Date_$type;
@@ -1699,6 +1756,8 @@ export interface IEnumerable {
     getEnumeratorObject() : IEnumerator
 }
 export let IEnumerable_$type = new Type(null, "IEnumerable");
+
+export let NativeStringMap_$type: Type = new Type(Map, "NativeStringMap", Base.prototype.$type, [IEnumerable_$type]);
 
 export interface IEnumerator {
     currentObject: any;

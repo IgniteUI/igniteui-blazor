@@ -133,7 +133,7 @@ namespace IgniteUI.Blazor.Controls
 
         private JSDataSourceSchema _schema = null;
         private void Read(Object item, JSDataSourceSchema schema, DataSourceManager manager) {
-            if (schema == null) {
+            if (schema == null || item == null) {
                 _isNull = true;
                 return;
             }

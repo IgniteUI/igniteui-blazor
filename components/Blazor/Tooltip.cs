@@ -70,7 +70,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	partial void OnOpenChanging(ref bool newValue);
 	/// <summary>
 	/// Whether the tooltip is showing.
-	/// @default false
 	/// </summary>
 	[Parameter]
 	public bool Open 
@@ -84,31 +83,11 @@ public partial class IgbTooltip: BaseRendererControl {
 	                 
 	                }
 	}
-	private bool _disableArrow = false;
-	
-	partial void OnDisableArrowChanging(ref bool newValue);
-	/// <summary>
-	/// Whether to disable the rendering of the arrow indicator for the tooltip.
-	/// </summary>
-	[Parameter]
-	[Obsolete("Use `with-arrow` to control the behavior of the tooltip arrow.")]
-	public bool DisableArrow 
-	{
-	get { return this._disableArrow; }
-	set { 
-	                if (this._disableArrow != value || !IsPropDirty("DisableArrow")) {
-	                        MarkPropDirty("DisableArrow");
-	                } 
-	                this._disableArrow = value;
-	                 
-	                }
-	}
 	private bool _withArrow = false;
 	
 	partial void OnWithArrowChanging(ref bool newValue);
 	/// <summary>
 	/// Whether to render an arrow indicator for the tooltip.
-	/// @default false
 	/// </summary>
 	[Parameter]
 	public bool WithArrow 
@@ -127,7 +106,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	partial void OnOffsetChanging(ref double newValue);
 	/// <summary>
 	/// The offset of the tooltip from the anchor in pixels.
-	/// @default 6
 	/// </summary>
 	[Parameter]
 	public double Offset 
@@ -146,7 +124,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	partial void OnPlacementChanging(ref PopoverPlacement newValue);
 	/// <summary>
 	/// Where to place the floating element relative to the parent anchor element.
-	/// @default bottom
 	/// </summary>
 	[Parameter]
 	public PopoverPlacement Placement 
@@ -165,9 +142,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	partial void OnAnchorChanging(ref string newValue);
 	/// <summary>
 	/// An element instance or an IDREF to use as the anchor for the tooltip.
-	/// @remarks
-	/// Trying to bind to an IDREF that does not exist in the current DOM root at will not work.
-	/// In such scenarios, it is better to get a DOM reference and pass it to the tooltip instance.
 	/// </summary>
 	[Parameter]
 	public string Anchor 
@@ -187,7 +161,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	/// <summary>
 	/// Which event triggers will show the tooltip.
 	/// Expects a comma separate string of different event triggers.
-	/// @default pointerenter
 	/// </summary>
 	[Parameter]
 	public string ShowTriggers 
@@ -207,7 +180,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	/// <summary>
 	/// Which event triggers will hide the tooltip.
 	/// Expects a comma separate string of different event triggers.
-	/// @default pointerleave, click
 	/// </summary>
 	[Parameter]
 	public string HideTriggers 
@@ -226,7 +198,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	partial void OnShowDelayChanging(ref double newValue);
 	/// <summary>
 	/// Specifies the number of milliseconds that should pass before showing the tooltip.
-	/// @default 200
 	/// </summary>
 	[Parameter]
 	public double ShowDelay 
@@ -245,7 +216,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	partial void OnHideDelayChanging(ref double newValue);
 	/// <summary>
 	/// Specifies the number of milliseconds that should pass before hiding the tooltip.
-	/// @default 300
 	/// </summary>
 	[Parameter]
 	public double HideDelay 
@@ -282,7 +252,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	partial void OnStickyChanging(ref bool newValue);
 	/// <summary>
 	/// Specifies if the tooltip remains visible until the user closes it via the close button or Esc key.
-	/// @default false
 	/// </summary>
 	[Parameter]
 	public bool Sticky 
@@ -372,10 +341,14 @@ public partial class IgbTooltip: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openingRef = refName;
-	                this.MarkPropDirty("OpeningRef");	
-	        }); 
+	            if (value != this._openingScript)
+	            {
+	                this._openingScript = value;
+	                this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openingRef = refName;
+	                    this.MarkPropDirty("OpeningRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -428,10 +401,14 @@ public partial class IgbTooltip: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._openedRef = refName;
-	                this.MarkPropDirty("OpenedRef");	
-	        }); 
+	            if (value != this._openedScript)
+	            {
+	                this._openedScript = value;
+	                this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._openedRef = refName;
+	                    this.MarkPropDirty("OpenedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -484,10 +461,14 @@ public partial class IgbTooltip: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closingRef = refName;
-	                this.MarkPropDirty("ClosingRef");	
-	        }); 
+	            if (value != this._closingScript)
+	            {
+	                this._closingScript = value;
+	                this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closingRef = refName;
+	                    this.MarkPropDirty("ClosingRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -540,10 +521,14 @@ public partial class IgbTooltip: BaseRendererControl {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._closedRef = refName;
-	                this.MarkPropDirty("ClosedRef");	
-	        }); 
+	            if (value != this._closedScript)
+	            {
+	                this._closedScript = value;
+	                this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._closedRef = refName;
+	                    this.MarkPropDirty("ClosedRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -598,7 +583,6 @@ public partial class IgbTooltip: BaseRendererControl {
 	        SerializeCoreIgbTooltip(ser);
 	
 	if (IsPropDirty("Open")) { ser.AddBooleanProp("open", this._open); }
-	if (IsPropDirty("DisableArrow")) { ser.AddBooleanProp("disableArrow", this._disableArrow); }
 	if (IsPropDirty("WithArrow")) { ser.AddBooleanProp("withArrow", this._withArrow); }
 	if (IsPropDirty("Offset")) { ser.AddNumberProp("offset", this._offset); }
 	if (IsPropDirty("Placement")) { ser.AddEnumProp("placement", this._placement); }

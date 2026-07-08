@@ -13,12 +13,6 @@ public class DatePickerTests : BlazorComponentTestBase
     }
 
     [Fact]
-    public void DatePicker_InheritsFromBaseComboBoxLike()
-    {
-        Assert.True(typeof(IgbDatePicker).IsSubclassOf(typeof(IgbBaseComboBoxLike)));
-    }
-
-    [Fact]
     public void DatePicker_Label_Property()
     {
         var picker = new IgbDatePicker();

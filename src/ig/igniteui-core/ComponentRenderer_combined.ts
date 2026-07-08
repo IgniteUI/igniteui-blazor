@@ -612,14 +612,31 @@ export class ComponentRenderer extends Base {
 			return;
 		}
 		let oldItem: any = null;
+		let itemsToRemove: any[] = null;
+		let removeSubItems: boolean = false;
 		let dci: DateColumnCache = this.resolveDateColumnInfo(msgo, refName);
 		if (msgo.containsKey("oldItem")) {
-			oldItem = this.convertJsonObjectToObject(<JsonDictionaryObject>msgo.item("oldItem"), dci, null);
+			let temp = msgo.item("oldItem");
+			if (typeCast<JsonDictionaryArray>((<any>JsonDictionaryArray).$type, temp) !== null) {
+				removeSubItems = true;
+				let array = <JsonDictionaryArray>temp;
+				itemsToRemove = <any[]>new Array(array.items.length);
+				for (let i: number = 0; i < array.items.length; i++) {
+					let item = array.items[i];
+					itemsToRemove[i] = this.convertJsonObjectToObject(<JsonDictionaryObject>item, dci, null);
+				}
+			} else {
+				oldItem = this.convertJsonObjectToObject(<JsonDictionaryObject>msgo.item("oldItem"), dci, null);
+				itemsToRemove = <any[]>new Array(1);
+				itemsToRemove[0] = oldItem;
+			}
 		}
-		let oldKey: string = null;
 		let newKey: string = null;
-		if (oldItem != null) {
-			oldKey = this.getDSItemKey(oldItem);
+		let oldKey: string = null;
+		if (!removeSubItems) {
+			if (oldItem != null) {
+				oldKey = this.getDSItemKey(oldItem);
+			}
 		}
 		let currValue = this.resolveRefValueImmediate(cont, refName);
 		if (currValue == null) {
@@ -655,15 +672,21 @@ export class ComponentRenderer extends Base {
 		if (this._itemMaps.containsKey(refName)) {
 			let map = this._itemMaps.item(refName);
 			let reverseMap = this._reverseItemMaps.item(refName);
-			let old: any = null;
-			if (oldKey != null && map.containsKey(oldKey)) {
-				old = map.item(oldKey);
-			}
-			if (old != null && reverseMap.containsKey(old)) {
-				reverseMap.removeItem(old);
-			}
-			if (oldKey != null && map.containsKey(oldKey)) {
-				map.removeItem(oldKey);
+			for (let i1: number = 0; i1 < itemsToRemove.length; i1++) {
+				oldItem = itemsToRemove[i1];
+				if (oldItem != null) {
+					oldKey = this.getDSItemKey(oldItem);
+				}
+				let old: any = null;
+				if (oldKey != null && map.containsKey(oldKey)) {
+					old = map.item(oldKey);
+				}
+				if (old != null && reverseMap.containsKey(old)) {
+					reverseMap.removeItem(old);
+				}
+				if (oldKey != null && map.containsKey(oldKey)) {
+					map.removeItem(oldKey);
+				}
 			}
 		}
 	}
@@ -691,30 +714,43 @@ export class ComponentRenderer extends Base {
 		if (index == -1) {
 			return;
 		}
+		let map_o: Dictionary$2<string, any> = new Dictionary$2<string, any>(String_$type, (<any>Base).$type, 0);
+		let reverseMap_o: Dictionary$2<any, string> = new Dictionary$2<any, string>((<any>Base).$type, String_$type, 0);
+		if (this._itemMaps.containsKey(refName)) {
+			map_o = this._itemMaps.item(refName);
+		}
+		if (this._reverseItemMaps.containsKey(refName)) {
+			reverseMap_o = this._reverseItemMaps.item(refName);
+		}
 		let newItem: any = null;
+		let newKey: string = null;
 		let dci: DateColumnCache = this.resolveDateColumnInfo(msgo, refName);
 		if (msgo.containsKey("newItem")) {
-			newItem = this.convertJsonObjectToObject(<JsonDictionaryObject>msgo.item("newItem"), dci, null);
-		}
-		let newKey: string = null;
-		if (newItem != null) {
-			newKey = this.getDSItemKey(newItem);
+			let temp = msgo.item("newItem");
+			if (typeCast<JsonDictionaryArray>((<any>JsonDictionaryArray).$type, temp) !== null) {
+				let array = this.convertJSonArrayToObjectArray(<JsonDictionaryArray>temp, null, dci);
+				this.extractArray(refName, <JsonDictionaryArray>temp, map_o, reverseMap_o, dci);
+				newItem = this.toResizableDS(array);
+			} else {
+				newItem = this.convertJsonObjectToObject(<JsonDictionaryObject>temp, dci, null);
+				if (newItem != null) {
+					newKey = this.getDSItemKey(newItem);
+				}
+				if (this._itemMaps.containsKey(refName)) {
+					if (newKey != null) {
+						map_o.item(newKey, newItem);
+					}
+				}
+				if (this._reverseItemMaps.containsKey(refName)) {
+					if (newItem != null && newKey != null) {
+						reverseMap_o.item(newItem, newKey);
+					}
+				}
+			}
 		}
 		let currValue = this.resolveRefValueImmediate(cont, refName);
 		if (currValue == null) {
 			return;
-		}
-		if (this._itemMaps.containsKey(refName)) {
-			let map = this._itemMaps.item(refName);
-			if (newKey != null) {
-				map.item(newKey, newItem);
-			}
-		}
-		if (this._reverseItemMaps.containsKey(refName)) {
-			let reverseMap = this._reverseItemMaps.item(refName);
-			if (newItem != null && newKey != null) {
-				reverseMap.item(newItem, newKey);
-			}
 		}
 		this.insertDSItemAtIndex(currValue, index, newItem);
 		if (this.hasNotifyMethods) {
@@ -2620,9 +2656,10 @@ export class ComponentRenderer extends Base {
 					continue;
 				}
 			}
+			let isUser: boolean = this._userValues.containsKey(cleanupList._inner[i]);
 			let old = this.shouldNamespaceSystemRefValues;
 			this.shouldNamespaceSystemRefValues = false;
-			this.removeRefValueCore(container, cleanupList._inner[i], this._userValues.containsKey(cleanupList._inner[i]));
+			this.removeRefValueCore(container, cleanupList._inner[i], isUser);
 			this.shouldNamespaceSystemRefValues = old;
 			if (this._cleanupHandlers != null && this._cleanupHandlers.count > 0) {
 				for (let j = 0; j < this._cleanupHandlers.count; j++) {
@@ -2989,11 +3026,9 @@ export class ComponentRenderer extends Base {
 		return ret;
 	}
 	private coerceUnknownValue(value: any, action: DescriptionTreeAction, container: any, state: ContainerState): any {
-		if (typeof value === 'string') {
-			if (stringStartsWith((<string>value), "@d:")) {
-				let v_ = (<string>value).substr(3);
-				value = new Date(v_);
-			}
+		if (typeof value === 'string' && stringStartsWith((<string>value), "@d:")) {
+			let v_ = (<string>value).substr(3);
+			value = new Date(v_);
 		}
 		if (typeCast<any[]>(Array_$type, value) !== null) {
 			let newValues = <any[]>value;
@@ -3243,6 +3278,9 @@ export class ComponentRenderer extends Base {
 		return action.newValue == null ? null : this.createRef(<string>action.newValue);
 	}
 	private coerceToDate(action: DescriptionTreeAction): any {
+		if (typeof action.newValue === 'string' && stringStartsWith((<string>action.newValue), "@d:")) {
+			action.newValue = (<string>action.newValue).substr(3);
+		}
 		if (typeof action.newValue === 'string') {
 			let v_ = action.newValue;
 			action.newValue = new Date(v_);
@@ -4017,9 +4055,10 @@ export class ComponentRenderer extends Base {
 		return finished;
 	}
 	waitForFlush(cont: any, onFlush: () => void): void {
+		let flushMethodName = "flush";
 		if (this.isProceedOnErrorEnabled) {
 			try {
-				let call = ComponentRendererMethodHelper.call("flush").$return().asVoid();
+				let call = ComponentRendererMethodHelper.call(flushMethodName).$return().asVoid();
 				this.executeMethod(cont, call.build(), (o: string) => onFlush());
 			}
 			catch (e) {
@@ -4027,7 +4066,7 @@ export class ComponentRenderer extends Base {
 				onFlush();
 			}
 		} else {
-			let call1 = ComponentRendererMethodHelper.call("flush").$return().asVoid();
+			let call1 = ComponentRendererMethodHelper.call(flushMethodName).$return().asVoid();
 			this.executeMethod(cont, call1.build(), (o: string) => onFlush());
 		}
 	}
@@ -4103,7 +4142,7 @@ export class TypeDescriptionCleanups extends Base {
 		}
 		while (type_o != null) {
 			typeName_o = type_o.typeName;
-			typeName_o = stringReplace(stringReplace(typeName_o, "Ultra", ""), "Xam", "");
+			typeName_o = stringReplace(stringReplace(stringReplace(stringReplace(typeName_o, "Ultra", ""), "Xam", ""), "Igg", ""), "Igs", "");
 			if (this._cleanups.containsKey(typeName_o)) {
 				this._cleanups.item(typeName_o)(container, obj);
 			}
@@ -4133,7 +4172,7 @@ export class TypeDescriptionCleanups extends Base {
 			}
 		}
 		let typeName = type.typeName;
-		typeName = stringReplace(stringReplace(typeName, "Ultra", ""), "Xam", "");
+		typeName = stringReplace(stringReplace(stringReplace(typeName, "Ultra", ""), "Xam", ""), "Igg", "");
 		return typeName;
 	}
 }

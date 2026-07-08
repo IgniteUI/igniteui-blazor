@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbCheckboxChangeEventArgs: BaseRendererElement {
                                 public override string Type { get { return "WebCheckboxChangeEventArgs"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	

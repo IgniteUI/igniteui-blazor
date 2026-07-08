@@ -1,0 +1,198 @@
+@attribute [Stories("Interactivity/Chat")]
+@inject IJSRuntime JS
+@inject IIgniteUIBlazor IgniteUIBlazor
+
+<Stories TComponent="IgbChat">
+
+    <Story Name="Basic">
+        <Template>
+            <IgbChat
+                style="--igc-chat-height: calc(100vh - 220px);"
+                Messages="_basicMessages"
+                Options="_basicOptions"
+                MessageCreated="OnBasicMessageCreated">
+            </IgbChat>
+        </Template>
+    </Story>
+
+    <Story Name="Chat Templates">
+        <Template>
+            <IconRegistrar />
+            <IgbChat
+                style="--igc-chat-height: calc(100vh - 220px);"
+                Messages="_templateMessages"
+                Options="_templateOptions"
+                MessageCreated="OnTemplateMessageCreated">
+                <IgbIconButton slot="prefix" aria-label="home" IconName="home" Collection="default" Variant="IconButtonVariant.Flat" />
+                <IgbButton slot="actions" Variant="ButtonVariant.Outlined">New Chat</IgbButton>
+                <IgbIconButton slot="actions" aria-label="search" Variant="IconButtonVariant.Flat">🔍</IgbIconButton>
+                <div slot="suggestions-header">Suggested Topics ✨</div>
+            </IgbChat>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private static readonly string[] InitialSuggestions =
+    [
+        "How do I install the library?",
+        "What themes are available?",
+        "How do Blazor events work?"
+    ];
+
+    private IgbChatMessage[] _basicMessages =
+    [
+        NewMessage("1", "agent", "Hi there! Welcome to the Ignite UI Blazor Lite support chat. Ask me about installation, components, theming, or API usage.", -600),
+        NewMessage("2", "user", "How do I install from NuGet?", -540),
+        NewMessage("3", "agent", "Install the NuGet package, call AddIgniteUIBlazor in Program.cs, and include a theme stylesheet from _content/IgniteUI.Blazor.", -480),
+        NewMessage("4", "user", "Great, what components are available?", -300),
+        NewMessage("5", "agent", "The library includes inputs, layout, navigation, overlays, notifications, scheduling components, and more.", -240)
+    ];
+
+    private IgbChatMessage[] _templateMessages =
+    [
+        NewMessage("t1", "agent", "This variant demonstrates custom script renderers and slot projection.", -180),
+        NewMessage("t2", "user", "Can I customize the send action and message header?", -120),
+        NewMessage("t3", "agent", "Yes. You can customize message header/actions, send button area, and suggestion prefix.", -60)
+    ];
+
+    private readonly IgbChatOptions _basicOptions = new()
+    {
+        CurrentUserId = "user",
+        HeaderText = "Ignite UI Blazor Lite Support",
+        InputPlaceholder = "Ask about installation, components, theming...",
+        Suggestions = InitialSuggestions
+    };
+
+    private IgbChatOptions _templateOptions = new IgbChatOptions
+    {
+        CurrentUserId = "user",
+        HeaderText = "Ignite UI Blazor Lite Support",
+        InputPlaceholder = "Ask me anything...",
+        Suggestions =
+                [
+                    "How do I install the library?",
+                    "What themes are available?",
+                    "How do Blazor events work?"
+                ],
+        Renderers = new IgbChatRenderers
+        {
+            MessageHeaderScript = "ChatStoryMessageHeaderScript",
+            MessageActionsScript = "ChatStoryMessageActionsScript",
+            InputActionsStartScript = "ChatStoryInputActionsStartScript",
+            SuggestionPrefixScript = "ChatStorySuggestionPrefixScript"
+        }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // manually ensure igc-avatar for templates in place of passing to AddIgniteUIBlazor()
+            IgbAvatarModule.Register(IgniteUIBlazor);
+            // var module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/Chat.stories.js");
+            // await module.InvokeVoidAsync("registerChatTemplates");
+        }
+    }
+
+    private async Task OnBasicMessageCreated(IgbChatMessageEventArgs args)
+    {
+        var userMessage = args.Detail;
+        if (!_basicMessages.Any(x => x.Id == userMessage.Id))
+        {
+            _basicMessages = [.. _basicMessages, userMessage];
+        }
+
+        _basicOptions.Suggestions = [];
+        _basicOptions.IsTyping = true;
+
+        await Task.Delay(700);
+
+        _basicOptions.IsTyping = false;
+        _basicMessages = [.. _basicMessages, BuildAgentReply(userMessage.Text)];
+    }
+
+    private async Task OnTemplateMessageCreated(IgbChatMessageEventArgs args)
+    {
+        var userMessage = args.Detail;
+        if (!_templateMessages.Any(x => x.Id == userMessage.Id))
+        {
+            _templateMessages = [.. _templateMessages, userMessage];
+        }
+
+        _templateOptions.Suggestions = [];
+        _templateOptions.IsTyping = true;
+
+        await Task.Delay(700);
+
+        _templateOptions.IsTyping = false;
+        _templateMessages = [.. _templateMessages, BuildAgentReply(userMessage.Text)];
+    }
+
+    private static IgbChatMessage BuildAgentReply(string prompt)
+    {
+        var lower = (prompt ?? string.Empty).ToLowerInvariant();
+        var text = GenerateAgentResponse(lower);
+
+        var reply = new IgbChatMessage
+        {
+            Id = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(),
+            Sender = "agent",
+            Timestamp = DateTime.UtcNow.ToString("o"),
+            Text = text
+        };
+
+        if (lower.Contains("image") || lower.Contains("picture") || lower.Contains("screenshot"))
+        {
+            reply.Attachments =
+            [
+                new IgbChatMessageAttachment
+                {
+                    Id = $"img-{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
+                    Name = "result.png",
+                    Url = "https://picsum.photos/400/280",
+                    AttachmentType = "image"
+                }
+            ];
+        }
+
+        return reply;
+    }
+
+    private static IgbChatMessage NewMessage(string id, string sender, string text, int offsetSeconds)
+    {
+        return new IgbChatMessage
+        {
+            Id = id,
+            Sender = sender,
+            Text = text,
+            Timestamp = DateTime.UtcNow.AddSeconds(offsetSeconds).ToString("o")
+        };
+    }
+
+    private static string GenerateAgentResponse(string lower)
+    {
+        if (lower.Contains("install") || lower.Contains("nuget") || lower.Contains("package") || lower.Contains("dotnet add"))
+        {
+            return "Install from NuGet (for example: dotnet add package IgniteUI.Blazor.Lite), register services with builder.Services.AddIgniteUIBlazor(), and reference a theme like _content/IgniteUI.Blazor/themes/light/bootstrap.css.";
+        }
+
+        if (lower.Contains("theme") || lower.Contains("dark") || lower.Contains("light") || lower.Contains("css"))
+        {
+            return "Use the built-in light and dark themes from _content/IgniteUI.Blazor/themes/... and scope theme overrides with IgbThemeProvider when needed.";
+        }
+
+        if (lower.Contains("event") || lower.Contains("listener") || lower.Contains("callback"))
+        {
+            return "Components expose strongly-typed EventCallback parameters. In Blazor, handle events like MessageCreated, InputChange, and TypingChange directly on the component.";
+        }
+
+        if (lower.Contains("component") || lower.Contains("available") || lower.Contains("list"))
+        {
+            return "The library includes inputs, layout, navigation, notifications, scheduling, and many data display components.";
+        }
+
+        return "I can help with NuGet setup, theme registration, EventCallback wiring, and component usage in Ignite UI Blazor Lite.";
+    }
+}

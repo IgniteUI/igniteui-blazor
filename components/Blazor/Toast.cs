@@ -8,12 +8,8 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// A toast component is used to show a notification
-/// </summary>
-public partial class IgbToast: IgbBaseAlertLike {
+                            public partial class IgbToast: IgbBaseAlertLike {
                                 public override string Type { get { return "WebToast"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {

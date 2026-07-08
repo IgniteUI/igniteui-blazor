@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbDateRangeDescriptor: BaseRendererElement {
                                 public override string Type { get { return "DateRangeDescriptor"; } }
+
 	
 	    public IgbDateRangeDescriptor(): base() {
 	        OnCreatedIgbDateRangeDescriptor();

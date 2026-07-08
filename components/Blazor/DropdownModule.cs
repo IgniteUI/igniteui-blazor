@@ -10,8 +10,7 @@ namespace IgniteUI.Blazor.Controls
         public static void Register(IIgniteUIBlazor runtime) {
             ModuleLoader.Load(runtime, "WebDropdownModule");
 
-            IgbBaseComboBoxLikeModule.MarkIsLoadRequested(runtime);
-IgbDropdownItemModule.MarkIsLoadRequested(runtime);
+            IgbDropdownItemModule.MarkIsLoadRequested(runtime);
 IgbDropdownHeaderModule.MarkIsLoadRequested(runtime);
 IgbDropdownGroupModule.MarkIsLoadRequested(runtime);
 

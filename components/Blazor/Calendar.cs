@@ -14,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
 /// </summary>
 public partial class IgbCalendar: IgbCalendarBase {
                                 public override string Type { get { return "WebCalendar"; } }
-
 							
                                 protected override void EnsureModulesLoaded()
                                 {
@@ -246,29 +245,6 @@ public partial class IgbCalendar: IgbCalendarBase {
 	                    }
 	                    
 	}
-	private IgbCalendarResourceStrings _resourceStrings;
-	
-	partial void OnResourceStringsChanging(ref IgbCalendarResourceStrings newValue);
-	/// <summary>
-	/// The resource strings for localization.
-	/// </summary>
-	[Parameter]
-	public IgbCalendarResourceStrings ResourceStrings 
-	{
-	get { return this._resourceStrings; }
-	set { 
-	                        OnResourceStringsChanging(ref value);
-	                        MarkPropDirty("ResourceStrings"); 
-	                        if (this._resourceStrings != null) {
-	                            this.DetachChild(this._resourceStrings);
-	                        }
-	                        if (value != null) {
-	                            this.AttachChild(value);
-	                        }
-	                        this._resourceStrings = value; 
-	                    }
-	                    
-	}
 	
 	    partial void FindByNameCalendar(string name, ref object item);
 	    public override object FindByName(string name)
@@ -349,10 +325,14 @@ public partial class IgbCalendar: IgbCalendarBase {
 	    
 	        set 
 	        {
-	            this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
-	                this._changeRef = refName;
-	                this.MarkPropDirty("ChangeRef");	
-	        }); 
+	            if (value != this._changeScript)
+	            {
+	                this._changeScript = value;
+	                this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) => {
+	                    this._changeRef = refName;
+	                    this.MarkPropDirty("ChangeRef");	
+	                });
+	            }
 	        }
 	        get 
 	        {
@@ -478,7 +458,6 @@ public partial class IgbCalendar: IgbCalendarBase {
 	if (IsPropDirty("VisibleMonths")) { ser.AddNumberProp("visibleMonths", this._visibleMonths); }
 	if (IsPropDirty("ActiveView")) { ser.AddEnumProp("activeView", this._activeView); }
 	if (IsPropDirty("FormatOptions")) { ser.AddSerializableProp("formatOptions", this._formatOptions); }
-	if (IsPropDirty("ResourceStrings")) { ser.AddSerializableProp("resourceStrings", this._resourceStrings); }
 	if (IsPropDirty("ChangeRef")) { ser.AddStringProp("changeRef", this._changeRef); }
 	
 	    }

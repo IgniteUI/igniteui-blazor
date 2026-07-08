@@ -9,7 +9,8 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
                             /// <summary>
-/// A container for card action items like buttons
+/// A container component for card action items such as buttons or icon buttons.
+/// Actions can be positioned at the start, center, or end of the container.
 /// </summary>
 public partial class IgbCardActions: BaseRendererControl {
                                 public override string Type { get { return "WebCardActions"; } }
@@ -68,7 +69,7 @@ public partial class IgbCardActions: BaseRendererControl {
 	
 	partial void OnOrientationChanging(ref ContentOrientation newValue);
 	/// <summary>
-	/// The orientation of the actions.
+	/// The orientation of the actions layout.
 	/// </summary>
 	[Parameter]
 	public ContentOrientation Orientation 

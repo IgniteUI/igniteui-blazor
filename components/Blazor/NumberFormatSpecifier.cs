@@ -11,7 +11,6 @@ namespace IgniteUI.Blazor.Controls
                             public partial class IgbNumberFormatSpecifier: IgbFormatSpecifier {
                                 public override string Type { get { return "NumberFormatSpecifier"; } }
 
-
                                 protected override void EnsureModulesLoaded()
                                 {
                                     if (!IgbNumberFormatSpecifierModule.IsLoadRequested(IgBlazor))

@@ -13,6 +13,7 @@ export class DataTemplatePassInfo extends Base {
 	viewportHeight: number = 0;
 	isHitTestRender: boolean = false;
 	passID: string = null;
+	isForDataLegend: boolean = false;
 }
 
 

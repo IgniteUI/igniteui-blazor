@@ -27,7 +27,6 @@ export class WebInputBaseDescriptionMetadata extends Base {
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
 		metadata.item("Outlined", "Boolean");
-		metadata.item("ReadOnly", "Boolean");
 		metadata.item("Placeholder", "String");
 		metadata.item("Label", "String");
 		metadata.item("Disabled", "Boolean");

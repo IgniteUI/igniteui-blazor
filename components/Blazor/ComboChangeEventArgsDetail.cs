@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
 {
                             public partial class IgbComboChangeEventArgsDetail: BaseRendererElement {
                                 public override string Type { get { return "WebComboChangeEventArgsDetail"; } }
+
 	
 	                    private static bool _marshalByValue = true;
 	
@@ -62,6 +63,7 @@ namespace IgniteUI.Blazor.Controls
 	        var oldValue = this._newValueScript; 
 	        if (oldValue != value || !IsPropDirty("NewValue"))
 	        {
+	            this._newValueScript = value;
 	            MarkPropDirty("NewValue"); 
 	            this.OnRefChanged("NewValue", oldValue, value, true, false, (string refName, object old, object newValue) => {
 	        	    this._newValueRef = refName;
@@ -111,6 +113,7 @@ namespace IgniteUI.Blazor.Controls
 	        var oldValue = this._itemsScript; 
 	        if (oldValue != value || !IsPropDirty("Items"))
 	        {
+	            this._itemsScript = value;
 	            MarkPropDirty("Items"); 
 	            this.OnRefChanged("Items", oldValue, value, true, false, (string refName, object old, object newValue) => {
 	        	    this._itemsRef = refName;
