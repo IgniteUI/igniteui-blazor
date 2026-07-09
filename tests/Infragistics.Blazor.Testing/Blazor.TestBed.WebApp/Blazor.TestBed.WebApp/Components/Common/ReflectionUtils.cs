@@ -126,11 +126,7 @@ namespace Blazor.TestBed.WebApp.Components.Common
                 return detailType;
             }
 
-            var nestedPrimitive = detailType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Select(x => Nullable.GetUnderlyingType(x.PropertyType) ?? x.PropertyType)
-                .FirstOrDefault(x => x == typeof(string) || x.IsPrimitive);
-
-            return nestedPrimitive;
+            return null;
         }
 
         private static bool EventSetterContainsPropagation(string source, string eventName)
