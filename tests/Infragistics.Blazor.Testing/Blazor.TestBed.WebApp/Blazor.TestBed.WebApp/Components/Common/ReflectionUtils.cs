@@ -123,7 +123,7 @@ namespace Blazor.TestBed.WebApp.Components.Common
             }
 
             var detailType = Nullable.GetUnderlyingType(detailProp.PropertyType) ?? detailProp.PropertyType;
-            if (detailType == typeof(string) || detailType.IsPrimitive)
+            if (detailType == typeof(string) || detailType.IsPrimitive || detailType == typeof(DateTime))
             {
                 return detailType;
             }
