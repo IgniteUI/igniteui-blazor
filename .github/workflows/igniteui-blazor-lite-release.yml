@@ -100,14 +100,6 @@ jobs:
       - name: Validate NuGet package signature
         run: dotnet nuget verify "${{ github.workspace }}/nupkg/IgniteUI.Blazor.Lite.${{ env.VERSION }}.nupkg" -v q
 
-      - name: Upload NuGet artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: nuget-package
-          path: ./nupkg/*.nupkg
-          if-no-files-found: error
-          retention-days: 1
-
       - name: NuGet login (OIDC Trusted Publishing)
         uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841   # v1
         id: nuget-login
@@ -115,5 +107,4 @@ jobs:
           user: ${{ secrets.INFRAGISTICS_NUGET_ORG_USER }}
 
       - name: Publish to NuGet.org
-        if: false  # Disabled for now, as we don't want to publish automatically
         run: dotnet nuget push "${{ github.workspace }}/nupkg/IgniteUI.Blazor.Lite.${{ env.VERSION }}.nupkg" --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json"
