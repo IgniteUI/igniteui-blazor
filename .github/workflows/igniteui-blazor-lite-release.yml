@@ -48,6 +48,9 @@ jobs:
       - name: Restore .NET dependencies
         run: dotnet restore
 
+      - name: Restore .NET local tools
+        run: dotnet tool restore
+
       - name: Build .NET library
         run: dotnet build --no-restore --configuration Release /p:Version=${{ env.VERSION }} /p:TreatWarningsAsErrors=false
 
