@@ -273,7 +273,7 @@
         .Where(x => ReflectionUtils.IsEventCallback(x))
         .Where(x => !twoWayBoundEvents.Contains(x.Name));
 
-    foreach (var evt in events)
+        foreach (var evt in events)
         {
             // hook events
             var arg = evt.PropertyType.GenericTypeArguments[0];
@@ -284,6 +284,18 @@
             StateHasChanged();
             await Task.Delay(1);
             var evtName = evt.Name == "Focus" || evt.Name == "Blur" ? evt.Name.ToLower() : "igc" + evt.Name;
+
+            // event is renamed on the client side, so we need to handle that case
+            if (evt.Name == "InputOcurred")
+            {
+                evtName = "igcInput";
+            }
+
+            if (evt.Name == "SelectionChanged")
+            {
+                evtName = "igcSelection";
+            }
+
             eventMessage = "";
             var res = await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend);
             await Task.Delay(100);

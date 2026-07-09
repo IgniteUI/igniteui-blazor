@@ -1,9 +1,8 @@
-﻿using Blazor.TestBed.WebApp.Components.Pages;
-using IgniteUI.Blazor.Controls;
+﻿using IgniteUI.Blazor.Controls;
 using Microsoft.AspNetCore.Components;
 using System.Data;
-using System.Globalization;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Blazor.TestBed.WebApp.Components.Common
 {
@@ -35,7 +34,7 @@ namespace Blazor.TestBed.WebApp.Components.Common
              // only async in this env.
             .Where(x => x.Name.EndsWith("Async"))
             // this is not user settable but exist in all classes.
-            .Where(x => x.Name != "SetNativeElementAsync")
+            .Where(x => x.Name != "SetNativeElementAsync" && x.Name != "SetParametersAsync")
             // exclude methods that are just wrappers to get existing props values. They don't actually match with existing client methods. They follow the naming Get{PropName}Async.
             .Where(x => !(x.Name.StartsWith("Get") && x.Name.EndsWith("Async")))
             //exclude methods that depend on some condition, based on component specific configuration.
@@ -96,9 +95,71 @@ namespace Blazor.TestBed.WebApp.Components.Common
 
         public static List<string> Get2WayBindingEvents(Type componentType)
         {
-            //TODO - figure out how to get the list of events that are 2-way binding events. For now, return an empty list.
-            List<string> events = new List<string>();
-            return events;
+            var sourceByType = componentType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(IsEventCallback)
+                .Select(x => x.DeclaringType)
+                .Where(x => x != null)
+                .Distinct()
+                .ToDictionary(x => x, GetSourceCodeForType);
+
+            var twoWayBindingEvents = componentType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(IsEventCallback)
+                .Where(x => x.DeclaringType != null)
+                .Where(x => EventSetterContainsPropagation(sourceByType[x.DeclaringType], x.Name))
+                .Select(x => x.Name)
+                .ToList();
+
+            return twoWayBindingEvents;
+        }
+
+        private static bool EventSetterContainsPropagation(string source, string eventName)
+        {
+            if (string.IsNullOrEmpty(source))
+            {
+                return false;
+            }
+
+            var pattern = $@"EventCallback(?:<[^>]+>)?\s+{Regex.Escape(eventName)}\s*\{{[\s\S]*?set\s*\{{[\s\S]*?OnPropertyPropagatedOut\(";
+            return Regex.IsMatch(source, pattern, RegexOptions.Singleline);
+        }
+
+        private static string GetSourceCodeForType(Type type)
+        {
+            var componentName = type.Name.Replace("Igb", "");
+            if (type == null)
+            {
+                return string.Empty;
+            }
+
+            var repoRoot = FindRepositoryRoot();
+            if (string.IsNullOrEmpty(repoRoot))
+            {
+                return string.Empty;
+            }
+
+            var filePath = Path.Combine(repoRoot, "components", "Blazor", componentName + ".cs");
+            if (!File.Exists(filePath))
+            {
+                filePath = Path.Combine(repoRoot, "componentsBase", componentName + ".cs");
+            }
+
+            return File.Exists(filePath) ? File.ReadAllText(filePath) : string.Empty;
+        }
+
+        private static string FindRepositoryRoot()
+        {
+            var current = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (current != null)
+            {
+                if (File.Exists(Path.Combine(current.FullName, "IgniteUI.Blazor.Lite.csproj")))
+                {
+                    return current.FullName;
+                }
+
+                current = current.Parent;
+            }
+
+            return string.Empty;
         }
 
         // extract tag name from descriptions metadata
