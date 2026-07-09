@@ -15,6 +15,11 @@ jobs:
     name: Build & Pack NuGet
     runs-on: windows-latest
     environment: nuget-org-publish
+    permissions:
+      id-token: write  # enable Azure OIDC token issuance for this job
+      contents: read
+    
+
       
     steps:
       - name: Checkout repository
