@@ -68,6 +68,7 @@
         ReflectionUtils.excludedProps = _app.config.GetSection(type + ":ExcludedProps")?.Get<string[]>()?.ToList() ?? new List<string>();
         ReflectionUtils.dependantProps = _app.config.GetSection(type + ":DependantProps")?.Get<string[]>()?.ToList() ?? new List<string>();
         ReflectionUtils.dependantMethods = _app.config.GetSection(type + ":DependantMethods")?.Get<string[]>()?.ToList() ?? new List<string>();
+        ReflectionUtils.excludedEvents = _app.config.GetSection(type + ":ExcludedEvents")?.Get<string[]>()?.ToList() ?? new List<string>();
 
         // wait for state change
         _app.StateHasChanged();
@@ -271,6 +272,7 @@
         var twoWayBoundEvents = ReflectionUtils.Get2WayBindingEvents(selectedType);
         var events = selectedType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
         .Where(x => ReflectionUtils.IsEventCallback(x))
+        .Where(x => !ReflectionUtils.excludedEvents.Contains(x.Name))
         .Where(x => !twoWayBoundEvents.Contains(x.Name));
 
         foreach (var evt in events)

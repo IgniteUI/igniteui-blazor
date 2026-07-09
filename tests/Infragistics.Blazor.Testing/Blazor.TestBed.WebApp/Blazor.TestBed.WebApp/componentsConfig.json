@@ -326,6 +326,10 @@
     "DependantMethods": [
       // BUG 35183
       "FocusAsync"
+    ],
+    "ExcludedEvents": [
+      // no such client event. 
+      "SelectedChanged"
     ]
   },
   "IgbDateTimeInput": {
@@ -334,59 +338,69 @@
       "SpinDelta"
     ]
   },
+  "IgbMaskInput": {
+    "ExcludedEvents": [
+      // no such client event. 
+      "ValueChanging"
+    ]
+  },
   "IgbInput": {
-    "ExcludedProps": [
-      // Temporary exclude since these are string, but should be numbers.
-      "Min",
-      "Max"
-    ],
-    "DependantMethods": [
-      // Depends on the input beign numeric.
-      "StepUpAsync",
-      "StepDownAsync"
-    ]
-  },
-  "IgbRangeSlider": {
-    "ExcludedProps": [
-      // BUG 35189
-      "ValueFormatOptions"
-    ]
-  },
-  "IgbStepper": {
-    "ExcludedProps": [
-      // This is a collection of nested IgbStep components, it should probably be only a getter. 
-      "Steps"
-    ],
-    "DependantMethods": [
-      // Depends on having at least one child step, otherwise throws error.
-      "NextAsync",
-      "PrevAsync"
-    ]
-  },
-  "IgbSelectGroup": {
-    "ExcludedProps": [
-      // This is a collection of nested IgbSelectItem components, it should probably be only a getter. 
-      "Items"
-    ]
-  },
-  "IgbDockManager": {
-    "ExcludedProps": [
-      // BUG 35254
-      "ResourceStrings",
-      // BUG 35259
-      "DisableKeyboardNavigation",
-      "ProximityDock",
-      "ShowPaneHeaders"
-    ],
-    "DependantMethods": [
-      // BUG 35267
-      "GetCurrentLayoutAsync"
-    ]
-  },
-  "IgbQueryBuilder": {
-    "DependantMethods": [
-      // depends on state beign valid, otherwise throws error
-      "CommitAsync"
-    ]
+      "ExcludedProps": [
+        // Temporary exclude since these are string, but should be numbers.
+        "Min",
+        "Max"
+      ],
+      "DependantMethods": [
+        // Depends on the input beign numeric.
+        "StepUpAsync",
+        "StepDownAsync"
+      ],
+      "ExcludedEvents": [
+        // no such client event. 
+        "ValueChanging"
+      ]
+    },
+    "IgbRangeSlider": {
+      "ExcludedProps": [
+        // BUG 35189
+        "ValueFormatOptions"
+      ]
+    },
+    "IgbStepper": {
+      "ExcludedProps": [
+        // This is a collection of nested IgbStep components, it should probably be only a getter. 
+        "Steps"
+      ],
+      "DependantMethods": [
+        // Depends on having at least one child step, otherwise throws error.
+        "NextAsync",
+        "PrevAsync"
+      ]
+    },
+    "IgbSelectGroup": {
+      "ExcludedProps": [
+        // This is a collection of nested IgbSelectItem components, it should probably be only a getter. 
+        "Items"
+      ]
+    },
+    "IgbDockManager": {
+      "ExcludedProps": [
+        // BUG 35254
+        "ResourceStrings",
+        // BUG 35259
+        "DisableKeyboardNavigation",
+        "ProximityDock",
+        "ShowPaneHeaders"
+      ],
+      "DependantMethods": [
+        // BUG 35267
+        "GetCurrentLayoutAsync"
+      ]
+    },
+    "IgbQueryBuilder": {
+      "DependantMethods": [
+        // depends on state beign valid, otherwise throws error
+        "CommitAsync"
+      ]
+    }
   }
-}

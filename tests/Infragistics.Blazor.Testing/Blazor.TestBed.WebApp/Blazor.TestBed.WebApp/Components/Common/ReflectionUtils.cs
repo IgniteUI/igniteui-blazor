@@ -14,6 +14,8 @@ namespace Blazor.TestBed.WebApp.Components.Common
         public static List<string> dependantProps = new List<string>() { };
         //methods that depend on other properties to be set, as per the component config
         public static List<string> dependantMethods = new List<string>() { };
+        // Exluded events as per the component config
+        public static List<string> excludedEvents = new List<string>() { };
 
         // gets the full list of valid properties for type
         public static List<PropertyInfo> GetValidProps(Type type)
