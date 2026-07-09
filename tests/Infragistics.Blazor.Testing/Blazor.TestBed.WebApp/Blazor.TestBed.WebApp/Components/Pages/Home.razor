@@ -1,0 +1,302 @@
+﻿@page "/"
+@using Blazor.TestBed.WebApp.Components.Common
+@using IgniteUI.Blazor.Controls
+@using System.Reflection
+@using System.Linq.Expressions
+@using Microsoft.AspNetCore.Components.Rendering
+@using Newtonsoft.Json
+@inject IJSRuntime JS
+
+<PageTitle>Home</PageTitle>
+
+@if (selectedType is not null)
+{
+    <div id="container">
+        <DynamicComponent Type="selectedType" @ref="dc">
+        </DynamicComponent>
+    </div>
+}
+
+
+
+@code {
+
+    private static Home _app;
+    private string componentSelector;
+    private Type? selectedType;
+    private DynamicComponent? dc;
+    private List<string> errorMessages = new List<string>();
+    private string eventMessage;
+
+    private IConfigurationRoot config;
+
+    public Home()
+    {
+        _app = this;
+        config = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("componentsConfig.json", optional: true, reloadOnChange: true)
+            .Build();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("onAfterRender");
+        }
+    }
+
+    [JSInvokable("GetErrors")]
+    public static List<string> GetErrors()
+    {
+        return _app.errorMessages;
+    }
+
+    [JSInvokable("SetComponentType")]
+    public static async Task<bool> SetComponentType(string type)
+    {
+        var component = ReflectionUtils.GetComponentByType(type);
+        // no such component
+        if (component == null)
+        {
+            return false;
+        }
+        _app.errorMessages.Clear();
+        _app.selectedType = component;
+
+        ReflectionUtils.excludedProps = _app.config.GetSection(type + ":ExcludedProps")?.Get<string[]>()?.ToList() ?? new List<string>();
+        ReflectionUtils.dependantProps = _app.config.GetSection(type + ":DependantProps")?.Get<string[]>()?.ToList() ?? new List<string>();
+        ReflectionUtils.dependantMethods = _app.config.GetSection(type + ":DependantMethods")?.Get<string[]>()?.ToList() ?? new List<string>();
+
+        // wait for state change
+        _app.StateHasChanged();
+        await Task.Delay(1);
+
+        // wait for component ready
+        await (_app.dc.Instance as BaseRendererControl).EnsureReady();
+        await Task.Delay(100);
+
+        // set component selector
+        _app.componentSelector = ReflectionUtils.GetComponentSelector(_app.dc.Instance, type);
+        await _app.JS.InvokeAsync<string>("setSelector", _app.componentSelector);
+
+        _app.dc.Parameters = new Dictionary<string, object>();
+
+        // test events
+        await _app.TestEvents();
+
+        // templates
+        await _app.TestServerTemplates();
+        await _app.TestClientTemplates();
+
+        //  test public props
+        await _app.TestProps();
+
+        // test all public API
+        await _app.TestAPI();
+
+        return true;
+    }
+
+    public async Task TestServerTemplates()
+    {
+        var tmpls = selectedType.GetProperties(BindingFlags.Public | BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)
+       .Where(x => ReflectionUtils.IsRenderFragment(x)).ToList();
+        foreach (var tmpl in tmpls)
+        {
+            var arg = tmpl.PropertyType.GenericTypeArguments[0];
+            var instance = Activator.CreateInstance(arg);
+            var r = ReflectionUtils.CreateRenderFragmentForType(arg, instance);
+
+            this.dc.Parameters.Add(tmpl.Name, r);
+            StateHasChanged();
+            await Task.Delay(1);
+            var clientPropName = char.ToLower(tmpl.Name[0]) + tmpl.Name.Substring(1);
+            var res = await JS.InvokeAsync<bool>("checkServerTemplate", clientPropName);
+
+            if (!res)
+            {
+                errorMessages.Add("Template not set for prop:  " + tmpl.Name);
+            }
+        }
+    }
+
+    public async Task TestClientTemplates()
+    {
+        var tmplsNames = selectedType.GetProperties(BindingFlags.Public | BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)
+    .Where(x => ReflectionUtils.IsRenderFragment(x)).Select(x => x.Name).ToList();
+        var scriptTemplateProps = selectedType.GetProperties(BindingFlags.Public | BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)
+    .Where(x => x.Name.EndsWith("Script") && tmplsNames.Contains(x.Name.Replace("Script", ""))).ToList();
+        foreach (var scriptProp in scriptTemplateProps)
+        {
+            var tmplName = ReflectionUtils.Camelize(scriptProp.Name.Replace("Script", ""));
+            await JS.InvokeVoidAsync("generateClientTmpl", tmplName);
+            this.dc.Parameters.Add(scriptProp.Name, tmplName);
+            StateHasChanged();
+            await Task.Delay(100);
+
+            var res = await JS.InvokeAsync<bool>("checkClientTemplate", tmplName);
+            if (!res)
+            {
+                errorMessages.Add("Template not set for prop:  " + scriptProp.Name);
+            }
+        }
+
+    }
+
+    public async Task TestAPI()
+    {
+        var methods = ReflectionUtils.GetValidMethods(selectedType);
+        foreach (var method in methods)
+        {
+            var parameters = new List<object>();
+            if (CustomTypes.PredefinedMethodArgs.ContainsKey(method.Name))
+            {
+                // this is a special method that needs special values
+                parameters.AddRange(CustomTypes.PredefinedMethodArgs[method.Name]);
+            }
+            else
+            {
+                var paramInfo = method.GetParameters();
+                int count = 0;
+                foreach (var p in paramInfo)
+                {
+                    var obj = ReflectionUtils.GetObjectOfType(p.ParameterType);
+                    parameters.Add(obj);
+                    count++;
+                }
+            }
+            var syncName = method.Name.Replace("Async", "");
+            var clientMethodName = ReflectionUtils.Camelize(syncName);
+            await JS.InvokeVoidAsync("spyOnMethod", clientMethodName);
+            object res = null;
+            try
+            {
+                res = await Blazor.TestBed.WebApp.Components.Common.Helper.InvokeAsync(method, dc.Instance, parameters.ToArray());
+
+            }
+            catch (Exception e)
+            {
+                // push any errors in collection
+                errorMessages.Add("Error on method: " + method.Name + ". Details: " + e.Message);
+            }
+            var expected = Newtonsoft.Json.JsonConvert.SerializeObject(res);
+            if (res == null || res.GetType().Name == "VoidTaskResult")
+            {
+                // method returns void
+                expected = "null";
+            }
+            var actualResult = await JS.InvokeAsync<string>("checkOnSpy", clientMethodName);
+            if (actualResult == null)
+            {
+                actualResult = "null";
+            }
+
+            if (actualResult != expected)
+            {
+                errorMessages.Add("Method result mismatch after calling. Method name:  " + method.Name + ". Expected:" + expected + ", but got: " + actualResult);
+            }
+
+        }
+    }
+
+    public async Task TestProps()
+    {
+        var props = ReflectionUtils.GetValidProps(selectedType);
+
+        foreach (var p in props)
+        {
+            object value;
+            try
+            {
+                value = ReflectionUtils.GetObjectOfType(p.PropertyType, p.Name == "Data");
+            }
+            catch (Exception)
+            {
+                // if object cannot resolve, perhaps it needs to be defined as CustomType?
+                continue;
+            }
+            if (CustomTypes.PredefinedPropertyValues.ContainsKey(p.Name))
+            {
+                // this is a special property with predefined value
+                value = CustomTypes.PredefinedPropertyValues[p.Name];
+            }
+            // set prop and wait for state to change
+            this.dc.Parameters.Add(p.Name, value);
+            StateHasChanged();
+            await Task.Delay(1);
+
+            var clientPropName = ReflectionUtils.GetActualPropertyName(p);
+            var clientValue = await GetClientPropValue(clientPropName);
+            if (!TestUtil.PropertyValuesAreEqual(value, clientValue, p))
+            {
+                string serverString = value is Enum ?
+               value.ToString().ToLowerInvariant() :
+               JsonConvert.SerializeObject(value, new JsonSerializerSettings()
+                   { ContractResolver = new IgnorePropertiesResolver(ReflectionUtils.IgnoredProps().ToArray()) });
+                this.errorMessages.Add("Property value mismatch after setting. Prop name:  " + p.Name + ". Expected:" + serverString + ", but got the following on the client: " + clientValue);
+            }
+        }
+    }
+
+    // in cases of slower operations, connection closes and execution stops, hence adding a try catch with a 5 second timeout and retry if needed.
+    public async Task<string> GetClientPropValue(string propName, int retry = 1)
+    {
+        string res = "";
+        try
+        {
+            TimeSpan span = new TimeSpan(0, 0, 5);
+            res = await JS.InvokeAsync<string>("checkProp", span, propName);
+        }
+        catch (Exception e)
+        {
+            if (retry > 0)
+            {
+                retry--;
+                res = await GetClientPropValue(propName, retry);
+            }
+            else
+            {
+                this.errorMessages.Add("Property check failed. Prop name:  " + propName + " , Error:" + e.Message);
+            }
+        }
+        return res;
+    }
+
+    public async Task TestEvents()
+    {
+        // filter out any events that blazor may have generated that do not exits on the original class
+        // var originalEvents = ReflectionUtils.GetOriginEvents(selectedType);
+        var twoWayBoundEvents = ReflectionUtils.Get2WayBindingEvents(selectedType);
+        var events = selectedType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        .Where(x => ReflectionUtils.IsEventCallback(x))
+        .Where(x => !twoWayBoundEvents.Contains(x.Name));
+
+    foreach (var evt in events)
+        {
+            // hook events
+            var arg = evt.PropertyType.GenericTypeArguments[0];
+            object argDetailToSend = null;
+            var instance = Activator.CreateInstance(evt.PropertyType, [this, this.EventHandler]);
+            this.dc.Parameters.Add(evt.Name, instance);
+
+            StateHasChanged();
+            await Task.Delay(1);
+            var evtName = evt.Name == "Focus" || evt.Name == "Blur" ? evt.Name.ToLower() : "igc" + evt.Name;
+            eventMessage = "";
+            var res = await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend);
+            await Task.Delay(100);
+
+            if (eventMessage != $"Event fired.")
+            {
+                this.errorMessages.Add("Event with name: " + evt.Name + " did not fire.");
+            }
+        }
+    }
+
+    private void EventHandler()
+    {
+        eventMessage = $"Event fired.";
+    }
+}

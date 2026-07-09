@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<NUnit>
+		<NumberOfTestWorkers>1</NumberOfTestWorkers>
+	</NUnit>
+	<Playwright>
+		<LaunchOptions>
+			<Headless>true</Headless>
+		</LaunchOptions>
+	</Playwright>
+	<TestRunParameters>
+		<Parameter name="defaultTimeout" value="40000" />
+	</TestRunParameters>
+</RunSettings>

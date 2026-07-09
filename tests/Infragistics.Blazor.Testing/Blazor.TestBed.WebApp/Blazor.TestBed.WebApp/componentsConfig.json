@@ -1,0 +1,392 @@
+{
+  "IgbGrid": {
+    "ExcludedProps": [
+      // FilteringExpressionsTree and AdvancedFilteringExpressionsTree throw errors silently on the client and break all other props, haha :(
+      "FilteringExpressionsTree",
+      "AdvancedFilteringExpressionsTree",
+      // complex object
+      "ResourceStrings",
+      // complex object
+      "Outlet",
+      // stategies are not supported ATM
+      "FilterStrategy",
+      "DataCloneStrategy",
+      "GroupStrategy",
+      "SortStrategy",
+      "Strategy",
+      // circular ref for groupby record obj
+      "GroupParent",
+      "Groups",
+      "Detail",
+      "Parent"
+    ],
+    "DependantProps": [
+      // summary height cannot be set without setting summaries first
+      "SummaryRowHeight",
+      // grouping cannot be set runtime if there's no mathing column field
+      "GroupingExpressions",
+      // depends on having visible columns
+      "RowDraggable"
+    ],
+    "DependantMethods": [
+      // these depend on there being groups to select/deselect/toggle
+      "SelectRowsInGroupAsync",
+      "DeselectRowsInGroupAsync",
+      "IsExpandedGroupAsync",
+      "ToggleGroupAsync",
+      "FullyExpandGroupAsync"
+    ]
+  },
+  "IgbTreeGrid": {
+    "ExcludedProps": [
+      // FilteringExpressionsTree and AdvancedFilteringExpressionsTree throw errors silently on the client and break all other props, haha :(
+      "FilteringExpressionsTree",
+      "AdvancedFilteringExpressionsTree",
+      // complex object
+      "ResourceStrings",
+      // complex object
+      "Outlet",
+      // deprecated
+      "ShouldGenerate",
+      // stategies are not supported ATM
+      "FilterStrategy",
+      "DataCloneStrategy",
+      "GroupStrategy",
+      "SortStrategy",
+      "Strategy",
+      // circular ref for groupby record obj
+      "GroupParent",
+      "Groups",
+      "Detail",
+      // circular ref for TreGrid rec
+      "Children",
+      "RecordParent",
+      // these should not be settable, depend on the data that is set
+      "RootRecords",
+      "ProcessedRootRecords"
+    ],
+    "DependantProps": [
+      // summary height cannot be set without setting summaries first
+      "SummaryRowHeight",
+      // grouping cannot be set runtime if there's no mathing column field
+      "GroupingExpressions",
+      // depends on having visible columns
+      "RowDraggable"
+    ],
+    "DependantMethods": [
+      // these depend on there being an expandable record to check
+      "GetDefaultExpandStateAsync"
+    ]
+  },
+  "IgbHierarchicalGrid": {
+    "ExcludedProps": [
+      // FilteringExpressionsTree and AdvancedFilteringExpressionsTree throw errors silently on the client and break all other props, haha :(
+      "FilteringExpressionsTree",
+      "AdvancedFilteringExpressionsTree",
+      // complex object
+      "ResourceStrings",
+      // complex object
+      "Outlet",
+      // deprecated
+      "ShouldGenerate",
+      // stategies are not supported ATM
+      "FilterStrategy",
+      "DataCloneStrategy",
+      "GroupStrategy",
+      "SortStrategy",
+      "Strategy",
+      // circular ref for groupby record obj
+      "GroupParent",
+      "Groups",
+      "Detail"
+    ],
+    "DependantProps": [
+      // summary height cannot be set without setting summaries first
+      "SummaryRowHeight",
+      // grouping cannot be set runtime if there's no mathing column field
+      "GroupingExpressions",
+      // depends on having visible columns
+      "RowDraggable"
+    ],
+    "DependantMethods": [
+      // these depend on there being an expandable record to check
+      "GetDefaultExpandStateAsync"
+    ]
+  },
+  "IgbPivotGrid": {
+    "ExcludedProps": [
+      // FilteringExpressionsTree and AdvancedFilteringExpressionsTree throw errors silently on the client and break all other props, haha :(
+      "FilteringExpressionsTree",
+      "AdvancedFilteringExpressionsTree",
+      // complex object
+      "ResourceStrings",
+      // complex object
+      "Outlet",
+      // deprecated
+      "ShouldGenerate",
+      // stategies are not supported ATM
+      "FilterStrategy",
+      "DataCloneStrategy",
+      "GroupStrategy",
+      "SortStrategy",
+      "Strategy",
+      // circular ref for groupby record obj
+      "GroupParent",
+      "Groups",
+      "Detail",
+      // this will need custom handling
+      "ChildLevel",
+      // this is auto-filled property, not settable, depends on the hierarchy
+      "Level",
+      // these are from props overriden from the base grid, related to features that are not supported for Pivot
+      "PagingMode",
+      "HideRowSelectors",
+      "RowEditable",
+      "Pinning",
+      "AllowFiltering",
+      "AllowAdvancedFiltering",
+      "SummaryPosition",
+      "SummaryCalculationMode",
+      "ShowSummaryOnCollapse",
+      "SortingExpressions",
+      "BatchEditing",
+      "TotalRecords",
+      // Cannot have both config and auto-config. Configs starts overriding each other
+      "AutoGenerateConfig",
+      // This is overriden and suppressed in the pivot's source. I don't know why it exists here.
+      "SelectedRows",
+      // Returns default 6000 at runtime in the generic prop harness.
+      "SnackbarDisplayTime"
+    ],
+    "DependantProps": [
+      // summary height cannot be set without setting summaries first
+      "SummaryRowHeight",
+      // grouping cannot be set runtime if there's no mathing column field
+      "GroupingExpressions",
+      // depends on having visible columns
+      "RowDraggable"
+    ],
+    "DependantMethods": [
+      //BUG 35214
+      "ToggleColumnAsync",
+      "GetColumnGroupExpandStateAsync",
+      "ToggleRowGroupAsync",
+      //needs valid config
+      "GetCurrentPivotConfigurationAsync",
+      // BUG 35220
+      "AutoSizeRowDimensionAsync",
+      //BUG 35221
+      "MoveDimensionAsync",
+      // BUG 35222
+      "FilterDimensionAsync"
+    ]
+  },
+  "IgbPivotDataSelector": {
+    "ExcludedProps": [
+      // complex component ref, cannot be generated runtime
+      "Grid"
+    ]
+  },
+  "IgbCalendar": {
+    "ExcludedProps": [
+      //BUG 35208
+      "FormatOptions",
+      "ResourceStrings"
+    ]
+  },
+  "IgbDatePicker": {
+    "ExcludedProps": [
+      "ResourceStrings"
+    ],
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync"
+    ]
+  },
+  "IgbDateRangePicker": {
+    "ExcludedProps": [
+      // BUG 40335
+      "CustomRanges",
+      // complex object
+      "Value",
+      // complex object
+      "ResourceStrings"
+    ],
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync",
+      "GetCurrentValueAsync"
+    ]
+  },
+  "IgbSelect": {
+    "ExcludedProps": [
+      // This should not be a property. No idea why it generates as one and why it is settable.
+      "EmitEvent"
+    ],
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync",
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbRadio": {
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync",
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbRating": {
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync"
+    ]
+  },
+  "IgbSlider": {
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync"
+    ],
+    "ExcludedProps": [
+      // BUG 35189
+      "ValueFormatOptions"
+    ]
+  },
+  "IgbTextarea": {
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync"
+    ],
+    "ExcludedProps": [
+      // BUG 35186
+      "Spellcheck"
+    ]
+  },
+  "IgbToggleButton": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbTree": {
+    "ExcludedProps": [
+      // circular ref
+      "Parent"
+    ]
+  },
+  "IgbTreeItem": {
+    "ExcludedProps": [
+      // circular ref
+      "Parent",
+      // this should not be settable, seems to be related to an the internal component state. 
+      "Level"
+    ]
+  },
+  "IgbButtonGroup": {
+    "DependantProps": [
+      // selected items can only be set if there're matching buttons in the group
+      "SelectedItems"
+    ]
+  },
+  "IgbDialog": {
+    "ExcludedProps": [
+      // BUG 35188
+      "ReturnValue"
+    ]
+  },
+  "IgbDropdown": {
+    "DependantMethods": [
+      // BUG 35184
+      "ShowAsync",
+      "ToggleAsync"
+    ]
+  },
+  "IgbStep": {
+    "DependantMethods": [
+      // BUG 35185
+      "ToggleAnimationAsync"
+    ]
+  },
+  "IgbCarouselSlide": {
+    "DependantMethods": [
+      // BUG 35185
+      "ToggleAnimationAsync"
+    ]
+  },
+  "IgbTab": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusAsync"
+    ]
+  },
+  "IgbDateTimeInput": {
+    "ExcludedProps": [
+      // BUG 35187
+      "SpinDelta"
+    ]
+  },
+  "IgbInput": {
+    "ExcludedProps": [
+      // Temporary exclude since these are string, but should be numbers.
+      "Min",
+      "Max"
+    ],
+    "DependantMethods": [
+      // Depends on the input beign numeric.
+      "StepUpAsync",
+      "StepDownAsync"
+    ]
+  },
+  "IgbRangeSlider": {
+    "ExcludedProps": [
+      // BUG 35189
+      "ValueFormatOptions"
+    ]
+  },
+  "IgbStepper": {
+    "ExcludedProps": [
+      // This is a collection of nested IgbStep components, it should probably be only a getter. 
+      "Steps"
+    ],
+    "DependantMethods": [
+      // Depends on having at least one child step, otherwise throws error.
+      "NextAsync",
+      "PrevAsync"
+    ]
+  },
+  "IgbSelectGroup": {
+    "ExcludedProps": [
+      // This is a collection of nested IgbSelectItem components, it should probably be only a getter. 
+      "Items"
+    ]
+  },
+  "IgbDockManager": {
+    "ExcludedProps": [
+      // BUG 35254
+      "ResourceStrings",
+      // BUG 35259
+      "DisableKeyboardNavigation",
+      "ProximityDock",
+      "ShowPaneHeaders"
+    ],
+    "DependantMethods": [
+      // BUG 35267
+      "GetCurrentLayoutAsync"
+    ]
+  },
+  "IgbQueryBuilder": {
+    "DependantMethods": [
+      // depends on state beign valid, otherwise throws error
+      "CommitAsync"
+    ]
+  }
+}
