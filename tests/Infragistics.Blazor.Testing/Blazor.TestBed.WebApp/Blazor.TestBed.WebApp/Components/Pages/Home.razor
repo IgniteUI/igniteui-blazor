@@ -277,7 +277,12 @@
         {
             // hook events
             var arg = evt.PropertyType.GenericTypeArguments[0];
+            var detailType = ReflectionUtils.GetOriginEventDetailType(arg);
             object argDetailToSend = null;
+            if (detailType != null)
+            {
+                argDetailToSend = ReflectionUtils.GetSimpleType(detailType);
+            }
             var instance = Activator.CreateInstance(evt.PropertyType, [this, this.EventHandler]);
             this.dc.Parameters.Add(evt.Name, instance);
 

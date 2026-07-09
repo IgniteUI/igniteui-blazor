@@ -112,6 +112,27 @@ namespace Blazor.TestBed.WebApp.Components.Common
             return twoWayBindingEvents;
         }
 
+        public static Type GetOriginEventDetailType(Type eventArgsType)
+        {
+            var detailProp = eventArgsType.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance);
+            if (detailProp == null)
+            {
+                return null;
+            }
+
+            var detailType = Nullable.GetUnderlyingType(detailProp.PropertyType) ?? detailProp.PropertyType;
+            if (detailType == typeof(string) || detailType.IsPrimitive)
+            {
+                return detailType;
+            }
+
+            var nestedPrimitive = detailType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Select(x => Nullable.GetUnderlyingType(x.PropertyType) ?? x.PropertyType)
+                .FirstOrDefault(x => x == typeof(string) || x.IsPrimitive);
+
+            return nestedPrimitive;
+        }
+
         private static bool EventSetterContainsPropagation(string source, string eventName)
         {
             if (string.IsNullOrEmpty(source))
