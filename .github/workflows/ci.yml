@@ -56,7 +56,7 @@ jobs:
 
       - name: Run Bulk Automation
         run: >
-          dotnet test ./tests/Infragistics.Blazor.Testing/Infragistics.Blazor.Testing/Infragistics.Blazor.Testing.sln
+          dotnet test ./tests/Infragistics.Blazor.Testing/Playwright.Testing/Playwright.Testing.csproj
           --settings ./tests/Infragistics.Blazor.Testing/Infragistics.Blazor.Testing/.runsettings
           --no-build --configuration Release --verbosity normal
           --collect:"XPlat Code Coverage"
