@@ -14,7 +14,7 @@
 
 	<DataCollectionRunSettings>
 		<DataCollectors>
-			<DataCollector friendlyName="Code Coverage">
+			<DataCollector friendlyName="XPlat Code Coverage">
 				<Configuration>
 					<Format>cobertura</Format>
 				</Configuration>
