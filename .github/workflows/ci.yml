@@ -54,11 +54,20 @@ jobs:
           --collect:"XPlat Code Coverage"
           --results-directory ./TestResults
 
+      - name: Build Playwright test project
+        run: >
+          dotnet build ./tests/Infragistics.Blazor.Testing/Playwright.Testing/Playwright.Testing.csproj
+          --configuration Release
+
+      - name: Install Playwright
+        shell: pwsh
+        run: ./tests/Infragistics.Blazor.Testing/Playwright.Testing/bin/Release/net9.0/playwright.ps1 install
+
       - name: Run Bulk Automation
         run: >
           dotnet test ./tests/Infragistics.Blazor.Testing/Infragistics.Blazor.Testing/Infragistics.Blazor.Testing.sln
           --settings ./tests/Infragistics.Blazor.Testing/Infragistics.Blazor.Testing/.runsettings
-          --configuration Release --verbosity normal
+          --no-build --configuration Release --verbosity normal
           --collect:"XPlat Code Coverage"
           --results-directory ./TestResults
 
