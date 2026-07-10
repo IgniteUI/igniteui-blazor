@@ -61,7 +61,7 @@ jobs:
 
       - name: Install Playwright
         shell: pwsh
-        run: ./tests/Infragistics.Blazor.Testing/Playwright.Testing/bin/Release/net9.0/playwright.ps1 install
+        run: ./tests/Infragistics.Blazor.Testing/Playwright.Testing/bin/Release/net10.0/playwright.ps1 install
 
       - name: Run Bulk Automation
         run: >
