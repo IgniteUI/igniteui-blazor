@@ -54,10 +54,18 @@ jobs:
           --collect:"XPlat Code Coverage"
           --results-directory ./TestResults
 
+      - name: Run Bulk Automation
+        run: >
+          dotnet test .\tests\Infragistics.Blazor.Testing\Infragistics.Blazor.Testing\Infragistics.Blazor.Testing.sln 
+          --settings .\tests\Infragistics.Blazor.Testing\Infragistics.Blazor.Testing\.runsettings
+          --no-build --configuration Release --verbosity normal
+          --collect:"Code Coverage"
+          --results-directory ./TestResults
+
       - name: Generate coverage report
         uses: danielpalme/ReportGenerator-GitHub-Action@c31aa4ed4f12f147061186cf2a029f307b5c3636
         with:
-          reports: TestResults/**/coverage.cobertura.xml
+          reports: TestResults/**/*.cobertura.xml
           targetdir: CoverageReport
           reporttypes: HtmlInline_AzurePipelines;Cobertura;MarkdownSummaryGithub
 

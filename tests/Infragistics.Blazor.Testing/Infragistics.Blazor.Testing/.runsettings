@@ -11,4 +11,14 @@
 	<TestRunParameters>
 		<Parameter name="defaultTimeout" value="40000" />
 	</TestRunParameters>
+
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="Code Coverage">
+				<Configuration>
+					<Format>cobertura</Format>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
 </RunSettings>
