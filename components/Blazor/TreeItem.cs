@@ -302,22 +302,6 @@ public partial class IgbTreeItem: BaseRendererControl {
 	                    {
 		InvokeMethodSync("disconnectedCallback", new object[] {  }, new string[] {  });
 	}
-	public async  Task ExpandWithEventAsync() 
-	                    {
-		await InvokeMethod("expandWithEvent", new object[] {  }, new string[] {  });
-	}
-	                    public  void ExpandWithEvent() 
-	                    {
-		InvokeMethodSync("expandWithEvent", new object[] {  }, new string[] {  });
-	}
-	public async  Task CollapseWithEventAsync() 
-	                    {
-		await InvokeMethod("collapseWithEvent", new object[] {  }, new string[] {  });
-	}
-	                    public  void CollapseWithEvent() 
-	                    {
-		InvokeMethodSync("collapseWithEvent", new object[] {  }, new string[] {  });
-	}
 	/// <summary>
 	/// Toggles tree item expansion state.
 	/// </summary>
