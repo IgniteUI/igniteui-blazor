@@ -109,5 +109,4 @@ jobs:
           user: ${{ secrets.INFRAGISTICS_NUGET_ORG_USER }}
 
       - name: Publish to NuGet.org
-        if: false
         run: dotnet nuget push "${{ github.workspace }}/nupkg/IgniteUI.Blazor.Lite.${{ env.VERSION }}.nupkg" --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json"
