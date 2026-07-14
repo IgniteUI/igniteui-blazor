@@ -2,22 +2,22 @@ using System;
 using System.Collections.Generic;
 public class NwindDataItem
 {
-    public string ProductName { get; set; }
+    public string? ProductName { get; set; } = string.Empty;
     //public double SupplierID { get; set; }
     //public double CategoryID { get; set; }
-    public string QuantityPerUnit { get; set; }
+    public string QuantityPerUnit { get; set; } = string.Empty;
     public double UnitPrice { get; set; }
     //public double UnitsInStock { get; set; }
     //public double UnitsOnOrder { get; set; }
     //public double ReorderLevel { get; set; }
     public bool Discontinued { get; set; }
-    public string OrderDate { get; set; }
+    public string OrderDate { get; set; } = string.Empty;
     //public double Rating { get; set; }
 }
 public class NwindDataItem_LocationsItem
 {
-    public string Shop { get; set; }
-    public string LastInventory { get; set; }
+    public string Shop { get; set; } = string.Empty;
+    public string LastInventory { get; set; } = string.Empty;
 }
 
 public class NwindData

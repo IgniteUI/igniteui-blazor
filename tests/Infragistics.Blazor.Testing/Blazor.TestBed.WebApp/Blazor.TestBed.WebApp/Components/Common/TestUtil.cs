@@ -7,7 +7,7 @@ namespace Blazor.TestBed.WebApp.Components.Common
 {
     public static class TestUtil
     {
-        public static bool PropertyValuesAreEqual(object serverValue, string clientValue, PropertyInfo prop) {
+        public static bool PropertyValuesAreEqual(object? serverValue, string? clientValue, PropertyInfo prop) {
             string serverString = serverValue is Enum ?
                 EnumActualValue(serverValue) :
                 JsonConvert.SerializeObject(serverValue, new JsonSerializerSettings()
@@ -19,7 +19,7 @@ namespace Blazor.TestBed.WebApp.Components.Common
             {
                 clientValue = "null";
             }
-            if (prop.PropertyType.Name == "Double")
+            if (prop.PropertyType.Name == "Double" && serverValue != null)
             {
                 serverString = Convert.ToInt32(serverValue).ToString();
             }
@@ -32,16 +32,23 @@ namespace Blazor.TestBed.WebApp.Components.Common
 
             if (prop.PropertyType == typeof(DateTime[]))
             {
-                var serverArray = JsonConvert.DeserializeObject<DateTime[]>(serverString).Select(x => x.ToShortDateString());
-                var clientArray = JsonConvert.DeserializeObject<DateTime[]>(clientValue).Select(x => x.ToShortDateString());
+                var serverDates = JsonConvert.DeserializeObject<DateTime[]>(serverString);
+                var clientDates = JsonConvert.DeserializeObject<DateTime[]>(clientValue);
+                if (serverDates == null || clientDates == null)
+                {
+                    return false;
+                }
+
+                var serverArray = serverDates.Select(x => x.ToShortDateString());
+                var clientArray = clientDates.Select(x => x.ToShortDateString());
                 serverString = string.Join(",", serverArray);
                 clientValue = string.Join(",", clientArray);
             }
 
             if (prop.PropertyType == typeof(IgbDateRangeDescriptor[])) {
-                var serverDateRangeArray = ((IgbDateRangeDescriptor[])serverValue);
+                var serverDateRangeArray = serverValue as IgbDateRangeDescriptor[];
                 var clientDateArray = JsonConvert.DeserializeObject<IgbDateRangeDescriptor[]>(clientValue);
-                if (serverDateRangeArray.Length != clientDateArray?.Length) {
+                if (serverDateRangeArray == null || clientDateArray == null || serverDateRangeArray.Length != clientDateArray.Length) {
                     return false;
                 }
                 for (int i = 0; i < serverDateRangeArray.Length; i++)
@@ -52,7 +59,12 @@ namespace Blazor.TestBed.WebApp.Components.Common
 
                     DateTime[] serverDateArray = (DateTime[])serverDateRangeArray[i].DateRange;
                     string[] serverStringArray = serverDateArray.Select(x => x.ToShortDateString()).ToArray();
-                    string[] clientStringArray = ((JArray)clientDateArray[i].DateRange).ToObject<DateTime[]>().Select(x => x.ToShortDateString()).ToArray();
+                    var clientRangeArray = ((JArray)clientDateArray[i].DateRange).ToObject<DateTime[]>();
+                    if (clientRangeArray == null)
+                    {
+                        return false;
+                    }
+                    string[] clientStringArray = clientRangeArray.Select(x => x.ToShortDateString()).ToArray();
                     serverString = string.Join(",", serverStringArray);
                     clientValue = string.Join(",", clientStringArray);
                 }
@@ -62,7 +74,7 @@ namespace Blazor.TestBed.WebApp.Components.Common
             if (prop.Name == "Data" || prop.Name == "DataSource")
             {
                 var objRes = JsonConvert.DeserializeObject<List<NwindDataItem>>(clientValue);
-                if (((NwindData)serverValue).Count != objRes?.Count)
+                if (serverValue is not NwindData serverData || serverData.Count != objRes?.Count)
                 {
                     return false;
                 }
@@ -80,15 +92,21 @@ namespace Blazor.TestBed.WebApp.Components.Common
         }
 
         public static string EnumActualValue(object serverValue) {
-            FieldInfo fieldInfo = serverValue.GetType().GetField(serverValue.ToString());
-            var customNameAttr = fieldInfo.GetCustomAttributes(true).FirstOrDefault(x => x.GetType().Name == "WCEnumNameAttribute");
+            var enumName = serverValue.ToString();
+            if (string.IsNullOrEmpty(enumName))
+            {
+                return string.Empty;
+            }
+
+            FieldInfo? fieldInfo = serverValue.GetType().GetField(enumName);
+            var customNameAttr = fieldInfo?.GetCustomAttributes(true).FirstOrDefault(x => x.GetType().Name == "WCEnumNameAttribute");
             if (customNameAttr != null)
             {
-                var attrValue = customNameAttr?.GetType().GetProperty("Name").GetValue(customNameAttr).ToString();
-                return attrValue;
+                var attrValue = customNameAttr.GetType().GetProperty("Name")?.GetValue(customNameAttr)?.ToString();
+                return attrValue ?? enumName.ToLowerInvariant();
             }
             else {
-                return serverValue.ToString().ToLowerInvariant();
+                return enumName.ToLowerInvariant();
             }
 
         }

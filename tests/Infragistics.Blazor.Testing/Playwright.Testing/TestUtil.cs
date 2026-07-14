@@ -25,8 +25,8 @@ namespace Playwright.Testing
                 try
                 {
                     var instance = Activator.CreateInstance(c);
-                    var a = c.GetProperty("Type").GetValue(instance).ToString().StartsWith("Web");
-                    if (a)
+                    var a = c.GetProperty("Type")?.GetValue(instance)?.ToString()?.StartsWith("Web");
+                    if (a == true)
                     {
                         result.Add(c.Name);
                     }

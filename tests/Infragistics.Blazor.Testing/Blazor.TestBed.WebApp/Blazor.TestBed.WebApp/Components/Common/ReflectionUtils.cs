@@ -53,7 +53,7 @@ namespace Blazor.TestBed.WebApp.Components.Common
             return clientPropName;
         }
 
-        public static Type GetComponentByType(string type)
+        public static Type? GetComponentByType(string type)
         {
             var asm = Assembly.Load("IgniteUI.Blazor.Lite");
             var classes = asm.GetTypes().Where(p =>
@@ -100,21 +100,20 @@ namespace Blazor.TestBed.WebApp.Components.Common
             var sourceByType = componentType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(IsEventCallback)
                 .Select(x => x.DeclaringType)
-                .Where(x => x != null)
+                .OfType<Type>()
                 .Distinct()
                 .ToDictionary(x => x, GetSourceCodeForType);
 
             var twoWayBindingEvents = componentType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(IsEventCallback)
-                .Where(x => x.DeclaringType != null)
-                .Where(x => EventSetterContainsPropagation(sourceByType[x.DeclaringType], x.Name))
+                .Where(x => x.DeclaringType is Type declaringType && EventSetterContainsPropagation(sourceByType[declaringType], x.Name))
                 .Select(x => x.Name)
                 .ToList();
 
             return twoWayBindingEvents;
         }
 
-        public static Type GetOriginEventDetailType(Type eventArgsType)
+        public static Type? GetOriginEventDetailType(Type eventArgsType)
         {
             var detailProp = eventArgsType.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance);
             if (detailProp == null)
@@ -145,10 +144,6 @@ namespace Blazor.TestBed.WebApp.Components.Common
         private static string GetSourceCodeForType(Type type)
         {
             var componentName = type.Name.Replace("Igb", "");
-            if (type == null)
-            {
-                return string.Empty;
-            }
 
             var repoRoot = FindRepositoryRoot();
             if (string.IsNullOrEmpty(repoRoot))
@@ -208,7 +203,7 @@ namespace Blazor.TestBed.WebApp.Components.Common
             }
 
             // Invoke the generic method to create RenderFragment<T>
-            return methodInfo.Invoke(null, new object[] { value });
+            return methodInfo.Invoke(null, new object[] { value })!;
         }
 
         private static RenderFragment<T> CreateTypedRenderFragment<T>(T value)
@@ -226,26 +221,27 @@ namespace Blazor.TestBed.WebApp.Components.Common
 
 
 
-        public static string Camelize(string value)
+        public static string Camelize(string? value)
         {
-            if (value == null || value.Length == 0)
+            if (string.IsNullOrEmpty(value))
             {
-                return value;
+                return string.Empty;
             }
-            return value.Substring(0, 1).ToLower() + value.Substring(1);
+            return value.Substring(0, 1).ToLowerInvariant() + value.Substring(1);
         }
 
-        public static string Capitalize(string value) {
-            if (value == null || value.Length == 0)
+        public static string Capitalize(string? value)
+        {
+            if (string.IsNullOrEmpty(value))
             {
-                return value;
+                return string.Empty;
             }
-            return char.ToUpper(value[0]) + value.Substring(1);
+            return char.ToUpperInvariant(value[0]) + value.Substring(1);
         }
 
-        public static object GetSimpleType(Type type)
+        public static object? GetSimpleType(Type type)
         {
-            object value = null;
+            object? value = null;
             if (type == typeof(string))
             {
                 value = "parameter";
@@ -269,9 +265,9 @@ namespace Blazor.TestBed.WebApp.Components.Common
             return value;
         }
 
-        public static object GetObjectOfType(Type type, bool isData = false, int depth = 0)
+        public static object? GetObjectOfType(Type type, bool isData = false, int depth = 0)
         {
-            object value = GetSimpleType(type);
+            object? value = GetSimpleType(type);
 
             if (CustomTypes.PredefinedTypes.ContainsKey(type.Name))
             {
@@ -286,15 +282,21 @@ namespace Blazor.TestBed.WebApp.Components.Common
                     return null;
                 }
 
-                var arrayElem = GetObjectOfType(type.GetElementType(), false, 1);
+                var elementType = type.GetElementType();
+                if (elementType == null)
+                {
+                    return null;
+                }
+
+                var arrayElem = GetObjectOfType(elementType, false, 1);
                 if (arrayElem != null)
                 {
-                    value = Array.CreateInstance(type.GetElementType(), 1);
+                    value = Array.CreateInstance(elementType, 1);
                     ((Array)value).SetValue(arrayElem, 0);
                 }
                 else
                 {
-                    value = Array.CreateInstance(type.GetElementType(), 0);
+                    value = Array.CreateInstance(elementType, 0);
                 }
             }
 
@@ -307,14 +309,20 @@ namespace Blazor.TestBed.WebApp.Components.Common
             if (value == null)
             {
                 value = Activator.CreateInstance(type);
-                if (!type.GetProperties().Any() && value is not Enum)
+                if (value == null)
                 {
                     return null;
                 }
+
+                if (!type.GetProperties().Any() && !type.IsEnum)
+                {
+                    return null;
+                }
+
                 var props = GetValidProps(type);
                 foreach (var p in props)
                 {
-                    object propValue = GetObjectOfType(p.PropertyType);
+                    var propValue = GetObjectOfType(p.PropertyType);
                     p.SetValue(value, propValue);
                 }
             }
