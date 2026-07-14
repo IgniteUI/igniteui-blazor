@@ -10,8 +10,7 @@ namespace IgniteUI.Blazor.Controls
         public static void Register(IIgniteUIBlazor runtime) {
             ModuleLoader.Load(runtime, "WebSnackbarModule");
 
-            IgbBaseAlertLikeModule.MarkIsLoadRequested(runtime);
-
+            
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime) {
