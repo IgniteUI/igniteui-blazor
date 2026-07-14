@@ -65,5 +65,3 @@ This release updates the Ignite UI for Blazor to the latest [igniteui-webcompone
 | [#1828](https://github.com/IgniteUI/igniteui-webcomponents/issues/1828) | Tooltip | Do not show the tooltip when the tooltip target is clicked |
 | [#1936](https://github.com/IgniteUI/igniteui-webcomponents/pull/1936) | Tooltip | Removed the max-width constraint for slotted content |
 | 2754 <!-- From 25.2.102 (May 2026) --> | IgbTabs | Changing the check state for IgbSwitch inside the tab causes the tab content to disappear |
-
-
