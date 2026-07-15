@@ -57,11 +57,11 @@ jobs:
 
       - name: Install Playwright
         shell: pwsh
-        run: ./tests/Playwright.Testing/bin/Release/net10.0/playwright.ps1 install
+        run: ./tests/IgniteUI.Blazor.Lite.IntegrationTests/bin/Release/net10.0/playwright.ps1 install
 
       - name: Run Bulk API Automation
         run: >
-          dotnet test ./tests/Playwright.Testing/Playwright.Testing.csproj
+          dotnet test ./tests/IgniteUI.Blazor.Lite.IntegrationTests/IgniteUI.Blazor.Lite.IntegrationTests.csproj
           --settings ./.runsettings
           --no-build --configuration Release --verbosity normal
           --collect:"API Code Coverage"

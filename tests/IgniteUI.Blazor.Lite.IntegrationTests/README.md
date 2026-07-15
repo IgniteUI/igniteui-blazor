@@ -37,7 +37,7 @@ For other specific browsers refer to `./playwright.ps1 install --help`
 
 ### Test settings
 
-The `Playwright.Testing` project once built, will generate all the tests and they should appear in the test explorer in Visual Studio.
+The `IgniteUI.Blazor.Lite.IntegrationTests` project once built, will generate all the tests and they should appear in the test explorer in Visual Studio.
 
 Each test once run will start its own instance of the `IgniteUI.Blazor.Lite.TestBed`. That is the test bed app, which renders an instance of each component per test. So no need for any other extra steps than just hitting run/debug on the test.
 

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Playwright.Testing
+namespace IgniteUI.Blazor.Lite.IntegrationTests
 {
     public class TestUtil
     {

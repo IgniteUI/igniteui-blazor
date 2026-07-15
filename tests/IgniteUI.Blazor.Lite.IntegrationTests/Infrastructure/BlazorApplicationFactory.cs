@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Playwright.Testing.Infrastructure
+namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
 {
     public class BlazorApplicationFactory<TProgram>
         : WebApplicationFactory<TProgram> where TProgram : class

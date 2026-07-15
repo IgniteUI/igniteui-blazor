@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Playwright.Testing.Infrastructure
+namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
 {
     public class BlazorPageTest<TProgram> : BrowserTest
         where TProgram : class

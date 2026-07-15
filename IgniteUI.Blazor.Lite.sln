@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IgniteUI.Blazor.Lite.TestBed", "tests\IgniteUI.Blazor.Lite.TestBed\IgniteUI.Blazor.Lite.TestBed.csproj", "{D4A67C42-35CA-FFFB-2D38-86E21B810757}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playwright.Testing", "tests\Playwright.Testing\Playwright.Testing.csproj", "{F2C2D961-5008-BE2F-4387-6C4A393EAB53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IgniteUI.Blazor.Lite.IntegrationTests", "tests\IgniteUI.Blazor.Lite.IntegrationTests\IgniteUI.Blazor.Lite.IntegrationTests.csproj", "{F2C2D961-5008-BE2F-4387-6C4A393EAB53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

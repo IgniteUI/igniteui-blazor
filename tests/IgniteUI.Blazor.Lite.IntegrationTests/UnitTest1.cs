@@ -4,9 +4,9 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NUnit.Framework.Internal;
 using System.Text;
-using Playwright.Testing.Infrastructure;
+using IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure;
 
-namespace Playwright.Testing
+namespace IgniteUI.Blazor.Lite.IntegrationTests
 {
     class ComponentData
     {
