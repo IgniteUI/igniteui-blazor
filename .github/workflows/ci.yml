@@ -55,11 +55,6 @@ jobs:
           --collect:"Unit Code Coverage"
           --results-directory ./TestResults
 
-      - name: Build Playwright test project
-        run: >
-          dotnet build ./tests/Playwright.Testing/Playwright.Testing.csproj
-          --configuration Release
-
       - name: Install Playwright
         shell: pwsh
         run: ./tests/Playwright.Testing/bin/Release/net10.0/playwright.ps1 install
