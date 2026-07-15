@@ -50,8 +50,9 @@ jobs:
 
       - name: Run .NET tests with coverage
         run: >
-          dotnet test --no-build --configuration Release --verbosity normal
-          --collect:"XPlat Code Coverage"
+          dotnet test ./tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj
+          --no-build --configuration Release --verbosity normal
+          --collect:"Unit Code Coverage"
           --results-directory ./TestResults
 
       - name: Build Playwright test project
