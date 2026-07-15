@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\IgniteUI.Blazor.Lite.csproj" />
-    <ProjectReference Include="..\Blazor.TestBed.WebApp\Blazor.TestBed.WebApp.csproj" />
+    <ProjectReference Include="..\IgniteUI.Blazor.Lite.TestBed\IgniteUI.Blazor.Lite.TestBed.csproj" />
   </ItemGroup>
 
 </Project>

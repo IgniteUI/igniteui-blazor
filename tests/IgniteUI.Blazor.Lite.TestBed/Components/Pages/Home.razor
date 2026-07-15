@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using Blazor.TestBed.WebApp.Components.Common
+@using IgniteUI.Blazor.Lite.TestBed.Components.Common
 @using IgniteUI.Blazor.Controls
 @using System.Reflection
 @using Newtonsoft.Json
@@ -197,7 +197,7 @@
             object? res = null;
             try
             {
-                res = await Blazor.TestBed.WebApp.Components.Common.Helper.InvokeAsync(method, componentInstance, parameters.ToArray());
+                res = await IgniteUI.Blazor.Lite.TestBed.Components.Common.Helper.InvokeAsync(method, componentInstance, parameters.ToArray());
 
             }
             catch (Exception e)

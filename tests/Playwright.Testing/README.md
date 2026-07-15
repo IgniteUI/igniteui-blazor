@@ -39,12 +39,12 @@ For other specific browsers refer to `./playwright.ps1 install --help`
 
 The `Playwright.Testing` project once built, will generate all the tests and they should appear in the test explorer in Visual Studio.
 
-Each test once run will start its own instance of the `Blazor.TestBed.WebApp`. That is the test bed app, which renders an instance of each component per test. So no need for any other extra steps than just hitting run/debug on the test.
+Each test once run will start its own instance of the `IgniteUI.Blazor.Lite.TestBed`. That is the test bed app, which renders an instance of each component per test. So no need for any other extra steps than just hitting run/debug on the test.
 
 
 - Disabling headless run for tests locally - uncomment the headless launch option in `.runsettings` 
 
-- If you don't want each test using in memory browser server, you can disable it in the `.runsettings` by setting `useInMemoryClient` to `false`. In this case you will need to run your own instance of the `Blazor.TestBed.WebApp`, either from VS or using `dotnet run` in the project folder.
+- If you don't want each test using in memory browser server, you can disable it in the `.runsettings` by setting `useInMemoryClient` to `false`. In this case you will need to run your own instance of the `IgniteUI.Blazor.Lite.TestBed`, either from VS or using `dotnet run` in the project folder.
 
 ### Using Visual Studio
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.6.11819.183 stable
+VisualStudioVersion = 18.6.11819.183
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IgniteUI.Blazor.Lite", "IgniteUI.Blazor.Lite.csproj", "{00D48DDA-16B9-40B2-0F44-CB9137BFBFC1}"
 EndProject
@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.runsettings = .runsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.TestBed.WebApp", "tests\Blazor.TestBed.WebApp\Blazor.TestBed.WebApp.csproj", "{D4A67C42-35CA-FFFB-2D38-86E21B810757}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IgniteUI.Blazor.Lite.TestBed", "tests\IgniteUI.Blazor.Lite.TestBed\IgniteUI.Blazor.Lite.TestBed.csproj", "{D4A67C42-35CA-FFFB-2D38-86E21B810757}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playwright.Testing", "tests\Playwright.Testing\Playwright.Testing.csproj", "{F2C2D961-5008-BE2F-4387-6C4A393EAB53}"
 EndProject

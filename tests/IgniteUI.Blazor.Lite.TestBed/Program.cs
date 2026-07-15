@@ -1,4 +1,4 @@
-using Blazor.TestBed.WebApp.Components;
+using IgniteUI.Blazor.Lite.TestBed.Components;
 
 
 public class Program

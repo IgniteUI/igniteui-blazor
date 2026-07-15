@@ -1,7 +1,7 @@
 ﻿using IgniteUI.Blazor.Controls;
 
 #pragma warning disable BL0005
-namespace Blazor.TestBed.WebApp.Components.Common
+namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {
     public static class CustomTypes
     {

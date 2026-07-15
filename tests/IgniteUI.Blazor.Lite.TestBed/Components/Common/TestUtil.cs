@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System.Reflection;
 using IgniteUI.Blazor.Controls;
 
-namespace Blazor.TestBed.WebApp.Components.Common
+namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {
     public static class TestUtil
     {

@@ -1,7 +1,7 @@
 ﻿//function that invokes the server-side render of a component by name
 async function renderComponent(componentName) {
     
-    var res = await DotNet.invokeMethodAsync('Blazor.TestBed.WebApp', 'SetComponentType', componentName);
+    var res = await DotNet.invokeMethodAsync('IgniteUI.Blazor.Lite.TestBed', 'SetComponentType', componentName);
     console.log("Task completed successfully: " + res);
 }
 
@@ -14,7 +14,7 @@ async function setSelector(componentSelector) {
 }
 
 async function getErrors() {
-    var res = await DotNet.invokeMethodAsync('Blazor.TestBed.WebApp', 'GetErrors');
+    var res = await DotNet.invokeMethodAsync('IgniteUI.Blazor.Lite.TestBed', 'GetErrors');
     return res;
 }
 

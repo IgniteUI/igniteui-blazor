@@ -5,7 +5,7 @@ using Newtonsoft.Json.Converters;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace Blazor.TestBed.WebApp.Components.Common
+namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {
     public static class Helper
     {

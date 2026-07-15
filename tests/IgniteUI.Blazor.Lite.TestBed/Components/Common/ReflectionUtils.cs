@@ -4,7 +4,7 @@ using System.Data;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Blazor.TestBed.WebApp.Components.Common
+namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {
     public static class ReflectionUtils
     {
