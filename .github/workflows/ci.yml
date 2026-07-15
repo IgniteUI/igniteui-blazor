@@ -56,17 +56,17 @@ jobs:
 
       - name: Build Playwright test project
         run: >
-          dotnet build ./tests/Infragistics.Blazor.Testing/Playwright.Testing/Playwright.Testing.csproj
+          dotnet build ./tests/Playwright.Testing/Playwright.Testing.csproj
           --configuration Release
 
       - name: Install Playwright
         shell: pwsh
-        run: ./tests/Infragistics.Blazor.Testing/Playwright.Testing/bin/Release/net10.0/playwright.ps1 install
+        run: ./tests/Playwright.Testing/bin/Release/net10.0/playwright.ps1 install
 
       - name: Run Bulk API Automation
         run: >
-          dotnet test ./tests/Infragistics.Blazor.Testing/Playwright.Testing/Playwright.Testing.csproj
-          --settings ./tests/Infragistics.Blazor.Testing/Infragistics.Blazor.Testing/.runsettings
+          dotnet test ./tests/Playwright.Testing/Playwright.Testing.csproj
+          --settings ./.runsettings
           --no-build --configuration Release --verbosity normal
           --collect:"API Code Coverage"
           --results-directory ./TestResults

@@ -73,7 +73,7 @@
     <EmbeddedResource Remove="tmp\**" />
     <None Remove="dist\**" />
     <None Remove="templates\**" />
-    <None Remove="tests\Infragistics.Blazor.Testing\**" />
+    <None Remove="tests\**" />
 
     <!-- Only root componentsBase and componentsBase/WebInputs -->
     <Compile Remove="componentsBase\**\*.cs" />
