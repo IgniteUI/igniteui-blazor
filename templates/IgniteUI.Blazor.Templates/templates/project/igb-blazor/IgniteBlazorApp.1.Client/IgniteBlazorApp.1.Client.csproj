@@ -13,10 +13,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.7" />
-    <PackageReference Include="IgniteUI.Blazor.Lite" Version="0.0.1" />
+    <PackageReference Include="IgniteUI.Blazor.Lite" Version="0.1.0" />
     <!--#if (IncludeWeatherSample) -->
     <PackageReference Include="Blazor-ApexCharts" Version="6.1.0" />
-    <PackageReference Include="IgniteUI.Blazor.GridLite" Version="0.7.1" />
+    <PackageReference Include="IgniteUI.Blazor.GridLite" Version="0.9.0" />
     <!--#endif -->
   </ItemGroup>
 
