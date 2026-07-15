@@ -1,0 +1,198 @@
+{
+  "IgbCalendar": {
+    "ExcludedProps": [
+      //BUG 35208
+      "FormatOptions",
+      "ResourceStrings"
+    ]
+  },
+  "IgbDatePicker": {
+    "ExcludedProps": [
+      "ResourceStrings"
+    ],
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync"
+    ]
+  },
+  "IgbDateRangePicker": {
+    "ExcludedProps": [
+      // BUG 40335
+      "CustomRanges",
+      // complex object
+      "Value",
+      // complex object
+      "ResourceStrings"
+    ],
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync",
+      "GetCurrentValueAsync"
+    ]
+  },
+  "IgbSelect": {
+    "ExcludedProps": [
+      // This should not be a property. No idea why it generates as one and why it is settable.
+      "EmitEvent"
+    ],
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync",
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbRadio": {
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync",
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbRating": {
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync"
+    ]
+  },
+  "IgbSlider": {
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync"
+    ],
+    "ExcludedProps": [
+      // BUG 35189
+      "ValueFormatOptions"
+    ]
+  },
+  "IgbTextarea": {
+    "DependantMethods": [
+      // BUG 35182
+      "ReportValidityAsync",
+      "CheckValidityAsync"
+    ],
+    "ExcludedProps": [
+      // BUG 35186
+      "Spellcheck"
+    ]
+  },
+  "IgbToggleButton": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbTree": {
+    "ExcludedProps": [
+      // circular ref
+      "Parent"
+    ]
+  },
+  "IgbTreeItem": {
+    "ExcludedProps": [
+      // circular ref
+      "Parent",
+      // this should not be settable, seems to be related to an the internal component state. 
+      "Level"
+    ]
+  },
+  "IgbButtonGroup": {
+    "DependantProps": [
+      // selected items can only be set if there're matching buttons in the group
+      "SelectedItems"
+    ]
+  },
+  "IgbDialog": {
+    "ExcludedProps": [
+      // BUG 35188
+      "ReturnValue"
+    ]
+  },
+  "IgbDropdown": {
+    "DependantMethods": [
+      // BUG 35184
+      "ShowAsync",
+      "ToggleAsync"
+    ]
+  },
+  "IgbStep": {
+    "DependantMethods": [
+      // BUG 35185
+      "ToggleAnimationAsync"
+    ]
+  },
+  "IgbCarouselSlide": {
+    "DependantMethods": [
+      // BUG 35185
+      "ToggleAnimationAsync"
+    ]
+  },
+  "IgbTab": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusAsync"
+    ],
+    "ExcludedEvents": [
+      // no such client event. 
+      "SelectedChanged"
+    ]
+  },
+  "IgbDateTimeInput": {
+    "ExcludedProps": [
+      // BUG 35187
+      "SpinDelta"
+    ]
+  },
+  "IgbMaskInput": {
+    "ExcludedEvents": [
+      // no such client event. 
+      "ValueChanging"
+    ]
+  },
+  "IgbInput": {
+      "ExcludedProps": [
+        // Temporary exclude since these are string, but should be numbers.
+        "Min",
+        "Max"
+      ],
+      "DependantMethods": [
+        // Depends on the input beign numeric.
+        "StepUpAsync",
+        "StepDownAsync"
+      ],
+      "ExcludedEvents": [
+        // no such client event. 
+        "ValueChanging"
+      ]
+    },
+    "IgbRangeSlider": {
+      "ExcludedProps": [
+        // BUG 35189
+        "ValueFormatOptions"
+      ]
+    },
+    "IgbStepper": {
+      "ExcludedProps": [
+        // This is a collection of nested IgbStep components, it should probably be only a getter. 
+        "Steps"
+      ],
+      "DependantMethods": [
+        // Depends on having at least one child step, otherwise throws error.
+        "NextAsync",
+        "PrevAsync"
+      ]
+    },
+    "IgbSelectGroup": {
+      "ExcludedProps": [
+        // This is a collection of nested IgbSelectItem components, it should probably be only a getter. 
+        "Items"
+      ]
+    }
+  }

@@ -50,14 +50,28 @@ jobs:
 
       - name: Run .NET tests with coverage
         run: >
-          dotnet test --no-build --configuration Release --verbosity normal
-          --collect:"XPlat Code Coverage"
+          dotnet test ./tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj
+          --settings ./.runsettings
+          --no-build --configuration Release --verbosity normal
+          --collect:"Code Coverage"
+          --results-directory ./TestResults
+
+      - name: Install Playwright
+        shell: pwsh
+        run: ./tests/IgniteUI.Blazor.Lite.IntegrationTests/bin/Release/net10.0/playwright.ps1 install
+
+      - name: Run Bulk API Automation
+        run: >
+          dotnet test ./tests/IgniteUI.Blazor.Lite.IntegrationTests/IgniteUI.Blazor.Lite.IntegrationTests.csproj
+          --settings ./.runsettings
+          --no-build --configuration Release --verbosity normal
+          --collect:"Code Coverage"
           --results-directory ./TestResults
 
       - name: Generate coverage report
         uses: danielpalme/ReportGenerator-GitHub-Action@c31aa4ed4f12f147061186cf2a029f307b5c3636
         with:
-          reports: TestResults/**/coverage.cobertura.xml
+          reports: TestResults/**/*.cobertura.xml
           targetdir: CoverageReport
           reporttypes: HtmlInline_AzurePipelines;Cobertura;MarkdownSummaryGithub
 
