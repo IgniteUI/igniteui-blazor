@@ -7,33 +7,22 @@ https://dotnet.microsoft.com/learn/aspnet/blazor-tutorial/install
 
 - If you don't have `pwsh`, you will have to [install Powershell](https://docs.microsoft.com/powershell/scripting/install/installing-powershell)
 
-## 1. Build Infragistics.Blazor
+Also run the node & npm setup steps for the repo, see [/README.md](../../README.md#building-and-running-locally)
 
-This project depends on the Infragistics.Blazor project. That is the base project that contains our Blazor components, which we're testing here.
+## 1. Install Playwright browsers
 
-There's a detailed guide for building it [here](https://infragistics.visualstudio.com/NetAdvantage/_wiki/wikis/NetAdvantage.wiki/1107/Running-and-Debugging-Translator?anchor=debugging-blazor-project-and-source).
-
-Good Luck! You'll need it.
-
-## 2. Install Playwright browsers
-
-- Open a Powershell terminal in the `./browser/IgBlazorSamples.Test/bin/Debug/net9.0` folder.
+- Open a Powershell terminal in the `./test/IgniteUI.Blazor.Lite.IntegrationTests/bin/Debug/net<version>` folder.
 
 - Run `./playwright.ps1 install chromium` to instal only chromium for Playwright to run. For all browsers just omit the  `chromium` argument.
 
-You can run it from the `./browser/IgBlazorSamples.Test` folder as well, but you will need to prefix the path to it: `bin/Debug/net9.0/playwright.ps1 install`
+You can run it from the `./test/IgniteUI.Blazor.Lite.IntegrationTests` folder as well, but you will need to prefix the path to it: `bin/Debug/net<version>/playwright.ps1 install`
 
 For running from **cmd** you will need to use `pwsh ./playwright.ps1 install`.
 
 For other specific browsers refer to `./playwright.ps1 install --help`
 
-## 3. Build Infragistics.Blazor.Testing.sln
 
-- Open the **Infragistics.Blazor.Testing.sln** solution
-
-- Build the solution. Should successfully build all projects.
-
-## 4. Run tests
+## 2. Run tests
 
 ### Test settings
 
@@ -54,7 +43,14 @@ Each test once run will start its own instance of the `IgniteUI.Blazor.Lite.Test
 
 - Debugging with Playwright Inspector - https://playwright.dev/dotnet/docs/debug. Pretty much add `await page.PauseAsync();` to the start of a test or elsewhere and the Playwright inspector will start at that point onward.
 
-# Resources and guidance
+### Using `dotnet test`
+
+You can also run the tests via the .NET CLI:
+```bash
+dotnet test ./tests/IgniteUI.Blazor.Lite.IntegrationTests --settings ./.runsettings
+```
+
+## Resources and guidance
 
 - For general guidance related to Playwright tests - https://playwright.dev/dotnet/docs/
 
