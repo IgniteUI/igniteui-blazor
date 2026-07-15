@@ -69,9 +69,11 @@
     <Content Remove="templates\**" />
     <Content Remove="*.json" />
     <EmbeddedResource Remove="dist\**" />
+    <EmbeddedResource Remove="stories\**" />
     <EmbeddedResource Remove="templates\**" />
     <EmbeddedResource Remove="tmp\**" />
     <None Remove="dist\**" />
+    <None Remove="stories\**" />
     <None Remove="templates\**" />
     <None Remove="tests\**" />
 
