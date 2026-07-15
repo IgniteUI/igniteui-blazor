@@ -14,9 +14,11 @@
 
 	<DataCollectionRunSettings>
 		<DataCollectors>
-			<DataCollector friendlyName="XPlat Code Coverage">
+			<DataCollector friendlyName="Code Coverage">
 				<Configuration>
 					<Format>cobertura</Format>
+					<Include>[IgniteUI.Blazor.Lite]*</Include>
+					<ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
 				</Configuration>
 			</DataCollector>
 		</DataCollectors>

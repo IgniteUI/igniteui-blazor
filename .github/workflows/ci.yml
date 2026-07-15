@@ -51,8 +51,9 @@ jobs:
       - name: Run .NET tests with coverage
         run: >
           dotnet test ./tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj
+          --settings ./.runsettings
           --no-build --configuration Release --verbosity normal
-          --collect:"Unit Code Coverage"
+          --collect:"Code Coverage"
           --results-directory ./TestResults
 
       - name: Install Playwright
@@ -64,7 +65,7 @@ jobs:
           dotnet test ./tests/IgniteUI.Blazor.Lite.IntegrationTests/IgniteUI.Blazor.Lite.IntegrationTests.csproj
           --settings ./.runsettings
           --no-build --configuration Release --verbosity normal
-          --collect:"API Code Coverage"
+          --collect:"Code Coverage"
           --results-directory ./TestResults
 
       - name: Generate coverage report
