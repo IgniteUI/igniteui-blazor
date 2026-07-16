@@ -1,0 +1,7 @@
+<Project>
+  <!-- Boundary sentinel: opts the templates subtree (including template content
+       projects) out of the repo's Central Package Management. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>
