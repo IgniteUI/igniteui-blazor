@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "IgniteUI.Blazor.Lite.slnx",
+    "projects": [
+      "src/IgniteUI.Blazor.Lite.csproj",
+      "tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj"
+    ]
+  }
+}
