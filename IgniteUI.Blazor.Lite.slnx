@@ -15,5 +15,5 @@
     <Project Path="tests/IgniteUI.Blazor.Lite.TestBed/IgniteUI.Blazor.Lite.TestBed.csproj" />
     <Project Path="tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj" />
   </Folder>
-  <Project Path="IgniteUI.Blazor.Lite.csproj" />
+  <Project Path="src/IgniteUI.Blazor.Lite.csproj" />
 </Solution>

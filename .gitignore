@@ -134,9 +134,7 @@ dist
 
 dist
 node_modules
-src/ig
-components
-/wwwroot/
+src/wwwroot/
 bin
 obj
 
@@ -144,25 +142,6 @@ obj
 .tfignore
 *.csproj.user
 *.lscache
-gulpfile.js
-Building.md
-IgniteUI.Blazor.csproj
-Infragistics.Blazor.sln
-
-# unignore src/ig
-!src/ig
-# unignore components
-!components
-# scope componentsBase
-componentsBase/**/*.*
-!componentsBase/WebInputs/*.*
-!componentsBase/*.*
-# scope src
-src/*.*
-!src/index.ts
-!src/Loader.ts
-!src/public_path.ts
-!src/refs-state.ts
 
 
 **/tmp/*
