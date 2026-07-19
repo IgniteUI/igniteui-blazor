@@ -1,0 +1,15 @@
+# Only tracked files need entries — Prettier 3 also respects .gitignore by
+# default (--ignore-path defaults to ['.gitignore', '.prettierignore']), so
+# build output, node_modules, obj/bin etc. are already excluded.
+
+# Generated (committed) TS interop sources — see FORMATTING.md
+src/src/ig/
+
+# Project templates contain placeholder tokens — leave untouched
+templates/
+
+# Lockfile
+package-lock.json
+
+# Markdown left unformatted for now (tables/changelog churn) — remove to enable
+*.md

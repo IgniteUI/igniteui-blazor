@@ -6,7 +6,13 @@
     "build": "cross-env NODE_ENV=production node node_modules/webpack/bin/webpack.js --mode production --config ./webpack.config.js  --color --bail",
     "build:dev": "cross-env NODE_ENV=development node node_modules/webpack/bin/webpack.js --mode development --config ./webpack.config.js  --color --bail",
     "copythemes": "ncp node_modules/igniteui-webcomponents/themes ./src/wwwroot/themes",
-    "ingest": "gulp"
+    "ingest": "gulp",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "git config core.hooksPath .githooks"
+  },
+  "lint-staged": {
+    "*.{js,ts,json,yml,yaml,css}": "prettier --write"
   },
   "author": "",
   "license": "ISC",
@@ -23,7 +29,9 @@
     "gulp-flatten": "^0.4.0",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^5.5.0",
+    "lint-staged": "^17.0.8",
     "ncp": "^2.0.0",
+    "prettier": "^3.9.5",
     "rimraf": "^2.6.1",
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.22.1",

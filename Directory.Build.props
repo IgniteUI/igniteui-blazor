@@ -5,5 +5,8 @@
     <Deterministic>true</Deterministic>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Run the .editorconfig IDExxxx style rules as analyzers during build
+         so formatting violations surface as warnings locally and in CI. -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 </Project>
