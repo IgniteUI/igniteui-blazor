@@ -145,7 +145,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     /// <summary>Enumerates every recorded igSendMessage as (containerId, parsed message).</summary>
     private IEnumerable<(string ContainerId, JsonElement Message)> Messages()
     {
-        foreach (var invocation in _js.Invocations)
+        foreach (var invocation in SnapshotInvocations())
         {
             if (invocation.Identifier != SendMessage ||
                 invocation.Arguments.Count < 2 ||
@@ -167,6 +167,24 @@ public sealed class RendererMessageInteropHarness : InteropHarness
             }
 
             yield return (containerId, message);
+        }
+    }
+
+    /// <summary>
+    /// Components flush queued messages from background continuations, so bUnit's
+    /// append-only invocation record can grow while we read it. Snapshot with retry.
+    /// </summary>
+    private IReadOnlyList<JSRuntimeInvocation> SnapshotInvocations()
+    {
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                return _js.Invocations.ToArray();
+            }
+            catch (InvalidOperationException) when (attempt < 10)
+            {
+            }
         }
     }
 
