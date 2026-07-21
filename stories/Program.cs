@@ -1,5 +1,4 @@
 using BlazingStory.Components;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using IgniteUI.Blazor.Stories.Components.Pages;
 
 var builder = WebApplication.CreateBuilder(args);

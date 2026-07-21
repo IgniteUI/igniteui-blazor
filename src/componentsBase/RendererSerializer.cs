@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Collections;
+using System.Globalization;
 using System.Text.RegularExpressions;
-
-using System.Text.Json;
 using Microsoft.AspNetCore.Components;
-using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {

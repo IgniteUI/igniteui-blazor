@@ -1,20 +1,12 @@
-
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using System.Globalization;
-using System.Text.Json;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Rendering;
-using System.IO;
-using System.Text;
-using System.Collections.ObjectModel;
 using System.Collections.Concurrent;
-using System.Data;
-using System.Threading;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
 
 namespace IgniteUI.Blazor.Controls
 {

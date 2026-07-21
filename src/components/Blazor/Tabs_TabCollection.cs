@@ -1,6 +1,3 @@
-
-using System;
-
 namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbTabs_TabCollection : BaseCollection<IgbTab>

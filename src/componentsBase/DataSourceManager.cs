@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace IgniteUI.Blazor.Controls
 {
     internal class DataSourceManager

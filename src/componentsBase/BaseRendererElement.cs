@@ -1,10 +1,6 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System;
-using System.Threading.Tasks;
+using System.Reflection;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using System.Reflection;
 
 namespace IgniteUI.Blazor.Controls
 {

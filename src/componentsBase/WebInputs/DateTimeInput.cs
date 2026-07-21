@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-
-namespace IgniteUI.Blazor.Controls
+﻿namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbDateTimeInput
     {

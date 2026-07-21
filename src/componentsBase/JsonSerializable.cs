@@ -1,5 +1,3 @@
-using System;
-
 namespace IgniteUI.Blazor.Controls
 {
     public delegate bool SerializationFilter(string name, string property);

@@ -1,5 +1,3 @@
-using System;
-
 namespace IgniteUI.Blazor.Controls
 {
     public class WCEnumNameAttribute

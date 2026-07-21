@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Reflection;
+﻿using System.Reflection;
 using IgniteUI.Blazor.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {

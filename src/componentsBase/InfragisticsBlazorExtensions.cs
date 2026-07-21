@@ -1,7 +1,5 @@
-using System;
-using IgniteUI.Blazor.Controls;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using IgniteUI.Blazor.Controls;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

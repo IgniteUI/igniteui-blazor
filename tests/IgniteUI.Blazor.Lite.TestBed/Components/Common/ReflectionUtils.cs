@@ -1,7 +1,7 @@
-﻿using IgniteUI.Blazor.Controls;
-using Microsoft.AspNetCore.Components;
-using System.Data;
+﻿using System.Data;
 using System.Reflection;
+using IgniteUI.Blazor.Controls;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {

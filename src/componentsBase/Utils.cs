@@ -1,5 +1,3 @@
-using System;
-
 namespace IgniteUI.Blazor.Controls
 {
     internal static class Utils

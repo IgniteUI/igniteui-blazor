@@ -1,10 +1,7 @@
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using Microsoft.JSInterop;
 
 namespace IgniteUI.Blazor.Controls
 {

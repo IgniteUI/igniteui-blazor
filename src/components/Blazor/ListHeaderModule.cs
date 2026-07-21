@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Collections.Generic;
-
 namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbListHeaderModule
