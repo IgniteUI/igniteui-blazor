@@ -1,0 +1,19 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".runsettings" />
+  </Folder>
+  <Folder Name="/stories/">
+    <Project Path="stories/IgniteUI.Blazor.Stories.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IgniteUI.Blazor.Lite.IntegrationTests/IgniteUI.Blazor.Lite.IntegrationTests.csproj" />
+    <Project Path="tests/IgniteUI.Blazor.Lite.TestBed/IgniteUI.Blazor.Lite.TestBed.csproj" />
+    <Project Path="tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj" />
+  </Folder>
+  <Project Path="src/IgniteUI.Blazor.Lite.csproj" />
+</Solution>

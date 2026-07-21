@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using System.Data;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {
@@ -97,20 +96,17 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static List<string> Get2WayBindingEvents(Type componentType)
         {
-            var sourceByType = componentType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(IsEventCallback)
-                .Select(x => x.DeclaringType)
-                .OfType<Type>()
-                .Distinct()
-                .ToDictionary(x => x, GetSourceCodeForType);
-
-            var twoWayBindingEvents = componentType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(IsEventCallback)
-                .Where(x => x.DeclaringType is Type declaringType && EventSetterContainsPropagation(sourceByType[declaringType], x.Name))
-                .Select(x => x.Name)
+            // Two-way binding events follow the Blazor @bind convention: an EventCallback<T>
+            // named "{Prop}Changed" paired with a settable [Parameter] property "{Prop}" of type T.
+            var props = componentType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var result = props.Where(IsEventCallback)
+                .Where(cb => cb.Name.EndsWith("Changed")
+                    && props.Any(p => p.Name == cb.Name[..^"Changed".Length]
+                        && p.PropertyType == cb.PropertyType.GenericTypeArguments.FirstOrDefault()))
+                .Select(cb => cb.Name)
                 .ToList();
 
-            return twoWayBindingEvents;
+            return result;
         }
 
         public static Type? GetOriginEventDetailType(Type eventArgsType)
@@ -128,52 +124,6 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             }
 
             return null;
-        }
-
-        private static bool EventSetterContainsPropagation(string source, string eventName)
-        {
-            if (string.IsNullOrEmpty(source))
-            {
-                return false;
-            }
-
-            var pattern = $@"EventCallback(?:<[^>]+>)?\s+{Regex.Escape(eventName)}\s*\{{[\s\S]*?set\s*\{{[\s\S]*?OnPropertyPropagatedOut\(";
-            return Regex.IsMatch(source, pattern, RegexOptions.Singleline);
-        }
-
-        private static string GetSourceCodeForType(Type type)
-        {
-            var componentName = type.Name.Replace("Igb", "");
-
-            var repoRoot = FindRepositoryRoot();
-            if (string.IsNullOrEmpty(repoRoot))
-            {
-                return string.Empty;
-            }
-
-            var filePath = Path.Combine(repoRoot, "components", "Blazor", componentName + ".cs");
-            if (!File.Exists(filePath))
-            {
-                filePath = Path.Combine(repoRoot, "componentsBase", componentName + ".cs");
-            }
-
-            return File.Exists(filePath) ? File.ReadAllText(filePath) : string.Empty;
-        }
-
-        private static string FindRepositoryRoot()
-        {
-            var current = new DirectoryInfo(Directory.GetCurrentDirectory());
-            while (current != null)
-            {
-                if (File.Exists(Path.Combine(current.FullName, "IgniteUI.Blazor.Lite.csproj")))
-                {
-                    return current.FullName;
-                }
-
-                current = current.Parent;
-            }
-
-            return string.Empty;
         }
 
         // extract tag name from descriptions metadata

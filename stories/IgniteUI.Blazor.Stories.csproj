@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <ProjectReference Include="..\IgniteUI.Blazor.Lite.csproj">
+	  <ProjectReference Include="..\src\IgniteUI.Blazor.Lite.csproj">
 		  <PrivateAssets>none</PrivateAssets>
 	  </ProjectReference>
   </ItemGroup>

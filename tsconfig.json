@@ -7,14 +7,14 @@
     "sourceMap": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "outDir": "dist",
+    "outDir": "src/dist",
     "lib": ["es2017", "dom", "scripthost"],
     "noImplicitAny": false,
     "removeComments": true,
     "baseUrl": ".",
     "paths": {
-      "igniteui-core/*": ["src/ig/igniteui-core/*"]
+      "igniteui-core/*": ["src/src/ig/igniteui-core/*"]
     }
   },
-  "exclude": ["dist"]
+  "exclude": ["src/dist"]
 }

@@ -1,13 +1,11 @@
 {
-  "name": "testapp",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "igniteui-blazor-lite",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cross-env NODE_ENV=production node node_modules/webpack/bin/webpack.js --mode production --config ./webpack.config.js  --color --bail",
     "build:dev": "cross-env NODE_ENV=development node node_modules/webpack/bin/webpack.js --mode development --config ./webpack.config.js  --color --bail",
-    "copythemes": "ncp node_modules/igniteui-webcomponents/themes ./wwwroot/themes",
+    "copythemes": "ncp node_modules/igniteui-webcomponents/themes ./src/wwwroot/themes",
     "ingest": "gulp"
   },
   "author": "",

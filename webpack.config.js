@@ -118,7 +118,7 @@ if (currScript.src.indexOf("?bustv2=") >= 0 || window.__igLibraryLoad) {
 }
 `;
       },
-      filename: path.join(__dirname, './wwwroot/app.bootstrap.js'),
+      filename: path.join(__dirname, './src/wwwroot/app.bootstrap.js'),
       inject: false,
   }),
   new HtmlWebpackPlugin({
@@ -139,47 +139,26 @@ if (currScript.src.indexOf("?bustv2=") >= 0 || window.__igLibraryLoad) {
   }
 `;
     },
-    filename: path.join(__dirname, './wwwroot/app.bundle.js'),
+    filename: path.join(__dirname, './src/wwwroot/app.bundle.js'),
     inject: false,
 }),
 new HtmlWebpackPlugin({
   templateContent: function (params) {
     return bootFileContent;
   },
-  filename: path.join(__dirname, './wwwroot/IgniteUI.Blazor.lib.module.js'),
-  inject: false,
-}),
-new HtmlWebpackPlugin({
-  templateContent: function (params) {
-    return bootFileContent.replace(/IgniteUI\.Blazor\.lib\.module\.js/gm, "IgniteUI.BlazorDebug.lib.module.js");
-  },
-  filename: path.join(__dirname, './wwwroot/IgniteUI.BlazorDebug.lib.module.js'),
-  inject: false,
-}),
-new HtmlWebpackPlugin({
-  templateContent: function (params) {
-    return bootFileContent.replace(/IgniteUI\.Blazor\.lib\.module\.js/gm, "IgniteUI.Blazor.Trial.lib.module.js");
-  },
-  filename: path.join(__dirname, './wwwroot/IgniteUI.Blazor.Trial.lib.module.js'),
-  inject: false,
-}),
-new HtmlWebpackPlugin({
-  templateContent: function (params) {
-    return bootFileContent.replace(/IgniteUI\.Blazor\.lib\.module\.js/gm, "IgniteUI.Blazor.Lite.lib.module.js");
-  },
-  filename: path.join(__dirname, './wwwroot/IgniteUI.Blazor.Lite.lib.module.js'),
+  filename: path.join(__dirname, './src/wwwroot/IgniteUI.Blazor.Lite.lib.module.js'),
   inject: false,
 })
 ];
 
 var config = {
   devtool: isProd ? 'hidden-source-map' : 'source-map',
-  context: path.resolve('./src'),
+  context: path.resolve('./src/src'),
   entry: {
-     app: ['./index.ts', ...glob.sync('./index.*.part.ts', { cwd: path.resolve('./src')})]
+     app: ['./index.ts', ...glob.sync('./index.*.part.ts', { cwd: path.resolve('./src/src')})]
   },
   output: {
-    path: path.resolve('./wwwroot'),
+    path: path.resolve('./src/wwwroot'),
     filename: '[name].[contenthash].bundle.js',
     globalObject: 'this',
     library: "InfragisticsBlazor"

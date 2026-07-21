@@ -4,6 +4,11 @@
       //BUG 35208
       "FormatOptions",
       "ResourceStrings"
+    ],
+    "ExcludedEvents": [
+      // Does not fire from a synthetic igcChange event. Previously untested:
+      // the old source-scan two-way detection accidentally excluded it.
+      "Change"
     ]
   },
   "IgbDatePicker": {
@@ -37,6 +42,11 @@
       // This should not be a property. No idea why it generates as one and why it is settable.
       "EmitEvent"
     ],
+    "ExcludedEvents": [
+      // Does not fire from a synthetic igcChange event. Previously untested:
+      // the old source-scan two-way detection accidentally excluded it.
+      "Change"
+    ],
     "DependantMethods": [
       // BUG 35182
       "ReportValidityAsync",
@@ -59,6 +69,12 @@
       // BUG 35182
       "ReportValidityAsync",
       "CheckValidityAsync"
+    ],
+    "ExcludedEvents": [
+      // Triggering igcChange resets client state and breaks the subsequent
+      // Value property check. Previously untested: the old source-scan
+      // two-way detection accidentally excluded it.
+      "Change"
     ]
   },
   "IgbSlider": {

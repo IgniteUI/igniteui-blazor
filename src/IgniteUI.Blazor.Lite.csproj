@@ -57,25 +57,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Exclude the TypeScript interop source (src/) and its build output (dist/) -->
     <Compile Remove="dist\**" />
-    <Compile Remove="stories\**" />
-    <Compile Remove="tests\**" />
-    <Compile Remove="templates\**" />
     <Content Remove="dist\**" />
     <Content Remove="src\**" />
-    <Content Remove="node_modules\**" />
-    <Content Remove="stories\**" />
-    <Content Remove="tests\**" />
-    <Content Remove="templates\**" />
-    <Content Remove="*.json" />
     <EmbeddedResource Remove="dist\**" />
-    <EmbeddedResource Remove="stories\**" />
-    <EmbeddedResource Remove="templates\**" />
     <EmbeddedResource Remove="tmp\**" />
     <None Remove="dist\**" />
-    <None Remove="stories\**" />
-    <None Remove="templates\**" />
-    <None Remove="tests\**" />
 
     <!-- Only root componentsBase and componentsBase/WebInputs -->
     <Compile Remove="componentsBase\**\*.cs" />
@@ -84,14 +72,14 @@
     <Compile Include="componentsBase\*.cs" />
     <Compile Include="componentsBase\WebInputs\*.cs" />
 
-    <None Include="README.md">
+    <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <None Include="LICENSE">
+    <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
