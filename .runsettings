@@ -17,8 +17,20 @@
 			<DataCollector friendlyName="Code Coverage">
 				<Configuration>
 					<Format>cobertura</Format>
-					<Include>[IgniteUI.Blazor.Lite]*</Include>
-					<ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+					<CodeCoverage>
+						<ModulePaths>
+							<Include>
+								<!-- Only the product assembly -->
+								<ModulePath>IgniteUI.Blazor.Lite.dll</ModulePath>
+							</Include>
+						</ModulePaths>
+						<Attributes>
+							<Exclude>
+								<Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+								<Attribute>^System\.Runtime\.CompilerServices\.CompilerGeneratedAttribute$</Attribute>
+							</Exclude>
+						</Attributes>
+					</CodeCoverage>
 				</Configuration>
 			</DataCollector>
 		</DataCollectors>
