@@ -1,0 +1,14 @@
+# Commits listed here are skipped by `git blame` (and GitHub's blame view
+# picks this file up automatically at the repo root).
+#
+# Local setup (one-time, per clone):
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# Only full 40-character SHAs are valid; a bad entry makes `git blame` error
+# out. Append the SHA in a follow-up commit (the hash is only known after the
+# formatting commit is created).
+
+# One-time repo-wide formatting commit (dotnet format whitespace + prettier)
+152588b1db59b64bd5249043e870a6db87ed5295
+9a14240ce192dcbed48445ab6251ae33c9f53cbb
+98dd4eae72d03f6cecb8b22ae1ea7583362c69ee
