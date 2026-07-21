@@ -1,6 +1,5 @@
 using IgniteUI.Blazor.Lite.TestBed.Components;
 
-
 public class Program
 {
     public static void Main(string[] args)

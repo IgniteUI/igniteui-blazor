@@ -20,7 +20,8 @@ namespace IgniteUI.Blazor.Controls
         {
             if (EventCallback<IgbComponentValueChangedEventArgs>.Empty.Equals(this.InputOcurred))
             {
-                this.InputOcurred = new EventCallback<IgbComponentValueChangedEventArgs>(null, (Action<IgbComponentValueChangedEventArgs>)((e) => { })); this._inputOcurred = null;
+                this.InputOcurred = new EventCallback<IgbComponentValueChangedEventArgs>(null, (Action<IgbComponentValueChangedEventArgs>)((e) => { }));
+                this._inputOcurred = null;
             }
         }
 

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbDropdownItem: IDisposable
+    public partial class IgbDropdownItem : IDisposable
     {
-        [CascadingParameter(Name="DropdownParent")]
+        [CascadingParameter(Name = "DropdownParent")]
         protected BaseRendererControl DropdownParent
         {
             get; set;

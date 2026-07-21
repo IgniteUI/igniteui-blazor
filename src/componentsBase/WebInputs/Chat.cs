@@ -19,7 +19,6 @@ namespace IgniteUI.Blazor.Controls
             newValue.DisableInputAttachments = true;
         }
 
-
         public IgbChatDraftMessage GetCurrentDraftMessage()
         {
             var iv = InvokeMethodSync("p:DraftMessage", new object[] { }, new string[] { });

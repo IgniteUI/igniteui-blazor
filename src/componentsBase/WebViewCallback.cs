@@ -26,7 +26,7 @@ namespace IgniteUI.Blazor.Controls
         //        _instance = value;
         //    } 
         //}
-        
+
         public bool IsReady
         {
             get
@@ -38,7 +38,8 @@ namespace IgniteUI.Blazor.Controls
         private bool _isReady;
 
         [JSInvokable]
-        public void OnReady() {
+        public void OnReady()
+        {
             _isReady = true;
             ForControls((c) => c.OnReady());
         }
@@ -50,9 +51,12 @@ namespace IgniteUI.Blazor.Controls
             {
                 var control = _controlsMap[controlKey];
                 BaseRendererControl target;
-                if (control.TryGetTarget(out target)) {
+                if (control.TryGetTarget(out target))
+                {
                     target.OnReady();
-                } else {
+                }
+                else
+                {
                     if (toRemove == null)
                     {
                         toRemove = new List<string>();
@@ -106,7 +110,8 @@ namespace IgniteUI.Blazor.Controls
         }
 
         [JSInvokable]
-        public void OnRaiseEvent(string containerId, string name, string propertyName, string args) {
+        public void OnRaiseEvent(string containerId, string name, string propertyName, string args)
+        {
             var control = GetControl(containerId);
             //Console.WriteLine("raising event");
             if (control != null)
@@ -117,7 +122,8 @@ namespace IgniteUI.Blazor.Controls
         }
 
         [JSInvokable]
-        public void AdjustDynamicContent(string containerId, string contentType, string templateId, string contentId, string actionType, string args) {
+        public void AdjustDynamicContent(string containerId, string contentType, string templateId, string contentId, string actionType, string args)
+        {
             var control = GetControl(containerId);
             //Console.WriteLine("raising event");
             if (control != null)
@@ -128,7 +134,8 @@ namespace IgniteUI.Blazor.Controls
         }
 
         [JSInvokable]
-        public void AdjustDynamicContentBatch(string containerId, string batch) {
+        public void AdjustDynamicContentBatch(string containerId, string batch)
+        {
             var control = GetControl(containerId);
             if (control != null)
             {

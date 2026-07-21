@@ -18,7 +18,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private string _json;
-        public string Json { get { return _json; }}
+        public string Json { get { return _json; } }
 
         internal string ToRef()
         {
@@ -44,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private string _uri;
-        public string Uri { get { return _uri; }}
+        public string Uri { get { return _uri; } }
 
         internal string ToRef()
         {

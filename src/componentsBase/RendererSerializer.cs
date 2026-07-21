@@ -8,10 +8,11 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using System.Linq;
 
-namespace IgniteUI.Blazor.Controls 
+namespace IgniteUI.Blazor.Controls
 {
 
-    internal partial class RendererSerializer {
+    internal partial class RendererSerializer
+    {
         public RendererSerializer(SerializationContext context, ComponentBase component, string name)
         {
             _name = name;
@@ -39,7 +40,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void AddBooleanProp(string propertyName, bool value) {
+        public void AddBooleanProp(string propertyName, bool value)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -51,7 +53,8 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": " + value.ToString(CultureInfo.InvariantCulture).ToLower());
         }
 
-        public void AddStringProp(string propertyName, string value) {
+        public void AddStringProp(string propertyName, string value)
+        {
             if (_context.Filter != null)
             {
                 if (propertyName != "name" && propertyName != "type")
@@ -121,7 +124,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void AddPrimitiveProp(string propertyName, object val) {
+        public void AddPrimitiveProp(string propertyName, object val)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -140,7 +144,7 @@ namespace IgniteUI.Blazor.Controls
                     AddPrimitiveProp(subVal);
                 }
                 _context.Writer.WriteEndArray();
-            } 
+            }
             else if (val is double)
             {
                 _context.Writer.WriteNumber(propertyName, (double)val);
@@ -183,14 +187,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void AddArrayProp(string propertyName, object values) {
+        public void AddArrayProp(string propertyName, object values)
+        {
             bool containsSub = false;
             var valuesArray = values as object[];
             if (values != null)
             {
-                for (int i = 0; i < valuesArray.Length; i++) {
+                for (int i = 0; i < valuesArray.Length; i++)
+                {
                     object val = valuesArray[i];
-                    if (val is BaseRendererControl || val is BaseRendererElement) {
+                    if (val is BaseRendererControl || val is BaseRendererElement)
+                    {
                         containsSub = true;
                         break;
                     }
@@ -208,22 +215,28 @@ namespace IgniteUI.Blazor.Controls
                     context = new SerializationContext(_context.Writer, null);
                 }
             }
-            if (values == null) {
+            if (values == null)
+            {
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
                 context.Writer.WriteNull(propertyName);
                 return;
             }
             //string[] strValues = new string[values.Length];
             context.Writer.WriteStartArray(propertyName);
-            for (int i = 0; i < valuesArray.Length; i++) {
+            for (int i = 0; i < valuesArray.Length; i++)
+            {
                 object val = valuesArray[i];
-                if (val is String) {
+                if (val is String)
+                {
                     context.Writer.WriteStringValue((string)val);
                     //strValues[i] = "\"" + (string)val + "\"";
-                } else if (val is JsonSerializable) {
+                }
+                else if (val is JsonSerializable)
+                {
                     ((JsonSerializable)val).Serialize(context);
                 }
-                else {
+                else
+                {
                     if (val is double)
                     {
                         context.Writer.WriteNumberValue((double)val);
@@ -271,14 +284,15 @@ namespace IgniteUI.Blazor.Controls
 
         protected string Camelize(string value)
         {
-            if (value == null || value.Length == 0) {
+            if (value == null || value.Length == 0)
+            {
                 return value;
             }
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-
-        public void AddEnumProp(string propertyName, Enum value) {
+        public void AddEnumProp(string propertyName, Enum value)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -304,7 +318,8 @@ namespace IgniteUI.Blazor.Controls
         //     return TextUtils.join("", parts);
         // }
 
-        public void AddNumberProp(String propertyName, Object value) {
+        public void AddNumberProp(String propertyName, Object value)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -335,7 +350,8 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": " + Convert.ToString(value, CultureInfo.InvariantCulture));
         }
 
-        public void AddDateTimeProp(String propertyName, DateTime? value) {
+        public void AddDateTimeProp(String propertyName, DateTime? value)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -359,15 +375,18 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void End() {
+        public void End()
+        {
             _context.Writer.WriteString("type", Type);
             _context.Writer.WriteEndObject();
         }
 
-        public void AddSerializableProp(String propertyName, JsonSerializable value) {
+        public void AddSerializableProp(String propertyName, JsonSerializable value)
+        {
             var context = _context;
-                
-            if (value == null) {
+
+            if (value == null)
+            {
 
                 if (_context.Filter != null)
                 {
@@ -379,7 +398,7 @@ namespace IgniteUI.Blazor.Controls
                     {
                         context = new SerializationContext(_context.Writer, null);
                     }
-                }          
+                }
                 context.Writer.WriteNull(propertyName);
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
                 return;
@@ -394,12 +413,13 @@ namespace IgniteUI.Blazor.Controls
                 {
                     context = new SerializationContext(_context.Writer, null);
                 }
-            }   
+            }
             value.Serialize(context, propertyName);
             //_properties.Add("\"" + propertyName + "\"" + ": " + value.Serialize());
         }
 
-        public void AddStringArrayProp(String propertyName, string[] values) {
+        public void AddStringArrayProp(String propertyName, string[] values)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -408,7 +428,8 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            if (values == null) {
+            if (values == null)
+            {
                 _context.Writer.WriteNull(propertyName);
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
                 return;
@@ -416,16 +437,18 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("parsing brush array");
             var v = values;
             //v = v.Trim();
-            
+
             var parts = values;
-            for (var i = 0; i < parts.Length; i++) {
+            for (var i = 0; i < parts.Length; i++)
+            {
                 parts[i] = parts[i].Trim();
                 //Console.WriteLine("brush part: " + parts[i]);
             }
 
             _context.Writer.WriteStartArray(propertyName);
             //string[] strValues = new string[parts.Length];
-            for (int i = 0; i < parts.Length; i++) {
+            for (int i = 0; i < parts.Length; i++)
+            {
                 string val = parts[i];
                 _context.Writer.WriteStringValue(val);
                 //strValues[i] = "\"" + val + "\"";
@@ -437,7 +460,8 @@ namespace IgniteUI.Blazor.Controls
             // _properties.Add("\"" + propertyName + "\"" + ": [" + arrayParts + " ]");
         }
 
-        public void AddDateArrayProp(String propertyName, DateTime[] values) {
+        public void AddDateArrayProp(String propertyName, DateTime[] values)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -446,7 +470,8 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            if (values == null) {
+            if (values == null)
+            {
                 _context.Writer.WriteNull(propertyName);
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
                 return;
@@ -454,7 +479,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("parsing brush array");
             var v = values;
             //v = v.Trim();
-            
+
             var parts = values;
             // for (var i = 0; i < parts.Length; i++) {
             //     parts[i] = parts[i].Trim();
@@ -466,7 +491,6 @@ namespace IgniteUI.Blazor.Controls
             //_context.Writer.WriteString(propertyName, result);
             // needed because of refactoring in the wc calendar
             // PR: https://github.com/IgniteUI/igniteui-webcomponents/pull/1200
-
 
             _context.Writer.WriteStartArray(propertyName);
             for (int i = 0; i < parts.Length; i++)
@@ -482,7 +506,8 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private Regex _colorSplitRegex = new Regex("[\\s,]+(?![^(]*\\))");
-        public void AddStringArrayProp(String propertyName, string values) {
+        public void AddStringArrayProp(String propertyName, string values)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -491,7 +516,8 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            if (values == null) {
+            if (values == null)
+            {
                 _context.Writer.WriteNull(propertyName);
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
                 return;
@@ -499,16 +525,18 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("parsing brush array");
             var v = values;
             v = v.Trim();
-            
+
             var parts = _colorSplitRegex.Split(v);
-            for (var i = 0; i < parts.Length; i++) {
+            for (var i = 0; i < parts.Length; i++)
+            {
                 parts[i] = parts[i].Trim();
                 //Console.WriteLine("brush part: " + parts[i]);
             }
 
             _context.Writer.WriteStartArray(propertyName);
             //string[] strValues = new string[parts.Length];
-            for (int i = 0; i < parts.Length; i++) {
+            for (int i = 0; i < parts.Length; i++)
+            {
                 string val = parts[i];
                 _context.Writer.WriteStringValue(val);
                 //strValues[i] = "\"" + val + "\"";
@@ -520,7 +548,8 @@ namespace IgniteUI.Blazor.Controls
             // _properties.Add("\"" + propertyName + "\"" + ": [" + arrayParts + " ]");
         }
 
-        public void AddEnumArrayProp(String propertyName, object values) {
+        public void AddEnumArrayProp(String propertyName, object values)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -529,7 +558,8 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            if (values == null) {
+            if (values == null)
+            {
                 _context.Writer.WriteNull(propertyName);
                 return;
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
@@ -537,7 +567,8 @@ namespace IgniteUI.Blazor.Controls
             IList vals = (IList)(object)values;
             //string[] strValues = new string[vals.Count];
             _context.Writer.WriteStartArray(propertyName);
-            for (int i = 0; i < vals.Count; i++) {
+            for (int i = 0; i < vals.Count; i++)
+            {
                 Enum val = (Enum)vals[i];
                 _context.Writer.WriteStringValue(Camelize(val.ToString()));
                 //strValues[i] = "\"" + val.ToString() + "\"";
@@ -546,7 +577,8 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": [" + string.Join(", ", strValues) + " ]");
         }
 
-        public void AddIntArrayProp(String propertyName, int[] values) {
+        public void AddIntArrayProp(String propertyName, int[] values)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -555,14 +587,16 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            if (values == null) {
+            if (values == null)
+            {
                 _context.Writer.WriteNull(propertyName);
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
                 return;
             }
             //string[] strValues = new string[values.Length];
             _context.Writer.WriteStartArray(propertyName);
-            for (int i = 0; i < values.Length; i++) {
+            for (int i = 0; i < values.Length; i++)
+            {
                 int val = values[i];
                 //strValues[i] = val.ToString(CultureInfo.InvariantCulture);
                 _context.Writer.WriteNumberValue(val);
@@ -571,7 +605,8 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": [" + string.Join(", ", strValues) + " ]");
         }
 
-        public void AddDoubleArrayProp(string propertyName, double[] numbers) {
+        public void AddDoubleArrayProp(string propertyName, double[] numbers)
+        {
             if (_context.Filter != null)
             {
                 if (!_context.Filter(_name, propertyName))
@@ -580,7 +615,8 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            if (numbers == null) {
+            if (numbers == null)
+            {
                 _context.Writer.WriteNull(propertyName);
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
                 return;
@@ -588,7 +624,8 @@ namespace IgniteUI.Blazor.Controls
 
             //List<string> items = new List<string>();
             _context.Writer.WriteStartArray(propertyName);
-            for (int i = 0; i < numbers.Length; i++) {
+            for (int i = 0; i < numbers.Length; i++)
+            {
                 //string c = numbers[i].ToString(CultureInfo.InvariantCulture);
                 //items.Add(c);
                 _context.Writer.WriteNumberValue(numbers[i]);
@@ -597,8 +634,10 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\": " + "[" + string.Join(", ", items) + "]");
         }
 
-        public void AddSerializableArrayProp<T>(string propertyName, T[] array) where T: JsonSerializable {
-            if (array == null) {
+        public void AddSerializableArrayProp<T>(string propertyName, T[] array) where T : JsonSerializable
+        {
+            if (array == null)
+            {
                 if (_context.Filter != null)
                 {
                     if (!_context.Filter(_name, propertyName))
@@ -612,7 +651,6 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-
             var context = _context;
             if (_context.Filter != null)
             {
@@ -623,7 +661,8 @@ namespace IgniteUI.Blazor.Controls
             }
             //List<string> items = new List<string>();
             context.Writer.WriteStartArray(propertyName);
-            for (int i = 0; i < array.Length; i++) {
+            for (int i = 0; i < array.Length; i++)
+            {
                 //string c = numbers[i].ToString(CultureInfo.InvariantCulture);
                 //items.Add(c);
                 var item = (JsonSerializable)array[i];
@@ -640,7 +679,8 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": " + coll.Serialize());
         }
 
-        public void AddCollectionProp<T>(string propertyName, BaseCollection<T> coll) {
+        public void AddCollectionProp<T>(string propertyName, BaseCollection<T> coll)
+        {
             var context = _context;
             if (_context.Filter != null)
             {

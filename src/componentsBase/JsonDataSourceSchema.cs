@@ -7,7 +7,8 @@ using System.Linq;
 namespace IgniteUI.Blazor.Controls
 {
 
-    internal class JSDataSourceSchema {
+    internal class JSDataSourceSchema
+    {
         public bool IsDataSource = false;
         public bool IsDictionary = false;
 
@@ -92,7 +93,7 @@ namespace IgniteUI.Blazor.Controls
                 uw.WriteStartObject();
             }
 
-        //Console.WriteLine("emitting json");
+            //Console.WriteLine("emitting json");
             if (IsDataSource)
             {
                 //Console.WriteLine("is data source");
@@ -120,7 +121,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     var currProp = PropertyNames[i];
                     var intents = PropertyDataIntents[i];
-                
+
                     if (_subSchemas.ContainsKey(currProp))
                     {
                         if (_subSchemas[currProp].HasDataIntents())
@@ -153,12 +154,11 @@ namespace IgniteUI.Blazor.Controls
                     }
                 }
 
-
                 for (var i = 0; i < Fields.Length; i++)
                 {
                     var currProp = FieldNames[i];
                     var intents = FieldDataIntents[i];
-                
+
                     if (_subSchemas.ContainsKey(currProp))
                     {
                         if (_subSchemas[currProp].HasDataIntents())
@@ -186,7 +186,7 @@ namespace IgniteUI.Blazor.Controls
                                 uw.WriteStringValue(val);
                             }
                             uw.WriteEndArray();
-                        // uw.WriteEndObject();
+                            // uw.WriteEndObject();
                         }
                     }
                 }
@@ -250,7 +250,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public static JSDataSourceSchema CreateFromDictionary(IDictionary item) {
+        public static JSDataSourceSchema CreateFromDictionary(IDictionary item)
+        {
             JSDataSourceSchema s = new JSDataSourceSchema();
             s.IsDictionary = true;
             List<string> names = new List<string>();
@@ -268,7 +269,6 @@ namespace IgniteUI.Blazor.Controls
                     names.Add((string)key);
                     s._buildingPropertiesDataIntents.Add(null);
 
-                    
                     Type ret = item[key].GetType();
                     types.Add(ret);
 
@@ -279,7 +279,7 @@ namespace IgniteUI.Blazor.Controls
                     s._buildingPropertiesTypes.Add(type);
                 }
             }
-            
+
             s.Properties = s._buildingProperties.ToArray();
             s.PropertyTypes = s._buildingPropertiesTypes.ToArray();
             s.PropertyDataIntents = s._buildingPropertiesDataIntents.ToArray();
@@ -288,31 +288,35 @@ namespace IgniteUI.Blazor.Controls
             s.TypedPropertyGetters = new Delegate[names.Count];
 
             var itemProp = item.GetType().GetProperty("Item");
-            
-            for (int i = 0; i < names.Count; i++) {
+
+            for (int i = 0; i < names.Count; i++)
+            {
                 var key = names[i];
                 s.PropertyGetters[i] = (o) => ((IDictionary)o)[key];
             }
-             for (int i = 0; i < names.Count; i++) {
+            for (int i = 0; i < names.Count; i++)
+            {
                 var key = names[i];
                 s.TypedPropertyGetters[i] = s.GetTypedDictionaryValueGetter(item.GetType(), types[i], itemProp, key);
             }
             s.JsonPropertyNames = new System.Text.Json.JsonEncodedText[names.Count];
-            for (int i = 0; i < names.Count; i++) {
+            for (int i = 0; i < names.Count; i++)
+            {
                 s.JsonPropertyNames[i] = System.Text.Json.JsonEncodedText.Encode(names[i]);
             }
 
             s.Fields = s._buildingFields.ToArray();
             s.FieldTypes = s._buildingFieldsTypes.ToArray();
             s.FieldDataIntents = s._buildingFieldsDataIntents.ToArray();
-            s.FieldNames = new string[] {};
+            s.FieldNames = new string[] { };
             s.FieldGetters = new Func<object, object>[s.FieldNames.Length];
             s.TypedFieldGetters = new Delegate[s.FieldNames.Length];
-            
+
             return s;
         }
 
-        public static JSDataSourceSchema Create(Type c) {
+        public static JSDataSourceSchema Create(Type c)
+        {
             JSDataSourceSchema s = new JSDataSourceSchema();
 
             // RS TFS272017 - We need to grab the property infos from the base types if they exist
@@ -325,13 +329,16 @@ namespace IgniteUI.Blazor.Controls
             List<FieldInfo> fields = new List<FieldInfo>();
             GetFieldsFromType(c, fields);
 
-            for (int i = 0; i < properties.Count; i++) {
+            for (int i = 0; i < properties.Count; i++)
+            {
                 var curr = properties[i];
-                if (curr.DeclaringType == typeof(Object) || curr.GetIndexParameters().Length > 0) {
+                if (curr.DeclaringType == typeof(Object) || curr.GetIndexParameters().Length > 0)
+                {
                     continue;
                 }
-            
-                if (curr.GetMethod != null && curr.GetMethod.IsPublic) {
+
+                if (curr.GetMethod != null && curr.GetMethod.IsPublic)
+                {
                     if (!curr.GetMethod.IsStatic)
                     {
                         s.AddProperty(curr);
@@ -339,12 +346,15 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            for (int i = 0; i < fields.Count; i++) {
+            for (int i = 0; i < fields.Count; i++)
+            {
                 FieldInfo curr = fields[i];
-                if (curr.DeclaringType == typeof(Object)) {
+                if (curr.DeclaringType == typeof(Object))
+                {
                     continue;
                 }
-                if (curr.IsPublic && !curr.IsSpecialName && !curr.IsStatic) {
+                if (curr.IsPublic && !curr.IsSpecialName && !curr.IsStatic)
+                {
                     s.AddField(curr);
                 }
             }
@@ -352,28 +362,36 @@ namespace IgniteUI.Blazor.Controls
             return s;
         }
 
-        public object ResolveValue(String name, Object item, Func<object, object> propGetter, JsonDataSourceItem jsonItem, JSDataSourceSchemaType type, DataSourceManager manager) {
+        public object ResolveValue(String name, Object item, Func<object, object> propGetter, JsonDataSourceItem jsonItem, JSDataSourceSchemaType type, DataSourceManager manager)
+        {
             if (item == null)
             {
                 return null;
             }
 
-            try {
-                object value =  propGetter(item);
-                if (type == JSDataSourceSchemaType.ObjectValue) {
+            try
+            {
+                object value = propGetter(item);
+                if (type == JSDataSourceSchemaType.ObjectValue)
+                {
                     return GetSubObject(name, value, jsonItem, manager);
                 }
                 return value;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return null;
             }
         }
 
-        private object GetSubObject(String name, Object value, JsonDataSourceItem rootItem, DataSourceManager manager) {
+        private object GetSubObject(String name, Object value, JsonDataSourceItem rootItem, DataSourceManager manager)
+        {
             bool checkedArray = _checkedArray.ContainsKey(name);
-            if (!checkedArray && value != null) {
+            if (!checkedArray && value != null)
+            {
                 _checkedArray[name] = true;
-                if (value.GetType().IsArray || value is IEnumerable || value is IList) {
+                if (value.GetType().IsArray || value is IEnumerable || value is IList)
+                {
                     _subSchemas[name] = BuildSubObjectSchema(value);
 
                     if (NotifyModified != null)
@@ -382,8 +400,10 @@ namespace IgniteUI.Blazor.Controls
                     }
                 }
             }
-            if (!_subSchemas.ContainsKey(name)) {
-                if (value == null) {
+            if (!_subSchemas.ContainsKey(name))
+            {
+                if (value == null)
+                {
                     return JsonDataSourceItem.Create(value, null, manager, rootItem);
                 }
                 _subSchemas[name] = JsonDataSourceItem.ExtractSchema(value);
@@ -394,7 +414,7 @@ namespace IgniteUI.Blazor.Controls
             }
             JSDataSourceSchema subSchema = _subSchemas[name];
 
-            return  JsonDataSourceItem.Create(value, subSchema, manager, rootItem);
+            return JsonDataSourceItem.Create(value, subSchema, manager, rootItem);
         }
 
         public JSDataSourceSchema BuildSubObjectSchema(object subObject)
@@ -442,36 +462,42 @@ namespace IgniteUI.Blazor.Controls
             return schema;
         }
 
-        public object ResolveFieldValue(String name, Object item, Func<object, object> fieldGetter, JsonDataSourceItem rootItem, JSDataSourceSchemaType type, DataSourceManager manager) {
-            try {
+        public object ResolveFieldValue(String name, Object item, Func<object, object> fieldGetter, JsonDataSourceItem rootItem, JSDataSourceSchemaType type, DataSourceManager manager)
+        {
+            try
+            {
                 object value = fieldGetter(item);
-                if (type == JSDataSourceSchemaType.ObjectValue) {
+                if (type == JSDataSourceSchemaType.ObjectValue)
+                {
                     return GetSubObject(name, value, rootItem, manager);
                 }
                 return value;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return null;
             }
         }
 
-        public String RenderDate(object value) 
+        public String RenderDate(object value)
         {
-             if (value is DateTime) {
+            if (value is DateTime)
+            {
                 return "@d:" + ((DateTime)value).ToString("o");
             }
-           
+
             return "null";
         }
 
         private JSDataSourceSchema _itemSchema = null;
 
-        public JSDataSourceSchema ItemSchema 
+        public JSDataSourceSchema ItemSchema
         {
-            get 
+            get
             {
                 return _itemSchema;
             }
-            set 
+            set
             {
                 _itemSchema = value;
             }
@@ -523,7 +549,7 @@ namespace IgniteUI.Blazor.Controls
             _subSchemas[propertyName] = schema;
         }
 
-        public JSDataSourceSchemaType ResolveSchemaType(Type type) 
+        public JSDataSourceSchemaType ResolveSchemaType(Type type)
         {
             if (type == typeof(double))
             {
@@ -545,10 +571,12 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JSDataSourceSchemaType.ShortValue;
             }
-            if (type == typeof(byte)) {
+            if (type == typeof(byte))
+            {
                 return JSDataSourceSchemaType.ByteValue;
             }
-            if (type == typeof(decimal)) {
+            if (type == typeof(decimal))
+            {
                 return JSDataSourceSchemaType.DecimalValue;
             }
             if (type == typeof(long))
@@ -641,7 +669,7 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchemaType.ObjectValue;
         }
 
-        public void AddProperty(PropertyInfo prop) 
+        public void AddProperty(PropertyInfo prop)
         {
             _buildingProperties.Add(prop);
 
@@ -660,7 +688,7 @@ namespace IgniteUI.Blazor.Controls
                         dataIntents.Add((IDataIntentAttribute)attr);
                     }
                 }
-            }   
+            }
             _buildingPropertiesDataIntents.Add(dataIntents == null ? null : dataIntents.ToArray());
 
             Type ret = prop.PropertyType;
@@ -672,7 +700,7 @@ namespace IgniteUI.Blazor.Controls
             _buildingPropertiesTypes.Add(type);
         }
 
-        public void AddField(FieldInfo curr) 
+        public void AddField(FieldInfo curr)
         {
             _buildingFields.Add(curr);
             Type ret = curr.FieldType;
@@ -693,7 +721,7 @@ namespace IgniteUI.Blazor.Controls
                         dataIntents.Add((IDataIntentAttribute)attr);
                     }
                 }
-            }   
+            }
             _buildingFieldsDataIntents.Add(dataIntents == null ? null : dataIntents.ToArray());
             //if (type == JsonDataSourceSchemaType.OBJECT_VALUE) {
             //    _subSchemas.put(curr.getName(), create(ret));
@@ -831,24 +859,29 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Commit() {
+        public void Commit()
+        {
             Properties = _buildingProperties.ToArray();
             PropertyTypes = _buildingPropertiesTypes.ToArray();
             PropertyDataIntents = _buildingPropertiesDataIntents.ToArray();
             PropertyNames = new String[_buildingProperties.Count];
             PropertyGetters = new Func<object, object>[_buildingProperties.Count];
             TypedPropertyGetters = new Delegate[_buildingProperties.Count];
-            for (int i = 0; i < _buildingProperties.Count; i++) {
+            for (int i = 0; i < _buildingProperties.Count; i++)
+            {
                 PropertyNames[i] = _buildingProperties[i].Name;
             }
-            for (int i = 0; i < _buildingProperties.Count; i++) {
+            for (int i = 0; i < _buildingProperties.Count; i++)
+            {
                 PropertyGetters[i] = GetPropertyValueGetter(_buildingProperties[i].DeclaringType, _buildingProperties[i]);
             }
-             for (int i = 0; i < _buildingProperties.Count; i++) {
+            for (int i = 0; i < _buildingProperties.Count; i++)
+            {
                 TypedPropertyGetters[i] = GetTypedPropertyValueGetter(_buildingProperties[i].DeclaringType, _buildingProperties[i]);
             }
             JsonPropertyNames = new System.Text.Json.JsonEncodedText[_buildingProperties.Count];
-            for (int i = 0; i < _buildingProperties.Count; i++) {
+            for (int i = 0; i < _buildingProperties.Count; i++)
+            {
                 JsonPropertyNames[i] = System.Text.Json.JsonEncodedText.Encode(_buildingProperties[i].Name);
             }
 
@@ -858,17 +891,21 @@ namespace IgniteUI.Blazor.Controls
             FieldDataIntents = _buildingFieldsDataIntents.ToArray();
             FieldGetters = new Func<object, object>[_buildingFields.Count];
             TypedFieldGetters = new Func<object, object>[_buildingFields.Count];
-            for (int i = 0; i < _buildingFields.Count; i++) {
+            for (int i = 0; i < _buildingFields.Count; i++)
+            {
                 FieldNames[i] = _buildingFields[i].Name;
             }
-            for (int i = 0; i < _buildingFields.Count; i++) {
+            for (int i = 0; i < _buildingFields.Count; i++)
+            {
                 FieldGetters[i] = GetFieldValueGetter(_buildingFields[i].DeclaringType, _buildingFields[i]);
             }
-            for (int i = 0; i < _buildingFields.Count; i++) {
+            for (int i = 0; i < _buildingFields.Count; i++)
+            {
                 TypedFieldGetters[i] = GetTypedFieldValueGetter(_buildingFields[i].DeclaringType, _buildingFields[i]);
             }
             JsonFieldNames = new System.Text.Json.JsonEncodedText[_buildingFields.Count];
-            for (int i = 0; i < _buildingFields.Count; i++) {
+            for (int i = 0; i < _buildingFields.Count; i++)
+            {
                 JsonFieldNames[i] = System.Text.Json.JsonEncodedText.Encode(_buildingFields[i].Name);
             }
 
@@ -879,7 +916,8 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    internal enum JSDataSourceSchemaType {
+    internal enum JSDataSourceSchemaType
+    {
         DoubleValue,
         IntValue,
         LongValue,

@@ -8,101 +8,100 @@ using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
-                            /// <summary>
-/// A wrapper for navigation drawer's header.
-/// </summary>
-public partial class IgbNavDrawerHeaderItem: BaseRendererControl {
-                                public override string Type { get { return "WebNavDrawerHeaderItem"; } }
+    /// <summary>
+    /// A wrapper for navigation drawer's header.
+    /// </summary>
+    public partial class IgbNavDrawerHeaderItem : BaseRendererControl
+    {
+        public override string Type { get { return "WebNavDrawerHeaderItem"; } }
 
-                                protected override void EnsureModulesLoaded()
-                                {
-                                    if (!IgbNavDrawerHeaderItemModule.IsLoadRequested(IgBlazor))
-                                    {
-                                        IgbNavDrawerHeaderItemModule.Register(IgBlazor);
-                                    }
-                                }
+        protected override void EnsureModulesLoaded()
+        {
+            if (!IgbNavDrawerHeaderItemModule.IsLoadRequested(IgBlazor))
+            {
+                IgbNavDrawerHeaderItemModule.Register(IgBlazor);
+            }
+        }
 
-                            protected override string ResolveDisplay()
-                        {
-                        return "inline-block";
-                        }
+        protected override string ResolveDisplay()
+        {
+            return "inline-block";
+        }
 
-                            protected override bool SupportsVisualChildren
-                        {
-                                get 
-                                {
-                            return true;
-                                }
-                        }
+        protected override bool SupportsVisualChildren
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-                            protected override bool UseDirectRender
-                        {
-                                get 
-                                {
-                            return true;
-                                }
-                        }
+        protected override bool UseDirectRender
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-                            protected override string DirectRenderElementName
-                        {
-                                get 
-                                {
-                            return "igc-nav-drawer-header-item";
-                                }
-                        }
+        protected override string DirectRenderElementName
+        {
+            get
+            {
+                return "igc-nav-drawer-header-item";
+            }
+        }
 
-                            protected override ControlEventBehavior DefaultEventBehavior
-                            {
-                                get { return ControlEventBehavior.Immediate; }
-                            }
-	
-	    public IgbNavDrawerHeaderItem(): base() {
-	        OnCreatedIgbNavDrawerHeaderItem();
-	
-	        
-	    }
-	
-	    partial void OnCreatedIgbNavDrawerHeaderItem();
-	    
-	
-	    partial void FindByNameNavDrawerHeaderItem(string name, ref object item);
-	    public override object FindByName(string name)
-	    {
-	        
-	    var baseResult = base.FindByName(name);
-	    if (baseResult != null)
-	    {
-	        return baseResult;
-	    }
-	
-	        object item = null;
-	        FindByNameNavDrawerHeaderItem(name, ref item);
-	        if (item != null)
-	        {
-	            return item;          
-	        }
-	
-	        return null;
-	    }
-	public async  Task SetNativeElementAsync(Object element) 
-	                    {
-		await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-	}
-	                    public  void SetNativeElement(Object element) 
-	                    {
-		InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-	}
-	
-	    partial void SerializeCoreIgbNavDrawerHeaderItem(RendererSerializer ser);
-	
-	    internal override void SerializeCore(RendererSerializer ser) 
-	    {
-	        base.SerializeCore(ser);
-	
-	        SerializeCoreIgbNavDrawerHeaderItem(ser);
-	
-	
-	    }
-	
-}
+        protected override ControlEventBehavior DefaultEventBehavior
+        {
+            get { return ControlEventBehavior.Immediate; }
+        }
+
+        public IgbNavDrawerHeaderItem() : base()
+        {
+            OnCreatedIgbNavDrawerHeaderItem();
+
+        }
+
+        partial void OnCreatedIgbNavDrawerHeaderItem();
+
+        partial void FindByNameNavDrawerHeaderItem(string name, ref object item);
+        public override object FindByName(string name)
+        {
+
+            var baseResult = base.FindByName(name);
+            if (baseResult != null)
+            {
+                return baseResult;
+            }
+
+            object item = null;
+            FindByNameNavDrawerHeaderItem(name, ref item);
+            if (item != null)
+            {
+                return item;
+            }
+
+            return null;
+        }
+        public async Task SetNativeElementAsync(Object element)
+        {
+            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+        }
+        public void SetNativeElement(Object element)
+        {
+            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+        }
+
+        partial void SerializeCoreIgbNavDrawerHeaderItem(RendererSerializer ser);
+
+        internal override void SerializeCore(RendererSerializer ser)
+        {
+            base.SerializeCore(ser);
+
+            SerializeCoreIgbNavDrawerHeaderItem(ser);
+
+        }
+
+    }
 }

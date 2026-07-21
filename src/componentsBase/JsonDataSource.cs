@@ -26,7 +26,7 @@ namespace IgniteUI.Blazor.Controls
         IJSDataSourceItem NotifyInsertItem(object data, int index, Object item);
         IJSDataSourceItem NotifyRemoveItem(object data, int index, object oldItem);
         void NotifyClearItems(Object data);
-        IJSDataSourceItem NotifySetItem(Object data, int index, Object oldItem, Object newItem) ;
+        IJSDataSourceItem NotifySetItem(Object data, int index, Object oldItem, Object newItem);
         IJSDataSourceItem NotifyUpdateItem(object data, int index, object item);
         void InsertItemWithId(string id, int index, Object item);
     }
@@ -38,18 +38,18 @@ namespace IgniteUI.Blazor.Controls
     }
 
     internal class JsonDataSource
-        : IJSDataSource 
+        : IJSDataSource
+    {
+        public bool SuppressModifications { get; set; }
+        public JSDataSourceType DataSourceType
         {
-            public bool SuppressModifications { get; set; }
-            public JSDataSourceType DataSourceType
+            get
             {
-                get
-                {
-                    return JSDataSourceType.Json;
-                }
+                return JSDataSourceType.Json;
             }
+        }
 
-            public bool IsSent { get; set; }
+        public bool IsSent { get; set; }
         private object _originalData;
 
         public string GetDataIntentsAsJson()
@@ -74,17 +74,23 @@ namespace IgniteUI.Blazor.Controls
 
         public bool DateCacheReady { get { return _dateCacheReady; } }
 
-        public static IJSDataSource CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager manager, string parentId) 
+        public static IJSDataSource CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
         {
-            if (data == null) {
+            if (data == null)
+            {
                 return null;
             }
-            
-            if (data.GetType().IsArray) {
+
+            if (data.GetType().IsArray)
+            {
                 return JsonDataSource.CreateFromArray((Object[])data, schema, manager, parentId);
-            } else if (data is IList) {
+            }
+            else if (data is IList)
+            {
                 return JsonDataSource.CreateFromIList((IList)data, schema, manager, parentId);
-            } else if (data is IEnumerable) {
+            }
+            else if (data is IEnumerable)
+            {
                 return JsonDataSource.CreateFromIEnumerable((IEnumerable)data, schema, manager, parentId);
             }
             return null;
@@ -106,77 +112,82 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
-                
+
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                 {
-					if (e.NewItems != null)
-					{
-						for (var i = 0; i < e.NewItems.Count; i++)
-						{
-							var item = e.NewItems[i];
+                    if (e.NewItems != null)
+                    {
+                        for (var i = 0; i < e.NewItems.Count; i++)
+                        {
+                            var item = e.NewItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null) {
+                            if (refName == null)
+                            {
                                 return;
                             }
-                            _manager.NotifyInsertItem(refName , e.NewStartingIndex + i, item);
-						}
-					}
-					break;
+                            _manager.NotifyInsertItem(refName, e.NewStartingIndex + i, item);
+                        }
+                    }
+                    break;
                 }
-				case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Remove:
                 {
-					if (e.OldItems != null)
-					{
-						for (var i = 0; i < e.OldItems.Count; i++)
-						{
-							var item = e.OldItems[i];
+                    if (e.OldItems != null)
+                    {
+                        for (var i = 0; i < e.OldItems.Count; i++)
+                        {
+                            var item = e.OldItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null) {
+                            if (refName == null)
+                            {
                                 return;
                             }
-							_manager.NotifyRemoveItem(refName, e.OldStartingIndex, item);
-						}
-					}
-					break;
+                            _manager.NotifyRemoveItem(refName, e.OldStartingIndex, item);
+                        }
+                    }
+                    break;
                 }
-				case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Replace:
                 {
-					if (e.OldItems != null)
-					{
-						for (var i = 0; i < e.OldItems.Count; i++)
-						{
-							var item = e.OldItems[i];
+                    if (e.OldItems != null)
+                    {
+                        for (var i = 0; i < e.OldItems.Count; i++)
+                        {
+                            var item = e.OldItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null) {
+                            if (refName == null)
+                            {
                                 return;
                             }
-							_manager.NotifyRemoveItem(refName, e.OldStartingIndex, item);
-						}
-					}
-					if (e.NewItems != null)
-					{
-						for (var i = 0; i < e.NewItems.Count; i++)
-						{
-							var item = e.NewItems[i];
+                            _manager.NotifyRemoveItem(refName, e.OldStartingIndex, item);
+                        }
+                    }
+                    if (e.NewItems != null)
+                    {
+                        for (var i = 0; i < e.NewItems.Count; i++)
+                        {
+                            var item = e.NewItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null) {
+                            if (refName == null)
+                            {
                                 return;
                             }
-							_manager.NotifyInsertItem(refName , e.NewStartingIndex + i, item);
-						}
-					}
-					break;
+                            _manager.NotifyInsertItem(refName, e.NewStartingIndex + i, item);
+                        }
+                    }
+                    break;
                 }
-				case NotifyCollectionChangedAction.Reset:
+                case NotifyCollectionChangedAction.Reset:
                 {
                     var refName = _manager.GetRefId(_originalData);
-                    if (refName == null) {
+                    if (refName == null)
+                    {
                         return;
                     }
-					_manager.NotifyClearItems(refName);
-					break;
+                    _manager.NotifyClearItems(refName);
+                    break;
                 }
             }
         }
@@ -208,9 +219,10 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSourceItem LookupById(Guid id) 
+        public IJSDataSourceItem LookupById(Guid id)
         {
-            if (_uuidToItem.ContainsKey(id)) {
+            if (_uuidToItem.ContainsKey(id))
+            {
                 return _uuidToItem[id];
             }
             return null;
@@ -244,7 +256,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public bool HasOriginal(object item) 
+        public bool HasOriginal(object item)
         {
             return _originalToItem.ContainsKey(item);
         }
@@ -259,61 +271,73 @@ namespace IgniteUI.Blazor.Controls
             return itm.Id;
         }
 
-        public IJSDataSourceItem FromOriginal(object item) {
-            if (_originalToItem.ContainsKey(item)) {
+        public IJSDataSourceItem FromOriginal(object item)
+        {
+            if (_originalToItem.ContainsKey(item))
+            {
                 return _originalToItem[item];
             }
 
             return null;
         }
 
-        public Object ToOriginal(IJSDataSourceItem item) {
+        public Object ToOriginal(IJSDataSourceItem item)
+        {
             if (item == null)
             {
                 return null;
             }
 
-            if (_itemToOriginal.ContainsKey(item)) {
+            if (_itemToOriginal.ContainsKey(item))
+            {
                 return _itemToOriginal[item];
             }
 
             return null;
         }
 
-        public static IJSDataSource Create(Object data, DataSourceManager manager) {
-            if (data == null) {
+        public static IJSDataSource Create(Object data, DataSourceManager manager)
+        {
+            if (data == null)
+            {
                 return null;
             }
 
-            if (data.GetType().IsArray) {
+            if (data.GetType().IsArray)
+            {
                 return JsonDataSource.CreateFromArray((Object[])data, null, manager, null);
-            } else if (data is IList) {
+            }
+            else if (data is IList)
+            {
                 return JsonDataSource.CreateFromIList((IList)data, null, manager, null);
-            } else if (data is IEnumerable) {
+            }
+            else if (data is IEnumerable)
+            {
                 return JsonDataSource.CreateFromIEnumerable((IEnumerable)data, null, manager, null);
             }
             return null;
         }
 
-        private static IJSDataSource CreateFromIEnumerable(IEnumerable data, JSDataSourceSchema schema, DataSourceManager manager, string parentId) 
+        private static IJSDataSource CreateFromIEnumerable(IEnumerable data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
         {
             JsonDataSource newData = new JsonDataSource();
             newData._manager = manager;
             newData._parentSchema = schema;
             newData._parentId = parentId;
-            foreach (var item in data) {
+            foreach (var item in data)
+            {
                 newData.Add(item);
             }
             newData.Listen(data);
             return newData;
         }
 
-        private static IJSDataSource CreateFromIList(IList data, JSDataSourceSchema schema, DataSourceManager manager, string parentId) 
+        private static IJSDataSource CreateFromIList(IList data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
         {
             //Console.WriteLine("test json");
             //DateTime testTime = DateTime.Now;
             //var ser = System.Text.Json.JsonSerializer.Serialize(data);
-            
+
             //Console.WriteLine("end test json:" + (DateTime.Now - testTime).TotalMilliseconds);
             //Console.WriteLine("begin create from list");
             DateTime startTime = DateTime.Now;
@@ -322,7 +346,8 @@ namespace IgniteUI.Blazor.Controls
             newData._parentSchema = schema;
             newData._parentId = parentId;
             var count = data.Count;
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++)
+            {
                 newData.Add(data[i]);
             }
             newData.Listen(data);
@@ -330,13 +355,14 @@ namespace IgniteUI.Blazor.Controls
             return newData;
         }
 
-        private static IJSDataSource CreateFromArray(object[] data, JSDataSourceSchema schema, DataSourceManager manager, string parentId) 
+        private static IJSDataSource CreateFromArray(object[] data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
         {
             JsonDataSource newData = new JsonDataSource();
             newData._parentSchema = schema;
             newData._manager = manager;
             newData._parentId = parentId;
-            for (int i = 0; i < data.Length; i++) {
+            for (int i = 0; i < data.Length; i++)
+            {
                 newData.Add(data[i]);
             }
             newData.Listen(data);
@@ -345,7 +371,8 @@ namespace IgniteUI.Blazor.Controls
 
         private JSDataSourceSchema _schema = null;
 
-        private void Add(object item) {
+        private void Add(object item)
+        {
             if (_schema == null)
             {
                 EnsureSchema(item);
@@ -387,34 +414,41 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void OnAddItem(IJSDataSourceItem itemJson, Object item) {
+        private void OnAddItem(IJSDataSourceItem itemJson, Object item)
+        {
             _uuidToItem[itemJson.Id] = itemJson;
-            if (item != null) {
+            if (item != null)
+            {
                 _originalToItem[item] = itemJson;
                 _itemToOriginal[itemJson] = item;
             }
         }
 
-        private void EnsureSchema(object item) 
-        {          
-            if (item != null && _schema == null) {
+        private void EnsureSchema(object item)
+        {
+            if (item != null && _schema == null)
+            {
                 //Console.WriteLine("begin esnure schema");
                 DateTime startTime = DateTime.Now;
 
-                if (_parentSchema != null) {
-                    if (_parentSchema.ItemSchema != null) {
+                if (_parentSchema != null)
+                {
+                    if (_parentSchema.ItemSchema != null)
+                    {
                         _schema = _parentSchema.ItemSchema;
                     }
                 }
                 _schema = JsonDataSourceItem.ExtractSchema(item);
-                if (_parentSchema != null && _parentSchema.ItemSchema == null) {
+                if (_parentSchema != null && _parentSchema.ItemSchema == null)
+                {
                     _parentSchema.ItemSchema = _schema;
                 }
                 //Console.WriteLine("end ensure schema: " + (DateTime.Now - startTime).TotalMilliseconds);
             }
         }
 
-        public IJSDataSourceItem NotifyInsertItem(object data, int index, Object item) {
+        public IJSDataSourceItem NotifyInsertItem(object data, int index, Object item)
+        {
             EnsureSchema(item);
             IJSDataSourceItem itemJson = JsonDataSourceItem.Create(item, _schema, _manager);
             OnAddItem(itemJson, item);
@@ -422,7 +456,8 @@ namespace IgniteUI.Blazor.Controls
             return itemJson;
         }
 
-        public IJSDataSourceItem NotifyRemoveItem(object data, int index, object oldItem) {
+        public IJSDataSourceItem NotifyRemoveItem(object data, int index, object oldItem)
+        {
             EnsureSchema(oldItem);
             IJSDataSourceItem itemJson = _data[index];
             OnRemove(itemJson, oldItem);
@@ -430,50 +465,64 @@ namespace IgniteUI.Blazor.Controls
             return itemJson;
         }
 
-        private void OnRemove(IJSDataSourceItem itemJson, object item) 
+        private void OnRemove(IJSDataSourceItem itemJson, object item)
         {
-            if (_uuidToItem.ContainsKey(itemJson.Id)) {
+            if (_uuidToItem.ContainsKey(itemJson.Id))
+            {
                 _uuidToItem.Remove(itemJson.Id);
             }
-            if (_itemToOriginal.ContainsKey(itemJson)) {
+            if (_itemToOriginal.ContainsKey(itemJson))
+            {
                 Object original = _itemToOriginal[itemJson];
-                if (_originalToItem.ContainsKey(original)) {
+                if (_originalToItem.ContainsKey(original))
+                {
                     _originalToItem.Remove(original);
                 }
                 _itemToOriginal.Remove(itemJson);
             }
             if (item != null &&
-                _originalToItem.ContainsKey(item)) {
+                _originalToItem.ContainsKey(item))
+            {
                 _itemToOriginal.Remove((IJSDataSourceItem)item);
             }
         }
 
-        public void NotifyClearItems(Object data) {
-            for (int i = 0; i < _data.Count; i++) {
+        public void NotifyClearItems(Object data)
+        {
+            for (int i = 0; i < _data.Count; i++)
+            {
                 IJSDataSourceItem item = _data[i];
                 OnRemove(item, null);
             }
             _data.Clear();
             _schema = null;
-            if (data.GetType().IsArray) {
+            if (data.GetType().IsArray)
+            {
                 object[] dataArr = (object[])data;
-                for (int i = 0; i < dataArr.Length; i++) {
+                for (int i = 0; i < dataArr.Length; i++)
+                {
                     Add(dataArr[i]);
                 }
-            } else if (data is IList) {
+            }
+            else if (data is IList)
+            {
                 IList dataList = (IList)data;
-                for (int i = 0; i < dataList.Count; i++) {
+                for (int i = 0; i < dataList.Count; i++)
+                {
                     Add(dataList[i]);
                 }
-            } else if (data is IEnumerable) {
+            }
+            else if (data is IEnumerable)
+            {
                 IEnumerable dataIter = (IEnumerable)data;
-                foreach (object item in dataIter) {
+                foreach (object item in dataIter)
+                {
                     Add(item);
                 }
             }
         }
 
-        public IJSDataSourceItem NotifySetItem(Object data, int index, Object oldItem, Object newItem) 
+        public IJSDataSourceItem NotifySetItem(Object data, int index, Object oldItem, Object newItem)
         {
             EnsureSchema(newItem);
             IJSDataSourceItem itemJson = JsonDataSourceItem.Create(newItem, _schema, _manager);
@@ -486,10 +535,10 @@ namespace IgniteUI.Blazor.Controls
         public IJSDataSourceItem this[int i]
         {
             get { return _data[i]; }
-          
+
         }
-        
-        public IJSDataSourceItem NotifyUpdateItem(object data, int index, object item) 
+
+        public IJSDataSourceItem NotifyUpdateItem(object data, int index, object item)
         {
             EnsureSchema(item);
             JsonDataSourceItem itemJson = null;
@@ -556,21 +605,23 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("begin to json");
             DateTime startTime = DateTime.Now;
             String ret;
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream()) {
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
                 using (System.Text.Json.Utf8JsonWriter uw = new System.Text.Json.Utf8JsonWriter(ms))
                 {
-                //RendererSerializer ser = new RendererSerializer(uw);
-                
-                ToJson(uw);
-                uw.Flush();
-                ret = System.Text.Encoding.UTF8.GetString(ms.ToArray());
+                    //RendererSerializer ser = new RendererSerializer(uw);
+
+                    ToJson(uw);
+                    uw.Flush();
+                    ret = System.Text.Encoding.UTF8.GetString(ms.ToArray());
                 }
             }
             //Console.WriteLine("end to json: " + (DateTime.Now - startTime).TotalMilliseconds);
             return ret;
         }
 
-        public void ToJson(System.Text.Json.Utf8JsonWriter writer, System.Text.Json.JsonEncodedText? propertyName = null) {
+        public void ToJson(System.Text.Json.Utf8JsonWriter writer, System.Text.Json.JsonEncodedText? propertyName = null)
+        {
             //Console.WriteLine("begin to json");
             DateTime startTime = DateTime.Now;
             //String[] items = new String[_data.Count];
@@ -583,13 +634,17 @@ namespace IgniteUI.Blazor.Controls
             {
                 writer.WriteStartArray();
             }
-            for (int i = 0; i < _data.Count; i++) {
+            for (int i = 0; i < _data.Count; i++)
+            {
                 JsonDataSourceItem item = (JsonDataSourceItem)_data[i];
                 //String ser = "null";
-                if (!item.IsNull) {
+                if (!item.IsNull)
+                {
                     item.ToJson(writer);
                     //ser = item.ToJson();
-                } else {
+                }
+                else
+                {
                     writer.WriteNullValue();
                 }
                 //items[i] = ser;

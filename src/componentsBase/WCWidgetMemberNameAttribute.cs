@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
         {
             Name = alternateName;
         }
-        
+
         public string Name
         {
             get; private set;

@@ -55,7 +55,8 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
                 // Navigate to about:blank to ensure any SignalR
                 // connections are dropped.
                 //await Page.GotoAsync("about:blank");
-                if (Context != null) {
+                if (Context != null)
+                {
                     await Context.DisposeAsync().ConfigureAwait(false);
                 }
                 await currentHost.DisposeAsync().ConfigureAwait(false);

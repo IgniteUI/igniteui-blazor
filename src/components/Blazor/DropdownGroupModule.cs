@@ -6,18 +6,21 @@ using System.Collections.Generic;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbDropdownGroupModule {
-        public static void Register(IIgniteUIBlazor runtime) {
+    public partial class IgbDropdownGroupModule
+    {
+        public static void Register(IIgniteUIBlazor runtime)
+        {
             ModuleLoader.Load(runtime, "WebDropdownGroupModule");
 
-            
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime) {
+        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebDropdownGroupModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime) {
+        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        {
             return ModuleLoader.IsLoadRequested(runtime, "WebDropdownGroupModule");
         }
     }

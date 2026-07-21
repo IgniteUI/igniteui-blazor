@@ -92,7 +92,7 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
                 {
                     Console.WriteLine(e.Message);
                 }
-                
+
             }
         }
 

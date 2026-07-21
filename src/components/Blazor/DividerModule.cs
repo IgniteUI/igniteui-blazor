@@ -6,18 +6,21 @@ using System.Collections.Generic;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbDividerModule {
-        public static void Register(IIgniteUIBlazor runtime) {
+    public partial class IgbDividerModule
+    {
+        public static void Register(IIgniteUIBlazor runtime)
+        {
             ModuleLoader.Load(runtime, "WebDividerModule");
 
-            
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime) {
+        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebDividerModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime) {
+        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        {
             return ModuleLoader.IsLoadRequested(runtime, "WebDividerModule");
         }
     }

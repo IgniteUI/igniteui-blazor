@@ -4,16 +4,17 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public class IgbComponentRendererContainer: ComponentBase
+    public class IgbComponentRendererContainer : ComponentBase
     {
 
         private Type _componentType;
         [Parameter]
-        public Type ComponentType { 
+        public Type ComponentType
+        {
             get
             {
                 return _componentType;
-            } 
+            }
             set
             {
                 var oldValue = _componentType;
@@ -22,7 +23,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     StateHasChanged();
                 }
-            } 
+            }
         }
 
         private object _rootComponent = null;
@@ -36,7 +37,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 var oldValue = _rootComponent;
                 _rootComponent = value;
-                if (oldValue != _rootComponent) 
+                if (oldValue != _rootComponent)
                 {
                     OnRootComponentChanged(oldValue, _rootComponent);
                 }
@@ -57,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
             if (ComponentType != null)
             {
                 builder.OpenComponent(0, ComponentType);
-                builder.AddComponentReferenceCapture(1, delegate(object value)
+                builder.AddComponentReferenceCapture(1, delegate (object value)
                 {
                     RootComponent = value;
                 });
@@ -71,7 +72,7 @@ namespace IgniteUI.Blazor.Controls
 
         public event ComponentRendererComponentChangedEventHandler ComponentChanged;
     }
-    
+
     public delegate void ComponentRendererComponentChangedEventHandler(object sender, ComponentRendererComponentChangedEventArgs args);
 
     public class ComponentRendererComponentChangedEventArgs

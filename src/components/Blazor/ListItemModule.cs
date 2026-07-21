@@ -6,18 +6,21 @@ using System.Collections.Generic;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbListItemModule {
-        public static void Register(IIgniteUIBlazor runtime) {
+    public partial class IgbListItemModule
+    {
+        public static void Register(IIgniteUIBlazor runtime)
+        {
             ModuleLoader.Load(runtime, "WebListItemModule");
 
-            
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime) {
+        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebListItemModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime) {
+        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        {
             return ModuleLoader.IsLoadRequested(runtime, "WebListItemModule");
         }
     }

@@ -21,7 +21,8 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
                   p.IsSubclassOf(typeof(BaseRendererControl)) &&
                   !p.Name.Contains("Base")
             ).ToList();
-            foreach ( var c in classes) {
+            foreach (var c in classes)
+            {
                 try
                 {
                     var instance = Activator.CreateInstance(c);
@@ -35,7 +36,6 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
                 {
                 }
             }
-           
 
             return result.Where(x => !excluded.Contains(x)).ToList();
         }

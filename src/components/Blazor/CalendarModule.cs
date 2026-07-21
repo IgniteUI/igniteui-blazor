@@ -6,19 +6,23 @@ using System.Collections.Generic;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbCalendarModule {
-        public static void Register(IIgniteUIBlazor runtime) {
+    public partial class IgbCalendarModule
+    {
+        public static void Register(IIgniteUIBlazor runtime)
+        {
             ModuleLoader.Load(runtime, "WebCalendarModule");
 
             IgbCalendarBaseModule.MarkIsLoadRequested(runtime);
 
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime) {
+        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebCalendarModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime) {
+        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        {
             return ModuleLoader.IsLoadRequested(runtime, "WebCalendarModule");
         }
     }

@@ -10,17 +10,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        
-
         private IgbTreeItemCollection _contentItems = null;
-	
+
         public IgbTreeItemCollection ContentItems
         {
-        
-            get 
+
+            get
             {
-                if (this._contentItems == null) {
-                    this._contentItems  = new IgbTreeItemCollection(this, "Items");
+                if (this._contentItems == null)
+                {
+                    this._contentItems = new IgbTreeItemCollection(this, "Items");
                 }
                 return this._contentItems;
             }
@@ -28,9 +27,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void FindByNameTree(string name, ref object item)
         {
-            foreach (var it in ContentItems) 
+            foreach (var it in ContentItems)
             {
-                if (it.Name == name || it.ContainerId == name) {
+                if (it.Name == name || it.ContainerId == name)
+                {
                     item = it;
                     return;
                 }
