@@ -1,0 +1,6 @@
+<Project>
+  <!-- Boundary sentinel: intentionally does NOT import the repo-root Directory.Build.props.
+       The templates package and the template *content* projects (IgniteBlazorApp.1*)
+       must not inherit repo-wide build settings, and this keeps the subtree
+       self-contained for a future extraction into its own repository. -->
+</Project>

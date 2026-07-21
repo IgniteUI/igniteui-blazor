@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Company>Infragistics</Company>
+    <Copyright>Infragistics</Copyright>
+    <Deterministic>true</Deterministic>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+</Project>

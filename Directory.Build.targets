@@ -1,0 +1,7 @@
+<Project>
+
+  <!-- Shared targets for all projects in the repo (except templates/, which opts out).
+       The JS interop bundle is built explicitly via `npm run build` / `npm run copythemes`
+       from the repo root — see README "Building and Running Locally". -->
+
+</Project>
