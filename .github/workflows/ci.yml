@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # The SDK is pinned via global.json (10.0.x builds all TFMs);
       # older runtimes are needed to run tests targeting net8.0/net9.0.
@@ -29,7 +29,7 @@ jobs:
             10.0.x
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v6.4.0
         with:
           node-version: 22
           cache: npm
@@ -70,7 +70,7 @@ jobs:
           --results-directory ./TestResults
 
       - name: Generate coverage report
-        uses: danielpalme/ReportGenerator-GitHub-Action@c31aa4ed4f12f147061186cf2a029f307b5c3636
+        uses: danielpalme/ReportGenerator-GitHub-Action@049f7ec958c672fd31d5cc1cb01622dc8d2e23ab
         with:
           reports: TestResults/**/*.cobertura.xml
           targetdir: CoverageReport
