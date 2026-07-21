@@ -21,7 +21,7 @@ jobs:
       # The SDK is pinned via global.json (10.0.x builds all TFMs);
       # older runtimes are needed to run tests targeting net8.0/net9.0.
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v5.4.0
         with:
           dotnet-version: |
             8.0.x
