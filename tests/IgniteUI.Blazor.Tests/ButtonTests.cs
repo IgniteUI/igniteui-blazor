@@ -1,5 +1,4 @@
 using Bunit;
-using Microsoft.AspNetCore.Components;
 using IgniteUI.Blazor.Controls;
 
 namespace IgniteUI.Blazor.Tests;

@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Playwright.NUnit;
 using Microsoft.Playwright;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Playwright.NUnit;
 
 namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
 {
@@ -55,7 +50,8 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
                 // Navigate to about:blank to ensure any SignalR
                 // connections are dropped.
                 //await Page.GotoAsync("about:blank");
-                if (Context != null) {
+                if (Context != null)
+                {
                     await Context.DisposeAsync().ConfigureAwait(false);
                 }
                 await currentHost.DisposeAsync().ConfigureAwait(false);

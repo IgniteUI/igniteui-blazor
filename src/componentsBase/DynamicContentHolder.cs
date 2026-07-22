@@ -1,14 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using System.Collections.Generic;
-using System;
-using System.Threading.Tasks;
-using System.Threading;
 
 namespace IgniteUI.Blazor.Controls
 {
 
-    public class DynamicContentHolder: ComponentBase
+    public class DynamicContentHolder : ComponentBase
     {
         protected LinkedList<DynamicContentInfo> DynamicContentInfo
         {
@@ -87,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
                 __builder.AddMarkupContent(10, "\r\n            ");
                 __builder.OpenComponent(11, item.ControlType);
                 __builder.SetKey(item.RefName);
-                __builder.AddComponentReferenceCapture(12, delegate(object __value)
+                __builder.AddComponentReferenceCapture(12, delegate (object __value)
                 {
                     OnDynamicChildRef(item.RefName, __value);
                 });
@@ -104,7 +100,6 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    
     public abstract class DynamicContentInfo
     {
         public Type ControlType { get; set; }
@@ -123,8 +118,8 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private object _component = null;
-        public object Component 
-        { 
+        public object Component
+        {
             get
             {
                 return _component;
@@ -134,14 +129,14 @@ namespace IgniteUI.Blazor.Controls
                 var oldValue = _component;
                 _component = value;
                 OnComponentChanged(oldValue, _component);
-            } 
+            }
         }
 
         public BaseRendererControl Owner { get; internal set; }
 
         protected virtual void OnComponentChanged(object oldValue, object component)
         {
-            
+
         }
 
         public virtual void UpdateTemplate(object template)
@@ -193,7 +188,7 @@ namespace IgniteUI.Blazor.Controls
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
             object component = null;
             List<TaskCompletionSource<object>> toSignal = null;
-            
+
             lock (_lock)
             {
                 component = Component;
@@ -274,14 +269,15 @@ namespace IgniteUI.Blazor.Controls
                 OnContextChanged((T)Context, (T)Context);
             }
         }
-        
+
         private void OnContextChanged(T oldValue, T newValue)
         {
             if (Component is IgbTemplateContent<T>)
             {
                 var template = (IgbTemplateContent<T>)Component;
 
-                if (_hasPopulatedContext) {
+                if (_hasPopulatedContext)
+                {
                     template.Context = (T)Context;
                 }
                 template.Template = Template;

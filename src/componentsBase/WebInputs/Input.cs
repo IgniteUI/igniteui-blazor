@@ -1,10 +1,5 @@
-using System;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -20,7 +15,8 @@ namespace IgniteUI.Blazor.Controls
         {
             if (EventCallback<IgbComponentValueChangedEventArgs>.Empty.Equals(this.InputOcurred))
             {
-                this.InputOcurred = new EventCallback<IgbComponentValueChangedEventArgs>(null, (Action<IgbComponentValueChangedEventArgs>)((e) => { })); this._inputOcurred = null;
+                this.InputOcurred = new EventCallback<IgbComponentValueChangedEventArgs>(null, (Action<IgbComponentValueChangedEventArgs>)((e) => { }));
+                this._inputOcurred = null;
             }
         }
 

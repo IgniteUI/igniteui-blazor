@@ -1,10 +1,7 @@
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using Microsoft.JSInterop;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -57,9 +54,9 @@ namespace IgniteUI.Blazor.Controls
                     if (target != null)
                     {
                         //Console.WriteLine("found target");
-                        var meth = target.MakeGenericMethod(new Type[] { 
-                            typeof(string), 
-                            typeof(int), 
+                        var meth = target.MakeGenericMethod(new Type[] {
+                            typeof(string),
+                            typeof(int),
                             typeof(UnmarshalledColumn[]),
                             typeof(string)
                             });
@@ -74,7 +71,7 @@ namespace IgniteUI.Blazor.Controls
                         var call = Expression.Call(wsRuntime, meth, methodNameParam, refNameParam,
                         indexParam, columnsParam);
 
-                        _callSendUnmarshalledColumnMessage = 
+                        _callSendUnmarshalledColumnMessage =
                         (Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[], string>)Expression.Lambda(
                             call, jsRuntimeParam, methodNameParam, refNameParam, indexParam, columnsParam).Compile();
                     }
@@ -84,9 +81,9 @@ namespace IgniteUI.Blazor.Controls
                     if (target != null)
                     {
                         //Console.WriteLine("found target");
-                        var meth = target.MakeGenericMethod(new Type[] { 
-                            typeof(string), 
-                            typeof(string), 
+                        var meth = target.MakeGenericMethod(new Type[] {
+                            typeof(string),
+                            typeof(string),
                             typeof(string)
                             });
 
@@ -94,12 +91,12 @@ namespace IgniteUI.Blazor.Controls
                         var methodNameParam = Expression.Parameter(typeof(string), "methodName");
                         var refNameParam = Expression.Parameter(typeof(string), "refName");
                         var dataIntentParam = Expression.Parameter(typeof(string), "index");
-                        
+
                         var wsRuntime = Expression.Convert(jsRuntimeParam, inprocRuntime.GetType());
                         var call = Expression.Call(wsRuntime, meth, methodNameParam, refNameParam,
                         dataIntentParam);
 
-                        _callSendUnmarshalledColumnDataIntentMessage = 
+                        _callSendUnmarshalledColumnDataIntentMessage =
                         (Func<IJSInProcessRuntime, string, string, string, string>)Expression.Lambda(
                             call, jsRuntimeParam, methodNameParam, refNameParam, dataIntentParam).Compile();
                     }
@@ -148,6 +145,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public bool IsInproc { get; private set; }
-        public bool IsForcedJsonDataMarshalling { get { return _igBlazor.Settings.ForceJsonDataMarshalling;  } }
+        public bool IsForcedJsonDataMarshalling { get { return _igBlazor.Settings.ForceJsonDataMarshalling; } }
     }
 }

@@ -28,7 +28,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 StopTypingDelay = 2000,
                 AdoptRootStyles = true,
                 Renderers = new IgbChatRenderers()
-            
+
             }
         },
         };

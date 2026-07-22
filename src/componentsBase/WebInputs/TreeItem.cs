@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Threading.Tasks;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTreeItem: IDisposable
+    public partial class IgbTreeItem : IDisposable
     {
-        [CascadingParameter(Name="TreeParent")]
+        [CascadingParameter(Name = "TreeParent")]
         protected BaseRendererControl TreeParent
         {
             get; set;

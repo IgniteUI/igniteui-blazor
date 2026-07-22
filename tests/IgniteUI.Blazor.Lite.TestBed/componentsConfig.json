@@ -12,9 +12,7 @@
     ]
   },
   "IgbDatePicker": {
-    "ExcludedProps": [
-      "ResourceStrings"
-    ],
+    "ExcludedProps": ["ResourceStrings"],
     "DependantMethods": [
       // BUG 35182
       "ReportValidityAsync",
@@ -115,7 +113,7 @@
     "ExcludedProps": [
       // circular ref
       "Parent",
-      // this should not be settable, seems to be related to an the internal component state. 
+      // this should not be settable, seems to be related to an the internal component state.
       "Level"
     ]
   },
@@ -156,7 +154,7 @@
       "FocusAsync"
     ],
     "ExcludedEvents": [
-      // no such client event. 
+      // no such client event.
       "SelectedChanged"
     ]
   },
@@ -168,47 +166,47 @@
   },
   "IgbMaskInput": {
     "ExcludedEvents": [
-      // no such client event. 
+      // no such client event.
       "ValueChanging"
     ]
   },
   "IgbInput": {
-      "ExcludedProps": [
-        // Temporary exclude since these are string, but should be numbers.
-        "Min",
-        "Max"
-      ],
-      "DependantMethods": [
-        // Depends on the input beign numeric.
-        "StepUpAsync",
-        "StepDownAsync"
-      ],
-      "ExcludedEvents": [
-        // no such client event. 
-        "ValueChanging"
-      ]
-    },
-    "IgbRangeSlider": {
-      "ExcludedProps": [
-        // BUG 35189
-        "ValueFormatOptions"
-      ]
-    },
-    "IgbStepper": {
-      "ExcludedProps": [
-        // This is a collection of nested IgbStep components, it should probably be only a getter. 
-        "Steps"
-      ],
-      "DependantMethods": [
-        // Depends on having at least one child step, otherwise throws error.
-        "NextAsync",
-        "PrevAsync"
-      ]
-    },
-    "IgbSelectGroup": {
-      "ExcludedProps": [
-        // This is a collection of nested IgbSelectItem components, it should probably be only a getter. 
-        "Items"
-      ]
-    }
+    "ExcludedProps": [
+      // Temporary exclude since these are string, but should be numbers.
+      "Min",
+      "Max"
+    ],
+    "DependantMethods": [
+      // Depends on the input beign numeric.
+      "StepUpAsync",
+      "StepDownAsync"
+    ],
+    "ExcludedEvents": [
+      // no such client event.
+      "ValueChanging"
+    ]
+  },
+  "IgbRangeSlider": {
+    "ExcludedProps": [
+      // BUG 35189
+      "ValueFormatOptions"
+    ]
+  },
+  "IgbStepper": {
+    "ExcludedProps": [
+      // This is a collection of nested IgbStep components, it should probably be only a getter.
+      "Steps"
+    ],
+    "DependantMethods": [
+      // Depends on having at least one child step, otherwise throws error.
+      "NextAsync",
+      "PrevAsync"
+    ]
+  },
+  "IgbSelectGroup": {
+    "ExcludedProps": [
+      // This is a collection of nested IgbSelectItem components, it should probably be only a getter.
+      "Items"
+    ]
   }
+}

@@ -1,8 +1,9 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum DividerType {
-	Solid, 
-	Dashed
+    public enum DividerType
+    {
+        Solid,
+        Dashed
 
-}
+    }
 }

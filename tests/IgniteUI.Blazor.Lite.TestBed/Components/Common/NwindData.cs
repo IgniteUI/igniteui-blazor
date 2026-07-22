@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 public class NwindDataItem
 {
     public string? ProductName { get; set; } = string.Empty;

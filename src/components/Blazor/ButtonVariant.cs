@@ -1,10 +1,11 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum ButtonVariant {
-	Contained, 
-	Flat, 
-	Outlined, 
-	Fab
+    public enum ButtonVariant
+    {
+        Contained,
+        Flat,
+        Outlined,
+        Fab
 
-}
+    }
 }

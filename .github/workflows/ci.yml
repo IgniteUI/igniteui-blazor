@@ -28,6 +28,13 @@ jobs:
             9.0.x
             10.0.x
 
+      # Folder mode formats files directly without loading MSBuild projects —
+      # full `dotnet format` corrupts sources on multi-targeted projects
+      # (inserts "Unmerged change from project" conflict markers per TFM;
+      # dotnet/format#1634, see FORMATTING.md).
+      - name: Verify .NET code formatting
+        run: dotnet format whitespace . --folder --exclude templates node_modules --verify-no-changes
+
       - name: Setup Node.js
         uses: actions/setup-node@v6.4.0
         with:
@@ -36,6 +43,9 @@ jobs:
 
       - name: Install npm dependencies
         run: npm ci
+
+      - name: Verify JS/TS formatting
+        run: npm run format:check
 
       - name: Build TypeScript/Webpack assets
         run: npm run build

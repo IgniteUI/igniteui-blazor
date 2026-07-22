@@ -1,8 +1,9 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum CarouselIndicatorsOrientation {
-	End, 
-	Start
+    public enum CarouselIndicatorsOrientation
+    {
+        End,
+        Start
 
-}
+    }
 }

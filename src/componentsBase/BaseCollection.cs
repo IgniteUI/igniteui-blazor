@@ -1,10 +1,10 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace IgniteUI.Blazor.Controls 
+namespace IgniteUI.Blazor.Controls
 {
 
-    public class BaseCollection<T> : ObservableCollection<T>  {
+    public class BaseCollection<T> : ObservableCollection<T>
+    {
         private bool _suppressNotify = false;
 
         internal bool SuppressNofify
@@ -44,18 +44,20 @@ namespace IgniteUI.Blazor.Controls
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
-            if (item is BaseRendererElement) {
+            if (item is BaseRendererElement)
+            {
                 BaseRendererElement c = (BaseRendererElement)(object)item;
                 c.Parent = _parent;
             }
             NotifyParent();
         }
 
-        protected override void RemoveItem(int index) 
+        protected override void RemoveItem(int index)
         {
             var item = this[index];
             base.RemoveItem(index);
-            if (item is BaseRendererElement) {
+            if (item is BaseRendererElement)
+            {
                 BaseRendererElement c = (BaseRendererElement)(object)item;
                 c.Parent = null;
             }
@@ -65,7 +67,8 @@ namespace IgniteUI.Blazor.Controls
         protected override void SetItem(int index, T item)
         {
             base.SetItem(index, item);
-            if (item is BaseRendererElement) {
+            if (item is BaseRendererElement)
+            {
                 BaseRendererElement c = (BaseRendererElement)(object)item;
                 c.Parent = _parent;
             }
@@ -98,12 +101,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public BaseCollection(object parent, string propertyName) {
+        public BaseCollection(object parent, string propertyName)
+        {
             _parent = parent;
             _propertyName = propertyName;
         }
 
-        private void NotifyParent() {
+        private void NotifyParent()
+        {
             if (_suppressNotify)
             {
                 return;
@@ -112,19 +117,23 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
-            if (_parent is BaseRendererElement) {
+            if (_parent is BaseRendererElement)
+            {
                 ((BaseRendererElement)_parent).MarkPropDirty(_propertyName);
             }
-            if (_parent is BaseRendererControl) {
+            if (_parent is BaseRendererControl)
+            {
                 ((BaseRendererControl)_parent).MarkPropDirty(_propertyName);
             }
         }
 
         protected override void ClearItems()
         {
-            for (var i = 0; i < Count; i++) {
+            for (var i = 0; i < Count; i++)
+            {
                 var item = this[i];
-                if (item is BaseRendererElement) {
+                if (item is BaseRendererElement)
+                {
                     BaseRendererElement c = (BaseRendererElement)(object)item;
                     c.Parent = null;
                 }
@@ -133,7 +142,8 @@ namespace IgniteUI.Blazor.Controls
             NotifyParent();
         }
 
-         public void Serialize(SerializationContext context, string propertyName = null)  {
+        public void Serialize(SerializationContext context, string propertyName = null)
+        {
             //var vals = new List<string>();
             if (propertyName != null)
             {
@@ -143,41 +153,55 @@ namespace IgniteUI.Blazor.Controls
             {
                 context.Writer.WriteStartArray();
             }
-            for (var i = 0; i < Count; i++) {
+            for (var i = 0; i < Count; i++)
+            {
                 var val = this[i];
-                if (val is JsonSerializable) {
+                if (val is JsonSerializable)
+                {
                     ((JsonSerializable)val).Serialize(context);
-                } else {
-                    if (typeof(T) == typeof(int)) {
+                }
+                else
+                {
+                    if (typeof(T) == typeof(int))
+                    {
                         context.Writer.WriteNumberValue((int)(object)val);
                     }
-                    else if (typeof(T) == typeof(long)) {
+                    else if (typeof(T) == typeof(long))
+                    {
                         context.Writer.WriteNumberValue((long)(object)val);
                     }
-                    else if (typeof(T) == typeof(short)) {
+                    else if (typeof(T) == typeof(short))
+                    {
                         context.Writer.WriteNumberValue((short)(object)val);
                     }
-                    else if (typeof(T) == typeof(decimal)) {
+                    else if (typeof(T) == typeof(decimal))
+                    {
                         context.Writer.WriteNumberValue((decimal)(object)val);
                     }
-                    else if (typeof(T) == typeof(float)) {
+                    else if (typeof(T) == typeof(float))
+                    {
                         context.Writer.WriteNumberValue((float)(object)val);
                     }
-                    else if (typeof(T) == typeof(double)) {
+                    else if (typeof(T) == typeof(double))
+                    {
                         context.Writer.WriteNumberValue((double)(object)val);
                     }
-                    else if (typeof(T) == typeof(byte)) {
+                    else if (typeof(T) == typeof(byte))
+                    {
                         context.Writer.WriteNumberValue((byte)(object)val);
                     }
-                    else if (typeof(T) == typeof(string)) {
+                    else if (typeof(T) == typeof(string))
+                    {
                         context.Writer.WriteStringValue((string)(object)val);
                     }
                     else
                     {
-                        if (_parent is BaseRendererElement) {
+                        if (_parent is BaseRendererElement)
+                        {
                             ((BaseRendererElement)_parent).ObjectToParam(context, val);
                         }
-                        if (_parent is BaseRendererControl) {
+                        if (_parent is BaseRendererControl)
+                        {
                             ((BaseRendererControl)_parent).ObjectToParam(context, val);
                         }
                     }
@@ -196,7 +220,8 @@ namespace IgniteUI.Blazor.Controls
                 if (item is BaseRendererElement)
                 {
                     var ele = (BaseRendererElement)(object)item;
-                    if (name == ele.Name) {
+                    if (name == ele.Name)
+                    {
                         return item;
                     }
                     var subEle = ele.FindByName(name);
@@ -207,7 +232,9 @@ namespace IgniteUI.Blazor.Controls
                             return subEle;
                         }
                     }
-                } else if (item is BaseRendererControl) {
+                }
+                else if (item is BaseRendererControl)
+                {
                     BaseRendererControl element = (BaseRendererControl)(object)item;
                     if (name == element.ContainerId)
                     {
@@ -218,10 +245,10 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public bool HasName(string name) 
+        public bool HasName(string name)
         {
             //TODO: hash map
-           for (var i = 0; i < this.Count; i++)
+            for (var i = 0; i < this.Count; i++)
             {
                 var item = this[i];
                 if (item is BaseRendererElement)
@@ -240,9 +267,11 @@ namespace IgniteUI.Blazor.Controls
                         }
                     }
                 }
-                else if (item is BaseRendererControl) {
+                else if (item is BaseRendererControl)
+                {
                     BaseRendererControl element = (BaseRendererControl)(object)item;
-                    if (name == element.ContainerId) {
+                    if (name == element.ContainerId)
+                    {
                         return true;
                     }
                 }

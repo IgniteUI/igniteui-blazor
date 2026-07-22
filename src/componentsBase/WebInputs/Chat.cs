@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <remarks>
@@ -18,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
             newValue ??= new IgbChatOptions();
             newValue.DisableInputAttachments = true;
         }
-
 
         public IgbChatDraftMessage GetCurrentDraftMessage()
         {

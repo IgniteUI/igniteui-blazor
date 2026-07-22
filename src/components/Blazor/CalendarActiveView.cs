@@ -1,9 +1,10 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum CalendarActiveView {
-	Days, 
-	Months, 
-	Years
+    public enum CalendarActiveView
+    {
+        Days,
+        Months,
+        Years
 
-}
+    }
 }

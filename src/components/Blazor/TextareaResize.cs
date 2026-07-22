@@ -1,9 +1,10 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum TextareaResize {
-	Vertical, 
-	Auto, 
-	None
+    public enum TextareaResize
+    {
+        Vertical,
+        Auto,
+        None
 
-}
+    }
 }
