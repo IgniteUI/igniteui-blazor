@@ -59,3 +59,4 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 
 - Use `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts. If the project already references full `IgniteUI.Blazor`, do not add `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor.GridLite` unless the user explicitly chooses to switch package strategy.
 - If no Ignite UI package is present, add the package that matches the chosen package strategy.
+- Look up all Ignite UI component documentation and APIs through the `igniteui-cli` MCP server tools (`list_components`, `search_docs`, `get_doc`, `search_api`, `get_api_reference` with `framework`/`platform: "blazor"`) instead of writing `Igb*` names, parameters, or events from memory. Generate theme CSS with the `igniteui-theming` MCP server tools.
