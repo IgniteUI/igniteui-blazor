@@ -25,6 +25,9 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 
 | Components              | Status |         Documentation          | Released Version<br> Ignite UI Blazor |Released Version<br> Ignite UI Blazor Lite |   License   |
 | :---------------------- | :----: | :----------------------------: | :--------------: | :---------: | :---------: |
+| Chat                    |   ✅   |       [Docs][Chat Docs]        |     [26.1]       | 0.1.0|    [MIT]    |
+| Splitter                |   ✅   |     [Docs][Splitter Docs]      |     [26.1]       | 0.1.0|    [MIT]    |
+| Highlight               |   ✅   |     [Docs][Highlight Docs]     |     [26.1]       | 0.1.0|    [MIT]    |
 | Date Range Picker       |   ✅   | Docs coming soon              |     [25.2]       | 0.0.1|    [MIT]    |
 | Tooltip                 |   ✅   |      [Docs][Tooltip Docs]      |     [25.1]       | 0.0.1|    [MIT]    |
 | Tile Manager            |   ✅   |   [Docs][Tile Manager Docs]    |     [25.1]       | 0.0.1|    [MIT]    |
@@ -256,6 +259,8 @@ dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 [Spreadsheet Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/spreadsheet-overview
 [Dock Manager Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Toolbar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/toolbar
+[Highlight Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/highlight
+[Splitter Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/splitter
 [Excel Library Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/excel-library
 [Bullet Graph Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/bullet-graph
 [Linear Gauge Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/linear-gauge
@@ -303,3 +308,4 @@ dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 [24.2]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#24219-november-2024
 [25.1]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25119-june-2025
 [25.2]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25232-november-2025
+[26.1]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#26151-june-2026
