@@ -3,7 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
-const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const glob = require('glob');
 
@@ -84,20 +84,20 @@ export async function afterServerStarted(blazor) {
 const plugins = [
   new webpack.DefinePlugin({
     'process.env': {
-      NODE_ENV: JSON.stringify(nodeEnv)
-    }
+      NODE_ENV: JSON.stringify(nodeEnv),
+    },
   }),
   new webpack.LoaderOptionsPlugin({
     options: {
       tslint: {
         emitErrors: true,
-        failOnHint: true
-      }
-    }
+        failOnHint: true,
+      },
+    },
   }),
   new HtmlWebpackPlugin({
-      templateContent: function (params) {
-        return `var currScript = document.currentScript;
+    templateContent: function (params) {
+      return `var currScript = document.currentScript;
 var entryScript = document.createElement("script");
 entryScript.async = false;
 if (currScript.src.indexOf("?bustv2=") >= 0 || window.__igLibraryLoad) {
@@ -117,9 +117,9 @@ if (currScript.src.indexOf("?bustv2=") >= 0 || window.__igLibraryLoad) {
   document.write(entryScript.outerHTML);
 }
 `;
-      },
-      filename: path.join(__dirname, './src/wwwroot/app.bootstrap.js'),
-      inject: false,
+    },
+    filename: path.join(__dirname, './src/wwwroot/app.bootstrap.js'),
+    inject: false,
   }),
   new HtmlWebpackPlugin({
     templateContent: function (params) {
@@ -141,63 +141,67 @@ if (currScript.src.indexOf("?bustv2=") >= 0 || window.__igLibraryLoad) {
     },
     filename: path.join(__dirname, './src/wwwroot/app.bundle.js'),
     inject: false,
-}),
-new HtmlWebpackPlugin({
-  templateContent: function (params) {
-    return bootFileContent;
-  },
-  filename: path.join(__dirname, './src/wwwroot/IgniteUI.Blazor.Lite.lib.module.js'),
-  inject: false,
-})
+  }),
+  new HtmlWebpackPlugin({
+    templateContent: function (params) {
+      return bootFileContent;
+    },
+    filename: path.join(__dirname, './src/wwwroot/IgniteUI.Blazor.Lite.lib.module.js'),
+    inject: false,
+  }),
 ];
 
 var config = {
   devtool: isProd ? 'hidden-source-map' : 'source-map',
   context: path.resolve('./src/src'),
   entry: {
-     app: ['./index.ts', ...glob.sync('./index.*.part.ts', { cwd: path.resolve('./src/src')})]
+    app: ['./index.ts', ...glob.sync('./index.*.part.ts', { cwd: path.resolve('./src/src') })],
   },
   output: {
     path: path.resolve('./src/wwwroot'),
     filename: '[name].[contenthash].bundle.js',
     globalObject: 'this',
-    library: "InfragisticsBlazor"
+    library: 'InfragisticsBlazor',
   },
-    module: {
-        rules: [
-            {
-                oneOf: [
-                    {
-                        enforce: 'pre',
-                        test: /\.worker\.ts$/,
-                        exclude: [/\/node_modules\//],
-                        use: [{
-                            loader: 'worker-loader',
-                            options: { filename: 'heatWorker.js' }
-                        },
-                            'ts-loader', 'source-map-loader']
-                    },
-                    {
-                        enforce: 'pre',
-                        test: /\.tsx?$/,
-                        exclude: [/\/node_modules\//],
-                        use: ['ts-loader', 'source-map-loader']
-                    }]
-            },
-            { test: /\.html$/, loader: 'html-loader' },
-            { test: /\.css$/, use: ['style-loader', 'css-loader'] }
-        ].filter(Boolean)
+  module: {
+    rules: [
+      {
+        oneOf: [
+          {
+            enforce: 'pre',
+            test: /\.worker\.ts$/,
+            exclude: [/\/node_modules\//],
+            use: [
+              {
+                loader: 'worker-loader',
+                options: { filename: 'heatWorker.js' },
+              },
+              'ts-loader',
+              'source-map-loader',
+            ],
+          },
+          {
+            enforce: 'pre',
+            test: /\.tsx?$/,
+            exclude: [/\/node_modules\//],
+            use: ['ts-loader', 'source-map-loader'],
+          },
+        ],
+      },
+      { test: /\.html$/, loader: 'html-loader' },
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+    ].filter(Boolean),
   },
   resolve: {
     extensions: ['.ts', '.js'],
-    plugins: [new TsconfigPathsPlugin({ extensions: [".ts", ".tsx", ".js"], configFile: "./tsconfig.json" })]
+    plugins: [new TsconfigPathsPlugin({ extensions: ['.ts', '.tsx', '.js'], configFile: './tsconfig.json' })],
   },
   plugins: plugins,
   devServer: {
     contentBase: path.join(__dirname, 'dist/'),
     compress: true,
     port: 3000,
-    hot: true
+    hot: true,
   },
   // optimization: {
   //   splitChunks: {
@@ -297,10 +301,10 @@ var config = {
           test: /(igniteui-webgrids)/,
           name: 'igniteui-webgrids',
           chunks: 'async',
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 };
 
 module.exports = config;

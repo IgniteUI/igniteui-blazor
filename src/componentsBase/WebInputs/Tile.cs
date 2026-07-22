@@ -1,10 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTile: IDisposable
+    public partial class IgbTile : IDisposable
     {
         [CascadingParameter(Name = "TileManagerParent")]
         protected BaseRendererControl TileManagerParent

@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Threading.Tasks;
-
 namespace IgniteUI.Blazor.Controls
 {
     public class LocalJson
@@ -18,7 +13,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private string _json;
-        public string Json { get { return _json; }}
+        public string Json { get { return _json; } }
 
         internal string ToRef()
         {
@@ -44,7 +39,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private string _uri;
-        public string Uri { get { return _uri; }}
+        public string Uri { get { return _uri; } }
 
         internal string ToRef()
         {

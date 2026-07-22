@@ -1,23 +1,21 @@
-﻿using IgniteUI.Blazor.Controls;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbTabs : BaseRendererControl
     {
 
-        partial void OnCreatedIgbTabs() {
+        partial void OnCreatedIgbTabs()
+        {
             EnsureChangeHandled();
         }
 
-        partial void OnHandlingChange(IgbTabComponentEventArgs args) {
+        partial void OnHandlingChange(IgbTabComponentEventArgs args)
+        {
             var selectedTab = args.Detail;
             // add check in case something triggers event without args.
-            if (selectedTab == null) {
+            if (selectedTab == null)
+            {
                 return;
             }
 
@@ -27,7 +25,8 @@ namespace IgniteUI.Blazor.Controls
                 {
                     item.Selected = true;
                 }
-                else {
+                else
+                {
                     item.Selected = false;
 
                 }
@@ -41,7 +40,7 @@ namespace IgniteUI.Blazor.Controls
                     }
                 }
             }
-           
+
         }
 
         internal void EnsureChangeHandled()

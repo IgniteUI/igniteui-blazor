@@ -1,7 +1,7 @@
-﻿using IgniteUI.Blazor.Controls;
-using Microsoft.AspNetCore.Components;
-using System.Data;
+﻿using System.Data;
 using System.Reflection;
+using IgniteUI.Blazor.Controls;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {
@@ -32,7 +32,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         {
             MethodInfo[] methodInfos = componentType.GetMethods(BindingFlags.Public | BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly).Where(m => !m.IsSpecialName).ToArray();
             var validMethods = methodInfos
-             // only async in this env.
+            // only async in this env.
             .Where(x => x.Name.EndsWith("Async"))
             // this is not user settable but exist in all classes.
             .Where(x => x.Name != "SetNativeElementAsync" && x.Name != "SetParametersAsync")
@@ -43,7 +43,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             return validMethods.ToList();
         }
 
-            public static string GetActualPropertyName(PropertyInfo propertyInfo)
+        public static string GetActualPropertyName(PropertyInfo propertyInfo)
         {
             var customNameAttr = propertyInfo.GetCustomAttributes(true).FirstOrDefault(x => x.GetType().Name == "WCWidgetMemberNameAttribute");
             // extract actual name from attribute
@@ -168,8 +168,6 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 };
             };
         }
-
-
 
         public static string Camelize(string? value)
         {

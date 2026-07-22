@@ -1,8 +1,9 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum PickerMode {
-	Dropdown, 
-	Dialog
+    public enum PickerMode
+    {
+        Dropdown,
+        Dialog
 
-}
+    }
 }

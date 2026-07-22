@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -8,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     {
         private Dictionary<string, string> _data = new Dictionary<string, string>();
         private String _type = null;
-        public string Type 
+        public string Type
         {
             get
             {
@@ -19,17 +17,18 @@ namespace IgniteUI.Blazor.Controls
                 _type = value;
             }
         }
-        public void SetData(string key, string data) 
+        public void SetData(string key, string data)
         {
             _data[key] = data;
         }
 
-        public string ToJson() 
+        public string ToJson()
         {
             List<string> props = new List<string>();
 
             props.Add("\"type\": \"" + _type + "\"");
-            foreach (string key in _data.Keys) {
+            foreach (string key in _data.Keys)
+            {
                 props.Add("\"" + key + "\": " + _data[key]);
             }
 

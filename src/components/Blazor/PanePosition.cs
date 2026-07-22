@@ -1,8 +1,9 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum PanePosition {
-	Start, 
-	End
+    public enum PanePosition
+    {
+        Start,
+        End
 
-}
+    }
 }

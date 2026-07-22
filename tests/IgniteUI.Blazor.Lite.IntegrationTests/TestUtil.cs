@@ -1,10 +1,5 @@
-﻿using IgniteUI.Blazor.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using IgniteUI.Blazor.Controls;
 
 namespace IgniteUI.Blazor.Lite.IntegrationTests
 {
@@ -21,7 +16,8 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
                   p.IsSubclassOf(typeof(BaseRendererControl)) &&
                   !p.Name.Contains("Base")
             ).ToList();
-            foreach ( var c in classes) {
+            foreach (var c in classes)
+            {
                 try
                 {
                     var instance = Activator.CreateInstance(c);
@@ -35,7 +31,6 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
                 {
                 }
             }
-           
 
             return result.Where(x => !excluded.Contains(x)).ToList();
         }

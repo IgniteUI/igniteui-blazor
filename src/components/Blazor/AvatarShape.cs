@@ -1,9 +1,10 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum AvatarShape {
-	Square, 
-	Circle, 
-	Rounded
+    public enum AvatarShape
+    {
+        Square,
+        Circle,
+        Rounded
 
-}
+    }
 }

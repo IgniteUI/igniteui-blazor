@@ -1,10 +1,6 @@
-using Microsoft.Playwright.NUnit;
-using Microsoft.Playwright;
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using NUnit.Framework.Internal;
-using System.Text;
 using IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure;
+using Microsoft.Playwright;
+using NUnit.Framework.Internal;
 
 namespace IgniteUI.Blazor.Lite.IntegrationTests
 {

@@ -12,25 +12,25 @@ import { refValues, itemMaps } from './refs-state';
 IgcPortalModule.register();
 
 (window as any).igTemplating = {
-  html: html
-}
+  html: html,
+};
 
-let cr = new ComponentRenderer()
+let cr = new ComponentRenderer();
 ComponentRenderer.defaultInstance = cr;
 (cr.adapter as any).isBlazorRenderer = true;
 
-const DATA_IG_ID_ATTRIBUTE = "data-ig-id";
+const DATA_IG_ID_ATTRIBUTE = 'data-ig-id';
 let containers: Map<string, HTMLElement> = new Map<string, HTMLElement>();
 let containersDirect: Map<string, boolean> = new Map<string, boolean>();
 let containersPendingRefs: Map<string, (() => void)[]> = new Map<string, (() => void)[]>();
 let containersPendingDataRefs: Map<string, (() => void)[]> = new Map<string, (() => void)[]>();
 function getContainer(id: string): HTMLElement {
   let cont = containers.get(id);
-    if (!cont) {
-        return null;
-    }
+  if (!cont) {
+    return null;
+  }
   if (!containersDirect.has(id)) {
-    if (cont.tagName.toUpperCase() == "IGC-COMPONENT-RENDERER-CONTAINER") {
+    if (cont.tagName.toUpperCase() == 'IGC-COMPONENT-RENDERER-CONTAINER') {
       containersDirect.set(id, false);
     } else {
       containersDirect.set(id, true);
@@ -48,26 +48,25 @@ function getContainerByIgIdAttribute(id) {
 cr.addNamespaceLookupListener(getContainerId);
 cr.shouldNamespaceSystemRefValues = true;
 
-
-cr.addPropertyUpdatingListener("options", (p, t, v) => {
+cr.addPropertyUpdatingListener('options', (p, t, v) => {
   /* hack to prevent igc-chat from automatically storing new messages in its internal collection
-  * which causes problems with the sync between Blazor and the web component.
-  */
-  if (t.tagName === "IGC-CHAT") {
+   * which causes problems with the sync between Blazor and the web component.
+   */
+  if (t.tagName === 'IGC-CHAT') {
     if (t.addEventListener) {
       let chat = t as any;
       if (!chat.___igcMessageCreatedPreventDefaultHandler) {
         chat.___igcMessageCreatedPreventDefaultHandler = (e: Event) => {
           e.preventDefault();
         };
-        chat.addEventListener("igcMessageCreated", chat.___igcMessageCreatedPreventDefaultHandler);
+        chat.addEventListener('igcMessageCreated', chat.___igcMessageCreatedPreventDefaultHandler);
       }
     }
   }
 });
 
 cr.addReferenceLookupListener((container, refType, value) => {
-  if (refType == "uuid") {
+  if (refType == 'uuid') {
     var retVal = null;
     itemMaps.forEach((v, k, map) => {
       if (v.has(value)) {
@@ -98,9 +97,9 @@ let isSyncMethodInvoke: boolean = false;
 
 var isDotNet = true;
 async function callDotNet(webCallback, methodName: string, ...args: any[]): Promise<any> {
-    if (isDotNet) {
-        return await webCallback.invokeMethodAsync(methodName, currentContainerName, ...args);
-    }
+  if (isDotNet) {
+    return await webCallback.invokeMethodAsync(methodName, currentContainerName, ...args);
+  }
 }
 
 (window as any).igWaitForLoaded = async function waitForLoaded() {
@@ -115,12 +114,17 @@ async function callDotNet(webCallback, methodName: string, ...args: any[]): Prom
   Loader.instance.request(module, cr);
 };
 
-(window as any).igSetResourceString = function setResourceString(type: string, grouping: string, id: string, value: string) {
+(window as any).igSetResourceString = function setResourceString(
+  type: string,
+  grouping: string,
+  id: string,
+  value: string,
+) {
   switch (type) {
-    case "set":
+    case 'set':
       Loader.instance.setResourceString(grouping, id, value);
       break;
-    case "register":
+    case 'register':
       Loader.instance.registerResource(grouping, JSON.parse(value));
       break;
   }
@@ -139,7 +143,7 @@ function isContainerDirectRender(): boolean {
 
 function getMainTarget() {
   let cont = currentContainer();
-  
+
   if (!containersDirect.get(currentContainerName)) {
     return cont.children[0];
   } else {
@@ -161,7 +165,7 @@ function copyProperties(target: any, source: any) {
 
 function findByName(node: any, name: string) {
   let root = node;
-  if (name == "mainControl") {
+  if (name == 'mainControl') {
     return root;
   }
 
@@ -217,7 +221,7 @@ function findByName(node: any, name: string) {
   return null;
 }
 
-let convertReturnValue = function(retVal: any): any {
+let convertReturnValue = function (retVal: any): any {
   // if (Loader.isMarshalByValue(retVal)) {
   //   retVal = Loader.stringify(retVal);
   // } else {
@@ -234,41 +238,41 @@ let convertReturnValue = function(retVal: any): any {
   //     }
   //     retVal = JSON.stringify(retVal);
   //   }
-    // }
+  // }
 
-  if (typeof(retVal) == "number") {
-    return JSON.stringify({ retType: "number", value: retVal});
-  } else if (typeof(retVal) == "string") {
-    return JSON.stringify({ retType: "string", value: retVal});
-  } else if (typeof(retVal) == "boolean") {
-    return JSON.stringify({ retType: "boolean", value: retVal});
+  if (typeof retVal == 'number') {
+    return JSON.stringify({ retType: 'number', value: retVal });
+  } else if (typeof retVal == 'string') {
+    return JSON.stringify({ retType: 'string', value: retVal });
+  } else if (typeof retVal == 'boolean') {
+    return JSON.stringify({ retType: 'boolean', value: retVal });
   } else if (retVal instanceof Date) {
     if (retVal.getTime() === dateMinValue().getTime()) {
-      retVal = "0001-01-01T00:00:00.000Z";
+      retVal = '0001-01-01T00:00:00.000Z';
     }
-    return JSON.stringify({ retType: "date", value: retVal});
-  } 
+    return JSON.stringify({ retType: 'date', value: retVal });
+  }
 
   if (retVal == null) {
-    return JSON.stringify({ retType: "object", type: "", value: null});
+    return JSON.stringify({ retType: 'object', type: '', value: null });
   }
 
   return Loader.stringify(retVal, getMainTarget());
 };
 
-let toReturn = function(retVal: any): any {
-  if (typeof(retVal) == "number") {
-    return { retType: "number", value: retVal};
-  } else if (typeof(retVal) == "string") {
-    return { retType: "string", value: retVal};
-  } else if (typeof(retVal) == "boolean") {
-    return { retType: "boolean", value: retVal};
+let toReturn = function (retVal: any): any {
+  if (typeof retVal == 'number') {
+    return { retType: 'number', value: retVal };
+  } else if (typeof retVal == 'string') {
+    return { retType: 'string', value: retVal };
+  } else if (typeof retVal == 'boolean') {
+    return { retType: 'boolean', value: retVal };
   } else if (retVal instanceof Date) {
-    return { retType: "date", value: retVal};
+    return { retType: 'date', value: retVal };
   }
 
   if (retVal == null) {
-    return { retType: "object", type: "", value: null};
+    return { retType: 'object', type: '', value: null };
   }
 
   return JSON.parse(Loader.stringify(retVal, getMainTarget()));
@@ -281,15 +285,15 @@ function toSimpleArgs(args: CustomEvent) {
 
   class SimpleCustomEvent {
     detail: any = {};
-  };
-  
+  }
+
   let newArgs = new SimpleCustomEvent();
 
   //HACK: we need to fix the stringify to include non prototypal keys. But I'm not doing that right now.
-  if (typeof(args.detail) == "object" && args.detail !== null && !args.detail.tagName) {
+  if (typeof args.detail == 'object' && args.detail !== null && !args.detail.tagName) {
     args.detail.___cloned = true;
   }
-  newArgs.detail = typeof(args.detail) == "object" ? toReturn(args.detail) : args.detail;
+  newArgs.detail = typeof args.detail == 'object' ? toReturn(args.detail) : args.detail;
 
   return newArgs;
 }
@@ -298,9 +302,9 @@ function markupCustomArgs(origArgs, args) {
   if (origArgs instanceof CustomEvent) {
     if (origArgs.target && origArgs.target instanceof HTMLElement) {
       let ele = origArgs.target as HTMLElement;
-      if (ele.tagName.toLowerCase() == "igc-combo") {
-        if (origArgs.type == "igcChange") {
-          args.detail.type = "WebComboChangeEventArgsDetail"
+      if (ele.tagName.toLowerCase() == 'igc-combo') {
+        if (origArgs.type == 'igcChange') {
+          args.detail.type = 'WebComboChangeEventArgsDetail';
         }
       }
     }
@@ -311,7 +315,7 @@ function flattenArgs(args, forceSimple?) {
   if (args === null || args === undefined) {
     return null;
   }
-  if (!(typeof(args) == "object")) {
+  if (!(typeof args == 'object')) {
     args = toReturn(args);
     return args;
   }
@@ -338,23 +342,23 @@ function flattenArgs(args, forceSimple?) {
 
 function expandDateColumns(item: any, source: any, itemIndex: number = 0, startIndex: number = 0) {
   if (Array.isArray(item)) {
-      if (source.__dateColumnsCache) {
-        let cache = source.__dateColumnsCache.columns[itemIndex];
-        (item as any).__dateColumnsCache = {};
-        (item as any).__dateColumnsCache.columns = cache;
-      }
-      
-      for (let i = 0; i < item.length; i++) {
-        expandDateColumns(item[i], item);
-      }
-      return;
+    if (source.__dateColumnsCache) {
+      let cache = source.__dateColumnsCache.columns[itemIndex];
+      (item as any).__dateColumnsCache = {};
+      (item as any).__dateColumnsCache.columns = cache;
+    }
+
+    for (let i = 0; i < item.length; i++) {
+      expandDateColumns(item[i], item);
+    }
+    return;
   }
 
   if (source.__dateColumnsCache) {
-      for (let i = startIndex; i < source.__dateColumnsCache.columns.length; i++) {
-          let propPath = source.__dateColumnsCache.columns[i];
-          expandDateColumn(item, propPath);
-      }
+    for (let i = startIndex; i < source.__dateColumnsCache.columns.length; i++) {
+      let propPath = source.__dateColumnsCache.columns[i];
+      expandDateColumn(item, propPath);
+    }
   }
 }
 
@@ -364,13 +368,13 @@ function expandDateColumn(item: any, path: string) {
       expandDateColumn(item[i], path);
     }
   } else {
-    if (path.includes(".")) {
-      let propName = path.split(".")[0];
-      if (propName.includes("[]")) {
-        let arr = item[propName.replace("[]", "")];
-        expandDateColumn(arr, path.replace(`${propName}.`, ""));
+    if (path.includes('.')) {
+      let propName = path.split('.')[0];
+      if (propName.includes('[]')) {
+        let arr = item[propName.replace('[]', '')];
+        expandDateColumn(arr, path.replace(`${propName}.`, ''));
       } else {
-        expandDateColumn(item[propName], path.replace(`${propName}.`, ""));
+        expandDateColumn(item[propName], path.replace(`${propName}.`, ''));
       }
     } else {
       if (item[path]) {
@@ -382,7 +386,15 @@ function expandDateColumn(item: any, path: string) {
 
 let dynamicContentBatch: any[] = [];
 let dynamicContentBatchPending = false;
-var adjustDynamicContent = function (containerId: string, contentType: string, templateId: string, contentId: string, actionType: string, webCallback, args: any) {
+var adjustDynamicContent = function (
+  containerId: string,
+  contentType: string,
+  templateId: string,
+  contentId: string,
+  actionType: string,
+  webCallback,
+  args: any,
+) {
   updateContainer(containerId);
   dynamicContentBatch.push({
     containerId: containerId,
@@ -390,20 +402,20 @@ var adjustDynamicContent = function (containerId: string, contentType: string, t
     templateId: templateId,
     contentId: contentId,
     actionType: actionType,
-    args: flattenArgs(args)
+    args: flattenArgs(args),
   });
 
   if (dynamicContentBatchPending) {
     return;
   }
   dynamicContentBatchPending = true;
-  
+
   window.setTimeout(() => {
     dynamicContentBatchPending = false;
     var arg = JSON.stringify(dynamicContentBatch);
     dynamicContentBatch.length = 0;
     currentContainerName = containerId;
-    callDotNet(webCallback, "AdjustDynamicContentBatch", arg);
+    callDotNet(webCallback, 'AdjustDynamicContentBatch', arg);
   }, 0);
 };
 
@@ -422,14 +434,14 @@ function getContainerIgIdAttribute(container: HTMLElement) {
 }
 
 function raiseEventImpl(propertyName: string, sender: any, args: any, containerName: any, webCallback) {
-  let name: string = "mainControl";
+  let name: string = 'mainControl';
   let cont = sender;
 
   if (!args && (sender instanceof CustomEvent || sender instanceof UIEvent)) {
-     args = sender;
-     updateContainer(containerName);
-     sender = getMainTarget();
-     cont = getContainerByIgIdAttribute(containerName);
+    args = sender;
+    updateContainer(containerName);
+    sender = getMainTarget();
+    cont = getContainerByIgIdAttribute(containerName);
   }
 
   let isWrapper = !(sender instanceof HTMLElement) && sender.i && sender.i.nativeElement;
@@ -470,32 +482,44 @@ function raiseEventImpl(propertyName: string, sender: any, args: any, containerN
   } else {
     outerArgs = flattenArgs(args, args instanceof UIEvent);
   }
-  
+
   Loader.clearMarshalIdByValueOnceByEvent(propertyName);
 
-    try
-    {
-      (window as any).raisingEvent = true;
+  try {
+    (window as any).raisingEvent = true;
 
-      callDotNet(webCallback, "OnRaiseEvent", name, propertyName, JSON.stringify({ sender: sender, args: outerArgs }));
-      if ((window as any).webViewCallback) {
-        ((window as any).webViewCallback).onRaiseEvent(name, propertyName, JSON.stringify({ sender: sender, args: outerArgs }));
-      }
-      if ((window as any).webkit && (window as any).webkit.messageHandlers && (window as any).webkit.messageHandlers.raiseEvent) {
-        (window as any).webkit.messageHandlers.raiseEvent.postMessage({ name: name, propertyName: propertyName, sender: sender, args: outerArgs });
-      }
-    } finally {
-      (window as any).raisingEvent = false;
+    callDotNet(webCallback, 'OnRaiseEvent', name, propertyName, JSON.stringify({ sender: sender, args: outerArgs }));
+    if ((window as any).webViewCallback) {
+      (window as any).webViewCallback.onRaiseEvent(
+        name,
+        propertyName,
+        JSON.stringify({ sender: sender, args: outerArgs }),
+      );
+    }
+    if (
+      (window as any).webkit &&
+      (window as any).webkit.messageHandlers &&
+      (window as any).webkit.messageHandlers.raiseEvent
+    ) {
+      (window as any).webkit.messageHandlers.raiseEvent.postMessage({
+        name: name,
+        propertyName: propertyName,
+        sender: sender,
+        args: outerArgs,
+      });
+    }
+  } finally {
+    (window as any).raisingEvent = false;
   }
 }
 
 var raiseEvent = function (propertyName: string, sender: any, args: any, containerName: any, webCallback) {
-  let resolvedBehavior = "queued";
+  let resolvedBehavior = 'queued';
   if (eventBehaviors.has(containerName)) {
     resolvedBehavior = eventBehaviors.get(containerName);
   }
-  
-  if (isSyncMethodInvoke || resolvedBehavior === "queued") {
+
+  if (isSyncMethodInvoke || resolvedBehavior === 'queued') {
     window.setTimeout(() => {
       raiseEventImpl(propertyName, sender, args, containerName, webCallback);
     }, 0);
@@ -504,7 +528,10 @@ var raiseEvent = function (propertyName: string, sender: any, args: any, contain
   }
 };
 
-let igScripts: Map<string, { shouldCall: boolean, func: Function }> = new Map<string, { shouldCall: boolean, func: Function }>();
+let igScripts: Map<string, { shouldCall: boolean; func: Function }> = new Map<
+  string,
+  { shouldCall: boolean; func: Function }
+>();
 (window as any).igRegisterScript = function (scriptId: string, script: Function, shouldCall: boolean = true) {
   igScripts.set(scriptId, { shouldCall: shouldCall, func: script });
 };
@@ -515,10 +542,10 @@ let igScripts: Map<string, { shouldCall: boolean, func: Function }> = new Map<st
 (window as any).igCheckReady = function (containerId: string) {
   // var cont = document.getElementById(containerId);
   var cont = getContainerByIgIdAttribute(containerId);
-  return (cont !== null && cont !== undefined);
+  return cont !== null && cont !== undefined;
 };
 
-(window as any).igSendMessages = function(json: string) {
+(window as any).igSendMessages = function (json: string) {
   let m = JSON.parse(json);
   for (let i = 0; i < m.length; i++) {
     (window as any).sendMessage(JSON.stringify(m[i]));
@@ -592,9 +619,9 @@ function processDataIntentsHelper(refValue: any, dataIntents: any) {
   let intent = {};
   for (var key of Object.keys(dataIntents)) {
     if (dataIntents[key] && dataIntents[key].subProps) {
-        if (refValue.length > 0 && refValue[0][key]) {
-          processDataIntentsHelper(refValue[0][key], dataIntents[key].subIntents);
-        }
+      if (refValue.length > 0 && refValue[0][key]) {
+        processDataIntentsHelper(refValue[0][key], dataIntents[key].subIntents);
+      }
     } else {
       intent[key] = dataIntents[key];
     }
@@ -623,8 +650,8 @@ function ensureExternalObject(target: any) {
   }
 
   if (target && target._implementation) {
-      // we are already an external type.
-      return target;
+    // we are already an external type.
+    return target;
   }
 
   if (!target || !target.tagName) {
@@ -632,34 +659,34 @@ function ensureExternalObject(target: any) {
   }
 
   let typeNameWithoutComponent = fromSpinal(target.tagName.toLowerCase());
-  let typeName = typeNameWithoutComponent + "Component";
-  
+  let typeName = typeNameWithoutComponent + 'Component';
+
   if (TypeRegistrar.isRegistered(typeName)) {
-      let ret = TypeRegistrar.create(typeName);
-      target.externlObject = ret;
-      if (ret.setNativeElement) {
-        ret.setNativeElement(target);
-      }
-      if (ret.provideImplementation) {
-        ret.provideImplementation(target);
-      } else {
-        ret._implementation = target;
-      }
-      return ret;
+    let ret = TypeRegistrar.create(typeName);
+    target.externlObject = ret;
+    if (ret.setNativeElement) {
+      ret.setNativeElement(target);
+    }
+    if (ret.provideImplementation) {
+      ret.provideImplementation(target);
+    } else {
+      ret._implementation = target;
+    }
+    return ret;
   }
 
   typeName = typeNameWithoutComponent;
-  
+
   if (TypeRegistrar.isRegistered(typeName)) {
-      let ret = TypeRegistrar.create(typeName);
-      target.externlObject = ret;
-      if (ret.setNativeElement) {
-        ret.setNativeElement(target);
-      }
-      if (ret.provideImplementation) {
-        ret.provideImplementation(target);
-      }
-      return ret;
+    let ret = TypeRegistrar.create(typeName);
+    target.externlObject = ret;
+    if (ret.setNativeElement) {
+      ret.setNativeElement(target);
+    }
+    if (ret.provideImplementation) {
+      ret.provideImplementation(target);
+    }
+    return ret;
   }
 
   return target;
@@ -677,11 +704,11 @@ function updateAngularElement(element: any) {
 (window as any).igSendMessage = function (containerId: string, json: string, webCallback: any, nativeElements: any[]) {
   updateContainer(containerId);
   let m = JSON.parse(json);
-  
+
   switch (m.type) {
-    case "description":
+    case 'description':
       let desc = m.description;
-      let ms = { descriptions: {"root": desc } };
+      let ms = { descriptions: { root: desc } };
       cr.loadJson(JSON.stringify(ms), (c) => currentContainer());
       if (cr.hasErrors()) {
         let errors = cr.getErrors();
@@ -699,7 +726,7 @@ function updateAngularElement(element: any) {
         }
       }
       break;
-    case "cleanup":
+    case 'cleanup':
       var container = currentContainer();
       if (container != null) {
         if (isContainerDirectRender()) {
@@ -739,339 +766,335 @@ function updateAngularElement(element: any) {
         }
       }
       break;
-    case "descriptionDelta":
-        let descDelta = m.description;
-        let skipApply = m.skipApply;
-        let msDelta = { descriptions: {"root": descDelta } };
+    case 'descriptionDelta':
+      let descDelta = m.description;
+      let skipApply = m.skipApply;
+      let msDelta = { descriptions: { root: descDelta } };
 
-        cr.loadJsonDelta(JSON.stringify(msDelta), (c) => currentContainer(), skipApply);
-        if (cr.hasErrors()) {
-          let errors = cr.getErrors();
-          cr.clearErrors();
-          for (let ei = 0; ei < errors.length; ei++) {
-            let error = errors[ei];
-            console.error(error);
-          }
+      cr.loadJsonDelta(JSON.stringify(msDelta), (c) => currentContainer(), skipApply);
+      if (cr.hasErrors()) {
+        let errors = cr.getErrors();
+        cr.clearErrors();
+        for (let ei = 0; ei < errors.length; ei++) {
+          let error = errors[ei];
+          console.error(error);
         }
+      }
 
-        if (containersPendingRefs.has(containerId)) {
-          let arr = containersPendingRefs.get(containerId);
-          containersPendingRefs.delete(containerId);
-          for (let j = 0; j < arr.length; j++) {
-            arr[j]();
-          }
+      if (containersPendingRefs.has(containerId)) {
+        let arr = containersPendingRefs.get(containerId);
+        containersPendingRefs.delete(containerId);
+        for (let j = 0; j < arr.length; j++) {
+          arr[j]();
         }
-        break;
-    case "refChanged":
+      }
+      break;
+    case 'refChanged':
       {
         let refName = m.refName;
         const originalRefVal = m.refValue;
         let refValue = m.refValue;
-        
-        if (typeof(refValue) == "string" &&
-            refValue.indexOf("json:::") == 0) {
-            refValue = refValue.substring("json:::".length);
-            
-            fetch(refValue).then((d) => {
-              d.json().then(dj => {
-                refValue = dj;
-                cr.provideRefValue(currentContainer(), refName, refValue);
-                refValues.set(refName, refValue);
 
-                for (let i = 0; i < refValue.length; i++) {
-                  refValue[i].___localJson = true;
-                }
-              });
-            })
-        } else {
-          if (typeof(refValue) == "string" &&
-            refValue.indexOf("containerId:::") == 0) {
-              refValue = refValue.substring("containerId:::".length);
-              if (containers.has(refValue) && containers.get(refValue).children.length > 0) {
-                refValue = containers.get(refValue).children[0];
-              } else {
-                if (!containersPendingRefs.has(refValue)) {
-                  containersPendingRefs.set(refValue, []);
-                }
-                let arr = containersPendingRefs.get(refValue);
-                let cc = currentContainer();
-                arr.push(() => {
-                  refValue = containers.get(refValue).children[0];
-                  cr.provideRefValue(cc, refName, refValue);
-                  refValues.set(refName, refValue);
-                });
-                return;
-              }
-          }
-          if (typeof(refValue) == "string" &&
-              refValue.indexOf("literalJson:::") == 0) {
-              refValue = refValue.substring("literalJson:::".length);
-              refValue = JSON.parse(refValue);
-          }
-          if (typeof(refValue) == "string" &&
-              refValue.indexOf("localJson:::") == 0) {
-              refValue = refValue.substring("localJson:::".length);
-              refValue = JSON.parse(refValue);
+        if (typeof refValue == 'string' && refValue.indexOf('json:::') == 0) {
+          refValue = refValue.substring('json:::'.length);
+
+          fetch(refValue).then((d) => {
+            d.json().then((dj) => {
+              refValue = dj;
+              cr.provideRefValue(currentContainer(), refName, refValue);
+              refValues.set(refName, refValue);
 
               for (let i = 0; i < refValue.length; i++) {
                 refValue[i].___localJson = true;
               }
+            });
+          });
+        } else {
+          if (typeof refValue == 'string' && refValue.indexOf('containerId:::') == 0) {
+            refValue = refValue.substring('containerId:::'.length);
+            if (containers.has(refValue) && containers.get(refValue).children.length > 0) {
+              refValue = containers.get(refValue).children[0];
+            } else {
+              if (!containersPendingRefs.has(refValue)) {
+                containersPendingRefs.set(refValue, []);
+              }
+              let arr = containersPendingRefs.get(refValue);
+              let cc = currentContainer();
+              arr.push(() => {
+                refValue = containers.get(refValue).children[0];
+                cr.provideRefValue(cc, refName, refValue);
+                refValues.set(refName, refValue);
+              });
+              return;
+            }
           }
-          if (typeof(refValue) == "string" &&
-              refValue.indexOf("script:::") == 0) {
-              refValue = refValue.substring("script:::".length);
-              let scriptRef = refValue;
-              if (!igScripts.has(refValue)) {
-                return;
-              }
-              var f = igScripts.get(refValue);
-              if (f.shouldCall && typeof(f.func) == "function") {
-                refValue = f.func();
-              } else {
-                refValue = f.func;
-              }
-              if (refValue &&
-                typeof(refValue) == "function") {
-                  (refValue as any).___fromScript = true;
-                  (refValue as any).___fromScriptId = scriptRef;
+          if (typeof refValue == 'string' && refValue.indexOf('literalJson:::') == 0) {
+            refValue = refValue.substring('literalJson:::'.length);
+            refValue = JSON.parse(refValue);
+          }
+          if (typeof refValue == 'string' && refValue.indexOf('localJson:::') == 0) {
+            refValue = refValue.substring('localJson:::'.length);
+            refValue = JSON.parse(refValue);
 
-                  if (getMainTarget() != null &&
-                      isContainerDirectRender()) {
-                      // attached and raises client-side event for direct render components
-                      let target = getMainTarget();
-                      let isNativeEvent = originalRefVal.indexOf("nativeEvent:::") == 0;
-                      const refs = refName.split("/");
-                      let actualEvent = refs[refs.length - 1];
-                      if (actualEvent.endsWith("Ocurred")) {
-                          actualEvent = actualEvent.replace("Ocurred", "");
-                      }
-                      if (actualEvent.toLowerCase() == "selectionchanged") {
-                          actualEvent = "Selection";
-                      }
-                      let directEvent = isNativeEvent ? actualEvent.toLowerCase() : "igc" + actualEvent;
-                      if (directEvents.has(refName)) {
-                          target.removeEventListener(directEvent, directEvents.get(refName)[1])
-                      }
-                      target.addEventListener(directEvent, refValue);
-                      directEvents.set(refName, [directEvent, refValue]);
-                  }
-              }
+            for (let i = 0; i < refValue.length; i++) {
+              refValue[i].___localJson = true;
+            }
           }
-          if (
-            refValue == null &&
-            getMainTarget() != null &&
-            isContainerDirectRender()) {
+          if (typeof refValue == 'string' && refValue.indexOf('script:::') == 0) {
+            refValue = refValue.substring('script:::'.length);
+            let scriptRef = refValue;
+            if (!igScripts.has(refValue)) {
+              return;
+            }
+            var f = igScripts.get(refValue);
+            if (f.shouldCall && typeof f.func == 'function') {
+              refValue = f.func();
+            } else {
+              refValue = f.func;
+            }
+            if (refValue && typeof refValue == 'function') {
+              (refValue as any).___fromScript = true;
+              (refValue as any).___fromScriptId = scriptRef;
+
+              if (getMainTarget() != null && isContainerDirectRender()) {
+                // attached and raises client-side event for direct render components
+                let target = getMainTarget();
+                let isNativeEvent = originalRefVal.indexOf('nativeEvent:::') == 0;
+                const refs = refName.split('/');
+                let actualEvent = refs[refs.length - 1];
+                if (actualEvent.endsWith('Ocurred')) {
+                  actualEvent = actualEvent.replace('Ocurred', '');
+                }
+                if (actualEvent.toLowerCase() == 'selectionchanged') {
+                  actualEvent = 'Selection';
+                }
+                let directEvent = isNativeEvent ? actualEvent.toLowerCase() : 'igc' + actualEvent;
+                if (directEvents.has(refName)) {
+                  target.removeEventListener(directEvent, directEvents.get(refName)[1]);
+                }
+                target.addEventListener(directEvent, refValue);
+                directEvents.set(refName, [directEvent, refValue]);
+              }
+            }
+          }
+          if (refValue == null && getMainTarget() != null && isContainerDirectRender()) {
             if (directEvents.has(refName)) {
               let target = getMainTarget();
               target.removeEventListener(directEvents.get(refName)[0], directEvents.get(refName)[1]);
               directEvents.delete(refName);
             }
+          }
+
+          if (
+            typeof refValue == 'string' &&
+            (refValue.indexOf('event:::') == 0 || refValue.indexOf('nativeEvent:::') == 0)
+          ) {
+            let isNativeEvent = refValue.indexOf('nativeEvent:::') == 0;
+            refValue = isNativeEvent
+              ? refValue.substring('nativeEvent:::'.length)
+              : refValue.substring('event:::'.length);
+            var eventName = refValue;
+            if (getMainTarget() != null && isContainerDirectRender()) {
+              // attached and raises server-side event for direct render components
+              let target = getMainTarget();
+              refValue = function (args) {
+                raiseEvent(eventName, target, isNativeEvent ? null : args, containerId, webCallback);
+              };
+            } else {
+              let target = getMainTarget();
+              refValue = function (sender, args) {
+                raiseEvent(eventName, sender, isNativeEvent ? null : args, containerId, webCallback);
+              };
             }
 
-          if (typeof(refValue) == "string" &&
-              (refValue.indexOf("event:::") == 0 ||
-              refValue.indexOf("nativeEvent:::") == 0)) {
-              let isNativeEvent = refValue.indexOf("nativeEvent:::") == 0;
-              refValue = isNativeEvent ?
-                refValue.substring("nativeEvent:::".length):
-                refValue.substring("event:::".length);
-              var eventName = refValue;
-              if (getMainTarget() != null &&
-                  isContainerDirectRender()) {
-                // attached and raises server-side event for direct render components
-                let target = getMainTarget();
-                refValue = function (args) {
-                  raiseEvent(eventName, target, isNativeEvent ? null : args, containerId, webCallback);
-                }
-              } else {
-                let target = getMainTarget();
-                refValue = function (sender, args) {
-                    raiseEvent(eventName, sender, isNativeEvent ? null : args, containerId, webCallback);
-                }
+            if (getMainTarget() != null && isContainerDirectRender()) {
+              let actualEvent = eventName;
+              if (eventName.endsWith('Ocurred')) {
+                actualEvent = actualEvent.replace('Ocurred', '');
+                //TODO: this must come from metadata.
+              }
+              if (eventName.toLowerCase() == 'selectionchanged') {
+                actualEvent = 'Selection';
+              }
+              let directEvent = isNativeEvent ? actualEvent.toLowerCase() : 'igc' + actualEvent;
+              let target = getMainTarget();
+
+              // 28717 - .net8 exposed a bug we had where if you assign a handler in Blazor and then assign a different
+              // handler we don't clean up the first handler. Our Blazor API doesn't allow multiple event handlers attached
+              // to a single event so we need to cleanup the previous handler if exists.
+              if (directEvents.has(refName)) {
+                target.removeEventListener(directEvent, directEvents.get(refName)[1]);
               }
 
-              if (getMainTarget() != null &&
-                isContainerDirectRender()) {
-                let actualEvent = eventName;
-                if (eventName.endsWith("Ocurred")) {
-                  actualEvent = actualEvent.replace("Ocurred", "");
-                  //TODO: this must come from metadata.
-                }
-                if (eventName.toLowerCase() == "selectionchanged") {
-                  actualEvent = "Selection";
-                }
-                let directEvent = isNativeEvent ? actualEvent.toLowerCase() : "igc" + actualEvent;
-                let target = getMainTarget();
-
-                // 28717 - .net8 exposed a bug we had where if you assign a handler in Blazor and then assign a different
-                // handler we don't clean up the first handler. Our Blazor API doesn't allow multiple event handlers attached
-                // to a single event so we need to cleanup the previous handler if exists.
-                if (directEvents.has(refName)) {
-                  target.removeEventListener(directEvent, directEvents.get(refName)[1])
-                }
-
-                target.addEventListener(directEvent, refValue);
-                directEvents.set(refName, [directEvent, refValue]);
-              }
-              if (m.eventBehavior) {
-                eventBehaviors.set(containerId, m.eventBehavior);
-              }
+              target.addEventListener(directEvent, refValue);
+              directEvents.set(refName, [directEvent, refValue]);
+            }
+            if (m.eventBehavior) {
+              eventBehaviors.set(containerId, m.eventBehavior);
+            }
           }
-          if (typeof(refValue) == "string" &&
-            refValue.indexOf("template:::") == 0) {
-              refValue = refValue.substring("template:::".length);
-              if (refValues.has(refName) && refValues.get(refName).__templateId == refValue) {
-                refValue = refValues.get(refName);
-              } else {
-
-                var currTemplate = null;
-                var templateId = refValue;
-                refValue = function (context) {
-                  if (currTemplate.___container.__disposed) {
-                    return noChange;
+          if (typeof refValue == 'string' && refValue.indexOf('template:::') == 0) {
+            refValue = refValue.substring('template:::'.length);
+            if (refValues.has(refName) && refValues.get(refName).__templateId == refValue) {
+              refValue = refValues.get(refName);
+            } else {
+              var currTemplate = null;
+              var templateId = refValue;
+              refValue = function (context) {
+                if (currTemplate.___container.__disposed) {
+                  return noChange;
+                }
+                if (!context) {
+                  return html`<div></div>`;
+                }
+                let contentId = context.___contentId;
+                if (
+                  context.___immediate ||
+                  (context.i && context.i.___immediate) ||
+                  (context.i && context.i.nativeElement && context.i.nativeElement.___immediate)
+                ) {
+                  let innerContext = context;
+                  if (!contentId && context.i && context.i.___contentId) {
+                    contentId = context.i.___contentId;
+                    innerContext = context.i;
                   }
-                  if (!context) {
-                    return html`<div></div>`;
+                  if (!contentId && context.i && context.i.nativeElement && context.i.nativeElement.___contentId) {
+                    contentId = context.i.nativeElement.___contentId;
+                    innerContext = context.i.nativeElement;
                   }
-                  let contentId = context.___contentId;
-                  if (context.___immediate || 
-                    (context.i && context.i.___immediate) ||
-                    (context.i && context.i.nativeElement && context.i.nativeElement.___immediate)) {
-                      let innerContext = context;
-                      if (!contentId && context.i && context.i.___contentId) {
-                        contentId = context.i.___contentId;
-                        innerContext = context.i;
-                      }
-                      if (!contentId && context.i && context.i.nativeElement && context.i.nativeElement.___contentId) {
-                        contentId = context.i.nativeElement.___contentId;
-                        innerContext = context.i.nativeElement;
-                      }
-                      var template = currTemplate;
-                      if (!template.___currentContextMap) {
-                        template.___currentContextMap = new Map<string, any>();
-                      }
-                      let currentContext: any = null;
-                      if (template.___currentContextMap.has(contentId)) {
-                        currentContext = template.___currentContextMap.get(contentId);
-                      }
-                      const hasImplicit = Object.getPrototypeOf(context).hasOwnProperty('implicit');
-                      if (hasImplicit || currentContext !== innerContext) {
-                        template.___currentContextMap.set(contentId, innerContext);
-                        adjustDynamicContent(template.___containerId,
-                          "TemplateContent",
-                          template.___templateId,
-                          contentId,
-                          "Update",
-                          webCallback,
-                          context);
-                      }
-                      if (innerContext.___root) {
-                        let root = innerContext.___root;
-                        if (!root.___host) {
-                          var host = root.querySelector("#" + 'host-' + contentId);
-                          if (host) {
-                            root.___host = host;
-                            template.___checkHost(template, root, root.___host);
-                          }
-                        } else {
-                          if (root.___host) {
-                            template.___checkHost(template, root, root.___host);
-                          }
-                        }
-                      }
+                  var template = currTemplate;
+                  if (!template.___currentContextMap) {
+                    template.___currentContextMap = new Map<string, any>();
                   }
-                  return html`<div id="${'host-' + contentId}">
-                  </div>`;
-                };
-                currTemplate = refValue;
-                refValue.___isBridged = true;
-                refValue.___templateId = templateId;
-                refValue.___containerId = currentContainerName;
-                refValue.___container = currentContainer();
-                refValue.___onTemplateInit = (template, templateContent) => {
-                  let mut = createMutationObserver((list) => {
-                      for (var mutation of list) {
-                          if (mutation.type == 'childList') {
-                              var host = templateContent.querySelector("#" + 'host-' + templateContent._id);
-                              templateContent.___host = host;
-                              if (template.___checkHost(template, templateContent, templateContent.___host)) {
-                                mut.disconnect();
-                                mut = null;
-                                if (mut2) {
-                                  mut2.disconnect();
-                                  mut2 = null;
-                                }
-                              }
-                              break;
-                          }
-                      }
-                  });
-                  mut.observe(templateContent, {
-                      childList: true
-                  });
-                  var dynCont = template.___container.parentElement.querySelector(".ig-dynamic-content-holder");
-                  let mut2 = createMutationObserver((list) => {
-                      for (var mutation of list) {
-                          if (mutation.type == 'childList') {
-                              var host = templateContent.querySelector("#" + 'host-' + templateContent._id);
-                              templateContent.___host = host;
-                              if (template.___checkHost(template, templateContent, templateContent.___host)) {
-                                mut2.disconnect();
-                                mut2 = null;
-                                if (mut) {
-                                  mut.disconnect();
-                                  mut = null;
-                                }
-                              }
-                              break;
-                          }
-                      }
-                  });
-                  mut2.observe(dynCont, {
-                      childList: true
-                  });
-                  adjustDynamicContent(template.___containerId,
-                    "TemplateContent",
-                    template.___templateId,
-                    templateContent._id,
-                      "Add",
+                  let currentContext: any = null;
+                  if (template.___currentContextMap.has(contentId)) {
+                    currentContext = template.___currentContextMap.get(contentId);
+                  }
+                  const hasImplicit = Object.getPrototypeOf(context).hasOwnProperty('implicit');
+                  if (hasImplicit || currentContext !== innerContext) {
+                    template.___currentContextMap.set(contentId, innerContext);
+                    adjustDynamicContent(
+                      template.___containerId,
+                      'TemplateContent',
+                      template.___templateId,
+                      contentId,
+                      'Update',
                       webCallback,
-                      null);
-                };
-                refValue.___onTemplateTeardown = (template, templateContent) => {
-                  adjustDynamicContent(template.___containerId,
-                    "TemplateContent",
-                    template.___templateId,
-                    templateContent._id,
-                      "Remove",
-                      webCallback,
-                      null);
-                };
-                refValue.___checkHost = (template, templateContent, host) => {
-                  var content = document.getElementById(templateContent._id);
-                  if (content && host) {
-                    if (content.parentElement != host) {
-                      if (host.id.replace("host-", "") != content.id) {
-                        console.log("error!");
+                      context,
+                    );
+                  }
+                  if (innerContext.___root) {
+                    let root = innerContext.___root;
+                    if (!root.___host) {
+                      var host = root.querySelector('#' + 'host-' + contentId);
+                      if (host) {
+                        root.___host = host;
+                        template.___checkHost(template, root, root.___host);
                       }
-                      host.appendChild(content);
-                      return true;
+                    } else {
+                      if (root.___host) {
+                        template.___checkHost(template, root, root.___host);
+                      }
                     }
                   }
-                  return false;
                 }
-                refValue.___onTemplateContextChanged = (template, templateContent, context) => {
-                  if (templateContent.___host) {
-                    template.___checkHost(template, templateContent, templateContent.___host);
+                return html`<div id="${'host-' + contentId}"></div>`;
+              };
+              currTemplate = refValue;
+              refValue.___isBridged = true;
+              refValue.___templateId = templateId;
+              refValue.___containerId = currentContainerName;
+              refValue.___container = currentContainer();
+              refValue.___onTemplateInit = (template, templateContent) => {
+                let mut = createMutationObserver((list) => {
+                  for (var mutation of list) {
+                    if (mutation.type == 'childList') {
+                      var host = templateContent.querySelector('#' + 'host-' + templateContent._id);
+                      templateContent.___host = host;
+                      if (template.___checkHost(template, templateContent, templateContent.___host)) {
+                        mut.disconnect();
+                        mut = null;
+                        if (mut2) {
+                          mut2.disconnect();
+                          mut2 = null;
+                        }
+                      }
+                      break;
+                    }
                   }
-                  adjustDynamicContent(template.___containerId,
-                    "TemplateContent",
-                    template.___templateId,
-                    templateContent._id,
-                      "Update",
-                      webCallback,
-                      context);
-                };
+                });
+                mut.observe(templateContent, {
+                  childList: true,
+                });
+                var dynCont = template.___container.parentElement.querySelector('.ig-dynamic-content-holder');
+                let mut2 = createMutationObserver((list) => {
+                  for (var mutation of list) {
+                    if (mutation.type == 'childList') {
+                      var host = templateContent.querySelector('#' + 'host-' + templateContent._id);
+                      templateContent.___host = host;
+                      if (template.___checkHost(template, templateContent, templateContent.___host)) {
+                        mut2.disconnect();
+                        mut2 = null;
+                        if (mut) {
+                          mut.disconnect();
+                          mut = null;
+                        }
+                      }
+                      break;
+                    }
+                  }
+                });
+                mut2.observe(dynCont, {
+                  childList: true,
+                });
+                adjustDynamicContent(
+                  template.___containerId,
+                  'TemplateContent',
+                  template.___templateId,
+                  templateContent._id,
+                  'Add',
+                  webCallback,
+                  null,
+                );
+              };
+              refValue.___onTemplateTeardown = (template, templateContent) => {
+                adjustDynamicContent(
+                  template.___containerId,
+                  'TemplateContent',
+                  template.___templateId,
+                  templateContent._id,
+                  'Remove',
+                  webCallback,
+                  null,
+                );
+              };
+              refValue.___checkHost = (template, templateContent, host) => {
+                var content = document.getElementById(templateContent._id);
+                if (content && host) {
+                  if (content.parentElement != host) {
+                    if (host.id.replace('host-', '') != content.id) {
+                      console.log('error!');
+                    }
+                    host.appendChild(content);
+                    return true;
+                  }
+                }
+                return false;
+              };
+              refValue.___onTemplateContextChanged = (template, templateContent, context) => {
+                if (templateContent.___host) {
+                  template.___checkHost(template, templateContent, templateContent.___host);
+                }
+                adjustDynamicContent(
+                  template.___containerId,
+                  'TemplateContent',
+                  template.___templateId,
+                  templateContent._id,
+                  'Update',
+                  webCallback,
+                  context,
+                );
+              };
             }
           }
           if (Array.isArray(refValue)) {
@@ -1082,7 +1105,7 @@ function updateAngularElement(element: any) {
               (refValue as any).__dateColumnsCache = {};
               (refValue as any).__dateColumnsCache.columns = m.dateCache;
             }
-            
+
             for (let i = 0; i < refValue.length; i++) {
               let item = refValue[i];
               expandDateColumns(item, refValue, i);
@@ -1094,7 +1117,7 @@ function updateAngularElement(element: any) {
 
           if (m.dataIntents) {
             refDataIntents.set(refName, m.dataIntents);
-            processDataIntents(refName, refValue);            
+            processDataIntents(refName, refValue);
           }
 
           cr.provideRefValue(currentContainer(), refName, refValue);
@@ -1102,11 +1125,8 @@ function updateAngularElement(element: any) {
         }
       }
       break;
-    case "invokeMethod":
-      {
-        try
-        {
-          
+    case 'invokeMethod': {
+      try {
         let methodName = m.methodName;
         let target = m.target;
         let invokeId = m.invokeId;
@@ -1115,58 +1135,56 @@ function updateAngularElement(element: any) {
 
         for (let i = 0; i < args.length; i++) {
           let t = types[i];
-          if (t == "Date") {
+          if (t == 'Date') {
             args[i] = new Date(args[i]);
           }
-          if (t == "DateArray") {
+          if (t == 'DateArray') {
             let dates = [];
             for (let j = 0; j < args[i].length; j++) {
               dates.push(new Date(args[i][j]));
             }
             args[i] = dates;
           }
-          if (t == "Number") {
+          if (t == 'Number') {
             if (args[i] == null) {
               args[i] = NaN;
             }
           }
-          if (t == "NumberArray") {
+          if (t == 'NumberArray') {
             for (let j = 0; j < args[i].length; j++) {
               if (args[i][j] == null) {
                 args[i][j] = NaN;
               }
             }
           }
-          if (t == "Json") {
+          if (t == 'Json') {
             let currArr = args[i];
             if (Array.isArray(currArr) && currArr.length > 0 && currArr[0].___byValue) {
               for (let x = 0; x < currArr.length; x++) {
-                  currArr[x] = cr.createObjectFromJson(JSON.stringify(currArr[x]), currentContainer());
+                currArr[x] = cr.createObjectFromJson(JSON.stringify(currArr[x]), currentContainer());
               }
-            }
-            else if (args[i] && args[i].___byValue) {
-              
-                args[i] = cr.createObjectFromJson(JSON.stringify(args[i]), currentContainer());
+            } else if (args[i] && args[i].___byValue) {
+              args[i] = cr.createObjectFromJson(JSON.stringify(args[i]), currentContainer());
 
-                if (!args[i].i) {
-                  args[i].i = args[i];
-                }
+              if (!args[i].i) {
+                args[i].i = args[i];
+              }
             } else if (args[i] && args[i].refType) {
-              if (args[i].refType == "uuid") {
+              if (args[i].refType == 'uuid') {
                 itemMaps.forEach((value: any, key: string) => {
                   if (value.has(args[i].id)) {
                     args[i] = value.get(args[i].id);
                   }
-                })
-              } else if (args[i].refType == "name") {
+                });
+              } else if (args[i].refType == 'name') {
                 args[i] = findByName(getMainTarget(), args[i].id);
               }
             }
           }
-          if (t == "Component") {
+          if (t == 'Component') {
             if (args[i] != null) {
-              if (args[i].indexOf("containerId:::") == 0) {
-                args[i] = args[i].substring("containerId:::".length);
+              if (args[i].indexOf('containerId:::') == 0) {
+                args[i] = args[i].substring('containerId:::'.length);
                 if (containers.has(args[i])) {
                   if (containersDirect.has(args[i])) {
                     args[i] = containers.get(args[i]);
@@ -1177,11 +1195,11 @@ function updateAngularElement(element: any) {
                   var ele = getContainerByIgIdAttribute(args[i]);
                   if (ele) {
                     args[i] = ele;
-                  } 
+                  }
                 }
               } else {
-                if (args[i].indexOf("elementIndex:::") == 0) {
-                  args[i] = args[i].substring("elementIndex:::".length);
+                if (args[i].indexOf('elementIndex:::') == 0) {
+                  args[i] = args[i].substring('elementIndex:::'.length);
                   args[i] = parseInt(args[i]);
                   args[i] = nativeElements[i];
                 }
@@ -1199,28 +1217,28 @@ function updateAngularElement(element: any) {
         child = ensureExternalObject(child);
 
         var isPropGet = false;
-        if (methodName.indexOf("p:") == 0) {
+        if (methodName.indexOf('p:') == 0) {
           isPropGet = true;
           methodName = methodName.substring(2);
-          methodName = methodName.substr(0, 1).toLowerCase() + (methodName).substring(1);
+          methodName = methodName.substr(0, 1).toLowerCase() + methodName.substring(1);
         }
 
         if (!hasProp(child, methodName)) {
-          if (methodName.endsWith("Component")) {
-            methodName = methodName.substr(0, methodName.length - "Component".length);
-          } else if (methodName.startsWith("perform")) {
+          if (methodName.endsWith('Component')) {
+            methodName = methodName.substr(0, methodName.length - 'Component'.length);
+          } else if (methodName.startsWith('perform')) {
             methodName = methodName.substr(7);
           }
 
           if (!hasProp(child, methodName)) {
             let error = "error: target doesn't have prop: " + methodName;
-            console.error(error)
+            console.error(error);
             return error;
           }
         }
 
         if (isPropGet) {
-            retVal = child[methodName];
+          retVal = child[methodName];
         } else {
           if (child[methodName]) {
             if (m.isSync) {
@@ -1229,42 +1247,53 @@ function updateAngularElement(element: any) {
             retVal = child[methodName].apply(child, args);
             isSyncMethodInvoke = false;
           }
-            }
+        }
 
         if (Object.prototype.toString.call(retVal) === '[object Promise]') {
-            (retVal as any).then((value) => {
-              window.setTimeout(() => {
-                  //reset container id, because this is async and something else might have send a message in the meantime
-                  updateContainer(containerId);
-                callDotNet(webCallback, "OnInvokeReturn", invokeId, convertReturnValue(value));
-              }, 0);
-            });
-            return JSON.stringify({ retType: "promise" });
+          (retVal as any).then((value) => {
+            window.setTimeout(() => {
+              //reset container id, because this is async and something else might have send a message in the meantime
+              updateContainer(containerId);
+              callDotNet(webCallback, 'OnInvokeReturn', invokeId, convertReturnValue(value));
+            }, 0);
+          });
+          return JSON.stringify({ retType: 'promise' });
         }
         retVal = convertReturnValue(retVal);
 
         //callDotNet("OnInvokeReturn", invokeId, retVal);
         if ((window as any).webViewCallback) {
-          ((window as any).webViewCallback).onInvokeReturn(invokeId, retVal);
+          (window as any).webViewCallback.onInvokeReturn(invokeId, retVal);
         }
-        if ((window as any).webkit && (window as any).webkit.messageHandlers && (window as any).webkit.messageHandlers.onInvokeReturn) {
+        if (
+          (window as any).webkit &&
+          (window as any).webkit.messageHandlers &&
+          (window as any).webkit.messageHandlers.onInvokeReturn
+        ) {
           (window as any).webkit.messageHandlers.onInvokeReturn.postMessage({ invokeId: invokeId, retVal: retVal });
         }
-          return retVal;
-        } catch (error) {
-          console.error(error);
+        return retVal;
+      } catch (error) {
+        console.error(error);
 
-          //callDotNet("OnInvokeReturn", m.invokeId, "error: " + error);
-          if ((window as any).webViewCallback) {
-            ((window as any).webViewCallback).onInvokeReturn(m.invokeId, "error: " + error);
-          }
-          if ((window as any).webkit && (window as any).webkit.messageHandlers && (window as any).webkit.messageHandlers.onInvokeReturn) {
-            (window as any).webkit.messageHandlers.onInvokeReturn.postMessage({ invokeId: m.invokeId, retVal: "error: " + error });
-          }
-          return "error: " + error;
+        //callDotNet("OnInvokeReturn", m.invokeId, "error: " + error);
+        if ((window as any).webViewCallback) {
+          (window as any).webViewCallback.onInvokeReturn(m.invokeId, 'error: ' + error);
         }
+        if (
+          (window as any).webkit &&
+          (window as any).webkit.messageHandlers &&
+          (window as any).webkit.messageHandlers.onInvokeReturn
+        ) {
+          (window as any).webkit.messageHandlers.onInvokeReturn.postMessage({
+            invokeId: m.invokeId,
+            retVal: 'error: ' + error,
+          });
+        }
+        return 'error: ' + error;
       }
-    case "refNotifyInsertItem":
+    }
+    case 'refNotifyInsertItem':
       {
         let refName = m.refName;
         let index: number = m.index;
@@ -1286,7 +1315,7 @@ function updateAngularElement(element: any) {
           }
         }
         if (child.notifyInsertItem) {
-          if (child.tagName && child.tagName == "IGC-DATA-GRID") {
+          if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
             child.notifyInsertItem(index, newItem);
           } else {
             child.notifyInsertItem(refValue, index, newItem);
@@ -1296,148 +1325,148 @@ function updateAngularElement(element: any) {
         }
       }
       break;
-    case "refNotifyRemoveItem":
-        {
-          let refName = m.refName;
-          let index: number = m.index;
-          
-          let refValue: any[] = refValues.get(refName);
-          let oldItem = refValue[index];
-          refValue.splice(index, 1);
-          let child: any = getMainTarget();
-          if (itemMaps.has(refName)) {
-            let map = itemMaps.get(refName);
-            if (oldItem.___id) {
-              map.delete(oldItem.___id);
-            }
-          }
-          if (child.notifyRemoveItem) {
-            if (child.tagName && child.tagName == "IGC-DATA-GRID") {
-              child.notifyRemoveItem(index, oldItem);
-            } else {
-              child.notifyRemoveItem(refValue, index, oldItem);
-            }
-          } else {
-            updateAngularElement(child);
+    case 'refNotifyRemoveItem':
+      {
+        let refName = m.refName;
+        let index: number = m.index;
+
+        let refValue: any[] = refValues.get(refName);
+        let oldItem = refValue[index];
+        refValue.splice(index, 1);
+        let child: any = getMainTarget();
+        if (itemMaps.has(refName)) {
+          let map = itemMaps.get(refName);
+          if (oldItem.___id) {
+            map.delete(oldItem.___id);
           }
         }
-        break;
-    case "refClearItems":
-        {
-          let refName = m.refName;
-          let index: number = m.index;
-          let newItem = m.newItem;
-          let newRefValue = m.refValue;
-          
-          let refValue: any[] = refValues.get(refName);
-          if (itemMaps.has(refName)) {
-            let map = itemMaps.get(refName);
-            for (let i = 0; i < refValue.length; i++) {
-              let child = refValue[i];
-              if (child.___id) {
-                map.delete(child.___id);
-              }
-            }
-          }
-          refValue.length = 0;
-
-          if (m.dateCache && !(refValue as any).__dateColumnsCache) {
-            (refValue as any).__dateColumnsCache = {};
-            (refValue as any).__dateColumnsCache.columns = m.dateCache;
-          }
-
-          for (let i = 0; i < newRefValue.length; i++) {
-            refValue[i] = newRefValue[i];
-            expandDateColumns(newRefValue[i], refValue);
-            if (itemMaps.has(refName)) {
-              let map = itemMaps.get(refName);
-              if (refValue[i].___id) {
-                map.set(refValue[i].___id, refValue[i]);
-              }
-            }
-          }
-          let child: any = getMainTarget();
-          if (child.notifyClearItems) {
-            if (child.tagName && child.tagName == "IGC-DATA-GRID") {
-              child.notifyClearItems();
-            } else {
-              child.notifyClearItems(refValue);
-            }
+        if (child.notifyRemoveItem) {
+          if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
+            child.notifyRemoveItem(index, oldItem);
           } else {
-            updateAngularElement(child);
+            child.notifyRemoveItem(refValue, index, oldItem);
           }
+        } else {
+          updateAngularElement(child);
         }
-        break;
-    case "refNotifySetItem":
-        {
-          let refName = m.refName;
-          let index: number = m.index;
-          let oldItem = m.oldItem;
-          if (itemMaps.has(refName)) {
-            let map = itemMaps.get(refName);
-            if (oldItem.___id) {
-              map.delete(oldItem.___id);
-            }
-          }
-          let newItem = m.newItem;
-          let refValue: any[] = refValues.get(refName);
+      }
+      break;
+    case 'refClearItems':
+      {
+        let refName = m.refName;
+        let index: number = m.index;
+        let newItem = m.newItem;
+        let newRefValue = m.refValue;
 
-          if (m.dateCache && !(refValue as any).__dateColumnsCache) {
-            (refValue as any).__dateColumnsCache = {};
-            (refValue as any).__dateColumnsCache.columns = m.dateCache;
-          }
-
-          expandDateColumns(newItem, refValue);
-          refValue[index] = newItem;
-          let child: any = getMainTarget();
-          if (itemMaps.has(refName)) {
-            let map = itemMaps.get(refName);
+        let refValue: any[] = refValues.get(refName);
+        if (itemMaps.has(refName)) {
+          let map = itemMaps.get(refName);
+          for (let i = 0; i < refValue.length; i++) {
+            let child = refValue[i];
             if (child.___id) {
-              map.set(child.___id, child);
+              map.delete(child.___id);
             }
-          }
-          if (child.notifySetItem) {
-            if (child.tagName && child.tagName == "IGC-DATA-GRID") {
-              child.notifySetItem(index, oldItem, newItem);
-            } else {
-              child.notifySetItem(refValue, index, oldItem, newItem);
-            }
-          } else {
-            updateAngularElement(child);
           }
         }
-        break;
-    case "refNotifyUpdateItem":
-        {
-          let refName = m.refName;
-          let index: number = m.index;
-          let syncDataonly = m.syncDataonly;
-          
-          let newItem = m.item;
-          
-          let refValue: any[] = refValues.get(refName);
-          let oldItem = refValue[index];
+        refValue.length = 0;
 
-          if (m.dateCache && !(refValue as any).__dateColumnsCache) {
-            (refValue as any).__dateColumnsCache = {};
-            (refValue as any).__dateColumnsCache.columns = m.dateCache;
-          }
+        if (m.dateCache && !(refValue as any).__dateColumnsCache) {
+          (refValue as any).__dateColumnsCache = {};
+          (refValue as any).__dateColumnsCache.columns = m.dateCache;
+        }
 
-          expandDateColumns(newItem, refValue);
-          copyProperties(oldItem, newItem);
-          
-          let child: any = getMainTarget();
-          if (child.notifySetItem && !syncDataonly) {
-            if (child.tagName && child.tagName == "IGC-DATA-GRID") {
-              child.notifySetItem(index, oldItem, oldItem);
-            } else {
-              child.notifySetItem(refValue, index, oldItem, oldItem);
+        for (let i = 0; i < newRefValue.length; i++) {
+          refValue[i] = newRefValue[i];
+          expandDateColumns(newRefValue[i], refValue);
+          if (itemMaps.has(refName)) {
+            let map = itemMaps.get(refName);
+            if (refValue[i].___id) {
+              map.set(refValue[i].___id, refValue[i]);
             }
-          } else {
-            updateAngularElement(child);
           }
         }
-        break;
+        let child: any = getMainTarget();
+        if (child.notifyClearItems) {
+          if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
+            child.notifyClearItems();
+          } else {
+            child.notifyClearItems(refValue);
+          }
+        } else {
+          updateAngularElement(child);
+        }
+      }
+      break;
+    case 'refNotifySetItem':
+      {
+        let refName = m.refName;
+        let index: number = m.index;
+        let oldItem = m.oldItem;
+        if (itemMaps.has(refName)) {
+          let map = itemMaps.get(refName);
+          if (oldItem.___id) {
+            map.delete(oldItem.___id);
+          }
+        }
+        let newItem = m.newItem;
+        let refValue: any[] = refValues.get(refName);
+
+        if (m.dateCache && !(refValue as any).__dateColumnsCache) {
+          (refValue as any).__dateColumnsCache = {};
+          (refValue as any).__dateColumnsCache.columns = m.dateCache;
+        }
+
+        expandDateColumns(newItem, refValue);
+        refValue[index] = newItem;
+        let child: any = getMainTarget();
+        if (itemMaps.has(refName)) {
+          let map = itemMaps.get(refName);
+          if (child.___id) {
+            map.set(child.___id, child);
+          }
+        }
+        if (child.notifySetItem) {
+          if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
+            child.notifySetItem(index, oldItem, newItem);
+          } else {
+            child.notifySetItem(refValue, index, oldItem, newItem);
+          }
+        } else {
+          updateAngularElement(child);
+        }
+      }
+      break;
+    case 'refNotifyUpdateItem':
+      {
+        let refName = m.refName;
+        let index: number = m.index;
+        let syncDataonly = m.syncDataonly;
+
+        let newItem = m.item;
+
+        let refValue: any[] = refValues.get(refName);
+        let oldItem = refValue[index];
+
+        if (m.dateCache && !(refValue as any).__dateColumnsCache) {
+          (refValue as any).__dateColumnsCache = {};
+          (refValue as any).__dateColumnsCache.columns = m.dateCache;
+        }
+
+        expandDateColumns(newItem, refValue);
+        copyProperties(oldItem, newItem);
+
+        let child: any = getMainTarget();
+        if (child.notifySetItem && !syncDataonly) {
+          if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
+            child.notifySetItem(index, oldItem, oldItem);
+          } else {
+            child.notifySetItem(refValue, index, oldItem, oldItem);
+          }
+        } else {
+          updateAngularElement(child);
+        }
+      }
+      break;
   }
 };
 
@@ -1462,7 +1491,7 @@ enum UnmarshalledColumnType {
   ByteValue,
   ShortValue,
   SingleValue,
-  
+
   NullableDoubleValue,
   NullableIntValue,
   NullableLongValue,
@@ -1484,7 +1513,7 @@ enum UnmarshalledColumnType {
   DecimalArrayValue,
   ByteArrayValue,
   ShortArrayValue,
-  SingleArrayValue
+  SingleArrayValue,
 }
 
 class UnmarshalledColumn {
@@ -1493,10 +1522,10 @@ class UnmarshalledColumn {
     this.dataSourceId = Blazor.platform.readStringField(ref, 8);
     this.type = Blazor.platform.readInt32Field(ref, 16);
     this.propertyPath = Blazor.platform.readStringField(ref, 24);
-    var propertyPathParts = this.propertyPath.split(".");
+    var propertyPathParts = this.propertyPath.split('.');
     this.propertyPathParts = propertyPathParts;
     this.propertyName = propertyPathParts[propertyPathParts.length - 1];
-    if (this.propertyName == "___self") {
+    if (this.propertyName == '___self') {
       this.isSelf = true;
     }
     this.isSubDataSource = Blazor.platform.readInt32Field(ref, 32) != 0;
@@ -1504,32 +1533,34 @@ class UnmarshalledColumn {
     var arrStart = Blazor.platform.readObjectField(ref, 40);
 
     var nullArrayStart = null;
-    if (this.type > UnmarshalledColumnType.SingleValue &&
-        this.type !== UnmarshalledColumnType.StringValue &&
-        this.type !== UnmarshalledColumnType.DateTimeValue &&
-        this.type !== UnmarshalledColumnType.CalendarValue) {
+    if (
+      this.type > UnmarshalledColumnType.SingleValue &&
+      this.type !== UnmarshalledColumnType.StringValue &&
+      this.type !== UnmarshalledColumnType.DateTimeValue &&
+      this.type !== UnmarshalledColumnType.CalendarValue
+    ) {
       nullArrayStart = Blazor.platform.readObjectField(ref, 48);
     }
 
     switch (this.type) {
       case UnmarshalledColumnType.DoubleValue:
-      case UnmarshalledColumnType.SingleValue:     
+      case UnmarshalledColumnType.SingleValue:
       case UnmarshalledColumnType.DecimalValue:
         if (!this.numberValues) {
           this.numberValues = new Array(this.actualCount);
         }
         for (var i = 0; i < this.actualCount; i++) {
           var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 8);
-          this.numberValues[i] = getValueActual(ele, "double");
+          this.numberValues[i] = getValueActual(ele, 'double');
         }
-        if (this.propertyName === "___primitiveValueCollection") {
+        if (this.propertyName === '___primitiveValueCollection') {
           // item is the array of primitive values
           this.setValue = (item, index) => {
             item.push(...this.numberValues);
           };
         } else {
-          this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = this.numberValues[index];
-        }       
+          this.setValue = (item, index) => (this.getTarget(item)[this.propertyName] = this.numberValues[index]);
+        }
         break;
       case UnmarshalledColumnType.BooleanValue:
         if (!this.booleanValues) {
@@ -1544,17 +1575,17 @@ class UnmarshalledColumn {
             this.booleanValues[i] = false;
           }
         }
-        if (this.propertyName === "___primitiveValueCollection") {
+        if (this.propertyName === '___primitiveValueCollection') {
           // item is the array of primitive values
           this.setValue = (item, index) => {
             item.push(...this.booleanValues);
           };
         } else {
-          this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = this.booleanValues[index];  
-        } 
-        break;      
-      case UnmarshalledColumnType.ByteValue:         
-      case UnmarshalledColumnType.IntValue:        
+          this.setValue = (item, index) => (this.getTarget(item)[this.propertyName] = this.booleanValues[index]);
+        }
+        break;
+      case UnmarshalledColumnType.ByteValue:
+      case UnmarshalledColumnType.IntValue:
       case UnmarshalledColumnType.ShortValue:
         if (!this.numberValues) {
           this.numberValues = new Array(this.actualCount);
@@ -1563,34 +1594,34 @@ class UnmarshalledColumn {
           var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 4);
           this.numberValues[i] = Blazor.platform.readInt32Field(ele, 0);
         }
-        if (this.propertyName === "___primitiveValueCollection") {
+        if (this.propertyName === '___primitiveValueCollection') {
           // item is the array of primitive values
           this.setValue = (item, index) => {
             item.push(...this.numberValues);
           };
         } else {
-          this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = this.numberValues[index];  
-        } 
-        break;         
-      case UnmarshalledColumnType.LongValue:   
+          this.setValue = (item, index) => (this.getTarget(item)[this.propertyName] = this.numberValues[index]);
+        }
+        break;
+      case UnmarshalledColumnType.LongValue:
         if (!this.numberValues) {
           this.numberValues = new Array(this.actualCount);
         }
         for (var i = 0; i < this.actualCount; i++) {
           var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 8);
           //this.numberValues[i] = Blazor.platform.readInt64Field(ele, 0);
-          this.numberValues[i] = getValueActual(ele, "i64");
+          this.numberValues[i] = getValueActual(ele, 'i64');
         }
-        if (this.propertyName === "___primitiveValueCollection") {
+        if (this.propertyName === '___primitiveValueCollection') {
           // item is the array of primitive values
           this.setValue = (item, index) => {
             item.push(...this.numberValues);
           };
         } else {
-          this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = this.numberValues[index];   
-        }                
+          this.setValue = (item, index) => (this.getTarget(item)[this.propertyName] = this.numberValues[index]);
+        }
         break;
-      case UnmarshalledColumnType.StringValue: 
+      case UnmarshalledColumnType.StringValue:
         if (!this.stringValues) {
           this.stringValues = new Array(this.actualCount);
         }
@@ -1598,14 +1629,14 @@ class UnmarshalledColumn {
           var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 4);
           this.stringValues[i] = Blazor.platform.readStringField(ele, 0);
         }
-        if (this.propertyName === "___primitiveValueCollection") {
+        if (this.propertyName === '___primitiveValueCollection') {
           // item is the array of primitive values
           this.setValue = (item, index) => {
             item.push(...this.stringValues);
           };
         } else {
-          this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = this.stringValues[index];  
-        }        
+          this.setValue = (item, index) => (this.getTarget(item)[this.propertyName] = this.stringValues[index]);
+        }
         break;
       case UnmarshalledColumnType.CalendarValue:
       case UnmarshalledColumnType.DateTimeValue:
@@ -1622,37 +1653,37 @@ class UnmarshalledColumn {
             this.dateValues[i] = new Date(stringValue);
           }
         }
-        if (this.propertyName === "___primitiveValueCollection") {
+        if (this.propertyName === '___primitiveValueCollection') {
           // item is the array of primitive values
           this.setValue = (item, index) => {
             item.push(...this.dateValues);
           };
         } else {
-          this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = this.dateValues[index];    
-        } 
+          this.setValue = (item, index) => (this.getTarget(item)[this.propertyName] = this.dateValues[index]);
+        }
         break;
       case UnmarshalledColumnType.ObjectValue:
-          if (this.isSubDataSource) {
-            if (!this.subDataSourceValues) {
-              this.subDataSourceValues = new Array(this.actualCount);
-            }
-            for (var i = 0; i < this.actualCount; i++) {
-              var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 4);
-              this.subDataSourceValues[i] = null;
-              var ele = Blazor.platform.readObjectField(ele, 0);
-              var subDataSourceColumns = getUnmarshalledColumns(ele);
-              if (subDataSourceColumns) {
-                this.subDataSourceValues[i] = createOrUpdateUnmarshalledDataSource(null, null, subDataSourceColumns);
-              }
-            }
-
-            this.setValue = (item, index) => {
-              if (!this.isSelf) {
-                this.getTarget(item)[this.propertyName] = this.subDataSourceValues[index];  
-              }
+        if (this.isSubDataSource) {
+          if (!this.subDataSourceValues) {
+            this.subDataSourceValues = new Array(this.actualCount);
+          }
+          for (var i = 0; i < this.actualCount; i++) {
+            var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 4);
+            this.subDataSourceValues[i] = null;
+            var ele = Blazor.platform.readObjectField(ele, 0);
+            var subDataSourceColumns = getUnmarshalledColumns(ele);
+            if (subDataSourceColumns) {
+              this.subDataSourceValues[i] = createOrUpdateUnmarshalledDataSource(null, null, subDataSourceColumns);
             }
           }
-          break;
+
+          this.setValue = (item, index) => {
+            if (!this.isSelf) {
+              this.getTarget(item)[this.propertyName] = this.subDataSourceValues[index];
+            }
+          };
+        }
+        break;
       case UnmarshalledColumnType.BooleanArrayValue:
       case UnmarshalledColumnType.ByteArrayValue:
       case UnmarshalledColumnType.CalendarArrayValue:
@@ -1664,54 +1695,58 @@ class UnmarshalledColumn {
       case UnmarshalledColumnType.ShortArrayValue:
       case UnmarshalledColumnType.SingleArrayValue:
       case UnmarshalledColumnType.StringArrayValue:
-          if (this.isSubDataSource) {
-            if (!this.subDataSourceValues) {
-              this.subDataSourceValues = new Array(this.actualCount);
-            }
-            for (var i = 0; i < this.actualCount; i++) {
-              var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 4);
-              this.subDataSourceValues[i] = null;
-              var ele = Blazor.platform.readObjectField(ele, 0);
-              var subDataSourceColumns = getUnmarshalledColumns(ele);
-              if (subDataSourceColumns) {
-                for (var j = 0; j < subDataSourceColumns.length; j++) {
-                  if (subDataSourceColumns[j].propertyPath === "___primitiveVal") {
-                    let vals = [];
-                    for (var k = 0; k < subDataSourceColumns[j].actualCount; k++) {
-                      switch (this.type) {
-                        case UnmarshalledColumnType.BooleanArrayValue:
-                          vals.push(subDataSourceColumns[j].booleanValues[k]); break;
-                        case UnmarshalledColumnType.ByteArrayValue:
-                        case UnmarshalledColumnType.IntArrayValue:
-                        case UnmarshalledColumnType.ShortArrayValue:
-                        case UnmarshalledColumnType.DoubleArrayValue:
-                        case UnmarshalledColumnType.SingleArrayValue:
-                        case UnmarshalledColumnType.DecimalArrayValue:
-                        case UnmarshalledColumnType.LongArrayValue:
-                          vals.push(subDataSourceColumns[j].numberValues[k]); break;
-                        case UnmarshalledColumnType.StringArrayValue:
-                          vals.push(subDataSourceColumns[j].stringValues[k]); break;
-                        case UnmarshalledColumnType.DateTimeArrayValue:
-                        case UnmarshalledColumnType.CalendarArrayValue:
-                          vals.push(subDataSourceColumns[j].dateValues[k]); break;
-                      }
+        if (this.isSubDataSource) {
+          if (!this.subDataSourceValues) {
+            this.subDataSourceValues = new Array(this.actualCount);
+          }
+          for (var i = 0; i < this.actualCount; i++) {
+            var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 4);
+            this.subDataSourceValues[i] = null;
+            var ele = Blazor.platform.readObjectField(ele, 0);
+            var subDataSourceColumns = getUnmarshalledColumns(ele);
+            if (subDataSourceColumns) {
+              for (var j = 0; j < subDataSourceColumns.length; j++) {
+                if (subDataSourceColumns[j].propertyPath === '___primitiveVal') {
+                  let vals = [];
+                  for (var k = 0; k < subDataSourceColumns[j].actualCount; k++) {
+                    switch (this.type) {
+                      case UnmarshalledColumnType.BooleanArrayValue:
+                        vals.push(subDataSourceColumns[j].booleanValues[k]);
+                        break;
+                      case UnmarshalledColumnType.ByteArrayValue:
+                      case UnmarshalledColumnType.IntArrayValue:
+                      case UnmarshalledColumnType.ShortArrayValue:
+                      case UnmarshalledColumnType.DoubleArrayValue:
+                      case UnmarshalledColumnType.SingleArrayValue:
+                      case UnmarshalledColumnType.DecimalArrayValue:
+                      case UnmarshalledColumnType.LongArrayValue:
+                        vals.push(subDataSourceColumns[j].numberValues[k]);
+                        break;
+                      case UnmarshalledColumnType.StringArrayValue:
+                        vals.push(subDataSourceColumns[j].stringValues[k]);
+                        break;
+                      case UnmarshalledColumnType.DateTimeArrayValue:
+                      case UnmarshalledColumnType.CalendarArrayValue:
+                        vals.push(subDataSourceColumns[j].dateValues[k]);
+                        break;
                     }
-                    this.subDataSourceValues[i] = vals;
                   }
+                  this.subDataSourceValues[i] = vals;
                 }
               }
             }
-
-            this.setValue = (item, index) => {
-              if (!this.isSelf) {
-                this.getTarget(item)[this.propertyName] = this.subDataSourceValues[index];  
-              }
-            }
           }
-          break;
-          
+
+          this.setValue = (item, index) => {
+            if (!this.isSelf) {
+              this.getTarget(item)[this.propertyName] = this.subDataSourceValues[index];
+            }
+          };
+        }
+        break;
+
       case UnmarshalledColumnType.NullableDoubleValue:
-      case UnmarshalledColumnType.NullableSingleValue:     
+      case UnmarshalledColumnType.NullableSingleValue:
       case UnmarshalledColumnType.NullableDecimalValue:
         if (!this.numberValues) {
           this.numberValues = new Array(this.actualCount);
@@ -1721,12 +1756,13 @@ class UnmarshalledColumn {
         }
         for (var i = 0; i < this.actualCount; i++) {
           var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 8);
-          this.numberValues[i] = getValueActual(ele, "double");
+          this.numberValues[i] = getValueActual(ele, 'double');
 
           var nullEle = Blazor.platform.getArrayEntryPtr(nullArrayStart, i, 1);
-          this.nullValues[i] = getValueActual(nullEle, "i8");
+          this.nullValues[i] = getValueActual(nullEle, 'i8');
         }
-        this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = !this.nullValues[index] ? this.numberValues[index] : null;
+        this.setValue = (item, index) =>
+          (this.getTarget(item)[this.propertyName] = !this.nullValues[index] ? this.numberValues[index] : null);
         break;
       case UnmarshalledColumnType.NullableBooleanValue:
         if (!this.booleanValues) {
@@ -1745,12 +1781,13 @@ class UnmarshalledColumn {
           }
 
           var nullEle = Blazor.platform.getArrayEntryPtr(nullArrayStart, i, 1);
-          this.nullValues[i] = getValueActual(nullEle, "i8");
+          this.nullValues[i] = getValueActual(nullEle, 'i8');
         }
-        this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = !this.nullValues[index] ? this.booleanValues[index] : null;
+        this.setValue = (item, index) =>
+          (this.getTarget(item)[this.propertyName] = !this.nullValues[index] ? this.booleanValues[index] : null);
         break;
-      case UnmarshalledColumnType.NullableByteValue:         
-      case UnmarshalledColumnType.NullableIntValue:        
+      case UnmarshalledColumnType.NullableByteValue:
+      case UnmarshalledColumnType.NullableIntValue:
       case UnmarshalledColumnType.NullableShortValue:
         if (!this.numberValues) {
           this.numberValues = new Array(this.actualCount);
@@ -1763,11 +1800,12 @@ class UnmarshalledColumn {
           this.numberValues[i] = Blazor.platform.readInt32Field(ele, 0);
 
           var nullEle = Blazor.platform.getArrayEntryPtr(nullArrayStart, i, 1);
-          this.nullValues[i] = getValueActual(nullEle, "i8");
+          this.nullValues[i] = getValueActual(nullEle, 'i8');
         }
-        this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = !this.nullValues[index] ? this.numberValues[index] : null;
+        this.setValue = (item, index) =>
+          (this.getTarget(item)[this.propertyName] = !this.nullValues[index] ? this.numberValues[index] : null);
         break;
-      case UnmarshalledColumnType.NullableLongValue:   
+      case UnmarshalledColumnType.NullableLongValue:
         if (!this.numberValues) {
           this.numberValues = new Array(this.actualCount);
         }
@@ -1777,12 +1815,13 @@ class UnmarshalledColumn {
         for (var i = 0; i < this.actualCount; i++) {
           var ele = Blazor.platform.getArrayEntryPtr(arrStart, i, 8);
           //this.numberValues[i] = Blazor.platform.readInt64Field(ele, 0);
-          this.numberValues[i] = getValueActual(ele, "i64");
+          this.numberValues[i] = getValueActual(ele, 'i64');
 
           var nullEle = Blazor.platform.getArrayEntryPtr(nullArrayStart, i, 1);
-          this.nullValues[i] = getValueActual(nullEle, "i8");
-        }               
-        this.setValue = (item, index) => this.getTarget(item)[this.propertyName] = !this.nullValues[index] ? this.numberValues[index] : null;
+          this.nullValues[i] = getValueActual(nullEle, 'i8');
+        }
+        this.setValue = (item, index) =>
+          (this.getTarget(item)[this.propertyName] = !this.nullValues[index] ? this.numberValues[index] : null);
         break;
     }
   }
@@ -1826,10 +1865,10 @@ class UnmarshalledColumnItem {
     this.dataSourceId = Blazor.platform.readStringField(ref, 8);
     this.type = Blazor.platform.readInt32Field(ref, 16);
     this.propertyPath = Blazor.platform.readStringField(ref, 24);
-    var propertyPathParts = this.propertyPath.split(".");
+    var propertyPathParts = this.propertyPath.split('.');
     this.propertyPathParts = propertyPathParts;
     this.propertyName = propertyPathParts[propertyPathParts.length - 1];
-    if (this.propertyName == "___self") {
+    if (this.propertyName == '___self') {
       this.isSelf = true;
     }
     this.isSubDataSource = Blazor.platform.readInt32Field(ref, 32) != 0;
@@ -1838,29 +1877,31 @@ class UnmarshalledColumnItem {
     var arrStart = Blazor.platform.readObjectField(ref, 40);
 
     var nullArrayStart = null;
-    if (this.type > UnmarshalledColumnType.SingleValue &&
-        this.type !== UnmarshalledColumnType.StringValue &&
-        this.type !== UnmarshalledColumnType.DateTimeValue &&
-        this.type !== UnmarshalledColumnType.CalendarValue) {
+    if (
+      this.type > UnmarshalledColumnType.SingleValue &&
+      this.type !== UnmarshalledColumnType.StringValue &&
+      this.type !== UnmarshalledColumnType.DateTimeValue &&
+      this.type !== UnmarshalledColumnType.CalendarValue
+    ) {
       nullArrayStart = Blazor.platform.readObjectField(ref, 48);
     }
 
     switch (this.type) {
       case UnmarshalledColumnType.DoubleValue:
-      case UnmarshalledColumnType.SingleValue:     
+      case UnmarshalledColumnType.SingleValue:
       case UnmarshalledColumnType.DecimalValue:
         var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 8);
-        this.numberValue = getValueActual(ele, "double");
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = this.numberValue;
+        this.numberValue = getValueActual(ele, 'double');
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = this.numberValue);
         break;
       case UnmarshalledColumnType.NullableDoubleValue:
-      case UnmarshalledColumnType.NullableSingleValue:     
+      case UnmarshalledColumnType.NullableSingleValue:
       case UnmarshalledColumnType.NullableDecimalValue:
         var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 8);
-        this.numberValue = getValueActual(ele, "double");
+        this.numberValue = getValueActual(ele, 'double');
         var nullEle = Blazor.platform.getArrayEntryPtr(nullArrayStart, index, 1);
-        this.nullValue = getValueActual(nullEle, "i8");
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = !this.nullValue ? this.numberValue : null; 
+        this.nullValue = getValueActual(nullEle, 'i8');
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = !this.nullValue ? this.numberValue : null);
         break;
       case UnmarshalledColumnType.BooleanValue:
         var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 4);
@@ -1870,7 +1911,7 @@ class UnmarshalledColumnItem {
         } else {
           this.booleanValue = false;
         }
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = this.booleanValue;  
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = this.booleanValue);
         break;
       case UnmarshalledColumnType.NullableBooleanValue:
         var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 4);
@@ -1881,44 +1922,45 @@ class UnmarshalledColumnItem {
           this.booleanValue = false;
         }
         var nullEle = Blazor.platform.getArrayEntryPtr(nullArrayStart, index, 1);
-        this.nullValue = getValueActual(nullEle, "i8"); 
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = !this.nullValue ? this.booleanValue : null;
+        this.nullValue = getValueActual(nullEle, 'i8');
+        this.setValue = (item) =>
+          (this.getTarget(item)[this.propertyName] = !this.nullValue ? this.booleanValue : null);
         break;
-      case UnmarshalledColumnType.ByteValue:         
-      case UnmarshalledColumnType.IntValue:        
+      case UnmarshalledColumnType.ByteValue:
+      case UnmarshalledColumnType.IntValue:
       case UnmarshalledColumnType.ShortValue:
         var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 4);
         this.numberValue = Blazor.platform.readInt32Field(ele, 0);
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = this.numberValue;  
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = this.numberValue);
         break;
-      case UnmarshalledColumnType.NullableByteValue:         
-      case UnmarshalledColumnType.NullableIntValue:        
+      case UnmarshalledColumnType.NullableByteValue:
+      case UnmarshalledColumnType.NullableIntValue:
       case UnmarshalledColumnType.NullableShortValue:
         var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 4);
         this.numberValue = Blazor.platform.readInt32Field(ele, 0);
         var nullEle = Blazor.platform.getArrayEntryPtr(nullArrayStart, index, 1);
-        this.nullValue = getValueActual(nullEle, "i8"); 
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = !this.nullValue ? this.numberValue : null; 
-        break;  
-      case UnmarshalledColumnType.LongValue:   
-        var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 8);
-        //this.numberValue = Blazor.platform.readInt64Field(ele, 0);
-        this.numberValue = getValueActual(ele, "i64");
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = this.numberValue;  
+        this.nullValue = getValueActual(nullEle, 'i8');
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = !this.nullValue ? this.numberValue : null);
         break;
-      case UnmarshalledColumnType.LongValue:   
+      case UnmarshalledColumnType.LongValue:
         var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 8);
         //this.numberValue = Blazor.platform.readInt64Field(ele, 0);
-        this.numberValue = getValueActual(ele, "i64");
+        this.numberValue = getValueActual(ele, 'i64');
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = this.numberValue);
+        break;
+      case UnmarshalledColumnType.LongValue:
+        var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 8);
+        //this.numberValue = Blazor.platform.readInt64Field(ele, 0);
+        this.numberValue = getValueActual(ele, 'i64');
         var nullEle = Blazor.platform.getArrayEntryPtr(nullArrayStart, index, 1);
-        this.nullValue = getValueActual(nullEle, "i8"); 
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = !this.nullValue ? this.numberValue : null;
-        break;          
-      case UnmarshalledColumnType.StringValue: 
+        this.nullValue = getValueActual(nullEle, 'i8');
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = !this.nullValue ? this.numberValue : null);
+        break;
+      case UnmarshalledColumnType.StringValue:
         var ele = Blazor.platform.getArrayEntryPtr(arrStart, index, 4);
         this.stringValue = Blazor.platform.readStringField(ele, 0);
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = this.stringValue;  
-        break;        
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = this.stringValue);
+        break;
       case UnmarshalledColumnType.CalendarValue:
       case UnmarshalledColumnType.DateTimeValue:
       case UnmarshalledColumnType.NullableCalendarValue:
@@ -1928,8 +1970,8 @@ class UnmarshalledColumnItem {
         var stringValue = Blazor.platform.readStringField(ele, 0);
         if (stringValue) {
           this.dateValue = new Date(stringValue);
-        }                   
-        this.setValue = (item) => this.getTarget(item)[this.propertyName] = this.dateValue;  
+        }
+        this.setValue = (item) => (this.getTarget(item)[this.propertyName] = this.dateValue);
         break;
       case UnmarshalledColumnType.ObjectValue:
         if (this.isSubDataSource) {
@@ -1939,9 +1981,9 @@ class UnmarshalledColumnItem {
           this.subDataSource = createOrUpdateUnmarshalledDataSource(null, this.subDataSource, subDataSourceColumns);
           this.setValue = (item) => {
             if (!this.isSelf) {
-             this.getTarget(item)[this.propertyName] = this.subDataSource;
+              this.getTarget(item)[this.propertyName] = this.subDataSource;
             }
-          }
+          };
         }
         break;
     }
@@ -1982,8 +2024,6 @@ class UnmarshalledColumnItem {
   setValue: (item: any) => void = null;
 }
 
-
-
 function getUnmarshalledColumns(columns: any): UnmarshalledColumn[] {
   if (!columns) {
     return null;
@@ -1992,7 +2032,7 @@ function getUnmarshalledColumns(columns: any): UnmarshalledColumn[] {
   var arrLen = getArrayLengthActual(columns);
   let ret: UnmarshalledColumn[] = [];
   for (var i = 0; i < arrLen; i++) {
-    var ptr = Blazor.platform.getArrayEntryPtr(arrStart, i, 56); 
+    var ptr = Blazor.platform.getArrayEntryPtr(arrStart, i, 56);
     ret.push(new UnmarshalledColumn(ptr));
   }
   return ret;
@@ -2005,7 +2045,7 @@ function getUnmarshalledColumnItems(columns: any, index: number): UnmarshalledCo
   var arrLen = getArrayLengthActual(columns);
   let ret: UnmarshalledColumnItem[] = [];
   for (var i = 0; i < arrLen; i++) {
-    var ptr = Blazor.platform.getArrayEntryPtr(arrStart, i, 56); 
+    var ptr = Blazor.platform.getArrayEntryPtr(arrStart, i, 56);
     ret.push(new UnmarshalledColumnItem(ptr, index));
   }
   return ret;
@@ -2038,16 +2078,16 @@ function createOrUpdateUnmarshalledDataSource(refName: string, data: any[], colu
 
   if (columns) {
     for (var i = 0; i < columns.length; i++) {
-      if (columns[i].propertyName == "___id") {
+      if (columns[i].propertyName == '___id') {
         idColumn = columns[i];
       }
-      if (columns[i].propertyName == "___self") {
+      if (columns[i].propertyName == '___self') {
         selfColumn = columns[i];
       }
-      if (columns[i].propertyName == "___primitiveVal") {
+      if (columns[i].propertyName == '___primitiveVal') {
         primColumn = columns[i];
       }
-      if (columns[i].propertyName == "___primitiveValueCollection") {
+      if (columns[i].propertyName == '___primitiveValueCollection') {
         primitiveCollectionValueColumn = columns[i];
       }
     }
@@ -2078,7 +2118,7 @@ function createOrUpdateUnmarshalledDataSource(refName: string, data: any[], colu
           if (selfColumn) {
             target = selfColumn.subDataSourceValues[i];
           } else {
-            target = { };
+            target = {};
           }
           itemMap.set(currId, target);
         }
@@ -2103,8 +2143,7 @@ function createOrUpdateUnmarshalledDataSource(refName: string, data: any[], colu
 
   if (oldData) {
     for (var i = 0; i < oldData.length; i++) {
-      if (oldData[i].___id &&
-        !newMap.has(oldData[i].___id)) {
+      if (oldData[i].___id && !newMap.has(oldData[i].___id)) {
         itemMap.delete(oldData[i].___id);
       }
     }
@@ -2133,10 +2172,10 @@ function createOrUpdateUnmarshalledItem(refName: string, item: any, columns: Unm
   var idColumn: UnmarshalledColumnItem = null;
   var selfColumn: UnmarshalledColumnItem = null;
   for (var i = 0; i < columns.length; i++) {
-    if (columns[i].propertyName == "___id") {
+    if (columns[i].propertyName == '___id') {
       idColumn = columns[i];
     }
-    if (columns[i].propertyName == "___self") {
+    if (columns[i].propertyName == '___self') {
       selfColumn = columns[i];
     }
   }
@@ -2153,7 +2192,6 @@ function createOrUpdateUnmarshalledItem(refName: string, item: any, columns: Unm
     itemMap.set(item.___id, item);
   }
 
-
   for (var j = 0; j < columns.length; j++) {
     var currCol = columns[j];
     if (!currCol.setValue) {
@@ -2166,13 +2204,13 @@ function createOrUpdateUnmarshalledItem(refName: string, item: any, columns: Unm
 
 function getValueNinePlus(ptr, type) {
   switch (type) {
-    case "double":
+    case 'double':
       return Blazor.runtime.getHeapF64(ptr);
-    case "i64":
+    case 'i64':
       return Blazor.runtime.getHeapI52(ptr);
-    case "i32":
+    case 'i32':
       return Blazor.runtime.getHeapI32(ptr);
-    case "i8":
+    case 'i8':
       return Blazor.runtime.getHeapI8(ptr);
   }
 }
@@ -2183,7 +2221,7 @@ function getArrayDataPtr(value: any): any {
   return value + 12;
 }
 
-(window as any).igUnmarshalledDataSourceCreate = function(refName: string, index: number, columns: any) {
+(window as any).igUnmarshalledDataSourceCreate = function (refName: string, index: number, columns: any) {
   if ((window as any).getValue) {
     getValueActual = (window as any).getValue;
   }
@@ -2195,7 +2233,6 @@ function getArrayDataPtr(value: any): any {
   }
   if (!getValueActual && (window as any).Module !== undefined) {
     getValueActual = Module.getValue;
-    
   }
   if (!getValueActual) {
     getValueActual = getValueNinePlus;
@@ -2207,17 +2244,16 @@ function getArrayDataPtr(value: any): any {
   }
   if (!getArrayLengthActual) {
     getArrayLengthActual = (arr: any) => {
-      return getValueActual(getArrayDataPtr(arr), "i32");
-    } 
+      return getValueActual(getArrayDataPtr(arr), 'i32');
+    };
   }
 
-  if (isDotnetNinePlus)
-     columns = Blazor.runtime.getHeapU32(columns);
+  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
 
   if (!isDotnetNinePlus) {
     refName = BINDING.conv_string(refName);
   }
-  var ind = refName.indexOf(":");
+  var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
@@ -2246,7 +2282,7 @@ function getArrayDataPtr(value: any): any {
       let arr = containersPendingDataRefs.get(containerId);
       arr.push(() => {
         let cc = getContainer(containerId);
-        cr.provideRefValue(cc, refName, null);        
+        cr.provideRefValue(cc, refName, null);
       });
     }
     return;
@@ -2265,18 +2301,18 @@ function getArrayDataPtr(value: any): any {
     let arr = containersPendingDataRefs.get(containerId);
     arr.push(() => {
       let cc = getContainer(containerId);
-      cr.provideRefValue(cc, refName, data);        
+      cr.provideRefValue(cc, refName, data);
     });
   }
   refValues.set(refName, data);
 };
 
-(window as any).igUnmarshalledDataSourceCreateDataIntents = function(refName: string, intents: string) {
+(window as any).igUnmarshalledDataSourceCreateDataIntents = function (refName: string, intents: string) {
   if (!isDotnetNinePlus) {
     refName = BINDING.conv_string(refName);
     intents = BINDING.conv_string(intents);
   }
-  var ind = refName.indexOf(":");
+  var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
@@ -2289,17 +2325,16 @@ function getArrayDataPtr(value: any): any {
   refDataIntents.set(refName, dataIntents);
 };
 
-(window as any).igUnmarshalledDataSourceInsert = function(refName: string, index: number, columns: any) {
+(window as any).igUnmarshalledDataSourceInsert = function (refName: string, index: number, columns: any) {
   if (!isDotnetNinePlus) {
     refName = BINDING.conv_string(refName);
   }
-  var ind = refName.indexOf(":");
+  var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
 
-  if (isDotnetNinePlus)
-     columns = Blazor.runtime.getHeapU32(columns);
+  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
 
   var colItems = getUnmarshalledColumnItems(columns, index);
   var item = createOrUpdateUnmarshalledItem(refName, null, colItems);
@@ -2313,7 +2348,7 @@ function getArrayDataPtr(value: any): any {
       if (child) {
         isSyncMethodInvoke = true;
         if (child.notifyInsertItem) {
-          if (child.tagName && child.tagName == "IGC-DATA-GRID") {
+          if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
             child.notifyInsertItem(index, item);
           } else {
             child.notifyInsertItem(refValue, index, item);
@@ -2326,21 +2361,20 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceUpdate = function(refName: string, index: number, columns: any) {
+(window as any).igUnmarshalledDataSourceUpdate = function (refName: string, index: number, columns: any) {
   if (!isDotnetNinePlus) {
     refName = BINDING.conv_string(refName);
   }
-  var ind = refName.indexOf(":");
+  var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
-  ind = refName.indexOf(":");
+  ind = refName.indexOf(':');
   var n = refName.substr(0, ind);
-  var syncDataOnly = refName.substr(ind + 1) == "true";
+  var syncDataOnly = refName.substr(ind + 1) == 'true';
   refName = n;
 
-  if (isDotnetNinePlus)  
-     columns = Blazor.runtime.getHeapU32(columns);
+  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
 
   var colItems = getUnmarshalledColumnItems(columns, index);
 
@@ -2355,7 +2389,7 @@ function getArrayDataPtr(value: any): any {
       let child: any = getMainTarget();
       isSyncMethodInvoke = true;
       if (child.notifySetItem && !syncDataOnly) {
-        if (child.tagName && child.tagName == "IGC-DATA-GRID") {
+        if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
           child.notifySetItem(index, oldVal, currVal);
         } else {
           child.notifySetItem(refValue, index, oldVal, currVal);
@@ -2367,19 +2401,18 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceRemove = function(refName: string, index: number, columns: any) {
+(window as any).igUnmarshalledDataSourceRemove = function (refName: string, index: number, columns: any) {
   if (!isDotnetNinePlus) {
     refName = BINDING.conv_string(refName);
   }
 
-  if (isDotnetNinePlus)
-     columns = Blazor.runtime.getHeapU32(columns);
+  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
 
-  var ind = refName.indexOf(":");
+  var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
-  
+
   if (refValues.has(refName)) {
     var refValue: any[] = refValues.get(refName);
 
@@ -2390,7 +2423,7 @@ function getArrayDataPtr(value: any): any {
       let child: any = getMainTarget();
       isSyncMethodInvoke = true;
       if (child.notifyRemoveItem) {
-        if (child.tagName && child.tagName == "IGC-DATA-GRID") {
+        if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
           child.notifyRemoveItem(index, oldVAl);
         } else {
           child.notifyRemoveItem(refValue, index, oldVAl);
@@ -2402,21 +2435,19 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceClear = function(refName: string, index: number, columns: any) {
+(window as any).igUnmarshalledDataSourceClear = function (refName: string, index: number, columns: any) {
   if (!isDotnetNinePlus) {
     refName = BINDING.conv_string(refName);
   }
-  var ind = refName.indexOf(":");
+  var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
 
-  if (isDotnetNinePlus)
-     columns = Blazor.runtime.getHeapU32(columns);
+  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
 
   var cols = getUnmarshalledColumns(columns);
 
-  
   if (refValues.has(refName)) {
     var refValue: any[] = refValues.get(refName);
 
@@ -2426,7 +2457,7 @@ function getArrayDataPtr(value: any): any {
       let child: any = getMainTarget();
       isSyncMethodInvoke = true;
       if (child.notifyClearItems) {
-        if (child.tagName && child.tagName == "IGC-DATA-GRID") {
+        if (child.tagName && child.tagName == 'IGC-DATA-GRID') {
           child.notifyClearItems();
         } else {
           child.notifyClearItems(refValue);
@@ -2439,11 +2470,14 @@ function getArrayDataPtr(value: any): any {
   }
 };
 
-
 //callDotNet("OnReady");
 if ((window as any).webViewCallback) {
-  ((window as any).webViewCallback).onReady();
+  (window as any).webViewCallback.onReady();
 }
-if ((window as any).webkit && (window as any).webkit.messageHandlers && (window as any).webkit.messageHandlers.onReady) {
-  (window as any).webkit.messageHandlers.onReady.postMessage({ });
+if (
+  (window as any).webkit &&
+  (window as any).webkit.messageHandlers &&
+  (window as any).webkit.messageHandlers.onReady
+) {
+  (window as any).webkit.messageHandlers.onReady.postMessage({});
 }

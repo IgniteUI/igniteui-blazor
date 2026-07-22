@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-
-namespace IgniteUI.Blazor.Controls 
+namespace IgniteUI.Blazor.Controls
 {
-    internal class DataSourceManager {
-        public DataSourceManager(RefSink sink, RuntimeHelper helper) {
+    internal class DataSourceManager
+    {
+        public DataSourceManager(RefSink sink, RuntimeHelper helper)
+        {
             // ChunkAmount = -1;
             // ChunkSlicingWait = -1;
             _helper = helper;
@@ -23,11 +22,13 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<object, string> _idLookup = new Dictionary<object, string>();
         private Dictionary<string, bool> _suspensionLookup = new Dictionary<string, bool>();
 
-        public object FindItem(Guid id) 
+        public object FindItem(Guid id)
         {
             foreach (var data in
-                _dataSources.Values) {
-                if (data.HasId(id)) {
+                _dataSources.Values)
+            {
+                if (data.HasId(id))
+                {
                     return data.LookupOriginal(id);
                 }
             }
@@ -35,8 +36,10 @@ namespace IgniteUI.Blazor.Controls
         }
         public object FindItem(string id)
         {
-            foreach (var data in _dataSources.Values) {
-                if (data.HasId(id)) {
+            foreach (var data in _dataSources.Values)
+            {
+                if (data.HasId(id))
+                {
                     return data.LookupOriginal(id);
                 }
             }
@@ -57,40 +60,47 @@ namespace IgniteUI.Blazor.Controls
         public Guid FindItemId(object item)
         {
             foreach (var data in
-                _dataSources.Values) {
-                if (data != null && data.HasOriginal(item)) {
+                _dataSources.Values)
+            {
+                if (data != null && data.HasOriginal(item))
+                {
                     return data.IdFromOriginal(item);
                 }
             }
             return Guid.Empty;
         }
 
-        public string OnRefChanged(string path, object data) 
+        public string OnRefChanged(string path, object data)
         {
             string id = null;
-            if (_refs.ContainsKey(path)) {
+            if (_refs.ContainsKey(path))
+            {
                 object obj = _refs[path];
                 string oldId = GetRefId(obj);
                 id = oldId;
 
                 if (data == null ||
-                obj != data) {
+                obj != data)
+                {
                     DecrementRef(oldId);
 
-                    if (!_refCount.ContainsKey(oldId)) {
+                    if (!_refCount.ContainsKey(oldId))
+                    {
                         _refs.Remove(path);
                     }
                 }
             }
 
-            if (data != null) {
+            if (data != null)
+            {
                 string newId = GetRefId(data);
                 id = newId;
 
                 _refs[path] = data;
                 _refsById[id] = data;
                 IncrementRef(id);
-                if (!_dataSources.ContainsKey(id)) {
+                if (!_dataSources.ContainsKey(id))
+                {
                     if (_helper.IsInproc && !_helper.IsForcedJsonDataMarshalling)
                     {
                         //Console.WriteLine("unmarshalled datasource");
@@ -106,7 +116,6 @@ namespace IgniteUI.Blazor.Controls
                 _refSink.OnRefChanged(id, _dataSources[id]);
             }
 
-
             if (data == null)
             {
                 id = null;
@@ -116,31 +125,41 @@ namespace IgniteUI.Blazor.Controls
 
         private Dictionary<string, int> _refCount = new Dictionary<string, int>();
 
-        private void IncrementRef(string id) {
+        private void IncrementRef(string id)
+        {
             int refCount = 0;
-            if (_refCount.ContainsKey(id)) {
+            if (_refCount.ContainsKey(id))
+            {
                 refCount = _refCount[id];
             }
             refCount++;
             _refCount[id] = refCount;
         }
 
-        void DecrementRef(string id) {
+        void DecrementRef(string id)
+        {
             int refCount = 0;
-            if (_refCount.ContainsKey(id)) {
+            if (_refCount.ContainsKey(id))
+            {
                 refCount = _refCount[id];
             }
             refCount--;
-            if (refCount > 0) {
+            if (refCount > 0)
+            {
                 _refCount[id] = refCount;
             }
-            else {
+            else
+            {
                 _refCount.Remove(id);
-                if (_dataSources.ContainsKey(id)) {
+                if (_dataSources.ContainsKey(id))
+                {
                     Object data = _dataSources[id];
-                    if (data != null && _idLookup.ContainsKey(data)) {
+                    if (data != null && _idLookup.ContainsKey(data))
+                    {
                         _idLookup.Remove(data);
-                    } else if (_refsById.ContainsKey(id) && _idLookup.ContainsKey(_refsById[id])) {
+                    }
+                    else if (_refsById.ContainsKey(id) && _idLookup.ContainsKey(_refsById[id]))
+                    {
                         _idLookup.Remove(_refsById[id]);
                     }
                     _dataSources.Remove(id);
@@ -152,12 +171,14 @@ namespace IgniteUI.Blazor.Controls
 
         public void NotifyInsertItem(string refName, int index, object refItem)
         {
-            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName]) {
+            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName])
+            {
                 return;
             }
 
             //Console.WriteLine("notifying insert item");
-            if (_refsById.ContainsKey(refName)) {
+            if (_refsById.ContainsKey(refName))
+            {
                 //Console.WriteLine("found by id");
                 object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
@@ -165,24 +186,30 @@ namespace IgniteUI.Blazor.Controls
                 _refSink.OnRefNotifyInsertItem(dataSource, refName, index, newItem);
             }
         }
-        public void NotifyRemoveItem(String refName, int index, Object oldItem) {
-            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName]) {
+        public void NotifyRemoveItem(String refName, int index, Object oldItem)
+        {
+            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName])
+            {
                 return;
             }
 
-            if (_refsById.ContainsKey(refName)) {
+            if (_refsById.ContainsKey(refName))
+            {
                 Object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
                 IJSDataSourceItem oldItemJson = dataSource.NotifyRemoveItem(data, index, oldItem);
                 _refSink.OnRefNotifyRemoveItem(dataSource, refName, index, oldItemJson);
             }
         }
-        public void NotifyClearItems(string refName) {
-            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName]) {
+        public void NotifyClearItems(string refName)
+        {
+            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName])
+            {
                 return;
             }
 
-            if (_refsById.ContainsKey(refName)) {
+            if (_refsById.ContainsKey(refName))
+            {
                 Object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
                 dataSource.NotifyClearItems(data);
@@ -191,10 +218,12 @@ namespace IgniteUI.Blazor.Controls
         }
         public void NotifySetItem(string refName, int index, object oldItem, object newItem)
         {
-            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName]) {
+            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName])
+            {
                 return;
             }
-            if (_refsById.ContainsKey(refName)) {
+            if (_refsById.ContainsKey(refName))
+            {
                 object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
                 IJSDataSourceItem oldItemJson = dataSource.DataSourceType == JSDataSourceType.Json ? ((JsonDataSource)dataSource)[index] : null;
@@ -204,10 +233,12 @@ namespace IgniteUI.Blazor.Controls
         }
         public void NotifyUpdateItem(string refName, int index, object refItem, bool syncDataOnly)
         {
-            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName]) {
+            if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName])
+            {
                 return;
             }
-            if (_refsById.ContainsKey(refName)) {
+            if (_refsById.ContainsKey(refName))
+            {
                 object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
                 IJSDataSourceItem newItemJson = dataSource.NotifyUpdateItem(data, index, refItem);
@@ -215,15 +246,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public bool HasRefId(object dataSource) {
-            if (_idLookup.ContainsKey(dataSource)) {
+        public bool HasRefId(object dataSource)
+        {
+            if (_idLookup.ContainsKey(dataSource))
+            {
                 return true;
             }
             return false;
         }
 
-        public string GetRefId(object dataSource) {
-            if (_idLookup.ContainsKey(dataSource)) {
+        public string GetRefId(object dataSource)
+        {
+            if (_idLookup.ContainsKey(dataSource))
+            {
                 return _idLookup[dataSource];
             }
             Guid id = Guid.NewGuid();
@@ -235,7 +270,8 @@ namespace IgniteUI.Blazor.Controls
 
         public void SuspendNotifications(object dataSource)
         {
-            if (!HasRefId(dataSource)) {
+            if (!HasRefId(dataSource))
+            {
                 return;
             }
             var refName = GetRefId(dataSource);
@@ -244,11 +280,13 @@ namespace IgniteUI.Blazor.Controls
 
         public void ResumeNotifications(object dataSource, bool notify = true)
         {
-            if (!HasRefId(dataSource)) {
+            if (!HasRefId(dataSource))
+            {
                 return;
             }
             var refName = GetRefId(dataSource);
-            if (_suspensionLookup.ContainsKey(refName)) {
+            if (_suspensionLookup.ContainsKey(refName))
+            {
                 _suspensionLookup[refName] = false;
                 if (notify)
                     NotifyClearItems(refName);

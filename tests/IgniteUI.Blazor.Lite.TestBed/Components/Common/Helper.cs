@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿using System.Reflection;
 using Newtonsoft.Json;
-using System.Reflection;
 using Newtonsoft.Json.Converters;
-using System.Linq;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {

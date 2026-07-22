@@ -11,7 +11,7 @@
 //     {
 //         private Guid _id;
 //         private bool _isNull = false;
-        
+
 //         public bool IsNull 
 //         {
 //             get

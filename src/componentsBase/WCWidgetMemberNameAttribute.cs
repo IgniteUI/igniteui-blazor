@@ -1,5 +1,3 @@
-using System;
-
 namespace IgniteUI.Blazor.Controls
 {
     public class WCWidgetMemberNameAttribute
@@ -9,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
         {
             Name = alternateName;
         }
-        
+
         public string Name
         {
             get; private set;

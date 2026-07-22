@@ -1,18 +1,20 @@
-﻿using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Reflection;
+﻿using System.Reflection;
 using IgniteUI.Blazor.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {
     public static class TestUtil
     {
-        public static bool PropertyValuesAreEqual(object? serverValue, string? clientValue, PropertyInfo prop) {
+        public static bool PropertyValuesAreEqual(object? serverValue, string? clientValue, PropertyInfo prop)
+        {
             string serverString = serverValue is Enum ?
                 EnumActualValue(serverValue) :
                 JsonConvert.SerializeObject(serverValue, new JsonSerializerSettings()
-            { ContractResolver = new IgnorePropertiesResolver(ReflectionUtils.IgnoredProps().ToArray()), NullValueHandling = NullValueHandling.Ignore });
-            if (serverString == clientValue) {
+                { ContractResolver = new IgnorePropertiesResolver(ReflectionUtils.IgnoredProps().ToArray()), NullValueHandling = NullValueHandling.Ignore });
+            if (serverString == clientValue)
+            {
                 return true;
             }
             if (clientValue == null)
@@ -45,15 +47,18 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 clientValue = string.Join(",", clientArray);
             }
 
-            if (prop.PropertyType == typeof(IgbDateRangeDescriptor[])) {
+            if (prop.PropertyType == typeof(IgbDateRangeDescriptor[]))
+            {
                 var serverDateRangeArray = serverValue as IgbDateRangeDescriptor[];
                 var clientDateArray = JsonConvert.DeserializeObject<IgbDateRangeDescriptor[]>(clientValue);
-                if (serverDateRangeArray == null || clientDateArray == null || serverDateRangeArray.Length != clientDateArray.Length) {
+                if (serverDateRangeArray == null || clientDateArray == null || serverDateRangeArray.Length != clientDateArray.Length)
+                {
                     return false;
                 }
                 for (int i = 0; i < serverDateRangeArray.Length; i++)
                 {
-                    if (serverDateRangeArray[i].Type != clientDateArray[i].Type) {
+                    if (serverDateRangeArray[i].Type != clientDateArray[i].Type)
+                    {
                         return false;
                     }
 
@@ -91,7 +96,8 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             return true;
         }
 
-        public static string EnumActualValue(object serverValue) {
+        public static string EnumActualValue(object serverValue)
+        {
             var enumName = serverValue.ToString();
             if (string.IsNullOrEmpty(enumName))
             {
@@ -105,7 +111,8 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 var attrValue = customNameAttr.GetType().GetProperty("Name")?.GetValue(customNameAttr)?.ToString();
                 return attrValue ?? enumName.ToLowerInvariant();
             }
-            else {
+            else
+            {
                 return enumName.ToLowerInvariant();
             }
 

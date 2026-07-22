@@ -1,9 +1,10 @@
 namespace IgniteUI.Blazor.Controls
 {
-public enum TileManagerResizeMode {
-	None, 
-	Hover, 
-	Always
+    public enum TileManagerResizeMode
+    {
+        None,
+        Hover,
+        Always
 
-}
+    }
 }

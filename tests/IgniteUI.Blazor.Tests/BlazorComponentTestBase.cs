@@ -1,8 +1,8 @@
 using Bunit;
+using IgniteUI.Blazor.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Moq;
-using IgniteUI.Blazor.Controls;
 
 namespace IgniteUI.Blazor.Tests;
 
