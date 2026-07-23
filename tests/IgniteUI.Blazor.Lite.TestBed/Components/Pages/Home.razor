@@ -26,6 +26,7 @@
     private Dictionary<string, object> componentParameters = new();
     private List<string> errorMessages = new List<string>();
     private string eventMessage = string.Empty;
+    private TaskCompletionSource<bool>? pendingRender;
 
     private IConfigurationRoot config;
 
@@ -40,6 +41,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        this.pendingRender?.TrySetResult(true);
+
         if (firstRender)
         {
             await JS.InvokeVoidAsync("onAfterRender");
@@ -254,8 +257,7 @@
             }
             // set prop and wait for state to change
             parameters.Add(p.Name, value!);
-            StateHasChanged();
-            await Task.Delay(1);
+            await WaitForRenderAsync(p.Name);
 
             var clientPropName = ReflectionUtils.GetActualPropertyName(p);
             var clientValue = await GetClientPropValue(clientPropName);
@@ -267,6 +269,24 @@
                     { ContractResolver = new IgnorePropertiesResolver(ReflectionUtils.IgnoredProps().ToArray()) });
                 this.errorMessages.Add("Property value mismatch after setting. Prop name:  " + p.Name + ". Expected:" + serverString + ", but got the following on the client: " + clientValue);
             }
+        }
+    }
+
+    private async Task WaitForRenderAsync(string propName, int timeoutMs = 1000)
+    {
+        // new TaskCompletionSource that will wait for render
+        var renderTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        this.pendingRender = renderTcs;
+
+        // trigger StateHasChanged to request a render.
+        await InvokeAsync(StateHasChanged);
+
+
+        // when render task finishes in OnAfterRenderAsync (or on timeout) continue.
+        var completed = await Task.WhenAny(renderTcs.Task, Task.Delay(timeoutMs));
+        if (completed != renderTcs.Task)
+        {
+            this.errorMessages.Add("Timed out waiting for component render after setting property: " + propName);
         }
     }
 
