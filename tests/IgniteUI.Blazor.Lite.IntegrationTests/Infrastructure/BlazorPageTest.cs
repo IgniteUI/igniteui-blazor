@@ -47,13 +47,17 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
             {
                 host = null;
 
-                // Navigate to about:blank to ensure any SignalR
-                // connections are dropped.
-                //await Page.GotoAsync("about:blank");
+                if (Page != null)
+                {
+                    await Page.GotoAsync("about:blank").ConfigureAwait(false);
+                    await Page.CloseAsync().ConfigureAwait(false);
+                }
+
                 if (Context != null)
                 {
                     await Context.DisposeAsync().ConfigureAwait(false);
                 }
+
                 await currentHost.DisposeAsync().ConfigureAwait(false);
             }
         }
