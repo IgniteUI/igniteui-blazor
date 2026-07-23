@@ -1,120 +1,106 @@
 ---
 name: igniteui-blazor-components
-description: "Covers non-grid Ignite UI for Blazor UI components: application setup, form controls (inputs, combos, selects, date/time pickers, calendar, checkbox, radio, switch, slider, rating), layout containers (tabs, stepper, accordion, expansion panel, navigation drawer, navbar, tree), data-display components (list, card, carousel, avatar, badge, chip, icon, progress indicators, dropdown, tooltip), feedback overlays (dialog, snackbar, toast, banner), layout managers (Dock Manager, Tile Manager); and visualizations (Category Chart, Data Chart, Financial/Stock Chart, Pie/Donut Chart, Sparkline, Treemap, Geographic Map, Gauges, Dashboard Tile) requiring IgniteUI.Blazor or IgniteUI.Blazor.Trial. Use when users ask about any Ignite UI Blazor component that is NOT a data grid. Do NOT use for data grids, tables, or tabular data - use igniteui-blazor-grids instead. Do NOT use for theming or styling - use igniteui-blazor-theming instead."
+description: "Covers non-grid Ignite UI for Blazor UI components: application setup, form controls (inputs, combos, selects, date/time pickers, calendar, checkbox, radio, switch, slider, rating), layout containers (tabs, stepper, accordion, expansion panel, navigation drawer, navbar, tree), data-display components (list, card, carousel, avatar, badge, chip, icon, progress indicators, dropdown, tooltip), feedback overlays (dialog, snackbar, toast, banner), layout managers (Dock Manager, Tile Manager), and visualizations (charts, gauges, maps, sparklines). Use when users ask about any Ignite UI Blazor component that is NOT a data grid. Do NOT use for data grids or tabular data - use igniteui-blazor-grids instead. Do NOT use for theming or styling - use igniteui-blazor-theming instead."
 user-invocable: true
 ---
 
 # Ignite UI for Blazor - UI Components
 
-## Prerequisites
+All component documentation and API facts come from the **Ignite UI CLI MCP server** (`igniteui-cli`). Do not write Ignite UI component names, parameters, events, or module registrations from memory - APIs change between versions.
 
-- .NET 8+ Blazor project (Server, WebAssembly, Web App, or MAUI Blazor Hybrid)
-- The correct NuGet package installed: `IgniteUI.Blazor.Lite` (NuGet.org, MIT) for general purpose UI components; `IgniteUI.Blazor.GridLite` (NuGet.org, MIT) for the lightweight grid; `IgniteUI.Blazor` (Infragistics private feed, licensed) for the full suite including charts, maps, gauges, and enterprise grids; or `IgniteUI.Blazor.Trial` (NuGet.org) for evaluation of the full suite
-- `builder.Services.AddIgniteUIBlazor(...)` called in `Program.cs`
-- `@using IgniteUI.Blazor.Controls` added to `_Imports.razor`
-- A theme CSS file and `_content/IgniteUI.Blazor/app.bundle.js` runtime script linked in the host page (see [`references/setup.md`](./references/setup.md))
-- The **Ignite UI CLI MCP server** (`igniteui-cli`) is available as a tool provider
+## Workflow
 
-> **AGENT INSTRUCTION - MCP Server Setup (REQUIRED)**
->
-> Before using any Ignite UI CLI MCP tools, you MUST verify the MCP server is available
-> by calling `list_components(framework: "blazor")`. If the tool is not available or the call fails,
-> you MUST automatically configure it by following the setup process steps described below.
->
-> After writing the file, inform the user that the MCP server has been
-> configured and they may need to reload the editor for the tools to activate.
-> Start the MCP server and wait for that MCP server to start before continuing the component-related work.
-> Do NOT skip this step or ask the user to do it manually.
+1. **Discover**: `list_components(framework: "blazor", filter: "<keyword>")` to browse by component name, or `search_docs(framework: "blazor", query: "<feature>")` for feature/free-text questions.
+2. **Read the doc**: `get_doc(framework: "blazor", name: "<doc-slug>")` for every component family you will use, before writing markup. Use the doc `name` returned by discovery - do not guess slugs.
+3. **Look up exact API**: `get_api_reference(platform: "blazor", component: "<IgbName>")` for properties, methods, events, and enums. Use `section` or `member` to keep responses small. Use `search_api` when the exact name is unknown.
+4. Base output only on what the tools returned. If a component or feature has no Blazor doc, say so instead of guessing.
 
-## Setting Up the Ignite UI CLI MCP Server
+For new-project scaffolding, call `get_project_setup_guide(framework: "blazor")`. Setup details (NuGet install, feeds, project types) are in the `general-installing-blazor`, `general-getting-started*`, and `general-nuget-feed` docs via `get_doc`.
 
-> **Full setup instructions for VS Code, Cursor, Claude Desktop, and JetBrains IDEs are in [`references/mcp-setup.md`](./references/mcp-setup.md).** Read that file for editor-specific configuration steps and verification.
+**If the MCP tools are unavailable**, add the server to your client's MCP config (`.vscode/mcp.json` uses a top-level `servers` key; `.mcp.json` and most other clients use `mcpServers`), then start it:
 
-## MANDATORY AGENT PROTOCOL - YOU MUST FOLLOW THIS BEFORE PRODUCING ANY OUTPUT
+```json
+{ "mcpServers": { "igniteui-cli": { "command": "npx", "args": ["-y", "igniteui-cli", "mcp"] } } }
+```
 
-**This file is a routing hub only. It contains no component examples and no component API details.**
+## Packages
 
-> **DO NOT write any component names, property names, event names, module registration calls, or Razor attributes from memory.**
-> Component APIs change between versions. Anything generated without reading the reference files and Blazor MCP docs will be incorrect.
-
-You are **required** to complete ALL of the following steps before producing any component-related code or answer:
-
-**STEP 1 - Identify every component or feature involved.**
-Map the user's request to one or more rows in the Task → Reference File table below. A single request often spans multiple categories (e.g., a form inside a Dialog requires reading both `form-controls.md` AND `feedback.md`).
-
-**STEP 2 - Read every identified reference file in full (PARALLEL).**
-Call `read_file` (or equivalent) on **all** reference files identified in Step 1 **in a single parallel batch**. Reference files map components to their MCP doc slugs and explain which MCP calls to make.
-
-**STEP 3 - Extract doc slugs, then call `get_doc` and API tools for each component involved.**
-Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. It returns the actual registration pattern, Razor markup, examples, and CSS parts. Do NOT skip this step.
-
-If a reference file does not list a slug for the requested component, call `search_docs(framework: "blazor", query: "<component or feature>")` to find the correct doc. If no Blazor doc exists, say that the component or feature is not covered instead of guessing.
-
-Use `search_api` and `get_api_reference` for Blazor component API details when property names, methods, events, or signatures are needed.
-
-**STEP 4 - Only then produce output.**
-Base your code and explanation exclusively on what you read. If the reference files or MCP docs do not cover something, say so explicitly rather than guessing.
-
-### Task → Reference File
-
-| Task | Reference file to read |
-|---|---|
-| NuGet install, `Program.cs` registration, `_Imports.razor`, CSS/script references, project types (Server, WASM, Web App, MAUI) | [`references/setup.md`](./references/setup.md) |
-| Input, Combo Box, Select, Date Picker, Date Range Picker, Calendar, Date Time Input, Mask Input, Checkbox, Radio / Radio Group, Switch, Slider / Range Slider, Rating, form/value binding | [`references/form-controls.md`](./references/form-controls.md) |
-| Tabs, Stepper, Accordion, Expansion Panel, Navigation Drawer, Navbar, Tree | [`references/layout.md`](./references/layout.md) |
-| List, Card, Carousel, Avatar, Badge, Chip, Icon, Icon Button, Button, Button Group, Circular Progress, Linear Progress, Dropdown, Tooltip, Ripple | [`references/data-display.md`](./references/data-display.md) |
-| Dialog, Snackbar, Toast, Banner | [`references/feedback.md`](./references/feedback.md) |
-| Dock Manager (panes, tabs, floating, serialization), Tile Manager | [`references/layout-manager.md`](./references/layout-manager.md) |
-| Category Chart, Data Chart, Financial / Stock Chart, Pie Chart, Donut Chart, Sparkline, Treemap, Geographic Map, Gauges, Dashboard Tile, visualization features (animations, tooltips, markers, highlighting, zooming, legends, maps, ranges) | [`references/charts.md`](./references/charts.md) |
-
-> **When in doubt, read more rather than fewer reference files.** The cost of an unnecessary file read is negligible; the cost of hallucinated API usage is a broken application.
-
-## Package Variants
-
-| Package | Source | Who uses it |
+| Package | Source | Contents |
 |---|---|---|
-| `IgniteUI.Blazor.Lite` | NuGet.org | Open-source / MIT users needing core UI components (forms, layout, navigation, data display, feedback) |
-| `IgniteUI.Blazor.GridLite` | NuGet.org | Open-source / MIT users needing the lightweight `IgbGridLite` data grid |
-| `IgniteUI.Blazor` | Infragistics private NuGet feed (`https://packages.infragistics.com/nuget/licensed/`) | Licensed / enterprise users that need the full component suite (grids, charts, maps, gauges, Dock Manager) |
-| `IgniteUI.Blazor.Trial` | NuGet.org | Evaluation users - same full suite as `IgniteUI.Blazor` but with a trial watermark |
+| `IgniteUI.Blazor.Lite` | NuGet.org (MIT) | Core UI components: forms, layout, navigation, data display, feedback |
+| `IgniteUI.Blazor.GridLite` | NuGet.org (MIT) | Lightweight `IgbGridLite` data grid only |
+| `IgniteUI.Blazor` | Infragistics private feed (licensed) | Full suite: everything plus charts, maps, gauges, Dock Manager, full grids |
+| `IgniteUI.Blazor.Trial` | NuGet.org | Full suite with trial watermark, for evaluation |
 
-`IgniteUI.Blazor.Lite` contains the open-source UI component set, while `IgniteUI.Blazor.GridLite` contains the free `IgbGridLite` data grid package. Both use the `IgniteUI.Blazor.Controls` namespace. Do **not** mix the licensed `IgniteUI.Blazor` package with `IgniteUI.Blazor.Lite` in the same project; they use the same namespaces and duplicate some components. If full `IgniteUI.Blazor` is already referenced, do not add Lite/GridLite unless the user explicitly asks to switch package strategy.
+All use the `IgniteUI.Blazor.Controls` namespace. Do **not** mix `IgniteUI.Blazor` with the Lite packages in one project - they duplicate components. If full `IgniteUI.Blazor` is already referenced, keep it unless the user explicitly switches strategy. See the `general-open-source-vs-premium` doc for details.
 
-## Key Blazor-Specific Notes
+## Setup essentials (silent-failure checklist)
 
-Add the Ignite UI runtime script before the Blazor framework script in the host page: `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>`. **If this script is missing, web components will not register and the app will render blank or broken. Verify this is present in every new project.**
+Every doc from `get_doc` shows the exact registration for its component. These are the things that fail *silently* when missing:
 
-> **AGENT INSTRUCTION - Module Registration**
->
-> Every Ignite UI for Blazor component **and its sub-components** has a corresponding module. Register **all** modules for every component used on the page in `Program.cs`:
->
-> ```csharp
-> builder.Services.AddIgniteUIBlazor(typeof(IgbComboModule), typeof(IgbDatePickerModule));
-> ```
->
-> Calling `builder.Services.AddIgniteUIBlazor()` with no arguments registers ALL modules (useful for prototypes but increases bundle size). Prefer explicit module registration in production.
+- **Module registration**: every `Igb*` component (and sub-component) needs its module in `Program.cs`: `builder.Services.AddIgniteUIBlazor(typeof(IgbComboModule), ...)`. A missing module means the component renders nothing, with no error. No-argument `AddIgniteUIBlazor()` registers everything (fine for prototypes, bigger bundles).
+- **Runtime script**: `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` must be in the host page before the Blazor framework script. Without it, web components never register and the page renders blank.
+- **Theme CSS link** in the host page (see the theming skill), and `@using IgniteUI.Blazor.Controls` in `_Imports.razor`.
+- **Interactive render mode**: on .NET 8+ Blazor Web App, pages using Ignite UI components need `@rendermode InteractiveServer` / `InteractiveWebAssembly` / `InteractiveAuto` (or global interactivity in `App.razor`). Static SSR pages will not work. In split server/client solutions, register the service in **both** `Program.cs` files.
 
-> **AGENT INSTRUCTION - `@ref` and `EnsureReady`**
->
-> When accessing a component from C# code (e.g., to call `ShowAsync()` on a dialog), use `@ref`:
->
-> ```razor
-> <IgbDialog @ref="DialogRef" />
->
-> @code {
->     public IgbDialog DialogRef { get; set; }
-> }
-> ```
->
-> Some components (e.g., `IgbIcon`) require `await component.EnsureReady()` before calling async registration methods in `OnAfterRenderAsync(bool firstRender)`.
+## Blazor-specific gotchas (not in the docs)
 
-> **AGENT INSTRUCTION - Forms**
->
-> Several Ignite UI Blazor components such as `IgbCombo` and `IgbRadio` do **not** work with the standard HTML `<form>` element. Do not assume a universal form pattern. Check the component's MCP doc first, bind component values explicitly (`@bind-Value`, `@bind-Checked`, or documented change events), and only use form integration patterns shown by the current docs.
+**Razor compiler traps** - these apply to any `Igb*` component:
+- **RZ9986**: complex attribute content fails to build. `<IgbChip class="chip @(cond ? "a" : "")" />` is an error - make the whole attribute one C# expression or a helper method call.
+- **CS1012**: single-quoted strings inside a double-quoted attribute lambda (`@onclick="() => Go('/home')"`) parse as char literals. Use a named handler method instead.
+- **BL0005**: do not set component parameters via `@ref` from code (`chart.Brushes = "..."`). Pass them as markup attributes.
 
----
+**Component references**:
+- `@ref` fields are `null` until after first render - use them in event handlers or `OnAfterRenderAsync`, never in `OnInitialized`.
 
-## Related Skills
+**Icons render blank until registered** - the most common cause of broken generated UIs:
+- The library bundles **no icons**. Every `IconName`/`Collection` pair used anywhere - `IgbIcon`, `IgbIconButton`, icons in navbar/drawer/list/chip slots - renders empty space until that name is registered in that collection with real SVG content.
+- Registration is **app-wide** (a global cached collection). Register each icon once - e.g. through a single `IgbIcon` in the main layout - instead of per usage:
 
-- [`igniteui-blazor-grids`](../igniteui-blazor-grids/SKILL.md) - Data Grids (Grid, Tree Grid, Hierarchical Grid, Pivot Grid, Grid Lite)
-- [`igniteui-blazor-theming`](../igniteui-blazor-theming/SKILL.md) - Theming & Styling
+```razor
+<IgbIcon @ref="IconRegistrar" style="display: none" />
+@code {
+    IgbIcon IconRegistrar = default!;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await IconRegistrar.EnsureReady();
+        await IconRegistrar.RegisterIconFromTextAsync("home",
+            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/></svg>",
+            "material");
+        // ...one call per icon name used anywhere in the app
+    }
+}
+```
+
+- The SVG string must be **genuine markup** (e.g. copied from the Material Icons/Symbols SVG set). Never emit placeholder strings or invented path data - they render blank or garbage. `RegisterIconAsync(name, url, collection)` loads from a URL instead, at the cost of a runtime network dependency.
+- Some `get_doc` examples (e.g. the navigation drawer) show `IconName="..."` markup **without** the registration code - when copying doc markup, always add registration for every icon name it references.
+
+**Slots and icons**:
+- Always put `IgbIcon` in slots (`prefix`, `suffix`, `start`, `end`, `icon`, `label`) - never `<span class="material-icons">`. Font spans are `display: inline` and drift to the top of the slot's flex container; `IgbIcon` self-centers.
+
+**Forms and binding**:
+- There is no universal form pattern. `IgbCombo` and `IgbRadio` do **not** work inside a plain HTML `<form>`. Bind values explicitly (`@bind-Value`, `@bind-Checked`, or the documented change event) and only use form integration the current doc shows.
+- Read input values from the bound property - `IgbInput` has no `GetValueAsync()`.
+
+**Navigation Drawer** (`IgbNavDrawer`):
+- Its `::part(base)` is always `position: fixed` - the drawer overlays content and the host contributes zero width, regardless of `Open`. There is no `pinned` parameter. For a pinned sidebar that occupies layout space, override in **global CSS** (not `.razor.css`): explicit width on the host, `::part(base) { position: relative; transform: none; }`, hide `::part(overlay)`, and remove the `inert` attribute via JS in `OnAfterRenderAsync`. Do not call `Show()` in `OnAfterRenderAsync` - it throws.
+- Nav drawer items have no automatic selection tracking - set `item.Active` yourself.
+
+**Charts, maps, gauges, sparklines** (require `IgniteUI.Blazor` / `.Trial`):
+- They **ignore CSS theme variables**. Set colors via component parameters (`Brushes`, `Outlines`, axis text colors), using resolved color values.
+- Brush-list parameters are space-separated **strings**: `Brushes="#4FC3F7 #81C784"`. `IncludedProperties`/`ExcludedProperties` are **string arrays**: `@(new string[] { "Id" })`.
+- `CategoryChartType.Bar` does not exist - use `Column`, or `IgbDataChart` + `IgbBarSeries` for horizontal bars.
+- `IgbSparkline` has no spline types - for smooth area sparklines use a small `IgbCategoryChart` with `SplineArea`.
+- `InnerExtent` (donut hole) is a chart-level property - putting it on `IgbRingSeries` crashes at runtime.
+- Category charts show markers by default; each `IgbDataChart` series category needs its own module.
+- Always set explicit `Width`/`Height`; inside CSS Grid give the cell `min-height: 0` so the chart doesn't collapse or overflow.
+
+**Dock Manager / Tile Manager**:
+- `IgbContentPane.ContentId` must exactly match the projected element's `slot` attribute, and the Dock Manager needs an explicit height or it renders 0px tall.
+- Layout serialization persists pane structure only - slot content stays static in Razor markup.
+
+## Related skills
+
+- `igniteui-blazor-grids` - all data grids (Grid, Tree Grid, Hierarchical Grid, Pivot Grid, Grid Lite)
+- `igniteui-blazor-theming` - themes, palettes, design tokens, CSS parts
