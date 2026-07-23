@@ -5,11 +5,7 @@
       "FormatOptions",
       "ResourceStrings"
     ],
-    "ExcludedEvents": [
-      // Does not fire from a synthetic igcChange event. Previously untested:
-      // the old source-scan two-way detection accidentally excluded it.
-      "Change"
-    ]
+    "ExcludedEvents": []
   },
   "IgbDatePicker": {
     "ExcludedProps": ["ResourceStrings"],
@@ -41,8 +37,7 @@
       "EmitEvent"
     ],
     "ExcludedEvents": [
-      // Does not fire from a synthetic igcChange event. Previously untested:
-      // the old source-scan two-way detection accidentally excluded it.
+      // Emits complex object, instance of igc-select-item, which we cannot easily mock.
       "Change"
     ],
     "DependantMethods": [
@@ -68,12 +63,7 @@
       "ReportValidityAsync",
       "CheckValidityAsync"
     ],
-    "ExcludedEvents": [
-      // Triggering igcChange resets client state and breaks the subsequent
-      // Value property check. Previously untested: the old source-scan
-      // two-way detection accidentally excluded it.
-      "Change"
-    ]
+    "ExcludedEvents": []
   },
   "IgbSlider": {
     "DependantMethods": [

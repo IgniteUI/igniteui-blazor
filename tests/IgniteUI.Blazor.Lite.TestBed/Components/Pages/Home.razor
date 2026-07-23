@@ -314,7 +314,7 @@
         {
             // hook events
             var arg = evt.PropertyType.GenericTypeArguments[0];
-            var detailType = ReflectionUtils.GetOriginEventDetailType(arg);
+            var detailType = ReflectionUtils.GetOriginEventDetailType(arg, selectedType);
             object? argDetailToSend = null;
             if (detailType != null)
             {
@@ -344,7 +344,7 @@
             }
 
             eventMessage = "";
-            var res = await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend);
+            var res = await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend, detailType == typeof(DateTime));
             await Task.Delay(100);
 
             if (eventMessage != $"Event fired.")
