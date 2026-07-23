@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
 {
@@ -36,12 +35,6 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
         {
             base.ConfigureWebHost(builder);
             configureWebHost?.Invoke(builder);
-
-            builder.ConfigureLogging(logging =>
-            {
-                logging.AddFilter("Microsoft.AspNetCore.SignalR.HubConnectionHandler", LogLevel.Critical);
-                logging.AddFilter("Microsoft.AspNetCore.Http.Connections.Internal.HttpConnectionManager", LogLevel.Critical);
-            });
 
             // Setting port to 0 means that Kestrel will pick any free a port.
             // but we don't want freedom, just use to use same port
