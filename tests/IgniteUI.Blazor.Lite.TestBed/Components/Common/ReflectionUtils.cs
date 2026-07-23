@@ -109,7 +109,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             return result;
         }
 
-        public static Type? GetOriginEventDetailType(Type eventArgsType)
+        public static Type? GetOriginEventDetailType(Type eventArgsType, Type componentType)
         {
             var detailProp = eventArgsType.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance);
             if (detailProp == null)
@@ -121,6 +121,12 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             if (detailType == typeof(string) || detailType.IsPrimitive || detailType == typeof(DateTime))
             {
                 return detailType;
+            }
+
+            // Calendar detail type is Object, but it actually casts to DateTime, so we need to handle that case specifically.
+            if (detailType == typeof(object) && componentType == typeof(IgbCalendar))
+            {
+                return typeof(DateTime);
             }
 
             return null;
@@ -200,7 +206,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             }
             else if (type == typeof(double))
             {
-                value = 100.0;
+                value = 1.0;
             }
             else if (type == typeof(DateTime))
             {
