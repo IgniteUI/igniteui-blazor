@@ -352,24 +352,28 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Checks for validity of the control and shows the browser message if it invalid.
         /// </summary>
-        public async Task ReportValidityAsync()
+        public async Task<bool> ReportValidityAsync()
         {
-            await InvokeMethod("reportValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
+            return ReturnToBoolean(iv);
         }
-        public void ReportValidity()
+        public bool ReportValidity()
         {
-            InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
+            return ReturnToBoolean(iv);
         }
         /// <summary>
         /// Checks for validity of the control and emits the invalid event if it invalid.
         /// </summary>
-        public async Task CheckValidityAsync()
+        public async Task<bool> CheckValidityAsync()
         {
-            await InvokeMethod("checkValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
+            return ReturnToBoolean(iv);
         }
-        public void CheckValidity()
+        public bool CheckValidity()
         {
-            InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
+            return ReturnToBoolean(iv);
         }
         /// <summary>
         /// Sets a custom validation message for the control.
