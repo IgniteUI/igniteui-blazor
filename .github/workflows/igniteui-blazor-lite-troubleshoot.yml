@@ -2,6 +2,8 @@ name: IgniteUI.Blazor.Lite Release
 
 on:
   workflow_dispatch:
+  pull_request:
+    types: [labeled]
 
 permissions:
   contents: read
@@ -12,6 +14,7 @@ jobs:
   release:
     name: Build & Pack NuGet
     runs-on: windows-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'run-troubleshoot'
     environment: nuget-org-publish
     permissions:
       id-token: write # enable Azure OIDC token issuance for this job
