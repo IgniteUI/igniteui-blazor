@@ -1,4 +1,4 @@
-name: IgniteUI.Blazor.Lite Release
+name: IgniteUI.Blazor.Lite troubleshooting
 
 on:
   workflow_dispatch:
@@ -68,7 +68,7 @@ jobs:
           --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
           --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERTIFICATE }}"
           --azure-credential-type azure-cli
-          --verbosity Diagnostic
+          --verbosity trace
 
       - name: Validate DLL signatures
         shell: pwsh
@@ -98,7 +98,7 @@ jobs:
           --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
           --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERTIFICATE }}"
           --azure-credential-type azure-cli
-          --verbosity Diagnostic
+          --verbosity trace
 
       - name: Validate NuGet package signature
         run: dotnet nuget verify "${{ github.workspace }}/nupkg/IgniteUI.Blazor.Lite.${{ env.VERSION }}.nupkg" -v q
