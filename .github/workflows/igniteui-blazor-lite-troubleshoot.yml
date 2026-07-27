@@ -98,6 +98,7 @@ jobs:
           --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
           --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERTIFICATE }}"
           --azure-credential-type azure-cli
+          --recurse-containers false
           --verbosity trace
 
       - name: Validate NuGet package signature
