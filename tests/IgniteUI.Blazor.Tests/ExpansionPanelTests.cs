@@ -1,10 +1,36 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class ExpansionPanelTests : BlazorComponentTestBase
+public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPanel>
 {
+    // The panel's own events carry a self-reference detail ({"refType": "name",
+    // "id": "mainControl"}) that must resolve back to the .NET instance via FindByName.
+    protected override ComponentContract<IgbExpansionPanel> InteropContract { get; } = new ComponentContract<IgbExpansionPanel>()
+        .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
+        .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
+        .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
+        .Event(c => c.Opening,
+            """{"detail": {"refType": "name", "id": "mainControl"}}""",
+            assert: (panel, args) => Assert.Same(panel, args.Detail))
+        .Event(c => c.Opened,
+            """{"detail": {"refType": "name", "id": "mainControl"}}""",
+            assert: (panel, args) => Assert.Same(panel, args.Detail))
+        .Event(c => c.Closing,
+            """{"detail": {"refType": "name", "id": "mainControl"}}""",
+            assert: (panel, args) => Assert.Same(panel, args.Detail))
+        .Event(c => c.Closed,
+            """{"detail": {"refType": "name", "id": "mainControl"}}""",
+            assert: (panel, args) => Assert.Same(panel, args.Detail));
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void ExpansionPanel_RendersCorrectElement()
     {

@@ -1,10 +1,27 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class TooltipTests : BlazorComponentTestBase
+public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
 {
+    protected override ComponentContract<IgbTooltip> InteropContract { get; } = new ComponentContract<IgbTooltip>()
+        .Method(c => c.ShowAsync("target-1"), c => c.Show("target-1"), "show", returns: true,
+            args: ["target-1"], types: ["String"])
+        .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
+        .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
+        .Event(c => c.Opening)
+        .Event(c => c.Opened)
+        .Event(c => c.Closing)
+        .Event(c => c.Closed);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Tooltip_RendersCorrectElement()
     {

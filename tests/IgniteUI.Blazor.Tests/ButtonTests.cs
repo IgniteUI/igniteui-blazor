@@ -1,10 +1,26 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class ButtonTests : BlazorComponentTestBase
+public class ButtonTests : ComponentWithContractTestBase<IgbButton>
 {
+    protected override ComponentContract<IgbButton> InteropContract { get; } = new ComponentContract<IgbButton>()
+        .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }),
+            "focus",
+            args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
+        .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
+        .Method(c => c.ClickAsync(), c => c.Click(), "click")
+        .Event(c => c.Focus)
+        .Event(c => c.Blur);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Button_RendersCorrectElement()
     {

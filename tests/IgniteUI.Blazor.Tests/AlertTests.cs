@@ -1,10 +1,23 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class SnackbarTests : BlazorComponentTestBase
+public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
 {
+    protected override ComponentContract<IgbSnackbar> InteropContract { get; } = new ComponentContract<IgbSnackbar>()
+        .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
+        .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
+        .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
+        .Event(c => c.Action);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Snackbar_RendersCorrectElement()
     {
@@ -75,8 +88,16 @@ public class SnackbarTests : BlazorComponentTestBase
     }
 }
 
-public class ToastTests : BlazorComponentTestBase
+public class ToastTests : ComponentWithContractTestBase<IgbToast>
 {
+    protected override ComponentContract<IgbToast> InteropContract { get; } = new ComponentContract<IgbToast>()
+        .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
+        .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
+        .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
     [Fact]
     public void Toast_RendersCorrectElement()
     {

@@ -1,10 +1,26 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class IconTests : BlazorComponentTestBase
+public class IconTests : ComponentWithContractTestBase<IgbIcon>
 {
+    protected override ComponentContract<IgbIcon> InteropContract { get; } = new ComponentContract<IgbIcon>()
+        .Method(c => c.RegisterIconAsync("home", "https://example.com/home.svg", "material"), c => c.RegisterIcon("home", "https://example.com/home.svg", "material"),
+            "registerIcon", args: ["home", "https://example.com/home.svg", "material"], types: ["String", "String", "String"])
+        .Method(c => c.RegisterIconFromTextAsync("home", "<svg></svg>", "material"), c => c.RegisterIconFromText("home", "<svg></svg>", "material"),
+            "registerIconFromText", args: ["home", "<svg></svg>", "material"], types: ["String", "String", "String"])
+        // IgbIconMeta is a MarshalByValueFactory type ("WebIconMeta")
+        // wire object carries name/collection plus bookkeeping (___byValue, type), hence JsonSubset.
+        .Method(c => c.SetIconRefAsync("chevron", "material", new IgbIconMeta { Name = "chevron_right", Collection = "custom" }), c => c.SetIconRef("chevron", "material", new IgbIconMeta { Name = "chevron_right", Collection = "custom" }),
+            "setIconRef",
+            args: ["chevron", "material", new JsonSubset("""{"name": "chevron_right", "collection": "custom"}""")],
+            types: ["String", "String", "Json"]);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
     [Fact]
     public void Icon_RendersCorrectElement()
     {
