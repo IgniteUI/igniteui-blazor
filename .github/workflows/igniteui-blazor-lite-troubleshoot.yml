@@ -14,6 +14,7 @@ jobs:
   release:
     name: Build & Pack NuGet
     runs-on: windows-latest
+    environment: nuget-org-publish
     if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'run-troubleshoot'
     permissions:
       id-token: write # enable Azure OIDC token issuance for this job
