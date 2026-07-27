@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 env:
-  VERSION: 666.666.666
+  VERSION: 666.666.666 # placeholder version for troubleshooting, will be overridden by workflow_dispatch input or PR label
 jobs:
   release:
     name: Build & Pack NuGet
