@@ -1,6 +1,5 @@
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -89,11 +88,11 @@ public sealed class RendererMessageInteropHarness : InteropHarness
                     message.GetProperty("methodName").GetString()!,
                     message.GetProperty("invokeId").GetInt64(),
                     message.TryGetProperty("arguments", out var args)
-                        ? args.EnumerateArray().ToArray()
-                        : Array.Empty<JsonElement>(),
+                        ? [.. args.EnumerateArray()]
+                        : [],
                     message.TryGetProperty("types", out var types)
-                        ? types.EnumerateArray().Select(t => t.GetString()!).ToArray()
-                        : Array.Empty<string>(),
+                        ? [.. types.EnumerateArray().Select(t => t.GetString()!)]
+                        : [],
                     message));
             }
             return calls;
@@ -271,7 +270,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         {
             try
             {
-                return _js.Invocations.ToArray();
+                return [.. _js.Invocations];
             }
             catch (InvalidOperationException) when (attempt < 10)
             {

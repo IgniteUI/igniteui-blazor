@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Tests.Interop;
 /// </summary>
 public static class InteropHarnessRegistry
 {
-    private static readonly Dictionary<Type, Func<BunitJSInterop, InteropHarness>> Overrides = new();
+    private static readonly Dictionary<Type, Func<BunitJSInterop, InteropHarness>> Overrides = [];
 
     public static void Register<TComponent>(Func<BunitJSInterop, InteropHarness> factory)
         where TComponent : IComponent

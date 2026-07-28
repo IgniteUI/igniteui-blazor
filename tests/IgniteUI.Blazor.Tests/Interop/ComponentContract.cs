@@ -45,8 +45,8 @@ public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
     public string? ReadsProperty { get; init; }
 
     public required Func<TComponent, Task<object?>> Invoke { get; init; }
-    public object?[] ExpectedArgs { get; init; } = Array.Empty<object?>();
-    public string[] ExpectedTypes { get; init; } = Array.Empty<string>();
+    public object?[] ExpectedArgs { get; init; } = [];
+    public string[] ExpectedTypes { get; init; } = [];
     public InteropReturn? Stub { get; init; }
     public object? ExpectedReturn { get; init; }
     public bool HasExpectedReturn { get; init; }
@@ -142,9 +142,9 @@ public sealed class EventContractSpec<TComponent> where TComponent : IComponent
 /// </summary>
 public sealed class ComponentContract<TComponent> where TComponent : IComponent
 {
-    private readonly List<MethodContractSpec<TComponent>> _methods = new();
-    private readonly List<EventContractSpec<TComponent>> _events = new();
-    private readonly List<StatePropContractSpec<TComponent>> _props = new();
+    private readonly List<MethodContractSpec<TComponent>> _methods = [];
+    private readonly List<EventContractSpec<TComponent>> _events = [];
+    private readonly List<StatePropContractSpec<TComponent>> _props = [];
 
     public IReadOnlyList<MethodContractSpec<TComponent>> Methods => _methods;
     public IReadOnlyList<EventContractSpec<TComponent>> Events => _events;
@@ -163,8 +163,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         {
             JsName = jsName,
             Invoke = async c => { await invoke(c); return null; },
-            ExpectedArgs = args ?? Array.Empty<object?>(),
-            ExpectedTypes = types ?? Array.Empty<string>(),
+            ExpectedArgs = args ?? [],
+            ExpectedTypes = types ?? [],
             Source = new SpecSource(atFile, atLine),
         });
         return this;
@@ -213,8 +213,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         {
             JsName = jsName,
             Invoke = async c => await invoke(c),
-            ExpectedArgs = args ?? Array.Empty<object?>(),
-            ExpectedTypes = types ?? Array.Empty<string>(),
+            ExpectedArgs = args ?? [],
+            ExpectedTypes = types ?? [],
             Stub = returns,
             ExpectedReturn = expect,
             HasExpectedReturn = true,
@@ -241,8 +241,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             JsName = jsName,
             Invoke = async c => { await invoke(c); return null; },
             SyncInvoke = c => { sync(c); return null; },
-            ExpectedArgs = args ?? Array.Empty<object?>(),
-            ExpectedTypes = types ?? Array.Empty<string>(),
+            ExpectedArgs = args ?? [],
+            ExpectedTypes = types ?? [],
             Source = new SpecSource(atFile, atLine),
         });
         return this;
@@ -277,8 +277,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             JsName = jsName,
             Invoke = async c => await invoke(c),
             SyncInvoke = c => sync(c),
-            ExpectedArgs = args ?? Array.Empty<object?>(),
-            ExpectedTypes = types ?? Array.Empty<string>(),
+            ExpectedArgs = args ?? [],
+            ExpectedTypes = types ?? [],
             Stub = returns,
             ExpectedReturn = expect,
             HasExpectedReturn = true,
@@ -672,7 +672,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     /// is known: assigns the parameter (an empty callback when <paramref name="sink"/> is
     /// null) and returns the exact boxed callback for the runner's round-trip assert.
     /// </summary>
-    private static object BindMember<TArgs>(
+    private static EventCallback<TArgs> BindMember<TArgs>(
         ComponentParameterCollectionBuilder<TComponent> ps,
         Expression<Func<TComponent, EventCallback<TArgs>>> member,
         Action<object>? sink)
