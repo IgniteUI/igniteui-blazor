@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -274,6 +275,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
             }
             catch (InvalidOperationException) when (attempt < 10)
             {
+                Thread.Yield();
             }
         }
     }

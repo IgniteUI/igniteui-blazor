@@ -46,7 +46,7 @@ dotnet test tests/IgniteUI.Blazor.Tests -f net10.0 --nologo --filter "FullyQuali
 
 ### Conventions
 
-- **Suites may live per class, instead per file** — search for the class (`BannerTests` is in `MiscComponentTests.cs`, `SnackbarTests`/`ToastTests` in `AlertTests.cs`).
+- **Suites may live per class, instead of per file** — search for the class (`BannerTests` is in `MiscComponentTests.cs`, `SnackbarTests`/`ToastTests` in `AlertTests.cs`).
 - **Skips need a mechanism reason.** Bug-tracker or `componentsConfig.json` listings are not skip reasons. If a member's decode hits a gap in shared infrastructure the change doesn't own, cover it pinning current behavior and write the *correct* assertion commented out under a `// TODO:` explaining the gap — ready to uncomment when fixed. A gap in a component under construction is a bug to fix, not to pin — see the two authoring modes in the interop reference.
 - Components are `partial` — the generated `src/components/Blazor/<Name>.cs` is not the whole class; always check `src/componentsBase/WebInputs/<Name>.cs` for hand-written extensions before drawing conclusions.
 - Formatting: only `dotnet format whitespace --folder` is safe in this repo — a full `dotnet format` writes conflict markers into multi-targeted sources.

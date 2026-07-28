@@ -123,7 +123,7 @@ Object details are envelope-wrapped by the client bridge (`src/src/index.ts` `to
 ```csharp
 public class <Name>Tests : ComponentWithContractTestBase<Igb<Name>>
 {
-    protected override ComponentContract<Igb<Name>> Contract { get; } = new ComponentContract<Igb<Name>>()
+    protected override ComponentContract<Igb<Name>> InteropContract { get; } = new ComponentContract<Igb<Name>>()
         .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: ...)
         .Event(c => c.SomeEvent, ...)
