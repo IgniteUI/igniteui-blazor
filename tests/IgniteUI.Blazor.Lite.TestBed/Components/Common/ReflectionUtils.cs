@@ -30,11 +30,14 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static List<MethodInfo> GetValidMethods(Type componentType)
         {
-            var baseRendererMethodNames = typeof(BaseRendererControl)
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(m => !m.IsSpecialName)
-                .Select(m => m.Name)
-                .ToHashSet();
+            var baseRendererMethodNames = new HashSet<string>();
+            if (componentType.IsAssignableTo(typeof(BaseRendererControl)))
+            {
+                baseRendererMethodNames = [.. typeof(BaseRendererControl)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(m => !m.IsSpecialName)
+                    .Select(m => m.Name)];
+            }
 
             MethodInfo[] methodInfos = componentType.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => !m.IsSpecialName).ToArray();
             var validMethods = methodInfos
