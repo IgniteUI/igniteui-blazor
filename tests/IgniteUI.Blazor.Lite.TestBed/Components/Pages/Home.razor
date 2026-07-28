@@ -344,7 +344,7 @@
             }
 
             eventMessage = "";
-            var res = await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend, detailType == typeof(DateTime));
+            await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend, detailType == typeof(DateTime));
             await Task.Delay(100);
 
             if (eventMessage != $"Event fired.")

@@ -123,7 +123,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 return detailType;
             }
 
-            // Calendar detail type is Object, but it actually casts to DateTime, so we need to handle that case specifically.
+            // TODO: Calendar detail type is Object, but it actually casts to DateTime, so we need to handle that case specifically.
             if (detailType == typeof(object) && componentType == typeof(IgbCalendar))
             {
                 return typeof(DateTime);
