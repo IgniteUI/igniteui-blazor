@@ -91,7 +91,7 @@ function checkProp(propName) {
   return val;
 }
 
-function triggerEvent(eventName, arg) {
+function triggerEvent(eventName, arg, isDate) {
   var container = document.getElementById('container');
   var target = container.querySelectorAll(window.targetName)[0];
   console.log('Trigger event: ' + eventName);
@@ -103,7 +103,7 @@ function triggerEvent(eventName, arg) {
           bubbles: true,
           cancelable: false,
           composed: true,
-          detail: arg || {},
+          detail: isDate ? new Date(arg) : arg || {},
         },
         {},
       ),
