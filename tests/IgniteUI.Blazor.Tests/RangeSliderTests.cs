@@ -1,10 +1,32 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class RangeSliderTests : BlazorComponentTestBase
+public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
 {
+    // TODO: ValueFormatOptions/ValueFormat (config objects on a direct-render component —
+    // they never cross as interop messages; BUG 35189 ).
+    protected override ComponentContract<IgbRangeSlider> InteropContract { get; } = new ComponentContract<IgbRangeSlider>()
+        .Event(c => c.Input,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"lower": 20, "upper": 80}}}""",
+            assert: args =>
+            {
+                Assert.Equal(20, args.Detail.Lower);
+                Assert.Equal(80, args.Detail.Upper);
+            })
+        .Event(c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"lower": 25, "upper": 75}}}""",
+            assert: args =>
+            {
+                Assert.Equal(25, args.Detail.Lower);
+                Assert.Equal(75, args.Detail.Upper);
+            });
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void RangeSlider_RendersCorrectElement()
     {

@@ -1,10 +1,29 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class IconButtonTests : BlazorComponentTestBase
+public class IconButtonTests : ComponentWithContractTestBase<IgbIconButton>
 {
+    protected override ComponentContract<IgbIconButton> InteropContract { get; } = new ComponentContract<IgbIconButton>()
+        .Method(c => c.RegisterIconAsync("home", "https://example.com/home.svg", "material"), c => c.RegisterIcon("home", "https://example.com/home.svg", "material"),
+            "registerIcon", args: ["home", "https://example.com/home.svg", "material"], types: ["String", "String", "String"])
+        .Method(c => c.RegisterIconFromTextAsync("home", "<svg></svg>", "material"), c => c.RegisterIconFromText("home", "<svg></svg>", "material"),
+            "registerIconFromText", args: ["home", "<svg></svg>", "material"], types: ["String", "String", "String"])
+        .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }),
+            "focus", args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
+        .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
+        .Method(c => c.ClickAsync(), c => c.Click(), "click")
+        .Event(c => c.Focus)
+        .Event(c => c.Blur);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void IconButton_RendersCorrectElement()
     {

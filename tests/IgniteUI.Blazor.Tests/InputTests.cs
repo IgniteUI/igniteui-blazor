@@ -1,10 +1,38 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class InputTests : BlazorComponentTestBase
+public class InputTests : ComponentWithContractTestBase<IgbInput>
 {
+    protected override ComponentContract<IgbInput> InteropContract { get; } = new ComponentContract<IgbInput>()
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: "hello")
+        .Method(c => c.StepUpAsync(2), c => c.StepUp(2), "stepUp", args: [2.0], types: ["Number"])
+        .Method(c => c.StepDownAsync(2), c => c.StepDown(2), "stepDown", args: [2.0], types: ["Number"])
+        .Method(c => c.SelectAsync(), c => c.Select(), "select")
+        .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }),
+            "focus", args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
+        .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.SetCustomValidityAsync("custom message"), c => c.SetCustomValidity("custom message"),
+            "setCustomValidity", args: ["custom message"], types: ["String"])
+        .Event(c => c.Change,
+            argsJson: """{"detail": "new value"}""",
+            assert: args => Assert.Equal("new value", args.Detail))
+        .Event(c => c.InputOcurred,
+            argsJson: """{"detail": "typed text"}""",
+            assert: args => Assert.Equal("typed text", args.Detail))
+        .Event(c => c.Focus)
+        .Event(c => c.Blur);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Input_RendersCorrectElement()
     {

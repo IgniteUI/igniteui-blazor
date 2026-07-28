@@ -1,10 +1,35 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class CarouselTests : BlazorComponentTestBase
+public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
 {
+    protected override ComponentContract<IgbCarousel> InteropContract { get; } = new ComponentContract<IgbCarousel>()
+        .Method(c => c.PlayAsync(), c => c.Play(), "play")
+        .Method(c => c.PauseAsync(), c => c.Pause(), "pause")
+        .Method(c => c.NextAsync(), c => c.Next(), "next", returns: true)
+        .Method(c => c.PrevAsync(), c => c.Prev(), "prev", returns: false)
+        .Method(c => c.SelectAsync(2, CarouselAnimationDirection.Next), c => c.Select(2, CarouselAnimationDirection.Next),
+            "select", returns: true,
+            args: [2.0, "next"], types: ["Number", "Json"])
+        .Getter(c => c.GetTotalAsync(), c => c.GetTotal(), "Total", returns: 5.0)
+        .Getter(c => c.GetCurrentAsync(), c => c.GetCurrent(), "Current", returns: 2.0)
+        .Getter(c => c.GetIsPlayingAsync(), c => c.GetIsPlaying(), "IsPlaying", returns: true)
+        .Getter(c => c.GetIsPausedAsync(), c => c.GetIsPaused(), "IsPaused", returns: false)
+        .Event(c => c.SlideChanged,
+            argsJson: """{"detail": 3}""",
+            assert: args => Assert.Equal(3, args.Detail))
+        .Event(c => c.Playing)
+        .Event(c => c.Paused);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Carousel_RendersCorrectElement()
     {

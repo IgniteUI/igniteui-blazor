@@ -1,10 +1,20 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class ToggleButtonTests : BlazorComponentTestBase
+public class ToggleButtonTests : ComponentWithContractTestBase<IgbToggleButton>
 {
+    protected override ComponentContract<IgbToggleButton> InteropContract { get; } = new ComponentContract<IgbToggleButton>()
+        .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }),
+            "focus", args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
+        .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
+        .Method(c => c.ClickAsync(), c => c.Click(), "click");
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
     [Fact]
     public void ToggleButton_RendersCorrectElement()
     {
