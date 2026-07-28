@@ -11,8 +11,8 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: 42.0)
         .Method(c => c.StepUpAsync(2), c => c.StepUp(2), "stepUp", args: [2.0], types: ["Number"])
         .Method(c => c.StepDownAsync(2), c => c.StepDown(2), "stepDown", args: [2.0], types: ["Number"])
-        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("custom message"), c => c.SetCustomValidity("custom message"),
             "setCustomValidity", args: ["custom message"], types: ["String"])
         .Event(c => c.Input,

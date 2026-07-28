@@ -40,8 +40,8 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             args: [new RawJson("""["item-1"]""")], types: [""])
         .Method(c => c.DeselectAsync(["item-1"]), c => c.Deselect(["item-1"]), "deselect",
             args: [new RawJson("""["item-1"]""")], types: [""])
-        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("invalid entry"), c => c.SetCustomValidity("invalid entry"), "setCustomValidity",
             args: ["invalid entry"], types: ["String"])
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",

@@ -34,8 +34,8 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
         //         //Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), result.Start.ToUniversalTime());
         //         //Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), result.End.ToUniversalTime());
         //     })
-        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("Please choose a valid range"), c => c.SetCustomValidity("Please choose a valid range"), "setCustomValidity",
             args: ["Please choose a valid range"], types: ["String"])
         .Event(c => c.Opening)

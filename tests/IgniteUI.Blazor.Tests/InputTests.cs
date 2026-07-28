@@ -14,8 +14,8 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
         .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }),
             "focus", args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
         .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
-        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("custom message"), c => c.SetCustomValidity("custom message"),
             "setCustomValidity", args: ["custom message"], types: ["String"])
         .Event(c => c.Change,

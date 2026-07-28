@@ -12,8 +12,8 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
         .Method(c => c.ClickAsync(), c => c.Click(), "click")
         .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
-        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("Please check this box"), c => c.SetCustomValidity("Please check this box"), "setCustomValidity",
             args: ["Please check this box"], types: ["String"])
         .Event(c => c.Change,

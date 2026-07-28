@@ -12,8 +12,8 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
             "focus", args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
         .Method(c => c.ClickAsync(), c => c.Click(), "click")
         .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
-        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("Please enable this setting"), c => c.SetCustomValidity("Please enable this setting"),
             "setCustomValidity", args: ["Please enable this setting"], types: ["String"])
         .Event(c => c.Change,
