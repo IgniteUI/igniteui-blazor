@@ -59,7 +59,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
         .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
         .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: true)
         .Method(c => c.ClearSelectionAsync(), c => c.ClearSelection(), "clearSelection")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("Please choose an option"), c => c.SetCustomValidity("Please choose an option"), "setCustomValidity",
             args: ["Please choose an option"], types: ["String"])
         .Event(c => c.Focus)

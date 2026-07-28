@@ -21,8 +21,8 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
             args: [1.0, 3.0, "forward"], types: ["Number", "Number", "String"])
         .Method(c => c.SetRangeTextAsync("abc", 1, 3, "end"), c => c.SetRangeText("abc", 1, 3, "end"), "setRangeText",
             args: ["abc", 1.0, 3.0, "end"], types: ["String", "Number", "Number", "String"])
-        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("custom message"), c => c.SetCustomValidity("custom message"), "setCustomValidity",
             args: ["custom message"], types: ["String"])
         .Event(c => c.Change,

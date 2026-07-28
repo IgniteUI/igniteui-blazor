@@ -15,8 +15,8 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         .Method(c => c.StepDownAsync(DatePart.Year, 3), c => c.StepDown(DatePart.Year, 3), "stepDown",
             args: ["year", 3.0], types: ["Json", "Number"])
         .Method(c => c.SelectAsync(), c => c.Select(), "select")
-        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity")
-        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("Please choose a valid date"), c => c.SetCustomValidity("Please choose a valid date"),
             "setCustomValidity", args: ["Please choose a valid date"], types: ["String"])
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",

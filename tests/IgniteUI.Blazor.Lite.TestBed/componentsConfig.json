@@ -9,11 +9,7 @@
   },
   "IgbDatePicker": {
     "ExcludedProps": ["ResourceStrings"],
-    "DependantMethods": [
-      // BUG 35182
-      "ReportValidityAsync",
-      "CheckValidityAsync"
-    ]
+    "DependantMethods": []
   },
   "IgbDateRangePicker": {
     "ExcludedProps": [
@@ -24,12 +20,7 @@
       // complex object
       "ResourceStrings"
     ],
-    "DependantMethods": [
-      // BUG 35182
-      "ReportValidityAsync",
-      "CheckValidityAsync",
-      "GetCurrentValueAsync"
-    ]
+    "DependantMethods": ["GetCurrentValueAsync"]
   },
   "IgbSelect": {
     "ExcludedProps": [
@@ -41,47 +32,29 @@
       "Change"
     ],
     "DependantMethods": [
-      // BUG 35182
-      "ReportValidityAsync",
-      "CheckValidityAsync",
       // BUG 35183
       "FocusComponentAsync"
     ]
   },
   "IgbRadio": {
     "DependantMethods": [
-      // BUG 35182
-      "ReportValidityAsync",
-      "CheckValidityAsync",
       // BUG 35183
       "FocusComponentAsync"
     ]
   },
   "IgbRating": {
-    "DependantMethods": [
-      // BUG 35182
-      "ReportValidityAsync",
-      "CheckValidityAsync"
-    ],
+    "DependantMethods": [],
     "ExcludedEvents": []
   },
   "IgbSlider": {
-    "DependantMethods": [
-      // BUG 35182
-      "ReportValidityAsync",
-      "CheckValidityAsync"
-    ],
+    "DependantMethods": [],
     "ExcludedProps": [
       // BUG 35189
       "ValueFormatOptions"
     ]
   },
   "IgbTextarea": {
-    "DependantMethods": [
-      // BUG 35182
-      "ReportValidityAsync",
-      "CheckValidityAsync"
-    ],
+    "DependantMethods": [],
     "ExcludedProps": [
       // BUG 35186
       "Spellcheck"
@@ -105,6 +78,32 @@
       "Parent",
       // this should not be settable, seems to be related to an the internal component state.
       "Level"
+    ]
+  },
+  "IgbCheckbox": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbIconButton": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync",
+      "BlurComponentAsync"
+    ]
+  },
+  "IgbSwitch": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbButton": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync",
+      "BlurComponentAsync"
     ]
   },
   "IgbButtonGroup": {
@@ -152,12 +151,20 @@
     "ExcludedProps": [
       // BUG 35187
       "SpinDelta"
+    ],
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
     ]
   },
   "IgbMaskInput": {
     "ExcludedEvents": [
       // no such client event.
       "ValueChanging"
+    ],
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
     ]
   },
   "IgbInput": {
@@ -169,7 +176,9 @@
     "DependantMethods": [
       // Depends on the input beign numeric.
       "StepUpAsync",
-      "StepDownAsync"
+      "StepDownAsync",
+      // BUG 35183
+      "FocusComponentAsync"
     ],
     "ExcludedEvents": [
       // no such client event.
