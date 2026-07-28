@@ -1,10 +1,45 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class SplitterTests : BlazorComponentTestBase
+public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
 {
+    protected override ComponentContract<IgbSplitter> InteropContract { get; } = new ComponentContract<IgbSplitter>()
+        .Method(c => c.ToggleAsync(PanePosition.Start), c => c.Toggle(PanePosition.Start),
+            "toggle", args: ["start"], types: ["Json"])
+        .Event(c => c.ResizeStart,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"startPanelSize": 120, "endPanelSize": 80, "delta": 0}}}""",
+            assert: args =>
+            {
+                Assert.Equal(120, args.Detail.StartPanelSize);
+                Assert.Equal(80, args.Detail.EndPanelSize);
+                Assert.Equal(0, args.Detail.Delta);
+            })
+        .Event(c => c.Resizing,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"startPanelSize": 130, "endPanelSize": 70, "delta": 10}}}""",
+            assert: args =>
+            {
+                Assert.Equal(130, args.Detail.StartPanelSize);
+                Assert.Equal(70, args.Detail.EndPanelSize);
+                Assert.Equal(10, args.Detail.Delta);
+            })
+        .Event(c => c.ResizeEnd,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"startPanelSize": 150, "endPanelSize": 50, "delta": 30}}}""",
+            assert: args =>
+            {
+                Assert.Equal(150, args.Detail.StartPanelSize);
+                Assert.Equal(50, args.Detail.EndPanelSize);
+                Assert.Equal(30, args.Detail.Delta);
+            });
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Splitter_RendersCorrectElement()
     {

@@ -1,10 +1,24 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class DialogTests : BlazorComponentTestBase
+public class DialogTests : ComponentWithContractTestBase<IgbDialog>
 {
+    protected override ComponentContract<IgbDialog> InteropContract { get; } = new ComponentContract<IgbDialog>()
+        .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
+        .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
+        .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
+        .Event(c => c.Closing)
+        .Event(c => c.Closed);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Dialog_RendersCorrectElement()
     {
