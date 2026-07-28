@@ -90,6 +90,32 @@
       "Level"
     ]
   },
+  "IgbCheckbox": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbIconButton": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync",
+      "BlurComponentAsync"
+    ]
+  },
+  "IgbSwitch": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
+  "IgbButton": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync",
+      "BlurComponentAsync"
+    ]
+  },
   "IgbButtonGroup": {
     "DependantProps": [
       // selected items can only be set if there're matching buttons in the group
@@ -135,12 +161,20 @@
     "ExcludedProps": [
       // BUG 35187
       "SpinDelta"
+    ],
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
     ]
   },
   "IgbMaskInput": {
     "ExcludedEvents": [
       // no such client event.
       "ValueChanging"
+    ],
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
     ]
   },
   "IgbInput": {
@@ -152,7 +186,9 @@
     "DependantMethods": [
       // Depends on the input beign numeric.
       "StepUpAsync",
-      "StepDownAsync"
+      "StepDownAsync",
+      // BUG 35183
+      "FocusComponentAsync"
     ],
     "ExcludedEvents": [
       // no such client event.

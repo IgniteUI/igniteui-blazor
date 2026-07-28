@@ -30,10 +30,18 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static List<MethodInfo> GetValidMethods(Type componentType)
         {
-            MethodInfo[] methodInfos = componentType.GetMethods(BindingFlags.Public | BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly).Where(m => !m.IsSpecialName).ToArray();
+            var baseRendererMethodNames = typeof(BaseRendererControl)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => !m.IsSpecialName)
+                .Select(m => m.Name)
+                .ToHashSet();
+
+            MethodInfo[] methodInfos = componentType.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => !m.IsSpecialName).ToArray();
             var validMethods = methodInfos
             // only async in this env.
             .Where(x => x.Name.EndsWith("Async"))
+            // exclude methods coming from BaseRendererControl.
+            .Where(x => !baseRendererMethodNames.Contains(x.Name))
             // this is not user settable but exist in all classes.
             .Where(x => x.Name != "SetNativeElementAsync" && x.Name != "SetParametersAsync")
             // exclude methods that are just wrappers to get existing props values. They don't actually match with existing client methods. They follow the naming Get{PropName}Async.
