@@ -83,7 +83,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     [Fact]
     public void Dropdown_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbDropdown>();
+        var cut = Render<IgbDropdown>();
         Assert.NotNull(cut.Find("igc-dropdown"));
     }
 
@@ -97,7 +97,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     [Fact]
     public void Dropdown_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdown>(parameters =>
+        var cut = Render<IgbDropdown>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-dropdown");
@@ -107,7 +107,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     [Fact]
     public void Dropdown_KeepOpenOnSelect_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdown>(parameters =>
+        var cut = Render<IgbDropdown>(parameters =>
             parameters.Add(p => p.KeepOpenOnSelect, true));
 
         var element = cut.Find("igc-dropdown");
@@ -126,7 +126,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbDropdownItem>();
+        var cut = Render<IgbDropdownItem>();
         Assert.NotNull(cut.Find("igc-dropdown-item"));
     }
 
@@ -140,7 +140,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdownItem>(parameters =>
+        var cut = Render<IgbDropdownItem>(parameters =>
             parameters.Add(p => p.Value, "item-1"));
 
         var element = cut.Find("igc-dropdown-item");
@@ -150,7 +150,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdownItem>(parameters =>
+        var cut = Render<IgbDropdownItem>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-dropdown-item");
@@ -160,7 +160,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_Selected_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdownItem>(parameters =>
+        var cut = Render<IgbDropdownItem>(parameters =>
             parameters.Add(p => p.Selected, true));
 
         var element = cut.Find("igc-dropdown-item");
@@ -170,7 +170,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbDropdownItem>(parameters =>
+        var cut = Render<IgbDropdownItem>(parameters =>
             parameters.AddChildContent("Option 1"));
 
         Assert.Contains("Option 1", cut.Markup);

@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Tests;
 /// invocation is recorded). Interop traffic is observed and driven through the
 /// <see cref="InteropHarness"/> seam rather than against the wire format directly.
 /// </summary>
-public abstract class BlazorComponentTestBase : TestContext
+public abstract class BlazorComponentTestBase : BunitContext
 {
     protected IIgniteUIBlazor IgniteUIBlazor { get; }
 

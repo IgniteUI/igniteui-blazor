@@ -9,7 +9,7 @@ public class NavbarTests : BlazorComponentTestBase
     [Fact]
     public void Navbar_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbNavbar>();
+        var cut = Render<IgbNavbar>();
         Assert.NotNull(cut.Find("igc-navbar"));
     }
 
@@ -23,7 +23,7 @@ public class NavbarTests : BlazorComponentTestBase
     [Fact]
     public void Navbar_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbNavbar>(parameters =>
+        var cut = Render<IgbNavbar>(parameters =>
             parameters.AddChildContent("Navigation Title"));
 
         Assert.Contains("Navigation Title", cut.Markup);
@@ -54,7 +54,7 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
     [Fact]
     public void NavDrawer_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbNavDrawer>();
+        var cut = Render<IgbNavDrawer>();
         Assert.NotNull(cut.Find("igc-nav-drawer"));
     }
 
@@ -68,7 +68,7 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
     [Fact]
     public void NavDrawer_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbNavDrawer>(parameters =>
+        var cut = Render<IgbNavDrawer>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-nav-drawer");

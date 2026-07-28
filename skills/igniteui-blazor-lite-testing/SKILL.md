@@ -32,7 +32,7 @@ The two suites overlap on purpose but answer different questions: integration pr
 
 ### Base classes
 
-- **`BlazorComponentTestBase`** — bUnit `TestContext` with setup `IIgniteUIBlazor` service, a recording JS runtime (`JSRuntimeMode.Loose`; every invocation recorded) and an `Interop` harness property (an `InteropHarness`, resolved per component type via `InteropFor<TComponent>()`). Default base for suites without an interop contract.
+- **`BlazorComponentTestBase`** — bUnit `BunitContext` with setup `IIgniteUIBlazor` service, a recording JS runtime (`JSRuntimeMode.Loose`; every invocation recorded) and an `Interop` harness property (an `InteropHarness`, resolved per component type via `InteropFor<TComponent>()`). Default base for suites without an interop contract.
 - **`ComponentWithContractTestBase<TComponent>`** — adds a declarative `ComponentContract<TComponent>`, `protected` runners (`VerifyMethodContract`/`VerifyPropContract`/`VerifyEventContract`) that the suite exposes as one-liner `[Fact]`s, and an inherited `Contract_SectionsHaveFacts` guard that fails if a non-empty contract section has no runner fact. Exactly one suite per component carries the contract; sync/async method pairs are declared together via the twin overloads.
 
 ### Running

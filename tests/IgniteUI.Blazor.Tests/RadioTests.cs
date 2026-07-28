@@ -35,7 +35,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     [Fact]
     public void Radio_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbRadio>();
+        var cut = Render<IgbRadio>();
         Assert.NotNull(cut.Find("igc-radio"));
     }
 
@@ -49,7 +49,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     [Fact]
     public void Radio_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.Value, "option1"));
 
         var element = cut.Find("igc-radio");
@@ -59,7 +59,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     [Fact]
     public void Radio_Checked_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.Checked, true));
 
         var element = cut.Find("igc-radio");
@@ -69,7 +69,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     [Fact]
     public void Radio_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-radio");
@@ -79,7 +79,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     [Fact]
     public void Radio_Required_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-radio");
@@ -89,7 +89,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     [Fact]
     public void Radio_LabelPosition_Before()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.LabelPosition, ToggleLabelPosition.Before));
 
         var element = cut.Find("igc-radio");
@@ -99,7 +99,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     [Fact]
     public void Radio_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.AddChildContent("Option A"));
 
         Assert.Contains("Option A", cut.Markup);
@@ -133,7 +133,7 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
     [Fact]
     public void RadioGroup_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbRadioGroup>();
+        var cut = Render<IgbRadioGroup>();
         Assert.NotNull(cut.Find("igc-radio-group"));
     }
 
@@ -147,7 +147,7 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
     [Fact]
     public void RadioGroup_Alignment_Vertical()
     {
-        var cut = RenderComponent<IgbRadioGroup>(parameters =>
+        var cut = Render<IgbRadioGroup>(parameters =>
             parameters.Add(p => p.Alignment, ContentOrientation.Vertical));
 
         var element = cut.Find("igc-radio-group");
@@ -157,7 +157,7 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
     [Fact]
     public void RadioGroup_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadioGroup>(parameters =>
+        var cut = Render<IgbRadioGroup>(parameters =>
             parameters.Add(p => p.Value, "selected-option"));
 
         var element = cut.Find("igc-radio-group");

@@ -43,7 +43,7 @@ public sealed class ContractViolationException : XunitException
 /// interop (e.g. Badge) stay on <see cref="BlazorComponentTestBase"/>.
 /// </summary>
 public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponentTestBase
-    where TComponent : IComponent
+    where TComponent : class, IComponent
 {
     /// <summary>
     /// The component's interop contract to exercise against a harness.
@@ -114,17 +114,17 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 // Hosted specs render the parent structure and pick the cut out of it;
                 // specs with an arrangement render their own instance.
                 IRenderedComponent<TComponent> cut;
-                IRenderedFragment scope;
+                IRenderedComponent<IComponent> scope;
                 if (method.Host is not null)
                 {
-                    scope = Render(method.Host);
+                    scope = method.Host(this);
                     cut = method.Target!(scope);
                 }
                 else
                 {
                     cut = method.Arrange is null
-                        ? sharedCut ??= RenderComponent<TComponent>()
-                        : RenderComponent<TComponent>(ps => method.Arrange(ps));
+                        ? sharedCut ??= Render<TComponent>()
+                        : Render<TComponent>(ps => method.Arrange(ps));
                     scope = cut;
                 }
 
@@ -149,7 +149,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
 
     /// <summary>Stub → invoke → assert the recorded call's identifier, args, and type tags, then the decoded return.</summary>
     private static async Task RunMethodSpec(
-        InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedFragment scope, MethodContractSpec<TComponent> method)
+        InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedComponent<IComponent> scope, MethodContractSpec<TComponent> method)
     {
         // Stub immediately before invoking so specs may reuse a method name
         // with different stubbed results.
@@ -218,7 +218,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
 
     /// <summary>Stub the property's JS-side value → invoke → assert a current-state read was issued and the return decoded.</summary>
     private static async Task RunGetterSpec(
-        InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedFragment scope, MethodContractSpec<TComponent> method)
+        InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedComponent<IComponent> scope, MethodContractSpec<TComponent> method)
     {
         var stub = method.StubFactory?.Invoke(harness, scope) ?? method.Stub;
         harness.SetupPropertyRead(method.ReadsProperty!, stub!);
@@ -270,7 +270,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
         {
             try
             {
-                var cut = RenderComponent<TComponent>(ps =>
+                var cut = Render<TComponent>(ps =>
                 {
                     prop.Arrange?.Invoke(ps);
                     prop.Set(ps);
@@ -324,7 +324,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             {
                 object? received = null;
                 object bound = null!;
-                var cut = RenderComponent<TComponent>(ps =>
+                var cut = Render<TComponent>(ps =>
                 {
                     evt.Arrange?.Invoke(ps);
                     bound = evt.Bind(ps, args => received = args);

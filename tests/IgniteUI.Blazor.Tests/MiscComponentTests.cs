@@ -47,7 +47,7 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
     [Fact]
     public void Accordion_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbAccordion>();
+        var cut = Render<IgbAccordion>();
         Assert.NotNull(cut.Find("igc-accordion"));
     }
 
@@ -61,7 +61,7 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
     [Fact]
     public void Accordion_SingleExpand_RendersAttribute()
     {
-        var cut = RenderComponent<IgbAccordion>(parameters =>
+        var cut = Render<IgbAccordion>(parameters =>
             parameters.Add(p => p.SingleExpand, true));
 
         var element = cut.Find("igc-accordion");
@@ -71,7 +71,7 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
     [Fact]
     public void Accordion_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbAccordion>(parameters =>
+        var cut = Render<IgbAccordion>(parameters =>
             parameters.AddChildContent("Accordion content"));
 
         Assert.Contains("Accordion content", cut.Markup);
@@ -102,7 +102,7 @@ public class BannerTests : ComponentWithContractTestBase<IgbBanner>
     [Fact]
     public void Banner_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbBanner>();
+        var cut = Render<IgbBanner>();
         Assert.NotNull(cut.Find("igc-banner"));
     }
 
@@ -116,7 +116,7 @@ public class BannerTests : ComponentWithContractTestBase<IgbBanner>
     [Fact]
     public void Banner_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbBanner>(parameters =>
+        var cut = Render<IgbBanner>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-banner");
@@ -135,7 +135,7 @@ public class DividerTests : BlazorComponentTestBase
     [Fact]
     public void Divider_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbDivider>();
+        var cut = Render<IgbDivider>();
         Assert.NotNull(cut.Find("igc-divider"));
     }
 
@@ -149,7 +149,7 @@ public class DividerTests : BlazorComponentTestBase
     [Fact]
     public void Divider_Type_Dashed()
     {
-        var cut = RenderComponent<IgbDivider>(parameters =>
+        var cut = Render<IgbDivider>(parameters =>
             parameters.Add(p => p.LineType, DividerType.Dashed));
 
         var element = cut.Find("igc-divider");
@@ -159,7 +159,7 @@ public class DividerTests : BlazorComponentTestBase
     [Fact]
     public void Divider_Middle_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDivider>(parameters =>
+        var cut = Render<IgbDivider>(parameters =>
             parameters.Add(p => p.Middle, true));
 
         var element = cut.Find("igc-divider");
@@ -169,7 +169,7 @@ public class DividerTests : BlazorComponentTestBase
     [Fact]
     public void Divider_Vertical_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDivider>(parameters =>
+        var cut = Render<IgbDivider>(parameters =>
             parameters.Add(p => p.Vertical, true));
 
         var element = cut.Find("igc-divider");
@@ -182,7 +182,7 @@ public class RippleTests : BlazorComponentTestBase
     [Fact]
     public void Ripple_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbRipple>();
+        var cut = Render<IgbRipple>();
         Assert.NotNull(cut.Find("igc-ripple"));
     }
 

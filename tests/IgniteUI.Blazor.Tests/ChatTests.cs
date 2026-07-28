@@ -82,7 +82,7 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void Chat_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbChat>();
+        var cut = Render<IgbChat>();
         Assert.NotNull(cut.Find("igc-chat"));
     }
 

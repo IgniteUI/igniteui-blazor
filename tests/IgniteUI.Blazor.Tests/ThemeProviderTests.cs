@@ -8,7 +8,7 @@ public class ThemeProviderTests : BlazorComponentTestBase
     [Fact]
     public void ThemeProvider_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbThemeProvider>();
+        var cut = Render<IgbThemeProvider>();
         cut.Find("igc-theme-provider").Should_Exist();
     }
 
@@ -24,7 +24,7 @@ public class ThemeProviderTests : BlazorComponentTestBase
     [Fact]
     public void ThemeProvider_DefaultValues_DoNotRenderAttributes()
     {
-        var cut = RenderComponent<IgbThemeProvider>();
+        var cut = Render<IgbThemeProvider>();
         var element = cut.Find("igc-theme-provider");
 
         Assert.Null(element.GetAttribute("theme"));
@@ -38,7 +38,7 @@ public class ThemeProviderTests : BlazorComponentTestBase
     [InlineData(Theme.Fluent, "fluent")]
     public void ThemeProvider_Theme_SerializesAsAttribute(Theme theme, string expected)
     {
-        var cut = RenderComponent<IgbThemeProvider>(parameters =>
+        var cut = Render<IgbThemeProvider>(parameters =>
             parameters.Add(p => p.Theme, theme));
 
         var element = cut.Find("igc-theme-provider");
@@ -50,7 +50,7 @@ public class ThemeProviderTests : BlazorComponentTestBase
     [InlineData(ThemeVariant.Dark, "dark")]
     public void ThemeProvider_Variant_SerializesAsAttribute(ThemeVariant variant, string expected)
     {
-        var cut = RenderComponent<IgbThemeProvider>(parameters =>
+        var cut = Render<IgbThemeProvider>(parameters =>
             parameters.Add(p => p.Variant, variant));
 
         var element = cut.Find("igc-theme-provider");
@@ -60,7 +60,7 @@ public class ThemeProviderTests : BlazorComponentTestBase
     [Fact]
     public void ThemeProvider_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbThemeProvider>(parameters =>
+        var cut = Render<IgbThemeProvider>(parameters =>
             parameters.AddChildContent("Scoped Content"));
 
         var element = cut.Find("igc-theme-provider");

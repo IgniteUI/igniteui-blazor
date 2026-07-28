@@ -11,7 +11,7 @@ public class SelectExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Select_Label_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(p =>
+        var cut = Render<IgbSelect>(p =>
             p.Add(x => x.Label, "Choose option"));
 
         Assert.Equal("Choose option", cut.Find("igc-select").GetAttribute("label"));
@@ -20,7 +20,7 @@ public class SelectExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Select_Outlined_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(p =>
+        var cut = Render<IgbSelect>(p =>
             p.Add(x => x.Outlined, true));
 
         Assert.NotNull(cut.Find("igc-select").GetAttribute("outlined"));
@@ -29,7 +29,7 @@ public class SelectExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Select_Autofocus_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(p =>
+        var cut = Render<IgbSelect>(p =>
             p.Add(x => x.Autofocus, true));
 
         Assert.NotNull(cut.Find("igc-select").GetAttribute("autofocus"));
@@ -38,7 +38,7 @@ public class SelectExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Select_Invalid_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(p =>
+        var cut = Render<IgbSelect>(p =>
             p.Add(x => x.Invalid, true));
 
         Assert.NotNull(cut.Find("igc-select").GetAttribute("invalid"));
@@ -47,7 +47,7 @@ public class SelectExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Select_Distance_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(p =>
+        var cut = Render<IgbSelect>(p =>
             p.Add(x => x.Distance, 8));
 
         Assert.Equal("8", cut.Find("igc-select").GetAttribute("distance"));
@@ -56,14 +56,14 @@ public class SelectExtendedTests : BlazorComponentTestBase
     [Fact]
     public void SelectGroup_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbSelectGroup>();
+        var cut = Render<IgbSelectGroup>();
         cut.Find("igc-select-group").Should_Exist();
     }
 
     [Fact]
     public void SelectGroup_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelectGroup>(p =>
+        var cut = Render<IgbSelectGroup>(p =>
             p.Add(x => x.Disabled, true));
 
         Assert.NotNull(cut.Find("igc-select-group").GetAttribute("disabled"));
@@ -72,14 +72,14 @@ public class SelectExtendedTests : BlazorComponentTestBase
     [Fact]
     public void SelectHeader_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbSelectHeader>();
+        var cut = Render<IgbSelectHeader>();
         cut.Find("igc-select-header").Should_Exist();
     }
 
     [Fact]
     public void SelectHeader_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbSelectHeader>(p =>
+        var cut = Render<IgbSelectHeader>(p =>
             p.AddChildContent("Group A"));
 
         Assert.Contains("Group A", cut.Find("igc-select-header").InnerHtml);
@@ -88,7 +88,7 @@ public class SelectExtendedTests : BlazorComponentTestBase
     [Fact]
     public void SelectItem_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbSelectItem>(p =>
+        var cut = Render<IgbSelectItem>(p =>
             p.Add(x => x.Value, "opt1")
              .AddChildContent("Option 1"));
 

@@ -8,7 +8,7 @@ public class ListTests : BlazorComponentTestBase
     [Fact]
     public void List_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbList>();
+        var cut = Render<IgbList>();
         Assert.NotNull(cut.Find("igc-list"));
     }
 
@@ -22,7 +22,7 @@ public class ListTests : BlazorComponentTestBase
     [Fact]
     public void List_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbList>(parameters =>
+        var cut = Render<IgbList>(parameters =>
             parameters.AddChildContent("List items"));
 
         Assert.Contains("List items", cut.Markup);
@@ -40,7 +40,7 @@ public class ListItemTests : BlazorComponentTestBase
     [Fact]
     public void ListItem_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbListItem>();
+        var cut = Render<IgbListItem>();
         Assert.NotNull(cut.Find("igc-list-item"));
     }
 
@@ -54,7 +54,7 @@ public class ListItemTests : BlazorComponentTestBase
     [Fact]
     public void ListItem_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbListItem>(parameters =>
+        var cut = Render<IgbListItem>(parameters =>
             parameters.AddChildContent("Item text"));
 
         Assert.Contains("Item text", cut.Markup);
@@ -66,7 +66,7 @@ public class ListHeaderTests : BlazorComponentTestBase
     [Fact]
     public void ListHeader_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbListHeader>();
+        var cut = Render<IgbListHeader>();
         Assert.NotNull(cut.Find("igc-list-header"));
     }
 

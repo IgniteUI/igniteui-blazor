@@ -31,7 +31,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbTextarea>();
+        var cut = Render<IgbTextarea>();
         Assert.NotNull(cut.Find("igc-textarea"));
     }
 
@@ -45,7 +45,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(parameters =>
+        var cut = Render<IgbTextarea>(parameters =>
             parameters.Add(p => p.Value, "Hello world"));
 
         var element = cut.Find("igc-textarea");
@@ -55,7 +55,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_Placeholder_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(parameters =>
+        var cut = Render<IgbTextarea>(parameters =>
             parameters.Add(p => p.Placeholder, "Type here..."));
 
         var element = cut.Find("igc-textarea");
@@ -65,7 +65,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(parameters =>
+        var cut = Render<IgbTextarea>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-textarea");
@@ -75,7 +75,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_Required_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(parameters =>
+        var cut = Render<IgbTextarea>(parameters =>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-textarea");
@@ -85,7 +85,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_ReadOnly_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(parameters =>
+        var cut = Render<IgbTextarea>(parameters =>
             parameters.Add(p => p.ReadOnly, true));
 
         var element = cut.Find("igc-textarea");
@@ -95,7 +95,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_Rows_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(parameters =>
+        var cut = Render<IgbTextarea>(parameters =>
             parameters.Add(p => p.Rows, 5.0));
 
         var element = cut.Find("igc-textarea");
@@ -105,7 +105,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_Label_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(parameters =>
+        var cut = Render<IgbTextarea>(parameters =>
             parameters.Add(p => p.Label, "Comments"));
 
         var element = cut.Find("igc-textarea");
@@ -115,7 +115,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_Resize_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(parameters =>
+        var cut = Render<IgbTextarea>(parameters =>
             parameters.Add(p => p.Resize, TextareaResize.Vertical));
 
         var element = cut.Find("igc-textarea");
@@ -179,7 +179,7 @@ public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbMaskInput>();
+        var cut = Render<IgbMaskInput>();
         Assert.NotNull(cut.Find("igc-mask-input"));
     }
 
@@ -193,7 +193,7 @@ public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_Mask_RendersAttribute()
     {
-        var cut = RenderComponent<IgbMaskInput>(parameters =>
+        var cut = Render<IgbMaskInput>(parameters =>
             parameters.Add(p => p.Mask, "000-000-0000"));
 
         var element = cut.Find("igc-mask-input");
@@ -203,7 +203,7 @@ public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbMaskInput>(parameters =>
+        var cut = Render<IgbMaskInput>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-mask-input");

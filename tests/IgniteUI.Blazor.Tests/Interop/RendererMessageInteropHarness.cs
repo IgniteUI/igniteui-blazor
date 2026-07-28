@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IgniteUI.Blazor.Tests.Interop;
@@ -63,11 +64,11 @@ public sealed class RendererMessageInteropHarness : InteropHarness
 
     public override void MakeReady() => _service.WebCallback.OnReady();
 
-    public override string ContainerIdOf(IRenderedFragment cut) =>
+    public override string ContainerIdOf(IRenderedComponent<IComponent> cut) =>
         cut.Find("[data-ig-id]").GetAttribute("data-ig-id")
         ?? throw new InvalidOperationException("Rendered component has no data-ig-id container marker.");
 
-    public override string ContainerIdOf(IRenderedFragment cut, string childSelector) =>
+    public override string ContainerIdOf(IRenderedComponent<IComponent> cut, string childSelector) =>
         cut.Find(childSelector).GetAttribute("data-ig-id")
         ?? throw new InvalidOperationException($"Element \"{childSelector}\" has no data-ig-id container marker.");
 
