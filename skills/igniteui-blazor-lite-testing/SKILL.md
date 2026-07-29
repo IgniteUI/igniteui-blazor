@@ -18,22 +18,21 @@ Three test projects under `tests/`, two suites:
 
 | Behavior | Where it's tested |
 |---|---|
-| Property → rendered attribute (direct-render components) | unit: plain bUnit facts (`cut.Find(...).GetAttribute(...)`) |
-| Markup/child content rendering | unit: plain bUnit facts |
+| Property → rendered attribute (direct-render components), markup/child content | unit: plain bUnit facts (`cut.Find(...).GetAttribute(...)`) |
 | Message-borne state serialization shapes | unit: `PropertySerializationTests` / `EnumSerializationTests` / `RenderingSerializationTests` |
-| **Interop wire behavior** — method identifiers, argument serialization + type tags, return decoding, event-handler registration/removal transmissions + JS→.NET event dispatch, interop-borne props/data | unit: the component's `ComponentContract` — full authoring guide: [`references/interop-contracts.md`](./references/interop-contracts.md) |
+| **Interop wire behavior** — method identifiers, argument serialization + type tags, return decoding, event-handler registration/removal transmissions + JS→.NET event dispatch, interop-borne props/data | unit: the component's `ComponentContract` — authoring guide: [`references/interop-contracts.md`](./references/interop-contracts.md) |
 | `<Member>Script` parameters (JS-side handlers/providers) | unit: automated sweep (`ScriptPropTests`, all components at once — no per-contract entries, no integration coverage exists) |
 | End-to-end prop/event/method behavior against the **real web component in a real browser** | integration: the TestBed sweep |
 | Visual output, client-side component logic | integration / e2e — never unit |
 
-The two suites overlap on purpose but answer different questions: integration proves the full pipeline works end-to-end (but can't attribute a failure to a side of the boundary, and skips everything excluded in `componentsConfig.json`); interop contracts pin the .NET side of the wire protocol at unit speed, per member — including the members integration excludes — and can accommodate different implementations via the `InteropHarness` seam (`InteropHarnessRegistry` swaps stacks per component).
+The suites overlap on purpose but answer different questions. Integration proves the full pipeline works end-to-end, but can't attribute a failure to a side of the boundary and skips everything excluded in `componentsConfig.json`. Interop contracts pin the .NET side of the wire protocol at unit speed, per member — including the members integration excludes — and tolerate different implementations through the `InteropHarness` seam (`InteropHarnessRegistry` swaps stacks per component).
 
 ## Unit suite (`tests/IgniteUI.Blazor.Tests`)
 
 ### Base classes
 
-- **`BlazorComponentTestBase`** — bUnit `TestContext` with setup `IIgniteUIBlazor` service, a recording JS runtime (`JSRuntimeMode.Loose`; every invocation recorded) and an `Interop` harness property (an `InteropHarness`, resolved per component type via `InteropFor<TComponent>()`). Default base for suites without an interop contract.
-- **`ComponentWithContractTestBase<TComponent>`** — adds a declarative `ComponentContract<TComponent>`, `protected` runners (`VerifyMethodContract`/`VerifyPropContract`/`VerifyEventContract`) that the suite exposes as one-liner `[Fact]`s, and an inherited `Contract_SectionsHaveFacts` guard that fails if a non-empty contract section has no runner fact. Exactly one suite per component carries the contract; sync/async method pairs are declared together via the twin overloads.
+- **`BlazorComponentTestBase`** — bUnit `TestContext` with the `IIgniteUIBlazor` service, a recording JS runtime (`JSRuntimeMode.Loose`; every invocation recorded), and an `Interop` harness property resolved per component type via `InteropFor<TComponent>()`. Default base for suites without an interop contract.
+- **`ComponentWithContractTestBase<TComponent>`** — adds a declarative `ComponentContract<TComponent>`, `protected` runners (`VerifyMethodContract` / `VerifyPropContract` / `VerifyEventContract`) that the suite exposes as one-liner `[Fact]`s, and an inherited `Contract_SectionsHaveFacts` guard that fails when a non-empty contract section has no runner fact. Exactly one suite per component carries the contract; sync/async method pairs are declared together via the twin overloads.
 
 ### Running
 
