@@ -8,7 +8,7 @@ public class BadgeTests : BlazorComponentTestBase
     [Fact]
     public void Badge_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbBadge>();
+        var cut = Render<IgbBadge>();
         Assert.NotNull(cut.Find("igc-badge"));
     }
 
@@ -22,7 +22,7 @@ public class BadgeTests : BlazorComponentTestBase
     [Fact]
     public void Badge_Outlined_RendersAttribute()
     {
-        var cut = RenderComponent<IgbBadge>(parameters =>
+        var cut = Render<IgbBadge>(parameters =>
             parameters.Add(p => p.Outlined, true));
 
         var element = cut.Find("igc-badge");
@@ -32,7 +32,7 @@ public class BadgeTests : BlazorComponentTestBase
     [Fact]
     public void Badge_Dot_RendersAttribute()
     {
-        var cut = RenderComponent<IgbBadge>(parameters =>
+        var cut = Render<IgbBadge>(parameters =>
             parameters.Add(p => p.Dot, true));
 
         var element = cut.Find("igc-badge");
@@ -42,7 +42,7 @@ public class BadgeTests : BlazorComponentTestBase
     [Fact]
     public void Badge_Shape_Rounded()
     {
-        var cut = RenderComponent<IgbBadge>(parameters =>
+        var cut = Render<IgbBadge>(parameters =>
             parameters.Add(p => p.Shape, BadgeShape.Rounded));
 
         var element = cut.Find("igc-badge");
@@ -52,7 +52,7 @@ public class BadgeTests : BlazorComponentTestBase
     [Fact]
     public void Badge_Shape_Square()
     {
-        var cut = RenderComponent<IgbBadge>(parameters =>
+        var cut = Render<IgbBadge>(parameters =>
             parameters.Add(p => p.Shape, BadgeShape.Square));
 
         var element = cut.Find("igc-badge");
@@ -62,7 +62,7 @@ public class BadgeTests : BlazorComponentTestBase
     [Fact]
     public void Badge_Variant_RendersAttribute()
     {
-        var cut = RenderComponent<IgbBadge>(parameters =>
+        var cut = Render<IgbBadge>(parameters =>
             parameters.Add(p => p.Variant, StyleVariant.Danger));
 
         var element = cut.Find("igc-badge");

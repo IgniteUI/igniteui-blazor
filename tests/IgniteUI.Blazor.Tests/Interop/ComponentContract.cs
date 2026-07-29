@@ -17,13 +17,17 @@ public sealed record SpecSource(string File, int Line);
 /// </summary>
 public static class ContractHost
 {
-    public static RenderFragment Of<THost>(Action<ComponentParameterCollectionBuilder<THost>> arrange)
-        where THost : IComponent
-    {
-        var ps = new ComponentParameterCollectionBuilder<THost>();
-        arrange(ps);
-        return ps.Build().ToRenderFragment<THost>();
-    }
+    /// <summary>
+    /// Produces a thunk that renders the host through the test context. bUnit v2 dropped the
+    /// public way to materialize an arranged builder into a detached <see cref="RenderFragment"/>
+    /// (<c>ComponentParameterCollection</c> is now internal), so the host defers to
+    /// <see cref="BunitContext.Render{TComponent}(Action{ComponentParameterCollectionBuilder{TComponent}})"/>
+    /// at run time instead. The rendered host is exposed as <see cref="IRenderedComponent{IComponent}"/>
+    /// via the interface's covariance.
+    /// </summary>
+    public static Func<BunitContext, IRenderedComponent<IComponent>> Of<THost>(Action<ComponentParameterCollectionBuilder<THost>> arrange)
+        where THost : class, IComponent
+        => ctx => ctx.Render<THost>(arrange);
 }
 
 /// <summary>Expected wire value that is itself JSON (object/array arguments); compared structurally and exactly.</summary>
@@ -58,10 +62,10 @@ public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
     /// Hosted specs: the full render, parent included (see <see cref="ContractHost.Of{THost}"/>);
     /// the component under test is picked out of it by <see cref="Target"/>.
     /// </summary>
-    public RenderFragment? Host { get; init; }
+    public Func<BunitContext, IRenderedComponent<IComponent>>? Host { get; init; }
 
     /// <summary>Selects which rendered <typeparamref name="TComponent"/> inside <see cref="Host"/> is the component under test.</summary>
-    public Func<IRenderedFragment, IRenderedComponent<TComponent>>? Target { get; init; }
+    public Func<IRenderedComponent<IComponent>, IRenderedComponent<TComponent>>? Target { get; init; }
 
     /// <summary>
     /// The member's sync twin (<c>Show()</c> for <c>ShowAsync()</c>), when declared: the
@@ -74,10 +78,10 @@ public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
     /// wins over <see cref="Stub"/>. The fragment is the render scope: the cut itself for
     /// arranged specs, the whole host for hosted ones (so ancestors are reachable).
     /// </summary>
-    public Func<InteropHarness, IRenderedFragment, InteropReturn>? StubFactory { get; init; }
+    public Func<InteropHarness, IRenderedComponent<IComponent>, InteropReturn>? StubFactory { get; init; }
 
     /// <summary>Dynamic return assert receiving the render scope (see <see cref="StubFactory"/>) to compare against arranged instances.</summary>
-    public Action<IRenderedFragment, object?>? AssertReturnWithCut { get; init; }
+    public Action<IRenderedComponent<IComponent>, object?>? AssertReturnWithCut { get; init; }
 
     public SpecSource? Source { get; init; }
 }
@@ -393,10 +397,10 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     public ComponentContract<TComponent> Getter<TResult>(
         Func<TComponent, Task<TResult>> invoke,
         string propertyName,
-        RenderFragment host,
-        Func<IRenderedFragment, IRenderedComponent<TComponent>> target,
-        Func<InteropHarness, IRenderedFragment, InteropReturn> returns,
-        Action<IRenderedFragment, TResult> assert,
+        Func<BunitContext, IRenderedComponent<IComponent>> host,
+        Func<IRenderedComponent<IComponent>, IRenderedComponent<TComponent>> target,
+        Func<InteropHarness, IRenderedComponent<IComponent>, InteropReturn> returns,
+        Action<IRenderedComponent<IComponent>, TResult> assert,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
     {
@@ -475,10 +479,10 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         Func<TComponent, Task<TResult>> invoke,
         Func<TComponent, TResult> sync,
         string propertyName,
-        RenderFragment host,
-        Func<IRenderedFragment, IRenderedComponent<TComponent>> target,
-        Func<InteropHarness, IRenderedFragment, InteropReturn> returns,
-        Action<IRenderedFragment, TResult> assert,
+        Func<BunitContext, IRenderedComponent<IComponent>> host,
+        Func<IRenderedComponent<IComponent>, IRenderedComponent<TComponent>> target,
+        Func<InteropHarness, IRenderedComponent<IComponent>, InteropReturn> returns,
+        Action<IRenderedComponent<IComponent>, TResult> assert,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
     {

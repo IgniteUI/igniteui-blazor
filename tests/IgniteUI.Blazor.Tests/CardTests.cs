@@ -8,7 +8,7 @@ public class CardTests : BlazorComponentTestBase
     [Fact]
     public void Card_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCard>();
+        var cut = Render<IgbCard>();
         Assert.NotNull(cut.Find("igc-card"));
     }
 
@@ -22,7 +22,7 @@ public class CardTests : BlazorComponentTestBase
     [Fact]
     public void Card_Elevated_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCard>(parameters =>
+        var cut = Render<IgbCard>(parameters =>
             parameters.Add(p => p.Elevated, true));
 
         var element = cut.Find("igc-card");
@@ -32,7 +32,7 @@ public class CardTests : BlazorComponentTestBase
     [Fact]
     public void Card_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbCard>(parameters =>
+        var cut = Render<IgbCard>(parameters =>
             parameters.AddChildContent("<p>Card content</p>"));
 
         Assert.Contains("Card content", cut.Markup);
@@ -50,7 +50,7 @@ public class CardHeaderTests : BlazorComponentTestBase
     [Fact]
     public void CardHeader_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCardHeader>();
+        var cut = Render<IgbCardHeader>();
         Assert.NotNull(cut.Find("igc-card-header"));
     }
 
@@ -67,7 +67,7 @@ public class CardContentTests : BlazorComponentTestBase
     [Fact]
     public void CardContent_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCardContent>();
+        var cut = Render<IgbCardContent>();
         Assert.NotNull(cut.Find("igc-card-content"));
     }
 
@@ -84,7 +84,7 @@ public class CardActionsTests : BlazorComponentTestBase
     [Fact]
     public void CardActions_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCardActions>();
+        var cut = Render<IgbCardActions>();
         Assert.NotNull(cut.Find("igc-card-actions"));
     }
 
@@ -101,7 +101,7 @@ public class CardMediaTests : BlazorComponentTestBase
     [Fact]
     public void CardMedia_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCardMedia>();
+        var cut = Render<IgbCardMedia>();
         Assert.NotNull(cut.Find("igc-card-media"));
     }
 

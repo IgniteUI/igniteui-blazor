@@ -22,7 +22,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbDialog>();
+        var cut = Render<IgbDialog>();
         Assert.NotNull(cut.Find("igc-dialog"));
     }
 
@@ -36,7 +36,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(parameters =>
+        var cut = Render<IgbDialog>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-dialog");
@@ -46,7 +46,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_Title_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(parameters =>
+        var cut = Render<IgbDialog>(parameters =>
             parameters.Add(p => p.Title, "Confirm Action"));
 
         var element = cut.Find("igc-dialog");
@@ -56,7 +56,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_KeepOpenOnEscape_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(parameters =>
+        var cut = Render<IgbDialog>(parameters =>
             parameters.Add(p => p.KeepOpenOnEscape, true));
 
         var element = cut.Find("igc-dialog");
@@ -66,7 +66,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_CloseOnOutsideClick_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(parameters =>
+        var cut = Render<IgbDialog>(parameters =>
             parameters.Add(p => p.CloseOnOutsideClick, true));
 
         var element = cut.Find("igc-dialog");
@@ -76,7 +76,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_HideDefaultAction_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(parameters =>
+        var cut = Render<IgbDialog>(parameters =>
             parameters.Add(p => p.HideDefaultAction, true));
 
         var element = cut.Find("igc-dialog");
@@ -86,7 +86,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_ReturnValue_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(parameters =>
+        var cut = Render<IgbDialog>(parameters =>
             parameters.Add(p => p.ReturnValue, "confirmed"));
 
         var element = cut.Find("igc-dialog");
@@ -96,7 +96,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbDialog>(parameters =>
+        var cut = Render<IgbDialog>(parameters =>
             parameters.AddChildContent("Dialog content here"));
 
         Assert.Contains("Dialog content here", cut.Markup);

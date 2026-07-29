@@ -35,7 +35,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     [Fact]
     public void Tabs_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbTabs>();
+        var cut = Render<IgbTabs>();
         Assert.NotNull(cut.Find("igc-tabs"));
     }
 
@@ -49,7 +49,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     [Fact]
     public void Tabs_Alignment_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTabs>(parameters =>
+        var cut = Render<IgbTabs>(parameters =>
             parameters.Add(p => p.Alignment, TabsAlignment.Center));
 
         var element = cut.Find("igc-tabs");
@@ -59,7 +59,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     [Fact]
     public void Tabs_Activation_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTabs>(parameters =>
+        var cut = Render<IgbTabs>(parameters =>
             parameters.Add(p => p.Activation, TabsActivation.Manual));
 
         var element = cut.Find("igc-tabs");
@@ -78,7 +78,7 @@ public class TabTests : BlazorComponentTestBase
     [Fact]
     public void Tab_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbTab>();
+        var cut = Render<IgbTab>();
         Assert.NotNull(cut.Find("igc-tab"));
     }
 
@@ -92,7 +92,7 @@ public class TabTests : BlazorComponentTestBase
     [Fact]
     public void Tab_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTab>(parameters =>
+        var cut = Render<IgbTab>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-tab");
@@ -102,7 +102,7 @@ public class TabTests : BlazorComponentTestBase
     [Fact]
     public void Tab_Selected_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTab>(parameters =>
+        var cut = Render<IgbTab>(parameters =>
             parameters.Add(p => p.Selected, true));
 
         var element = cut.Find("igc-tab");
@@ -112,7 +112,7 @@ public class TabTests : BlazorComponentTestBase
     [Fact]
     public void Tab_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbTab>(parameters =>
+        var cut = Render<IgbTab>(parameters =>
             parameters.AddChildContent("Tab Label"));
 
         Assert.Contains("Tab Label", cut.Markup);

@@ -12,7 +12,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Dialog_HideDefaultAction_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(p =>
+        var cut = Render<IgbDialog>(p =>
             p.Add(x => x.HideDefaultAction, true));
 
         Assert.NotNull(cut.Find("igc-dialog").GetAttribute("hide-default-action"));
@@ -21,7 +21,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Dialog_Title_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(p =>
+        var cut = Render<IgbDialog>(p =>
             p.Add(x => x.Title, "Confirm Action"));
 
         Assert.Equal("Confirm Action", cut.Find("igc-dialog").GetAttribute("title"));
@@ -30,7 +30,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Dialog_ReturnValue_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDialog>(p =>
+        var cut = Render<IgbDialog>(p =>
             p.Add(x => x.ReturnValue, "ok"));
 
         Assert.Equal("ok", cut.Find("igc-dialog").GetAttribute("return-value"));
@@ -39,7 +39,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Dialog_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbDialog>(p =>
+        var cut = Render<IgbDialog>(p =>
             p.AddChildContent("<p>Are you sure?</p>"));
 
         Assert.Contains("Are you sure?", cut.Find("igc-dialog").InnerHtml);
@@ -48,7 +48,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Accordion_SingleExpand_RendersAttribute()
     {
-        var cut = RenderComponent<IgbAccordion>(p =>
+        var cut = Render<IgbAccordion>(p =>
             p.Add(x => x.SingleExpand, true));
 
         Assert.NotNull(cut.Find("igc-accordion").GetAttribute("single-expand"));
@@ -57,7 +57,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Accordion_SingleExpand_False_NoAttribute()
     {
-        var cut = RenderComponent<IgbAccordion>(p =>
+        var cut = Render<IgbAccordion>(p =>
             p.Add(x => x.SingleExpand, false));
 
         Assert.Null(cut.Find("igc-accordion").GetAttribute("single-expand"));
@@ -66,7 +66,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Accordion_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbAccordion>(p =>
+        var cut = Render<IgbAccordion>(p =>
             p.AddChildContent("<div>Panel content</div>"));
 
         Assert.Contains("Panel content", cut.Find("igc-accordion").InnerHtml);
@@ -75,7 +75,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Banner_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbBanner>(p =>
+        var cut = Render<IgbBanner>(p =>
             p.Add(x => x.Open, true));
 
         Assert.NotNull(cut.Find("igc-banner").GetAttribute("open"));
@@ -84,7 +84,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Banner_Open_False_NoAttribute()
     {
-        var cut = RenderComponent<IgbBanner>(p =>
+        var cut = Render<IgbBanner>(p =>
             p.Add(x => x.Open, false));
 
         Assert.Null(cut.Find("igc-banner").GetAttribute("open"));
@@ -93,7 +93,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Banner_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbBanner>(p =>
+        var cut = Render<IgbBanner>(p =>
             p.AddChildContent("Important notice"));
 
         Assert.Contains("Important notice", cut.Find("igc-banner").InnerHtml);
@@ -102,7 +102,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void ExpansionPanel_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbExpansionPanel>(p =>
+        var cut = Render<IgbExpansionPanel>(p =>
             p.Add(x => x.Open, true)
              .AddChildContent("<p>Panel body</p>"));
 
@@ -112,7 +112,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Snackbar_ActionText_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSnackbar>(p =>
+        var cut = Render<IgbSnackbar>(p =>
             p.Add(x => x.ActionText, "Undo"));
 
         Assert.Equal("Undo", cut.Find("igc-snackbar").GetAttribute("action-text"));
@@ -121,7 +121,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Snackbar_DisplayTime_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSnackbar>(p =>
+        var cut = Render<IgbSnackbar>(p =>
             p.Add(x => x.DisplayTime, 5000));
 
         Assert.Equal("5000", cut.Find("igc-snackbar").GetAttribute("display-time"));
@@ -130,7 +130,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Snackbar_KeepOpen_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSnackbar>(p =>
+        var cut = Render<IgbSnackbar>(p =>
             p.Add(x => x.KeepOpen, true));
 
         Assert.NotNull(cut.Find("igc-snackbar").GetAttribute("keep-open"));
@@ -139,7 +139,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Toast_DisplayTime_RendersAttribute()
     {
-        var cut = RenderComponent<IgbToast>(p =>
+        var cut = Render<IgbToast>(p =>
             p.Add(x => x.DisplayTime, 3000));
 
         Assert.Equal("3000", cut.Find("igc-toast").GetAttribute("display-time"));
@@ -148,7 +148,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Toast_KeepOpen_RendersAttribute()
     {
-        var cut = RenderComponent<IgbToast>(p =>
+        var cut = Render<IgbToast>(p =>
             p.Add(x => x.KeepOpen, true));
 
         Assert.NotNull(cut.Find("igc-toast").GetAttribute("keep-open"));
@@ -157,7 +157,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Toast_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbToast>(p =>
+        var cut = Render<IgbToast>(p =>
             p.Add(x => x.Open, true));
 
         Assert.NotNull(cut.Find("igc-toast").GetAttribute("open"));
@@ -166,7 +166,7 @@ public class DialogExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Toast_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbToast>(p =>
+        var cut = Render<IgbToast>(p =>
             p.AddChildContent("File saved"));
 
         Assert.Contains("File saved", cut.Find("igc-toast").InnerHtml);

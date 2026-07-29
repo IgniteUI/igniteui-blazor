@@ -8,7 +8,7 @@ public class AvatarTests : BlazorComponentTestBase
     [Fact]
     public void Avatar_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbAvatar>();
+        var cut = Render<IgbAvatar>();
         Assert.NotNull(cut.Find("igc-avatar"));
     }
 
@@ -22,7 +22,7 @@ public class AvatarTests : BlazorComponentTestBase
     [Fact]
     public void Avatar_Src_RendersAttribute()
     {
-        var cut = RenderComponent<IgbAvatar>(parameters =>
+        var cut = Render<IgbAvatar>(parameters =>
             parameters.Add(p => p.Src, "https://example.com/avatar.png"));
 
         var element = cut.Find("igc-avatar");
@@ -32,7 +32,7 @@ public class AvatarTests : BlazorComponentTestBase
     [Fact]
     public void Avatar_Alt_RendersAttribute()
     {
-        var cut = RenderComponent<IgbAvatar>(parameters =>
+        var cut = Render<IgbAvatar>(parameters =>
             parameters.Add(p => p.Alt, "User avatar"));
 
         var element = cut.Find("igc-avatar");
@@ -42,7 +42,7 @@ public class AvatarTests : BlazorComponentTestBase
     [Fact]
     public void Avatar_Initials_RendersAttribute()
     {
-        var cut = RenderComponent<IgbAvatar>(parameters =>
+        var cut = Render<IgbAvatar>(parameters =>
             parameters.Add(p => p.Initials, "JD"));
 
         var element = cut.Find("igc-avatar");
@@ -52,7 +52,7 @@ public class AvatarTests : BlazorComponentTestBase
     [Fact]
     public void Avatar_Shape_Circle()
     {
-        var cut = RenderComponent<IgbAvatar>(parameters =>
+        var cut = Render<IgbAvatar>(parameters =>
             parameters.Add(p => p.Shape, AvatarShape.Circle));
 
         var element = cut.Find("igc-avatar");
@@ -62,7 +62,7 @@ public class AvatarTests : BlazorComponentTestBase
     [Fact]
     public void Avatar_Shape_Rounded()
     {
-        var cut = RenderComponent<IgbAvatar>(parameters =>
+        var cut = Render<IgbAvatar>(parameters =>
             parameters.Add(p => p.Shape, AvatarShape.Rounded));
 
         var element = cut.Find("igc-avatar");

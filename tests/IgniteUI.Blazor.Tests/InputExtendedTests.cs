@@ -12,7 +12,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_Label_RendersAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.Label, "Username"));
 
         Assert.Equal("Username", cut.Find("igc-input").GetAttribute("label"));
@@ -21,7 +21,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_Outlined_RendersAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.Outlined, true));
 
         Assert.NotNull(cut.Find("igc-input").GetAttribute("outlined"));
@@ -30,7 +30,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_Invalid_RendersAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.Invalid, true));
 
         Assert.NotNull(cut.Find("igc-input").GetAttribute("invalid"));
@@ -39,7 +39,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_Min_RendersAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.Min, 0));
 
         Assert.Equal("0", cut.Find("igc-input").GetAttribute("min"));
@@ -48,7 +48,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_Max_RendersAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.Max, 100));
 
         Assert.Equal("100", cut.Find("igc-input").GetAttribute("max"));
@@ -57,7 +57,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_Step_RendersAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.Step, 5));
 
         Assert.Equal("5", cut.Find("igc-input").GetAttribute("step"));
@@ -66,7 +66,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_Autocomplete_RendersAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.Autocomplete, "email"));
 
         Assert.Equal("email", cut.Find("igc-input").GetAttribute("autocomplete"));
@@ -75,7 +75,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_InputMode_RendersAsAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.InputMode, "numeric"));
 
         Assert.Equal("numeric", cut.Find("igc-input").GetAttribute("inputmode"));
@@ -84,7 +84,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Input_ValidateOnly_RendersAttribute()
     {
-        var cut = RenderComponent<IgbInput>(p =>
+        var cut = Render<IgbInput>(p =>
             p.Add(x => x.ValidateOnly, true));
 
         Assert.NotNull(cut.Find("igc-input").GetAttribute("validate-only"));
@@ -94,7 +94,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_Label_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.Label, "Comments"));
 
         Assert.Equal("Comments", cut.Find("igc-textarea").GetAttribute("label"));
@@ -103,7 +103,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_Outlined_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.Outlined, true));
 
         Assert.NotNull(cut.Find("igc-textarea").GetAttribute("outlined"));
@@ -112,7 +112,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_MaxLength_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.MaxLength, 500));
 
         Assert.Equal("500", cut.Find("igc-textarea").GetAttribute("maxlength"));
@@ -121,7 +121,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_MinLength_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.MinLength, 10));
 
         Assert.Equal("10", cut.Find("igc-textarea").GetAttribute("minlength"));
@@ -130,7 +130,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_ReadOnly_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.ReadOnly, true));
 
         Assert.NotNull(cut.Find("igc-textarea").GetAttribute("readonly"));
@@ -139,7 +139,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_Spellcheck_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.Spellcheck, true));
 
         Assert.NotNull(cut.Find("igc-textarea").GetAttribute("spellcheck"));
@@ -148,7 +148,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_InputMode_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.InputMode, "text"));
 
         Assert.Equal("text", cut.Find("igc-textarea").GetAttribute("inputmode"));
@@ -157,7 +157,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_Wrap_Hard()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.Wrap, TextareaWrap.Hard));
 
         Assert.Equal("hard", cut.Find("igc-textarea").GetAttribute("wrap"));
@@ -166,7 +166,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_ValidateOnly_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.ValidateOnly, true));
 
         Assert.NotNull(cut.Find("igc-textarea").GetAttribute("validate-only"));
@@ -175,7 +175,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_Autocomplete_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTextarea>(p =>
+        var cut = Render<IgbTextarea>(p =>
             p.Add(x => x.Autocomplete, "on"));
 
         Assert.Equal("on", cut.Find("igc-textarea").GetAttribute("autocomplete"));
@@ -185,7 +185,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_ValueMode_RendersAttribute()
     {
-        var cut = RenderComponent<IgbMaskInput>(p =>
+        var cut = Render<IgbMaskInput>(p =>
             p.Add(x => x.ValueMode, MaskInputValueMode.WithFormatting));
 
         Assert.Equal("withFormatting", cut.Find("igc-mask-input").GetAttribute("value-mode"));
@@ -194,7 +194,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_Prompt_RendersAttribute()
     {
-        var cut = RenderComponent<IgbMaskInput>(p =>
+        var cut = Render<IgbMaskInput>(p =>
             p.Add(x => x.Prompt, "#"));
 
         Assert.Equal("#", cut.Find("igc-mask-input").GetAttribute("prompt"));
@@ -203,7 +203,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_Label_RendersAttribute()
     {
-        var cut = RenderComponent<IgbMaskInput>(p =>
+        var cut = Render<IgbMaskInput>(p =>
             p.Add(x => x.Label, "Phone"));
 
         Assert.Equal("Phone", cut.Find("igc-mask-input").GetAttribute("label"));
@@ -212,7 +212,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_Required_RendersAttribute()
     {
-        var cut = RenderComponent<IgbMaskInput>(p =>
+        var cut = Render<IgbMaskInput>(p =>
             p.Add(x => x.Required, true));
 
         Assert.NotNull(cut.Find("igc-mask-input").GetAttribute("required"));
@@ -221,7 +221,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_Outlined_RendersAttribute()
     {
-        var cut = RenderComponent<IgbMaskInput>(p =>
+        var cut = Render<IgbMaskInput>(p =>
             p.Add(x => x.Outlined, true));
 
         Assert.NotNull(cut.Find("igc-mask-input").GetAttribute("outlined"));
@@ -231,7 +231,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Checkbox_Invalid_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCheckbox>(p =>
+        var cut = Render<IgbCheckbox>(p =>
             p.Add(x => x.Invalid, true));
 
         Assert.NotNull(cut.Find("igc-checkbox").GetAttribute("invalid"));
@@ -240,7 +240,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Checkbox_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbCheckbox>(p =>
+        var cut = Render<IgbCheckbox>(p =>
             p.AddChildContent("Accept terms"));
 
         Assert.Contains("Accept terms", cut.Find("igc-checkbox").InnerHtml);
@@ -249,7 +249,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Switch_Invalid_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSwitch>(p =>
+        var cut = Render<IgbSwitch>(p =>
             p.Add(x => x.Invalid, true));
 
         Assert.NotNull(cut.Find("igc-switch").GetAttribute("invalid"));
@@ -258,7 +258,7 @@ public class InputExtendedTests : BlazorComponentTestBase
     [Fact]
     public void Switch_Required_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSwitch>(p =>
+        var cut = Render<IgbSwitch>(p =>
             p.Add(x => x.Required, true));
 
         Assert.NotNull(cut.Find("igc-switch").GetAttribute("required"));

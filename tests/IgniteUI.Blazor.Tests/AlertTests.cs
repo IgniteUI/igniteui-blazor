@@ -21,7 +21,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
     [Fact]
     public void Snackbar_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbSnackbar>();
+        var cut = Render<IgbSnackbar>();
         Assert.NotNull(cut.Find("igc-snackbar"));
     }
 
@@ -41,7 +41,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
     [Fact]
     public void Snackbar_ActionText_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSnackbar>(parameters =>
+        var cut = Render<IgbSnackbar>(parameters =>
             parameters.Add(p => p.ActionText, "UNDO"));
 
         var element = cut.Find("igc-snackbar");
@@ -51,7 +51,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
     [Fact]
     public void Snackbar_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSnackbar>(parameters =>
+        var cut = Render<IgbSnackbar>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-snackbar");
@@ -61,7 +61,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
     [Fact]
     public void Snackbar_DisplayTime_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSnackbar>(parameters =>
+        var cut = Render<IgbSnackbar>(parameters =>
             parameters.Add(p => p.DisplayTime, 5000.0));
 
         var element = cut.Find("igc-snackbar");
@@ -71,7 +71,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
     [Fact]
     public void Snackbar_KeepOpen_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSnackbar>(parameters =>
+        var cut = Render<IgbSnackbar>(parameters =>
             parameters.Add(p => p.KeepOpen, true));
 
         var element = cut.Find("igc-snackbar");
@@ -81,7 +81,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
     [Fact]
     public void Snackbar_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbSnackbar>(parameters =>
+        var cut = Render<IgbSnackbar>(parameters =>
             parameters.AddChildContent("Item deleted"));
 
         Assert.Contains("Item deleted", cut.Markup);
@@ -101,7 +101,7 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
     [Fact]
     public void Toast_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbToast>();
+        var cut = Render<IgbToast>();
         Assert.NotNull(cut.Find("igc-toast"));
     }
 
@@ -121,7 +121,7 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
     [Fact]
     public void Toast_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbToast>(parameters =>
+        var cut = Render<IgbToast>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-toast");
@@ -131,7 +131,7 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
     [Fact]
     public void Toast_DisplayTime_RendersAttribute()
     {
-        var cut = RenderComponent<IgbToast>(parameters =>
+        var cut = Render<IgbToast>(parameters =>
             parameters.Add(p => p.DisplayTime, 3000.0));
 
         var element = cut.Find("igc-toast");
@@ -141,7 +141,7 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
     [Fact]
     public void Toast_KeepOpen_RendersAttribute()
     {
-        var cut = RenderComponent<IgbToast>(parameters =>
+        var cut = Render<IgbToast>(parameters =>
             parameters.Add(p => p.KeepOpen, true));
 
         var element = cut.Find("igc-toast");
@@ -151,7 +151,7 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
     [Fact]
     public void Toast_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbToast>(parameters =>
+        var cut = Render<IgbToast>(parameters =>
             parameters.AddChildContent("Operation successful"));
 
         Assert.Contains("Operation successful", cut.Markup);

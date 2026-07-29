@@ -12,7 +12,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Button_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbButton>(p => p
+        var cut = Render<IgbButton>(p => p
             .Add(x => x.Variant, ButtonVariant.Outlined)
             .Add(x => x.DisplayType, ButtonBaseType.Submit)
             .Add(x => x.Disabled, true)
@@ -34,7 +34,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Input_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbInput>(p => p
+        var cut = Render<IgbInput>(p => p
             .Add(x => x.Value, "test")
             .Add(x => x.DisplayType, InputType.Password)
             .Add(x => x.Placeholder, "Enter value")
@@ -58,7 +58,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Textarea_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbTextarea>(p => p
+        var cut = Render<IgbTextarea>(p => p
             .Add(x => x.Value, "content")
             .Add(x => x.Placeholder, "Type here")
             .Add(x => x.Label, "Message")
@@ -80,7 +80,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Checkbox_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbCheckbox>(p => p
+        var cut = Render<IgbCheckbox>(p => p
             .Add(x => x.Checked, true)
             .Add(x => x.Disabled, true)
             .Add(x => x.Required, true)
@@ -100,7 +100,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Switch_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbSwitch>(p => p
+        var cut = Render<IgbSwitch>(p => p
             .Add(x => x.Checked, true)
             .Add(x => x.Disabled, true)
             .Add(x => x.Required, true)
@@ -118,7 +118,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Radio_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbRadio>(p => p
+        var cut = Render<IgbRadio>(p => p
             .Add(x => x.Value, "option-a")
             .Add(x => x.Checked, true)
             .Add(x => x.Disabled, true)
@@ -136,7 +136,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Slider_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbSlider>(p => p
+        var cut = Render<IgbSlider>(p => p
             .Add(x => x.Value, 50)
             .Add(x => x.Min, 0)
             .Add(x => x.Max, 100)
@@ -162,7 +162,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void RangeSlider_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbRangeSlider>(p => p
+        var cut = Render<IgbRangeSlider>(p => p
             .Add(x => x.Lower, 20)
             .Add(x => x.Upper, 80)
             .Add(x => x.Min, 0)
@@ -182,7 +182,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Rating_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbRating>(p => p
+        var cut = Render<IgbRating>(p => p
             .Add(x => x.Value, 4)
             .Add(x => x.Max, 10)
             .Add(x => x.ReadOnly, true)
@@ -206,7 +206,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Chip_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbChip>(p => p
+        var cut = Render<IgbChip>(p => p
             .Add(x => x.Disabled, true)
             .Add(x => x.Removable, true)
             .Add(x => x.Selectable, true)
@@ -224,7 +224,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void ExpansionPanel_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbExpansionPanel>(p => p
+        var cut = Render<IgbExpansionPanel>(p => p
             .Add(x => x.Open, true)
             .Add(x => x.Disabled, true)
             .Add(x => x.IndicatorPosition, ExpansionPanelIndicatorPosition.End));
@@ -238,7 +238,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Dialog_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbDialog>(p => p
+        var cut = Render<IgbDialog>(p => p
             .Add(x => x.Open, true)
             .Add(x => x.Title, "Test Title")
             .Add(x => x.KeepOpenOnEscape, true)
@@ -255,7 +255,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Snackbar_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbSnackbar>(p => p
+        var cut = Render<IgbSnackbar>(p => p
             .Add(x => x.Open, true)
             .Add(x => x.DisplayTime, 5000)
             .Add(x => x.KeepOpen, true)
@@ -271,7 +271,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Toast_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbToast>(p => p
+        var cut = Render<IgbToast>(p => p
             .Add(x => x.Open, true)
             .Add(x => x.DisplayTime, 3000)
             .Add(x => x.KeepOpen, true));
@@ -285,7 +285,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbLinearProgress>(p => p
+        var cut = Render<IgbLinearProgress>(p => p
             .Add(x => x.Value, 75)
             .Add(x => x.Max, 100)
             .Add(x => x.Variant, StyleVariant.Success)
@@ -307,7 +307,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void CircularProgress_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbCircularProgress>(p => p
+        var cut = Render<IgbCircularProgress>(p => p
             .Add(x => x.Value, 60)
             .Add(x => x.Max, 100)
             .Add(x => x.Variant, StyleVariant.Danger)
@@ -327,7 +327,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void NavDrawer_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbNavDrawer>(p => p
+        var cut = Render<IgbNavDrawer>(p => p
             .Add(x => x.Open, true)
             .Add(x => x.Position, NavDrawerPosition.End));
 
@@ -339,7 +339,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void NavDrawerItem_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbNavDrawerItem>(p => p
+        var cut = Render<IgbNavDrawerItem>(p => p
             .Add(x => x.Disabled, true)
             .Add(x => x.Active, true));
 
@@ -351,7 +351,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Carousel_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbCarousel>(p => p
+        var cut = Render<IgbCarousel>(p => p
             .Add(x => x.DisableLoop, true)
             .Add(x => x.DisablePauseOnInteraction, true)
             .Add(x => x.HideNavigation, true)
@@ -375,7 +375,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Tree_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbTree>(p => p
+        var cut = Render<IgbTree>(p => p
             .Add(x => x.SingleBranchExpand, true)
             .Add(x => x.ToggleNodeOnClick, true)
             .Add(x => x.Selection, TreeSelection.Cascade));
@@ -389,7 +389,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void TreeItem_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbTreeItem>(p => p
+        var cut = Render<IgbTreeItem>(p => p
             .Add(x => x.Label, "Item 1")
             .Add(x => x.Expanded, true)
             .Add(x => x.Active, true)
@@ -407,7 +407,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Tabs_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbTabs>(p => p
+        var cut = Render<IgbTabs>(p => p
             .Add(x => x.Alignment, TabsAlignment.Center)
             .Add(x => x.Activation, TabsActivation.Manual));
 
@@ -419,7 +419,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Tab_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbTab>(p => p
+        var cut = Render<IgbTab>(p => p
             .Add(x => x.Disabled, true)
             .Add(x => x.Selected, true));
 
@@ -431,7 +431,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Stepper_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbStepper>(p => p
+        var cut = Render<IgbStepper>(p => p
             .Add(x => x.Orientation, StepperOrientation.Vertical)
             .Add(x => x.StepType, StepperStepType.Full)
             .Add(x => x.TitlePosition, StepperTitlePosition.End)
@@ -447,7 +447,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Step_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbStep>(p => p
+        var cut = Render<IgbStep>(p => p
             .Add(x => x.Disabled, true));
 
         var el = cut.Find("igc-step");
@@ -457,7 +457,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void ToggleButton_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbToggleButton>(p => p
+        var cut = Render<IgbToggleButton>(p => p
             .Add(x => x.Value, "bold")
             .Add(x => x.Selected, true)
             .Add(x => x.Disabled, true));
@@ -471,7 +471,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void IconButton_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbIconButton>(p => p
+        var cut = Render<IgbIconButton>(p => p
             .Add(x => x.IconName, "search")
             .Add(x => x.Collection, "material")
             .Add(x => x.Variant, IconButtonVariant.Outlined)
@@ -489,7 +489,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Avatar_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbAvatar>(p => p
+        var cut = Render<IgbAvatar>(p => p
             .Add(x => x.Src, "img.png")
             .Add(x => x.Alt, "User")
             .Add(x => x.Initials, "AB")
@@ -505,7 +505,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Badge_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbBadge>(p => p
+        var cut = Render<IgbBadge>(p => p
             .Add(x => x.Variant, StyleVariant.Info)
             .Add(x => x.Outlined, true)
             .Add(x => x.Shape, BadgeShape.Square));
@@ -519,7 +519,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Icon_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbIcon>(p => p
+        var cut = Render<IgbIcon>(p => p
             .Add(x => x.IconName, "home")
             .Add(x => x.Collection, "material")
             .Add(x => x.Mirrored, true));
@@ -533,7 +533,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Accordion_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbAccordion>(p => p
+        var cut = Render<IgbAccordion>(p => p
             .Add(x => x.SingleExpand, true));
 
         var el = cut.Find("igc-accordion");
@@ -543,7 +543,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void ButtonGroup_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbButtonGroup>(p => p
+        var cut = Render<IgbButtonGroup>(p => p
             .Add(x => x.Disabled, true)
             .Add(x => x.Selection, ButtonGroupSelection.Multiple));
 
@@ -555,7 +555,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Select_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbSelect>(p => p
+        var cut = Render<IgbSelect>(p => p
             .Add(x => x.Label, "Choose")
             .Add(x => x.Placeholder, "Select...")
             .Add(x => x.Disabled, true)
@@ -575,7 +575,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void DateTimeInput_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbDateTimeInput>(p => p
+        var cut = Render<IgbDateTimeInput>(p => p
             .Add(x => x.InputFormat, "dd/MM/yyyy")
             .Add(x => x.Label, "Date")
             .Add(x => x.Placeholder, "Enter date")
@@ -595,7 +595,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbMaskInput>(p => p
+        var cut = Render<IgbMaskInput>(p => p
             .Add(x => x.Mask, "(000) 000-0000")
             .Add(x => x.Label, "Phone")
             .Add(x => x.Placeholder, "Enter phone")
@@ -617,7 +617,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Dropdown_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbDropdown>(p => p
+        var cut = Render<IgbDropdown>(p => p
             .Add(x => x.Open, true)
             .Add(x => x.KeepOpenOnSelect, true));
 
@@ -629,7 +629,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void TileManager_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbTileManager>(p => p
+        var cut = Render<IgbTileManager>(p => p
             .Add(x => x.ColumnCount, 4)
             .Add(x => x.ResizeMode, TileManagerResizeMode.Always)
             .Add(x => x.DragMode, TileManagerDragMode.TileHeader)
@@ -647,7 +647,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Tile_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbTile>(p => p
+        var cut = Render<IgbTile>(p => p
             .Add(x => x.ColSpan, 2)
             .Add(x => x.RowSpan, 3)
             .Add(x => x.ColStart, 1)
@@ -663,7 +663,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Tooltip_RendersAllAttributes()
     {
-        var cut = RenderComponent<IgbTooltip>(p => p
+        var cut = Render<IgbTooltip>(p => p
             .Add(x => x.Open, true)
             .Add(x => x.WithArrow, true)
             .Add(x => x.Offset, 10)

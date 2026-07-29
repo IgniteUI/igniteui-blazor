@@ -43,7 +43,7 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
     [Fact]
     public void Splitter_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbSplitter>();
+        var cut = Render<IgbSplitter>();
         Assert.NotNull(cut.Find("igc-splitter"));
     }
 
@@ -70,7 +70,7 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
     [InlineData(SplitterOrientation.Vertical, "vertical")]
     public void Splitter_Orientation_SerializesAsAttribute(SplitterOrientation orientation, string expected)
     {
-        var cut = RenderComponent<IgbSplitter>(parameters =>
+        var cut = Render<IgbSplitter>(parameters =>
             parameters.Add(p => p.Orientation, orientation));
 
         Assert.Equal(expected, cut.Find("igc-splitter").GetAttribute("orientation"));
@@ -79,7 +79,7 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
     [Fact]
     public void Splitter_DisableCollapse_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSplitter>(parameters =>
+        var cut = Render<IgbSplitter>(parameters =>
             parameters.Add(p => p.DisableCollapse, true));
 
         Assert.NotNull(cut.Find("igc-splitter").GetAttribute("disable-collapse"));
@@ -88,7 +88,7 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
     [Fact]
     public void Splitter_DisableResize_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSplitter>(parameters =>
+        var cut = Render<IgbSplitter>(parameters =>
             parameters.Add(p => p.DisableResize, true));
 
         Assert.NotNull(cut.Find("igc-splitter").GetAttribute("disable-resize"));
@@ -97,7 +97,7 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
     [Fact]
     public void Splitter_SizeConstraints_RendersAttributes()
     {
-        var cut = RenderComponent<IgbSplitter>(parameters =>
+        var cut = Render<IgbSplitter>(parameters =>
             parameters.Add(p => p.StartMinSize, "10%")
                 .Add(p => p.EndMaxSize, "400px")
                 .Add(p => p.StartSize, "30%")
@@ -113,7 +113,7 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
     [Fact]
     public void Splitter_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbSplitter>(parameters =>
+        var cut = Render<IgbSplitter>(parameters =>
             parameters.AddChildContent("<div slot=\"start\">Start</div><div slot=\"end\">End</div>"));
 
         var innerHtml = cut.Find("igc-splitter").InnerHtml;

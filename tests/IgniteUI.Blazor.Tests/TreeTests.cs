@@ -54,14 +54,14 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void Tree_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbTree>();
+        var cut = Render<IgbTree>();
         cut.Find("igc-tree").Should_Exist();
     }
 
     [Fact]
     public void Tree_SingleBranchExpand_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTree>(p =>
+        var cut = Render<IgbTree>(p =>
             p.Add(x => x.SingleBranchExpand, true));
 
         Assert.NotNull(cut.Find("igc-tree").GetAttribute("single-branch-expand"));
@@ -70,7 +70,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void Tree_ToggleNodeOnClick_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTree>(p =>
+        var cut = Render<IgbTree>(p =>
             p.Add(x => x.ToggleNodeOnClick, true));
 
         Assert.NotNull(cut.Find("igc-tree").GetAttribute("toggle-node-on-click"));
@@ -79,7 +79,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void Tree_Selection_Multiple()
     {
-        var cut = RenderComponent<IgbTree>(p =>
+        var cut = Render<IgbTree>(p =>
             p.Add(x => x.Selection, TreeSelection.Multiple));
 
         Assert.Equal("multiple", cut.Find("igc-tree").GetAttribute("selection"));
@@ -88,7 +88,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void Tree_Selection_Cascade()
     {
-        var cut = RenderComponent<IgbTree>(p =>
+        var cut = Render<IgbTree>(p =>
             p.Add(x => x.Selection, TreeSelection.Cascade));
 
         Assert.Equal("cascade", cut.Find("igc-tree").GetAttribute("selection"));
@@ -97,7 +97,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void Tree_Selection_None()
     {
-        var cut = RenderComponent<IgbTree>(p =>
+        var cut = Render<IgbTree>(p =>
             p.Add(x => x.Selection, TreeSelection.None));
 
         Assert.Equal("none", cut.Find("igc-tree").GetAttribute("selection"));
@@ -106,14 +106,14 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void TreeItem_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbTreeItem>();
+        var cut = Render<IgbTreeItem>();
         cut.Find("igc-tree-item").Should_Exist();
     }
 
     [Fact]
     public void TreeItem_Label_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTreeItem>(p =>
+        var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Label, "Node 1"));
 
         Assert.Equal("Node 1", cut.Find("igc-tree-item").GetAttribute("label"));
@@ -122,7 +122,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void TreeItem_Expanded_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTreeItem>(p =>
+        var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Expanded, true));
 
         Assert.NotNull(cut.Find("igc-tree-item").GetAttribute("expanded"));
@@ -131,7 +131,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void TreeItem_Active_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTreeItem>(p =>
+        var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Active, true));
 
         Assert.NotNull(cut.Find("igc-tree-item").GetAttribute("active"));
@@ -140,7 +140,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void TreeItem_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbTreeItem>(p =>
+        var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Disabled, true));
 
         Assert.NotNull(cut.Find("igc-tree-item").GetAttribute("disabled"));
@@ -149,7 +149,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     [Fact]
     public void TreeItem_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbTreeItem>(p =>
+        var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Label, "Parent")
              .AddChildContent("<span>Child</span>"));
 
@@ -160,7 +160,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
 public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
 {
     /// <summary>Real-usage host: IgbTree > "Node 1" > "Child 1.1" (the component under test).</summary>
-    static readonly RenderFragment treeHost = ContractHost.Of<IgbTree>(ps => ps.AddChildContent(b =>
+    static readonly Func<BunitContext, IRenderedComponent<IComponent>> treeHost = ContractHost.Of<IgbTree>(ps => ps.AddChildContent(b =>
     {
         b.OpenComponent<IgbTreeItem>(0);
         b.AddAttribute(1, "Label", "Node 1");

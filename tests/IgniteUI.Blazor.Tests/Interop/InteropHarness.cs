@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IgniteUI.Blazor.Tests.Interop;
@@ -110,10 +111,10 @@ public abstract class InteropHarness
     public abstract void MakeReady();
 
     /// <summary>Resolves the interop instance id of a rendered component.</summary>
-    public abstract string ContainerIdOf(IRenderedFragment cut);
+    public abstract string ContainerIdOf(IRenderedComponent<IComponent> cut);
 
     /// <summary>Resolves the interop instance id of a child component inside a rendered fragment.</summary>
-    public abstract string ContainerIdOf(IRenderedFragment cut, string childSelector);
+    public abstract string ContainerIdOf(IRenderedComponent<IComponent> cut, string childSelector);
 
     /// <summary>All API method invocations sent to JS so far, in order.</summary>
     public abstract IReadOnlyList<InteropMethodCall> MethodCalls { get; }

@@ -23,7 +23,7 @@ public class HighlightTests : ComponentWithContractTestBase<IgbHighlight>
     [Fact]
     public void Highlight_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbHighlight>();
+        var cut = Render<IgbHighlight>();
         Assert.NotNull(cut.Find("igc-highlight"));
     }
 
@@ -39,7 +39,7 @@ public class HighlightTests : ComponentWithContractTestBase<IgbHighlight>
     [Fact]
     public void Highlight_CaseSensitive_True_RendersAttribute()
     {
-        var cut = RenderComponent<IgbHighlight>(parameters =>
+        var cut = Render<IgbHighlight>(parameters =>
             parameters.Add(p => p.CaseSensitive, true));
 
         Assert.NotNull(cut.Find("igc-highlight").GetAttribute("case-sensitive"));
@@ -48,7 +48,7 @@ public class HighlightTests : ComponentWithContractTestBase<IgbHighlight>
     [Fact]
     public void Highlight_SearchText_RendersAttribute()
     {
-        var cut = RenderComponent<IgbHighlight>(parameters =>
+        var cut = Render<IgbHighlight>(parameters =>
             parameters.Add(p => p.SearchText, "lorem"));
 
         Assert.Equal("lorem", cut.Find("igc-highlight").GetAttribute("search-text"));
@@ -57,7 +57,7 @@ public class HighlightTests : ComponentWithContractTestBase<IgbHighlight>
     [Fact]
     public void Highlight_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbHighlight>(parameters =>
+        var cut = Render<IgbHighlight>(parameters =>
             parameters.AddChildContent("<p>Body text to search.</p>"));
 
         Assert.Contains("Body text to search.", cut.Find("igc-highlight").InnerHtml);

@@ -86,7 +86,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     [Fact]
     public void Select_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbSelect>();
+        var cut = Render<IgbSelect>();
         Assert.NotNull(cut.Find("igc-select"));
     }
 
@@ -100,7 +100,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     [Fact]
     public void Select_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(parameters =>
+        var cut = Render<IgbSelect>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-select");
@@ -110,7 +110,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     [Fact]
     public void Select_Required_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(parameters =>
+        var cut = Render<IgbSelect>(parameters =>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-select");
@@ -120,7 +120,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     [Fact]
     public void Select_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(parameters =>
+        var cut = Render<IgbSelect>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-select");
@@ -130,7 +130,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     [Fact]
     public void Select_Placeholder_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(parameters =>
+        var cut = Render<IgbSelect>(parameters =>
             parameters.Add(p => p.Placeholder, "Choose..."));
 
         var element = cut.Find("igc-select");
@@ -140,7 +140,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     [Fact]
     public void Select_Label_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelect>(parameters =>
+        var cut = Render<IgbSelect>(parameters =>
             parameters.Add(p => p.Label, "Country"));
 
         var element = cut.Find("igc-select");
@@ -159,7 +159,7 @@ public class SelectItemTests : BlazorComponentTestBase
     [Fact]
     public void SelectItem_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbSelectItem>();
+        var cut = Render<IgbSelectItem>();
         Assert.NotNull(cut.Find("igc-select-item"));
     }
 
@@ -173,7 +173,7 @@ public class SelectItemTests : BlazorComponentTestBase
     [Fact]
     public void SelectItem_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelectItem>(parameters =>
+        var cut = Render<IgbSelectItem>(parameters =>
             parameters.Add(p => p.Value, "us"));
 
         var element = cut.Find("igc-select-item");
@@ -183,7 +183,7 @@ public class SelectItemTests : BlazorComponentTestBase
     [Fact]
     public void SelectItem_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelectItem>(parameters =>
+        var cut = Render<IgbSelectItem>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-select-item");
@@ -193,7 +193,7 @@ public class SelectItemTests : BlazorComponentTestBase
     [Fact]
     public void SelectItem_Selected_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSelectItem>(parameters =>
+        var cut = Render<IgbSelectItem>(parameters =>
             parameters.Add(p => p.Selected, true));
 
         var element = cut.Find("igc-select-item");
@@ -203,7 +203,7 @@ public class SelectItemTests : BlazorComponentTestBase
     [Fact]
     public void SelectItem_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbSelectItem>(parameters =>
+        var cut = Render<IgbSelectItem>(parameters =>
             parameters.AddChildContent("United States"));
 
         Assert.Contains("United States", cut.Markup);

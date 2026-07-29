@@ -24,7 +24,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
     [Fact]
     public void Icon_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbIcon>();
+        var cut = Render<IgbIcon>();
         Assert.NotNull(cut.Find("igc-icon"));
     }
 
@@ -38,7 +38,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
     [Fact]
     public void Icon_Name_RendersAttribute()
     {
-        var cut = RenderComponent<IgbIcon>(parameters =>
+        var cut = Render<IgbIcon>(parameters =>
             parameters.Add(p => p.IconName, "home"));
 
         var element = cut.Find("igc-icon");
@@ -48,7 +48,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
     [Fact]
     public void Icon_Collection_RendersAttribute()
     {
-        var cut = RenderComponent<IgbIcon>(parameters =>
+        var cut = Render<IgbIcon>(parameters =>
             parameters.Add(p => p.Collection, "material"));
 
         var element = cut.Find("igc-icon");
@@ -58,7 +58,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
     [Fact]
     public void Icon_Mirrored_RendersAttribute()
     {
-        var cut = RenderComponent<IgbIcon>(parameters =>
+        var cut = Render<IgbIcon>(parameters =>
             parameters.Add(p => p.Mirrored, true));
 
         var element = cut.Find("igc-icon");

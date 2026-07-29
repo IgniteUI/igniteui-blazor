@@ -24,14 +24,14 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     [Fact]
     public void Button_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbButton>();
+        var cut = Render<IgbButton>();
         cut.Find("igc-button").Should_Exist();
     }
 
     [Fact]
     public void Button_DefaultVariant_IsContained()
     {
-        var cut = RenderComponent<IgbButton>();
+        var cut = Render<IgbButton>();
         var element = cut.Find("igc-button");
         // Default variant should not emit attribute (only dirty props are serialized)
         Assert.NotNull(element);
@@ -40,7 +40,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     [Fact]
     public void Button_SetVariant_Flat()
     {
-        var cut = RenderComponent<IgbButton>(parameters =>
+        var cut = Render<IgbButton>(parameters =>
             parameters.Add(p => p.Variant, ButtonVariant.Flat));
 
         var element = cut.Find("igc-button");
@@ -50,7 +50,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     [Fact]
     public void Button_SetVariant_Outlined()
     {
-        var cut = RenderComponent<IgbButton>(parameters =>
+        var cut = Render<IgbButton>(parameters =>
             parameters.Add(p => p.Variant, ButtonVariant.Outlined));
 
         var element = cut.Find("igc-button");
@@ -60,7 +60,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     [Fact]
     public void Button_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbButton>(parameters =>
+        var cut = Render<IgbButton>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-button");
@@ -70,7 +70,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     [Fact]
     public void Button_NotDisabled_NoAttribute()
     {
-        var cut = RenderComponent<IgbButton>(parameters =>
+        var cut = Render<IgbButton>(parameters =>
             parameters.Add(p => p.Disabled, false));
 
         var element = cut.Find("igc-button");
@@ -81,7 +81,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     [Fact]
     public void Button_Href_RendersAttribute()
     {
-        var cut = RenderComponent<IgbButton>(parameters =>
+        var cut = Render<IgbButton>(parameters =>
             parameters.Add(p => p.Href, "https://example.com"));
 
         var element = cut.Find("igc-button");
@@ -91,7 +91,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     [Fact]
     public void Button_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbButton>(parameters =>
+        var cut = Render<IgbButton>(parameters =>
             parameters.AddChildContent("Click Me"));
 
         cut.Find("igc-button").MarkupMatches(@"<igc-button class=""igb-web-button"" data-ig-id:ignore>Click Me</igc-button>");
@@ -113,7 +113,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     [Fact]
     public void Button_DisplayType_RendersCorrectly()
     {
-        var cut = RenderComponent<IgbButton>(parameters =>
+        var cut = Render<IgbButton>(parameters =>
             parameters.Add(p => p.DisplayType, ButtonBaseType.Submit));
 
         var element = cut.Find("igc-button");

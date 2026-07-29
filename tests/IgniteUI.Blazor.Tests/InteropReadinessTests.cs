@@ -13,7 +13,7 @@ public class InteropReadinessTests : BlazorComponentTestBase
     [Fact]
     public async Task MethodInvocation_BeforeReady_Throws()
     {
-        var cut = RenderComponent<IgbBanner>();
+        var cut = Render<IgbBanner>();
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => cut.Instance.ShowAsync());
         Assert.Null(Interop.FindCall("show"));
@@ -24,7 +24,7 @@ public class InteropReadinessTests : BlazorComponentTestBase
     {
         Interop.PrimeReady();
         Interop.SetupMethodResult("show", InteropReturn.Bool(true));
-        var cut = RenderComponent<IgbBanner>();
+        var cut = Render<IgbBanner>();
 
         var shown = await cut.Instance.ShowAsync();
 
@@ -35,7 +35,7 @@ public class InteropReadinessTests : BlazorComponentTestBase
     [Fact]
     public async Task MakeReady_ReadiesComponents_RenderedBeforeTheLoadedSignal()
     {
-        var cut = RenderComponent<IgbBanner>();
+        var cut = Render<IgbBanner>();
         Interop.SetupMethodResult("hide", InteropReturn.Bool(false));
 
         Interop.MakeReady();
