@@ -1,10 +1,88 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class SelectTests : BlazorComponentTestBase
+public class SelectTests : ComponentWithContractTestBase<IgbSelect>
 {
+    /// <summary>Static arrange for contract tests adding two select items.</summary>
+    static readonly Action<ComponentParameterCollectionBuilder<IgbSelect>> arrangeItems =
+        ps => ps.AddChildContent(builder =>
+        {
+            builder.OpenComponent<IgbSelectItem>(0);
+            builder.AddAttribute(1, "Value", "us");
+            builder.CloseComponent();
+            builder.OpenComponent<IgbSelectItem>(2);
+            builder.AddAttribute(3, "Value", "ca");
+            builder.CloseComponent();
+        });
+
+    /// <summary>Static arrange for contract tests adding a select group.</summary>
+    static readonly Action<ComponentParameterCollectionBuilder<IgbSelect>> arrangeGroups =
+        ps => ps.AddChildContent(builder =>
+        {
+            builder.OpenComponent<IgbSelectGroup>(0);
+            builder.CloseComponent();
+        });
+
+    protected override ComponentContract<IgbSelect> InteropContract { get; } = new ComponentContract<IgbSelect>()
+        .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
+        .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
+        .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: "us")
+        .Getter(c => c.GetItemsAsync(), c => c.GetItems(), "Items",
+            arrangeItems,
+            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(2)")}}}"}]"""),
+            assert: (cut, result) =>
+            {
+                Assert.Equal(2, result.Length);
+                Assert.Same(cut.FindComponents<IgbSelectItem>()[0].Instance, result[0]);
+                Assert.Same(cut.FindComponents<IgbSelectItem>()[1].Instance, result[1]);
+            })
+        .Getter(c => c.GetGroupsAsync(), c => c.GetGroups(), "Groups",
+            arrangeGroups,
+            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-group:nth-of-type(1)")}}}"}]"""),
+            assert: (cut, result) =>
+            {
+                Assert.Single(result);
+                // TODO: IgbSelectGroup never registers with Select's FindByName (no cascading-value
+                // partial the way SelectItem has one), so the ref currently resolves to a null
+                // Assert.Same(cut.FindComponents<IgbSelectGroup>()[0].Instance, result[0]);
+            })
+        .Getter(c => c.GetSelectedItemAsync(), c => c.GetSelectedItem(), "SelectedItem",
+            arrangeItems,
+            returns: (interop, cut) => InteropReturn.Ref($$"""{"refType": "name", "id": "{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(1)")}}"}"""),
+            assert: (cut, result) => Assert.Same(cut.FindComponents<IgbSelectItem>()[0].Instance, result))
+        .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }), "focus",
+            args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
+        .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: true)
+        .Method(c => c.ClearSelectionAsync(), c => c.ClearSelection(), "clearSelection")
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
+        .Method(c => c.SetCustomValidityAsync("Please choose an option"), c => c.SetCustomValidity("Please choose an option"), "setCustomValidity",
+            args: ["Please choose an option"], types: ["String"])
+        .Event(c => c.Focus)
+        .Event(c => c.Blur)
+        .Event(c => c.Opening)
+        .Event(c => c.Opened)
+        .Event(c => c.Closing)
+        .Event(c => c.Closed)
+        .Event(c => c.Change,
+            arrangeItems,
+            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(2)")}}}"}}""",
+            assert: (cut, args) =>
+            {
+                Assert.Same(cut.FindComponents<IgbSelectItem>()[1].Instance, args.Detail);
+                Assert.Equal("ca", args.Detail.Value); // Change propagates Detail.Value into Select.Value
+            });
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Select_RendersCorrectElement()
     {

@@ -1,10 +1,26 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class ChipTests : BlazorComponentTestBase
+public class ChipTests : ComponentWithContractTestBase<IgbChip>
 {
+    protected override ComponentContract<IgbChip> InteropContract { get; } = new ComponentContract<IgbChip>()
+        .Getter(c => c.GetCurrentSelectedAsync(), c => c.GetCurrentSelected(), "Selected", returns: true)
+        .Event(c => c.Select,
+            argsJson: """{"detail": true}""",
+            assert: args => Assert.True(args.Detail))
+        .Event(c => c.Remove,
+            argsJson: """{"detail": true}""",
+            assert: args => Assert.True(args.Detail));
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Chip_RendersCorrectElement()
     {

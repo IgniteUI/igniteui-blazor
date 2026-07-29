@@ -1,10 +1,22 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class ButtonGroupTests : BlazorComponentTestBase
+public class ButtonGroupTests : ComponentWithContractTestBase<IgbButtonGroup>
 {
+    protected override ComponentContract<IgbButtonGroup> InteropContract { get; } = new ComponentContract<IgbButtonGroup>()
+        .Event(c => c.Select,
+            argsJson: """{"detail": "toggle-1"}""",
+            assert: args => Assert.Equal("toggle-1", args.Detail))
+        .Event(c => c.Deselect,
+            argsJson: """{"detail": "toggle-1"}""",
+            assert: args => Assert.Equal("toggle-1", args.Detail));
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void ButtonGroup_RendersCorrectElement()
     {

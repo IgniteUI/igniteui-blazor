@@ -1,10 +1,33 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class SliderTests : BlazorComponentTestBase
+public class SliderTests : ComponentWithContractTestBase<IgbSlider>
 {
+    // TODO: ValueFormatOptions/ValueFormat — Slider is direct-render BUG 35189
+    protected override ComponentContract<IgbSlider> InteropContract { get; } = new ComponentContract<IgbSlider>()
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: 42.0)
+        .Method(c => c.StepUpAsync(2), c => c.StepUp(2), "stepUp", args: [2.0], types: ["Number"])
+        .Method(c => c.StepDownAsync(2), c => c.StepDown(2), "stepDown", args: [2.0], types: ["Number"])
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
+        .Method(c => c.SetCustomValidityAsync("custom message"), c => c.SetCustomValidity("custom message"),
+            "setCustomValidity", args: ["custom message"], types: ["String"])
+        .Event(c => c.Input,
+            argsJson: """{"detail": 3}""",
+            assert: args => Assert.Equal(3, args.Detail))
+        .Event(c => c.Change,
+            argsJson: """{"detail": 5}""",
+            assert: args => Assert.Equal(5, args.Detail));
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Slider_RendersCorrectElement()
     {

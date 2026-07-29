@@ -1,10 +1,32 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class RatingTests : BlazorComponentTestBase
+public class RatingTests : ComponentWithContractTestBase<IgbRating>
 {
+    protected override ComponentContract<IgbRating> InteropContract { get; } = new ComponentContract<IgbRating>()
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: 3.5)
+        .Method(c => c.StepUpAsync(2), c => c.StepUp(2), "stepUp", args: [2.0], types: ["Number"])
+        .Method(c => c.StepDownAsync(2), c => c.StepDown(2), "stepDown", args: [2.0], types: ["Number"])
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
+        .Method(c => c.SetCustomValidityAsync("custom message"), c => c.SetCustomValidity("custom message"),
+            "setCustomValidity", args: ["custom message"], types: ["String"])
+        .Event(c => c.Change,
+            argsJson: """{"detail": 4}""",
+            assert: args => Assert.Equal(4, args.Detail))
+        .Event(c => c.Hover,
+            argsJson: """{"detail": 2}""",
+            assert: args => Assert.Equal(2, args.Detail));
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Rating_RendersCorrectElement()
     {

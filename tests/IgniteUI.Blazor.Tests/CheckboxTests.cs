@@ -1,10 +1,37 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class CheckboxTests : BlazorComponentTestBase
+public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
 {
+    protected override ComponentContract<IgbCheckbox> InteropContract { get; } = new ComponentContract<IgbCheckbox>()
+        .Getter(c => c.GetCurrentCheckedAsync(), c => c.GetCurrentChecked(), "Checked", returns: true)
+        .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }), "focus",
+            args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
+        .Method(c => c.ClickAsync(), c => c.Click(), "click")
+        .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
+        .Method(c => c.SetCustomValidityAsync("Please check this box"), c => c.SetCustomValidity("Please check this box"), "setCustomValidity",
+            args: ["Please check this box"], types: ["String"])
+        .Event(c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "checkbox-value"}}}""",
+            assert: args =>
+            {
+                Assert.True(args.Detail.Checked);
+                Assert.Equal("checkbox-value", args.Detail.Value);
+            })
+        .Event(c => c.Focus)
+        .Event(c => c.Blur);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Checkbox_RendersCorrectElement()
     {
