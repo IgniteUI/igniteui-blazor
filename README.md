@@ -28,7 +28,7 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 | Chat                    |   ✅   |       [Docs][Chat Docs]        |     [26.1]       | 0.1.0|    [MIT]    |
 | Splitter                |   ✅   |     [Docs][Splitter Docs]      |     [26.1]       | 0.1.0|    [MIT]    |
 | Highlight               |   ✅   |     [Docs][Highlight Docs]     |     [26.1]       | 0.1.0|    [MIT]    |
-| Date Range Picker       |   ✅   | Docs coming soon              |     [25.2]       | 0.0.1|    [MIT]    |
+| Date Range Picker       |   ✅   |       [Docs][Date Range]       |     [25.2]       | 0.0.1|    [MIT]    |
 | Tooltip                 |   ✅   |      [Docs][Tooltip Docs]      |     [25.1]       | 0.0.1|    [MIT]    |
 | Tile Manager            |   ✅   |   [Docs][Tile Manager Docs]    |     [25.1]       | 0.0.1|    [MIT]    |
 | Carousel                |   ✅   |     [Docs][Carousel Docs]      |     [24.2]       | 0.0.1|    [MIT]    |
@@ -39,7 +39,7 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 | Stepper                 |   ✅   |      [Docs][Stepper Docs]      |     [22.2]       | 0.0.1|    [MIT]    |
 | Select                  |   ✅   |      [Docs][Select Docs]       |     [22.2]       | 0.0.1|    [MIT]    |
 | Dialog                  |   ✅   |      [Docs][Dialog Docs]       |     [22.2]       | 0.0.1|    [MIT]    |
-| Accordion               |   ✅   |     [Docs][Accordion Docs]     |     [22.2]       |  0.0.1|   [MIT]    |
+| Accordion               |   ✅   |     [Docs][Accordion Docs]     |     [22.2]       | 0.0.1|    [MIT]    |
 | Mask Input              |   ✅   |   [Docs][Masked Input Docs]    |     [22.1]       | 0.0.1|    [MIT]    |
 | Drop Down               |   ✅   |     [Docs][Dropdown Docs]      |     [22.1]       | 0.0.1|    [MIT]    |
 | Linear Progress         |   ✅   |  [Docs][Linear Progress Docs]  |     [22.1]       | 0.0.1|    [MIT]    |
