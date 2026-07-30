@@ -70,6 +70,42 @@ public class BadgeTests : BlazorComponentTestBase
     }
 
     [Fact]
+    public void Badge_Variant_Info()
+    {
+        var cut = Render<IgbBadge>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Info));
+
+        Assert.Equal("info", cut.Find("igc-badge").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Badge_Variant_Success()
+    {
+        var cut = Render<IgbBadge>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Success));
+
+        Assert.Equal("success", cut.Find("igc-badge").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Badge_Variant_Warning()
+    {
+        var cut = Render<IgbBadge>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Warning));
+
+        Assert.Equal("warning", cut.Find("igc-badge").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Badge_ChildContent_Renders()
+    {
+        var cut = Render<IgbBadge>(parameters =>
+            parameters.AddChildContent("99+"));
+
+        Assert.Contains("99+", cut.Find("igc-badge").InnerHtml);
+    }
+
+    [Fact]
     public void Badge_InheritsFromBaseRendererControl()
     {
         Assert.True(typeof(IgbBadge).IsSubclassOf(typeof(BaseRendererControl)));

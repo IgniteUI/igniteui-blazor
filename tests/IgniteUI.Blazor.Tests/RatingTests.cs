@@ -132,8 +132,27 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
     }
 
     [Fact]
+    public void Rating_ChildContent_RatingSymbol()
+    {
+        var cut = Render<IgbRating>(parameters =>
+            parameters.AddChildContent("<igc-rating-symbol></igc-rating-symbol>"));
+
+        Assert.Contains("igc-rating-symbol", cut.Find("igc-rating").InnerHtml);
+    }
+
+    [Fact]
     public void Rating_InheritsFromBaseRendererControl()
     {
         Assert.True(typeof(IgbRating).IsSubclassOf(typeof(BaseRendererControl)));
+    }
+}
+
+public class RatingSymbolTests : BlazorComponentTestBase
+{
+    [Fact]
+    public void RatingSymbol_RendersCorrectElement()
+    {
+        var cut = Render<IgbRatingSymbol>();
+        cut.Find("igc-rating-symbol").Should_Exist();
     }
 }

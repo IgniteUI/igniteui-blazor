@@ -60,6 +60,15 @@ public class CardHeaderTests : BlazorComponentTestBase
         var header = new IgbCardHeader();
         Assert.Equal("WebCardHeader", header.Type);
     }
+
+    [Fact]
+    public void CardHeader_ChildContent_Renders()
+    {
+        var cut = Render<IgbCardHeader>(parameters =>
+            parameters.AddChildContent("<h3>Title</h3>"));
+
+        Assert.Contains("Title", cut.Find("igc-card-header").InnerHtml);
+    }
 }
 
 public class CardContentTests : BlazorComponentTestBase
@@ -76,6 +85,15 @@ public class CardContentTests : BlazorComponentTestBase
     {
         var content = new IgbCardContent();
         Assert.Equal("WebCardContent", content.Type);
+    }
+
+    [Fact]
+    public void CardContent_ChildContent_Renders()
+    {
+        var cut = Render<IgbCardContent>(parameters =>
+            parameters.AddChildContent("<p>Body text</p>"));
+
+        Assert.Contains("Body text", cut.Find("igc-card-content").InnerHtml);
     }
 }
 
@@ -94,6 +112,15 @@ public class CardActionsTests : BlazorComponentTestBase
         var actions = new IgbCardActions();
         Assert.Equal("WebCardActions", actions.Type);
     }
+
+    [Fact]
+    public void CardActions_ChildContent_Renders()
+    {
+        var cut = Render<IgbCardActions>(parameters =>
+            parameters.AddChildContent("<button>Action</button>"));
+
+        Assert.Contains("Action", cut.Find("igc-card-actions").InnerHtml);
+    }
 }
 
 public class CardMediaTests : BlazorComponentTestBase
@@ -110,5 +137,14 @@ public class CardMediaTests : BlazorComponentTestBase
     {
         var media = new IgbCardMedia();
         Assert.Equal("WebCardMedia", media.Type);
+    }
+
+    [Fact]
+    public void CardMedia_ChildContent_Renders()
+    {
+        var cut = Render<IgbCardMedia>(parameters =>
+            parameters.AddChildContent("<img src=\"test.png\" />"));
+
+        Assert.Contains("img", cut.Find("igc-card-media").InnerHtml);
     }
 }

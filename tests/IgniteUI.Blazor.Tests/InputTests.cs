@@ -156,4 +156,94 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
         var element = cut.Find("igc-input");
         Assert.Equal("[A-Za-z]+", element.GetAttribute("pattern"));
     }
+
+    [Fact]
+    public void Input_Label_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Label, "Username"));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("Username", element.GetAttribute("label"));
+    }
+
+    [Fact]
+    public void Input_Outlined_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Outlined, true));
+
+        var element = cut.Find("igc-input");
+        Assert.NotNull(element.GetAttribute("outlined"));
+    }
+
+    [Fact]
+    public void Input_Invalid_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Invalid, true));
+
+        var element = cut.Find("igc-input");
+        Assert.NotNull(element.GetAttribute("invalid"));
+    }
+
+    [Fact]
+    public void Input_Min_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Min, 0));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("0", element.GetAttribute("min"));
+    }
+
+    [Fact]
+    public void Input_Max_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Max, 100));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("100", element.GetAttribute("max"));
+    }
+
+    [Fact]
+    public void Input_Step_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Step, 5));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("5", element.GetAttribute("step"));
+    }
+
+    [Fact]
+    public void Input_Autocomplete_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Autocomplete, "email"));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("email", element.GetAttribute("autocomplete"));
+    }
+
+    [Fact]
+    public void Input_InputMode_RendersAsAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.InputMode, "numeric"));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("numeric", element.GetAttribute("inputmode"));
+    }
+
+    [Fact]
+    public void Input_ValidateOnly_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.ValidateOnly, true));
+
+        var element = cut.Find("igc-input");
+        Assert.NotNull(element.GetAttribute("validate-only"));
+    }
 }

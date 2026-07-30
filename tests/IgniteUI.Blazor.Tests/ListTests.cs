@@ -76,4 +76,13 @@ public class ListHeaderTests : BlazorComponentTestBase
         var header = new IgbListHeader();
         Assert.Equal("WebListHeader", header.Type);
     }
+
+    [Fact]
+    public void ListHeader_ChildContent_Renders()
+    {
+        var cut = Render<IgbListHeader>(parameters =>
+            parameters.AddChildContent("Section A"));
+
+        Assert.Contains("Section A", cut.Find("igc-list-header").InnerHtml);
+    }
 }
