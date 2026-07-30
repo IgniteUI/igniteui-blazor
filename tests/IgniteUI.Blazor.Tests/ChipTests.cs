@@ -1,14 +1,30 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class ChipTests : BlazorComponentTestBase
+public class ChipTests : ComponentWithContractTestBase<IgbChip>
 {
+    protected override ComponentContract<IgbChip> InteropContract { get; } = new ComponentContract<IgbChip>()
+        .Getter(c => c.GetCurrentSelectedAsync(), c => c.GetCurrentSelected(), "Selected", returns: true)
+        .Event(c => c.Select,
+            argsJson: """{"detail": true}""",
+            assert: args => Assert.True(args.Detail))
+        .Event(c => c.Remove,
+            argsJson: """{"detail": true}""",
+            assert: args => Assert.True(args.Detail));
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Chip_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbChip>();
+        var cut = Render<IgbChip>();
         Assert.NotNull(cut.Find("igc-chip"));
     }
 
@@ -22,7 +38,7 @@ public class ChipTests : BlazorComponentTestBase
     [Fact]
     public void Chip_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbChip>(parameters =>
+        var cut = Render<IgbChip>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-chip");
@@ -32,7 +48,7 @@ public class ChipTests : BlazorComponentTestBase
     [Fact]
     public void Chip_Removable_RendersAttribute()
     {
-        var cut = RenderComponent<IgbChip>(parameters =>
+        var cut = Render<IgbChip>(parameters =>
             parameters.Add(p => p.Removable, true));
 
         var element = cut.Find("igc-chip");
@@ -42,7 +58,7 @@ public class ChipTests : BlazorComponentTestBase
     [Fact]
     public void Chip_Selectable_RendersAttribute()
     {
-        var cut = RenderComponent<IgbChip>(parameters =>
+        var cut = Render<IgbChip>(parameters =>
             parameters.Add(p => p.Selectable, true));
 
         var element = cut.Find("igc-chip");
@@ -52,7 +68,7 @@ public class ChipTests : BlazorComponentTestBase
     [Fact]
     public void Chip_Selected_RendersAttribute()
     {
-        var cut = RenderComponent<IgbChip>(parameters =>
+        var cut = Render<IgbChip>(parameters =>
             parameters.Add(p => p.Selected, true));
 
         var element = cut.Find("igc-chip");
@@ -62,7 +78,7 @@ public class ChipTests : BlazorComponentTestBase
     [Fact]
     public void Chip_Variant_RendersAttribute()
     {
-        var cut = RenderComponent<IgbChip>(parameters =>
+        var cut = Render<IgbChip>(parameters =>
             parameters.Add(p => p.Variant, StyleVariant.Info));
 
         var element = cut.Find("igc-chip");
@@ -70,9 +86,45 @@ public class ChipTests : BlazorComponentTestBase
     }
 
     [Fact]
+    public void Chip_Variant_Primary()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Primary));
+
+        Assert.Equal("primary", cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Chip_Variant_Success()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Success));
+
+        Assert.Equal("success", cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Chip_Variant_Warning()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Warning));
+
+        Assert.Equal("warning", cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Chip_Variant_Danger()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Danger));
+
+        Assert.Equal("danger", cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
     public void Chip_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbChip>(parameters =>
+        var cut = Render<IgbChip>(parameters =>
             parameters.AddChildContent("Tag Label"));
 
         Assert.Contains("Tag Label", cut.Markup);

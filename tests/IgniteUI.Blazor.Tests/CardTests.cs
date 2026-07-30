@@ -8,7 +8,7 @@ public class CardTests : BlazorComponentTestBase
     [Fact]
     public void Card_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCard>();
+        var cut = Render<IgbCard>();
         Assert.NotNull(cut.Find("igc-card"));
     }
 
@@ -22,7 +22,7 @@ public class CardTests : BlazorComponentTestBase
     [Fact]
     public void Card_Elevated_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCard>(parameters =>
+        var cut = Render<IgbCard>(parameters =>
             parameters.Add(p => p.Elevated, true));
 
         var element = cut.Find("igc-card");
@@ -32,7 +32,7 @@ public class CardTests : BlazorComponentTestBase
     [Fact]
     public void Card_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbCard>(parameters =>
+        var cut = Render<IgbCard>(parameters =>
             parameters.AddChildContent("<p>Card content</p>"));
 
         Assert.Contains("Card content", cut.Markup);
@@ -50,7 +50,7 @@ public class CardHeaderTests : BlazorComponentTestBase
     [Fact]
     public void CardHeader_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCardHeader>();
+        var cut = Render<IgbCardHeader>();
         Assert.NotNull(cut.Find("igc-card-header"));
     }
 
@@ -60,6 +60,15 @@ public class CardHeaderTests : BlazorComponentTestBase
         var header = new IgbCardHeader();
         Assert.Equal("WebCardHeader", header.Type);
     }
+
+    [Fact]
+    public void CardHeader_ChildContent_Renders()
+    {
+        var cut = Render<IgbCardHeader>(parameters =>
+            parameters.AddChildContent("<h3>Title</h3>"));
+
+        Assert.Contains("Title", cut.Find("igc-card-header").InnerHtml);
+    }
 }
 
 public class CardContentTests : BlazorComponentTestBase
@@ -67,7 +76,7 @@ public class CardContentTests : BlazorComponentTestBase
     [Fact]
     public void CardContent_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCardContent>();
+        var cut = Render<IgbCardContent>();
         Assert.NotNull(cut.Find("igc-card-content"));
     }
 
@@ -77,6 +86,15 @@ public class CardContentTests : BlazorComponentTestBase
         var content = new IgbCardContent();
         Assert.Equal("WebCardContent", content.Type);
     }
+
+    [Fact]
+    public void CardContent_ChildContent_Renders()
+    {
+        var cut = Render<IgbCardContent>(parameters =>
+            parameters.AddChildContent("<p>Body text</p>"));
+
+        Assert.Contains("Body text", cut.Find("igc-card-content").InnerHtml);
+    }
 }
 
 public class CardActionsTests : BlazorComponentTestBase
@@ -84,7 +102,7 @@ public class CardActionsTests : BlazorComponentTestBase
     [Fact]
     public void CardActions_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCardActions>();
+        var cut = Render<IgbCardActions>();
         Assert.NotNull(cut.Find("igc-card-actions"));
     }
 
@@ -94,6 +112,15 @@ public class CardActionsTests : BlazorComponentTestBase
         var actions = new IgbCardActions();
         Assert.Equal("WebCardActions", actions.Type);
     }
+
+    [Fact]
+    public void CardActions_ChildContent_Renders()
+    {
+        var cut = Render<IgbCardActions>(parameters =>
+            parameters.AddChildContent("<button>Action</button>"));
+
+        Assert.Contains("Action", cut.Find("igc-card-actions").InnerHtml);
+    }
 }
 
 public class CardMediaTests : BlazorComponentTestBase
@@ -101,7 +128,7 @@ public class CardMediaTests : BlazorComponentTestBase
     [Fact]
     public void CardMedia_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCardMedia>();
+        var cut = Render<IgbCardMedia>();
         Assert.NotNull(cut.Find("igc-card-media"));
     }
 
@@ -110,5 +137,14 @@ public class CardMediaTests : BlazorComponentTestBase
     {
         var media = new IgbCardMedia();
         Assert.Equal("WebCardMedia", media.Type);
+    }
+
+    [Fact]
+    public void CardMedia_ChildContent_Renders()
+    {
+        var cut = Render<IgbCardMedia>(parameters =>
+            parameters.AddChildContent("<img src=\"test.png\" />"));
+
+        Assert.Contains("img", cut.Find("igc-card-media").InnerHtml);
     }
 }

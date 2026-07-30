@@ -1,14 +1,30 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class IconTests : BlazorComponentTestBase
+public class IconTests : ComponentWithContractTestBase<IgbIcon>
 {
+    protected override ComponentContract<IgbIcon> InteropContract { get; } = new ComponentContract<IgbIcon>()
+        .Method(c => c.RegisterIconAsync("home", "https://example.com/home.svg", "material"), c => c.RegisterIcon("home", "https://example.com/home.svg", "material"),
+            "registerIcon", args: ["home", "https://example.com/home.svg", "material"], types: ["String", "String", "String"])
+        .Method(c => c.RegisterIconFromTextAsync("home", "<svg></svg>", "material"), c => c.RegisterIconFromText("home", "<svg></svg>", "material"),
+            "registerIconFromText", args: ["home", "<svg></svg>", "material"], types: ["String", "String", "String"])
+        // IgbIconMeta is a MarshalByValueFactory type ("WebIconMeta")
+        // wire object carries name/collection plus bookkeeping (___byValue, type), hence JsonSubset.
+        .Method(c => c.SetIconRefAsync("chevron", "material", new IgbIconMeta { Name = "chevron_right", Collection = "custom" }), c => c.SetIconRef("chevron", "material", new IgbIconMeta { Name = "chevron_right", Collection = "custom" }),
+            "setIconRef",
+            args: ["chevron", "material", new JsonSubset("""{"name": "chevron_right", "collection": "custom"}""")],
+            types: ["String", "String", "Json"]);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
     [Fact]
     public void Icon_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbIcon>();
+        var cut = Render<IgbIcon>();
         Assert.NotNull(cut.Find("igc-icon"));
     }
 
@@ -22,7 +38,7 @@ public class IconTests : BlazorComponentTestBase
     [Fact]
     public void Icon_Name_RendersAttribute()
     {
-        var cut = RenderComponent<IgbIcon>(parameters =>
+        var cut = Render<IgbIcon>(parameters =>
             parameters.Add(p => p.IconName, "home"));
 
         var element = cut.Find("igc-icon");
@@ -32,7 +48,7 @@ public class IconTests : BlazorComponentTestBase
     [Fact]
     public void Icon_Collection_RendersAttribute()
     {
-        var cut = RenderComponent<IgbIcon>(parameters =>
+        var cut = Render<IgbIcon>(parameters =>
             parameters.Add(p => p.Collection, "material"));
 
         var element = cut.Find("igc-icon");
@@ -42,11 +58,20 @@ public class IconTests : BlazorComponentTestBase
     [Fact]
     public void Icon_Mirrored_RendersAttribute()
     {
-        var cut = RenderComponent<IgbIcon>(parameters =>
+        var cut = Render<IgbIcon>(parameters =>
             parameters.Add(p => p.Mirrored, true));
 
         var element = cut.Find("igc-icon");
         Assert.NotNull(element.GetAttribute("mirrored"));
+    }
+
+    [Fact]
+    public void Icon_ChildContent_Renders()
+    {
+        var cut = Render<IgbIcon>(parameters =>
+            parameters.AddChildContent("<svg></svg>"));
+
+        Assert.Contains("svg", cut.Find("igc-icon").InnerHtml);
     }
 
     [Fact]

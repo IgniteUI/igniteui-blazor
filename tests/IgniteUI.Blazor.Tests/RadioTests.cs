@@ -1,14 +1,41 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class RadioTests : BlazorComponentTestBase
+public class RadioTests : ComponentWithContractTestBase<IgbRadio>
 {
+    protected override ComponentContract<IgbRadio> InteropContract { get; } = new ComponentContract<IgbRadio>()
+        .Getter(c => c.GetCurrentCheckedAsync(), c => c.GetCurrentChecked(), "Checked", returns: true)
+        .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }),
+            "focus", args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
+        .Method(c => c.ClickAsync(), c => c.Click(), "click")
+        .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
+        .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
+        .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: true)
+        .Method(c => c.SetCustomValidityAsync("Please select an option"), c => c.SetCustomValidity("Please select an option"),
+            "setCustomValidity", args: ["Please select an option"], types: ["String"])
+        .Event(c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "option1"}}}""",
+            assert: args =>
+            {
+                Assert.True(args.Detail.Checked);
+                Assert.Equal("option1", args.Detail.Value);
+            })
+        .Event(c => c.Focus)
+        .Event(c => c.Blur);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void Radio_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbRadio>();
+        var cut = Render<IgbRadio>();
         Assert.NotNull(cut.Find("igc-radio"));
     }
 
@@ -22,7 +49,7 @@ public class RadioTests : BlazorComponentTestBase
     [Fact]
     public void Radio_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.Value, "option1"));
 
         var element = cut.Find("igc-radio");
@@ -32,7 +59,7 @@ public class RadioTests : BlazorComponentTestBase
     [Fact]
     public void Radio_Checked_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.Checked, true));
 
         var element = cut.Find("igc-radio");
@@ -42,7 +69,7 @@ public class RadioTests : BlazorComponentTestBase
     [Fact]
     public void Radio_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-radio");
@@ -52,7 +79,7 @@ public class RadioTests : BlazorComponentTestBase
     [Fact]
     public void Radio_Required_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-radio");
@@ -62,7 +89,7 @@ public class RadioTests : BlazorComponentTestBase
     [Fact]
     public void Radio_LabelPosition_Before()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.Add(p => p.LabelPosition, ToggleLabelPosition.Before));
 
         var element = cut.Find("igc-radio");
@@ -72,7 +99,7 @@ public class RadioTests : BlazorComponentTestBase
     [Fact]
     public void Radio_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbRadio>(parameters =>
+        var cut = Render<IgbRadio>(parameters =>
             parameters.AddChildContent("Option A"));
 
         Assert.Contains("Option A", cut.Markup);
@@ -85,12 +112,28 @@ public class RadioTests : BlazorComponentTestBase
     }
 }
 
-public class RadioGroupTests : BlazorComponentTestBase
+public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
 {
+    protected override ComponentContract<IgbRadioGroup> InteropContract { get; } = new ComponentContract<IgbRadioGroup>()
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: "selected-option")
+        .Event(c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "selected-option"}}}""",
+            assert: args =>
+            {
+                Assert.True(args.Detail.Checked);
+                Assert.Equal("selected-option", args.Detail.Value);
+            });
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
     [Fact]
     public void RadioGroup_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbRadioGroup>();
+        var cut = Render<IgbRadioGroup>();
         Assert.NotNull(cut.Find("igc-radio-group"));
     }
 
@@ -104,7 +147,7 @@ public class RadioGroupTests : BlazorComponentTestBase
     [Fact]
     public void RadioGroup_Alignment_Vertical()
     {
-        var cut = RenderComponent<IgbRadioGroup>(parameters =>
+        var cut = Render<IgbRadioGroup>(parameters =>
             parameters.Add(p => p.Alignment, ContentOrientation.Vertical));
 
         var element = cut.Find("igc-radio-group");
@@ -114,7 +157,7 @@ public class RadioGroupTests : BlazorComponentTestBase
     [Fact]
     public void RadioGroup_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbRadioGroup>(parameters =>
+        var cut = Render<IgbRadioGroup>(parameters =>
             parameters.Add(p => p.Value, "selected-option"));
 
         var element = cut.Find("igc-radio-group");
