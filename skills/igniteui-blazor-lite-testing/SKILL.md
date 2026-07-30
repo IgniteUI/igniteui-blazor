@@ -46,7 +46,9 @@ dotnet test tests/IgniteUI.Blazor.Tests -f net10.0 --nologo --filter "FullyQuali
 
 ### Conventions
 
-- **Suites may live per class, instead of per file** — search for the class (`BannerTests` is in `MiscComponentTests.cs`, `SnackbarTests`/`ToastTests` in `AlertTests.cs`).
+- Generally follow **one file per component: `<Name>Tests.cs` holds `<Name>Tests`.** A component's **child** components may share the parent's file (`SelectTests.cs` also holds `SelectItemTests`/`SelectGroupTests`/`SelectHeaderTests`; likewise Card, List, Dropdown, NavDrawer, Tabs, Stepper, TileManager, Tree, Rating, Slider) — that's the only permitted multi-class file. Cross-cutting suites (`BaseControlTests`, `*SerializationTests`, `ScriptPropTests`, `Interop*Tests`) are keyed to a class/behavior, not a component, and keep their own files.
+- New facts go into the existing `<Name>Tests` class; if the class carries a contract, plain bUnit facts sit alongside the contract runners in the same class.
+- Shared test helpers live in `ElementAssertionExtensions.cs`.
 - **Skips need a mechanism reason.** Bug-tracker or `componentsConfig.json` listings are not skip reasons. If a member's decode hits a gap in shared infrastructure the change doesn't own, cover it pinning current behavior and write the *correct* assertion commented out under a `// TODO:` explaining the gap — ready to uncomment when fixed. A gap in a component under construction is a bug to fix, not to pin — see the two authoring modes in the interop reference.
 - Components are `partial` — the generated `src/components/Blazor/<Name>.cs` is not the whole class; always check `src/componentsBase/WebInputs/<Name>.cs` for hand-written extensions before drawing conclusions.
 - Formatting: only `dotnet format whitespace --folder` is safe in this repo — a full `dotnet format` writes conflict markers into multi-targeted sources.

@@ -70,6 +70,25 @@ public class AvatarTests : BlazorComponentTestBase
     }
 
     [Fact]
+    public void Avatar_Shape_Square()
+    {
+        var cut = Render<IgbAvatar>(parameters =>
+            parameters.Add(p => p.Shape, AvatarShape.Square));
+
+        var element = cut.Find("igc-avatar");
+        Assert.Equal("square", element.GetAttribute("shape"));
+    }
+
+    [Fact]
+    public void Avatar_ChildContent_Renders()
+    {
+        var cut = Render<IgbAvatar>(parameters =>
+            parameters.AddChildContent("<img src=\"avatar.png\" />"));
+
+        Assert.Contains("img", cut.Find("igc-avatar").InnerHtml);
+    }
+
+    [Fact]
     public void Avatar_InheritsFromBaseRendererControl()
     {
         Assert.True(typeof(IgbAvatar).IsSubclassOf(typeof(BaseRendererControl)));

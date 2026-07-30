@@ -148,6 +148,46 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     }
 
     [Fact]
+    public void Select_Outlined_RendersAttribute()
+    {
+        var cut = Render<IgbSelect>(parameters =>
+            parameters.Add(p => p.Outlined, true));
+
+        var element = cut.Find("igc-select");
+        Assert.NotNull(element.GetAttribute("outlined"));
+    }
+
+    [Fact]
+    public void Select_Autofocus_RendersAttribute()
+    {
+        var cut = Render<IgbSelect>(parameters =>
+            parameters.Add(p => p.Autofocus, true));
+
+        var element = cut.Find("igc-select");
+        Assert.NotNull(element.GetAttribute("autofocus"));
+    }
+
+    [Fact]
+    public void Select_Invalid_RendersAttribute()
+    {
+        var cut = Render<IgbSelect>(parameters =>
+            parameters.Add(p => p.Invalid, true));
+
+        var element = cut.Find("igc-select");
+        Assert.NotNull(element.GetAttribute("invalid"));
+    }
+
+    [Fact]
+    public void Select_Distance_RendersAttribute()
+    {
+        var cut = Render<IgbSelect>(parameters =>
+            parameters.Add(p => p.Distance, 8));
+
+        var element = cut.Find("igc-select");
+        Assert.Equal("8", element.GetAttribute("distance"));
+    }
+
+    [Fact]
     public void Select_InheritsFromBaseRendererControl()
     {
         Assert.True(typeof(IgbSelect).IsSubclassOf(typeof(BaseRendererControl)));
@@ -207,5 +247,43 @@ public class SelectItemTests : BlazorComponentTestBase
             parameters.AddChildContent("United States"));
 
         Assert.Contains("United States", cut.Markup);
+    }
+}
+
+public class SelectGroupTests : BlazorComponentTestBase
+{
+    [Fact]
+    public void SelectGroup_RendersCorrectElement()
+    {
+        var cut = Render<IgbSelectGroup>();
+        cut.Find("igc-select-group").Should_Exist();
+    }
+
+    [Fact]
+    public void SelectGroup_Disabled_RendersAttribute()
+    {
+        var cut = Render<IgbSelectGroup>(parameters =>
+            parameters.Add(p => p.Disabled, true));
+
+        Assert.NotNull(cut.Find("igc-select-group").GetAttribute("disabled"));
+    }
+}
+
+public class SelectHeaderTests : BlazorComponentTestBase
+{
+    [Fact]
+    public void SelectHeader_RendersCorrectElement()
+    {
+        var cut = Render<IgbSelectHeader>();
+        cut.Find("igc-select-header").Should_Exist();
+    }
+
+    [Fact]
+    public void SelectHeader_ChildContent_Renders()
+    {
+        var cut = Render<IgbSelectHeader>(parameters =>
+            parameters.AddChildContent("Group A"));
+
+        Assert.Contains("Group A", cut.Find("igc-select-header").InnerHtml);
     }
 }

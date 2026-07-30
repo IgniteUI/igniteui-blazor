@@ -21,7 +21,7 @@ The recipe below is phrased for pin mode ("read the source"); in spec mode, subs
 
 Each component has (at most) **one** suite carrying the contract:
 
-- If the component already has a test class, change its base from `BlazorComponentTestBase` to `ComponentWithContractTestBase<Igb<Name>>`, add `using IgniteUI.Blazor.Tests.Interop;`, and add the `Contract` property at the top. Leave all existing facts untouched. **Search for the class, not the file** — some suites live in shared files (e.g. `BannerTests` is in `MiscComponentTests.cs`, `SnackbarTests`/`ToastTests` in `AlertTests.cs`). If several classes exist for one component (`XTests` + `XExtendedTests`), put the contract on the primary (`XTests`) only.
+- If the component already has a test class, change its base from `BlazorComponentTestBase` to `ComponentWithContractTestBase<Igb<Name>>`, add `using IgniteUI.Blazor.Tests.Interop;`, and add the `Contract` property at the top. Leave all existing facts untouched. `<Name>Tests` lives in `<Name>Tests.cs` — except for **child** components, whose suite may shares the parent's file (`SelectItemTests` is in `SelectTests.cs`).
 - If no suite exists anywhere, create `<Name>Tests.cs` with the contract.
 - Components with **no interop surface** (they never send an interop invocation and register no JS-originated event handlers — e.g. Badge) stay on `BlazorComponentTestBase`.
 

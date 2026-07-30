@@ -1,4 +1,4 @@
-# Overview  
+# Overview
 Ignite UI for Blazor accepts contributions, as long as they follow the guidelines explained below. When contributing you would have to follow these steps:
 
 1. Fork the repository or make a branch (if you have the necessary rights)
@@ -12,7 +12,7 @@ Your pull request will undergo a review and if approved will be merged. All chec
     npm install
     npm test
 
-[General Naming and Coding Guidelines](../../../wiki/General-Naming-and-Coding-Guidelines-for-Ignite-UI-for-Blazor)  
+[General Naming and Coding Guidelines](../../../wiki/General-Naming-and-Coding-Guidelines-for-Ignite-UI-for-Blazor)
 -->
 
 # Workflow
@@ -44,7 +44,7 @@ Example status workflows:
 
 ### Versioning
 
-When creating an issue assign a `version:` label. Add `version:` labels for each version for which the issue is applicable.  
+When creating an issue assign a `version:` label. Add `version:` labels for each version for which the issue is applicable.
 When creating a PR assign a `version:` label for the corresponding version branch the PR is targeting.
 
 ### Severity
@@ -54,7 +54,7 @@ When logging issue you should assign `severity:` label. If you cannot determine 
 1. `severity: low` the issue is unnoticeable or barely noticeable in uncommon interactions with the feature. The issue does not affect end-user experience, or any of the general functionalities of the feature. The feature works fine if the issue persists to exist.
 2. `severity: medium` the issue is noticeable, but only in certain scenarios, which are not commonly anticipated. The issue affects end-user experience to a lesser degree, but does not affect the general functionalities of the feature. The feature behaviors may be affected by this issue when new behaviors are added, or new integration scenarios are developed.
 3. `severity: high` the issue is noticeable in common interaction scenarios. The issue affects the end-user experience significantly, and affects one or more of the general functionalities of the feature. The feature behaviors are affected by the issue, causing one or more of the behaviors to malfunction.
-4. `severity: critical` the issue appears in a core interaction scenarios (80% use-cases). The issue is immediately noticeable by end-users and stops their interaction flow (an exception is thrown which prevents the user to continue their work with the UI, or breaks the UI completely). The issues affects one or more of the core functionalities of the feature causing them or the entire feature to stop functioning. 
+4. `severity: critical` the issue appears in a core interaction scenarios (80% use-cases). The issue is immediately noticeable by end-users and stops their interaction flow (an exception is thrown which prevents the user to continue their work with the UI, or breaks the UI completely). The issues affects one or more of the core functionalities of the feature causing them or the entire feature to stop functioning.
 
 ### Triaging
 
@@ -77,11 +77,11 @@ Example status workflows:
 `status: awaiting-test` => `status: in-test` => `status: not-fixed` => `status: in-development` => `status: awaiting-test`
 
 ## Accessibility (a11y)
-Accessibility is an integral part of any UI component. We as a team are committed to deliver fully-accessible UI components. Every developer should take into account the following standards and should implement and test for compliance with them:  
- * Section 508 compliance.  
- * WCAG (preferably AAA compliance, AA compliance where AAA is unachivable because of the type of UI component)  
- * WAI-ARIA  
- * Full keyboard navigation  
+Accessibility is an integral part of any UI component. We as a team are committed to deliver fully-accessible UI components. Every developer should take into account the following standards and should implement and test for compliance with them:
+ * Section 508 compliance.
+ * WCAG (preferably AAA compliance, AA compliance where AAA is unachivable because of the type of UI component)
+ * WAI-ARIA
+ * Full keyboard navigation
 
 ## Localization - applicable to issues and pull requests
 1. `status: pending-localization` this status tells that there are changes in the localization strings that need to be translated. When you make such changes, put this status badge without removing the other applicable ones and assign a person to do the translations.
@@ -98,7 +98,7 @@ There are several ways to localize components' string resources:
 
 2. Using npm package:
 We've created new repository which will hold the resource strings for languages different than English:
-https://github.com/IgniteUI/igniteui-Blazor-i18n 
+https://github.com/IgniteUI/igniteui-Blazor-i18n
 
 **NOTE** The localization repo has been moved to live inside the `igniteui-Blazor` repository under `./projects/igniteui-Blazor-i18n`
 **NOTE** As of 21.1.x the localization resource strings have been moved to the [`igniteui-i18n`](https://github.com/IgniteUI/igniteui-i18n) repository under `projects/igniteui-i18n-resources`.
@@ -131,16 +131,16 @@ When committing a message you need to follow this template convention:
 `<type>(<scope>): <subject> <issue|optional>`
 
 1. `<type>` - The type is the conventional type of the commit message. All possible choices you can find [here](https://github.com/pvdlg/conventional-commit-types#commit-types).
-2. `<scope>` - The scope is the context on which you are worked on. It could be current directive, component etc. 
+2. `<scope>` - The scope is the context on which you are worked on. It could be current directive, component etc.
 	If you are unable to determine your working context you can leave it as "(*)".
 3. `<subject>` - The subject (first line of the Commit message) is the most critical. So be sure you have clear and easy understandable description about the commit.
 	The limit of the subject is at least `15` characters.
-4. `<issue>` - The issue is the refenrece of the github task you have. Be aware that you are able to link more than one issue. For instance `(#123 #456)`. 
+4. `<issue>` - The issue is the refenrece of the github task you have. Be aware that you are able to link more than one issue. For instance `(#123 #456)`.
 	Also there is another important point, for `(fix, feat, test) types` you are obliged to add at least one issue reference.
 5. The limits you have per line is `80` characters.
 ### example: "feat(checkbox): add ripple, indeterminate state, and label #123"
 
-# Fixing a bug  
+# Fixing a bug
 When fixing a bug you need to follow these guidelines:
 
 1. Leave a comment above your change in the format `<initials> <date> <Issue Number|Issue Link> <Comment for the change>`
@@ -167,6 +167,7 @@ In order to contribute code to a new feature, you need to follow these guideline
 
 1. Work on implementation in your fork/branch.
 2. Follow a test-driven development process (TDD) to ensure full code coverage.
+   * Unit tests go in `tests/IgniteUI.Blazor.Tests`, generally **one file per component** — `<Name>Tests.cs` holds `<Name>Tests`. Suites for a component's child components may share the parent's file (e.g. `SelectItemTests` in `SelectTests.cs`); anything else gets its own file.
 3. Document all newly added public methods, inputs, outputs and properties.
 4. Make sure all static code analysis and tests pass before opening a pull request.
 5. Test the component with screen reader and browser tools for accessibility compliance.

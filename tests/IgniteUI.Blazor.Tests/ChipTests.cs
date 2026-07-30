@@ -86,6 +86,42 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
     }
 
     [Fact]
+    public void Chip_Variant_Primary()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Primary));
+
+        Assert.Equal("primary", cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Chip_Variant_Success()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Success));
+
+        Assert.Equal("success", cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Chip_Variant_Warning()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Warning));
+
+        Assert.Equal("warning", cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Chip_Variant_Danger()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Danger));
+
+        Assert.Equal("danger", cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
     public void Chip_ChildContent_Renders()
     {
         var cut = Render<IgbChip>(parameters =>
