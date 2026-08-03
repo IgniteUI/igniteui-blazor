@@ -41,12 +41,53 @@ public sealed record RawJson(string Json);
 public sealed record JsonSubset(string Json);
 
 /// <summary>
-/// An expected wire value that can only be computed once the component has rendered —
-/// typically a reference to a child, whose interop instance id is assigned then. Resolved
-/// against the harness and the render right before comparison, and may itself produce a
-/// <see cref="RawJson"/>/<see cref="JsonSubset"/> or a scalar.
+/// Non-generic view of a <see cref="FromRender{T}"/>, so the runner can spot and resolve a
+/// late value sitting inside an untyped collection (a method's expected arguments).
 /// </summary>
-public sealed record FromRender(Func<InteropHarness, IRenderedComponent<IComponent>, object?> Value);
+internal interface IFromRender
+{
+    object? Resolve(InteropHarness harness, IRenderedComponent<IComponent> scope);
+}
+
+/// <summary>
+/// A contract value that can only be settled once the component has rendered — a child's
+/// interop instance id, a captured element handle, a data item's assigned uuid. This is the
+/// only such mechanism in the DSL: any parameter typed <see cref="FromRender{T}"/> accepts
+/// either a fixed value (implicitly, written exactly as it would be otherwise) or a late one
+/// built with <see cref="FromRender.Of{T}"/>. The render scope is the cut for an arranged
+/// spec and the whole host render for a hosted one, matching the spec's own scope.
+/// </summary>
+public readonly struct FromRender<T> : IFromRender
+{
+    private readonly T _value;
+    private readonly Func<InteropHarness, IRenderedComponent<IComponent>, T>? _resolve;
+
+    internal FromRender(T value)
+    {
+        _value = value;
+        _resolve = null;
+    }
+
+    internal FromRender(Func<InteropHarness, IRenderedComponent<IComponent>, T> resolve)
+    {
+        _value = default!;
+        _resolve = resolve;
+    }
+
+    public static implicit operator FromRender<T>(T value) => new(value);
+
+    /// <summary>The settled value: computed against the render when declared late, otherwise as given.</summary>
+    internal T Get(InteropHarness harness, IRenderedComponent<IComponent> scope) =>
+        _resolve is null ? _value : _resolve(harness, scope);
+
+    object? IFromRender.Resolve(InteropHarness harness, IRenderedComponent<IComponent> scope) => Get(harness, scope);
+}
+
+/// <summary>Builds late <see cref="FromRender{T}"/> values — the counterpart to <see cref="ContractHost.Of{THost}"/>.</summary>
+public static class FromRender
+{
+    public static FromRender<T> Of<T>(Func<InteropHarness, IRenderedComponent<IComponent>, T> resolve) => new(resolve);
+}
 
 public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
 {
@@ -59,7 +100,8 @@ public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
     public required Func<TComponent, Task<object?>> Invoke { get; init; }
     public object?[] ExpectedArgs { get; init; } = [];
     public string[] ExpectedTypes { get; init; } = [];
-    public InteropReturn? Stub { get; init; }
+    /// <summary>The value the JS side hands back, settled against the render when the spec declared it late.</summary>
+    public FromRender<InteropReturn>? Stub { get; init; }
     public object? ExpectedReturn { get; init; }
     public bool HasExpectedReturn { get; init; }
 
@@ -81,14 +123,7 @@ public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
     /// </summary>
     public Func<TComponent, object?>? SyncInvoke { get; init; }
 
-    /// <summary>
-    /// Dynamic stub for returns referencing arranged children (ids only known after render);
-    /// wins over <see cref="Stub"/>. The fragment is the render scope: the cut itself for
-    /// arranged specs, the whole host for hosted ones (so ancestors are reachable).
-    /// </summary>
-    public Func<InteropHarness, IRenderedComponent<IComponent>, InteropReturn>? StubFactory { get; init; }
-
-    /// <summary>Dynamic return assert receiving the render scope (see <see cref="StubFactory"/>) to compare against arranged instances.</summary>
+    /// <summary>Dynamic return assert receiving the render scope, to compare against arranged instances.</summary>
     public Action<IRenderedComponent<IComponent>, object?>? AssertReturnWithCut { get; init; }
 
     /// <summary>
@@ -105,13 +140,11 @@ public sealed class StatePropContractSpec<TComponent> where TComponent : ICompon
 {
     public required string WireName { get; init; }
     public required Action<ComponentParameterCollectionBuilder<TComponent>> Set { get; init; }
-    public object? ExpectedValue { get; init; }
+    /// <summary>The transmitted value, settled against the render when the spec declared it late.</summary>
+    public FromRender<object?> ExpectedValue { get; init; }
 
     /// <summary>Extra render setup the transmission depends on (e.g. data items the value must reference).</summary>
     public Action<ComponentParameterCollectionBuilder<TComponent>>? Arrange { get; init; }
-
-    /// <summary>Dynamic wire value for transmissions referencing arranged state (ids only known after render); wins over <see cref="ExpectedValue"/>.</summary>
-    public Func<InteropHarness, IRenderedComponent<TComponent>, object?>? ExpectedValueFactory { get; init; }
 
     public SpecSource? Source { get; init; }
 }
@@ -133,7 +166,8 @@ public sealed class EventContractSpec<TComponent> where TComponent : IComponent
 
     /// <summary>The declared event args type; the runner asserts the received args are assignable to it.</summary>
     public required Type ArgsType { get; init; }
-    public string ArgsJson { get; init; } = "{}";
+    /// <summary>The dispatched payload, settled against the render when the spec declared it late.</summary>
+    public FromRender<string> ArgsJson { get; init; } = "{}";
     public Action<object>? AssertArgs { get; init; }
 
     /// <summary>Like <see cref="AssertArgs"/> but also receives the rendered component (for reference-resolution asserts).</summary>
@@ -141,9 +175,6 @@ public sealed class EventContractSpec<TComponent> where TComponent : IComponent
 
     /// <summary>Extra render setup the event needs to be reachable (child components, data, ...).</summary>
     public Action<ComponentParameterCollectionBuilder<TComponent>>? Arrange { get; init; }
-
-    /// <summary>Dynamic payload builder for references only known after render (child ids); wins over <see cref="ArgsJson"/>.</summary>
-    public Func<InteropHarness, IRenderedComponent<TComponent>, string>? ArgsJsonFactory { get; init; }
 
     /// <summary>Like <see cref="AssertWithComponent"/> but receives the rendered cut (to reach arranged children).</summary>
     public Action<IRenderedComponent<TComponent>, object>? AssertWithCut { get; init; }
@@ -169,12 +200,17 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     public IReadOnlyList<EventContractSpec<TComponent>> Events => _events;
     public IReadOnlyList<StatePropContractSpec<TComponent>> Props => _props;
 
-    /// <summary>A void API method (async-only members): asserts identifier, arguments and type tags.</summary>
+    /// <summary>
+    /// A void API method (async-only members): asserts identifier, arguments and type tags.
+    /// <paramref name="arrange"/>/<paramref name="elements"/> as on the twin overload below.
+    /// </summary>
     public ComponentContract<TComponent> Method(
         Func<TComponent, Task> invoke,
         string jsName,
         object?[]? args = null,
         string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
     {
@@ -184,6 +220,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             Invoke = async c => { await invoke(c); return null; },
             ExpectedArgs = args ?? [],
             ExpectedTypes = types ?? [],
+            Arrange = arrange,
+            ExpectedElements = elements,
             Source = new SpecSource(atFile, atLine),
         });
         return this;
@@ -195,7 +233,9 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         Func<TComponent, Task<TResult>> invoke,
         string jsName,
         object?[]? args = null,
-        string[]? types = null)
+        string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null)
         => throw new NotSupportedException();
 
     /// <summary>
@@ -209,22 +249,26 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         TResult returns,
         object?[]? args = null,
         string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
-        => Method(invoke, jsName, StubFor(returns), returns, args, types, atFile, atLine);
+        => Method(invoke, jsName, StubFor(returns), returns, args, types, arrange, elements, atFile, atLine);
 
     /// <summary>
     /// Value-returning method overload (async-only members) for wire returns the value
     /// form can't express (object/array envelopes, or stubs that decode to a different
-    /// value than sent).
+    /// value than sent, or a stub only known once rendered — see <see cref="FromRender{T}"/>).
     /// </summary>
     public ComponentContract<TComponent> Method<TResult>(
         Func<TComponent, Task<TResult>> invoke,
         string jsName,
-        InteropReturn returns,
+        FromRender<InteropReturn> returns,
         TResult expect,
         object?[]? args = null,
         string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
     {
@@ -234,6 +278,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             Invoke = async c => await invoke(c),
             ExpectedArgs = args ?? [],
             ExpectedTypes = types ?? [],
+            Arrange = arrange,
+            ExpectedElements = elements,
             Stub = returns,
             ExpectedReturn = expect,
             HasExpectedReturn = true,
@@ -297,7 +343,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         Func<TComponent, Task<TResult>> invoke,
         Func<TComponent, TResult> sync,
         string jsName,
-        InteropReturn returns,
+        FromRender<InteropReturn> returns,
         TResult expect,
         object?[]? args = null,
         string[]? types = null,
@@ -380,7 +426,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     public ComponentContract<TComponent> Getter<TResult>(
         Func<TComponent, Task<TResult>> invoke,
         string propertyName,
-        InteropReturn returns,
+        FromRender<InteropReturn> returns,
         TResult expect,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
@@ -408,7 +454,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         Func<TComponent, Task<TResult>> invoke,
         string propertyName,
         Action<ComponentParameterCollectionBuilder<TComponent>> arrange,
-        Func<InteropHarness, IRenderedComponent<TComponent>, InteropReturn> returns,
+        FromRender<InteropReturn> returns,
         Action<IRenderedComponent<TComponent>, TResult> assert,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
@@ -418,8 +464,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             ReadsProperty = propertyName,
             Invoke = async c => await invoke(c),
             Arrange = arrange,
-            // For arranged specs the render scope IS the typed cut.
-            StubFactory = (h, scope) => returns(h, (IRenderedComponent<TComponent>)scope),
+            Stub = returns,
             AssertReturnWithCut = (scope, o) => assert((IRenderedComponent<TComponent>)scope, (TResult)o!),
             Source = new SpecSource(atFile, atLine),
         });
@@ -439,7 +484,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         string propertyName,
         Func<BunitContext, IRenderedComponent<IComponent>> host,
         Func<IRenderedComponent<IComponent>, IRenderedComponent<TComponent>> target,
-        Func<InteropHarness, IRenderedComponent<IComponent>, InteropReturn> returns,
+        FromRender<InteropReturn> returns,
         Action<IRenderedComponent<IComponent>, TResult> assert,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
@@ -450,7 +495,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             Invoke = async c => await invoke(c),
             Host = host,
             Target = target,
-            StubFactory = returns,
+            Stub = returns,
             AssertReturnWithCut = (scope, o) => assert(scope, (TResult)o!),
             Source = new SpecSource(atFile, atLine),
         });
@@ -472,7 +517,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         Func<TComponent, Task<TResult>> invoke,
         Func<TComponent, TResult> sync,
         string propertyName,
-        InteropReturn returns,
+        FromRender<InteropReturn> returns,
         TResult expect,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
@@ -496,7 +541,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         Func<TComponent, TResult> sync,
         string propertyName,
         Action<ComponentParameterCollectionBuilder<TComponent>> arrange,
-        Func<InteropHarness, IRenderedComponent<TComponent>, InteropReturn> returns,
+        FromRender<InteropReturn> returns,
         Action<IRenderedComponent<TComponent>, TResult> assert,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
@@ -507,7 +552,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             Invoke = async c => await invoke(c),
             SyncInvoke = c => sync(c),
             Arrange = arrange,
-            StubFactory = (h, scope) => returns(h, (IRenderedComponent<TComponent>)scope),
+            Stub = returns,
             AssertReturnWithCut = (scope, o) => assert((IRenderedComponent<TComponent>)scope, (TResult)o!),
             Source = new SpecSource(atFile, atLine),
         });
@@ -521,7 +566,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         string propertyName,
         Func<BunitContext, IRenderedComponent<IComponent>> host,
         Func<IRenderedComponent<IComponent>, IRenderedComponent<TComponent>> target,
-        Func<InteropHarness, IRenderedComponent<IComponent>, InteropReturn> returns,
+        FromRender<InteropReturn> returns,
         Action<IRenderedComponent<IComponent>, TResult> assert,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
@@ -533,7 +578,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             SyncInvoke = c => sync(c),
             Host = host,
             Target = target,
-            StubFactory = returns,
+            Stub = returns,
             AssertReturnWithCut = (scope, o) => assert(scope, (TResult)o!),
             Source = new SpecSource(atFile, atLine),
         });
@@ -556,12 +601,17 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     /// <summary>
     /// Prop overload stating the wire value explicitly — required for enums (wire enum
     /// value) and serialized objects/arrays (<see cref="JsonSubset"/>/<see cref="RawJson"/>).
+    /// <paramref name="arrange"/> adds render setup the transmission depends on (e.g. the
+    /// data items the value references); pass a late <paramref name="wire"/>
+    /// (<see cref="FromRender.Of{T}"/>) when it can only be known once that has rendered —
+    /// tracked items, for instance, cross as refs whose ids are assigned on transfer.
     /// </summary>
     public ComponentContract<TComponent> Prop<TValue>(
         Expression<Func<TComponent, TValue>> member,
         TValue value,
-        object? wire,
+        FromRender<object?> wire,
         string? wireName = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
     {
@@ -570,31 +620,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             WireName = wireName ?? WirePropertyName(member),
             Set = ps => ps.Add(member, value),
             ExpectedValue = wire,
-            Source = new SpecSource(atFile, atLine),
-        });
-        return this;
-    }
-
-    /// <summary>
-    /// Prop overload with render arrangement and a dynamic wire value — for values whose
-    /// transmission references arranged state (e.g. data items crossing as uuid refs
-    /// whose ids are only assigned once the data source transfers).
-    /// </summary>
-    public ComponentContract<TComponent> Prop<TValue>(
-        Expression<Func<TComponent, TValue>> member,
-        TValue value,
-        Action<ComponentParameterCollectionBuilder<TComponent>> arrange,
-        Func<InteropHarness, IRenderedComponent<TComponent>, object?> wire,
-        string? wireName = null,
-        [CallerFilePath] string atFile = "",
-        [CallerLineNumber] int atLine = 0)
-    {
-        _props.Add(new StatePropContractSpec<TComponent>
-        {
-            WireName = wireName ?? WirePropertyName(member),
-            Set = ps => ps.Add(member, value),
             Arrange = arrange,
-            ExpectedValueFactory = wire,
             Source = new SpecSource(atFile, atLine),
         });
         return this;
@@ -677,14 +703,15 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
 
     /// <summary>
     /// Event overload for payloads referencing arranged children: <paramref name="arrange"/>
-    /// adds the children (or data) the event needs, <paramref name="argsJson"/> builds the
-    /// payload after render (when child ids exist), and <paramref name="assert"/> receives
-    /// the rendered cut so it can compare against the arranged child instances.
+    /// adds the children (or data) the event needs, a late <paramref name="argsJson"/>
+    /// (<see cref="FromRender.Of{T}"/>) builds the payload after render (when child ids
+    /// exist), and <paramref name="assert"/> receives the rendered cut so it can compare
+    /// against the arranged child instances.
     /// </summary>
     public ComponentContract<TComponent> Event<TArgs>(
         Expression<Func<TComponent, EventCallback<TArgs>>> member,
         Action<ComponentParameterCollectionBuilder<TComponent>> arrange,
-        Func<InteropHarness, IRenderedComponent<TComponent>, string> argsJson,
+        FromRender<string> argsJson,
         Action<IRenderedComponent<TComponent>, TArgs> assert,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
@@ -696,7 +723,7 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             Get = GetterOf(member),
             ArgsType = typeof(TArgs),
             Arrange = arrange,
-            ArgsJsonFactory = argsJson,
+            ArgsJson = argsJson,
             AssertWithCut = (cut, o) => assert(cut, (TArgs)o),
             Source = new SpecSource(atFile, atLine),
         });

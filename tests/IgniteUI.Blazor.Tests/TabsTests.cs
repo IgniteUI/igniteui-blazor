@@ -17,7 +17,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
                 builder.AddAttribute(3, "id", "tab-2");
                 builder.CloseComponent();
             }),
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tab:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tab:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) =>
             {
                 Assert.Same(cut.Instance.ActualTabsCollection[1], args.Detail);

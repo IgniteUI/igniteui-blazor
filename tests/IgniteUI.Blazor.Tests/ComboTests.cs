@@ -47,17 +47,17 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             args: ["invalid entry"], types: ["String"])
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
-            returns: (interop, cut) => InteropReturn.Array(
-                $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 0)}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array(
+                $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 0)}}"}]""")),
             assert: (cut, result) => Assert.Same(_valueItem1, Assert.Single(result)))
         .Getter(c => c.GetSelectionAsync(), c => c.GetSelection(), "Selection",
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
-            returns: (interop, cut) => InteropReturn.Array(
-                $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 1)}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array(
+                $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 1)}}"}]""")),
             assert: (cut, result) => Assert.Same(_valueItem2, Assert.Single(result)))
         .Event(c => c.Change,
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
-            argsJson: (interop, cut) => ChangeDetail(UuidRef(interop, cut, 0), UuidRef(interop, cut, 0)),
+            argsJson: FromRender.Of((interop, cut) => ChangeDetail(UuidRef(interop, cut, 0), UuidRef(interop, cut, 0))),
             assert: (cut, args) =>
             {
                 Assert.Same(_valueItem1, Assert.Single(args.Detail.NewValue));
@@ -68,7 +68,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             arrange: ps => ps
                 .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
                 .Add(c => c.Value, [_valueItem1]),
-            argsJson: (interop, cut) => ChangeDetail("", UuidRef(interop, cut, 0), "deselection"),
+            argsJson: FromRender.Of((interop, cut) => ChangeDetail("", UuidRef(interop, cut, 0), "deselection")),
             assert: (cut, args) =>
             {
                 Assert.Empty(args.Detail.NewValue);
@@ -79,9 +79,9 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             })
         .Event(c => c.Change,
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
-            argsJson: (interop, cut) => ChangeDetail(
+            argsJson: FromRender.Of((interop, cut) => ChangeDetail(
                 UuidRef(interop, cut, 0) + ", " + UuidRef(interop, cut, 1),
-                UuidRef(interop, cut, 0) + ", " + UuidRef(interop, cut, 1)),
+                UuidRef(interop, cut, 0) + ", " + UuidRef(interop, cut, 1))),
             assert: (cut, args) =>
             {
                 // Multi-selection: every element resolves back to its original data instance.
@@ -128,7 +128,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
         .Prop(c => c.Value,
             value: [_valueItem1],
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
-            wire: (interop, cut) => new RawJson($"[{UuidRef(interop, cut, 0)}]"))
+            wire: FromRender.Of<object?>((interop, cut) => new RawJson($"[{UuidRef(interop, cut, 0)}]")))
         .Prop(c => c.Data,
             new[]
             {
@@ -295,7 +295,7 @@ public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>
     protected override ComponentContract<IgbCombo<double>> InteropContract { get; } = new ComponentContract<IgbCombo<double>>()
         .Event(c => c.Change,
             arrange,
-            argsJson: (interop, cut) => ComboTests.ChangeDetail("2", ComboTests.UuidRef(interop, cut, 1)),
+            argsJson: FromRender.Of((interop, cut) => ComboTests.ChangeDetail("2", ComboTests.UuidRef(interop, cut, 1))),
             assert: (cut, args) =>
             {
                 Assert.Equal(2.0, Assert.Single(args.Detail.NewValue)); // numbers decode as double

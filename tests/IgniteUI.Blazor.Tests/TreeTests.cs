@@ -22,27 +22,27 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     protected override ComponentContract<IgbTree> InteropContract { get; } = new ComponentContract<IgbTree>()
         .Event(c => c.ItemExpanding,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.ItemExpanded,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.ItemCollapsing,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.ItemCollapsed,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.ActiveItem,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.SelectionChanged,
             arrange,
-            argsJson: (interop, cut) => $$$$$"""{"detail": {"retType": "object", "type": "", "value": {"newSelection": {"retType": "Array", "type": "", "value": [{"refType": "name", "id": "{{{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}}}"}]}}}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$$$"""{"detail": {"retType": "object", "type": "", "value": {"newSelection": {"retType": "Array", "type": "", "value": [{"refType": "name", "id": "{{{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}}}"}]}}}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail.NewSelection[0]));
 
     [Fact]
@@ -179,7 +179,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
         .Method(c => c.CollapseAsync(), c => c.Collapse(), "collapse")
         .Getter(c => c.GetPathAsync(), c => c.GetPath(), "Path",
             arrange: ps => { },
-            returns: (interop, cut) => InteropReturn.Array("""[{"refType": "name", "id": "mainControl"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array("""[{"refType": "name", "id": "mainControl"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Single(result);
@@ -188,7 +188,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
         .Getter(c => c.GetPathAsync(), c => c.GetPath(), "Path",
             host: treeHost,
             target: h => h.FindComponents<IgbTreeItem>()[1], // Child 1.1
-            returns: (interop, h) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(h, "igc-tree-item")}}}"}, {"refType": "name", "id": "mainControl"}]"""),
+            returns: FromRender.Of((interop, h) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(h, "igc-tree-item")}}}"}, {"refType": "name", "id": "mainControl"}]""")),
             assert: (h, result) =>
             {
                 Assert.Equal(2, result.Length);

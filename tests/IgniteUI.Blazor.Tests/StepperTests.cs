@@ -25,7 +25,7 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
         .Method(c => c.ResetAsync(), c => c.Reset(), "reset")
         .Getter(c => c.GetStepsAsync(), c => c.GetSteps(), "Steps",
             arrange,
-            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(2)")}}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Equal(2, result.Length);

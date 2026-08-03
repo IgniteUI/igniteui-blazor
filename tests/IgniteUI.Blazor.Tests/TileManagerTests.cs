@@ -24,7 +24,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
             args: ["{\"tiles\":[]}"], types: ["String"])
         .Getter(c => c.GetTilesAsync(), c => c.GetTiles(), "Tiles",
             arrange,
-            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Equal(2, result.Length);
@@ -33,31 +33,31 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
             })
         .Event(c => c.TileDragStart,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail))
         .Event(c => c.TileDragEnd,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail))
         .Event(c => c.TileDragCancel,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail))
         .Event(c => c.TileResizeStart,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail))
         .Event(c => c.TileResizeEnd,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail))
         .Event(c => c.TileResizeCancel,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail))
         .Event(c => c.TileFullscreen,
             arrange,
-            argsJson: (interop, cut) => $$$$"""{"detail": {"retType": "object", "type": "", "value": {"tile": {"refType": "name", "id": "{{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}}"}, "state": true}}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$$"""{"detail": {"retType": "object", "type": "", "value": {"tile": {"refType": "name", "id": "{{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}}"}, "state": true}}}"""),
             assert: (cut, args) =>
             {
                 Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail.Tile);
@@ -65,7 +65,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
             })
         .Event(c => c.TileMaximize,
             arrange,
-            argsJson: (interop, cut) => $$$$"""{"detail": {"retType": "object", "type": "", "value": {"tile": {"refType": "name", "id": "{{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}}"}, "state": false}}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$$"""{"detail": {"retType": "object", "type": "", "value": {"tile": {"refType": "name", "id": "{{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}}"}, "state": false}}}"""),
             assert: (cut, args) =>
             {
                 Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail.Tile);

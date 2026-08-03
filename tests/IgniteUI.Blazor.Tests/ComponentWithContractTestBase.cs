@@ -128,14 +128,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     scope = cut;
                 }
 
-                if (method.ReadsProperty is not null)
-                {
-                    await RunGetterSpec(harness, cut, scope, method);
-                }
-                else
-                {
-                    await RunMethodSpec(harness, cut, scope, method);
-                }
+                await RunSpec(harness, cut, scope, method);
             }
             catch (Exception ex) when (ex is not ContractViolationException)
             {
@@ -147,37 +140,68 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
         }
     }
 
-    /// <summary>Stub → invoke → assert the recorded call's identifier, args, and type tags, then the decoded return.</summary>
-    private static async Task RunMethodSpec(
+    /// <summary>
+    /// Stub → invoke → assert, for both kinds of spec. A current-state read differs from an
+    /// API call in only two ways — who names the wire identifier (the harness, from the
+    /// property name, vs. the spec) and that it carries no arguments — so the invocation,
+    /// sync-twin and return-decoding dance is written once, here.
+    /// </summary>
+    private static async Task RunSpec(
         InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedComponent<IComponent> scope, MethodContractSpec<TComponent> method)
     {
-        // Stub immediately before invoking so specs may reuse a method name
+        var isRead = method.ReadsProperty is not null;
+
+        // Stub immediately before invoking so specs may reuse a member
         // with different stubbed results.
-        var stub = method.StubFactory?.Invoke(harness, scope) ?? method.Stub;
-        if (stub is not null)
+        var stub = method.Stub?.Get(harness, scope);
+        if (isRead)
+        {
+            harness.SetupPropertyRead(method.ReadsProperty!, stub!);
+        }
+        else if (stub is not null)
         {
             harness.SetupMethodResult(method.JsName!, stub);
         }
 
         var containerId = harness.ContainerIdOf(cut);
-        var (call, result) = await InvokeExpectingNewCall(
-            () => harness.CallsOf(method.JsName!, containerId),
-            () => method.Invoke(cut.Instance),
-            $"\"{method.JsName}\" sent no new invocation");
-        AssertCallShape(harness, cut, method, call, result);
-        method.AssertReturnWithCut?.Invoke(scope, result);
+        // How a read is identified on the wire stays harness-owned; a call's identifier is the spec's.
+        Func<IEnumerable<InteropMethodCall>> matching = isRead
+            ? () => harness.PropertyReads(containerId, method.ReadsProperty!)
+            : () => harness.CallsOf(method.JsName!, containerId);
+        var noNewCall = isRead
+            ? $"no new current-state read was issued for \"{method.ReadsProperty}\""
+            : $"\"{method.JsName}\" sent no new invocation";
+
+        var (call, result) = await InvokeExpectingNewCall(matching, () => method.Invoke(cut.Instance), noNewCall);
+        AssertObserved(harness, cut, scope, method, call, result);
 
         if (method.SyncInvoke is not null)
         {
-            // The sync twin must produce the same invocation and decode the same reply
+            // The sync twin must produce its own invocation and decode the same reply
             // (the stub persists) to the same result.
             var (syncCall, syncResult) = await InvokeExpectingNewCall(
-                () => harness.CallsOf(method.JsName!, containerId),
+                matching,
                 () => Task.FromResult(method.SyncInvoke(cut.Instance)),
-                $"sync twin \"{method.JsName}\" sent no new invocation");
-            AssertCallShape(harness, cut, method, syncCall, syncResult);
-            method.AssertReturnWithCut?.Invoke(scope, syncResult);
+                "sync twin: " + noNewCall);
+            AssertObserved(harness, cut, scope, method, syncCall, syncResult);
         }
+    }
+
+    /// <summary>Asserts everything the spec pins about one observed invocation: its wire shape (calls only) and its decoded return.</summary>
+    private static void AssertObserved(
+        InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedComponent<IComponent> scope,
+        MethodContractSpec<TComponent> method, InteropMethodCall call, object? result)
+    {
+        // A read carries no arguments, type tags or element handles — there is no wire shape to pin.
+        if (method.ReadsProperty is null)
+        {
+            AssertCallShape(harness, cut, method, call);
+        }
+        if (method.HasExpectedReturn)
+        {
+            AssertReturn(method.ExpectedReturn, result);
+        }
+        method.AssertReturnWithCut?.Invoke(scope, result);
     }
 
     /// <summary>
@@ -202,7 +226,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
 
     /// <summary>Asserts a recorded invocation matches the spec's expected args, type tags, and element handles.</summary>
     private static void AssertCallShape(
-        InteropHarness harness, IRenderedComponent<TComponent> cut, MethodContractSpec<TComponent> method, InteropMethodCall call, object? result)
+        InteropHarness harness, IRenderedComponent<TComponent> cut, MethodContractSpec<TComponent> method, InteropMethodCall call)
     {
         Assert.Equal(method.ExpectedTypes, call.Types);
         Assert.Equal(method.ExpectedArgs.Length, call.Arguments.Count);
@@ -211,16 +235,11 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             AssertWireValue(Resolve(method.ExpectedArgs[i], harness, cut), call.Arguments[i]);
         }
         AssertElements(method.ExpectedElements?.Invoke() ?? [], call.Elements);
-
-        if (method.HasExpectedReturn)
-        {
-            AssertReturn(method.ExpectedReturn, result);
-        }
     }
 
-    /// <summary>Resolves a <see cref="FromRender"/> expectation against the render; every other value is already final.</summary>
-    private static object? Resolve(object? expected, InteropHarness harness, IRenderedComponent<IComponent> cut) =>
-        expected is FromRender fromRender ? fromRender.Value(harness, cut) : expected;
+    /// <summary>Settles a late expectation (see <see cref="FromRender{T}"/>) against the render; every other value is already final.</summary>
+    private static object? Resolve(object? expected, InteropHarness harness, IRenderedComponent<IComponent> scope) =>
+        expected is IFromRender late ? late.Resolve(harness, scope) : expected;
 
     /// <summary>
     /// Asserts the element handles riding with the invocation, by id — a handle's id is
@@ -238,40 +257,6 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     "the spec expects an element handle with no id — check its arrangement captured a rendered element");
             }
             Assert.Equal(expected[i].Id, actual[i].Id);
-        }
-    }
-
-    /// <summary>Stub the property's JS-side value → invoke → assert a current-state read was issued and the return decoded.</summary>
-    private static async Task RunGetterSpec(
-        InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedComponent<IComponent> scope, MethodContractSpec<TComponent> method)
-    {
-        var stub = method.StubFactory?.Invoke(harness, scope) ?? method.Stub;
-        harness.SetupPropertyRead(method.ReadsProperty!, stub!);
-
-        var containerId = harness.ContainerIdOf(cut);
-        var (_, result) = await InvokeExpectingNewCall(
-            () => harness.PropertyReads(containerId, method.ReadsProperty!),
-            () => method.Invoke(cut.Instance),
-            "no new current-state read was issued for the property");
-        if (method.HasExpectedReturn)
-        {
-            AssertReturn(method.ExpectedReturn, result);
-        }
-        method.AssertReturnWithCut?.Invoke(scope, result);
-
-        if (method.SyncInvoke is not null)
-        {
-            // The sync twin must issue its own read (the read's wire identifier stays
-            // harness-owned) and decode the persisting stub to the same result.
-            var (_, syncResult) = await InvokeExpectingNewCall(
-                () => harness.PropertyReads(containerId, method.ReadsProperty!),
-                () => Task.FromResult(method.SyncInvoke(cut.Instance)),
-                $"sync twin issued no new current-state read for \"{method.ReadsProperty}\"");
-            if (method.HasExpectedReturn)
-            {
-                AssertReturn(method.ExpectedReturn, syncResult);
-            }
-            method.AssertReturnWithCut?.Invoke(scope, syncResult);
         }
     }
 
@@ -309,10 +294,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                         "no property update transmission was observed — check the wire name, " +
                         "and whether this prop crosses as a rendered attribute instead (not a .Prop case)");
                 }
-                var expected = prop.ExpectedValueFactory is not null
-                    ? prop.ExpectedValueFactory(harness, cut)
-                    : prop.ExpectedValue;
-                AssertWireValue(expected, actual.Value);
+                AssertWireValue(prop.ExpectedValue.Get(harness, cut), actual.Value);
             }
             catch (Exception ex) when (ex is not ContractViolationException)
             {
@@ -367,7 +349,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     ?? throw new XunitException("no event-handler registration transmission was observed");
                 Assert.Equal(evt.EventName, registration.GetString());
 
-                var argsJson = evt.ArgsJsonFactory?.Invoke(harness, cut) ?? evt.ArgsJson;
+                var argsJson = evt.ArgsJson.Get(harness, cut);
                 harness.RaiseEvent(containerId, evt.EventName, argsJson);
 
                 if (received is null)
