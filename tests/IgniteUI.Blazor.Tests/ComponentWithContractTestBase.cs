@@ -164,7 +164,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             () => harness.CallsOf(method.JsName!, containerId),
             () => method.Invoke(cut.Instance),
             $"\"{method.JsName}\" sent no new invocation");
-        AssertCallShape(method, call, result);
+        AssertCallShape(harness, cut, method, call, result);
         method.AssertReturnWithCut?.Invoke(scope, result);
 
         if (method.SyncInvoke is not null)
@@ -175,7 +175,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 () => harness.CallsOf(method.JsName!, containerId),
                 () => Task.FromResult(method.SyncInvoke(cut.Instance)),
                 $"sync twin \"{method.JsName}\" sent no new invocation");
-            AssertCallShape(method, syncCall, syncResult);
+            AssertCallShape(harness, cut, method, syncCall, syncResult);
             method.AssertReturnWithCut?.Invoke(scope, syncResult);
         }
     }
@@ -200,19 +200,44 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
         return (after[^1], result);
     }
 
-    /// <summary>Asserts a recorded invocation matches the spec's expected args and type tags.</summary>
-    private static void AssertCallShape(MethodContractSpec<TComponent> method, InteropMethodCall call, object? result)
+    /// <summary>Asserts a recorded invocation matches the spec's expected args, type tags, and element handles.</summary>
+    private static void AssertCallShape(
+        InteropHarness harness, IRenderedComponent<TComponent> cut, MethodContractSpec<TComponent> method, InteropMethodCall call, object? result)
     {
         Assert.Equal(method.ExpectedTypes, call.Types);
         Assert.Equal(method.ExpectedArgs.Length, call.Arguments.Count);
         for (var i = 0; i < method.ExpectedArgs.Length; i++)
         {
-            AssertWireValue(method.ExpectedArgs[i], call.Arguments[i]);
+            AssertWireValue(Resolve(method.ExpectedArgs[i], harness, cut), call.Arguments[i]);
         }
+        AssertElements(method.ExpectedElements?.Invoke() ?? [], call.Elements);
 
         if (method.HasExpectedReturn)
         {
             AssertReturn(method.ExpectedReturn, result);
+        }
+    }
+
+    /// <summary>Resolves a <see cref="FromRender"/> expectation against the render; every other value is already final.</summary>
+    private static object? Resolve(object? expected, InteropHarness harness, IRenderedComponent<IComponent> cut) =>
+        expected is FromRender fromRender ? fromRender.Value(harness, cut) : expected;
+
+    /// <summary>
+    /// Asserts the element handles riding with the invocation, by id — a handle's id is
+    /// what makes it resolvable on the client, so a spec expecting one without an id means
+    /// its arrangement never captured a real element (which would pass vacuously).
+    /// </summary>
+    private static void AssertElements(IReadOnlyList<ElementReference> expected, IReadOnlyList<ElementReference> actual)
+    {
+        Assert.Equal(expected.Count, actual.Count);
+        for (var i = 0; i < expected.Count; i++)
+        {
+            if (string.IsNullOrEmpty(expected[i].Id))
+            {
+                throw new XunitException(
+                    "the spec expects an element handle with no id — check its arrangement captured a rendered element");
+            }
+            Assert.Equal(expected[i].Id, actual[i].Id);
         }
     }
 

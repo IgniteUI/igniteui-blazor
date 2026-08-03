@@ -8,7 +8,9 @@ namespace IgniteUI.Blazor.Tests.Interop;
 
 /// <summary>
 /// A component API method invocation observed on the interop layer,
-/// normalized away from the concrete wire format.
+/// normalized away from the concrete wire format. <c>Elements</c> are the DOM element
+/// handles that ride with the call rather than inside <c>Arguments</c> — an element-typed
+/// argument crosses as a placeholder referencing its position among them.
 /// </summary>
 public sealed record InteropMethodCall(
     string ContainerId,
@@ -16,6 +18,7 @@ public sealed record InteropMethodCall(
     long InvokeId,
     IReadOnlyList<JsonElement> Arguments,
     IReadOnlyList<string> Types,
+    IReadOnlyList<ElementReference> Elements,
     JsonElement RawMessage);
 
 /// <summary>
