@@ -29,7 +29,7 @@ namespace IgniteUI.Blazor.Controls
         }
         public void Toggle(Object target_)
         {
-            InvokeMethodSync("show", new object[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
+            InvokeMethodSync("toggle", new object[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
             target_ is ElementReference ? new ElementReference[] { (ElementReference)target_ } : null);
         }
 
