@@ -52,7 +52,7 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
     [Fact]
     public void Stepper_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbStepper>();
+        var cut = Render<IgbStepper>();
         Assert.NotNull(cut.Find("igc-stepper"));
     }
 
@@ -75,7 +75,7 @@ public class StepTests : BlazorComponentTestBase
     [Fact]
     public void Step_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbStep>();
+        var cut = Render<IgbStep>();
         Assert.NotNull(cut.Find("igc-step"));
     }
 
@@ -89,7 +89,7 @@ public class StepTests : BlazorComponentTestBase
     [Fact]
     public void Step_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbStep>(parameters =>
+        var cut = Render<IgbStep>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-step");
@@ -99,7 +99,7 @@ public class StepTests : BlazorComponentTestBase
     [Fact]
     public void Step_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbStep>(parameters =>
+        var cut = Render<IgbStep>(parameters =>
             parameters.AddChildContent("Step Content"));
 
         Assert.Contains("Step Content", cut.Markup);

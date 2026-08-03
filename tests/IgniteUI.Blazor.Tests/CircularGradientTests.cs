@@ -8,14 +8,14 @@ public class CircularGradientTests : BlazorComponentTestBase
     [Fact]
     public void CircularGradient_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCircularGradient>();
+        var cut = Render<IgbCircularGradient>();
         cut.Find("igc-circular-gradient").Should_Exist();
     }
 
     [Fact]
     public void CircularGradient_Offset_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCircularGradient>(p =>
+        var cut = Render<IgbCircularGradient>(p =>
             p.Add(x => x.Offset, "0%"));
 
         Assert.Equal("0%", cut.Find("igc-circular-gradient").GetAttribute("offset"));
@@ -24,7 +24,7 @@ public class CircularGradientTests : BlazorComponentTestBase
     [Fact]
     public void CircularGradient_Color_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCircularGradient>(p =>
+        var cut = Render<IgbCircularGradient>(p =>
             p.Add(x => x.Color, "#ff0000"));
 
         Assert.Equal("#ff0000", cut.Find("igc-circular-gradient").GetAttribute("color"));
@@ -33,7 +33,7 @@ public class CircularGradientTests : BlazorComponentTestBase
     [Fact]
     public void CircularGradient_Opacity_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCircularGradient>(p =>
+        var cut = Render<IgbCircularGradient>(p =>
             p.Add(x => x.Opacity, 0.5));
 
         Assert.Equal("0.5", cut.Find("igc-circular-gradient").GetAttribute("opacity"));
@@ -42,7 +42,7 @@ public class CircularGradientTests : BlazorComponentTestBase
     [Fact]
     public void CircularGradient_AllProperties()
     {
-        var cut = RenderComponent<IgbCircularGradient>(p =>
+        var cut = Render<IgbCircularGradient>(p =>
             p.Add(x => x.Offset, "50%")
              .Add(x => x.Color, "blue")
              .Add(x => x.Opacity, 1));

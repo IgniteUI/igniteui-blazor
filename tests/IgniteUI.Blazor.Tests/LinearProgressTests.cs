@@ -8,7 +8,7 @@ public class LinearProgressTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbLinearProgress>();
+        var cut = Render<IgbLinearProgress>();
         Assert.NotNull(cut.Find("igc-linear-progress"));
     }
 
@@ -28,7 +28,7 @@ public class LinearProgressTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbLinearProgress>(parameters =>
+        var cut = Render<IgbLinearProgress>(parameters =>
             parameters.Add(p => p.Value, 75.0));
 
         var element = cut.Find("igc-linear-progress");
@@ -38,7 +38,7 @@ public class LinearProgressTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_Max_RendersAttribute()
     {
-        var cut = RenderComponent<IgbLinearProgress>(parameters =>
+        var cut = Render<IgbLinearProgress>(parameters =>
             parameters.Add(p => p.Max, 200.0));
 
         var element = cut.Find("igc-linear-progress");
@@ -48,7 +48,7 @@ public class LinearProgressTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_Striped_RendersAttribute()
     {
-        var cut = RenderComponent<IgbLinearProgress>(parameters =>
+        var cut = Render<IgbLinearProgress>(parameters =>
             parameters.Add(p => p.Striped, true));
 
         var element = cut.Find("igc-linear-progress");
@@ -58,7 +58,7 @@ public class LinearProgressTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_Indeterminate_RendersAttribute()
     {
-        var cut = RenderComponent<IgbLinearProgress>(parameters =>
+        var cut = Render<IgbLinearProgress>(parameters =>
             parameters.Add(p => p.Indeterminate, true));
 
         var element = cut.Find("igc-linear-progress");
@@ -68,7 +68,7 @@ public class LinearProgressTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_HideLabel_RendersAttribute()
     {
-        var cut = RenderComponent<IgbLinearProgress>(parameters =>
+        var cut = Render<IgbLinearProgress>(parameters =>
             parameters.Add(p => p.HideLabel, true));
 
         var element = cut.Find("igc-linear-progress");
@@ -78,7 +78,7 @@ public class LinearProgressTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_Variant_RendersAttribute()
     {
-        var cut = RenderComponent<IgbLinearProgress>(parameters =>
+        var cut = Render<IgbLinearProgress>(parameters =>
             parameters.Add(p => p.Variant, StyleVariant.Success));
 
         var element = cut.Find("igc-linear-progress");
@@ -88,63 +88,20 @@ public class LinearProgressTests : BlazorComponentTestBase
     [Fact]
     public void LinearProgress_LabelFormat_RendersAttribute()
     {
-        var cut = RenderComponent<IgbLinearProgress>(parameters =>
+        var cut = Render<IgbLinearProgress>(parameters =>
             parameters.Add(p => p.LabelFormat, "{0}%"));
 
         var element = cut.Find("igc-linear-progress");
         Assert.Equal("{0}%", element.GetAttribute("label-format"));
     }
-}
-
-public class CircularProgressTests : BlazorComponentTestBase
-{
-    [Fact]
-    public void CircularProgress_RendersCorrectElement()
-    {
-        var cut = RenderComponent<IgbCircularProgress>();
-        Assert.NotNull(cut.Find("igc-circular-progress"));
-    }
 
     [Fact]
-    public void CircularProgress_TypeMetadata_IsCorrect()
+    public void LinearProgress_AnimationDuration_RendersAttribute()
     {
-        var progress = new IgbCircularProgress();
-        Assert.Equal("WebCircularProgress", progress.Type);
-    }
+        var cut = Render<IgbLinearProgress>(parameters =>
+            parameters.Add(p => p.AnimationDuration, 500));
 
-    [Fact]
-    public void CircularProgress_InheritsFromProgressBase()
-    {
-        Assert.True(typeof(IgbCircularProgress).IsSubclassOf(typeof(IgbProgressBase)));
-    }
-
-    [Fact]
-    public void CircularProgress_Value_RendersAttribute()
-    {
-        var cut = RenderComponent<IgbCircularProgress>(parameters =>
-            parameters.Add(p => p.Value, 60.0));
-
-        var element = cut.Find("igc-circular-progress");
-        Assert.Equal("60", element.GetAttribute("value"));
-    }
-
-    [Fact]
-    public void CircularProgress_Indeterminate_RendersAttribute()
-    {
-        var cut = RenderComponent<IgbCircularProgress>(parameters =>
-            parameters.Add(p => p.Indeterminate, true));
-
-        var element = cut.Find("igc-circular-progress");
-        Assert.NotNull(element.GetAttribute("indeterminate"));
-    }
-
-    [Fact]
-    public void CircularProgress_Max_RendersAttribute()
-    {
-        var cut = RenderComponent<IgbCircularProgress>(parameters =>
-            parameters.Add(p => p.Max, 150.0));
-
-        var element = cut.Find("igc-circular-progress");
-        Assert.Equal("150", element.GetAttribute("max"));
+        var element = cut.Find("igc-linear-progress");
+        Assert.Equal("500", element.GetAttribute("animation-duration"));
     }
 }

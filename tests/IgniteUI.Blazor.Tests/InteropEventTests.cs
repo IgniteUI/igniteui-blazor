@@ -15,7 +15,7 @@ public class InteropEventTests : BlazorComponentTestBase
     public void BoolDetailEvent_FromJs_PropagatesTwoWayBinding()
     {
         var selected = false;
-        var cut = RenderComponent<IgbChip>(parameters => parameters
+        var cut = Render<IgbChip>(parameters => parameters
             .Add(c => c.Select, _ => { })
             .Add(c => c.SelectedChanged, value => selected = value));
 
@@ -28,7 +28,7 @@ public class InteropEventTests : BlazorComponentTestBase
     [Fact]
     public void BoolDetailEvent_FromJs_SendsDeltaStateSyncBack()
     {
-        var cut = RenderComponent<IgbChip>(parameters =>
+        var cut = Render<IgbChip>(parameters =>
             parameters.Add(c => c.Select, _ => { }));
         var containerId = Interop.ContainerIdOf(cut);
 
@@ -43,7 +43,7 @@ public class InteropEventTests : BlazorComponentTestBase
     [Fact]
     public void Event_WithoutBoundHandler_IsIgnored()
     {
-        var cut = RenderComponent<IgbBanner>();
+        var cut = Render<IgbBanner>();
 
         // No handler bound — dispatch must be a no-op rather than an error.
         Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Closing");

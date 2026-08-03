@@ -83,7 +83,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     [Fact]
     public void Dropdown_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbDropdown>();
+        var cut = Render<IgbDropdown>();
         Assert.NotNull(cut.Find("igc-dropdown"));
     }
 
@@ -97,7 +97,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     [Fact]
     public void Dropdown_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdown>(parameters =>
+        var cut = Render<IgbDropdown>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-dropdown");
@@ -107,11 +107,20 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     [Fact]
     public void Dropdown_KeepOpenOnSelect_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdown>(parameters =>
+        var cut = Render<IgbDropdown>(parameters =>
             parameters.Add(p => p.KeepOpenOnSelect, true));
 
         var element = cut.Find("igc-dropdown");
         Assert.NotNull(element.GetAttribute("keep-open-on-select"));
+    }
+
+    [Fact]
+    public void Dropdown_ChildContent_Renders()
+    {
+        var cut = Render<IgbDropdown>(parameters =>
+            parameters.AddChildContent("<igc-dropdown-item>Item</igc-dropdown-item>"));
+
+        Assert.Contains("Item", cut.Find("igc-dropdown").InnerHtml);
     }
 
     [Fact]
@@ -126,7 +135,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbDropdownItem>();
+        var cut = Render<IgbDropdownItem>();
         Assert.NotNull(cut.Find("igc-dropdown-item"));
     }
 
@@ -140,7 +149,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdownItem>(parameters =>
+        var cut = Render<IgbDropdownItem>(parameters =>
             parameters.Add(p => p.Value, "item-1"));
 
         var element = cut.Find("igc-dropdown-item");
@@ -150,7 +159,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdownItem>(parameters =>
+        var cut = Render<IgbDropdownItem>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-dropdown-item");
@@ -160,7 +169,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     [Fact]
     public void DropdownItem_Selected_RendersAttribute()
     {
-        var cut = RenderComponent<IgbDropdownItem>(parameters =>
+        var cut = Render<IgbDropdownItem>(parameters =>
             parameters.Add(p => p.Selected, true));
 
         var element = cut.Find("igc-dropdown-item");
@@ -168,11 +177,59 @@ public class DropdownItemTests : BlazorComponentTestBase
     }
 
     [Fact]
+    public void DropdownItem_Active_RendersAttribute()
+    {
+        var cut = Render<IgbDropdownItem>(parameters =>
+            parameters.Add(p => p.Active, true));
+
+        var element = cut.Find("igc-dropdown-item");
+        Assert.NotNull(element.GetAttribute("active"));
+    }
+
+    [Fact]
     public void DropdownItem_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbDropdownItem>(parameters =>
+        var cut = Render<IgbDropdownItem>(parameters =>
             parameters.AddChildContent("Option 1"));
 
         Assert.Contains("Option 1", cut.Markup);
+    }
+}
+
+public class DropdownGroupTests : BlazorComponentTestBase
+{
+    [Fact]
+    public void DropdownGroup_RendersCorrectElement()
+    {
+        var cut = Render<IgbDropdownGroup>();
+        cut.Find("igc-dropdown-group").Should_Exist();
+    }
+
+    [Fact]
+    public void DropdownGroup_ChildContent_Renders()
+    {
+        var cut = Render<IgbDropdownGroup>(parameters =>
+            parameters.AddChildContent("<igc-dropdown-item>Grouped</igc-dropdown-item>"));
+
+        Assert.Contains("Grouped", cut.Find("igc-dropdown-group").InnerHtml);
+    }
+}
+
+public class DropdownHeaderTests : BlazorComponentTestBase
+{
+    [Fact]
+    public void DropdownHeader_RendersCorrectElement()
+    {
+        var cut = Render<IgbDropdownHeader>();
+        cut.Find("igc-dropdown-header").Should_Exist();
+    }
+
+    [Fact]
+    public void DropdownHeader_ChildContent_Renders()
+    {
+        var cut = Render<IgbDropdownHeader>(parameters =>
+            parameters.AddChildContent("Category"));
+
+        Assert.Contains("Category", cut.Find("igc-dropdown-header").InnerHtml);
     }
 }

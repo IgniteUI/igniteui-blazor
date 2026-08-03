@@ -35,7 +35,7 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
     [Fact]
     public void Switch_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbSwitch>();
+        var cut = Render<IgbSwitch>();
         Assert.NotNull(cut.Find("igc-switch"));
     }
 
@@ -55,7 +55,7 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
     [Fact]
     public void Switch_Checked_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSwitch>(parameters =>
+        var cut = Render<IgbSwitch>(parameters =>
             parameters.Add(p => p.Checked, true));
 
         var element = cut.Find("igc-switch");
@@ -65,7 +65,7 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
     [Fact]
     public void Switch_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSwitch>(parameters =>
+        var cut = Render<IgbSwitch>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-switch");
@@ -75,7 +75,7 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
     [Fact]
     public void Switch_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbSwitch>(parameters =>
+        var cut = Render<IgbSwitch>(parameters =>
             parameters.Add(p => p.Value, "toggle-value"));
 
         var element = cut.Find("igc-switch");
@@ -83,9 +83,29 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
     }
 
     [Fact]
+    public void Switch_Required_RendersAttribute()
+    {
+        var cut = Render<IgbSwitch>(parameters =>
+            parameters.Add(p => p.Required, true));
+
+        var element = cut.Find("igc-switch");
+        Assert.NotNull(element.GetAttribute("required"));
+    }
+
+    [Fact]
+    public void Switch_Invalid_RendersAttribute()
+    {
+        var cut = Render<IgbSwitch>(parameters =>
+            parameters.Add(p => p.Invalid, true));
+
+        var element = cut.Find("igc-switch");
+        Assert.NotNull(element.GetAttribute("invalid"));
+    }
+
+    [Fact]
     public void Switch_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbSwitch>(parameters =>
+        var cut = Render<IgbSwitch>(parameters =>
             parameters.AddChildContent("Dark mode"));
 
         Assert.Contains("Dark mode", cut.Markup);

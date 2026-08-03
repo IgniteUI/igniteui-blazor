@@ -34,7 +34,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
     [Fact]
     public void ExpansionPanel_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbExpansionPanel>();
+        var cut = Render<IgbExpansionPanel>();
         Assert.NotNull(cut.Find("igc-expansion-panel"));
     }
 
@@ -48,7 +48,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
     [Fact]
     public void ExpansionPanel_Open_RendersAttribute()
     {
-        var cut = RenderComponent<IgbExpansionPanel>(parameters =>
+        var cut = Render<IgbExpansionPanel>(parameters =>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-expansion-panel");
@@ -58,7 +58,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
     [Fact]
     public void ExpansionPanel_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbExpansionPanel>(parameters =>
+        var cut = Render<IgbExpansionPanel>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-expansion-panel");
@@ -68,7 +68,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
     [Fact]
     public void ExpansionPanel_IndicatorPosition_End()
     {
-        var cut = RenderComponent<IgbExpansionPanel>(parameters =>
+        var cut = Render<IgbExpansionPanel>(parameters =>
             parameters.Add(p => p.IndicatorPosition, ExpansionPanelIndicatorPosition.End));
 
         var element = cut.Find("igc-expansion-panel");
@@ -78,7 +78,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
     [Fact]
     public void ExpansionPanel_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbExpansionPanel>(parameters =>
+        var cut = Render<IgbExpansionPanel>(parameters =>
             parameters.AddChildContent("Panel content"));
 
         Assert.Contains("Panel content", cut.Markup);

@@ -35,7 +35,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     [Fact]
     public void Checkbox_RendersCorrectElement()
     {
-        var cut = RenderComponent<IgbCheckbox>();
+        var cut = Render<IgbCheckbox>();
         Assert.NotNull(cut.Find("igc-checkbox"));
     }
 
@@ -55,7 +55,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     [Fact]
     public void Checkbox_Checked_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCheckbox>(parameters =>
+        var cut = Render<IgbCheckbox>(parameters =>
             parameters.Add(p => p.Checked, true));
 
         var element = cut.Find("igc-checkbox");
@@ -65,7 +65,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     [Fact]
     public void Checkbox_Indeterminate_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCheckbox>(parameters =>
+        var cut = Render<IgbCheckbox>(parameters =>
             parameters.Add(p => p.Indeterminate, true));
 
         var element = cut.Find("igc-checkbox");
@@ -75,7 +75,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     [Fact]
     public void Checkbox_Disabled_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCheckbox>(parameters =>
+        var cut = Render<IgbCheckbox>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-checkbox");
@@ -85,7 +85,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     [Fact]
     public void Checkbox_Required_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCheckbox>(parameters =>
+        var cut = Render<IgbCheckbox>(parameters =>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-checkbox");
@@ -95,7 +95,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     [Fact]
     public void Checkbox_LabelPosition_Before()
     {
-        var cut = RenderComponent<IgbCheckbox>(parameters =>
+        var cut = Render<IgbCheckbox>(parameters =>
             parameters.Add(p => p.LabelPosition, ToggleLabelPosition.Before));
 
         var element = cut.Find("igc-checkbox");
@@ -105,7 +105,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     [Fact]
     public void Checkbox_Value_RendersAttribute()
     {
-        var cut = RenderComponent<IgbCheckbox>(parameters =>
+        var cut = Render<IgbCheckbox>(parameters =>
             parameters.Add(p => p.Value, "test-value"));
 
         var element = cut.Find("igc-checkbox");
@@ -113,9 +113,19 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     }
 
     [Fact]
+    public void Checkbox_Invalid_RendersAttribute()
+    {
+        var cut = Render<IgbCheckbox>(parameters =>
+            parameters.Add(p => p.Invalid, true));
+
+        var element = cut.Find("igc-checkbox");
+        Assert.NotNull(element.GetAttribute("invalid"));
+    }
+
+    [Fact]
     public void Checkbox_ChildContent_Renders()
     {
-        var cut = RenderComponent<IgbCheckbox>(parameters =>
+        var cut = Render<IgbCheckbox>(parameters =>
             parameters.AddChildContent("Accept terms"));
 
         Assert.Contains("Accept terms", cut.Markup);

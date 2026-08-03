@@ -19,7 +19,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(ButtonVariant.Fab, "fab")]
     public void ButtonVariant_Serialization(ButtonVariant variant, string expected)
     {
-        var cut = RenderComponent<IgbButton>(p => p.Add(x => x.Variant, variant));
+        var cut = Render<IgbButton>(p => p.Add(x => x.Variant, variant));
         Assert.Equal(expected, cut.Find("igc-button").GetAttribute("variant"));
     }
 
@@ -30,7 +30,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(ButtonBaseType.Submit, "submit")]
     public void ButtonBaseType_Serialization(ButtonBaseType type, string expected)
     {
-        var cut = RenderComponent<IgbButton>(p => p.Add(x => x.DisplayType, type));
+        var cut = Render<IgbButton>(p => p.Add(x => x.DisplayType, type));
         Assert.Equal(expected, cut.Find("igc-button").GetAttribute("type"));
     }
 
@@ -45,7 +45,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(InputType.Url, "url")]
     public void InputType_Serialization(InputType type, string expected)
     {
-        var cut = RenderComponent<IgbInput>(p => p.Add(x => x.DisplayType, type));
+        var cut = Render<IgbInput>(p => p.Add(x => x.DisplayType, type));
         Assert.Equal(expected, cut.Find("igc-input").GetAttribute("type"));
     }
 
@@ -55,7 +55,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(ToggleLabelPosition.Before, "before")]
     public void ToggleLabelPosition_Serialization(ToggleLabelPosition pos, string expected)
     {
-        var cut = RenderComponent<IgbCheckbox>(p => p.Add(x => x.LabelPosition, pos));
+        var cut = Render<IgbCheckbox>(p => p.Add(x => x.LabelPosition, pos));
         Assert.Equal(expected, cut.Find("igc-checkbox").GetAttribute("label-position"));
     }
 
@@ -65,7 +65,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(BadgeShape.Square, "square")]
     public void BadgeShape_Serialization(BadgeShape shape, string expected)
     {
-        var cut = RenderComponent<IgbBadge>(p => p.Add(x => x.Shape, shape));
+        var cut = Render<IgbBadge>(p => p.Add(x => x.Shape, shape));
         Assert.Equal(expected, cut.Find("igc-badge").GetAttribute("shape"));
     }
 
@@ -76,7 +76,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(AvatarShape.Square, "square")]
     public void AvatarShape_Serialization(AvatarShape shape, string expected)
     {
-        var cut = RenderComponent<IgbAvatar>(p => p.Add(x => x.Shape, shape));
+        var cut = Render<IgbAvatar>(p => p.Add(x => x.Shape, shape));
         Assert.Equal(expected, cut.Find("igc-avatar").GetAttribute("shape"));
     }
 
@@ -89,7 +89,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(StyleVariant.Danger, "danger")]
     public void StyleVariant_Serialization(StyleVariant variant, string expected)
     {
-        var cut = RenderComponent<IgbLinearProgress>(p => p.Add(x => x.Variant, variant));
+        var cut = Render<IgbLinearProgress>(p => p.Add(x => x.Variant, variant));
         Assert.Equal(expected, cut.Find("igc-linear-progress").GetAttribute("variant"));
     }
 
@@ -102,7 +102,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(NavDrawerPosition.Relative, "relative")]
     public void NavDrawerPosition_Serialization(NavDrawerPosition pos, string expected)
     {
-        var cut = RenderComponent<IgbNavDrawer>(p => p.Add(x => x.Position, pos));
+        var cut = Render<IgbNavDrawer>(p => p.Add(x => x.Position, pos));
         Assert.Equal(expected, cut.Find("igc-nav-drawer").GetAttribute("position"));
     }
 
@@ -113,7 +113,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(TextareaResize.Auto, "auto")]
     public void TextareaResize_Serialization(TextareaResize resize, string expected)
     {
-        var cut = RenderComponent<IgbTextarea>(p => p.Add(x => x.Resize, resize));
+        var cut = Render<IgbTextarea>(p => p.Add(x => x.Resize, resize));
         Assert.Equal(expected, cut.Find("igc-textarea").GetAttribute("resize"));
     }
 
@@ -124,7 +124,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(TextareaWrap.Off, "off")]
     public void TextareaWrap_Serialization(TextareaWrap wrap, string expected)
     {
-        var cut = RenderComponent<IgbTextarea>(p => p.Add(x => x.Wrap, wrap));
+        var cut = Render<IgbTextarea>(p => p.Add(x => x.Wrap, wrap));
         Assert.Equal(expected, cut.Find("igc-textarea").GetAttribute("wrap"));
     }
 
@@ -135,7 +135,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(TreeSelection.Cascade, "cascade")]
     public void TreeSelection_Serialization(TreeSelection sel, string expected)
     {
-        var cut = RenderComponent<IgbTree>(p => p.Add(x => x.Selection, sel));
+        var cut = Render<IgbTree>(p => p.Add(x => x.Selection, sel));
         Assert.Equal(expected, cut.Find("igc-tree").GetAttribute("selection"));
     }
 
@@ -146,7 +146,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(ButtonGroupSelection.Multiple, "multiple")]
     public void ButtonGroupSelection_Serialization(ButtonGroupSelection sel, string expected)
     {
-        var cut = RenderComponent<IgbButtonGroup>(p => p.Add(x => x.Selection, sel));
+        var cut = Render<IgbButtonGroup>(p => p.Add(x => x.Selection, sel));
         Assert.Equal(expected, cut.Find("igc-button-group").GetAttribute("selection"));
     }
 
@@ -158,7 +158,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(TabsAlignment.Justify, "justify")]
     public void TabsAlignment_Serialization(TabsAlignment alignment, string expected)
     {
-        var cut = RenderComponent<IgbTabs>(p => p.Add(x => x.Alignment, alignment));
+        var cut = Render<IgbTabs>(p => p.Add(x => x.Alignment, alignment));
         Assert.Equal(expected, cut.Find("igc-tabs").GetAttribute("alignment"));
     }
 
@@ -168,7 +168,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(TabsActivation.Manual, "manual")]
     public void TabsActivation_Serialization(TabsActivation activation, string expected)
     {
-        var cut = RenderComponent<IgbTabs>(p => p.Add(x => x.Activation, activation));
+        var cut = Render<IgbTabs>(p => p.Add(x => x.Activation, activation));
         Assert.Equal(expected, cut.Find("igc-tabs").GetAttribute("activation"));
     }
 
@@ -179,7 +179,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(SliderTickOrientation.Mirror, "mirror")]
     public void SliderTickOrientation_Serialization(SliderTickOrientation orient, string expected)
     {
-        var cut = RenderComponent<IgbSlider>(p => p.Add(x => x.TickOrientation, orient));
+        var cut = Render<IgbSlider>(p => p.Add(x => x.TickOrientation, orient));
         Assert.Equal(expected, cut.Find("igc-slider").GetAttribute("tick-orientation"));
     }
 
@@ -189,7 +189,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(StepperOrientation.Vertical, "vertical")]
     public void StepperOrientation_Serialization(StepperOrientation orient, string expected)
     {
-        var cut = RenderComponent<IgbStepper>(p => p.Add(x => x.Orientation, orient));
+        var cut = Render<IgbStepper>(p => p.Add(x => x.Orientation, orient));
         Assert.Equal(expected, cut.Find("igc-stepper").GetAttribute("orientation"));
     }
 
@@ -200,7 +200,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(StepperStepType.Full, "full")]
     public void StepperStepType_Serialization(StepperStepType type, string expected)
     {
-        var cut = RenderComponent<IgbStepper>(p => p.Add(x => x.StepType, type));
+        var cut = Render<IgbStepper>(p => p.Add(x => x.StepType, type));
         Assert.Equal(expected, cut.Find("igc-stepper").GetAttribute("step-type"));
     }
 
@@ -212,7 +212,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(StepperTitlePosition.Start, "start")]
     public void StepperTitlePosition_Serialization(StepperTitlePosition pos, string expected)
     {
-        var cut = RenderComponent<IgbStepper>(p => p.Add(x => x.TitlePosition, pos));
+        var cut = Render<IgbStepper>(p => p.Add(x => x.TitlePosition, pos));
         Assert.Equal(expected, cut.Find("igc-stepper").GetAttribute("title-position"));
     }
 
@@ -223,7 +223,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(ExpansionPanelIndicatorPosition.None, "none")]
     public void ExpansionPanelIndicatorPosition_Serialization(ExpansionPanelIndicatorPosition pos, string expected)
     {
-        var cut = RenderComponent<IgbExpansionPanel>(p => p.Add(x => x.IndicatorPosition, pos));
+        var cut = Render<IgbExpansionPanel>(p => p.Add(x => x.IndicatorPosition, pos));
         Assert.Equal(expected, cut.Find("igc-expansion-panel").GetAttribute("indicator-position"));
     }
 
@@ -234,7 +234,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(IconButtonVariant.Flat, "flat")]
     public void IconButtonVariant_Serialization(IconButtonVariant variant, string expected)
     {
-        var cut = RenderComponent<IgbIconButton>(p => p.Add(x => x.Variant, variant));
+        var cut = Render<IgbIconButton>(p => p.Add(x => x.Variant, variant));
         Assert.Equal(expected, cut.Find("igc-icon-button").GetAttribute("variant"));
     }
 
@@ -244,7 +244,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(MaskInputValueMode.WithFormatting, "withFormatting")]
     public void MaskInputValueMode_Serialization(MaskInputValueMode mode, string expected)
     {
-        var cut = RenderComponent<IgbMaskInput>(p => p.Add(x => x.ValueMode, mode));
+        var cut = Render<IgbMaskInput>(p => p.Add(x => x.ValueMode, mode));
         Assert.Equal(expected, cut.Find("igc-mask-input").GetAttribute("value-mode"));
     }
 
@@ -255,7 +255,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(TileManagerResizeMode.Hover, "hover")]
     public void TileManagerResizeMode_Serialization(TileManagerResizeMode mode, string expected)
     {
-        var cut = RenderComponent<IgbTileManager>(p => p.Add(x => x.ResizeMode, mode));
+        var cut = Render<IgbTileManager>(p => p.Add(x => x.ResizeMode, mode));
         Assert.Equal(expected, cut.Find("igc-tile-manager").GetAttribute("resize-mode"));
     }
 
@@ -266,7 +266,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(TileManagerDragMode.TileHeader, "tile-header")]
     public void TileManagerDragMode_Serialization(TileManagerDragMode mode, string expected)
     {
-        var cut = RenderComponent<IgbTileManager>(p => p.Add(x => x.DragMode, mode));
+        var cut = Render<IgbTileManager>(p => p.Add(x => x.DragMode, mode));
         Assert.Equal(expected, cut.Find("igc-tile-manager").GetAttribute("drag-mode"));
     }
 
@@ -277,7 +277,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(HorizontalTransitionAnimation.Fade, "fade")]
     public void CarouselAnimationType_Serialization(HorizontalTransitionAnimation anim, string expected)
     {
-        var cut = RenderComponent<IgbCarousel>(p => p.Add(x => x.AnimationType, anim));
+        var cut = Render<IgbCarousel>(p => p.Add(x => x.AnimationType, anim));
         Assert.Equal(expected, cut.Find("igc-carousel").GetAttribute("animation-type"));
     }
 
@@ -287,7 +287,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(CarouselIndicatorsOrientation.End, "end")]
     public void CarouselIndicatorsOrientation_Serialization(CarouselIndicatorsOrientation orient, string expected)
     {
-        var cut = RenderComponent<IgbCarousel>(p => p.Add(x => x.IndicatorsOrientation, orient));
+        var cut = Render<IgbCarousel>(p => p.Add(x => x.IndicatorsOrientation, orient));
         Assert.Equal(expected, cut.Find("igc-carousel").GetAttribute("indicators-orientation"));
     }
 }

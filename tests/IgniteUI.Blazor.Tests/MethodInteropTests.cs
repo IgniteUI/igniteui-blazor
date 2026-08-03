@@ -18,7 +18,7 @@ public class MethodInteropTests : BlazorComponentTestBase
     {
         Interop.PrimeReady();
         Interop.SetupMethodResult("toggle", InteropReturn.Deferred);
-        var cut = RenderComponent<IgbBanner>();
+        var cut = Render<IgbBanner>();
 
         var pending = cut.Instance.ToggleAsync();
         Assert.False(pending.IsCompleted);

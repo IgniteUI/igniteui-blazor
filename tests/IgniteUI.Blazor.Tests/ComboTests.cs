@@ -1,6 +1,7 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Tests;
 
@@ -17,13 +18,13 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
 
     // Data items cross as {"refType": "uuid", "id": "<guid>"} references (see
     // JsonDataSourceItem.ToJson's "___id" marker), assigned once item is added to DS.
-    internal static string DataItemId(InteropHarness interop, IRenderedFragment cut, int index)
+    internal static string DataItemId(InteropHarness interop, IRenderedComponent<IComponent> cut, int index)
     {
         var items = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), "data")!.Value.EnumerateArray().ToArray();
         return items[index].GetProperty("___id").GetString()!;
     }
 
-    internal static string UuidRef(InteropHarness interop, IRenderedFragment cut, int index) =>
+    internal static string UuidRef(InteropHarness interop, IRenderedComponent<IComponent> cut, int index) =>
         $$"""{"refType": "uuid", "id": "{{DataItemId(interop, cut, index)}}"}""";
 
     internal static string ChangeDetail(string newValues, string items, string type = "selection") =>
