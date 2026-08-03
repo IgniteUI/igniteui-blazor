@@ -15,6 +15,8 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         public static List<string> dependantMethods = new List<string>() { };
         // Exluded events as per the component config
         public static List<string> excludedEvents = new List<string>() { };
+        // Props whose initial value is allowed to differ from the client component's, as per the component config
+        public static List<string> excludedDefaultProps = new List<string>() { };
 
         // gets the full list of valid properties for type
         public static List<PropertyInfo> GetValidProps(Type type)
