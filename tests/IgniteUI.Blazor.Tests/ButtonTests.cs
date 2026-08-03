@@ -120,11 +120,3 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
         Assert.Equal("submit", element.GetAttribute("type"));
     }
 }
-
-internal static class ElementAssertionExtensions
-{
-    public static void Should_Exist(this AngleSharp.Dom.IElement element)
-    {
-        Assert.NotNull(element);
-    }
-}

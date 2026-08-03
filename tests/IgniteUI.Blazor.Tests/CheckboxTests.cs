@@ -113,6 +113,16 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     }
 
     [Fact]
+    public void Checkbox_Invalid_RendersAttribute()
+    {
+        var cut = Render<IgbCheckbox>(parameters =>
+            parameters.Add(p => p.Invalid, true));
+
+        var element = cut.Find("igc-checkbox");
+        Assert.NotNull(element.GetAttribute("invalid"));
+    }
+
+    [Fact]
     public void Checkbox_ChildContent_Renders()
     {
         var cut = Render<IgbCheckbox>(parameters =>

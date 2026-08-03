@@ -66,6 +66,15 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
     }
 
     [Fact]
+    public void Icon_ChildContent_Renders()
+    {
+        var cut = Render<IgbIcon>(parameters =>
+            parameters.AddChildContent("<svg></svg>"));
+
+        Assert.Contains("svg", cut.Find("igc-icon").InnerHtml);
+    }
+
+    [Fact]
     public void Icon_InheritsFromBaseRendererControl()
     {
         Assert.True(typeof(IgbIcon).IsSubclassOf(typeof(BaseRendererControl)));

@@ -67,6 +67,15 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     }
 
     [Fact]
+    public void Tabs_ChildContent_Renders()
+    {
+        var cut = Render<IgbTabs>(parameters =>
+            parameters.AddChildContent("<igc-tab>First</igc-tab>"));
+
+        Assert.Contains("First", cut.Find("igc-tabs").InnerHtml);
+    }
+
+    [Fact]
     public void Tabs_InheritsFromBaseRendererControl()
     {
         Assert.True(typeof(IgbTabs).IsSubclassOf(typeof(BaseRendererControl)));

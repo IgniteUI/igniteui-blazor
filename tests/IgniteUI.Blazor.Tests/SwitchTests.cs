@@ -83,6 +83,26 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
     }
 
     [Fact]
+    public void Switch_Required_RendersAttribute()
+    {
+        var cut = Render<IgbSwitch>(parameters =>
+            parameters.Add(p => p.Required, true));
+
+        var element = cut.Find("igc-switch");
+        Assert.NotNull(element.GetAttribute("required"));
+    }
+
+    [Fact]
+    public void Switch_Invalid_RendersAttribute()
+    {
+        var cut = Render<IgbSwitch>(parameters =>
+            parameters.Add(p => p.Invalid, true));
+
+        var element = cut.Find("igc-switch");
+        Assert.NotNull(element.GetAttribute("invalid"));
+    }
+
+    [Fact]
     public void Switch_ChildContent_Renders()
     {
         var cut = Render<IgbSwitch>(parameters =>
