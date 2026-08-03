@@ -197,7 +197,7 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-        private bool _spinLoop = false;
+        private bool _spinLoop = true;
 
         partial void OnSpinLoopChanging(ref bool newValue);
         /// <summary>

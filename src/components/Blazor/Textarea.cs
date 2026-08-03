@@ -272,7 +272,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _rows = 0;
+        private double _rows = 3;
 
         partial void OnRowsChanging(ref double newValue);
         /// <summary>
@@ -323,7 +323,7 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
-        private bool _spellcheck = false;
+        private bool _spellcheck = true;
 
         partial void OnSpellcheckChanging(ref bool newValue);
         /// <summary>

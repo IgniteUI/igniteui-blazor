@@ -138,4 +138,16 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
 
         Assert.NotNull(cut.Find("igc-date-time-input").GetAttribute("outlined"));
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbDateTimeInput</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void DateTimeInput_DefaultValues_MatchWebComponent()
+    {
+        var input = new IgbDateTimeInput();
+
+        Assert.True(input.SpinLoop);
+    }
 }

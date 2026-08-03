@@ -207,4 +207,17 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     {
         Assert.True(typeof(IgbTextarea).IsSubclassOf(typeof(BaseRendererControl)));
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbTextarea</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Textarea_DefaultValues_MatchWebComponent()
+    {
+        var textarea = new IgbTextarea();
+
+        Assert.Equal(3, textarea.Rows);
+        Assert.True(textarea.Spellcheck);
+    }
 }

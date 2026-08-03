@@ -129,4 +129,16 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbDateRangePicker</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void DateRangePicker_DefaultValues_MatchWebComponent()
+    {
+        var picker = new IgbDateRangePicker();
+
+        Assert.Equal(2, picker.VisibleMonths);
+    }
 }

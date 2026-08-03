@@ -100,7 +100,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _offset = 0;
+        private double _offset = 6;
 
         partial void OnOffsetChanging(ref double newValue);
         /// <summary>
@@ -120,7 +120,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private PopoverPlacement _placement = PopoverPlacement.Top;
+        private PopoverPlacement _placement = PopoverPlacement.Bottom;
 
         partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>
@@ -202,7 +202,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _showDelay = 0;
+        private double _showDelay = 200;
 
         partial void OnShowDelayChanging(ref double newValue);
         /// <summary>
@@ -222,7 +222,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _hideDelay = 0;
+        private double _hideDelay = 300;
 
         partial void OnHideDelayChanging(ref double newValue);
         /// <summary>

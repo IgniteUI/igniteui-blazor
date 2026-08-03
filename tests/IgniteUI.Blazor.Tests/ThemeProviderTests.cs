@@ -12,8 +12,8 @@ public class ThemeProviderTests : BlazorComponentTestBase
         cut.Find("igc-theme-provider").Should_Exist();
     }
 
-    [Fact(Skip = "Default should be Bootstrap")]
-    public void ThemeProvider_DefaultValues_AreMaterialAndLight()
+    [Fact]
+    public void ThemeProvider_DefaultValues_AreBootstrapAndLight()
     {
         var provider = new IgbThemeProvider();
 

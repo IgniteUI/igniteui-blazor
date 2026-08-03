@@ -80,7 +80,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _max = 0;
+        private double _max = 100;
 
         partial void OnMaxChanging(ref double newValue);
         /// <summary>
@@ -206,7 +206,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _step = 0;
+        private double _step = 1;
 
         partial void OnStepChanging(ref double newValue);
         /// <summary>

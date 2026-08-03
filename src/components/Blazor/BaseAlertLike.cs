@@ -68,7 +68,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _displayTime = 0;
+        private double _displayTime = 4000;
 
         partial void OnDisplayTimeChanging(ref double newValue);
         /// <summary>

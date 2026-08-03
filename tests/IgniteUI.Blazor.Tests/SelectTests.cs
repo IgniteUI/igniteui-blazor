@@ -286,4 +286,16 @@ public class SelectHeaderTests : BlazorComponentTestBase
 
         Assert.Contains("Group A", cut.Find("igc-select-header").InnerHtml);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbSelect</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Select_DefaultValues_MatchWebComponent()
+    {
+        var select = new IgbSelect();
+
+        Assert.Equal(PopoverPlacement.BottomStart, select.Placement);
+    }
 }

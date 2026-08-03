@@ -72,4 +72,16 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
 
         Assert.Contains("Operation successful", cut.Markup);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbToast</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Toast_DefaultValues_MatchWebComponent()
+    {
+        var toast = new IgbToast();
+
+        Assert.Equal(4000, toast.DisplayTime);
+    }
 }

@@ -243,7 +243,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _maximumIndicatorsCount = 0;
+        private double _maximumIndicatorsCount = 10;
 
         partial void OnMaximumIndicatorsCountChanging(ref double newValue);
         /// <summary>

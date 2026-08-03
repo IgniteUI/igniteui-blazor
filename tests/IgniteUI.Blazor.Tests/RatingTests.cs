@@ -155,4 +155,17 @@ public class RatingSymbolTests : BlazorComponentTestBase
         var cut = Render<IgbRatingSymbol>();
         cut.Find("igc-rating-symbol").Should_Exist();
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbRating</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Rating_DefaultValues_MatchWebComponent()
+    {
+        var rating = new IgbRating();
+
+        Assert.Equal(5, rating.Max);
+        Assert.Equal(1, rating.Step);
+    }
 }

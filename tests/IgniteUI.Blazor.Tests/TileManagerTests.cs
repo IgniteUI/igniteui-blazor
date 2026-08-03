@@ -246,4 +246,18 @@ public class TileTests : ComponentWithContractTestBase<IgbTile>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbTile</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Tile_DefaultValues_MatchWebComponent()
+    {
+        var tile = new IgbTile();
+
+        Assert.Equal(1, tile.ColSpan);
+        Assert.Equal(1, tile.RowSpan);
+        Assert.Equal(-1, tile.Position);
+    }
 }

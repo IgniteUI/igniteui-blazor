@@ -102,7 +102,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _opacity = 0;
+        private double _opacity = 1;
 
         partial void OnOpacityChanging(ref double newValue);
         /// <summary>

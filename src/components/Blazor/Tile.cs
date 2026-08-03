@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnCreatedIgbTile();
 
-        private double _colSpan = 0;
+        private double _colSpan = 1;
 
         partial void OnColSpanChanging(ref double newValue);
         /// <summary>
@@ -80,7 +80,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _rowSpan = 0;
+        private double _rowSpan = 1;
 
         partial void OnRowSpanChanging(ref double newValue);
         /// <summary>
@@ -233,7 +233,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _position = 0;
+        private double _position = -1;
 
         partial void OnPositionChanging(ref double newValue);
         /// <summary>

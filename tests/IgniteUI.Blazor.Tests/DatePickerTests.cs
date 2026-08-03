@@ -162,4 +162,16 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         picker.Value = date;
         Assert.Equal(date, picker.Value);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbDatePicker</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void DatePicker_DefaultValues_MatchWebComponent()
+    {
+        var picker = new IgbDatePicker();
+
+        Assert.Equal(1, picker.VisibleMonths);
+    }
 }

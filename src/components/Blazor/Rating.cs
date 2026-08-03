@@ -61,7 +61,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnCreatedIgbRating();
 
-        private double _max = 0;
+        private double _max = 5;
 
         partial void OnMaxChanging(ref double newValue);
         /// <summary>
@@ -83,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _step = 0;
+        private double _step = 1;
 
         partial void OnStepChanging(ref double newValue);
         /// <summary>

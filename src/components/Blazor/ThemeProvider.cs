@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnCreatedIgbThemeProvider();
 
-        private Theme _theme = Theme.Material;
+        private Theme _theme = Theme.Bootstrap;
 
         partial void OnThemeChanging(ref Theme newValue);
         /// <summary>

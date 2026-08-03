@@ -52,4 +52,16 @@ public class CircularGradientTests : BlazorComponentTestBase
         Assert.Equal("blue", el.GetAttribute("color"));
         Assert.Equal("1", el.GetAttribute("opacity"));
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbCircularGradient</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void CircularGradient_DefaultValues_MatchWebComponent()
+    {
+        var gradient = new IgbCircularGradient();
+
+        Assert.Equal(1, gradient.Opacity);
+    }
 }

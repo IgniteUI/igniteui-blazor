@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnCreatedIgbDropdown();
 
-        private PopoverPlacement _placement = PopoverPlacement.Top;
+        private PopoverPlacement _placement = PopoverPlacement.BottomStart;
 
         partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>

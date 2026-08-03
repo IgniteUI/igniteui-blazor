@@ -527,7 +527,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _visibleMonths = 0;
+        private double _visibleMonths = 2;
 
         partial void OnVisibleMonthsChanging(ref double newValue);
         [Parameter]
