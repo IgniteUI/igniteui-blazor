@@ -128,8 +128,8 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnValueFormatChanging(ref string newValue);
         /// <summary>
-        /// A format string which sets aria-valuetext. Instances of '{0}' will be replaced
-        /// with the current value of the control and instances of '{1}' with the maximum value for the control.
+        /// A format string which sets aria-valuetext. Instances of <c>{0}</c> will be replaced
+        /// with the current value of the control and instances of <c>{1}</c> with the maximum value for the control.
         /// Important for screen-readers and useful for localization.
         /// </summary>
         [Parameter]
@@ -150,7 +150,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnValueChanging(ref double newValue);
         /// <summary>
-        /// The current value of the component
+        /// The value of the component.
         /// </summary>
         [Parameter]
         public double Value
@@ -166,11 +166,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Return the current value of the component.
+        /// </summary>
         public async Task<double> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
+
+        /// <summary>
+        /// Return the current value of the component.
+        /// </summary>
         public double GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
@@ -180,7 +188,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHoverPreviewChanging(ref bool newValue);
         /// <summary>
-        /// Sets hover preview behavior for the component
+        /// Sets hover preview behavior for the component.
         /// </summary>
         [Parameter]
         public bool HoverPreview
@@ -261,7 +269,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
-        /// The disabled state of the component
+        /// The disabled state of the component.
         /// </summary>
         [Parameter]
         public bool Disabled
@@ -281,7 +289,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
-        /// Control the validity of the control.
+        /// Sets the control into invalid state (visual state only).
         /// </summary>
         [Parameter]
         public bool Invalid
@@ -326,50 +334,68 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
-        /// Increments the value of the control by `n` steps multiplied by the
+        /// Increments the value of the control by <paramref name="n"/> steps multiplied by the
         /// step factor.
         /// </summary>
         public async Task StepUpAsync(double n = 1)
         {
             await InvokeMethod("stepUp", new object[] { n }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Increments the value of the control by <paramref name="n"/> steps multiplied by the
+        /// step factor.
+        /// </summary>
         public void StepUp(double n = 1)
         {
             InvokeMethodSync("stepUp", new object[] { n }, new string[] { "Number" });
         }
         /// <summary>
-        /// Decrements the value of the control by `n` steps multiplied by
+        /// Decrements the value of the control by <paramref name="n"/> steps multiplied by
         /// the step factor.
         /// </summary>
         public async Task StepDownAsync(double n = 1)
         {
             await InvokeMethod("stepDown", new object[] { n }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Decrements the value of the control by <paramref name="n"/> steps multiplied by
+        /// the step factor.
+        /// </summary>
         public void StepDown(double n = 1)
         {
             InvokeMethodSync("stepDown", new object[] { n }, new string[] { "Number" });
         }
         /// <summary>
-        /// Checks for validity of the control and shows the browser message if it invalid.
+        /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
             var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and shows the browser message if it's invalid.
+        /// </summary>
         public bool ReportValidity()
         {
             var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Checks for validity of the control and emits the invalid event if it invalid.
+        /// Checks for validity of the control and emits the invalid event if it's invalid.
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
             var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and emits the invalid event if it's invalid.
+        /// </summary>
         public bool CheckValidity()
         {
             var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
@@ -377,18 +403,28 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Sets a custom validation message for the control.
-        /// As long as `message` is not empty, the control is considered invalid.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
             await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Sets a custom validation message for the control.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
+        /// </summary>
         public void SetCustomValidity(String message)
         {
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
         private EventCallback<double>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<double> ValueChanged
         {
@@ -416,6 +452,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -440,6 +484,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the value of the control changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbNumberEventArgs> Change
         {
@@ -516,6 +564,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _hoverRef = null;
         private string _hoverScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Hover"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string HoverScript
         {
@@ -540,6 +596,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingHover(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _hover = null;
+
+        /// <summary>
+        /// Emitted when hover is enabled and the user mouses over a symbol of the rating.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbNumberEventArgs> Hover
         {

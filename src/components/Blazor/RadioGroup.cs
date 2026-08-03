@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The igc-radio-group component unifies one or more igc-radio buttons.
+    /// Unifies one or more <see cref="IgbRadio"/> components into a single group.
     /// </summary>
     public partial class IgbRadioGroup : BaseRendererControl
     {
@@ -83,7 +83,8 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnValueChanging(ref string newValue);
         /// <summary>
-        /// Gets/Sets the checked igc-radio element that matches `value`
+        /// The value of the group, reflecting the value of the currently checked <see cref="IgbRadio"/> button.
+        /// Setting it checks the <see cref="IgbRadio"/> button in the group with a matching value.
         /// </summary>
         [Parameter]
         public string Value
@@ -99,11 +100,21 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Gets the current value of the group.
+        /// </summary>
+        /// <returns>The value of the checked <see cref="IgbRadio"/>.</returns>
         public async Task<string> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
+
+        /// <summary>
+        /// Gets the current value of the group.
+        /// </summary>
+        /// <returns>The value of the checked <see cref="IgbRadio"/>.</returns>
         public string GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
@@ -139,6 +150,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private EventCallback<string>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanged
         {
@@ -166,6 +182,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -190,6 +214,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbRadioChangeEventArgs args);
         private EventCallback<IgbRadioChangeEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the checked state of a radio button in the group changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbRadioChangeEventArgs> Change
         {

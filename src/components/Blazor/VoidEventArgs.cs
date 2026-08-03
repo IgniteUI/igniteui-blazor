@@ -1,5 +1,10 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for component events that carry no payload, such as the focus and blur
+    /// notifications of the input controls or the opening, opened, closing and closed notifications
+    /// of the components that show an overlay.
+    /// </summary>
     public partial class IgbVoidEventArgs : BaseRendererElement
     {
         public override string Type { get { return "VoidEventArgs"; } }

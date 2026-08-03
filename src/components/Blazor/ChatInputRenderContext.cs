@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The context object for renderers that deal with the chat input area.
+    /// </summary>
     public partial class IgbChatInputRenderContext : BaseRendererElement
     {
         public override string Type { get { return "WebChatInputRenderContext"; } }

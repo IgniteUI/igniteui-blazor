@@ -6,9 +6,9 @@ namespace IgniteUI.Blazor.Controls
     /// A button that displays a single icon, designed for compact, icon-only
     /// interactions such as toolbar actions, floating action buttons, or inline
     /// controls.
-    /// The icon is sourced from the icon registry via the `name` and `collection`
-    /// attributes. Like the normal button, it can render as an anchor element when
-    /// `href` is set and is fully form-associated.
+    /// The icon is sourced from the icon registry via the <see cref="IconName"/> and
+    /// <see cref="Collection"/> properties. Like <see cref="IgbButton"/>, it can render as an anchor
+    /// element when <see cref="IgbButtonBase.Href"/> is set and is fully form-associated.
     /// </summary>
     public partial class IgbIconButton : IgbButtonBase
     {
@@ -125,9 +125,14 @@ namespace IgniteUI.Blazor.Controls
         partial void OnVariantChanging(ref IconButtonVariant newValue);
         /// <summary>
         /// The variant of the button which determines its visual appearance.
-        /// - `contained` – filled background; highest visual emphasis (default).
-        /// - `outlined` – transparent background with a visible border.
-        /// - `flat` – no background or border; lowest visual emphasis.
+        /// <list type="bullet">
+        ///   <item><description><see cref="IconButtonVariant.Contained"/> – filled background;
+        ///     highest visual emphasis (default).</description></item>
+        ///   <item><description><see cref="IconButtonVariant.Outlined"/> – transparent background
+        ///     with a visible border.</description></item>
+        ///   <item><description><see cref="IconButtonVariant.Flat"/> – no background or border;
+        ///     lowest visual emphasis.</description></item>
+        /// </list>
         /// </summary>
         [Parameter]
         public IconButtonVariant Variant
@@ -163,18 +168,46 @@ namespace IgniteUI.Blazor.Controls
 
             return null;
         }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconAsync(String name, String url, String collection = null)
         {
             await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIcon(String name, String url, String collection = null)
         {
             InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconFromTextAsync(String name, String iconText, String collection = null)
         {
             await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIconFromText(String name, String iconText, String collection = null)
         {
             InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });

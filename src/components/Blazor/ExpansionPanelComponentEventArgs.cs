@@ -2,6 +2,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the expansion panel open and close events, carrying the
+    /// <see cref="IgbExpansionPanel"/> instance the event applies to.
+    /// Raised by <see cref="IgbExpansionPanel"/> for itself and by <see cref="IgbAccordion"/> for its
+    /// child panels.
+    /// </summary>
     public partial class IgbExpansionPanelComponentEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebExpansionPanelComponentEventArgs"; } }
@@ -19,6 +25,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbExpansionPanel _detail;
 
         partial void OnDetailChanging(ref IgbExpansionPanel newValue);
+
+        /// <summary>
+        /// The expansion panel the event was raised for.
+        /// </summary>
         [Parameter]
         public IgbExpansionPanel Detail
         {

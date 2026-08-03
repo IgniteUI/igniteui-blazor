@@ -59,11 +59,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Returns the current value of the input.
+        /// </summary>
         public async Task<DateTime?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToDate(iv);
         }
+
+        /// <summary>
+        /// Returns the current value of the input.
+        /// </summary>
         public DateTime? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
@@ -89,35 +97,60 @@ namespace IgniteUI.Blazor.Controls
 
             return null;
         }
+
+        /// <summary>
+        /// Increments a date/time portion.
+        /// </summary>
         public async Task StepUpAsync(DatePart? datePart = null, double delta = -1)
         {
             await InvokeMethod("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
+
+        /// <summary>
+        /// Increments a date/time portion.
+        /// </summary>
         public void StepUp(DatePart? datePart = null, double delta = -1)
         {
             InvokeMethodSync("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
+
+        /// <summary>
+        /// Decrements a date/time portion.
+        /// </summary>
         public async Task StepDownAsync(DatePart? datePart = null, double delta = -1)
         {
             await InvokeMethod("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
+
+        /// <summary>
+        /// Decrements a date/time portion.
+        /// </summary>
         public void StepDown(DatePart? datePart = null, double delta = -1)
         {
             InvokeMethodSync("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
         /// <summary>
-        /// Clears the input element of user input.
+        /// Clears the component of any user input.
         /// </summary>
         public async Task ClearAsync()
         {
             await InvokeMethod("clear", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Clears the component of any user input.
+        /// </summary>
         public void Clear()
         {
             InvokeMethodSync("clear", new object[] { }, new string[] { });
         }
 
         private EventCallback<DateTime?>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<DateTime?> ValueChanged
         {
@@ -145,6 +178,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputOcurredRef = null;
         private string _inputOcurredScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="InputOcurred"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputOcurredScript
         {
@@ -169,6 +210,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingInputOcurred(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _inputOcurred = null;
+
+        /// <summary>
+        /// Emitted when the control input receives user input.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> InputOcurred
         {
@@ -210,6 +255,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -234,6 +287,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbComponentDateValueChangedEventArgs args);
         private EventCallback<IgbComponentDateValueChangedEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the user modifies and commits the component's value.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentDateValueChangedEventArgs> Change
         {
@@ -310,6 +367,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _focusRef = null;
         private string _focusScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string FocusScript
         {
@@ -334,6 +399,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
+
+        /// <summary>
+        /// Emitted when the component gains focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Focus
         {
@@ -375,6 +444,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _blurRef = null;
         private string _blurScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string BlurScript
         {
@@ -399,6 +476,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
+
+        /// <summary>
+        /// Emitted when the component loses focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Blur
         {

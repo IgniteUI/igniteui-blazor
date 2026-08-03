@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A step component used within an `igc-stepper` to represent an individual step in a wizard-like workflow.
+    /// A step component used within an <see cref="IgbStepper"/> to represent an individual step
+    /// in a wizard-like workflow.
     /// </summary>
     public partial class IgbStep : BaseRendererControl
     {

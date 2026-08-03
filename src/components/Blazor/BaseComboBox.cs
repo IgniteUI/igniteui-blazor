@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class shared by <see cref="IgbCombo{T}"/> and <see cref="IgbComboBoxBaseLike"/>.
+    /// </summary>
     public partial class IgbBaseComboBox : BaseRendererControl
     {
         public override string Type { get { return "WebBaseComboBox"; } }
@@ -75,11 +78,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Shows the component.
         /// </summary>
+        /// <returns><see langword="true"/> when the component was successfully opened,
+        /// or <see langword="false"/> if it was already open.</returns>
         public async Task<bool> ShowAsync()
         {
             var iv = await InvokeMethod("show", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Shows the component.
+        /// </summary>
+        /// <returns><see langword="true"/> when the component was successfully opened,
+        /// or <see langword="false"/> if it was already open.</returns>
         public bool Show()
         {
             var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
@@ -88,11 +99,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Hides the component.
         /// </summary>
+        /// <returns><see langword="true"/> when the component was successfully closed,
+        /// or <see langword="false"/> if it was already closed.</returns>
         public async Task<bool> HideAsync()
         {
             var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Hides the component.
+        /// </summary>
+        /// <returns><see langword="true"/> when the component was successfully closed,
+        /// or <see langword="false"/> if it was already closed.</returns>
         public bool Hide()
         {
             var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
@@ -101,11 +120,17 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Toggles the open state of the component.
         /// </summary>
+        /// <returns><see langword="true"/> when the open state was changed.</returns>
         public async Task<bool> ToggleAsync()
         {
             var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Toggles the open state of the component.
+        /// </summary>
+        /// <returns><see langword="true"/> when the open state was changed.</returns>
         public bool Toggle()
         {
             var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });

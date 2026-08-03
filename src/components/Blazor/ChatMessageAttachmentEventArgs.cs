@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbChat.AttachmentClick"/> event, carrying the message
+    /// attachment that was clicked.
+    /// </summary>
     public partial class IgbChatMessageAttachmentEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebChatMessageAttachmentEventArgs"; } }
@@ -19,6 +23,9 @@ namespace IgniteUI.Blazor.Controls
         private IgbChatMessageAttachment _detail;
 
         partial void OnDetailChanging(ref IgbChatMessageAttachment newValue);
+        /// <summary>
+        /// The chat message attachment the event was raised for.
+        /// </summary>
         [Parameter]
         public IgbChatMessageAttachment Detail
         {

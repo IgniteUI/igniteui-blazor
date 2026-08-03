@@ -4,7 +4,8 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The tree allows users to represent hierarchical data in a tree-view structure,
-    /// maintaining parent-child relationships, as well as to define static tree-view structure without a corresponding data model.
+    /// maintaining parent-child relationships, as well as to define static tree-view structure
+    /// without a corresponding data model.
     /// </summary>
     public partial class IgbTree : BaseRendererControl
     {
@@ -159,6 +160,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _selectionChangedRef = null;
         private string _selectionChangedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="SelectionChanged"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string SelectionChangedScript
         {
@@ -183,6 +192,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingSelectionChanged(IgbTreeSelectionEventArgs args);
         private EventCallback<IgbTreeSelectionEventArgs>? _selectionChanged = null;
+
+        /// <summary>
+        /// Emitted when item selection is changing, before the selection completes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTreeSelectionEventArgs> SelectionChanged
         {
@@ -224,6 +237,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _itemExpandingRef = null;
         private string _itemExpandingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ItemExpanding"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ItemExpandingScript
         {
@@ -248,6 +269,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingItemExpanding(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemExpanding = null;
+
+        /// <summary>
+        /// Emitted when tree item is about to expand.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTreeItemComponentEventArgs> ItemExpanding
         {
@@ -289,6 +314,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _itemExpandedRef = null;
         private string _itemExpandedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ItemExpanded"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ItemExpandedScript
         {
@@ -313,6 +346,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingItemExpanded(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemExpanded = null;
+
+        /// <summary>
+        /// Emitted when tree item is expanded.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTreeItemComponentEventArgs> ItemExpanded
         {
@@ -354,6 +391,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _itemCollapsingRef = null;
         private string _itemCollapsingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ItemCollapsing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ItemCollapsingScript
         {
@@ -378,6 +423,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingItemCollapsing(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemCollapsing = null;
+
+        /// <summary>
+        /// Emitted when tree item is about to collapse.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTreeItemComponentEventArgs> ItemCollapsing
         {
@@ -419,6 +468,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _itemCollapsedRef = null;
         private string _itemCollapsedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ItemCollapsed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ItemCollapsedScript
         {
@@ -443,6 +500,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingItemCollapsed(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemCollapsed = null;
+
+        /// <summary>
+        /// Emitted when tree item is collapsed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTreeItemComponentEventArgs> ItemCollapsed
         {
@@ -484,6 +545,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _activeItemRef = null;
         private string _activeItemScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ActiveItem"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ActiveItemScript
         {
@@ -508,6 +577,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingActiveItem(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _activeItem = null;
+
+        /// <summary>
+        /// Emitted when the active item of the tree changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTreeItemComponentEventArgs> ActiveItem
         {

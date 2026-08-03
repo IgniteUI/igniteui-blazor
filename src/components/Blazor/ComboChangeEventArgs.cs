@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbCombo{T}.Change"/> event.
+    /// </summary>
     public partial class IgbComboChangeEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebComboChangeEventArgs"; } }
@@ -19,6 +22,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbComboChangeEventArgsDetail _detail;
 
         partial void OnDetailChanging(ref IgbComboChangeEventArgsDetail newValue);
+
+        /// <summary>
+        /// Describes the selection change: the new value, the items it affected and the kind of change.
+        /// </summary>
         [Parameter]
         public IgbComboChangeEventArgsDetail Detail
         {

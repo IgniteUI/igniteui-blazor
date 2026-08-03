@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbTabs.Change"/> event, carrying the <see cref="IgbTab"/>
+    /// instance the event applies to.
+    /// </summary>
     public partial class IgbTabComponentEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebTabComponentEventArgs"; } }
@@ -19,6 +23,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbTab _detail;
 
         partial void OnDetailChanging(ref IgbTab newValue);
+
+        /// <summary>
+        /// The tab that became selected.
+        /// </summary>
         [Parameter]
         public IgbTab Detail
         {

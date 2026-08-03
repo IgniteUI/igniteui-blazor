@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The pair of thumb values carried by the <see cref="IgbRangeSlider"/> value events.
+    /// </summary>
     public partial class IgbRangeSliderValue : BaseRendererElement
     {
         public override string Type { get { return "WebRangeSliderValue"; } }
@@ -19,6 +22,10 @@ namespace IgniteUI.Blazor.Controls
         private double _lower = 0;
 
         partial void OnLowerChanging(ref double newValue);
+
+        /// <summary>
+        /// The value of the lower thumb.
+        /// </summary>
         [Parameter]
         public double Lower
         {
@@ -36,6 +43,10 @@ namespace IgniteUI.Blazor.Controls
         private double _upper = 0;
 
         partial void OnUpperChanging(ref double newValue);
+
+        /// <summary>
+        /// The value of the upper thumb.
+        /// </summary>
         [Parameter]
         public double Upper
         {

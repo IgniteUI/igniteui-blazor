@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A tab element slotted into an `igc-tabs` container.
+    /// A tab nested in an <see cref="IgbTabs"/> component.
     /// </summary>
     public partial class IgbTab : BaseRendererControl, IDisposable
     {

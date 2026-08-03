@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class shared by <see cref="IgbSnackbar"/> and <see cref="IgbToast"/>.
+    /// </summary>
     public partial class IgbBaseAlertLike : BaseRendererControl
     {
         public override string Type { get { return "WebBaseAlertLike"; } }
@@ -92,7 +95,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnKeepOpenChanging(ref bool newValue);
         /// <summary>
-        /// Determines whether the component should close after the `displayTime` is over.
+        /// Determines whether the component should close after the <see cref="DisplayTime"/> is over.
         /// </summary>
         [Parameter]
         public bool KeepOpen
@@ -113,9 +116,18 @@ namespace IgniteUI.Blazor.Controls
         partial void OnPositionChanging(ref AbsolutePosition newValue);
         /// <summary>
         /// Sets the position of the component in the viewport.
-        /// `bottom` - positions the component at the bottom. This is the default.
-        /// `middle` - positions the component at the center.
-        /// `top` - positions the component at the top.
+        /// <list type="bullet">
+        ///   <item><description>
+        ///     <see cref="AbsolutePosition.Bottom"/> - positions the component at the bottom.
+        ///     This is the default.
+        ///   </description></item>
+        ///   <item><description>
+        ///     <see cref="AbsolutePosition.Middle"/> - positions the component at the center.
+        ///   </description></item>
+        ///   <item><description>
+        ///     <see cref="AbsolutePosition.Top"/> - positions the component at the top.
+        ///   </description></item>
+        /// </list>
         /// </summary>
         [Parameter]
         public AbsolutePosition Position
@@ -136,8 +148,17 @@ namespace IgniteUI.Blazor.Controls
         partial void OnPositioningChanging(ref NotificationPositioning newValue);
         /// <summary>
         /// Sets the positioning strategy of the component.
-        /// `viewport` - positions the component relative to the viewport, ignoring any ancestor elements. This is the default behavior.
-        /// `container` - positions the component relative to the nearest visible ancestor. In this mode, the component will be constrained within the bounding box of the ancestor and will be positioned according to the `position` attribute.
+        /// <list type="bullet">
+        ///   <item><description>
+        ///     <see cref="NotificationPositioning.Viewport"/> - positions the component relative to the
+        ///     viewport, ignoring any ancestor elements. This is the default behavior.
+        ///   </description></item>
+        ///   <item><description>
+        ///     <see cref="NotificationPositioning.Container"/> - positions the component relative to the
+        ///     nearest visible ancestor. In this mode, the component will be constrained within the bounding
+        ///     box of the ancestor and will be positioned according to the <see cref="Position"/> property.
+        ///   </description></item>
+        /// </list>
         /// </summary>
         [Parameter]
         public NotificationPositioning Positioning
@@ -191,14 +212,26 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Opens the component.
-        /// Returns a promise that resolves to `true` if the component was successfully opened, or `false`
-        /// if it was already open or could not be shown (e.g., in `container` positioning mode with no visible ancestors).
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the component was successfully opened, or <see langword="false"/>
+        /// if it was already open or could not be shown (for example, in
+        /// <see cref="NotificationPositioning.Container"/> positioning mode with no visible ancestors).
+        /// </returns>
         public async Task<bool> ShowAsync()
         {
             var iv = await InvokeMethod("show", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Opens the component.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the component was successfully opened, or <see langword="false"/>
+        /// if it was already open or could not be shown (for example, in
+        /// <see cref="NotificationPositioning.Container"/> positioning mode with no visible ancestors).
+        /// </returns>
         public bool Show()
         {
             var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
@@ -206,14 +239,24 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Closes the component.
-        /// Returns a promise that resolves to `true` if the component was successfully closed, or `false`
-        /// if it was already closed.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the component was successfully closed, or <see langword="false"/>
+        /// if it was already closed.
+        /// </returns>
         public async Task<bool> HideAsync()
         {
             var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Closes the component.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the component was successfully closed, or <see langword="false"/>
+        /// if it was already closed.
+        /// </returns>
         public bool Hide()
         {
             var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
@@ -221,14 +264,24 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Toggles the open state of the component.
-        /// Returns a promise that resolves to `true` if the operation completed successfully, or `false`
-        /// if it was already in the desired state.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the operation completed successfully, or <see langword="false"/>
+        /// if it was already in the desired state.
+        /// </returns>
         public async Task<bool> ToggleAsync()
         {
             var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Toggles the open state of the component.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the operation completed successfully, or <see langword="false"/>
+        /// if it was already in the desired state.
+        /// </returns>
         public bool Toggle()
         {
             var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });

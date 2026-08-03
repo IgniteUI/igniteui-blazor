@@ -2,6 +2,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the tile drag and resize events raised by <see cref="IgbTile"/> and
+    /// <see cref="IgbTileManager"/>, such as <see cref="IgbTile.TileDragStart"/> and
+    /// <see cref="IgbTile.TileResizeEnd"/>.
+    /// </summary>
     public partial class IgbTileComponentEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebTileComponentEventArgs"; } }
@@ -19,6 +24,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbTile _detail;
 
         partial void OnDetailChanging(ref IgbTile newValue);
+
+        /// <summary>
+        /// The tile the operation applies to.
+        /// </summary>
         [Parameter]
         public IgbTile Detail
         {

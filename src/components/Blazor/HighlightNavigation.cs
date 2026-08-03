@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Options for controlling navigation behavior when moving the active highlight.
+    /// </summary>
     public partial class IgbHighlightNavigation : BaseRendererElement
     {
         public override string Type { get { return "WebHighlightNavigation"; } }
@@ -20,7 +23,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnPreventScrollChanging(ref bool newValue);
         /// <summary>
-        /// If true, prevents the component from scrolling the new active match into view.
+        /// When <see langword="true"/>, prevents the component from scrolling the new active match into view.
         /// </summary>
         [Parameter]
         public bool PreventScroll

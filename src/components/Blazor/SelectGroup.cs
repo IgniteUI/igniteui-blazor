@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A container for a group of select items.
+    /// </summary>
     public partial class IgbSelectGroup : BaseRendererControl
     {
         public override string Type { get { return "WebSelectGroup"; } }
@@ -60,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnItemsChanging(ref IgbSelectItem[] newValue);
         /// <summary>
-        /// All child `igc-select-item`s.
+        /// All child <see cref="IgbSelectItem"/> components.
         /// </summary>
         [Parameter]
         public IgbSelectItem[] Items
