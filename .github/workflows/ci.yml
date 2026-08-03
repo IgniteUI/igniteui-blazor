@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
 
       # The SDK is pinned via global.json (10.0.x builds all TFMs);
       # older runtimes are needed to run tests targeting net8.0/net9.0.
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5.4.0
+        uses: actions/setup-dotnet@v6.0.0
         with:
           dotnet-version: |
             8.0.x
