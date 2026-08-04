@@ -36,7 +36,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 (sp) =>
                 {
                     var bs = new IgniteUIBlazorSettings();
-                    bs = bs.WithModulesToLoad(modulesToLoad != null && modulesToLoad.Length > 0 ? new ReadOnlyCollection<Type>(modulesToLoad) : null);
+                    Type[] modules = modulesToLoad != null && modulesToLoad.Length > 0 ? [.. modulesToLoad] : [];
+                    bs = bs.WithModulesToLoad(modules.Length > 0 ? new ReadOnlyCollection<Type>(modules) : null);
                     return bs;
                 });
 
