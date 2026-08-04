@@ -79,7 +79,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 (sp) =>
                 {
                     var bs = new IgniteUIBlazorSettings(settings);
-                    bs = bs.WithModulesToLoad(modulesToLoad != null && modulesToLoad.Length > 0 ? new ReadOnlyCollection<Type>(modulesToLoad) : null);
+                    // The params add to whatever the settings already carry rather than replacing them
+                    Type[] modules = [.. (settings?.ModulesToLoad ?? Enumerable.Empty<Type>())
+                        .Concat(modulesToLoad ?? Enumerable.Empty<Type>())
+                        .Distinct()];
+                    bs = bs.WithModulesToLoad(modules.Length > 0 ? new ReadOnlyCollection<Type>(modules) : null);
                     return bs;
                 });
 
