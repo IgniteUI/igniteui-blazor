@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
-        /// Determines whether the drawer is disabled.
+        /// Determines whether the drawer item is disabled.
         /// </summary>
         [Parameter]
         public bool Disabled
@@ -83,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnActiveChanging(ref bool newValue);
         /// <summary>
-        /// Determines whether the drawer is active.
+        /// Determines whether the drawer item is active.
         /// </summary>
         [Parameter]
         public bool Active

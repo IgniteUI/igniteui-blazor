@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Represents an attachment associated with a chat message.
+    /// </summary>
     public partial class IgbChatMessageAttachment : BaseRendererElement
     {
         public override string Type { get { return "WebChatMessageAttachment"; } }

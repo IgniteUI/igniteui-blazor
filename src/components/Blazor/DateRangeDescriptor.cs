@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Describes a set of dates by combining a range type with the dates it applies to.
+    /// </summary>
     public partial class IgbDateRangeDescriptor : BaseRendererElement
     {
         public override string Type { get { return "DateRangeDescriptor"; } }
@@ -17,6 +20,10 @@ namespace IgniteUI.Blazor.Controls
         private DateRangeType _rangeType = DateRangeType.After;
 
         partial void OnRangeTypeChanging(ref DateRangeType newValue);
+
+        /// <summary>
+        /// The kind of range being described, which determines how <see cref="DateRange"/> is matched.
+        /// </summary>
         [Parameter]
         [WCWidgetMemberName("Type")]
         public DateRangeType RangeType
@@ -35,6 +42,14 @@ namespace IgniteUI.Blazor.Controls
         private object _dateRange;
 
         partial void OnDateRangeChanging(ref object newValue);
+
+        /// <summary>
+        /// The date or dates the descriptor applies to, interpreted according to <see cref="RangeType"/>.
+        /// <see cref="DateRangeType.After"/> and <see cref="DateRangeType.Before"/> use the first date,
+        /// <see cref="DateRangeType.Between"/> uses the first and the last, and
+        /// <see cref="DateRangeType.Specific"/> matches every date listed. Not used by
+        /// <see cref="DateRangeType.Weekdays"/> and <see cref="DateRangeType.Weekends"/>.
+        /// </summary>
         [Parameter]
         public object DateRange
         {

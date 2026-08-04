@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The options used to format the months and the weekdays in the calendar views.
+    /// Set through <see cref="IgbCalendar.FormatOptions"/>.
+    /// </summary>
     public partial class IgbCalendarFormatOptions : BaseRendererElement
     {
         public override string Type { get { return "CalendarFormatOptions"; } }
@@ -19,6 +23,10 @@ namespace IgniteUI.Blazor.Controls
         private string _weekday;
 
         partial void OnWeekdayChanging(ref string newValue);
+        /// <summary>
+        /// The representation of the weekday names, one of <c>long</c>, <c>short</c> or <c>narrow</c>.
+        /// Defaults to <c>narrow</c>.
+        /// </summary>
         [Parameter]
         public string Weekday
         {
@@ -36,6 +44,10 @@ namespace IgniteUI.Blazor.Controls
         private string _month;
 
         partial void OnMonthChanging(ref string newValue);
+        /// <summary>
+        /// The representation of the month names, one of <c>numeric</c>, <c>2-digit</c>, <c>long</c>,
+        /// <c>short</c> or <c>narrow</c>. Defaults to <c>long</c>.
+        /// </summary>
         [Parameter]
         public string Month
         {

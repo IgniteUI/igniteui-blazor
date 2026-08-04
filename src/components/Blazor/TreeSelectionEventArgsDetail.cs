@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The payload carried by <see cref="IgbTree.SelectionChanged"/>, holding the selection
+    /// the tree is about to apply.
+    /// </summary>
     public partial class IgbTreeSelectionEventArgsDetail : BaseRendererElement
     {
         public override string Type { get { return "WebTreeSelectionEventArgsDetail"; } }
@@ -19,6 +23,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbTreeItem[] _newSelection;
 
         partial void OnNewSelectionChanging(ref IgbTreeItem[] newValue);
+
+        /// <summary>
+        /// The tree items that will make up the new selection.
+        /// </summary>
         [Parameter]
         public IgbTreeItem[] NewSelection
         {

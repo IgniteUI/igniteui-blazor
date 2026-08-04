@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class for <see cref="IgbCalendar"/>.
+    /// </summary>
     public partial class IgbCalendarBase : BaseRendererControl
     {
         public override string Type { get { return "WebCalendarBase"; } }

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Provides a way to display supplementary information related to an element when a user interacts with it (e.g., hover, focus).
+    /// Provides a way to display supplementary information related to an element when a user
+    /// interacts with it, for example on hover or focus.
     /// It offers features such as placement customization, delays, sticky mode, and animations.
     /// </summary>
     public partial class IgbTooltip : BaseRendererControl
@@ -124,7 +125,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>
-        /// Where to place the floating element relative to the parent anchor element.
+        /// Where to place the tooltip relative to its anchor element.
         /// </summary>
         [Parameter]
         public PopoverPlacement Placement
@@ -144,7 +145,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnAnchorChanging(ref string newValue);
         /// <summary>
-        /// An element instance or an IDREF to use as the anchor for the tooltip.
+        /// The ID of the element to use as the anchor for the tooltip.
         /// </summary>
         [Parameter]
         public string Anchor
@@ -165,7 +166,7 @@ namespace IgniteUI.Blazor.Controls
         partial void OnShowTriggersChanging(ref string newValue);
         /// <summary>
         /// Which event triggers will show the tooltip.
-        /// Expects a comma separate string of different event triggers.
+        /// Expects a comma separated string of different event triggers.
         /// </summary>
         [Parameter]
         public string ShowTriggers
@@ -186,7 +187,7 @@ namespace IgniteUI.Blazor.Controls
         partial void OnHideTriggersChanging(ref string newValue);
         /// <summary>
         /// Which event triggers will hide the tooltip.
-        /// Expects a comma separate string of different event triggers.
+        /// Expects a comma separated string of different event triggers.
         /// </summary>
         [Parameter]
         public string HideTriggers
@@ -246,7 +247,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnMessageChanging(ref string newValue);
         /// <summary>
-        /// Specifies a plain text as tooltip content.
+        /// Specifies plain text as the tooltip content.
         /// </summary>
         [Parameter]
         public string Message
@@ -312,13 +313,18 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Shows the tooltip if not already showing.
-        /// If a target is provided, sets it as a transient anchor.
+        /// If <paramref name="target"/> is provided, it is set as a transient anchor.
         /// </summary>
         public async Task<bool> ShowAsync(String target = null)
         {
             var iv = await InvokeMethod("show", new object[] { StringToString(target) }, new string[] { "String" });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Shows the tooltip if not already showing.
+        /// If <paramref name="target"/> is provided, it is set as a transient anchor.
+        /// </summary>
         public bool Show(String target = null)
         {
             var iv = InvokeMethodSync("show", new object[] { StringToString(target) }, new string[] { "String" });
@@ -332,19 +338,27 @@ namespace IgniteUI.Blazor.Controls
             var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Hides the tooltip if not already hidden.
+        /// </summary>
         public bool Hide()
         {
             var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Toggles the tooltip between shown/hidden state
+        /// Toggles the tooltip between shown and hidden state.
         /// </summary>
         public async Task<bool> ToggleAsync()
         {
             var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Toggles the tooltip between shown and hidden state.
+        /// </summary>
         public bool Toggle()
         {
             var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
@@ -353,6 +367,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openingRef = null;
         private string _openingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpeningScript
         {
@@ -377,6 +399,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingOpening(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opening = null;
+
+        /// <summary>
+        /// Emitted before the tooltip begins to open.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Opening
         {
@@ -418,6 +444,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openedRef = null;
         private string _openedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpenedScript
         {
@@ -442,6 +476,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingOpened(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opened = null;
+
+        /// <summary>
+        /// Emitted after the tooltip has successfully opened and is visible.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Opened
         {
@@ -483,6 +521,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closingRef = null;
         private string _closingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosingScript
         {
@@ -507,6 +553,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
+
+        /// <summary>
+        /// Emitted before the tooltip begins to close.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closing
         {
@@ -548,6 +598,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closedRef = null;
         private string _closedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosedScript
         {
@@ -572,6 +630,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
+
+        /// <summary>
+        /// Emitted after the tooltip has been fully removed from view.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closed
         {

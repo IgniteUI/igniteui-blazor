@@ -46,7 +46,7 @@ namespace IgniteUI.Blazor.Controls
                 // if (_igBlazor is IJSInProcessRuntime)
                 // {
                 //     this.JsInProcessRuntime = (IJSInProcessRuntime)_igBlazor;
-                // }            
+                // }
 
                 _igBlazor.WebCallback.Register(this);
                 _dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime, _igBlazor));
@@ -1327,6 +1327,7 @@ namespace IgniteUI.Blazor.Controls
         /// Resumes data change notifications.
         /// </summary>
         /// <param name="dataSource">The datasource that is being changed.</param>
+        /// <param name="notify">Whether to notify the component that the datasource items changed.</param>
         public void ResumeNotifications(object dataSource, bool notify = true)
         {
             _dataSourceManager.ResumeNotifications(dataSource, notify);
@@ -1904,7 +1905,7 @@ namespace IgniteUI.Blazor.Controls
                         //     {
                         //         return str;
                         //     }
-                        // } else 
+                        // } else
                         if (j.ValueKind == JsonValueKind.String)
                         {
                             returnValue = j.GetString();

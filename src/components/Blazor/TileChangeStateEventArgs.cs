@@ -2,6 +2,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the tile state events raised by <see cref="IgbTile"/> and
+    /// <see cref="IgbTileManager"/>, such as <see cref="IgbTile.TileFullscreen"/> and
+    /// <see cref="IgbTile.TileMaximize"/>.
+    /// </summary>
     public partial class IgbTileChangeStateEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebTileChangeStateEventArgs"; } }
@@ -19,6 +24,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbTileChangeStateEventArgsDetail _detail;
 
         partial void OnDetailChanging(ref IgbTileChangeStateEventArgsDetail newValue);
+
+        /// <summary>
+        /// The affected tile and the state it is changing to.
+        /// </summary>
         [Parameter]
         public IgbTileChangeStateEventArgsDetail Detail
         {

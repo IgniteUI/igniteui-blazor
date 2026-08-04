@@ -157,6 +157,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputRef = null;
         private string _inputScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Input"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputScript
         {
@@ -181,6 +189,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingInput(IgbRangeSliderValueEventArgs args);
         private EventCallback<IgbRangeSliderValueEventArgs>? _input = null;
+
+        /// <summary>
+        /// Emitted when a value is changed via thumb drag or keyboard interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbRangeSliderValueEventArgs> Input
         {
@@ -222,6 +234,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -246,6 +266,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbRangeSliderValueEventArgs args);
         private EventCallback<IgbRangeSliderValueEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when a value change is committed on a thumb drag end or keyboard interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbRangeSliderValueEventArgs> Change
         {

@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Used for defining gradient stops in the igc-circular-progress.
-    /// For each `igc-circular-gradient` defined as `gradient` slot of `igc-circular-progress` element would be created a SVG stop element.
-    /// The values passed as `color`, `offset` and `opacity` would be set as
-    /// `stop-color`, `offset` and `stop-opacity` of the SVG element without further validations.
+    /// Defines a gradient stop for an <see cref="IgbCircularProgress"/> component.
+    /// Nest one or more of these in the <c>gradient</c> slot of an <see cref="IgbCircularProgress"/>;
+    /// each one produces an SVG stop element.
+    /// <see cref="Color"/>, <see cref="Offset"/> and <see cref="Opacity"/> are applied as the
+    /// <c>stop-color</c>, <c>offset</c> and <c>stop-opacity</c> of that stop without further validation.
     /// </summary>
     public partial class IgbCircularGradient : BaseRendererControl
     {
@@ -66,7 +67,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnOffsetChanging(ref string newValue);
         /// <summary>
-        /// Defines where the gradient stop is placed along the gradient vector
+        /// Defines where the gradient stop is placed along the gradient vector.
         /// </summary>
         [Parameter]
         public string Offset
@@ -86,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnColorChanging(ref string newValue);
         /// <summary>
-        /// Defines the color of the gradient stop
+        /// Defines the color of the gradient stop.
         /// </summary>
         [Parameter]
         public string Color
@@ -106,7 +107,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnOpacityChanging(ref double newValue);
         /// <summary>
-        /// Defines the opacity of the gradient stop
+        /// Defines the opacity of the gradient stop.
         /// </summary>
         [Parameter]
         public double Opacity

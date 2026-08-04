@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A container for a group of `igc-dropdown-item` components.
+    /// A container for a group of dropdown items.
     /// </summary>
     public partial class IgbDropdownGroup : BaseRendererControl
     {

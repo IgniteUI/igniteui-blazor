@@ -2,6 +2,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Represents a clickable button, used to submit forms or anywhere in a
+    /// document for accessible, standard button functionality.
+    /// The button supports multiple visual variants, can render as an anchor
+    /// (<c>&lt;a&gt;</c>) element when <see cref="IgbButtonBase.Href"/> is set, and is fully
+    /// form-associated, acting as a native <c>submit</c> or <c>reset</c> control.
+    /// </summary>
     public partial class IgbButton : IgbButtonBase
     {
         public override string Type { get { return "WebButton"; } }
@@ -56,10 +63,16 @@ namespace IgniteUI.Blazor.Controls
         partial void OnVariantChanging(ref ButtonVariant newValue);
         /// <summary>
         /// The variant of the button which determines its visual appearance.
-        /// - `contained` – filled background; highest visual emphasis (default).
-        /// - `outlined` – transparent background with a visible border.
-        /// - `flat` – no background or border; lowest visual emphasis.
-        /// - `fab` – floating action button shape; typically used for primary actions.
+        /// <list type="bullet">
+        ///   <item><description><see cref="ButtonVariant.Contained"/> – filled background;
+        ///     highest visual emphasis (default).</description></item>
+        ///   <item><description><see cref="ButtonVariant.Outlined"/> – transparent background
+        ///     with a visible border.</description></item>
+        ///   <item><description><see cref="ButtonVariant.Flat"/> – no background or border;
+        ///     lowest visual emphasis.</description></item>
+        ///   <item><description><see cref="ButtonVariant.Fab"/> – floating action button shape;
+        ///     typically used for primary actions.</description></item>
+        /// </list>
         /// </summary>
         [Parameter]
         public ButtonVariant Variant

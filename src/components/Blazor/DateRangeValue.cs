@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A date range defined by a start and an end date.
+    /// </summary>
     public partial class IgbDateRangeValue : BaseRendererElement
     {
         public override string Type { get { return "WebDateRangeValue"; } }
@@ -17,6 +20,10 @@ namespace IgniteUI.Blazor.Controls
         private DateTime _start = DateTime.MinValue;
 
         partial void OnStartChanging(ref DateTime newValue);
+
+        /// <summary>
+        /// The first date of the range.
+        /// </summary>
         [Parameter]
         public DateTime Start
         {
@@ -34,6 +41,10 @@ namespace IgniteUI.Blazor.Controls
         private DateTime _end = DateTime.MinValue;
 
         partial void OnEndChanging(ref DateTime newValue);
+
+        /// <summary>
+        /// The last date of the range.
+        /// </summary>
         [Parameter]
         public DateTime End
         {

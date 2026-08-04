@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The Combo component is similar to the Select component in that it provides a list of options from which the user can make a selection.
-    /// In contrast to the Select component, the Combo component displays all options in a virtualized list of items,
-    /// meaning the combo box can simultaneously show thousands of options, where one or more options can be selected.
+    /// The Combo component is similar to <see cref="IgbSelect"/> in that it provides a list of options
+    /// from which the user can make a selection.
+    /// In contrast to the Select component, the Combo component displays all options in a virtualized
+    /// list of items, meaning the combo box can simultaneously show thousands of options, where one or
+    /// more options can be selected.
     /// Additionally, users can create custom item templates, allowing for robust data visualization.
-    /// The Combo component features case-sensitive filtering, grouping, complex data binding, dynamic addition of values and more.
+    /// The Combo component features case-sensitive filtering, grouping, complex data binding,
+    /// dynamic addition of values and more.
     /// </summary>
     public partial class IgbCombo<T> : IgbBaseComboBox
     {
@@ -99,7 +102,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
-        /// The outlined attribute of the control.
+        /// Whether the control has an outlined appearance.
         /// </summary>
         [Parameter]
         public bool Outlined
@@ -199,7 +202,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnLabelChanging(ref string newValue);
         /// <summary>
-        /// The label attribute of the control.
+        /// The label of the control.
         /// </summary>
         [Parameter]
         public string Label
@@ -219,7 +222,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
-        /// The placeholder attribute of the control.
+        /// The placeholder text of the control.
         /// </summary>
         [Parameter]
         public string Placeholder
@@ -239,7 +242,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnPlaceholderSearchChanging(ref string newValue);
         /// <summary>
-        /// The placeholder attribute of the search input.
+        /// The placeholder text of the search input.
         /// </summary>
         [Parameter]
         public string PlaceholderSearch
@@ -425,9 +428,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnValueChanging(ref T[] newValue);
         /// <summary>
-        /// Sets the value (selected items). The passed value must be a valid JSON array.
-        /// If the data source is an array of complex objects, the `valueKey` attribute must be set.
-        /// Note that when `displayKey` is not explicitly set, it will fall back to the value of `valueKey`.
+        /// The value of the control, that is the currently selected items.
+        /// If the data source is an array of complex objects, <see cref="ValueKey"/> must be set.
+        /// Note that when <see cref="DisplayKey"/> is not explicitly set, it falls back to the value
+        /// of <see cref="ValueKey"/>.
         /// </summary>
         [Parameter]
         public T[] Value
@@ -443,22 +447,42 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Returns the current value of the combo.
+        /// </summary>
+        /// <returns>The selected values, represented by <see cref="ValueKey"/> when provided.</returns>
         public async Task<T[]> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToObjectArray(iv).Cast<T>().ToArray();
         }
+
+        /// <summary>
+        /// Returns the current value of the combo.
+        /// </summary>
+        /// <returns>The selected values, represented by <see cref="ValueKey"/> when provided.</returns>
         public T[] GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
             return ReturnToObjectArray(iv).Cast<T>().ToArray();
         }
         private string _selectionRef;
+
+        /// <summary>
+        /// Returns the current selection of the combo.
+        /// </summary>
+        /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
         public async Task<object[]> GetSelectionAsync()
         {
             var iv = await InvokeMethod("p:Selection", new object[] { }, new string[] { });
             return ReturnToObjectArray(iv);
         }
+
+        /// <summary>
+        /// Returns the current selection of the combo.
+        /// </summary>
+        /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
         public object[] GetSelection()
         {
             var iv = InvokeMethodSync("p:Selection", new object[] { }, new string[] { });
@@ -468,7 +492,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
-        /// The disabled state of the component
+        /// The disabled state of the component.
         /// </summary>
         [Parameter]
         public bool Disabled
@@ -508,7 +532,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
-        /// Control the validity of the control.
+        /// Sets the control into invalid state (visual state only).
         /// </summary>
         [Parameter]
         public bool Invalid
@@ -528,6 +552,10 @@ namespace IgniteUI.Blazor.Controls
         private RenderFragment<object> _itemTemplate;
 
         partial void OnItemTemplateChanging(ref RenderFragment<object> newValue);
+
+        /// <summary>
+        /// The template used for the content of each combo item.
+        /// </summary>
         [Parameter]
         public RenderFragment<object> ItemTemplate
         {
@@ -555,7 +583,13 @@ namespace IgniteUI.Blazor.Controls
         private string _itemTemplateTemplateId;
         private string _itemTemplateScript;
 
-        ///<summary>Provides a means of setting ItemTemplate in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the template used for the content of each combo item.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ItemTemplateScript
         {
@@ -580,6 +614,10 @@ namespace IgniteUI.Blazor.Controls
         private RenderFragment<object> _groupHeaderTemplate;
 
         partial void OnGroupHeaderTemplateChanging(ref RenderFragment<object> newValue);
+
+        /// <summary>
+        /// The template used for the content of each combo group header.
+        /// </summary>
         [Parameter]
         public RenderFragment<object> GroupHeaderTemplate
         {
@@ -607,7 +645,13 @@ namespace IgniteUI.Blazor.Controls
         private string _groupHeaderTemplateTemplateId;
         private string _groupHeaderTemplateScript;
 
-        ///<summary>Provides a means of setting GroupHeaderTemplate in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the template used for the content of each combo group header.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string GroupHeaderTemplateScript
         {
@@ -658,6 +702,9 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
+        /// <summary>
+        /// Sets focus on the component.
+        /// </summary>
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
@@ -673,48 +720,87 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("blur", new object[] { }, new string[] { });
         }
 
+        /// <summary>
+        /// Removes focus from the component.
+        /// </summary>
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
             InvokeMethodSync("blur", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
+        /// If no items are provided all items are selected.
+        /// </summary>
+        /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
+        /// the corresponding value should be used in place of the item reference.</param>
         public async Task SelectAsync(object[] items)
         {
             await InvokeMethod("select", new object[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
+
+        /// <summary>
+        /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
+        /// If no items are provided all items are selected.
+        /// </summary>
+        /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
+        /// the corresponding value should be used in place of the item reference.</param>
         public void Select(object[] items)
         {
             InvokeMethodSync("select", new object[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
+
+        /// <summary>
+        /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
+        /// If no items are provided all items are deselected.
+        /// </summary>
+        /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
+        /// the corresponding value should be used in place of the item reference.</param>
         public async Task DeselectAsync(object[] items)
         {
             await InvokeMethod("deselect", new object[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
+
+        /// <summary>
+        /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
+        /// If no items are provided all items are deselected.
+        /// </summary>
+        /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
+        /// the corresponding value should be used in place of the item reference.</param>
         public void Deselect(object[] items)
         {
             InvokeMethodSync("deselect", new object[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
         /// <summary>
-        /// Checks for validity of the control and shows the browser message if it invalid.
+        /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
             var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and shows the browser message if it's invalid.
+        /// </summary>
         public bool ReportValidity()
         {
             var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Checks for validity of the control and emits the invalid event if it invalid.
+        /// Checks for validity of the control and emits the invalid event if it's invalid.
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
             var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and emits the invalid event if it's invalid.
+        /// </summary>
         public bool CheckValidity()
         {
             var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
@@ -722,18 +808,28 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Sets a custom validation message for the control.
-        /// As long as `message` is not empty, the control is considered invalid.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
             await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Sets a custom validation message for the control.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
+        /// </summary>
         public void SetCustomValidity(String message)
         {
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
         private EventCallback<T[]>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<T[]> ValueChanged
         {
@@ -761,6 +857,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -785,6 +889,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbComboChangeEventArgs args);
         private EventCallback<IgbComboChangeEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the control's selection has changed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComboChangeEventArgs> Change
         {
@@ -861,6 +969,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _focusRef = null;
         private string _focusScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string FocusScript
         {
@@ -885,6 +1001,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
+
+        /// <summary>
+        /// Emitted when the component gains focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Focus
         {
@@ -926,6 +1046,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _blurRef = null;
         private string _blurScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string BlurScript
         {
@@ -950,6 +1078,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
+
+        /// <summary>
+        /// Emitted when the component loses focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Blur
         {
@@ -991,6 +1123,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openingRef = null;
         private string _openingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpeningScript
         {
@@ -1015,6 +1155,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingOpening(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opening = null;
+
+        /// <summary>
+        /// Emitted just before the list of options is opened.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Opening
         {
@@ -1056,6 +1200,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openedRef = null;
         private string _openedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpenedScript
         {
@@ -1080,6 +1232,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingOpened(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opened = null;
+
+        /// <summary>
+        /// Emitted after the list of options is opened.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Opened
         {
@@ -1121,6 +1277,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closingRef = null;
         private string _closingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosingScript
         {
@@ -1145,6 +1309,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
+
+        /// <summary>
+        /// Emitted just before the list of options is closed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closing
         {
@@ -1186,6 +1354,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closedRef = null;
         private string _closedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosedScript
         {
@@ -1210,6 +1386,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
+
+        /// <summary>
+        /// Emitted after the list of options is closed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closed
         {

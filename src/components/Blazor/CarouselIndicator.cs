@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Used when a custom indicator needs to be passed to the `igc-carousel` component.
+    /// Used when a custom indicator needs to be passed to the <see cref="IgbCarousel"/> component.
     /// </summary>
     public partial class IgbCarouselIndicator : BaseRendererControl
     {

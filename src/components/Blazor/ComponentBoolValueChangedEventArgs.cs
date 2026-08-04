@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for component events that carry a Boolean payload.
+    /// The meaning of <see cref="Detail"/> depends on the event that raises it.
+    /// </summary>
     public partial class IgbComponentBoolValueChangedEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebComponentBoolValueChangedEventArgs"; } }
@@ -19,6 +23,10 @@ namespace IgniteUI.Blazor.Controls
         private bool _detail = false;
 
         partial void OnDetailChanging(ref bool newValue);
+
+        /// <summary>
+        /// The Boolean value carried by the event.
+        /// </summary>
         [Parameter]
         public bool Detail
         {
