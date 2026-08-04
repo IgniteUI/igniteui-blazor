@@ -39,7 +39,7 @@ namespace IgniteUI.Blazor.Controls
 
         private string _doneButton;
         /// <summary>
-        /// Text for the picker button that commits the range selection.
+        /// Text for the button that commits the range selection when the picker is in dialog mode.
         /// </summary>
         [Parameter]
         [WCWidgetMemberName("done")]
@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
 
         private string _cancelButton;
         /// <summary>
-        /// Text for the picker button that cancels the range selection.
+        /// Text for the button that cancels the range selection when the picker is in dialog mode.
         /// </summary>
         [Parameter]
         [WCWidgetMemberName("cancel")]
