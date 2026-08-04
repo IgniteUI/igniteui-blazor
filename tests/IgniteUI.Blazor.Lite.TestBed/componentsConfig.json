@@ -118,13 +118,6 @@
       "ReturnValue"
     ]
   },
-  "IgbDropdown": {
-    "DependantMethods": [
-      // BUG 35184
-      "ShowAsync",
-      "ToggleAsync"
-    ]
-  },
   "IgbStep": {
     "DependantMethods": [
       // BUG 35185
