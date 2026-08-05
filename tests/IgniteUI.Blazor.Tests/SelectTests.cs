@@ -33,7 +33,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: "us")
         .Getter(c => c.GetItemsAsync(), c => c.GetItems(), "Items",
             arrangeItems,
-            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(2)")}}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Equal(2, result.Length);
@@ -42,7 +42,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             })
         .Getter(c => c.GetGroupsAsync(), c => c.GetGroups(), "Groups",
             arrangeGroups,
-            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-group:nth-of-type(1)")}}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-group:nth-of-type(1)")}}}"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Single(result);
@@ -52,7 +52,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             })
         .Getter(c => c.GetSelectedItemAsync(), c => c.GetSelectedItem(), "SelectedItem",
             arrangeItems,
-            returns: (interop, cut) => InteropReturn.Ref($$"""{"refType": "name", "id": "{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(1)")}}"}"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Ref($$"""{"refType": "name", "id": "{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(1)")}}"}""")),
             assert: (cut, result) => Assert.Same(cut.FindComponents<IgbSelectItem>()[0].Instance, result))
         .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }), "focus",
             args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
@@ -70,7 +70,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
         .Event(c => c.Closed)
         .Event(c => c.Change,
             arrangeItems,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) =>
             {
                 Assert.Same(cut.FindComponents<IgbSelectItem>()[1].Instance, args.Detail);

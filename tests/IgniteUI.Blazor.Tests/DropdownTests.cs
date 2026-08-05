@@ -44,8 +44,8 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
         });
 
     /// <summary>The wire form of the arranged component anchor — its interop instance id, assigned on render</summary>
-    static readonly FromRender componentAnchorArg =
-        new((interop, cut) => $"containerId:::{interop.ContainerIdOf(cut, "igc-button")}");
+    static readonly FromRender<string> componentAnchorArg =
+        FromRender.Of((interop, cut) => $"containerId:::{interop.ContainerIdOf(cut, "igc-button")}");
 
     /// <summary>Arranges two IgbDropdownItem children</summary>
     static readonly Action<ComponentParameterCollectionBuilder<IgbDropdown>> itemsArrange =
@@ -96,7 +96,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             InteropReturn.Undefined, expect: null!, args: [2.0], types: ["Json"])
         .Getter(c => c.GetItemsAsync(), c => c.GetItems(), "Items",
             itemsArrange,
-            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(2)")}}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Equal(2, result.Length);
@@ -105,7 +105,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             })
         .Getter(c => c.GetGroupsAsync(), c => c.GetGroups(), "Groups",
             groupsArrange,
-            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-group:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-group:nth-of-type(2)")}}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-group:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-group:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Equal(2, result.Length);
@@ -118,7 +118,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
         .Getter(c => c.GetSelectedItemAsync(), c => c.GetSelectedItem(), "SelectedItem", InteropReturn.Undefined, expect: null!)
         .Getter(c => c.GetSelectedItemAsync(), c => c.GetSelectedItem(), "SelectedItem",
             itemsArrange,
-            returns: (interop, cut) => InteropReturn.Ref($$"""{"refType": "name", "id": "{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(1)")}}"}"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Ref($$"""{"refType": "name", "id": "{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(1)")}}"}""")),
             assert: (cut, result) => Assert.Same(cut.FindComponents<IgbDropdownItem>()[0].Instance, result))
         .Event(c => c.Opening)
         .Event(c => c.Opened)
@@ -126,7 +126,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
         .Event(c => c.Closed)
         .Event(c => c.Change,
             itemsArrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbDropdownItem>()[1].Instance, args.Detail));
 
     [Fact]

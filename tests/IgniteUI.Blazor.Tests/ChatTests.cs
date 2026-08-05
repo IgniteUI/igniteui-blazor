@@ -11,7 +11,7 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
             args: ["message-42"], types: ["String"])
         .Getter(c => c.GetCurrentDraftMessageAsync(), c => c.GetCurrentDraftMessage(), "DraftMessage",
             arrange: _ => { },
-            returns: (interop, cut) => InteropReturn.Object("", """{"text": "wip draft"}"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Object("", """{"text": "wip draft"}""")),
             assert: (cut, result) => Assert.Equal("wip draft", result.Text))
         .Event(c => c.TypingChange,
             argsJson: """{"detail": true}""",
