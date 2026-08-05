@@ -1,11 +1,52 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Tests;
 
 public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
 {
+    /// <summary>
+    /// Holds what the anchor arrangements below capture. An anchor only exists once its
+    /// render has run, so the specs read it back from here — the runner renders a spec's
+    /// arrangement before invoking it, and gives each arranged spec its own render.
+    /// </summary>
+    sealed class Anchor
+    {
+        public IgbButton Component = null!;
+        public ElementReference Element;
+    }
+
+    static readonly Anchor anchor = new();
+
+    /// <summary>
+    /// Arranges an IgbButton as the anchor for the show/toggle target overloads. A real
+    /// anchor is an element outside the dropdown (that's the point of passing one — an
+    /// anchor inside it would go in the <c>target</c> slot instead); the interop boundary
+    /// only sees the reference, so where the button renders is immaterial here.
+    /// </summary>
+    static readonly Action<ComponentParameterCollectionBuilder<IgbDropdown>> componentAnchorArrange =
+        ps => ps.AddChildContent(builder =>
+        {
+            builder.OpenComponent<IgbButton>(0);
+            builder.AddComponentReferenceCapture(1, instance => anchor.Component = (IgbButton)instance);
+            builder.CloseComponent();
+        });
+
+    /// <summary>Arranges a plain element as the anchor, capturing its reference — the <c>@ref</c> form of a target</summary>
+    static readonly Action<ComponentParameterCollectionBuilder<IgbDropdown>> elementAnchorArrange =
+        ps => ps.AddChildContent(builder =>
+        {
+            builder.OpenElement(0, "span");
+            builder.AddElementReferenceCapture(1, reference => anchor.Element = reference);
+            builder.CloseElement();
+        });
+
+    /// <summary>The wire form of the arranged component anchor — its interop instance id, assigned on render</summary>
+    static readonly FromRender componentAnchorArg =
+        new((interop, cut) => $"containerId:::{interop.ContainerIdOf(cut, "igc-button")}");
+
     /// <summary>Arranges two IgbDropdownItem children</summary>
     static readonly Action<ComponentParameterCollectionBuilder<IgbDropdown>> itemsArrange =
         ps => ps.AddChildContent(builder =>
@@ -32,8 +73,22 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
 
     protected override ComponentContract<IgbDropdown> InteropContract { get; } = new ComponentContract<IgbDropdown>()
         .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
+        // A component anchor crosses as that component's own interop instance, with no
+        // element handle.
+        .Method(c => c.ShowAsync(anchor.Component), c => c.Show(anchor.Component), "show", returns: true,
+            args: [componentAnchorArg], types: ["Component"], arrange: componentAnchorArrange)
+        // An ElementReference anchor crosses as a positional placeholder, with the handle
+        // itself riding alongside the arguments.
+        .Method(c => c.ShowAsync(anchor.Element), c => c.Show(anchor.Element), "show", returns: true,
+            args: ["elementIndex:::0"], types: ["Component"], arrange: elementAnchorArrange,
+            elements: () => [anchor.Element])
         .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
         .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
+        .Method(c => c.ToggleAsync(anchor.Component), c => c.Toggle(anchor.Component), "toggle", returns: true,
+            args: [componentAnchorArg], types: ["Component"], arrange: componentAnchorArrange)
+        .Method(c => c.ToggleAsync(anchor.Element), c => c.Toggle(anchor.Element), "toggle", returns: true,
+            args: ["elementIndex:::0"], types: ["Component"], arrange: elementAnchorArrange,
+            elements: () => [anchor.Element])
         .Method(c => c.ClearSelectionAsync(), c => c.ClearSelection(), "clearSelection")
         .Method(c => c.SelectAsync("item-1"), c => c.Select("item-1"), "select",
             InteropReturn.Undefined, expect: null!, args: ["item-1"], types: ["Json"])

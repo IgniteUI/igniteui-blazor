@@ -40,6 +40,14 @@ public sealed record RawJson(string Json);
 /// </summary>
 public sealed record JsonSubset(string Json);
 
+/// <summary>
+/// An expected wire value that can only be computed once the component has rendered —
+/// typically a reference to a child, whose interop instance id is assigned then. Resolved
+/// against the harness and the render right before comparison, and may itself produce a
+/// <see cref="RawJson"/>/<see cref="JsonSubset"/> or a scalar.
+/// </summary>
+public sealed record FromRender(Func<InteropHarness, IRenderedComponent<IComponent>, object?> Value);
+
 public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
 {
     /// <summary>Wire identifier; null when <see cref="ReadsProperty"/> is set (resolved via the harness).</summary>
@@ -82,6 +90,13 @@ public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
 
     /// <summary>Dynamic return assert receiving the render scope (see <see cref="StubFactory"/>) to compare against arranged instances.</summary>
     public Action<IRenderedComponent<IComponent>, object?>? AssertReturnWithCut { get; init; }
+
+    /// <summary>
+    /// The element handles the invocation must carry (see <see cref="InteropMethodCall.Elements"/>).
+    /// Read after the render, since the handles only exist then; when not declared, the
+    /// invocation must carry none.
+    /// </summary>
+    public Func<IReadOnlyList<ElementReference>>? ExpectedElements { get; init; }
 
     public SpecSource? Source { get; init; }
 }
@@ -230,6 +245,10 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     /// <summary>
     /// A void API method declared with its sync twin (<c>Toggle()</c> for <c>ToggleAsync()</c>):
     /// the runner re-invokes the twin against the same expectations after the async path.
+    /// <paramref name="arrange"/> adds render setup the member needs (children the call
+    /// references); an argument whose value or wire form only exists once rendered is
+    /// declared with <see cref="FromRender"/>, and <paramref name="elements"/> states the
+    /// element handles the invocation must carry alongside its arguments (none when omitted).
     /// </summary>
     public ComponentContract<TComponent> Method(
         Func<TComponent, Task> invoke,
@@ -237,6 +256,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         string jsName,
         object?[]? args = null,
         string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
     {
@@ -247,6 +268,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             SyncInvoke = c => { sync(c); return null; },
             ExpectedArgs = args ?? [],
             ExpectedTypes = types ?? [],
+            Arrange = arrange,
+            ExpectedElements = elements,
             Source = new SpecSource(atFile, atLine),
         });
         return this;
@@ -260,11 +283,16 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         TResult returns,
         object?[]? args = null,
         string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
-        => Method(invoke, sync, jsName, StubFor(returns), returns, args, types, atFile, atLine);
+        => Method(invoke, sync, jsName, StubFor(returns), returns, args, types, arrange, elements, atFile, atLine);
 
-    /// <summary>Value-returning method with its sync twin, for wire returns the value form can't express.</summary>
+    /// <summary>
+    /// Value-returning method with its sync twin, for wire returns the value form can't express.
+    /// <paramref name="arrange"/>/<paramref name="elements"/> as on the void twin overload.
+    /// </summary>
     public ComponentContract<TComponent> Method<TResult>(
         Func<TComponent, Task<TResult>> invoke,
         Func<TComponent, TResult> sync,
@@ -273,6 +301,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         TResult expect,
         object?[]? args = null,
         string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null,
         [CallerFilePath] string atFile = "",
         [CallerLineNumber] int atLine = 0)
     {
@@ -283,6 +313,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             SyncInvoke = c => sync(c),
             ExpectedArgs = args ?? [],
             ExpectedTypes = types ?? [],
+            Arrange = arrange,
+            ExpectedElements = elements,
             Stub = returns,
             ExpectedReturn = expect,
             HasExpectedReturn = true,
@@ -294,14 +326,18 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     // Compile-time drift guards for twin declarations (same rationale as the single-selector
     // poison above): each candidate is a better overload-resolution match than the legitimate
     // void twin form when one or both sides start returning a value, so drift fails the build
-    // instead of silently decoding defaults.
+    // instead of silently decoding defaults. They mirror the void twin's optional parameters
+    // so that passing arrange:/elements: cannot make them inapplicable — an arranged spec
+    // whose member starts returning a value must fail here too.
     [Obsolete("This method pair returns a value — state the wire return via the returns: twin overload.", error: true)]
     public ComponentContract<TComponent> Method<TResult>(
         Func<TComponent, Task<TResult>> invoke,
         Func<TComponent, TResult> sync,
         string jsName,
         object?[]? args = null,
-        string[]? types = null)
+        string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null)
         => throw new NotSupportedException();
 
     [Obsolete("The async method returns a value but its sync twin is void — align the pair and state the wire return.", error: true)]
@@ -310,7 +346,9 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         Action<TComponent> sync,
         string jsName,
         object?[]? args = null,
-        string[]? types = null)
+        string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null)
         => throw new NotSupportedException();
 
     [Obsolete("The sync twin returns a value but the async method is void — align the pair and state the wire return.", error: true)]
@@ -319,7 +357,9 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         Func<TComponent, TResult> sync,
         string jsName,
         object?[]? args = null,
-        string[]? types = null)
+        string[]? types = null,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Func<IReadOnlyList<ElementReference>>? elements = null)
         => throw new NotSupportedException();
 
     /// <summary>
