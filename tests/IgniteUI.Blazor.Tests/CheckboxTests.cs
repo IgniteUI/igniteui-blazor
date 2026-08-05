@@ -23,6 +23,9 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
                 Assert.True(args.Detail.Checked);
                 Assert.Equal("checkbox-value", args.Detail.Value);
             })
+        .Bind(c => c.Checked, c => c.CheckedChanged, via: c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "checkbox-value"}}}""",
+            expect: true)
         .Event(c => c.Focus)
         .Event(c => c.Blur);
 
@@ -31,6 +34,9 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Checkbox_RendersCorrectElement()
