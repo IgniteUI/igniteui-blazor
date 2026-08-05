@@ -2,6 +2,15 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A snackbar component is used to provide feedback about an operation
+    /// by showing a brief message at the bottom of the screen.
+    /// The component integrates with the
+    /// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">Invoker Commands API</see>:
+    /// an Ignite UI button or a native <c>&lt;button&gt;</c> with <c>command="--show"</c> / <c>"--hide"</c> /
+    /// <c>"--toggle"</c> and <c>commandfor</c> pointing to this component will call the
+    /// corresponding method declaratively.
+    /// </summary>
     public partial class IgbSnackbar : IgbBaseAlertLike
     {
         public override string Type { get { return "WebSnackbar"; } }
@@ -94,6 +103,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _actionRef = null;
         private string _actionScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Action"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ActionScript
         {
@@ -118,6 +135,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingAction(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _action = null;
+
+        /// <summary>
+        /// Emitted when the snackbar action button is clicked.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Action
         {

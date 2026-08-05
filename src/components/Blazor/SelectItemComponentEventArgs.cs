@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbSelect.Change"/> event, carrying the
+    /// <see cref="IgbSelectItem"/> instance the event applies to.
+    /// </summary>
     public partial class IgbSelectItemComponentEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebSelectItemComponentEventArgs"; } }
@@ -19,6 +23,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbSelectItem _detail;
 
         partial void OnDetailChanging(ref IgbSelectItem newValue);
+
+        /// <summary>
+        /// The select item that became selected.
+        /// </summary>
         [Parameter]
         public IgbSelectItem Detail
         {

@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The base context object passed to custom renderers, containing the
+    /// <see cref="IgbChat"/> component instance.
+    /// </summary>
     public partial class IgbChatRenderContext : BaseRendererElement
     {
         public override string Type { get { return "WebChatRenderContext"; } }
@@ -18,7 +22,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnInstanceChanging(ref IgbChat newValue);
         /// <summary>
-        /// The instance of the IgcChatComponent.
+        /// The instance of the <see cref="IgbChat"/> component.
         /// </summary>
         [Parameter]
         public IgbChat Instance

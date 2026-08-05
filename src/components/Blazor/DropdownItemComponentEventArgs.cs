@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbDropdown.Change"/> event, carrying the
+    /// <see cref="IgbDropdownItem"/> instance the event applies to.
+    /// </summary>
     public partial class IgbDropdownItemComponentEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebDropdownItemComponentEventArgs"; } }
@@ -19,6 +23,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbDropdownItem _detail;
 
         partial void OnDetailChanging(ref IgbDropdownItem newValue);
+
+        /// <summary>
+        /// The dropdown item that became selected.
+        /// </summary>
         [Parameter]
         public IgbDropdownItem Detail
         {

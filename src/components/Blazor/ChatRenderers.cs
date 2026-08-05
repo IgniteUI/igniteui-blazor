@@ -48,7 +48,13 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentTemplateId;
         private string _attachmentScript;
 
-        ///<summary>Provides a means of setting Attachment in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders a single chat message attachment.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string AttachmentScript
         {
@@ -103,7 +109,13 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentContentTemplateId;
         private string _attachmentContentScript;
 
-        ///<summary>Provides a means of setting AttachmentContent in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the content of an attachment.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string AttachmentContentScript
         {
@@ -158,7 +170,13 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentHeaderTemplateId;
         private string _attachmentHeaderScript;
 
-        ///<summary>Provides a means of setting AttachmentHeader in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the header of an attachment.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string AttachmentHeaderScript
         {
@@ -213,7 +231,13 @@ namespace IgniteUI.Blazor.Controls
         private string _inputTemplateId;
         private string _inputScript;
 
-        ///<summary>Provides a means of setting Input in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the main chat input field.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputScript
         {
@@ -268,7 +292,13 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsTemplateId;
         private string _inputActionsScript;
 
-        ///<summary>Provides a means of setting InputActions in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the actions container within the input area.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputActionsScript
         {
@@ -323,7 +353,13 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsEndTemplateId;
         private string _inputActionsEndScript;
 
-        ///<summary>Provides a means of setting InputActionsEnd in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the actions at the end of the input area.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputActionsEndScript
         {
@@ -378,7 +414,13 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsStartTemplateId;
         private string _inputActionsStartScript;
 
-        ///<summary>Provides a means of setting InputActionsStart in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the actions at the start of the input area.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputActionsStartScript
         {
@@ -433,7 +475,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageTemplateId;
         private string _messageScript;
 
-        ///<summary>Provides a means of setting Message in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders an entire chat message bubble.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageScript
         {
@@ -459,7 +507,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnMessageActionsChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
-        /// Custom renderer for message-specific actions (e.g., reply or delete buttons).
+        /// Custom renderer for message-specific actions (e.g. reply or delete buttons).
         /// </summary>
         [Parameter]
         public RenderFragment<IgbChatMessageRenderContext> MessageActions
@@ -488,7 +536,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageActionsTemplateId;
         private string _messageActionsScript;
 
-        ///<summary>Provides a means of setting MessageActions in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders message-specific actions (e.g. reply or delete buttons).
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageActionsScript
         {
@@ -543,7 +597,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageAttachmentsTemplateId;
         private string _messageAttachmentsScript;
 
-        ///<summary>Provides a means of setting MessageAttachments in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the attachments associated with a message.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageAttachmentsScript
         {
@@ -598,7 +658,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageContentTemplateId;
         private string _messageContentScript;
 
-        ///<summary>Provides a means of setting MessageContent in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the main text and content of a message.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageContentScript
         {
@@ -653,7 +719,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageHeaderTemplateId;
         private string _messageHeaderScript;
 
-        ///<summary>Provides a means of setting MessageHeader in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the header of a message, including sender and timestamp.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageHeaderScript
         {
@@ -708,7 +780,13 @@ namespace IgniteUI.Blazor.Controls
         private string _sendButtonTemplateId;
         private string _sendButtonScript;
 
-        ///<summary>Provides a means of setting SendButton in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the message send button.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string SendButtonScript
         {
@@ -763,7 +841,13 @@ namespace IgniteUI.Blazor.Controls
         private string _suggestionPrefixTemplateId;
         private string _suggestionPrefixScript;
 
-        ///<summary>Provides a means of setting SuggestionPrefix in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the prefix text shown before suggestions.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string SuggestionPrefixScript
         {

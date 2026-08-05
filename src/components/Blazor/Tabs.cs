@@ -2,6 +2,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Tabs organize and allow navigation between groups of content that are related
+    /// and at the same level of hierarchy.
+    /// The <see cref="IgbTabs"/> component allows the user to navigate between multiple
+    /// <see cref="IgbTab"/> children.
+    /// It supports keyboard navigation and provides API methods to control the selected tab.
+    /// </summary>
     public partial class IgbTabs : BaseRendererControl
     {
         public override string Type { get { return "WebTabs"; } }
@@ -143,7 +150,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnAlignmentChanging(ref TabsAlignment newValue);
         /// <summary>
-        /// Sets the alignment for the tab headers
+        /// Sets the alignment for the tab headers.
         /// </summary>
         [Parameter]
         public TabsAlignment Alignment
@@ -163,10 +170,11 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnActivationChanging(ref TabsActivation newValue);
         /// <summary>
-        /// Determines the tab activation. When set to auto,
+        /// Determines the tab activation. When set to <see cref="TabsActivation.Auto"/>,
         /// the tab is instantly selected while navigating with the Left/Right Arrows, Home or End keys
         /// and the corresponding panel is displayed.
-        /// When set to manual, the tab is only focused. The selection happens after pressing Space or Enter.
+        /// When set to <see cref="TabsActivation.Manual"/>, the tab is only focused.
+        /// The selection happens after pressing Space or Enter.
         /// </summary>
         [Parameter]
         public TabsActivation Activation
@@ -182,11 +190,21 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Gets the currently selected tab.
+        /// </summary>
+        /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
         public async Task<string> GetSelectedAsync()
         {
             var iv = await InvokeMethod("p:Selected", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
+
+        /// <summary>
+        /// Gets the currently selected tab.
+        /// </summary>
+        /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
         public string GetSelected()
         {
             var iv = InvokeMethodSync("p:Selected", new object[] { }, new string[] { });
@@ -229,6 +247,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("select", new object[] { StringToString(id) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Selects the specified tab and displays the corresponding panel.
+        /// </summary>
         public void Select(String id)
         {
             InvokeMethodSync("select", new object[] { StringToString(id) }, new string[] { "String" });
@@ -236,6 +258,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -260,6 +290,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbTabComponentEventArgs args);
         private EventCallback<IgbTabComponentEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the selected tab changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTabComponentEventArgs> Change
         {

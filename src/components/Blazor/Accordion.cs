@@ -115,6 +115,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("hideAll", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Hides all of the child expansion panels' contents.
+        /// </summary>
         public void HideAll()
         {
             InvokeMethodSync("hideAll", new object[] { }, new string[] { });
@@ -126,6 +130,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("showAll", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Shows all of the child expansion panels' contents.
+        /// </summary>
         public void ShowAll()
         {
             InvokeMethodSync("showAll", new object[] { }, new string[] { });
@@ -133,6 +141,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openingRef = null;
         private string _openingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpeningScript
         {
@@ -157,6 +173,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingOpening(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _opening = null;
+
+        /// <summary>
+        /// Emitted before opening a child expansion panel.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbExpansionPanelComponentEventArgs> Opening
         {
@@ -198,6 +218,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openedRef = null;
         private string _openedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpenedScript
         {
@@ -222,6 +250,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingOpened(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _opened = null;
+
+        /// <summary>
+        /// Emitted after a child expansion panel is opened.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbExpansionPanelComponentEventArgs> Opened
         {
@@ -263,6 +295,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closingRef = null;
         private string _closingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosingScript
         {
@@ -287,6 +327,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosing(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _closing = null;
+
+        /// <summary>
+        /// Emitted before closing a child expansion panel.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbExpansionPanelComponentEventArgs> Closing
         {
@@ -328,6 +372,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closedRef = null;
         private string _closedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosedScript
         {
@@ -352,6 +404,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosed(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _closed = null;
+
+        /// <summary>
+        /// Emitted after a child expansion panel is closed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbExpansionPanelComponentEventArgs> Closed
         {

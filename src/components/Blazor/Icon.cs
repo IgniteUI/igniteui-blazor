@@ -148,26 +148,68 @@ namespace IgniteUI.Blazor.Controls
         {
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconAsync(String name, String url, String collection = null)
         {
             await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIcon(String name, String url, String collection = null)
         {
             InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconFromTextAsync(String name, String iconText, String collection = null)
         {
             await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIconFromText(String name, String iconText, String collection = null)
         {
             InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Sets an icon reference/alias that points to another icon.
+        /// </summary>
+        /// <param name="name">The alias name.</param>
+        /// <param name="collection">The collection for the alias.</param>
+        /// <param name="icon">The target icon metadata (name and collection).</param>
         public async Task SetIconRefAsync(String name, String collection, IgbIconMeta icon)
         {
             await InvokeMethod("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
         }
+
+        /// <summary>
+        /// Sets an icon reference/alias that points to another icon.
+        /// </summary>
+        /// <param name="name">The alias name.</param>
+        /// <param name="collection">The collection for the alias.</param>
+        /// <param name="icon">The target icon metadata (name and collection).</param>
         public void SetIconRef(String name, String collection, IgbIconMeta icon)
         {
             InvokeMethodSync("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });

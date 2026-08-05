@@ -2,6 +2,24 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A side navigation container that provides
+    /// quick access between views within an application.
+    /// For non-relative positions (<see cref="NavDrawerPosition.Start"/>,
+    /// <see cref="NavDrawerPosition.End"/>, <see cref="NavDrawerPosition.Top"/>,
+    /// <see cref="NavDrawerPosition.Bottom"/>) the drawer is rendered as a native
+    /// <c>&lt;dialog&gt;</c> element, providing modal semantics, automatic focus trapping,
+    /// and a backdrop. For the <see cref="NavDrawerPosition.Relative"/> position it is
+    /// rendered inline as a <c>&lt;nav&gt;</c> landmark.
+    /// When content is provided in the <c>mini</c> slot, a compact icon-only variant is
+    /// always displayed alongside the main drawer (hidden only while the full drawer
+    /// is open).
+    /// The component integrates with the
+    /// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">Invoker Commands API</see>:
+    /// an Ignite UI button or a native <c>&lt;button&gt;</c> with <c>command="--show"</c> / <c>"--hide"</c> /
+    /// <c>"--toggle"</c> and <c>commandfor</c> pointing to this component will call the
+    /// corresponding method declaratively.
+    /// </summary>
     public partial class IgbNavDrawer : BaseRendererControl
     {
         public override string Type { get { return "WebNavDrawer"; } }
@@ -61,11 +79,23 @@ namespace IgniteUI.Blazor.Controls
         partial void OnPositionChanging(ref NavDrawerPosition newValue);
         /// <summary>
         /// Sets the position of the drawer.
-        /// - `start` — anchored to the inline-start edge (default).
-        /// - `end` — anchored to the inline-end edge.
-        /// - `top` — anchored to the block-start edge.
-        /// - `bottom` — anchored to the block-end edge.
-        /// - `relative` — rendered inline within the page flow; no modal backdrop.
+        /// <list type="bullet">
+        ///   <item><description>
+        ///   <see cref="NavDrawerPosition.Start"/> — anchored to the inline-start edge (default).
+        ///   </description></item>
+        ///   <item><description>
+        ///   <see cref="NavDrawerPosition.End"/> — anchored to the inline-end edge.
+        ///   </description></item>
+        ///   <item><description>
+        ///   <see cref="NavDrawerPosition.Top"/> — anchored to the block-start edge.
+        ///   </description></item>
+        ///   <item><description>
+        ///   <see cref="NavDrawerPosition.Bottom"/> — anchored to the block-end edge.
+        ///   </description></item>
+        ///   <item><description>
+        ///   <see cref="NavDrawerPosition.Relative"/> — rendered inline within the page flow; no modal backdrop.
+        ///   </description></item>
+        /// </list>
         /// </summary>
         [Parameter]
         public NavDrawerPosition Position
@@ -106,7 +136,7 @@ namespace IgniteUI.Blazor.Controls
         partial void OnKeepOpenOnEscapeChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the drawer should remain open when the Escape key is pressed.
-        /// This attribute is only applicable when the drawer is in a non-relative position,
+        /// This is only applicable when the drawer is in a non-relative position,
         /// as the Escape key does not trigger the closing of relative drawers.
         /// </summary>
         [Parameter]
@@ -126,6 +156,14 @@ namespace IgniteUI.Blazor.Controls
         private string _label;
 
         partial void OnLabelChanging(ref string newValue);
+
+        /// <summary>
+        /// Sets an accessible label for the drawer.
+        /// In non-relative positions this label is applied to the modal <c>&lt;dialog&gt;</c> element.
+        /// In <see cref="NavDrawerPosition.Relative"/> position it labels the <c>&lt;nav&gt;</c> landmark.
+        /// When multiple navigation landmarks exist on the page each should receive a
+        /// distinct label so screen-reader users can differentiate between them.
+        /// </summary>
         [Parameter]
         public string Label
         {
@@ -169,39 +207,69 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
-        /// Opens the drawer. Returns `true` if the operation was successful, `false` if the drawer was already open.
+        /// Opens the drawer.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the drawer was successfully opened, or <see langword="false"/>
+        /// if it was already open.
+        /// </returns>
         public async Task<bool> ShowAsync()
         {
             var iv = await InvokeMethod("show", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Opens the drawer.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the drawer was successfully opened, or <see langword="false"/>
+        /// if it was already open.
+        /// </returns>
         public bool Show()
         {
             var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Closes the drawer. Returns `true` if the operation was successful, `false` if the drawer was already closed.
+        /// Closes the drawer.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the drawer was successfully closed, or <see langword="false"/>
+        /// if it was already closed.
+        /// </returns>
         public async Task<bool> HideAsync()
         {
             var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Closes the drawer.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the drawer was successfully closed, or <see langword="false"/>
+        /// if it was already closed.
+        /// </returns>
         public bool Hide()
         {
             var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Toggles the open state of the drawer. Delegates to `show()` or `hide()` depending on the current state.
+        /// Toggles the open state of the drawer. Delegates to <see cref="Show"/> or <see cref="Hide"/> depending
+        /// on the current state.
         /// </summary>
         public async Task<bool> ToggleAsync()
         {
             var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Toggles the open state of the drawer. Delegates to <see cref="Show"/> or <see cref="Hide"/> depending
+        /// on the current state.
+        /// </summary>
         public bool Toggle()
         {
             var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
@@ -210,6 +278,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closingRef = null;
         private string _closingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosingScript
         {
@@ -234,6 +310,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
+
+        /// <summary>
+        /// Emitted just before the drawer is closed by a user interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closing
         {
@@ -275,6 +355,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closedRef = null;
         private string _closedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosedScript
         {
@@ -299,6 +387,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
+
+        /// <summary>
+        /// Emitted just after the drawer is closed by a user interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closed
         {

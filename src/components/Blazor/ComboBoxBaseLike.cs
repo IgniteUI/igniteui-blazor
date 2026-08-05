@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class shared by <see cref="IgbDatePicker"/>, <see cref="IgbDateRangePicker"/>, <see cref="IgbDropdown"/>
+    /// and <see cref="IgbSelect"/>.
+    /// </summary>
     public partial class IgbComboBoxBaseLike : IgbBaseComboBox
     {
         public override string Type { get { return "WebComboBoxBaseLike"; } }

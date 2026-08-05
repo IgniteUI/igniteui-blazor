@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Represents a single chat message in an <see cref="IgbChat"/> conversation.
+    /// </summary>
     public partial class IgbChatMessage : BaseRendererElement
     {
         public override string Type { get { return "WebChatMessage"; } }

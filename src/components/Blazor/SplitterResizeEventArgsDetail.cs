@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The payload of the <see cref="IgbSplitter.ResizeStart"/>, <see cref="IgbSplitter.Resizing"/>
+    /// and <see cref="IgbSplitter.ResizeEnd"/> events.
+    /// </summary>
     public partial class IgbSplitterResizeEventArgsDetail : BaseRendererElement
     {
         public override string Type { get { return "WebSplitterResizeEventArgsDetail"; } }
@@ -20,7 +24,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnStartPanelSizeChanging(ref double newValue);
         /// <summary>
-        /// The current size of the start panel in pixels
+        /// The current size of the start panel in pixels.
         /// </summary>
         [Parameter]
         public double StartPanelSize
@@ -40,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEndPanelSizeChanging(ref double newValue);
         /// <summary>
-        /// The current size of the end panel in pixels
+        /// The current size of the end panel in pixels.
         /// </summary>
         [Parameter]
         public double EndPanelSize
@@ -60,7 +64,8 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDeltaChanging(ref double newValue);
         /// <summary>
-        /// The change in size since the resize operation started (only for igcResizing and igcResizeEnd)
+        /// The change in size since the resize operation started. Only set for
+        /// <see cref="IgbSplitter.Resizing"/> and <see cref="IgbSplitter.ResizeEnd"/>.
         /// </summary>
         [Parameter]
         public double Delta

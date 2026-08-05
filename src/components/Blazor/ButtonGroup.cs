@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The `igc-button-group` groups a series of `igc-toggle-button`s together, exposing features such as layout and selection.
+    /// Groups a series of <see cref="IgbToggleButton"/> components together, exposing features
+    /// such as layout and selection.
     /// </summary>
     public partial class IgbButtonGroup : BaseRendererControl
     {
@@ -122,6 +123,10 @@ namespace IgniteUI.Blazor.Controls
         private string[] _selectedItems;
 
         partial void OnSelectedItemsChanging(ref string[] newValue);
+
+        /// <summary>
+        /// Gets or sets the values of the currently selected buttons.
+        /// </summary>
         [Parameter]
         public string[] SelectedItems
         {
@@ -167,6 +172,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _selectRef = null;
         private string _selectScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string SelectScript
         {
@@ -191,6 +204,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingSelect(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _select = null;
+
+        /// <summary>
+        /// Emitted when a button is selected through user interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> Select
         {
@@ -232,6 +249,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _deselectRef = null;
         private string _deselectScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Deselect"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string DeselectScript
         {
@@ -256,6 +281,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingDeselect(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _deselect = null;
+
+        /// <summary>
+        /// Emitted when a button is deselected through user interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> Deselect
         {

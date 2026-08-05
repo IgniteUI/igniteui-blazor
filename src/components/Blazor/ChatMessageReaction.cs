@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Represents a user's reaction to a specific chat message.
+    /// </summary>
     public partial class IgbChatMessageReaction : BaseRendererElement
     {
         public override string Type { get { return "WebChatMessageReaction"; } }

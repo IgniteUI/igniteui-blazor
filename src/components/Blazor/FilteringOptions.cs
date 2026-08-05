@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Filtering options for the <see cref="IgbCombo{T}"/> component.
+    /// </summary>
     public partial class IgbFilteringOptions : BaseRendererElement
     {
         public override string Type { get { return "WebFilteringOptions"; } }
@@ -58,7 +61,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnMatchDiacriticsChanging(ref bool newValue);
         /// <summary>
-        /// If true, the filter distinguishes between accented letters and their base letters
+        /// When <see langword="true"/>, the filter distinguishes between accented letters and their base letters.
         /// </summary>
         [Parameter]
         public bool MatchDiacritics
