@@ -601,12 +601,45 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// <summary>Compares a decoded .NET return against the spec's expected value.</summary>
     private static void AssertReturn(object? expected, object? actual)
     {
-        // Date returns are decoded to local time; compare instants instead of kinds.
-        if (expected is DateTime expectedDate && actual is DateTime actualDate)
+        switch (expected)
         {
-            Assert.Equal(expectedDate.ToUniversalTime(), actualDate.ToUniversalTime());
-            return;
+            case DateTime expectedInstant:
+                AssertDecodedDate(expectedInstant, actual);
+                break;
+            case IEnumerable<DateTime> expectedInstants:
+                // Dates in a collection follow the same rule; xUnit's own equality would compare
+                // them by reading alone, which is neither the instant nor the conversion.
+                var expectedList = expectedInstants.ToList();
+                var actualList = Assert.IsAssignableFrom<IEnumerable<DateTime>>(actual).ToList();
+                Assert.Equal(expectedList.Count, actualList.Count);
+                for (var i = 0; i < expectedList.Count; i++)
+                {
+                    AssertDecodedDate(expectedList[i], actualList[i]);
+                }
+                break;
+            default:
+                Assert.Equal(expected, actual);
+                break;
         }
-        Assert.Equal(expected, actual);
+    }
+
+    /// <summary>
+    /// One decoded date: stated by the spec as the UTC instant that crossed the wire, and required
+    /// to arrive as the local rendering of it — reading *and* <see cref="DateTimeKind"/>. Asserting
+    /// the kind is what pins the conversion in every timezone, including the one where local and
+    /// UTC coincide and a plain instant comparison could not tell the two apart.
+    /// </summary>
+    private static void AssertDecodedDate(DateTime expectedInstant, object? actual)
+    {
+        if (expectedInstant.Kind == DateTimeKind.Unspecified)
+        {
+            throw new XunitException(
+                $"expected date {expectedInstant:o} has Kind=Unspecified — state the instant explicitly " +
+                "(DateTimeKind.Utc), since ToLocalTime and ToUniversalTime read an unspecified kind in " +
+                "opposite directions and would shift it silently");
+        }
+        var actualDate = Assert.IsType<DateTime>(actual);
+        Assert.Equal(expectedInstant.ToLocalTime(), actualDate);
+        Assert.Equal(DateTimeKind.Local, actualDate.Kind);
     }
 }

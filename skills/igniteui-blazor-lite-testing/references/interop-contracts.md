@@ -49,6 +49,16 @@ wire:    FromRender.Of<object?>((interop, cut) => new RawJson(...))  // a prop w
 
 The render scope handed to the lambda is the cut for an arranged spec and the whole host render for a hosted one — the same scope the spec's own `assert:` receives. Pair it with `arrange:` (or `host:`/`target:`) so there is something rendered to reference.
 
+### Dates
+
+Decoding converts to local time (`ReturnToDate`, default `RoundTripDateConversion.Auto`), so a decoded date is `Kind=Local` with a shifted reading. Rules:
+
+- State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares against its local rendering and asserts the kind; an `Unspecified` expectation throws.
+- Never write `.ToLocalTime()` in a spec to make a comparison pass. If one seems needed, the assertion helper is missing a case — add it there. The one exception is an author-written `assert:` lambda, where you do the comparing: use `…Utc).ToLocalTime()` (see `DateRangePickerTests`' bind assert).
+- Outbound dates (`.Prop` values, method args) are not decoded and keep the kind the spec wrote, so their wire expectation is a plain literal — `DateTimeKind.Utc` serializes with `Z`.
+
+Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in an object), `DatePickerTests`/`DateTimeInputTests` (nullable, with a `// TODO:` for the cleared case crossing as `MinValue`).
+
 ### 1. Methods and getters
 
 - Every public API member that produces an outbound invocation gets a spec. Distinguish two kinds:
@@ -59,7 +69,7 @@ The render scope handed to the lambda is the cut for an arranged spec and the wh
   | Return kind | Contract form |
   |---|---|
   | none | omit — void overload |
-  | scalar (bool/number/string/date) | just the value: `returns: true` / `5.0` / a UTC `DateTime` — the wire return kind is derived from the value's type, and the decoded .NET return must round-trip back to it (dates compared as instants) |
+  | scalar (bool/number/string/date) | just the value: `returns: true` / `5.0` / a UTC `DateTime` — the wire return kind is derived from the value's type, and the decoded .NET return must round-trip back to it (dates: see the rule above — stated as the UTC instant, asserted as its local rendering) |
   | single serialized object | arranged `Getter` overload with `InteropReturn.Object(...)` + value-level `assert:` — see `ChatTests.cs` `DraftMessage` |
   | array of component/data-item references | arranged `Getter` overload with `InteropReturn.Array` of refs, `Assert.Same` against arranged instances — see `TileManagerTests.cs` `Tiles`, `ComboTests.cs` `Value` |
   | single bound-object reference | arranged `Getter` overload with `InteropReturn.Ref(...)`, `Assert.Same` against the arranged child — see `SelectTests.cs`/`DropdownTests.cs` `SelectedItem` |
@@ -134,7 +144,7 @@ One dispatch pins: the driving event's registration crossed, the callback member
 | `ObjectToParam(x, typeof(SomeEnum))`, tag `"Json"` | `SomeEnum.Member` | the `[WCEnumName("...")]` value if the member has one, else camelCase of the member name (`Next` → `"next"`) |
 | `ObjectToParam(x)` with a plain string, tag `"Json"` | `"item-1"`     | `"item-1"`                           |
 | `ObjectToParam(x)` with a marshal-by-value object, tag `"Json"` | an options object | `new JsonSubset("""{"key": value, ...}""")` |
-| `x` DateTime, tag `"Date"`                 | a `DateTime`             | the same `DateTime` (compared as instant) |
+| `x` DateTime, tag `"Date"`                 | a `DateTime`             | the same `DateTime` — outbound, so it keeps the kind the spec wrote |
 | array helpers (`IntArrayToString`, ...), tag `"NumberArray"` etc. | array | `new RawJson("[1,2,3]")`            |
 | `ComponentToJson(x, i)`, tag `"Component"`  | an `Igb*` component      | `"containerId:::<that component's own container id>"` (a `FromRender` value) — no element handle |
 | `ComponentToJson(x, i)`, tag `"Component"`  | an `ElementReference`    | `"elementIndex:::<i>"`, plus the handle itself declared via `elements:` (it rides beside the arguments, not in them) |
