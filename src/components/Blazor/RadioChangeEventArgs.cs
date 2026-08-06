@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbRadioChangeEventArgs() : base()
-        {
-            OnCreatedIgbRadioChangeEventArgs();
-
-        }
-
-        partial void OnCreatedIgbRadioChangeEventArgs();
-
         private IgbRadioChangeEventArgsDetail _detail;
 
         partial void OnDetailChanging(ref IgbRadioChangeEventArgsDetail newValue);

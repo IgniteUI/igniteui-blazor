@@ -98,9 +98,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="IgbTabs"/>.
+        /// </summary>
         public IgbTabs() : base()
         {
-            OnCreatedIgbTabs();
+            // Ensure Change handler so selection syncs back to the child IgbTab instances
+            EnsureChangeHandled();
 
             _allTabsCollection = new IgbTabs_TabCollection(this, "TabsCollection");
             _tabsCollectionAdapter = new CollectionAdapter<IgbTab, IgbTab>(
@@ -116,8 +120,6 @@ namespace IgniteUI.Blazor.Controls
             _tabsCollectionAdapter.SubcribeToManual(TabsCollection);
 
         }
-
-        partial void OnCreatedIgbTabs();
 
         private IgbTabs_TabCollection _tabsCollection = null;
 

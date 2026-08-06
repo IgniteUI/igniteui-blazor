@@ -14,14 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbExpansionPanelComponentEventArgs() : base()
-        {
-            OnCreatedIgbExpansionPanelComponentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbExpansionPanelComponentEventArgs();
-
         private IgbExpansionPanel _detail;
 
         partial void OnDetailChanging(ref IgbExpansionPanel newValue);

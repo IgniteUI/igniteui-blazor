@@ -53,14 +53,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbRating() : base()
-        {
-            OnCreatedIgbRating();
-
-        }
-
-        partial void OnCreatedIgbRating();
-
         private double _max = 5;
 
         partial void OnMaxChanging(ref double newValue);

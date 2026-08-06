@@ -27,14 +27,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbCalendarBase() : base()
-        {
-            OnCreatedIgbCalendarBase();
-
-        }
-
-        partial void OnCreatedIgbCalendarBase();
-
         private CalendarSelection _selection = CalendarSelection.Single;
 
         partial void OnSelectionChanging(ref CalendarSelection newValue);

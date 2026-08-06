@@ -55,14 +55,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbThemeProvider() : base()
-        {
-            OnCreatedIgbThemeProvider();
-
-        }
-
-        partial void OnCreatedIgbThemeProvider();
-
         private Theme _theme = Theme.Bootstrap;
 
         partial void OnThemeChanging(ref Theme newValue);

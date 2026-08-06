@@ -44,14 +44,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbToast() : base()
-        {
-            OnCreatedIgbToast();
-
-        }
-
-        partial void OnCreatedIgbToast();
-
         partial void FindByNameToast(string name, ref object item);
         public override object FindByName(string name)
         {

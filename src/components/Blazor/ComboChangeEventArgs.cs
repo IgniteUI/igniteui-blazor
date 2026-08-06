@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbComboChangeEventArgs() : base()
-        {
-            OnCreatedIgbComboChangeEventArgs();
-
-        }
-
-        partial void OnCreatedIgbComboChangeEventArgs();
-
         private IgbComboChangeEventArgsDetail _detail;
 
         partial void OnDetailChanging(ref IgbComboChangeEventArgsDetail newValue);

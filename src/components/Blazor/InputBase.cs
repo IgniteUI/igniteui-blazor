@@ -24,14 +24,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbInputBase() : base()
-        {
-            OnCreatedIgbInputBase();
-
-        }
-
-        partial void OnCreatedIgbInputBase();
-
         private bool _outlined = false;
 
         partial void OnOutlinedChanging(ref bool newValue);

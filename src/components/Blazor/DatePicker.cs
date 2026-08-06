@@ -31,14 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbDatePicker() : base()
-        {
-            OnCreatedIgbDatePicker();
-
-        }
-
-        partial void OnCreatedIgbDatePicker();
-
         private string _label;
 
         partial void OnLabelChanging(ref string newValue);

@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbSelectItemComponentEventArgs() : base()
-        {
-            OnCreatedIgbSelectItemComponentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbSelectItemComponentEventArgs();
-
         private IgbSelectItem _detail;
 
         partial void OnDetailChanging(ref IgbSelectItem newValue);

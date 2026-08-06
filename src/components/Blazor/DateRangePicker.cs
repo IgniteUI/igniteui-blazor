@@ -32,14 +32,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbDateRangePicker() : base()
-        {
-            OnCreatedIgbDateRangePicker();
-
-        }
-
-        partial void OnCreatedIgbDateRangePicker();
-
         private IgbDateRangeValue? _value;
 
         partial void OnValueChanging(ref IgbDateRangeValue? newValue);

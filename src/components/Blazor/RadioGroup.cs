@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbRadioGroup() : base()
-        {
-            OnCreatedIgbRadioGroup();
-
-        }
-
-        partial void OnCreatedIgbRadioGroup();
-
         private ContentOrientation _alignment = ContentOrientation.Vertical;
 
         partial void OnAlignmentChanging(ref ContentOrientation newValue);

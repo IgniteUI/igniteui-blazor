@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCarousel() : base()
-        {
-            OnCreatedIgbCarousel();
-
-        }
-
-        partial void OnCreatedIgbCarousel();
-
         private bool _disableLoop = false;
 
         partial void OnDisableLoopChanging(ref bool newValue);

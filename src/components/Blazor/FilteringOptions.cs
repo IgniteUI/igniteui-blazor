@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebFilteringOptions"; } }
 
-        public IgbFilteringOptions() : base()
-        {
-            OnCreatedIgbFilteringOptions();
-
-        }
-
-        partial void OnCreatedIgbFilteringOptions();
-
         private string _filterKey;
 
         partial void OnFilterKeyChanging(ref string newValue);

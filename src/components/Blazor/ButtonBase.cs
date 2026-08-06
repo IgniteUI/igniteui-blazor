@@ -43,14 +43,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbButtonBase() : base()
-        {
-            OnCreatedIgbButtonBase();
-
-        }
-
-        partial void OnCreatedIgbButtonBase();
-
         private ButtonBaseType _displayType = ButtonBaseType.Button;
 
         partial void OnDisplayTypeChanging(ref ButtonBaseType newValue);

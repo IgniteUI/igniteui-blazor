@@ -50,14 +50,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCardMedia() : base()
-        {
-            OnCreatedIgbCardMedia();
-
-        }
-
-        partial void OnCreatedIgbCardMedia();
-
         partial void FindByNameCardMedia(string name, ref object item);
         public override object FindByName(string name)
         {

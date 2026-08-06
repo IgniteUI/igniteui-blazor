@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbActiveStepChangedEventArgsDetail() : base()
-        {
-            OnCreatedIgbActiveStepChangedEventArgsDetail();
-
-        }
-
-        partial void OnCreatedIgbActiveStepChangedEventArgsDetail();
-
         private double _index = 0;
 
         partial void OnIndexChanging(ref double newValue);

@@ -44,14 +44,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbSelectItem() : base()
-        {
-            OnCreatedIgbSelectItem();
-
-        }
-
-        partial void OnCreatedIgbSelectItem();
-
         partial void FindByNameSelectItem(string name, ref object item);
         public override object FindByName(string name)
         {

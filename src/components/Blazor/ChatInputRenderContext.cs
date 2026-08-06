@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebChatInputRenderContext"; } }
 
-        public IgbChatInputRenderContext() : base()
-        {
-            OnCreatedIgbChatInputRenderContext();
-
-        }
-
-        partial void OnCreatedIgbChatInputRenderContext();
-
         private string _value;
 
         partial void OnValueChanging(ref string newValue);

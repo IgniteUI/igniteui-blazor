@@ -31,14 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbDateTimeInput() : base()
-        {
-            OnCreatedIgbDateTimeInput();
-
-        }
-
-        partial void OnCreatedIgbDateTimeInput();
-
         private DateTime? _value = DateTime.MinValue;
 
         partial void OnValueChanging(ref DateTime? newValue);

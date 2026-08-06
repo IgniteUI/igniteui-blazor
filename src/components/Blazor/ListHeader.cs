@@ -49,14 +49,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbListHeader() : base()
-        {
-            OnCreatedIgbListHeader();
-
-        }
-
-        partial void OnCreatedIgbListHeader();
-
         partial void FindByNameListHeader(string name, ref object item);
         public override object FindByName(string name)
         {

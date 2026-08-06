@@ -35,13 +35,14 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Queued; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="IgbChat"/>.
+        /// </summary>
         public IgbChat() : base()
         {
-            OnCreatedIgbChat();
-
+            // Ensure that Options setter is called to apply the default options and disable input attachments.
+            this.Options = new IgbChatOptions();
         }
-
-        partial void OnCreatedIgbChat();
 
         private IgbChatMessage[] _messages;
 

@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbBadge() : base()
-        {
-            OnCreatedIgbBadge();
-
-        }
-
-        partial void OnCreatedIgbBadge();
-
         private StyleVariant _variant = StyleVariant.Primary;
 
         partial void OnVariantChanging(ref StyleVariant newValue);

@@ -8,14 +8,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbChatDraftMessage() : base()
-        {
-            OnCreatedIgbChatDraftMessage();
-
-        }
-
-        partial void OnCreatedIgbChatDraftMessage();
-
         private string _text;
 
         partial void OnTextChanging(ref string newValue);

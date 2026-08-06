@@ -50,14 +50,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCardHeader() : base()
-        {
-            OnCreatedIgbCardHeader();
-
-        }
-
-        partial void OnCreatedIgbCardHeader();
-
         partial void FindByNameCardHeader(string name, ref object item);
         public override object FindByName(string name)
         {

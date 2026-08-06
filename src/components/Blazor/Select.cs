@@ -46,14 +46,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbSelect() : base()
-        {
-            OnCreatedIgbSelect();
-
-        }
-
-        partial void OnCreatedIgbSelect();
-
         private string? _value;
 
         partial void OnValueChanging(ref string? newValue);

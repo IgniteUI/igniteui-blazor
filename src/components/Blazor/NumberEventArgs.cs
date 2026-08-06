@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbNumberEventArgs() : base()
-        {
-            OnCreatedIgbNumberEventArgs();
-
-        }
-
-        partial void OnCreatedIgbNumberEventArgs();
-
         private double _detail = 0;
 
         partial void OnDetailChanging(ref double newValue);

@@ -13,14 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbTileComponentEventArgs() : base()
-        {
-            OnCreatedIgbTileComponentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbTileComponentEventArgs();
-
         private IgbTile _detail;
 
         partial void OnDetailChanging(ref IgbTile newValue);
