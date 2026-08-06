@@ -15,14 +15,6 @@ namespace IgniteUI.Blazor.Controls
             return "inline-block";
         }
 
-        public IgbComboBoxBaseLike() : base()
-        {
-            OnCreatedIgbComboBoxBaseLike();
-
-        }
-
-        partial void OnCreatedIgbComboBoxBaseLike();
-
         private bool _keepOpenOnSelect = false;
 
         partial void OnKeepOpenOnSelectChanging(ref bool newValue);

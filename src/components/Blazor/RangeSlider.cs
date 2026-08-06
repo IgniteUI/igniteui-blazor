@@ -46,14 +46,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbRangeSlider() : base()
-        {
-            OnCreatedIgbRangeSlider();
-
-        }
-
-        partial void OnCreatedIgbRangeSlider();
-
         private double _lower = 0;
 
         partial void OnLowerChanging(ref double newValue);

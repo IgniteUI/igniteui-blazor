@@ -19,14 +19,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbBaseComboBox() : base()
-        {
-            OnCreatedIgbBaseComboBox();
-
-        }
-
-        partial void OnCreatedIgbBaseComboBox();
-
         private bool _open = false;
 
         partial void OnOpenChanging(ref bool newValue);

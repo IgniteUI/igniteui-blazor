@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbSelectGroup() : base()
-        {
-            OnCreatedIgbSelectGroup();
-
-        }
-
-        partial void OnCreatedIgbSelectGroup();
-
         private IgbSelectItem[] _items;
 
         partial void OnItemsChanging(ref IgbSelectItem[] newValue);

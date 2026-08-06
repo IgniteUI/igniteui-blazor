@@ -13,14 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbTreeItemComponentEventArgs() : base()
-        {
-            OnCreatedIgbTreeItemComponentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbTreeItemComponentEventArgs();
-
         private IgbTreeItem _detail;
 
         partial void OnDetailChanging(ref IgbTreeItem newValue);

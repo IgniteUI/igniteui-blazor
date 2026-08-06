@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTileManager() : base()
-        {
-            OnCreatedIgbTileManager();
-
-        }
-
-        partial void OnCreatedIgbTileManager();
-
         private TileManagerResizeMode _resizeMode = TileManagerResizeMode.None;
 
         partial void OnResizeModeChanging(ref TileManagerResizeMode newValue);

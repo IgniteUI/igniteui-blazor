@@ -10,14 +10,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebComponentDataValueChangedEventArgs"; } }
 
-        public IgbComponentDataValueChangedEventArgs() : base()
-        {
-            OnCreatedIgbComponentDataValueChangedEventArgs();
-
-        }
-
-        partial void OnCreatedIgbComponentDataValueChangedEventArgs();
-
         private object _detail;
 
         partial void OnDetailChanging(ref object newValue);

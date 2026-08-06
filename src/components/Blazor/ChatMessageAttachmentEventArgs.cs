@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbChatMessageAttachmentEventArgs() : base()
-        {
-            OnCreatedIgbChatMessageAttachmentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbChatMessageAttachmentEventArgs();
-
         private IgbChatMessageAttachment _detail;
 
         partial void OnDetailChanging(ref IgbChatMessageAttachment newValue);

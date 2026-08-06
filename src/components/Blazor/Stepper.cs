@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbStepper() : base()
-        {
-            OnCreatedIgbStepper();
-
-        }
-
-        partial void OnCreatedIgbStepper();
-
         /// <summary>
         /// Returns all of the stepper's steps.
         /// </summary>

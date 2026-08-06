@@ -5,11 +5,6 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTabs : BaseRendererControl
     {
 
-        partial void OnCreatedIgbTabs()
-        {
-            EnsureChangeHandled();
-        }
-
         partial void OnHandlingChange(IgbTabComponentEventArgs args)
         {
             var selectedTab = args.Detail;

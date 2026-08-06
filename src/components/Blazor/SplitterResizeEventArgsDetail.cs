@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbSplitterResizeEventArgsDetail() : base()
-        {
-            OnCreatedIgbSplitterResizeEventArgsDetail();
-
-        }
-
-        partial void OnCreatedIgbSplitterResizeEventArgsDetail();
-
         private double _startPanelSize = 0;
 
         partial void OnStartPanelSizeChanging(ref double newValue);

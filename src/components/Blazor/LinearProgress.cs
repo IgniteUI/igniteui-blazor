@@ -47,14 +47,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbLinearProgress() : base()
-        {
-            OnCreatedIgbLinearProgress();
-
-        }
-
-        partial void OnCreatedIgbLinearProgress();
-
         private bool _striped = false;
 
         partial void OnStripedChanging(ref bool newValue);

@@ -45,14 +45,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbCircularProgress() : base()
-        {
-            OnCreatedIgbCircularProgress();
-
-        }
-
-        partial void OnCreatedIgbCircularProgress();
-
         partial void FindByNameCircularProgress(string name, ref object item);
         public override object FindByName(string name)
         {

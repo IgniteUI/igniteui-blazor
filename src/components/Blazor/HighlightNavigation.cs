@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbHighlightNavigation() : base()
-        {
-            OnCreatedIgbHighlightNavigation();
-
-        }
-
-        partial void OnCreatedIgbHighlightNavigation();
-
         private bool _preventScroll = false;
 
         partial void OnPreventScrollChanging(ref bool newValue);

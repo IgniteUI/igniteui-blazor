@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbDateRangeValueDetail() : base()
-        {
-            OnCreatedIgbDateRangeValueDetail();
-
-        }
-
-        partial void OnCreatedIgbDateRangeValueDetail();
-
         private DateTime _start = DateTime.MinValue;
 
         partial void OnStartChanging(ref DateTime newValue);

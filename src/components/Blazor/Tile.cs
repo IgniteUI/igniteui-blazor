@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTile() : base()
-        {
-            OnCreatedIgbTile();
-
-        }
-
-        partial void OnCreatedIgbTile();
-
         private double _colSpan = 1;
 
         partial void OnColSpanChanging(ref double newValue);

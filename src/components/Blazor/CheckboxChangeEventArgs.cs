@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbCheckboxChangeEventArgs() : base()
-        {
-            OnCreatedIgbCheckboxChangeEventArgs();
-
-        }
-
-        partial void OnCreatedIgbCheckboxChangeEventArgs();
-
         private IgbCheckboxChangeEventArgsDetail _detail;
 
         partial void OnDetailChanging(ref IgbCheckboxChangeEventArgsDetail newValue);

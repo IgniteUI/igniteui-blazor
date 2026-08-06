@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebCustomDateRange"; } }
 
-        public IgbCustomDateRange() : base()
-        {
-            OnCreatedIgbCustomDateRange();
-
-        }
-
-        partial void OnCreatedIgbCustomDateRange();
-
         private string _label;
 
         partial void OnLabelChanging(ref string newValue);

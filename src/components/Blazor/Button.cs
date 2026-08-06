@@ -50,14 +50,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbButton() : base()
-        {
-            OnCreatedIgbButton();
-
-        }
-
-        partial void OnCreatedIgbButton();
-
         private ButtonVariant _variant = ButtonVariant.Contained;
 
         partial void OnVariantChanging(ref ButtonVariant newValue);

@@ -18,14 +18,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbFormatSpecifier() : base()
-        {
-            OnCreatedIgbFormatSpecifier();
-
-        }
-
-        partial void OnCreatedIgbFormatSpecifier();
-
         partial void FindByNameFormatSpecifier(string name, ref object item);
         public override object FindByName(string name)
         {

@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebDateRangeValue"; } }
 
-        public IgbDateRangeValue() : base()
-        {
-            OnCreatedIgbDateRangeValue();
-
-        }
-
-        partial void OnCreatedIgbDateRangeValue();
-
         private DateTime _start = DateTime.MinValue;
 
         partial void OnStartChanging(ref DateTime newValue);

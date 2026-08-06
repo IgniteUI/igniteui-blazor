@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbIconMeta() : base()
-        {
-            OnCreatedIgbIconMeta();
-
-        }
-
-        partial void OnCreatedIgbIconMeta();
-
         private string _collection;
 
         partial void OnCollectionChanging(ref string newValue);

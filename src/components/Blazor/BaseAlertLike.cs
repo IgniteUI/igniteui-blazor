@@ -43,14 +43,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbBaseAlertLike() : base()
-        {
-            OnCreatedIgbBaseAlertLike();
-
-        }
-
-        partial void OnCreatedIgbBaseAlertLike();
-
         private bool _open = false;
 
         partial void OnOpenChanging(ref bool newValue);

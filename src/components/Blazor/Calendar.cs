@@ -31,14 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbCalendar() : base()
-        {
-            OnCreatedIgbCalendar();
-
-        }
-
-        partial void OnCreatedIgbCalendar();
-
         private DateTime _value = DateTime.MinValue;
 
         partial void OnValueChanging(ref DateTime newValue);

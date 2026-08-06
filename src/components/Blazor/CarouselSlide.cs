@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCarouselSlide() : base()
-        {
-            OnCreatedIgbCarouselSlide();
-
-        }
-
-        partial void OnCreatedIgbCarouselSlide();
-
         private bool _active = false;
 
         partial void OnActiveChanging(ref bool newValue);

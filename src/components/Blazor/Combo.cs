@@ -37,14 +37,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbCombo() : base()
-        {
-            OnCreatedIgbCombo();
-
-        }
-
-        partial void OnCreatedIgbCombo();
-
         private string _dataRef;
         private Object _data;
 

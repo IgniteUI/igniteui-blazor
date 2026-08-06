@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "DateRangeDescriptor"; } }
 
-        public IgbDateRangeDescriptor() : base()
-        {
-            OnCreatedIgbDateRangeDescriptor();
-
-        }
-
-        partial void OnCreatedIgbDateRangeDescriptor();
-
         private DateRangeType _rangeType = DateRangeType.After;
 
         partial void OnRangeTypeChanging(ref DateRangeType newValue);

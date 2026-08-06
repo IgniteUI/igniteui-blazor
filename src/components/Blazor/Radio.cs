@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbRadio() : base()
-        {
-            OnCreatedIgbRadio();
-
-        }
-
-        partial void OnCreatedIgbRadio();
-
         private bool _required = false;
 
         partial void OnRequiredChanging(ref bool newValue);

@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbAvatar() : base()
-        {
-            OnCreatedIgbAvatar();
-
-        }
-
-        partial void OnCreatedIgbAvatar();
-
         private string _src;
 
         partial void OnSrcChanging(ref string newValue);

@@ -8,14 +8,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbComboChangeEventArgsDetail() : base()
-        {
-            OnCreatedIgbComboChangeEventArgsDetail();
-
-        }
-
-        partial void OnCreatedIgbComboChangeEventArgsDetail();
-
         private string _newValueRef;
         private object[] _newValue;
 

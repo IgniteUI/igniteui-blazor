@@ -44,14 +44,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbSwitch() : base()
-        {
-            OnCreatedIgbSwitch();
-
-        }
-
-        partial void OnCreatedIgbSwitch();
-
         partial void FindByNameSwitch(string name, ref object item);
         public override object FindByName(string name)
         {

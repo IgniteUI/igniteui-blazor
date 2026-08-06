@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbDivider() : base()
-        {
-            OnCreatedIgbDivider();
-
-        }
-
-        partial void OnCreatedIgbDivider();
-
         private bool _vertical = false;
 
         partial void OnVerticalChanging(ref bool newValue);

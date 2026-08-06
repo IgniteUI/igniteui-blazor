@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbCalendarFormatOptions() : base()
-        {
-            OnCreatedIgbCalendarFormatOptions();
-
-        }
-
-        partial void OnCreatedIgbCalendarFormatOptions();
-
         private string _weekday;
 
         partial void OnWeekdayChanging(ref string newValue);

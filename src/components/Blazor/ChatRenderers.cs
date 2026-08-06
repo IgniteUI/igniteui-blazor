@@ -6,14 +6,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebChatRenderers"; } }
 
-        public IgbChatRenderers() : base()
-        {
-            OnCreatedIgbChatRenderers();
-
-        }
-
-        partial void OnCreatedIgbChatRenderers();
-
         private string _attachmentRef;
         private RenderFragment<IgbChatAttachmentRenderContext> _attachment;
 

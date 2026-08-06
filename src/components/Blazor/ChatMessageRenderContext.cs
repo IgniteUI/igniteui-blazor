@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebChatMessageRenderContext"; } }
 
-        public IgbChatMessageRenderContext() : base()
-        {
-            OnCreatedIgbChatMessageRenderContext();
-
-        }
-
-        partial void OnCreatedIgbChatMessageRenderContext();
-
         private IgbChatMessage _message;
 
         partial void OnMessageChanging(ref IgbChatMessage newValue);

@@ -46,14 +46,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbSlider() : base()
-        {
-            OnCreatedIgbSlider();
-
-        }
-
-        partial void OnCreatedIgbSlider();
-
         private double _value = 0;
 
         partial void OnValueChanging(ref double newValue);

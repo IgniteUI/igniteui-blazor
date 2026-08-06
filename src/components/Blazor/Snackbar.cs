@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbSnackbar() : base()
-        {
-            OnCreatedIgbSnackbar();
-
-        }
-
-        partial void OnCreatedIgbSnackbar();
-
         private string _actionText;
 
         partial void OnActionTextChanging(ref string newValue);

@@ -53,14 +53,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCard() : base()
-        {
-            OnCreatedIgbCard();
-
-        }
-
-        partial void OnCreatedIgbCard();
-
         private bool _elevated = false;
 
         partial void OnElevatedChanging(ref bool newValue);

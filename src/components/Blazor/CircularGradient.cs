@@ -55,14 +55,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCircularGradient() : base()
-        {
-            OnCreatedIgbCircularGradient();
-
-        }
-
-        partial void OnCreatedIgbCircularGradient();
-
         private string _offset;
 
         partial void OnOffsetChanging(ref string newValue);

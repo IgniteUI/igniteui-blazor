@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTreeItem() : base()
-        {
-            OnCreatedIgbTreeItem();
-
-        }
-
-        partial void OnCreatedIgbTreeItem();
-
         private IgbTreeItem _parent;
 
         partial void OnParentChanging(ref IgbTreeItem newValue);

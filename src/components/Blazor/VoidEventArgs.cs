@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "VoidEventArgs"; } }
 
-        public IgbVoidEventArgs() : base()
-        {
-            OnCreatedIgbVoidEventArgs();
-
-        }
-
-        partial void OnCreatedIgbVoidEventArgs();
-
         partial void FindByNameVoidEventArgs(string name, ref object item);
         public override object FindByName(string name)
         {

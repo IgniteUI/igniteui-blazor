@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCardActions() : base()
-        {
-            OnCreatedIgbCardActions();
-
-        }
-
-        partial void OnCreatedIgbCardActions();
-
         private ContentOrientation _orientation = ContentOrientation.Horizontal;
 
         partial void OnOrientationChanging(ref ContentOrientation newValue);
