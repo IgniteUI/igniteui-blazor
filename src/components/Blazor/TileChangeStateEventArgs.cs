@@ -61,13 +61,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbTileChangeStateEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTileChangeStateEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

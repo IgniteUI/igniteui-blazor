@@ -64,15 +64,5 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbSwitch(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbSwitch(ser);
-
-        }
-
     }
 }

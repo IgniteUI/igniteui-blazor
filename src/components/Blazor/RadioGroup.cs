@@ -286,13 +286,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingValue(string oldValue, ref string newValue);
 
-        partial void SerializeCoreIgbRadioGroup(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRadioGroup(ser);
 
             if (IsPropDirty("Alignment"))
             { ser.AddEnumProp("alignment", this._alignment); }

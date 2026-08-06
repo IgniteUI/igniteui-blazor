@@ -439,13 +439,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbAccordion(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbAccordion(ser);
 
             if (IsPropDirty("SingleExpand"))
             { ser.AddBooleanProp("singleExpand", this._singleExpand); }

@@ -360,13 +360,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingValue(string oldValue, ref string newValue);
 
-        partial void SerializeCoreIgbMaskInput(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbMaskInput(ser);
 
             if (IsPropDirty("ValueMode"))
             { ser.AddEnumProp("valueMode", this._valueMode); }

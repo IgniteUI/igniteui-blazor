@@ -76,13 +76,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbComboBoxBaseLike(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComboBoxBaseLike(ser);
 
             if (IsPropDirty("KeepOpenOnSelect"))
             { ser.AddBooleanProp("keepOpenOnSelect", this._keepOpenOnSelect); }

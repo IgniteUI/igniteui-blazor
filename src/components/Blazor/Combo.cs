@@ -1423,13 +1423,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingValue(T[] oldValue, ref T[] newValue);
 
-        partial void SerializeCoreIgbCombo(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCombo(ser);
 
             if (IsPropDirty("DataRef"))
             { ser.AddStringProp("dataRef", this._dataRef); }

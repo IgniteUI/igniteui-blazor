@@ -923,13 +923,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingValue(string oldValue, ref string newValue);
 
-        partial void SerializeCoreIgbTextarea(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTextarea(ser);
 
             if (IsPropDirty("Autocomplete"))
             { ser.AddStringProp("autocomplete", this._autocomplete); }

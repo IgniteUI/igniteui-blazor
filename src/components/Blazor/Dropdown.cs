@@ -778,13 +778,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbDropdown(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDropdown(ser);
 
             if (IsPropDirty("Placement"))
             { ser.AddEnumProp("placement", this._placement); }

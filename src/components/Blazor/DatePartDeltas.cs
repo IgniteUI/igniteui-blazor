@@ -158,13 +158,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbDatePartDeltas(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDatePartDeltas(ser);
 
             if (IsPropDirty("Date"))
             { ser.AddNumberProp("date", this._date); }

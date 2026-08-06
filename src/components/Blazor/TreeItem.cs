@@ -361,13 +361,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("collapse", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbTreeItem(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTreeItem(ser);
 
             if (IsPropDirty("Parent"))
             { ser.AddSerializableProp("parent", this._parent); }

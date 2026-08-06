@@ -205,13 +205,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
-        partial void SerializeCoreIgbIconButton(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbIconButton(ser);
 
             if (IsPropDirty("IconName"))
             { ser.AddStringProp("iconName", this._iconName); }

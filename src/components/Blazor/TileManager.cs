@@ -890,13 +890,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTileManager(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTileManager(ser);
 
             if (IsPropDirty("ResizeMode"))
             { ser.AddEnumProp("resizeMode", this._resizeMode); }

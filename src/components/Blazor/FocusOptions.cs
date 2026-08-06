@@ -53,13 +53,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbFocusOptions(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbFocusOptions(ser);
 
             if (IsPropDirty("PreventScroll"))
             { ser.AddBooleanProp("preventScroll", this._preventScroll); }

@@ -881,13 +881,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbChatRenderers(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatRenderers(ser);
 
             if (IsPropDirty("AttachmentRef"))
             { ser.AddStringProp("attachmentRef", this._attachmentRef); }

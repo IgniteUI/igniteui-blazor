@@ -335,13 +335,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTabs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTabs(ser);
 
             if (IsPropDirty("TabsCollection"))
             { var coll = this._tabsCollection; GetSerializableTabsCollection(ref coll); ser.AddCollectionProp("tabsCollection", coll); }

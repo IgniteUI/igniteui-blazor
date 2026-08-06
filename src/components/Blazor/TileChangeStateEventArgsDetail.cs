@@ -83,13 +83,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbTileChangeStateEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTileChangeStateEventArgsDetail(ser);
 
             if (IsPropDirty("Tile"))
             { ser.AddSerializableProp("tile", this._tile); }

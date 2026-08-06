@@ -702,13 +702,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbChat(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChat(ser);
 
             if (IsPropDirty("Messages"))
             { ser.AddSerializableArrayProp("messages", this._messages); }

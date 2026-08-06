@@ -82,13 +82,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbRadioChangeEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRadioChangeEventArgsDetail(ser);
 
             if (IsPropDirty("Checked"))
             { ser.AddBooleanProp("checked", this._checked); }

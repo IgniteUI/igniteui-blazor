@@ -101,13 +101,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbButton(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbButton(ser);
 
             if (IsPropDirty("Variant"))
             { ser.AddEnumProp("variant", this._variant); }

@@ -899,13 +899,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTile(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTile(ser);
 
             if (IsPropDirty("ColSpan"))
             { ser.AddNumberProp("colSpan", this._colSpan); }

@@ -708,13 +708,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbCarousel(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCarousel(ser);
 
             if (IsPropDirty("DisableLoop"))
             { ser.AddBooleanProp("disableLoop", this._disableLoop); }

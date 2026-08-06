@@ -124,13 +124,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbThemeProvider(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbThemeProvider(ser);
 
             if (IsPropDirty("Theme"))
             { ser.AddEnumProp("theme", this._theme); }

@@ -436,13 +436,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingValue(double oldValue, ref double newValue);
 
-        partial void SerializeCoreIgbSlider(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSlider(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddNumberProp("value", this._value); }

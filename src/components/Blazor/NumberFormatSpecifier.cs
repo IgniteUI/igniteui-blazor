@@ -447,13 +447,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbNumberFormatSpecifier(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbNumberFormatSpecifier(ser);
 
             if (IsPropDirty("Locale"))
             { ser.AddStringProp("locale", this._locale); }

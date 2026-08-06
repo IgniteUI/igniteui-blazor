@@ -619,13 +619,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingChecked(bool oldValue, ref bool newValue);
 
-        partial void SerializeCoreIgbCheckboxBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCheckboxBase(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }

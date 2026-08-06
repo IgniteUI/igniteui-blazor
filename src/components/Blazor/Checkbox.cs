@@ -87,13 +87,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbCheckbox(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCheckbox(ser);
 
             if (IsPropDirty("Indeterminate"))
             { ser.AddBooleanProp("indeterminate", this._indeterminate); }

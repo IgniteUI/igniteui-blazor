@@ -58,16 +58,6 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToString(iv);
         }
 
-        partial void SerializeCoreIgbFormatSpecifier(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbFormatSpecifier(ser);
-
-        }
-
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);

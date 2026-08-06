@@ -194,13 +194,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("click", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbToggleButton(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbToggleButton(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }

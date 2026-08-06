@@ -515,13 +515,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingValues(DateTime[] oldValue, ref DateTime[] newValue);
 
-        partial void SerializeCoreIgbCalendar(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCalendar(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddDateTimeProp("value", this._value); }

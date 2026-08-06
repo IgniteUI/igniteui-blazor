@@ -64,13 +64,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbChatAttachmentRenderContext(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatAttachmentRenderContext(ser);
 
             if (IsPropDirty("Attachment"))
             { ser.AddSerializableProp("attachment", this._attachment); }

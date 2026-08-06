@@ -262,13 +262,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("search", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbHighlight(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbHighlight(ser);
 
             if (IsPropDirty("CaseSensitive"))
             { ser.AddBooleanProp("caseSensitive", this._caseSensitive); }

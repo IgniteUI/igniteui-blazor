@@ -421,13 +421,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingSelected(bool oldValue, ref bool newValue);
 
-        partial void SerializeCoreIgbChip(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChip(ser);
 
             if (IsPropDirty("Disabled"))
             { ser.AddBooleanProp("disabled", this._disabled); }

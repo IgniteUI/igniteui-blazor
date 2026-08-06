@@ -74,13 +74,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbActiveStepChangingEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbActiveStepChangingEventArgsDetail(ser);
 
             if (IsPropDirty("OldIndex"))
             { ser.AddNumberProp("oldIndex", this._oldIndex); }

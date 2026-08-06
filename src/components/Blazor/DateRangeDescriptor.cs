@@ -77,13 +77,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbDateRangeDescriptor(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDateRangeDescriptor(ser);
 
             if (IsPropDirty("RangeType"))
             { ser.AddEnumProp("rangeType", this._rangeType); }

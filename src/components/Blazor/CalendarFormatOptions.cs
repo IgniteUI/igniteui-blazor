@@ -75,13 +75,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbCalendarFormatOptions(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCalendarFormatOptions(ser);
 
             if (IsPropDirty("Weekday"))
             { ser.AddStringProp("weekday", this._weekday); }

@@ -53,13 +53,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbIconMeta(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbIconMeta(ser);
 
             if (IsPropDirty("Collection"))
             { ser.AddStringProp("collection", this._collection); }

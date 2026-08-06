@@ -612,13 +612,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTree(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTree(ser);
 
             if (IsPropDirty("SingleBranchExpand"))
             { ser.AddBooleanProp("singleBranchExpand", this._singleBranchExpand); }

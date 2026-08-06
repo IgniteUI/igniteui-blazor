@@ -442,13 +442,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbDialog(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDialog(ser);
 
             if (IsPropDirty("KeepOpenOnEscape"))
             { ser.AddBooleanProp("keepOpenOnEscape", this._keepOpenOnEscape); }

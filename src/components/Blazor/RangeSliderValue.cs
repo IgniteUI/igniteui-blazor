@@ -74,13 +74,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbRangeSliderValue(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRangeSliderValue(ser);
 
             if (IsPropDirty("Lower"))
             { ser.AddNumberProp("lower", this._lower); }

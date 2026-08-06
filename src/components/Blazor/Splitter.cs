@@ -557,13 +557,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbSplitter(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSplitter(ser);
 
             if (IsPropDirty("Orientation"))
             { ser.AddEnumProp("orientation", this._orientation); }

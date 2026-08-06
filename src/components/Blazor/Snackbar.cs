@@ -170,13 +170,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbSnackbar(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSnackbar(ser);
 
             if (IsPropDirty("ActionText"))
             { ser.AddStringProp("actionText", this._actionText); }

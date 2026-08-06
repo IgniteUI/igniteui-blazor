@@ -102,13 +102,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbSplitterResizeEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSplitterResizeEventArgsDetail(ser);
 
             if (IsPropDirty("StartPanelSize"))
             { ser.AddNumberProp("startPanelSize", this._startPanelSize); }

@@ -422,13 +422,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbNavDrawer(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbNavDrawer(ser);
 
             if (IsPropDirty("Position"))
             { ser.AddEnumProp("position", this._position); }

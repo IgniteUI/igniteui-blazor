@@ -620,13 +620,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingChecked(bool oldValue, ref bool newValue);
 
-        partial void SerializeCoreIgbRadio(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRadio(ser);
 
             if (IsPropDirty("Required"))
             { ser.AddBooleanProp("required", this._required); }

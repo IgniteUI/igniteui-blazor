@@ -98,13 +98,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbFilteringOptions(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbFilteringOptions(ser);
 
             if (IsPropDirty("FilterKey"))
             { ser.AddStringProp("filterKey", this._filterKey); }

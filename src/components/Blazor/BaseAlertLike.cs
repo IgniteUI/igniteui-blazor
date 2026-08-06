@@ -280,13 +280,9 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
-        partial void SerializeCoreIgbBaseAlertLike(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbBaseAlertLike(ser);
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }

@@ -470,13 +470,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbButtonBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbButtonBase(ser);
 
             if (IsPropDirty("DisplayType"))
             { ser.AddEnumProp("displayType", this._displayType); }

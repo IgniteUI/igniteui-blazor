@@ -129,13 +129,9 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
-        partial void SerializeCoreIgbBaseComboBox(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbBaseComboBox(ser);
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }

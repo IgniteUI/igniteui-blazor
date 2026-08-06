@@ -1263,13 +1263,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingValue(DateTime? oldValue, ref DateTime? newValue);
 
-        partial void SerializeCoreIgbDatePicker(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDatePicker(ser);
 
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }

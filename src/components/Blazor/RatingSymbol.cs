@@ -85,15 +85,5 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbRatingSymbol(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbRatingSymbol(ser);
-
-        }
-
     }
 }

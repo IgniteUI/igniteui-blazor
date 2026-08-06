@@ -108,13 +108,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbLinearProgress(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbLinearProgress(ser);
 
             if (IsPropDirty("Striped"))
             { ser.AddBooleanProp("striped", this._striped); }

@@ -54,13 +54,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbComponentDateValueChangedEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComponentDateValueChangedEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddDateTimeProp("detail", this._detail); }

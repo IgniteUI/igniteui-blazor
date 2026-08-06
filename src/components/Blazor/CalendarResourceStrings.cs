@@ -265,13 +265,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbCalendarResourceStrings(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCalendarResourceStrings(ser);
 
             if (IsPropDirty("SelectMonth"))
             { ser.AddStringProp("selectMonth", this._selectMonth); }

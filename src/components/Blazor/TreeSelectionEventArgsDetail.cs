@@ -54,13 +54,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        partial void SerializeCoreIgbTreeSelectionEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTreeSelectionEventArgsDetail(ser);
 
             if (IsPropDirty("NewSelection"))
             { ser.AddSerializableArrayProp("newSelection", this._newSelection); }

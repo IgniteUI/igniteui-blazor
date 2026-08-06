@@ -633,13 +633,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnEventUpdatingValue(double oldValue, ref double newValue);
 
-        partial void SerializeCoreIgbRating(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRating(ser);
 
             if (IsPropDirty("Max"))
             { ser.AddNumberProp("max", this._max); }
