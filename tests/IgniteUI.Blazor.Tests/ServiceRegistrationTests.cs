@@ -163,6 +163,23 @@ public class ServiceRegistrationTests
         Assert.Same(runtime, Assert.Single(SecondModule.Registrations));
     }
 
+    /// <summary>
+    /// Mutating the original array after calling <c>AddIgniteUIBlazor</c> must not change which
+    /// modules the settings report. The overload snapshots the array at registration time.
+    /// </summary>
+    [Fact]
+    public void AddIgniteUIBlazor_MutatingOriginalArray_DoesNotAffectRegisteredModules()
+    {
+        var modules = new Type[] { typeof(FirstModule) };
+
+        using var host = new Host(s => s.AddIgniteUIBlazor(modules));
+
+        // Mutate after registration, before the first resolve.
+        modules[0] = typeof(SecondModule);
+
+        Assert.Equal([typeof(FirstModule)], SettingsOf(host).ModulesToLoad);
+    }
+
     [Fact]
     public void Runtime_IsScoped_SoEachScopeRegistersItsOwn()
     {

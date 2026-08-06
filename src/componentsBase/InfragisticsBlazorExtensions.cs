@@ -31,13 +31,15 @@ namespace Microsoft.Extensions.DependencyInjection
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddIgniteUIBlazor(this Microsoft.Extensions.DependencyInjection.IServiceCollection collection,
             params Type[] modulesToLoad)
         {
+            // Snapshot the caller's array immediately so any later mutation has no effect.
+            Type[] snapshot = modulesToLoad != null && modulesToLoad.Length > 0 ? [.. modulesToLoad] : [];
+
             var s = collection.AddScoped(
                 typeof(IIgniteUIBlazorSettings),
                 (sp) =>
                 {
                     var bs = new IgniteUIBlazorSettings();
-                    Type[] modules = modulesToLoad != null && modulesToLoad.Length > 0 ? [.. modulesToLoad] : [];
-                    bs = bs.WithModulesToLoad(modules.Length > 0 ? new ReadOnlyCollection<Type>(modules) : null);
+                    bs = bs.WithModulesToLoad(snapshot.Length > 0 ? new ReadOnlyCollection<Type>(snapshot) : null);
                     return bs;
                 });
 
