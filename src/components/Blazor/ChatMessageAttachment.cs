@@ -13,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _id;
 
-        partial void OnIdChanging(ref string newValue);
         /// <summary>
         /// A unique identifier for the attachment.
         /// </summary>
@@ -33,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _url;
 
-        partial void OnUrlChanging(ref string newValue);
         /// <summary>
         /// The URL from which the attachment can be downloaded or viewed.
         /// Typically used for attachments stored on a server or CDN.
@@ -54,7 +52,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _attachmentType;
 
-        partial void OnAttachmentTypeChanging(ref string newValue);
         /// <summary>
         /// The MIME type or a custom type identifier for the attachment (e.g. "image/png", "pdf", "audio").
         /// </summary>
@@ -75,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _thumbnail;
 
-        partial void OnThumbnailChanging(ref string newValue);
         /// <summary>
         /// Optional URL to a thumbnail preview of the attachment (e.g. for images or videos).
         /// </summary>

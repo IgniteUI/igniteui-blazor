@@ -16,8 +16,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbExpansionPanel _detail;
 
-        partial void OnDetailChanging(ref IgbExpansionPanel newValue);
-
         /// <summary>
         /// The expansion panel the event was raised for.
         /// </summary>

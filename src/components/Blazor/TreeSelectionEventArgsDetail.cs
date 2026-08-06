@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTreeItem[] _newSelection;
 
-        partial void OnNewSelectionChanging(ref IgbTreeItem[] newValue);
-
         /// <summary>
         /// The tree items that will make up the new selection.
         /// </summary>

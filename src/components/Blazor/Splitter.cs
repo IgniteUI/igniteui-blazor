@@ -57,7 +57,6 @@ namespace IgniteUI.Blazor.Controls
 
         private SplitterOrientation _orientation = SplitterOrientation.Horizontal;
 
-        partial void OnOrientationChanging(ref SplitterOrientation newValue);
         /// <summary>
         /// The orientation of the splitter, which determines the direction of resizing and collapsing.
         /// </summary>
@@ -77,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableCollapse = false;
 
-        partial void OnDisableCollapseChanging(ref bool newValue);
         /// <summary>
         /// When <see langword="true"/>, prevents the user from collapsing either pane.
         /// This also hides the expand/collapse buttons on the splitter bar.
@@ -98,7 +96,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableResize = false;
 
-        partial void OnDisableResizeChanging(ref bool newValue);
         /// <summary>
         /// When <see langword="true"/>, prevents the user from resizing the panes by dragging the splitter bar
         /// or using keyboard shortcuts.
@@ -120,7 +117,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideCollapseButtons = false;
 
-        partial void OnHideCollapseButtonsChanging(ref bool newValue);
         /// <summary>
         /// When <see langword="true"/>, hides the expand/collapse buttons on the splitter bar.
         /// Note that the buttons will also be hidden if <see cref="DisableCollapse"/> is
@@ -142,7 +138,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideDragHandle = false;
 
-        partial void OnHideDragHandleChanging(ref bool newValue);
         /// <summary>
         /// When <see langword="true"/>, hides the drag handle on the splitter bar.
         /// Note that the drag handle will also be hidden if <see cref="DisableResize"/>
@@ -164,7 +159,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _startMinSize;
 
-        partial void OnStartMinSizeChanging(ref string? newValue);
         /// <summary>
         /// The minimum size of the start pane.
         /// </summary>
@@ -184,7 +178,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _endMinSize;
 
-        partial void OnEndMinSizeChanging(ref string? newValue);
         /// <summary>
         /// The minimum size of the end pane.
         /// </summary>
@@ -204,7 +197,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _startMaxSize;
 
-        partial void OnStartMaxSizeChanging(ref string? newValue);
         /// <summary>
         /// The maximum size of the start pane.
         /// </summary>
@@ -224,7 +216,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _endMaxSize;
 
-        partial void OnEndMaxSizeChanging(ref string? newValue);
         /// <summary>
         /// The maximum size of the end pane.
         /// </summary>
@@ -244,7 +235,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _startSize;
 
-        partial void OnStartSizeChanging(ref string? newValue);
         /// <summary>
         /// The size of the start pane.
         /// </summary>
@@ -264,7 +254,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _endSize;
 
-        partial void OnEndSizeChanging(ref string? newValue);
         /// <summary>
         /// The size of the end pane.
         /// </summary>

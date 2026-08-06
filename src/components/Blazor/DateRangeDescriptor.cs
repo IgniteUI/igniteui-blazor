@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private DateRangeType _rangeType = DateRangeType.After;
 
-        partial void OnRangeTypeChanging(ref DateRangeType newValue);
-
         /// <summary>
         /// The kind of range being described, which determines how <see cref="DateRange"/> is matched.
         /// </summary>
@@ -32,8 +30,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private object _dateRange;
-
-        partial void OnDateRangeChanging(ref object newValue);
 
         /// <summary>
         /// The date or dates the descriptor applies to, interpreted according to <see cref="RangeType"/>.

@@ -53,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Sets the disabled state for the chip.
         /// </summary>
@@ -73,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _removable = false;
 
-        partial void OnRemovableChanging(ref bool newValue);
         /// <summary>
         /// Defines if the chip is removable or not.
         /// </summary>
@@ -93,7 +91,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selectable = false;
 
-        partial void OnSelectableChanging(ref bool newValue);
         /// <summary>
         /// Defines if the chip is selectable or not.
         /// </summary>
@@ -113,7 +110,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Defines if the chip is selected or not.
         /// </summary>
@@ -151,7 +147,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StyleVariant _variant = StyleVariant.Primary;
 
-        partial void OnVariantChanging(ref StyleVariant newValue);
         /// <summary>
         /// A property that sets the color variant of the chip component.
         /// </summary>

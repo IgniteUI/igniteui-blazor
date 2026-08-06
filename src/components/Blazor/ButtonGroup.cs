@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Disables all buttons inside the group.
         /// </summary>
@@ -74,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ContentOrientation _alignment = ContentOrientation.Horizontal;
 
-        partial void OnAlignmentChanging(ref ContentOrientation newValue);
         /// <summary>
         /// Sets the orientation of the buttons in the group.
         /// </summary>
@@ -94,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ButtonGroupSelection _selection = ButtonGroupSelection.Single;
 
-        partial void OnSelectionChanging(ref ButtonGroupSelection newValue);
         /// <summary>
         /// Controls the mode of selection for the button group.
         /// </summary>
@@ -113,8 +110,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string[] _selectedItems;
-
-        partial void OnSelectedItemsChanging(ref string[] newValue);
 
         /// <summary>
         /// Gets or sets the values of the currently selected buttons.

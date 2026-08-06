@@ -10,7 +10,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _text;
 
-        partial void OnTextChanging(ref string newValue);
         /// <summary>
         /// The textual content of the draft message.
         /// </summary>
@@ -30,7 +29,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatMessageAttachment[] _attachments;
 
-        partial void OnAttachmentsChanging(ref IgbChatMessageAttachment[] newValue);
         /// <summary>
         /// An array of attachments associated with the draft message.
         /// </summary>

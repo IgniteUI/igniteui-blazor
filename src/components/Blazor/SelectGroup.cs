@@ -53,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbSelectItem[] _items;
 
-        partial void OnItemsChanging(ref IgbSelectItem[] newValue);
         /// <summary>
         /// All child <see cref="IgbSelectItem"/> components.
         /// </summary>
@@ -73,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Whether the group item and all its children are disabled.
         /// </summary>

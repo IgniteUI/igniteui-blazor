@@ -57,7 +57,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _offset;
 
-        partial void OnOffsetChanging(ref string newValue);
         /// <summary>
         /// Defines where the gradient stop is placed along the gradient vector.
         /// </summary>
@@ -77,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _color;
 
-        partial void OnColorChanging(ref string newValue);
         /// <summary>
         /// Defines the color of the gradient stop.
         /// </summary>
@@ -97,7 +95,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _opacity = 1;
 
-        partial void OnOpacityChanging(ref double newValue);
         /// <summary>
         /// Defines the opacity of the gradient stop.
         /// </summary>

@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _oldIndex = 0;
 
-        partial void OnOldIndexChanging(ref double newValue);
-
         /// <summary>
         /// The index of the step that is currently active.
         /// </summary>
@@ -33,8 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _newIndex = 0;
-
-        partial void OnNewIndexChanging(ref double newValue);
 
         /// <summary>
         /// The index of the step that is about to become active.

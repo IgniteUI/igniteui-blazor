@@ -11,7 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The current value of the input field.
         /// </summary>

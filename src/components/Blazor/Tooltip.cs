@@ -55,7 +55,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the tooltip is showing.
         /// </summary>
@@ -75,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _withArrow = false;
 
-        partial void OnWithArrowChanging(ref bool newValue);
         /// <summary>
         /// Whether to render an arrow indicator for the tooltip.
         /// </summary>
@@ -95,7 +93,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _offset = 6;
 
-        partial void OnOffsetChanging(ref double newValue);
         /// <summary>
         /// The offset of the tooltip from the anchor in pixels.
         /// </summary>
@@ -115,7 +112,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private PopoverPlacement _placement = PopoverPlacement.Bottom;
 
-        partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>
         /// Where to place the tooltip relative to its anchor element.
         /// </summary>
@@ -135,7 +131,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _anchor;
 
-        partial void OnAnchorChanging(ref string newValue);
         /// <summary>
         /// The ID of the element to use as the anchor for the tooltip.
         /// </summary>
@@ -155,7 +150,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _showTriggers;
 
-        partial void OnShowTriggersChanging(ref string newValue);
         /// <summary>
         /// Which event triggers will show the tooltip.
         /// Expects a comma separated string of different event triggers.
@@ -176,7 +170,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _hideTriggers;
 
-        partial void OnHideTriggersChanging(ref string newValue);
         /// <summary>
         /// Which event triggers will hide the tooltip.
         /// Expects a comma separated string of different event triggers.
@@ -197,7 +190,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _showDelay = 200;
 
-        partial void OnShowDelayChanging(ref double newValue);
         /// <summary>
         /// Specifies the number of milliseconds that should pass before showing the tooltip.
         /// </summary>
@@ -217,7 +209,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _hideDelay = 300;
 
-        partial void OnHideDelayChanging(ref double newValue);
         /// <summary>
         /// Specifies the number of milliseconds that should pass before hiding the tooltip.
         /// </summary>
@@ -237,7 +228,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _message;
 
-        partial void OnMessageChanging(ref string newValue);
         /// <summary>
         /// Specifies plain text as the tooltip content.
         /// </summary>
@@ -257,7 +247,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _sticky = false;
 
-        partial void OnStickyChanging(ref bool newValue);
         /// <summary>
         /// Specifies if the tooltip remains visible until the user closes it via the close button or Esc key.
         /// </summary>

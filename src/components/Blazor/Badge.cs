@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private StyleVariant _variant = StyleVariant.Primary;
 
-        partial void OnVariantChanging(ref StyleVariant newValue);
         /// <summary>
         /// The type (style variant) of the badge.
         /// </summary>
@@ -74,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Sets whether to draw an outlined version of the badge.
         /// </summary>
@@ -94,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private BadgeShape _shape = BadgeShape.Rounded;
 
-        partial void OnShapeChanging(ref BadgeShape newValue);
         /// <summary>
         /// The shape of the badge.
         /// </summary>
@@ -114,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _dot = false;
 
-        partial void OnDotChanging(ref bool newValue);
         /// <summary>
         /// Sets whether to render a dot type badge.
         /// When enabled, the badge appears as a small dot without any content.

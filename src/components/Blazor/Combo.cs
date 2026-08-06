@@ -40,7 +40,6 @@ namespace IgniteUI.Blazor.Controls
         private string _dataRef;
         private Object _data;
 
-        partial void OnDataChanging(ref Object newValue);
         /// <summary>
         /// The data source used to generate the list of options.
         /// </summary>
@@ -52,7 +51,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._data;
-                OnDataChanging(ref value);
 
                 if (oldValue != value || !IsPropDirty("Data"))
                 {
@@ -92,7 +90,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Whether the control has an outlined appearance.
         /// </summary>
@@ -112,7 +109,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _singleSelect = false;
 
-        partial void OnSingleSelectChanging(ref bool newValue);
         /// <summary>
         /// Enables single selection mode and moves item filtering to the main input.
         /// </summary>
@@ -132,7 +128,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _autofocus = false;
 
-        partial void OnAutofocusChanging(ref bool newValue);
         /// <summary>
         /// The autofocus attribute of the control.
         /// </summary>
@@ -152,7 +147,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _autofocusList = false;
 
-        partial void OnAutofocusListChanging(ref bool newValue);
         /// <summary>
         /// Focuses the list of options when the menu opens.
         /// </summary>
@@ -172,7 +166,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _locale;
 
-        partial void OnLocaleChanging(ref string newValue);
         /// <summary>
         /// Gets/Sets the locale used for getting language, affecting resource strings.
         /// </summary>
@@ -192,7 +185,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label of the control.
         /// </summary>
@@ -212,7 +204,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholder;
 
-        partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
@@ -232,7 +223,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholderSearch;
 
-        partial void OnPlaceholderSearchChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the search input.
         /// </summary>
@@ -252,7 +242,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _valueKey;
 
-        partial void OnValueKeyChanging(ref string? newValue);
         /// <summary>
         /// The key in the data source used when selecting items.
         /// </summary>
@@ -272,7 +261,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _displayKey;
 
-        partial void OnDisplayKeyChanging(ref string? newValue);
         /// <summary>
         /// The key in the data source used to display items in the list.
         /// </summary>
@@ -292,7 +280,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _groupKey;
 
-        partial void OnGroupKeyChanging(ref string newValue);
         /// <summary>
         /// The key in the data source used to group items in the list.
         /// </summary>
@@ -312,7 +299,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private GroupingDirection _groupSorting = GroupingDirection.Asc;
 
-        partial void OnGroupSortingChanging(ref GroupingDirection newValue);
         /// <summary>
         /// Sorts the items in each group by ascending or descending order.
         /// </summary>
@@ -332,7 +318,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbFilteringOptions _filteringOptions;
 
-        partial void OnFilteringOptionsChanging(ref IgbFilteringOptions newValue);
         /// <summary>
         /// An object that configures the filtering of the combo.
         /// </summary>
@@ -342,7 +327,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._filteringOptions; }
             set
             {
-                OnFilteringOptionsChanging(ref value);
                 MarkPropDirty("FilteringOptions");
                 if (this._filteringOptions != null)
                 {
@@ -358,7 +342,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _caseSensitiveIcon = false;
 
-        partial void OnCaseSensitiveIconChanging(ref bool newValue);
         /// <summary>
         /// Enables the case sensitive search icon in the filtering input.
         /// </summary>
@@ -378,7 +361,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableFiltering = false;
 
-        partial void OnDisableFilteringChanging(ref bool newValue);
         /// <summary>
         /// Disables the filtering of the list of options.
         /// </summary>
@@ -398,7 +380,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableClear = false;
 
-        partial void OnDisableClearChanging(ref bool newValue);
         /// <summary>
         /// Hides the clear button.
         /// </summary>
@@ -418,7 +399,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private T[] _value;
 
-        partial void OnValueChanging(ref T[] newValue);
         /// <summary>
         /// The value of the control, that is the currently selected items.
         /// If the data source is an array of complex objects, <see cref="ValueKey"/> must be set.
@@ -482,7 +462,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -502,7 +481,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -522,7 +500,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>
@@ -543,8 +520,6 @@ namespace IgniteUI.Blazor.Controls
         private string _itemTemplateRef;
         private RenderFragment<object> _itemTemplate;
 
-        partial void OnItemTemplateChanging(ref RenderFragment<object> newValue);
-
         /// <summary>
         /// The template used for the content of each combo item.
         /// </summary>
@@ -556,7 +531,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._itemTemplate;
-                OnItemTemplateChanging(ref value);
                 if (oldValue != value || !IsPropDirty("ItemTemplate"))
                 {
                     MarkPropDirty("ItemTemplate");
@@ -605,8 +579,6 @@ namespace IgniteUI.Blazor.Controls
         private string _groupHeaderTemplateRef;
         private RenderFragment<object> _groupHeaderTemplate;
 
-        partial void OnGroupHeaderTemplateChanging(ref RenderFragment<object> newValue);
-
         /// <summary>
         /// The template used for the content of each combo group header.
         /// </summary>
@@ -618,7 +590,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._groupHeaderTemplate;
-                OnGroupHeaderTemplateChanging(ref value);
                 if (oldValue != value || !IsPropDirty("GroupHeaderTemplate"))
                 {
                     MarkPropDirty("GroupHeaderTemplate");

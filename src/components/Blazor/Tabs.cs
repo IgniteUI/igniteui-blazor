@@ -125,8 +125,6 @@ namespace IgniteUI.Blazor.Controls
 
         partial void GetSerializableTabsCollection(ref IgbTabs_TabCollection value);
 
-        partial void OnTabsCollectionChanging(ref IgbTabs_TabCollection newValue);
-
         public IgbTabs_TabCollection TabsCollection
         {
 
@@ -150,7 +148,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TabsAlignment _alignment = TabsAlignment.Start;
 
-        partial void OnAlignmentChanging(ref TabsAlignment newValue);
         /// <summary>
         /// Sets the alignment for the tab headers.
         /// </summary>
@@ -170,7 +167,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TabsActivation _activation = TabsActivation.Auto;
 
-        partial void OnActivationChanging(ref TabsActivation newValue);
         /// <summary>
         /// Determines the tab activation. When set to <see cref="TabsActivation.Auto"/>,
         /// the tab is instantly selected while navigating with the Left/Right Arrows, Home or End keys

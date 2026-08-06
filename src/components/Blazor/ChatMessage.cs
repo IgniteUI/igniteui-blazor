@@ -13,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _id;
 
-        partial void OnIdChanging(ref string newValue);
         /// <summary>
         /// A unique identifier for the message.
         /// </summary>
@@ -33,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _text;
 
-        partial void OnTextChanging(ref string newValue);
         /// <summary>
         /// The textual content of the message.
         /// </summary>
@@ -53,7 +51,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _sender;
 
-        partial void OnSenderChanging(ref string newValue);
         /// <summary>
         /// The identifier or name of the sender of the message.
         /// </summary>
@@ -73,7 +70,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _timestamp;
 
-        partial void OnTimestampChanging(ref string newValue);
         /// <summary>
         /// The timestamp indicating when the message was sent.
         /// </summary>
@@ -93,7 +89,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatMessageAttachment[] _attachments;
 
-        partial void OnAttachmentsChanging(ref IgbChatMessageAttachment[] newValue);
         /// <summary>
         /// Optional list of attachments associated with the message,
         /// such as images, files, or links.
@@ -114,7 +109,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string[] _reactions;
 
-        partial void OnReactionsChanging(ref string[] newValue);
         /// <summary>
         /// Optional list of reactions associated with the message.
         /// </summary>

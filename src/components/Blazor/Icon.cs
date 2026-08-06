@@ -53,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _iconName;
 
-        partial void OnIconNameChanging(ref string newValue);
         /// <summary>
         /// The name of the icon glyph to draw.
         /// </summary>
@@ -74,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _collection;
 
-        partial void OnCollectionChanging(ref string newValue);
         /// <summary>
         /// The name of the registered collection for look up of icons.
         /// </summary>
@@ -94,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _mirrored = false;
 
-        partial void OnMirroredChanging(ref bool newValue);
         /// <summary>
         /// Whether to flip the icon horizontally. Useful for RTL (right-to-left) layouts.
         /// </summary>

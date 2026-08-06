@@ -53,8 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
-
         /// <summary>
         /// When set, makes the component a required field for validation.
         /// </summary>
@@ -74,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -94,7 +91,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _checked = false;
 
-        partial void OnCheckedChanging(ref bool newValue);
         /// <summary>
         /// The checked state of the control.
         /// </summary>
@@ -132,7 +128,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ToggleLabelPosition _labelPosition = ToggleLabelPosition.After;
 
-        partial void OnLabelPositionChanging(ref ToggleLabelPosition newValue);
         /// <summary>
         /// The label position of the radio control.
         /// </summary>
@@ -152,7 +147,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -172,7 +166,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>

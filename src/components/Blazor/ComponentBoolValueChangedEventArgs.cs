@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _detail = false;
 
-        partial void OnDetailChanging(ref bool newValue);
-
         /// <summary>
         /// The Boolean value carried by the event.
         /// </summary>

@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _date = 0;
 
-        partial void OnDateChanging(ref double newValue);
-
         /// <summary>
         /// The number of days the date part is spun by.
         /// </summary>
@@ -33,8 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _month = 0;
-
-        partial void OnMonthChanging(ref double newValue);
 
         /// <summary>
         /// The number of months the month part is spun by.
@@ -55,8 +51,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _year = 0;
 
-        partial void OnYearChanging(ref double newValue);
-
         /// <summary>
         /// The number of years the year part is spun by.
         /// </summary>
@@ -75,8 +69,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _hours = 0;
-
-        partial void OnHoursChanging(ref double newValue);
 
         /// <summary>
         /// The number of hours the hours part is spun by.
@@ -97,8 +89,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _minutes = 0;
 
-        partial void OnMinutesChanging(ref double newValue);
-
         /// <summary>
         /// The number of minutes the minutes part is spun by.
         /// </summary>
@@ -117,8 +107,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _seconds = 0;
-
-        partial void OnSecondsChanging(ref double newValue);
 
         /// <summary>
         /// The number of seconds the seconds part is spun by.

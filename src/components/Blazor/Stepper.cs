@@ -92,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StepperOrientation _orientation = StepperOrientation.Horizontal;
 
-        partial void OnOrientationChanging(ref StepperOrientation newValue);
         /// <summary>
         /// The orientation of the stepper.
         /// </summary>
@@ -112,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StepperStepType _stepType = StepperStepType.Full;
 
-        partial void OnStepTypeChanging(ref StepperStepType newValue);
         /// <summary>
         /// The visual type of the steps.
         /// </summary>
@@ -132,7 +130,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _linear = false;
 
-        partial void OnLinearChanging(ref bool newValue);
         /// <summary>
         /// Whether the stepper is linear.
         /// </summary>
@@ -152,7 +149,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _contentTop = false;
 
-        partial void OnContentTopChanging(ref bool newValue);
         /// <summary>
         /// Whether the content is displayed above the steps.
         /// </summary>
@@ -172,7 +168,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StepperVerticalAnimation _verticalAnimation = StepperVerticalAnimation.Grow;
 
-        partial void OnVerticalAnimationChanging(ref StepperVerticalAnimation newValue);
         /// <summary>
         /// The animation type when in vertical mode.
         /// </summary>
@@ -192,7 +187,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private HorizontalTransitionAnimation _horizontalAnimation = HorizontalTransitionAnimation.Slide;
 
-        partial void OnHorizontalAnimationChanging(ref HorizontalTransitionAnimation newValue);
         /// <summary>
         /// The animation type when in horizontal mode.
         /// </summary>
@@ -212,7 +206,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _animationDuration = 320;
 
-        partial void OnAnimationDurationChanging(ref double newValue);
         /// <summary>
         /// The animation duration in either vertical or horizontal mode in milliseconds.
         /// </summary>
@@ -232,7 +225,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StepperTitlePosition _titlePosition = StepperTitlePosition.Auto;
 
-        partial void OnTitlePositionChanging(ref StepperTitlePosition newValue);
         /// <summary>
         /// The position of the steps title.
         /// </summary>

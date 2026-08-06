@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private DateTime _start = DateTime.MinValue;
 
-        partial void OnStartChanging(ref DateTime newValue);
-
         /// <summary>
         /// The first date of the range.
         /// </summary>
@@ -34,8 +32,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private DateTime _end = DateTime.MinValue;
-
-        partial void OnEndChanging(ref DateTime newValue);
 
         /// <summary>
         /// The last date of the range.

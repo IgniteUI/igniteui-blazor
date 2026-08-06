@@ -13,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _checked = false;
 
-        partial void OnCheckedChanging(ref bool newValue);
         /// <summary>
         /// The checked state of the control after the change.
         /// </summary>
@@ -33,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>

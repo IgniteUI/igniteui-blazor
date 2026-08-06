@@ -21,7 +21,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Sets the open state of the component.
         /// </summary>

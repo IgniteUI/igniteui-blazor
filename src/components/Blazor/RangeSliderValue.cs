@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _lower = 0;
 
-        partial void OnLowerChanging(ref double newValue);
-
         /// <summary>
         /// The value of the lower thumb.
         /// </summary>
@@ -33,8 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _upper = 0;
-
-        partial void OnUpperChanging(ref double newValue);
 
         /// <summary>
         /// The value of the upper thumb.

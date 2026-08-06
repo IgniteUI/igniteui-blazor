@@ -33,7 +33,6 @@ namespace IgniteUI.Blazor.Controls
 
         private DateTime? _value = DateTime.MinValue;
 
-        partial void OnValueChanging(ref DateTime? newValue);
         /// <summary>
         /// The value of the input.
         /// </summary>

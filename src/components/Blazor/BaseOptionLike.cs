@@ -45,7 +45,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _active = false;
 
-        partial void OnActiveChanging(ref bool newValue);
         /// <summary>
         /// Whether the item is active.
         /// </summary>
@@ -65,7 +64,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Whether the item is disabled.
         /// </summary>
@@ -85,7 +83,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Whether the item is selected.
         /// </summary>
@@ -105,7 +102,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The current value of the item.
         /// If not specified, the text content of the item is used.

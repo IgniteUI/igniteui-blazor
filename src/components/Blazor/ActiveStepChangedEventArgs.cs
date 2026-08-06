@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbActiveStepChangedEventArgsDetail _detail;
 
-        partial void OnDetailChanging(ref IgbActiveStepChangedEventArgsDetail newValue);
-
         /// <summary>
         /// The payload of the event, carrying the index of the step that became active.
         /// </summary>
@@ -25,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {

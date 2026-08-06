@@ -55,7 +55,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _elevated = false;
 
-        partial void OnElevatedChanging(ref bool newValue);
         /// <summary>
         /// Sets the card to have an elevated appearance with shadow.
         /// When false, the card uses an outlined style with a border.

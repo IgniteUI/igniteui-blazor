@@ -13,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _preventScroll = false;
 
-        partial void OnPreventScrollChanging(ref bool newValue);
         /// <summary>
         /// When <see langword="true"/>, prevents the component from scrolling the new active match into view.
         /// </summary>

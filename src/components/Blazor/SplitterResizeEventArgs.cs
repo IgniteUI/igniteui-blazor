@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbSplitterResizeEventArgsDetail _detail;
 
-        partial void OnDetailChanging(ref IgbSplitterResizeEventArgsDetail newValue);
-
         /// <summary>
         /// The current sizes of the panes adjacent to the resized splitter bar.
         /// </summary>
@@ -24,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {

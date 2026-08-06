@@ -48,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _value = 0;
 
-        partial void OnValueChanging(ref double newValue);
         /// <summary>
         /// The current value of the component.
         /// </summary>
@@ -86,7 +85,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>

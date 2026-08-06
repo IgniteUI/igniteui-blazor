@@ -48,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
 
         private PopoverPlacement _placement = PopoverPlacement.BottomStart;
 
-        partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>
         /// The preferred placement of the component around the target element.
         /// </summary>
@@ -68,7 +67,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private PopoverScrollStrategy _scrollStrategy = PopoverScrollStrategy.Scroll;
 
-        partial void OnScrollStrategyChanging(ref PopoverScrollStrategy newValue);
         /// <summary>
         /// Determines the behavior of the component during scrolling of the parent container.
         /// </summary>
@@ -88,7 +86,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _flip = false;
 
-        partial void OnFlipChanging(ref bool newValue);
         /// <summary>
         /// Whether the component should be flipped to the opposite side of the target once it's about to overflow the visible area.
         /// When <see langword="true"/>, once enough space is detected on its preferred side, it will flip back.
@@ -109,7 +106,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _distance = 0;
 
-        partial void OnDistanceChanging(ref double newValue);
         /// <summary>
         /// The distance from the target element.
         /// </summary>
@@ -129,7 +125,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _sameWidth = false;
 
-        partial void OnSameWidthChanging(ref bool newValue);
         /// <summary>
         /// Whether the dropdown's width should be the same as the target's one.
         /// </summary>

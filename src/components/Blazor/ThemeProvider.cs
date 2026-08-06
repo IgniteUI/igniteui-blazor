@@ -57,7 +57,6 @@ namespace IgniteUI.Blazor.Controls
 
         private Theme _theme = Theme.Bootstrap;
 
-        partial void OnThemeChanging(ref Theme newValue);
         /// <summary>
         /// The theme to provide to descendant components.
         /// </summary>
@@ -77,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ThemeVariant _variant = ThemeVariant.Light;
 
-        partial void OnVariantChanging(ref ThemeVariant newValue);
         /// <summary>
         /// The theme variant to provide to descendant components.
         /// </summary>

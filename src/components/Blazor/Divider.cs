@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _vertical = false;
 
-        partial void OnVerticalChanging(ref bool newValue);
         /// <summary>
         /// Whether to render a vertical divider line.
         /// </summary>
@@ -74,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _middle = false;
 
-        partial void OnMiddleChanging(ref bool newValue);
         /// <summary>
         /// When set and inset is provided, it will shrink the divider line from both sides.
         /// </summary>
@@ -94,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DividerType _lineType = DividerType.Solid;
 
-        partial void OnLineTypeChanging(ref DividerType newValue);
         /// <summary>
         /// Whether to render a solid or a dashed divider line.
         /// </summary>

@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private DateTime _detail = DateTime.MinValue;
 
-        partial void OnDetailChanging(ref DateTime newValue);
-
         /// <summary>
         /// The date value carried by the event.
         /// </summary>

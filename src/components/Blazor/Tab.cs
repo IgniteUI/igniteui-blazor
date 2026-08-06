@@ -85,7 +85,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The tab item label.
         /// </summary>
@@ -105,7 +104,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the tab is selected.
         /// </summary>
@@ -125,7 +123,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the tab is disabled.
         /// </summary>

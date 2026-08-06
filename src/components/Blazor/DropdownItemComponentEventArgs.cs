@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbDropdownItem _detail;
 
-        partial void OnDetailChanging(ref IgbDropdownItem newValue);
-
         /// <summary>
         /// The dropdown item that became selected.
         /// </summary>

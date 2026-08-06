@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _actionText;
 
-        partial void OnActionTextChanging(ref string newValue);
         /// <summary>
         /// The text of the action button.
         /// </summary>

@@ -13,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbChatMessage _message;
 
-        partial void OnMessageChanging(ref IgbChatMessage newValue);
         /// <summary>
         /// The chat message that the reaction is associated with.
         /// </summary>
@@ -23,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._message; }
             set
             {
-                OnMessageChanging(ref value);
                 MarkPropDirty("Message");
                 if (this._message != null)
                 {
@@ -39,7 +37,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _reaction;
 
-        partial void OnReactionChanging(ref string newValue);
         /// <summary>
         /// The string representation of the reaction, such as an emoji or a string;
         /// </summary>

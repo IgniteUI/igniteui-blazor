@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTile _tile;
 
-        partial void OnTileChanging(ref IgbTile newValue);
-
         /// <summary>
         /// The tile whose state is changing.
         /// </summary>
@@ -33,8 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private bool _state = false;
-
-        partial void OnStateChanging(ref bool newValue);
 
         /// <summary>
         /// The state the tile is changing to; <see langword="true"/> when it is being maximized or

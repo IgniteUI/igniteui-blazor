@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _src;
 
-        partial void OnSrcChanging(ref string newValue);
         /// <summary>
         /// The image source to use.
         /// </summary>
@@ -74,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _alt;
 
-        partial void OnAltChanging(ref string newValue);
         /// <summary>
         /// Alternative text for the image.
         /// </summary>
@@ -94,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _initials;
 
-        partial void OnInitialsChanging(ref string newValue);
         /// <summary>
         /// Initials to use as a fallback when no image is available.
         /// </summary>
@@ -114,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private AvatarShape _shape = AvatarShape.Square;
 
-        partial void OnShapeChanging(ref AvatarShape newValue);
         /// <summary>
         /// The shape of the avatar.
         /// </summary>

@@ -15,8 +15,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTreeItem _detail;
 
-        partial void OnDetailChanging(ref IgbTreeItem newValue);
-
         /// <summary>
         /// The tree item the event applies to.
         /// </summary>

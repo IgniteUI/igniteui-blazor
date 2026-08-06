@@ -11,7 +11,6 @@ namespace IgniteUI.Blazor.Controls
         private string _newValueRef;
         private object[] _newValue;
 
-        partial void OnNewValueChanging(ref object[] newValue);
         [Parameter]
         public object[] NewValue
         {
@@ -20,7 +19,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._newValue;
-                OnNewValueChanging(ref value);
 
                 if (oldValue != value || !IsPropDirty("NewValue"))
                 {
@@ -61,7 +59,6 @@ namespace IgniteUI.Blazor.Controls
         private string _itemsRef;
         private object[] _items;
 
-        partial void OnItemsChanging(ref object[] newValue);
         [Parameter]
         public object[] Items
         {
@@ -70,7 +67,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._items;
-                OnItemsChanging(ref value);
 
                 if (oldValue != value || !IsPropDirty("Items"))
                 {
@@ -110,7 +106,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ComboChangeType _changeType = ComboChangeType.Selection;
 
-        partial void OnChangeTypeChanging(ref ComboChangeType newValue);
         [Parameter]
         [WCWidgetMemberName("Type")]
         public ComboChangeType ChangeType

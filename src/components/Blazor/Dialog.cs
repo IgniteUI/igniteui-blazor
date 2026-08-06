@@ -62,7 +62,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _keepOpenOnEscape = false;
 
-        partial void OnKeepOpenOnEscapeChanging(ref bool newValue);
         /// <summary>
         /// When set, pressing the <c>Escape</c> key will not close the dialog.
         /// By default the browser closes a modal dialog on <c>Escape</c>. Enable this
@@ -85,7 +84,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _closeOnOutsideClick = false;
 
-        partial void OnCloseOnOutsideClickChanging(ref bool newValue);
         /// <summary>
         /// When set, clicking on the backdrop area outside the dialog surface
         /// will close it (emitting close events).
@@ -107,7 +105,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideDefaultAction = false;
 
-        partial void OnHideDefaultActionChanging(ref bool newValue);
         /// <summary>
         /// When set, the built-in "OK" close button in the footer is not rendered.
         /// Has no effect when content is projected into the <c>footer</c> slot, since
@@ -129,7 +126,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the dialog is open.
         /// Setting this property programmatically will open or close the dialog
@@ -153,7 +149,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _title;
 
-        partial void OnTitleChanging(ref string newValue);
         /// <summary>
         /// The title displayed in the dialog header.
         /// Overridden by any content projected into the <c>title</c> slot.
@@ -173,8 +168,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _returnValue;
-
-        partial void OnReturnValueChanging(ref string newValue);
 
         /// <summary>
         /// The return value of the dialog.

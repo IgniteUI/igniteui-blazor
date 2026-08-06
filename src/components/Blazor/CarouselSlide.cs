@@ -53,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _active = false;
 
-        partial void OnActiveChanging(ref bool newValue);
         /// <summary>
         /// The current active slide for the carousel component.
         /// </summary>

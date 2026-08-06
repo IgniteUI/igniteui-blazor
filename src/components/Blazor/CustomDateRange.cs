@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
-
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
@@ -32,8 +30,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangeValue _dateRange;
 
-        partial void OnDateRangeChanging(ref IgbDateRangeValue newValue);
-
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
@@ -43,7 +39,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._dateRange; }
             set
             {
-                OnDateRangeChanging(ref value);
                 MarkPropDirty("DateRange");
                 if (this._dateRange != null)
                 {

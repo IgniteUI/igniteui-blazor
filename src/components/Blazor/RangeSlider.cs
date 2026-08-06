@@ -48,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _lower = 0;
 
-        partial void OnLowerChanging(ref double newValue);
         /// <summary>
         /// The current value of the lower thumb.
         /// </summary>
@@ -68,7 +67,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _upper = 0;
 
-        partial void OnUpperChanging(ref double newValue);
         /// <summary>
         /// The current value of the upper thumb.
         /// </summary>
@@ -88,7 +86,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _thumbLabelLower;
 
-        partial void OnThumbLabelLowerChanging(ref string newValue);
         /// <summary>
         /// The aria label for the lower thumb.
         /// </summary>
@@ -108,7 +105,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _thumbLabelUpper;
 
-        partial void OnThumbLabelUpperChanging(ref string newValue);
         /// <summary>
         /// The aria label for the upper thumb.
         /// </summary>

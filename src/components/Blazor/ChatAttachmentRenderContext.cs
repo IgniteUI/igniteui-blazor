@@ -11,7 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbChatMessageAttachment _attachment;
 
-        partial void OnAttachmentChanging(ref IgbChatMessageAttachment newValue);
         /// <summary>
         /// The specific attachment being rendered.
         /// </summary>
@@ -21,7 +20,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._attachment; }
             set
             {
-                OnAttachmentChanging(ref value);
                 MarkPropDirty("Attachment");
                 if (this._attachment != null)
                 {

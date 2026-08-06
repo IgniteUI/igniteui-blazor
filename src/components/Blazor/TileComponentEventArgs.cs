@@ -15,8 +15,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTile _detail;
 
-        partial void OnDetailChanging(ref IgbTile newValue);
-
         /// <summary>
         /// The tile the operation applies to.
         /// </summary>

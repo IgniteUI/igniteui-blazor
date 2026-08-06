@@ -55,7 +55,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Indicates whether the contents of the control should be visible.
         /// </summary>
@@ -75,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Whether the expansion panel is disabled.
         /// Disabled panels are ignored for user interactions.
@@ -96,7 +94,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ExpansionPanelIndicatorPosition _indicatorPosition = ExpansionPanelIndicatorPosition.Start;
 
-        partial void OnIndicatorPositionChanging(ref ExpansionPanelIndicatorPosition newValue);
         /// <summary>
         /// The indicator position of the expansion panel.
         /// </summary>

@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbRadioChangeEventArgsDetail _detail;
 
-        partial void OnDetailChanging(ref IgbRadioChangeEventArgsDetail newValue);
-
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the radio button.
         /// </summary>
@@ -25,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {

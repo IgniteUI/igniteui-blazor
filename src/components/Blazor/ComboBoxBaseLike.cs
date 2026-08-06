@@ -17,7 +17,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _keepOpenOnSelect = false;
 
-        partial void OnKeepOpenOnSelectChanging(ref bool newValue);
         /// <summary>
         /// Whether the component dropdown should be kept open on selection.
         /// </summary>
@@ -37,7 +36,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _keepOpenOnOutsideClick = false;
 
-        partial void OnKeepOpenOnOutsideClickChanging(ref bool newValue);
         /// <summary>
         /// Whether the component dropdown should be kept open on clicking outside of it.
         /// </summary>

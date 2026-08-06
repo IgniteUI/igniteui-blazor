@@ -68,7 +68,6 @@ namespace IgniteUI.Blazor.Controls
 
         private NavDrawerPosition _position = NavDrawerPosition.Start;
 
-        partial void OnPositionChanging(ref NavDrawerPosition newValue);
         /// <summary>
         /// Sets the position of the drawer.
         /// <list type="bullet">
@@ -105,7 +104,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the drawer is open.
         /// </summary>
@@ -125,7 +123,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _keepOpenOnEscape = false;
 
-        partial void OnKeepOpenOnEscapeChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the drawer should remain open when the Escape key is pressed.
         /// This is only applicable when the drawer is in a non-relative position,
@@ -146,8 +143,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _label;
-
-        partial void OnLabelChanging(ref string newValue);
 
         /// <summary>
         /// Sets an accessible label for the drawer.

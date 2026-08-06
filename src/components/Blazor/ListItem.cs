@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Defines if the list item is selected or not.
         /// </summary>

@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _collection;
 
-        partial void OnCollectionChanging(ref string newValue);
-
         /// <summary>
         /// The name of the collection the icon is registered in.
         /// </summary>

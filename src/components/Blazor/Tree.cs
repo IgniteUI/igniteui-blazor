@@ -55,7 +55,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _singleBranchExpand = false;
 
-        partial void OnSingleBranchExpandChanging(ref bool newValue);
         /// <summary>
         /// Whether a single or multiple of a parent's child items can be expanded.
         /// </summary>
@@ -75,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _toggleNodeOnClick = false;
 
-        partial void OnToggleNodeOnClickChanging(ref bool newValue);
         /// <summary>
         /// Whether clicking over nodes will change their expanded state or not.
         /// </summary>
@@ -95,7 +93,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TreeSelection _selection = TreeSelection.None;
 
-        partial void OnSelectionChanging(ref TreeSelection newValue);
         /// <summary>
         /// The selection state of the tree.
         /// </summary>

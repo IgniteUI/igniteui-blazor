@@ -53,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private ContentOrientation _alignment = ContentOrientation.Vertical;
 
-        partial void OnAlignmentChanging(ref ContentOrientation newValue);
         /// <summary>
         /// Alignment of the radio controls inside this group.
         /// </summary>
@@ -73,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the group, reflecting the value of the currently checked <see cref="IgbRadio"/> button.
         /// Setting it checks the <see cref="IgbRadio"/> button in the group with a matching value.

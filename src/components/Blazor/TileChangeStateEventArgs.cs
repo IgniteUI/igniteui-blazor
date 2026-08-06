@@ -15,8 +15,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTileChangeStateEventArgsDetail _detail;
 
-        partial void OnDetailChanging(ref IgbTileChangeStateEventArgsDetail newValue);
-
         /// <summary>
         /// The affected tile and the state it is changing to.
         /// </summary>
@@ -26,7 +24,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {

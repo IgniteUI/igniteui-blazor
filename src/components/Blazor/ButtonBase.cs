@@ -45,7 +45,6 @@ namespace IgniteUI.Blazor.Controls
 
         private ButtonBaseType _displayType = ButtonBaseType.Button;
 
-        partial void OnDisplayTypeChanging(ref ButtonBaseType newValue);
         /// <summary>
         /// The type of the button, which determines its behavior and semantics.
         /// <list type="bullet">
@@ -74,8 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _href;
 
-        partial void OnHrefChanging(ref string newValue);
-
         /// <summary>
         /// The URL the button points to. When set, the component renders as an
         /// <c>&lt;a&gt;</c> element instead of a <c>&lt;button&gt;</c>, enabling navigation on click.
@@ -98,7 +95,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _download;
 
-        partial void OnDownloadChanging(ref string newValue);
         /// <summary>
         /// Prompts the browser to download the linked resource rather than navigating
         /// to it. The optional value is used as the suggested file name.
@@ -120,7 +116,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ButtonBaseTarget _target = ButtonBaseTarget._blank;
 
-        partial void OnTargetChanging(ref ButtonBaseTarget newValue);
         /// <summary>
         /// Where to open the linked document. Only effective when <see cref="Href"/> is set.
         /// <list type="bullet">
@@ -149,7 +144,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _rel;
 
-        partial void OnRelChanging(ref string newValue);
         /// <summary>
         /// The relationship between the current document and the linked URL.
         /// Accepts a space-separated list of link types (e.g. <c>noopener noreferrer</c>).
@@ -173,7 +167,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// When set, the button will be disabled and non-interactive.
         /// </summary>
@@ -193,7 +186,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _command;
 
-        partial void OnCommandChanging(ref string newValue);
         /// <summary>
         /// The command to invoke on the target element specified by <see cref="Commandfor"/>.
         /// Part of the <see href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">
@@ -216,7 +208,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _commandfor;
 
-        partial void OnCommandforChanging(ref string? newValue);
         /// <summary>
         /// The ID of the target element for the invoker command.
         /// Part of the <see href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">

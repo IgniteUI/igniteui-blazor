@@ -33,7 +33,6 @@ namespace IgniteUI.Blazor.Controls
 
         private MaskInputValueMode _valueMode = MaskInputValueMode.Raw;
 
-        partial void OnValueModeChanging(ref MaskInputValueMode newValue);
         /// <summary>
         /// Dictates the behavior when retrieving the value of the control.
         /// <list type="bullet">
@@ -63,7 +62,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the input.
         /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
@@ -104,7 +102,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _mask;
 
-        partial void OnMaskChanging(ref string newValue);
         /// <summary>
         /// The masked pattern of the component.
         /// </summary>
@@ -124,7 +121,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _prompt;
 
-        partial void OnPromptChanging(ref string newValue);
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
         /// </summary>
@@ -144,7 +140,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>

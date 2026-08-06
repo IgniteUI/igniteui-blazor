@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is invalid.
         /// Invalid steps are styled with an error state and are not
@@ -76,7 +75,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _active = false;
 
-        partial void OnActiveChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is active.
         /// Active steps are styled with an active state and their content is visible.
@@ -97,7 +95,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _optional = false;
 
-        partial void OnOptionalChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is optional.
         /// Optional steps validity does not affect the default behavior when the stepper is in linear mode i.e.
@@ -119,7 +116,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is disabled.
         /// Disabled steps are styled with a disabled state and are not interactive.
@@ -140,7 +136,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _complete = false;
 
-        partial void OnCompleteChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is completed.
         /// </summary>

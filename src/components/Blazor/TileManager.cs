@@ -53,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private TileManagerResizeMode _resizeMode = TileManagerResizeMode.None;
 
-        partial void OnResizeModeChanging(ref TileManagerResizeMode newValue);
         /// <summary>
         /// Whether resize operations are enabled.
         /// </summary>
@@ -73,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TileManagerDragMode _dragMode = TileManagerDragMode.None;
 
-        partial void OnDragModeChanging(ref TileManagerDragMode newValue);
         /// <summary>
         /// Whether drag and drop operations are enabled.
         /// </summary>
@@ -92,8 +90,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _columnCount = 0;
-
-        partial void OnColumnCountChanging(ref double newValue);
 
         /// <summary>
         /// Sets the number of columns for the tile manager.
@@ -115,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _minColumnWidth;
 
-        partial void OnMinColumnWidthChanging(ref string? newValue);
         /// <summary>
         /// Sets the minimum width for a column unit in the tile manager.
         /// </summary>
@@ -135,7 +130,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _minRowHeight;
 
-        partial void OnMinRowHeightChanging(ref string? newValue);
         /// <summary>
         /// Sets the minimum height for a row unit in the tile manager.
         /// </summary>
@@ -155,7 +149,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _gap;
 
-        partial void OnGapChanging(ref string? newValue);
         /// <summary>
         /// Sets the gap size between tiles in the tile manager.
         /// </summary>

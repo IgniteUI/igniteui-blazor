@@ -49,7 +49,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _striped = false;
 
-        partial void OnStripedChanging(ref bool newValue);
         /// <summary>
         /// Sets the striped look of the control.
         /// </summary>
@@ -69,7 +68,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private LinearProgressLabelAlign _labelAlign = LinearProgressLabelAlign.TopStart;
 
-        partial void OnLabelAlignChanging(ref LinearProgressLabelAlign newValue);
         /// <summary>
         /// The position for the default label of the control.
         /// </summary>

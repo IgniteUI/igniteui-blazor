@@ -48,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _indeterminate = false;
 
-        partial void OnIndeterminateChanging(ref bool newValue);
         /// <summary>
         /// Draws the checkbox in indeterminate state.
         /// </summary>

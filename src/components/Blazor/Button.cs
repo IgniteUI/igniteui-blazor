@@ -52,7 +52,6 @@ namespace IgniteUI.Blazor.Controls
 
         private ButtonVariant _variant = ButtonVariant.Contained;
 
-        partial void OnVariantChanging(ref ButtonVariant newValue);
         /// <summary>
         /// The variant of the button which determines its visual appearance.
         /// <list type="bullet">

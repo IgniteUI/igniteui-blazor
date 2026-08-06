@@ -56,7 +56,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the banner is open.
         /// Setting this property programmatically will immediately show or hide the

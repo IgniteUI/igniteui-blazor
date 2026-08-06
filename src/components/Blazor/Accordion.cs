@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _singleExpand = false;
 
-        partial void OnSingleExpandChanging(ref bool newValue);
         /// <summary>
         /// Allows only one panel to be expanded at a time.
         /// </summary>

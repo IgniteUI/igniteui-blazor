@@ -12,8 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbRangeSliderValue _detail;
 
-        partial void OnDetailChanging(ref IgbRangeSliderValue newValue);
-
         /// <summary>
         /// The lower and upper thumb values of the range slider.
         /// </summary>
@@ -23,7 +21,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {

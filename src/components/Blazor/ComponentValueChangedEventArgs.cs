@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _detail;
 
-        partial void OnDetailChanging(ref string newValue);
-
         /// <summary>
         /// The string value carried by the event.
         /// </summary>

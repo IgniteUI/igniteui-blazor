@@ -46,7 +46,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbChatMessage[] _messages;
 
-        partial void OnMessagesChanging(ref IgbChatMessage[] newValue);
         /// <summary>
         /// The list of chat messages currently displayed.
         /// Use this property to set or update the message history.
@@ -67,7 +66,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatDraftMessage _draftMessage;
 
-        partial void OnDraftMessageChanging(ref IgbChatDraftMessage newValue);
         /// <summary>
         /// The chat message currently being composed but not yet sent.
         /// Includes the draft text and any attachments.
@@ -78,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._draftMessage; }
             set
             {
-                OnDraftMessageChanging(ref value);
                 MarkPropDirty("DraftMessage");
                 if (this._draftMessage != null)
                 {
@@ -94,7 +91,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatOptions? _options;
 
-        partial void OnOptionsChanging(ref IgbChatOptions? newValue);
         /// <summary>
         /// Controls the chat behavior and appearance through a configuration object.
         /// Use this to toggle UI options, provide suggestions, templates, etc.
@@ -105,7 +101,9 @@ namespace IgniteUI.Blazor.Controls
             get { return this._options; }
             set
             {
-                OnOptionsChanging(ref value);
+                // Never store a null options object, and input attachments are not supported yet.
+                value ??= new IgbChatOptions();
+                value.DisableInputAttachments = true;
                 MarkPropDirty("Options");
                 if (this._options != null)
                 {

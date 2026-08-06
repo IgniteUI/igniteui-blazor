@@ -14,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _startPanelSize = 0;
 
-        partial void OnStartPanelSizeChanging(ref double newValue);
         /// <summary>
         /// The current size of the start panel in pixels.
         /// </summary>
@@ -34,7 +33,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _endPanelSize = 0;
 
-        partial void OnEndPanelSizeChanging(ref double newValue);
         /// <summary>
         /// The current size of the end panel in pixels.
         /// </summary>
@@ -54,7 +52,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _delta = 0;
 
-        partial void OnDeltaChanging(ref double newValue);
         /// <summary>
         /// The change in size since the resize operation started. Only set for
         /// <see cref="IgbSplitter.Resizing"/> and <see cref="IgbSplitter.ResizeEnd"/>.

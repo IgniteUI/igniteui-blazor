@@ -53,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _iconName;
 
-        partial void OnIconNameChanging(ref string newValue);
         /// <summary>
         /// The name of the icon to display.
         /// </summary>
@@ -74,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _collection;
 
-        partial void OnCollectionChanging(ref string newValue);
         /// <summary>
         /// The collection the icon belongs to.
         /// </summary>
@@ -94,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _mirrored = false;
 
-        partial void OnMirroredChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the icon should be mirrored in right-to-left contexts.
         /// </summary>
@@ -114,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IconButtonVariant _variant = IconButtonVariant.Contained;
 
-        partial void OnVariantChanging(ref IconButtonVariant newValue);
         /// <summary>
         /// The variant of the button which determines its visual appearance.
         /// <list type="bullet">

@@ -55,7 +55,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _max = 5;
 
-        partial void OnMaxChanging(ref double newValue);
         /// <summary>
         /// The maximum value for the rating.
         /// If there are projected symbols, the maximum value will be resolved
@@ -77,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _step = 1;
 
-        partial void OnStepChanging(ref double newValue);
         /// <summary>
         /// The minimum value change allowed.
         /// Valid values are in the interval between 0 and 1 inclusive.
@@ -98,7 +96,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label of the control.
         /// </summary>
@@ -118,7 +115,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _valueFormat;
 
-        partial void OnValueFormatChanging(ref string newValue);
         /// <summary>
         /// A format string which sets aria-valuetext. Instances of <c>{0}</c> will be replaced
         /// with the current value of the control and instances of <c>{1}</c> with the maximum value for the control.
@@ -140,7 +136,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _value = 0;
 
-        partial void OnValueChanging(ref double newValue);
         /// <summary>
         /// The value of the component.
         /// </summary>
@@ -178,7 +173,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hoverPreview = false;
 
-        partial void OnHoverPreviewChanging(ref bool newValue);
         /// <summary>
         /// Sets hover preview behavior for the component.
         /// </summary>
@@ -198,7 +192,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -219,7 +212,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _single = false;
 
-        partial void OnSingleChanging(ref bool newValue);
         /// <summary>
         /// Toggles single selection visual mode.
         /// </summary>
@@ -239,7 +231,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _allowReset = false;
 
-        partial void OnAllowResetChanging(ref bool newValue);
         /// <summary>
         /// Whether to reset the rating when the user selects the same value.
         /// </summary>
@@ -259,7 +250,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -279,7 +269,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>

@@ -33,8 +33,6 @@ namespace IgniteUI.Blazor.Controls
 
         private DateTime _value = DateTime.MinValue;
 
-        partial void OnValueChanging(ref DateTime newValue);
-
         /// <summary>
         /// The current value of the calendar.
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Single"/>.
@@ -74,8 +72,6 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToDate(iv);
         }
         private DateTime[] _values;
-
-        partial void OnValuesChanging(ref DateTime[] newValue);
 
         /// <summary>
         /// The current values of the calendar.
@@ -120,7 +116,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime _activeDate = DateTime.MinValue;
 
-        partial void OnActiveDateChanging(ref DateTime newValue);
         /// <summary>
         /// Sets the date which is shown in view and is highlighted. By default it is the current date.
         /// </summary>
@@ -140,7 +135,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideOutsideDays = false;
 
-        partial void OnHideOutsideDaysChanging(ref bool newValue);
         /// <summary>
         /// Whether to hide the dates that do not belong to the current active month.
         /// </summary>
@@ -160,7 +154,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideHeader = false;
 
-        partial void OnHideHeaderChanging(ref bool newValue);
         /// <summary>
         /// Whether to render the calendar header part.
         /// When <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
@@ -182,7 +175,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private CalendarHeaderOrientation _headerOrientation = CalendarHeaderOrientation.Horizontal;
 
-        partial void OnHeaderOrientationChanging(ref CalendarHeaderOrientation newValue);
         /// <summary>
         /// The orientation of the calendar header.
         /// </summary>
@@ -202,7 +194,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ContentOrientation _orientation = ContentOrientation.Horizontal;
 
-        partial void OnOrientationChanging(ref ContentOrientation newValue);
         /// <summary>
         /// The orientation of the calendar months when more than one month
         /// is being shown.
@@ -223,7 +214,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _visibleMonths = 1;
 
-        partial void OnVisibleMonthsChanging(ref double newValue);
         /// <summary>
         /// The number of months displayed in the days view.
         /// </summary>
@@ -243,7 +233,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private CalendarActiveView _activeView = CalendarActiveView.Days;
 
-        partial void OnActiveViewChanging(ref CalendarActiveView newValue);
         /// <summary>
         /// The current active view of the component.
         /// </summary>
@@ -263,7 +252,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbCalendarFormatOptions _formatOptions;
 
-        partial void OnFormatOptionsChanging(ref IgbCalendarFormatOptions newValue);
         /// <summary>
         /// The options used to format the months and the weekdays in the calendar views.
         /// </summary>
@@ -273,7 +261,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._formatOptions; }
             set
             {
-                OnFormatOptionsChanging(ref value);
                 MarkPropDirty("FormatOptions");
                 if (this._formatOptions != null)
                 {

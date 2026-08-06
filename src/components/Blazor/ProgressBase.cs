@@ -45,7 +45,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _max = 100;
 
-        partial void OnMaxChanging(ref double newValue);
         /// <summary>
         /// Maximum value of the control.
         /// </summary>
@@ -65,7 +64,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _value = 0;
 
-        partial void OnValueChanging(ref double newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -85,7 +83,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StyleVariant _variant = StyleVariant.Primary;
 
-        partial void OnVariantChanging(ref StyleVariant newValue);
         /// <summary>
         /// The variant of the control.
         /// </summary>
@@ -105,7 +102,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _animationDuration = 500;
 
-        partial void OnAnimationDurationChanging(ref double newValue);
         /// <summary>
         /// Animation duration in milliseconds.
         /// </summary>
@@ -125,7 +121,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _indeterminate = false;
 
-        partial void OnIndeterminateChanging(ref bool newValue);
         /// <summary>
         /// The indeterminate state of the control.
         /// </summary>
@@ -145,7 +140,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideLabel = false;
 
-        partial void OnHideLabelChanging(ref bool newValue);
         /// <summary>
         /// Shows/hides the label of the control.
         /// </summary>
@@ -165,7 +159,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _labelFormat;
 
-        partial void OnLabelFormatChanging(ref string newValue);
         /// <summary>
         /// Format string for the default label of the control. Placeholders:
         /// <list type="bullet">

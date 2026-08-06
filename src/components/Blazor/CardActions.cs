@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private ContentOrientation _orientation = ContentOrientation.Horizontal;
 
-        partial void OnOrientationChanging(ref ContentOrientation newValue);
         /// <summary>
         /// The orientation of the actions layout.
         /// </summary>

@@ -14,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbChatMessageAttachment _detail;
 
-        partial void OnDetailChanging(ref IgbChatMessageAttachment newValue);
         /// <summary>
         /// The chat message attachment the event was raised for.
         /// </summary>
@@ -24,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {

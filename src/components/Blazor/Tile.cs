@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _colSpan = 1;
 
-        partial void OnColSpanChanging(ref double newValue);
         /// <summary>
         /// The number of columns the tile will span.
         /// </summary>
@@ -74,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _rowSpan = 1;
 
-        partial void OnRowSpanChanging(ref double newValue);
         /// <summary>
         /// The number of rows the tile will span.
         /// </summary>
@@ -94,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _colStart = 0;
 
-        partial void OnColStartChanging(ref double? newValue);
         /// <summary>
         /// The starting column for the tile.
         /// </summary>
@@ -114,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _rowStart = 0;
 
-        partial void OnRowStartChanging(ref double? newValue);
         /// <summary>
         /// The starting row for the tile.
         /// </summary>
@@ -152,7 +148,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _maximized = false;
 
-        partial void OnMaximizedChanging(ref bool newValue);
         /// <summary>
         /// Indicates whether the tile occupies all available space within the layout.
         /// </summary>
@@ -172,7 +167,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableResize = false;
 
-        partial void OnDisableResizeChanging(ref bool newValue);
         /// <summary>
         /// Indicates whether to disable tile resize behavior regardless
         /// of its tile manager parent settings.
@@ -193,7 +187,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableFullscreen = false;
 
-        partial void OnDisableFullscreenChanging(ref bool newValue);
         /// <summary>
         /// Whether to disable the rendering of the tile <c>fullscreen-action</c> slot and its
         /// default fullscreen action button.
@@ -214,7 +207,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableMaximize = false;
 
-        partial void OnDisableMaximizeChanging(ref bool newValue);
         /// <summary>
         /// Whether to disable the rendering of the tile <c>maximize-action</c> slot and its
         /// default maximize action button.
@@ -235,7 +227,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _position = -1;
 
-        partial void OnPositionChanging(ref double newValue);
         /// <summary>
         /// Gets/sets the tile's visual position in the layout.
         /// Corresponds to the CSS <c>order</c> property.

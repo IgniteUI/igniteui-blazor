@@ -48,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string? _value;
 
-        partial void OnValueChanging(ref string? newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -86,7 +85,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Whether the control has an outlined appearance.
         /// </summary>
@@ -106,7 +104,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _autofocus = false;
 
-        partial void OnAutofocusChanging(ref bool newValue);
         /// <summary>
         /// Whether the control should receive focus automatically.
         /// </summary>
@@ -126,7 +123,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _distance = 0;
 
-        partial void OnDistanceChanging(ref double newValue);
         /// <summary>
         /// The distance of the select dropdown from its input.
         /// </summary>
@@ -146,7 +142,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label of the control.
         /// </summary>
@@ -166,7 +161,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholder;
 
-        partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
@@ -186,7 +180,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private PopoverPlacement _placement = PopoverPlacement.BottomStart;
 
-        partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>
         /// The preferred placement of the select dropdown around its input.
         /// </summary>
@@ -206,7 +199,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private PopoverScrollStrategy _scrollStrategy = PopoverScrollStrategy.Scroll;
 
-        partial void OnScrollStrategyChanging(ref PopoverScrollStrategy newValue);
         /// <summary>
         /// Determines the behavior of the component during scrolling of the parent container.
         /// </summary>
@@ -346,7 +338,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -366,7 +357,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -386,7 +376,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>

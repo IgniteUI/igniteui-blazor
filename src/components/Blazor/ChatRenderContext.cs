@@ -12,7 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbChat _instance;
 
-        partial void OnInstanceChanging(ref IgbChat newValue);
         /// <summary>
         /// The instance of the <see cref="IgbChat"/> component.
         /// </summary>

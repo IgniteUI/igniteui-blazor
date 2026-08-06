@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTab _detail;
 
-        partial void OnDetailChanging(ref IgbTab newValue);
-
         /// <summary>
         /// The tab that became selected.
         /// </summary>

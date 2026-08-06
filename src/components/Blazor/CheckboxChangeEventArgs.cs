@@ -14,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbCheckboxChangeEventArgsDetail _detail;
 
-        partial void OnDetailChanging(ref IgbCheckboxChangeEventArgsDetail newValue);
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the control.
         /// </summary>
@@ -24,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {

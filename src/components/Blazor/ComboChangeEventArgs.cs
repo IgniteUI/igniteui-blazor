@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbComboChangeEventArgsDetail _detail;
 
-        partial void OnDetailChanging(ref IgbComboChangeEventArgsDetail newValue);
-
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
         /// </summary>
@@ -24,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {

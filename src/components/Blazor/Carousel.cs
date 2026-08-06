@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _disableLoop = false;
 
-        partial void OnDisableLoopChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should skip rotating to the first slide after it reaches the last.
         /// </summary>
@@ -74,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disablePauseOnInteraction = false;
 
-        partial void OnDisablePauseOnInteractionChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should ignore user interactions and not pause on them.
         /// </summary>
@@ -94,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideNavigation = false;
 
-        partial void OnHideNavigationChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should skip rendering of the default navigation buttons.
         /// </summary>
@@ -114,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideIndicators = false;
 
-        partial void OnHideIndicatorsChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should skip rendering of the indicator controls (dots).
         /// </summary>
@@ -134,7 +130,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _vertical = false;
 
-        partial void OnVerticalChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel has vertical alignment.
         /// </summary>
@@ -154,7 +149,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private CarouselIndicatorsOrientation _indicatorsOrientation = CarouselIndicatorsOrientation.End;
 
-        partial void OnIndicatorsOrientationChanging(ref CarouselIndicatorsOrientation newValue);
         /// <summary>
         /// Sets the orientation of the indicator controls (dots).
         /// </summary>
@@ -174,7 +168,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _indicatorsLabelFormat;
 
-        partial void OnIndicatorsLabelFormatChanging(ref string newValue);
         /// <summary>
         /// The format used to set the aria-label on the carousel indicators.
         /// Instances of <c>{0}</c> will be replaced with the index of the corresponding slide.
@@ -195,7 +188,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _slidesLabelFormat;
 
-        partial void OnSlidesLabelFormatChanging(ref string newValue);
         /// <summary>
         /// The format used to set the aria-label on the carousel slides and the text displayed
         /// when the number of indicators is greater than the maximum indicator count.
@@ -218,7 +210,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _interval = 0;
 
-        partial void OnIntervalChanging(ref double newValue);
         /// <summary>
         /// The duration in milliseconds between changing the active slide.
         /// </summary>
@@ -238,7 +229,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _maximumIndicatorsCount = 10;
 
-        partial void OnMaximumIndicatorsCountChanging(ref double newValue);
         /// <summary>
         /// The maximum number of indicator controls (dots) that can be shown. Defaults to <c>10</c>.
         /// </summary>
@@ -258,7 +248,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private HorizontalTransitionAnimation _animationType = HorizontalTransitionAnimation.Slide;
 
-        partial void OnAnimationTypeChanging(ref HorizontalTransitionAnimation newValue);
         /// <summary>
         /// The animation type.
         /// </summary>

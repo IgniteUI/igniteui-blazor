@@ -57,7 +57,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _caseSensitive = false;
 
-        partial void OnCaseSensitiveChanging(ref bool newValue);
         /// <summary>
         /// Whether to match the searched text with case sensitivity in mind.
         /// When <see langword="true"/>, only exact-case occurrences of <see cref="SearchText"/> are highlighted.
@@ -78,7 +77,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _searchText;
 
-        partial void OnSearchTextChanging(ref string newValue);
         /// <summary>
         /// The string to search and highlight in the DOM content of the component.
         /// Setting this property triggers a new search automatically.

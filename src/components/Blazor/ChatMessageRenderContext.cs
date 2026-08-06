@@ -11,7 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbChatMessage _message;
 
-        partial void OnMessageChanging(ref IgbChatMessage newValue);
         /// <summary>
         /// The specific chat message being rendered.
         /// </summary>
@@ -21,7 +20,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._message; }
             set
             {
-                OnMessageChanging(ref value);
                 MarkPropDirty("Message");
                 if (this._message != null)
                 {

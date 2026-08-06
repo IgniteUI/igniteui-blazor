@@ -12,8 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _preventScroll = false;
 
-        partial void OnPreventScrollChanging(ref bool newValue);
-
         /// <summary>
         /// Whether the browser should keep the current scroll position instead of scrolling the newly
         /// focused component into view. Defaults to <see langword="false"/>.

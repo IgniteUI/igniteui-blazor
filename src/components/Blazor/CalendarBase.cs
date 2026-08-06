@@ -29,7 +29,6 @@ namespace IgniteUI.Blazor.Controls
 
         private CalendarSelection _selection = CalendarSelection.Single;
 
-        partial void OnSelectionChanging(ref CalendarSelection newValue);
         /// <summary>
         /// Sets the type of selection in the component.
         /// </summary>
@@ -49,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _showWeekNumbers = false;
 
-        partial void OnShowWeekNumbersChanging(ref bool newValue);
         /// <summary>
         /// Whether to show the week numbers.
         /// </summary>
@@ -69,7 +67,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private WeekDays _weekStart = WeekDays.Sunday;
 
-        partial void OnWeekStartChanging(ref WeekDays newValue);
         /// <summary>
         /// Gets/Sets the first day of the week.
         /// </summary>
@@ -89,7 +86,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _locale;
 
-        partial void OnLocaleChanging(ref string newValue);
         /// <summary>
         /// Gets/Sets the locale used for formatting and displaying the dates in the component.
         /// </summary>
@@ -109,7 +105,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbCalendarResourceStrings _resourceStrings;
 
-        partial void OnResourceStringsChanging(ref IgbCalendarResourceStrings newValue);
         /// <summary>
         /// The resource strings for localization.
         /// </summary>
@@ -119,7 +114,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._resourceStrings; }
             set
             {
-                OnResourceStringsChanging(ref value);
                 MarkPropDirty("ResourceStrings");
                 if (this._resourceStrings != null)
                 {
@@ -135,7 +129,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangeDescriptor[]? _specialDates;
 
-        partial void OnSpecialDatesChanging(ref IgbDateRangeDescriptor[]? newValue);
         /// <summary>
         /// Gets/Sets the special dates for the component.
         /// </summary>
@@ -155,7 +148,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangeDescriptor[]? _disabledDates;
 
-        partial void OnDisabledDatesChanging(ref IgbDateRangeDescriptor[]? newValue);
         /// <summary>
         /// Gets/Sets the disabled dates for the component.
         /// </summary>

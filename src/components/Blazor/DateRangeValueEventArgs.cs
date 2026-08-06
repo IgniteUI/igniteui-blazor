@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbDateRangeValueDetail _detail;
 
-        partial void OnDetailChanging(ref IgbDateRangeValueDetail newValue);
-
         /// <summary>
         /// The date range carried by the event.
         /// </summary>
@@ -24,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
