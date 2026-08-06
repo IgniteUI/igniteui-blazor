@@ -6,14 +6,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebCalendarResourceStrings"; } }
 
-        public IgbCalendarResourceStrings() : base()
-        {
-            OnCreatedIgbCalendarResourceStrings();
-
-        }
-
-        partial void OnCreatedIgbCalendarResourceStrings();
-
         private string _selectMonth;
 
         partial void OnSelectMonthChanging(ref string newValue);

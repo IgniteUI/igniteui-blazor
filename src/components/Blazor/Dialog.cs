@@ -60,14 +60,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbDialog() : base()
-        {
-            OnCreatedIgbDialog();
-
-        }
-
-        partial void OnCreatedIgbDialog();
-
         private bool _keepOpenOnEscape = false;
 
         partial void OnKeepOpenOnEscapeChanging(ref bool newValue);

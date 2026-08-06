@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbSliderBase() : base()
-        {
-            OnCreatedIgbSliderBase();
-
-        }
-
-        partial void OnCreatedIgbSliderBase();
-
         private double _min = 0;
 
         partial void OnMinChanging(ref double newValue);

@@ -10,14 +10,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "FocusOptions"; } }
 
-        public IgbFocusOptions() : base()
-        {
-            OnCreatedIgbFocusOptions();
-
-        }
-
-        partial void OnCreatedIgbFocusOptions();
-
         private bool _preventScroll = false;
 
         partial void OnPreventScrollChanging(ref bool newValue);

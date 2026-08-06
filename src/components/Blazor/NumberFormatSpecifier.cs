@@ -20,14 +20,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbNumberFormatSpecifier() : base()
-        {
-            OnCreatedIgbNumberFormatSpecifier();
-
-        }
-
-        partial void OnCreatedIgbNumberFormatSpecifier();
-
         private string _locale;
 
         partial void OnLocaleChanging(ref string newValue);

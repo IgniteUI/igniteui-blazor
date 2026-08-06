@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbIconButton() : base()
-        {
-            OnCreatedIgbIconButton();
-
-        }
-
-        partial void OnCreatedIgbIconButton();
-
         private string _iconName;
 
         partial void OnIconNameChanging(ref string newValue);

@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbRangeSliderValue() : base()
-        {
-            OnCreatedIgbRangeSliderValue();
-
-        }
-
-        partial void OnCreatedIgbRangeSliderValue();
-
         private double _lower = 0;
 
         partial void OnLowerChanging(ref double newValue);

@@ -50,14 +50,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbSliderLabel() : base()
-        {
-            OnCreatedIgbSliderLabel();
-
-        }
-
-        partial void OnCreatedIgbSliderLabel();
-
         partial void FindByNameSliderLabel(string name, ref object item);
         public override object FindByName(string name)
         {

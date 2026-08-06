@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCheckboxBase() : base()
-        {
-            OnCreatedIgbCheckboxBase();
-
-        }
-
-        partial void OnCreatedIgbCheckboxBase();
-
         private string _value;
 
         partial void OnValueChanging(ref string newValue);

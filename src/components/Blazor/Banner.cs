@@ -54,14 +54,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbBanner() : base()
-        {
-            OnCreatedIgbBanner();
-
-        }
-
-        partial void OnCreatedIgbBanner();
-
         private bool _open = false;
 
         partial void OnOpenChanging(ref bool newValue);

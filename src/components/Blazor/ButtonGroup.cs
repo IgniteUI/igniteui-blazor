@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbButtonGroup() : base()
-        {
-            OnCreatedIgbButtonGroup();
-
-        }
-
-        partial void OnCreatedIgbButtonGroup();
-
         private bool _disabled = false;
 
         partial void OnDisabledChanging(ref bool newValue);

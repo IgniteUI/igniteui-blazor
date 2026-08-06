@@ -53,14 +53,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTextarea() : base()
-        {
-            OnCreatedIgbTextarea();
-
-        }
-
-        partial void OnCreatedIgbTextarea();
-
         private string _autocomplete;
 
         partial void OnAutocompleteChanging(ref string newValue);

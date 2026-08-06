@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbChip() : base()
-        {
-            OnCreatedIgbChip();
-
-        }
-
-        partial void OnCreatedIgbChip();
-
         private bool _disabled = false;
 
         partial void OnDisabledChanging(ref bool newValue);

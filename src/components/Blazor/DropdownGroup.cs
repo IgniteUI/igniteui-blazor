@@ -49,14 +49,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbDropdownGroup() : base()
-        {
-            OnCreatedIgbDropdownGroup();
-
-        }
-
-        partial void OnCreatedIgbDropdownGroup();
-
         partial void FindByNameDropdownGroup(string name, ref object item);
         public override object FindByName(string name)
         {

@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbTabComponentEventArgs() : base()
-        {
-            OnCreatedIgbTabComponentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbTabComponentEventArgs();
-
         private IgbTab _detail;
 
         partial void OnDetailChanging(ref IgbTab newValue);

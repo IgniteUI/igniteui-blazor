@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbComponentDateValueChangedEventArgs() : base()
-        {
-            OnCreatedIgbComponentDateValueChangedEventArgs();
-
-        }
-
-        partial void OnCreatedIgbComponentDateValueChangedEventArgs();
-
         private DateTime _detail = DateTime.MinValue;
 
         partial void OnDetailChanging(ref DateTime newValue);

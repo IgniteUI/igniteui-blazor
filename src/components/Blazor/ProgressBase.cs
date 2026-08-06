@@ -43,14 +43,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbProgressBase() : base()
-        {
-            OnCreatedIgbProgressBase();
-
-        }
-
-        partial void OnCreatedIgbProgressBase();
-
         private double _max = 100;
 
         partial void OnMaxChanging(ref double newValue);

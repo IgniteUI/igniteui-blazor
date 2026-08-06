@@ -55,14 +55,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbHighlight() : base()
-        {
-            OnCreatedIgbHighlight();
-
-        }
-
-        partial void OnCreatedIgbHighlight();
-
         private bool _caseSensitive = false;
 
         partial void OnCaseSensitiveChanging(ref bool newValue);

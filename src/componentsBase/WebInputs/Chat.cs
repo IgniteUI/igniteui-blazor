@@ -6,11 +6,6 @@ namespace IgniteUI.Blazor.Controls
     /// </remarks>
     public partial class IgbChat
     {
-        partial void OnCreatedIgbChat()
-        {
-            // Ensure that Options setter is called to apply the default options and disable input attachments.
-            this.Options = new IgbChatOptions();
-        }
         partial void OnOptionsChanging(ref IgbChatOptions? newValue)
         {
             newValue ??= new IgbChatOptions();

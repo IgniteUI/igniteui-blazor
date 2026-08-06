@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebChatAttachmentRenderContext"; } }
 
-        public IgbChatAttachmentRenderContext() : base()
-        {
-            OnCreatedIgbChatAttachmentRenderContext();
-
-        }
-
-        partial void OnCreatedIgbChatAttachmentRenderContext();
-
         private IgbChatMessageAttachment _attachment;
 
         partial void OnAttachmentChanging(ref IgbChatMessageAttachment newValue);

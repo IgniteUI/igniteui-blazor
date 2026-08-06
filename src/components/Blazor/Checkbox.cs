@@ -46,14 +46,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbCheckbox() : base()
-        {
-            OnCreatedIgbCheckbox();
-
-        }
-
-        partial void OnCreatedIgbCheckbox();
-
         private bool _indeterminate = false;
 
         partial void OnIndeterminateChanging(ref bool newValue);

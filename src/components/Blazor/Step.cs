@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbStep() : base()
-        {
-            OnCreatedIgbStep();
-
-        }
-
-        partial void OnCreatedIgbStep();
-
         private bool _invalid = false;
 
         partial void OnInvalidChanging(ref bool newValue);

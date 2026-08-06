@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbComponentBoolValueChangedEventArgs() : base()
-        {
-            OnCreatedIgbComponentBoolValueChangedEventArgs();
-
-        }
-
-        partial void OnCreatedIgbComponentBoolValueChangedEventArgs();
-
         private bool _detail = false;
 
         partial void OnDetailChanging(ref bool newValue);

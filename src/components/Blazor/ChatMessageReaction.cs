@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbChatMessageReaction() : base()
-        {
-            OnCreatedIgbChatMessageReaction();
-
-        }
-
-        partial void OnCreatedIgbChatMessageReaction();
-
         private IgbChatMessage _message;
 
         partial void OnMessageChanging(ref IgbChatMessage newValue);

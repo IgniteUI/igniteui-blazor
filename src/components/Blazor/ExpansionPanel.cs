@@ -53,14 +53,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbExpansionPanel() : base()
-        {
-            OnCreatedIgbExpansionPanel();
-
-        }
-
-        partial void OnCreatedIgbExpansionPanel();
-
         private bool _open = false;
 
         partial void OnOpenChanging(ref bool newValue);

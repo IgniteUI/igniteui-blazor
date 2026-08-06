@@ -57,14 +57,6 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
-        public IgbTab() : base()
-        {
-            OnCreatedIgbTab();
-
-        }
-
-        partial void OnCreatedIgbTab();
-
         partial void OnIgbTabDisposing();
         public void Dispose()
         {

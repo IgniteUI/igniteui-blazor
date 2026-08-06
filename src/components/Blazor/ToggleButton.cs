@@ -54,14 +54,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbToggleButton() : base()
-        {
-            OnCreatedIgbToggleButton();
-
-        }
-
-        partial void OnCreatedIgbToggleButton();
-
         private string _value;
 
         partial void OnValueChanging(ref string newValue);

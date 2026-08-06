@@ -50,14 +50,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbRipple() : base()
-        {
-            OnCreatedIgbRipple();
-
-        }
-
-        partial void OnCreatedIgbRipple();
-
         partial void FindByNameRipple(string name, ref object item);
         public override object FindByName(string name)
         {

@@ -53,14 +53,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTooltip() : base()
-        {
-            OnCreatedIgbTooltip();
-
-        }
-
-        partial void OnCreatedIgbTooltip();
-
         private bool _open = false;
 
         partial void OnOpenChanging(ref bool newValue);

@@ -12,14 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbDropdownItemComponentEventArgs() : base()
-        {
-            OnCreatedIgbDropdownItemComponentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbDropdownItemComponentEventArgs();
-
         private IgbDropdownItem _detail;
 
         partial void OnDetailChanging(ref IgbDropdownItem newValue);

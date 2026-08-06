@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbTreeSelectionEventArgs() : base()
-        {
-            OnCreatedIgbTreeSelectionEventArgs();
-
-        }
-
-        partial void OnCreatedIgbTreeSelectionEventArgs();
-
         private IgbTreeSelectionEventArgsDetail _detail;
 
         partial void OnDetailChanging(ref IgbTreeSelectionEventArgsDetail newValue);

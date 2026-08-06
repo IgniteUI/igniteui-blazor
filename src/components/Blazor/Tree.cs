@@ -53,14 +53,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTree() : base()
-        {
-            OnCreatedIgbTree();
-
-        }
-
-        partial void OnCreatedIgbTree();
-
         private bool _singleBranchExpand = false;
 
         partial void OnSingleBranchExpandChanging(ref bool newValue);

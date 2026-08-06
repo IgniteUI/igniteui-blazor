@@ -27,14 +27,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbDateTimeInputBase() : base()
-        {
-            OnCreatedIgbDateTimeInputBase();
-
-        }
-
-        partial void OnCreatedIgbDateTimeInputBase();
-
         private bool _outlined = false;
 
         partial void OnOutlinedChanging(ref bool newValue);

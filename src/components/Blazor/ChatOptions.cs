@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebChatOptions"; } }
 
-        public IgbChatOptions() : base()
-        {
-            OnCreatedIgbChatOptions();
-
-        }
-
-        partial void OnCreatedIgbChatOptions();
-
         private string _currentUserId;
 
         partial void OnCurrentUserIdChanging(ref string newValue);

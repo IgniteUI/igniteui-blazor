@@ -31,14 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbMaskInput() : base()
-        {
-            OnCreatedIgbMaskInput();
-
-        }
-
-        partial void OnCreatedIgbMaskInput();
-
         private MaskInputValueMode _valueMode = MaskInputValueMode.Raw;
 
         partial void OnValueModeChanging(ref MaskInputValueMode newValue);

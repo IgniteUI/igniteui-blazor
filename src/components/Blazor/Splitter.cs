@@ -55,14 +55,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbSplitter() : base()
-        {
-            OnCreatedIgbSplitter();
-
-        }
-
-        partial void OnCreatedIgbSplitter();
-
         private SplitterOrientation _orientation = SplitterOrientation.Horizontal;
 
         partial void OnOrientationChanging(ref SplitterOrientation newValue);

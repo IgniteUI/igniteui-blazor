@@ -66,14 +66,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbNavDrawer() : base()
-        {
-            OnCreatedIgbNavDrawer();
-
-        }
-
-        partial void OnCreatedIgbNavDrawer();
-
         private NavDrawerPosition _position = NavDrawerPosition.Start;
 
         partial void OnPositionChanging(ref NavDrawerPosition newValue);

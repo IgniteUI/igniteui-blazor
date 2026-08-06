@@ -51,14 +51,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbNavDrawerItem() : base()
-        {
-            OnCreatedIgbNavDrawerItem();
-
-        }
-
-        partial void OnCreatedIgbNavDrawerItem();
-
         private bool _disabled = false;
 
         partial void OnDisabledChanging(ref bool newValue);

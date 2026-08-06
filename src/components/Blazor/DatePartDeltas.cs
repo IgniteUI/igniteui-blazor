@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "DatePartDeltas"; } }
 
-        public IgbDatePartDeltas() : base()
-        {
-            OnCreatedIgbDatePartDeltas();
-
-        }
-
-        partial void OnCreatedIgbDatePartDeltas();
-
         private double _date = 0;
 
         partial void OnDateChanging(ref double newValue);

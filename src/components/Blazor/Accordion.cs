@@ -52,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbAccordion() : base()
-        {
-            OnCreatedIgbAccordion();
-
-        }
-
-        partial void OnCreatedIgbAccordion();
-
         private bool _singleExpand = false;
 
         partial void OnSingleExpandChanging(ref bool newValue);
