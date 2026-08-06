@@ -236,4 +236,17 @@ public class SliderLabelTests : BlazorComponentTestBase
 
         Assert.Contains("Low", cut.Find("igc-slider-label").InnerHtml);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbSlider</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Slider_DefaultValues_MatchWebComponent()
+    {
+        var slider = new IgbSlider();
+
+        Assert.Equal(100, slider.Max);
+        Assert.Equal(1, slider.Step);
+    }
 }

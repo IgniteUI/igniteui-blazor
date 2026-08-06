@@ -287,4 +287,16 @@ public class DropdownHeaderTests : BlazorComponentTestBase
 
         Assert.Contains("Category", cut.Find("igc-dropdown-header").InnerHtml);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbDropdown</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Dropdown_DefaultValues_MatchWebComponent()
+    {
+        var dropdown = new IgbDropdown();
+
+        Assert.Equal(PopoverPlacement.BottomStart, dropdown.Placement);
+    }
 }

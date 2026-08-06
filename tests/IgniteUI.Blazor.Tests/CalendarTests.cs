@@ -172,4 +172,16 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
         cal.ActiveDate = date;
         Assert.Equal(date, cal.ActiveDate);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbCalendar</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Calendar_DefaultValues_MatchWebComponent()
+    {
+        var calendar = new IgbCalendar();
+
+        Assert.Equal(1, calendar.VisibleMonths);
+    }
 }

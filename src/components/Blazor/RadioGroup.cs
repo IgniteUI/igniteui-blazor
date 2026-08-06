@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnCreatedIgbRadioGroup();
 
-        private ContentOrientation _alignment = ContentOrientation.Horizontal;
+        private ContentOrientation _alignment = ContentOrientation.Vertical;
 
         partial void OnAlignmentChanging(ref ContentOrientation newValue);
         /// <summary>

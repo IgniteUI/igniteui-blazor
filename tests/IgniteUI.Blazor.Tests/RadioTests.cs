@@ -169,4 +169,16 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
     {
         Assert.True(typeof(IgbRadioGroup).IsSubclassOf(typeof(BaseRendererControl)));
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbRadioGroup</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void RadioGroup_DefaultValues_MatchWebComponent()
+    {
+        var group = new IgbRadioGroup();
+
+        Assert.Equal(ContentOrientation.Vertical, group.Alignment);
+    }
 }

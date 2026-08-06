@@ -192,7 +192,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private PopoverPlacement _placement = PopoverPlacement.Top;
+        private PopoverPlacement _placement = PopoverPlacement.BottomStart;
 
         partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>

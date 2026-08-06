@@ -104,4 +104,16 @@ public class StepTests : BlazorComponentTestBase
 
         Assert.Contains("Step Content", cut.Markup);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbStepper</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Stepper_DefaultValues_MatchWebComponent()
+    {
+        var stepper = new IgbStepper();
+
+        Assert.Equal(320, stepper.AnimationDuration);
+    }
 }
