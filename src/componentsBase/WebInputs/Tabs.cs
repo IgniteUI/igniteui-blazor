@@ -31,7 +31,7 @@ namespace IgniteUI.Blazor.Controls
 
                 }
 
-                if (!EventCallback<string>.Empty.Equals(item.SelectedChanged))
+                if (!EventCallback<bool>.Empty.Equals(item.SelectedChanged))
                 {
                     var task = item.SelectedChanged.InvokeAsync(item.Selected);
                     if (task.Exception != null)

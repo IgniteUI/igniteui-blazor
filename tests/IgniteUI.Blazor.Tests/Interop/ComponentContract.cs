@@ -183,6 +183,53 @@ public sealed class EventContractSpec<TComponent> where TComponent : IComponent
 }
 
 /// <summary>
+/// A two-way binding pair — the <c>@bind-X</c> contract: a <c>[Parameter] X</c> plus its
+/// <c>EventCallback&lt;TValue&gt; XChanged</c>, driven by dispatching <see cref="DrivingEvent"/>.
+/// Assigning <c>XChanged</c> internally registers the paired event and its handler provides updates.
+/// </summary>
+public sealed class BindContractSpec<TComponent> where TComponent : IComponent
+{
+    /// <summary>The bound property's name, for failure messages and its wire spelling.</summary>
+    public required string PropertyName { get; init; }
+
+    /// <summary>The paired event whose client-side dispatch drives the change.</summary>
+    public required string DrivingEvent { get; init; }
+
+    /// <summary>
+    /// Arranges the render exactly as <c>@bind-X</c> would (bUnit's <c>ps.Bind</c>), routing the
+    /// pushed value to the sink so the spec asserts the user-facing contract rather than the
+    /// callback member. Returns nothing — the sink is the observation.
+    /// </summary>
+    public required Action<ComponentParameterCollectionBuilder<TComponent>, Action<object?>> BindPair { get; init; }
+
+    /// <summary>Reads the bound property back off the component, to assert it was updated.</summary>
+    public required Func<TComponent, object?> ReadProperty { get; init; }
+
+    /// <summary>
+    /// Whether the callback member kept what its setter was handed. A setter whose
+    /// "is this empty?" guard is wrong can drop or null it, leaving the binding silently dead.
+    /// </summary>
+    public required Func<TComponent, bool> ChangedIsBound { get; init; }
+
+    /// <summary>The payload dispatched for <see cref="DrivingEvent"/>, settled against the render when declared late.</summary>
+    public FromRender<string> ArgsJson { get; init; } = "{}";
+
+    /// <summary>The value the binding must receive — often a projection of the event's detail, so always stated.</summary>
+    public object? Expected { get; init; }
+
+    /// <summary>
+    /// Value-level check applied to the pushed value, for payloads whose type has no value equality;
+    /// replaces the comparison against <see cref="Expected"/>, which then only documents intent and guards vacuity.
+    /// </summary>
+    public Action<object?>? AssertValue { get; init; }
+
+    /// <summary>Extra render setup the pair needs to be reachable (child components, data, ...).</summary>
+    public Action<ComponentParameterCollectionBuilder<TComponent>>? Arrange { get; init; }
+
+    public SpecSource? Source { get; init; }
+}
+
+/// <summary>
 /// Pins a component's interop contract: how its public API maps onto the wire —
 /// method identifiers, argument serialization and type tags, return decoding, and
 /// event names + args deserialization. Runs through the <see cref="InteropHarness"/>
@@ -195,10 +242,12 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     private readonly List<MethodContractSpec<TComponent>> _methods = [];
     private readonly List<EventContractSpec<TComponent>> _events = [];
     private readonly List<StatePropContractSpec<TComponent>> _props = [];
+    private readonly List<BindContractSpec<TComponent>> _binds = [];
 
     public IReadOnlyList<MethodContractSpec<TComponent>> Methods => _methods;
     public IReadOnlyList<EventContractSpec<TComponent>> Events => _events;
     public IReadOnlyList<StatePropContractSpec<TComponent>> Props => _props;
+    public IReadOnlyList<BindContractSpec<TComponent>> Binds => _binds;
 
     /// <summary>
     /// A void API method (async-only members): asserts identifier, arguments and type tags.
@@ -639,6 +688,69 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             Bind = (ps, on) => BindMember(ps, member, on),
             Get = GetterOf(member),
             ArgsType = typeof(IgbVoidEventArgs),
+            Source = new SpecSource(atFile, atLine),
+        });
+        return this;
+    }
+
+    /// <summary>
+    /// A two-way binding pair — what <c>@bind-X</c> relies on. Identified by its two members,
+    /// which share one <typeparamref name="TValue"/> so a mismatched pair cannot compile.
+    /// <paramref name="via"/> is the paired event whose client-side dispatch drives the change.
+    /// </summary>
+    /// <param name="property">The bound property, e.g. <c>c => c.Selected</c>.</param>
+    /// <param name="changed">Its change callback, e.g. <c>c => c.SelectedChanged</c>.</param>
+    /// <param name="via">The paired event that carries the change, e.g. <c>c => c.Select</c>.</param>
+    /// <param name="argsJson">
+    /// The payload dispatched for <paramref name="via"/> — normally identical to the one the
+    /// event's own <c>.Event</c> spec already uses.
+    /// </param>
+    /// <param name="expect"> The value the binding must receive. </param>
+    /// <param name="arrange">Extra render setup the pair needs (child components, data).</param>
+    /// <param name="assert">
+    /// Value-level check for payload types with no value equality, replaces the comparison against
+    /// <paramref name="expect"/>, which then only documents intent.
+    /// </param>
+    /// <param name="initial">
+    /// The bound starting value. Defaults to the type's own default, which is what every pair
+    /// needs; state it only for a pair that must start somewhere else to be meaningful.
+    /// </param>
+    public ComponentContract<TComponent> Bind<TValue, TArgs>(
+        Expression<Func<TComponent, TValue>> property,
+        Expression<Func<TComponent, EventCallback<TValue>>> changed,
+        Expression<Func<TComponent, EventCallback<TArgs>>> via,
+        FromRender<string> argsJson,
+        TValue expect,
+        Action<ComponentParameterCollectionBuilder<TComponent>>? arrange = null,
+        Action<TValue>? assert = null,
+        TValue initial = default!,
+        [CallerFilePath] string atFile = "",
+        [CallerLineNumber] int atLine = 0)
+    {
+        var propertyName = MemberOf(property).Name;
+        var changedName = MemberOf(changed).Name;
+        // @bind-X resolves the callback by name, so a bindable pair must follow the convention:
+        if (changedName != propertyName + "Changed")
+        {
+            throw new ArgumentException(
+                $"\"{changedName}\" cannot be the change callback of \"{propertyName}\" — @bind-{propertyName} " +
+                $"resolves \"{propertyName}Changed\" by name.", nameof(changed));
+        }
+        var (readProp, readChanged) = (property.Compile(), changed.Compile());
+
+        _binds.Add(new BindContractSpec<TComponent>
+        {
+            PropertyName = MemberOf(property).Name,
+            DrivingEvent = MemberName(via),
+            // Exactly what @bind-X expands to, via bUnit's own two-way binding helper. The
+            // wrappers have no <Prop>Expression parameter, so the value expression is omitted.
+            BindPair = (ps, sink) => ps.Bind(property, initial, value => sink(value)),
+            ReadProperty = c => readProp(c),
+            ChangedIsBound = c => !EventCallback<TValue>.Empty.Equals(readChanged(c)),
+            ArgsJson = argsJson,
+            Expected = expect,
+            AssertValue = assert is null ? null : o => assert((TValue)o!),
+            Arrange = arrange,
             Source = new SpecSource(atFile, atLine),
         });
         return this;

@@ -49,6 +49,20 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
                 Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start.ToUniversalTime());
                 Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End.ToUniversalTime());
             })
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
+            expect: new IgbDateRangeValue
+            {
+                Start = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc),
+                End = new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc),
+            },
+            assert: value =>
+            {
+                // IgbDateRangeValue has no value equality, so the pushed value is checked field-wise:
+                Assert.NotNull(value);
+                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime(), value.Start);
+                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc).ToLocalTime(), value.End);
+            })
         .Event(c => c.Input,
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
             assert: args =>
@@ -129,6 +143,9 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     /// <summary>
     /// The wrapper must report the same initial values as <c>IgbDateRangePicker</c>'s web component,

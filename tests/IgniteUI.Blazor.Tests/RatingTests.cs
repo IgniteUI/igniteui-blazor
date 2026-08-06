@@ -17,6 +17,8 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
         .Event(c => c.Change,
             argsJson: """{"detail": 4}""",
             assert: args => Assert.Equal(4, args.Detail))
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": 4}""", expect: 4.0)
         .Event(c => c.Hover,
             argsJson: """{"detail": 2}""",
             assert: args => Assert.Equal(2, args.Detail));
@@ -26,6 +28,9 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Rating_RendersCorrectElement()
