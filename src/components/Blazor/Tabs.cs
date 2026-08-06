@@ -278,7 +278,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbTabComponentEventArgs args);
         private EventCallback<IgbTabComponentEventArgs>? _change = null;
 
         /// <summary>
@@ -300,8 +299,7 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
+                            SyncSelectedTab(args);
                         });
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {

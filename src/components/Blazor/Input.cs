@@ -416,7 +416,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
 
         /// <summary>
@@ -438,8 +437,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {

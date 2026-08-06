@@ -294,7 +294,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
 
         /// <summary>
@@ -314,11 +313,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -371,7 +366,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
 
         /// <summary>
@@ -391,11 +385,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;

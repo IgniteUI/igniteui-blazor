@@ -104,7 +104,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingAction(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _action = null;
 
         /// <summary>
@@ -124,11 +123,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _action, ref eventCallbacksCache))
                     {
                         _action = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value, (args) =>
-                        {
-                            OnHandlingAction(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value);
                         this.OnRefChanged("Action", null, "event:::Action", true, false, (refName, oldValue, newValue) =>
                         {
                             this._actionRef = refName;

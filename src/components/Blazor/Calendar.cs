@@ -369,7 +369,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentDataValueChangedEventArgs args);
         private EventCallback<IgbComponentDataValueChangedEventArgs>? _change = null;
 
         /// <summary>
@@ -391,8 +390,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(DateTime);
 
                             if (this.Selection == CalendarSelection.Single)

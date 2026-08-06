@@ -183,7 +183,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbRadioChangeEventArgs args);
         private EventCallback<IgbRadioChangeEventArgs>? _change = null;
 
         /// <summary>
@@ -205,8 +204,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {

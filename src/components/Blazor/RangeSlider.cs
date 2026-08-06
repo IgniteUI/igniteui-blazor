@@ -155,7 +155,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbRangeSliderValueEventArgs args);
         private EventCallback<IgbRangeSliderValueEventArgs>? _input = null;
 
         /// <summary>
@@ -175,11 +174,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
                     {
                         _input = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -232,7 +227,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbRangeSliderValueEventArgs args);
         private EventCallback<IgbRangeSliderValueEventArgs>? _change = null;
 
         /// <summary>
@@ -252,11 +246,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
                     {
                         _change = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", value, (args) =>
-                        {
-                            OnHandlingChange(args);
-
-                        });
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", value);
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {
                             this._changeRef = refName;

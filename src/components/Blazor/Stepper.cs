@@ -344,7 +344,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingActiveStepChanging(IgbActiveStepChangingEventArgs args);
         private EventCallback<IgbActiveStepChangingEventArgs>? _activeStepChanging = null;
 
         /// <summary>
@@ -364,11 +363,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _activeStepChanging, ref eventCallbacksCache))
                     {
                         _activeStepChanging = value;
-                        this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", value, (args) =>
-                        {
-                            OnHandlingActiveStepChanging(args);
-
-                        });
+                        this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", value);
                         this.OnRefChanged("ActiveStepChanging", null, "event:::ActiveStepChanging", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangingRef = refName;
@@ -421,7 +416,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingActiveStepChanged(IgbActiveStepChangedEventArgs args);
         private EventCallback<IgbActiveStepChangedEventArgs>? _activeStepChanged = null;
 
         /// <summary>
@@ -441,11 +435,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _activeStepChanged, ref eventCallbacksCache))
                     {
                         _activeStepChanged = value;
-                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value, (args) =>
-                        {
-                            OnHandlingActiveStepChanged(args);
-
-                        });
+                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value);
                         this.OnRefChanged("ActiveStepChanged", null, "event:::ActiveStepChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangedRef = refName;

@@ -358,7 +358,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbRadioChangeEventArgs args);
         private EventCallback<IgbRadioChangeEventArgs>? _change = null;
 
         /// <summary>
@@ -380,8 +379,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueChecked = default(bool);
 
                             {
@@ -468,7 +465,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
 
         /// <summary>
@@ -488,11 +484,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value, (args) =>
-                        {
-                            OnHandlingFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -545,7 +537,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
 
         /// <summary>
@@ -565,11 +556,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value, (args) =>
-                        {
-                            OnHandlingBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;

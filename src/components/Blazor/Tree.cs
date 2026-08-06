@@ -178,7 +178,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSelectionChanged(IgbTreeSelectionEventArgs args);
         private EventCallback<IgbTreeSelectionEventArgs>? _selectionChanged = null;
 
         /// <summary>
@@ -198,11 +197,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _selectionChanged, ref eventCallbacksCache))
                     {
                         _selectionChanged = value;
-                        this.SetHandler<IgbTreeSelectionEventArgs>(this.Name, "SelectionChanged", value, (args) =>
-                        {
-                            OnHandlingSelectionChanged(args);
-
-                        });
+                        this.SetHandler<IgbTreeSelectionEventArgs>(this.Name, "SelectionChanged", value);
                         this.OnRefChanged("SelectionChanged", null, "event:::SelectionChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._selectionChangedRef = refName;
@@ -255,7 +250,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingItemExpanding(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemExpanding = null;
 
         /// <summary>
@@ -275,11 +269,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _itemExpanding, ref eventCallbacksCache))
                     {
                         _itemExpanding = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanding", value, (args) =>
-                        {
-                            OnHandlingItemExpanding(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanding", value);
                         this.OnRefChanged("ItemExpanding", null, "event:::ItemExpanding", true, false, (refName, oldValue, newValue) =>
                         {
                             this._itemExpandingRef = refName;
@@ -332,7 +322,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingItemExpanded(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemExpanded = null;
 
         /// <summary>
@@ -352,11 +341,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _itemExpanded, ref eventCallbacksCache))
                     {
                         _itemExpanded = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanded", value, (args) =>
-                        {
-                            OnHandlingItemExpanded(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanded", value);
                         this.OnRefChanged("ItemExpanded", null, "event:::ItemExpanded", true, false, (refName, oldValue, newValue) =>
                         {
                             this._itemExpandedRef = refName;
@@ -409,7 +394,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingItemCollapsing(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemCollapsing = null;
 
         /// <summary>
@@ -429,11 +413,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _itemCollapsing, ref eventCallbacksCache))
                     {
                         _itemCollapsing = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsing", value, (args) =>
-                        {
-                            OnHandlingItemCollapsing(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsing", value);
                         this.OnRefChanged("ItemCollapsing", null, "event:::ItemCollapsing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._itemCollapsingRef = refName;
@@ -486,7 +466,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingItemCollapsed(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemCollapsed = null;
 
         /// <summary>
@@ -506,11 +485,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _itemCollapsed, ref eventCallbacksCache))
                     {
                         _itemCollapsed = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsed", value, (args) =>
-                        {
-                            OnHandlingItemCollapsed(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsed", value);
                         this.OnRefChanged("ItemCollapsed", null, "event:::ItemCollapsed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._itemCollapsedRef = refName;
@@ -563,7 +538,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingActiveItem(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _activeItem = null;
 
         /// <summary>
@@ -583,11 +557,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _activeItem, ref eventCallbacksCache))
                     {
                         _activeItem = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ActiveItem", value, (args) =>
-                        {
-                            OnHandlingActiveItem(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ActiveItem", value);
                         this.OnRefChanged("ActiveItem", null, "event:::ActiveItem", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeItemRef = refName;

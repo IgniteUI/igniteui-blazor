@@ -170,7 +170,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSelect(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _select = null;
 
         /// <summary>
@@ -190,11 +189,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _select, ref eventCallbacksCache))
                     {
                         _select = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", value, (args) =>
-                        {
-                            OnHandlingSelect(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", value);
                         this.OnRefChanged("Select", null, "event:::Select", true, false, (refName, oldValue, newValue) =>
                         {
                             this._selectRef = refName;
@@ -247,7 +242,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingDeselect(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _deselect = null;
 
         /// <summary>
@@ -267,11 +261,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _deselect, ref eventCallbacksCache))
                     {
                         _deselect = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", value, (args) =>
-                        {
-                            OnHandlingDeselect(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", value);
                         this.OnRefChanged("Deselect", null, "event:::Deselect", true, false, (refName, oldValue, newValue) =>
                         {
                             this._deselectRef = refName;

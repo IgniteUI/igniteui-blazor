@@ -179,7 +179,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputOcurred(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _inputOcurred = null;
 
         /// <summary>
@@ -199,11 +198,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _inputOcurred, ref eventCallbacksCache))
                     {
                         _inputOcurred = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", value, (args) =>
-                        {
-                            OnHandlingInputOcurred(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", value);
                         this.OnRefChanged("InputOcurred", null, "event:::InputOcurred", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputOcurredRef = refName;
@@ -256,7 +251,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentDateValueChangedEventArgs args);
         private EventCallback<IgbComponentDateValueChangedEventArgs>? _change = null;
 
         /// <summary>
@@ -278,8 +272,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(DateTime?);
 
                             {
@@ -366,7 +358,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
 
         /// <summary>
@@ -386,11 +377,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value, (args) =>
-                        {
-                            OnHandlingFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -443,7 +430,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
 
         /// <summary>
@@ -463,11 +449,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value, (args) =>
-                        {
-                            OnHandlingBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;

@@ -256,7 +256,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _input = null;
 
         /// <summary>
@@ -276,11 +275,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
                     {
                         _input = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -333,7 +328,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _change = null;
 
         /// <summary>
@@ -355,8 +349,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(double);
 
                             {

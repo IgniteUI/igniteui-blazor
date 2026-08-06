@@ -479,7 +479,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSlideChanged(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _slideChanged = null;
 
         /// <summary>
@@ -499,11 +498,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _slideChanged, ref eventCallbacksCache))
                     {
                         _slideChanged = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value, (args) =>
-                        {
-                            OnHandlingSlideChanged(args);
-
-                        });
+                        this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value);
                         this.OnRefChanged("SlideChanged", null, "event:::SlideChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._slideChangedRef = refName;
@@ -556,7 +551,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingPlaying(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _playing = null;
 
         /// <summary>
@@ -576,11 +570,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _playing, ref eventCallbacksCache))
                     {
                         _playing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value, (args) =>
-                        {
-                            OnHandlingPlaying(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value);
                         this.OnRefChanged("Playing", null, "event:::Playing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._playingRef = refName;
@@ -633,7 +623,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingPaused(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _paused = null;
 
         /// <summary>
@@ -653,11 +642,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _paused, ref eventCallbacksCache))
                     {
                         _paused = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value, (args) =>
-                        {
-                            OnHandlingPaused(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value);
                         this.OnRefChanged("Paused", null, "event:::Paused", true, false, (refName, oldValue, newValue) =>
                         {
                             this._pausedRef = refName;

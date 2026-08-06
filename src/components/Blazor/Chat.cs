@@ -174,7 +174,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingMessageCreated(IgbChatMessageEventArgs args);
         private EventCallback<IgbChatMessageEventArgs>? _messageCreated = null;
 
         /// <summary>
@@ -194,11 +193,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _messageCreated, ref eventCallbacksCache))
                     {
                         _messageCreated = value;
-                        this.SetHandler<IgbChatMessageEventArgs>(this.Name, "MessageCreated", value, (args) =>
-                        {
-                            OnHandlingMessageCreated(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageEventArgs>(this.Name, "MessageCreated", value);
                         this.OnRefChanged("MessageCreated", null, "event:::MessageCreated", true, false, (refName, oldValue, newValue) =>
                         {
                             this._messageCreatedRef = refName;
@@ -251,7 +246,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingMessageReact(IgbChatMessageReactionEventArgs args);
         private EventCallback<IgbChatMessageReactionEventArgs>? _messageReact = null;
 
         /// <summary>
@@ -271,11 +265,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _messageReact, ref eventCallbacksCache))
                     {
                         _messageReact = value;
-                        this.SetHandler<IgbChatMessageReactionEventArgs>(this.Name, "MessageReact", value, (args) =>
-                        {
-                            OnHandlingMessageReact(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageReactionEventArgs>(this.Name, "MessageReact", value);
                         this.OnRefChanged("MessageReact", null, "event:::MessageReact", true, false, (refName, oldValue, newValue) =>
                         {
                             this._messageReactRef = refName;
@@ -328,7 +318,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingAttachmentClick(IgbChatMessageAttachmentEventArgs args);
         private EventCallback<IgbChatMessageAttachmentEventArgs>? _attachmentClick = null;
 
         /// <summary>
@@ -348,11 +337,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _attachmentClick, ref eventCallbacksCache))
                     {
                         _attachmentClick = value;
-                        this.SetHandler<IgbChatMessageAttachmentEventArgs>(this.Name, "AttachmentClick", value, (args) =>
-                        {
-                            OnHandlingAttachmentClick(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageAttachmentEventArgs>(this.Name, "AttachmentClick", value);
                         this.OnRefChanged("AttachmentClick", null, "event:::AttachmentClick", true, false, (refName, oldValue, newValue) =>
                         {
                             this._attachmentClickRef = refName;
@@ -405,7 +390,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTypingChange(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _typingChange = null;
 
         /// <summary>
@@ -425,11 +409,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _typingChange, ref eventCallbacksCache))
                     {
                         _typingChange = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "TypingChange", value, (args) =>
-                        {
-                            OnHandlingTypingChange(args);
-
-                        });
+                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "TypingChange", value);
                         this.OnRefChanged("TypingChange", null, "event:::TypingChange", true, false, (refName, oldValue, newValue) =>
                         {
                             this._typingChangeRef = refName;
@@ -482,7 +462,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _inputFocus = null;
 
         /// <summary>
@@ -502,11 +481,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _inputFocus, ref eventCallbacksCache))
                     {
                         _inputFocus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputFocus", value, (args) =>
-                        {
-                            OnHandlingInputFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputFocus", value);
                         this.OnRefChanged("InputFocus", null, "event:::InputFocus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputFocusRef = refName;
@@ -559,7 +534,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _inputBlur = null;
 
         /// <summary>
@@ -579,11 +553,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _inputBlur, ref eventCallbacksCache))
                     {
                         _inputBlur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputBlur", value, (args) =>
-                        {
-                            OnHandlingInputBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputBlur", value);
                         this.OnRefChanged("InputBlur", null, "event:::InputBlur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputBlurRef = refName;
@@ -636,7 +606,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _inputChange = null;
 
         /// <summary>
@@ -656,11 +625,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _inputChange, ref eventCallbacksCache))
                     {
                         _inputChange = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputChange", value, (args) =>
-                        {
-                            OnHandlingInputChange(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputChange", value);
                         this.OnRefChanged("InputChange", null, "event:::InputChange", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputChangeRef = refName;

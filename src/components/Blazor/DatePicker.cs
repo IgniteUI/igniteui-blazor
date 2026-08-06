@@ -749,7 +749,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpening(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opening = null;
 
         /// <summary>
@@ -769,11 +768,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
                     {
                         _opening = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value, (args) =>
-                        {
-                            OnHandlingOpening(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -826,7 +821,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpened(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opened = null;
 
         /// <summary>
@@ -846,11 +840,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
                     {
                         _opened = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value, (args) =>
-                        {
-                            OnHandlingOpened(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -903,7 +893,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
 
         /// <summary>
@@ -923,11 +912,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -980,7 +965,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
 
         /// <summary>
@@ -1000,11 +984,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -1057,7 +1037,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentDateValueChangedEventArgs args);
         private EventCallback<IgbComponentDateValueChangedEventArgs>? _change = null;
 
         /// <summary>
@@ -1079,8 +1058,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(DateTime?);
 
                             {
@@ -1167,7 +1144,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbComponentDateValueChangedEventArgs args);
         private EventCallback<IgbComponentDateValueChangedEventArgs>? _input = null;
 
         /// <summary>
@@ -1187,11 +1163,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
                     {
                         _input = value;
-                        this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;

@@ -328,7 +328,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingResizeStart(IgbSplitterResizeEventArgs args);
         private EventCallback<IgbSplitterResizeEventArgs>? _resizeStart = null;
 
         /// <summary>
@@ -348,11 +347,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _resizeStart, ref eventCallbacksCache))
                     {
                         _resizeStart = value;
-                        this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "ResizeStart", value, (args) =>
-                        {
-                            OnHandlingResizeStart(args);
-
-                        });
+                        this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "ResizeStart", value);
                         this.OnRefChanged("ResizeStart", null, "event:::ResizeStart", true, false, (refName, oldValue, newValue) =>
                         {
                             this._resizeStartRef = refName;
@@ -405,7 +400,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingResizing(IgbSplitterResizeEventArgs args);
         private EventCallback<IgbSplitterResizeEventArgs>? _resizing = null;
 
         /// <summary>
@@ -425,11 +419,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _resizing, ref eventCallbacksCache))
                     {
                         _resizing = value;
-                        this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "Resizing", value, (args) =>
-                        {
-                            OnHandlingResizing(args);
-
-                        });
+                        this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "Resizing", value);
                         this.OnRefChanged("Resizing", null, "event:::Resizing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._resizingRef = refName;
@@ -482,7 +472,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingResizeEnd(IgbSplitterResizeEventArgs args);
         private EventCallback<IgbSplitterResizeEventArgs>? _resizeEnd = null;
 
         /// <summary>
@@ -502,11 +491,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _resizeEnd, ref eventCallbacksCache))
                     {
                         _resizeEnd = value;
-                        this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "ResizeEnd", value, (args) =>
-                        {
-                            OnHandlingResizeEnd(args);
-
-                        });
+                        this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "ResizeEnd", value);
                         this.OnRefChanged("ResizeEnd", null, "event:::ResizeEnd", true, false, (refName, oldValue, newValue) =>
                         {
                             this._resizeEndRef = refName;

@@ -237,7 +237,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingRemove(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _remove = null;
 
         /// <summary>
@@ -257,11 +256,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _remove, ref eventCallbacksCache))
                     {
                         _remove = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", value, (args) =>
-                        {
-                            OnHandlingRemove(args);
-
-                        });
+                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", value);
                         this.OnRefChanged("Remove", null, "event:::Remove", true, false, (refName, oldValue, newValue) =>
                         {
                             this._removeRef = refName;
@@ -314,7 +309,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSelect(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _select = null;
 
         /// <summary>
@@ -337,8 +331,6 @@ namespace IgniteUI.Blazor.Controls
                         _select = value;
                         this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Select", value, (args) =>
                         {
-                            OnHandlingSelect(args);
-
                             var newValueSelected = default(bool);
 
                             {

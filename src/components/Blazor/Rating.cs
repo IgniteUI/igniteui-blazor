@@ -444,7 +444,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _change = null;
 
         /// <summary>
@@ -466,8 +465,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(double);
 
                             {
@@ -554,7 +551,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingHover(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _hover = null;
 
         /// <summary>
@@ -574,11 +570,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _hover, ref eventCallbacksCache))
                     {
                         _hover = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", value, (args) =>
-                        {
-                            OnHandlingHover(args);
-
-                        });
+                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", value);
                         this.OnRefChanged("Hover", null, "event:::Hover", true, false, (refName, oldValue, newValue) =>
                         {
                             this._hoverRef = refName;
