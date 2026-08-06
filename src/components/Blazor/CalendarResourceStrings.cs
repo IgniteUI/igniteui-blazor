@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The localized strings used by the calendar views, exposed through the <c>ResourceStrings</c>
+    /// property of <see cref="IgbCalendar"/> and <see cref="IgbDatePicker"/>.
+    /// </summary>
     public partial class IgbCalendarResourceStrings : BaseRendererElement
     {
         public override string Type { get { return "WebCalendarResourceStrings"; } }
@@ -17,6 +21,10 @@ namespace IgniteUI.Blazor.Controls
         private string _selectMonth;
 
         partial void OnSelectMonthChanging(ref string newValue);
+
+        /// <summary>
+        /// Text for the accessible label of the header button that switches the calendar to the months view.
+        /// </summary>
         [Parameter]
         public string SelectMonth
         {
@@ -34,6 +42,10 @@ namespace IgniteUI.Blazor.Controls
         private string _selectYear;
 
         partial void OnSelectYearChanging(ref string newValue);
+
+        /// <summary>
+        /// Text for the accessible label of the header button that switches the calendar to the years view.
+        /// </summary>
         [Parameter]
         public string SelectYear
         {
@@ -51,6 +63,11 @@ namespace IgniteUI.Blazor.Controls
         private string _selectDate;
 
         partial void OnSelectDateChanging(ref string newValue);
+
+        /// <summary>
+        /// Title shown in the calendar header until a date is selected, in single selection mode.
+        /// Defaults to <c>Select Date</c>.
+        /// </summary>
         [Parameter]
         public string SelectDate
         {
@@ -68,6 +85,11 @@ namespace IgniteUI.Blazor.Controls
         private string _selectRange;
 
         partial void OnSelectRangeChanging(ref string newValue);
+
+        /// <summary>
+        /// Title shown in the calendar header until a range is selected, in range selection mode.
+        /// Defaults to <c>Select Range</c>.
+        /// </summary>
         [Parameter]
         public string SelectRange
         {
@@ -85,6 +107,13 @@ namespace IgniteUI.Blazor.Controls
         private string _selectedDate;
 
         partial void OnSelectedDateChanging(ref string newValue);
+
+        /// <summary>
+        /// The label for the currently selected date.
+        /// </summary>
+        /// <remarks>
+        /// Not mapped to any string in the current localization pipeline and has no effect.
+        /// </remarks>
         [Parameter]
         public string SelectedDate
         {
@@ -102,6 +131,11 @@ namespace IgniteUI.Blazor.Controls
         private string _startDate;
 
         partial void OnStartDateChanging(ref string newValue);
+
+        /// <summary>
+        /// Placeholder shown in the calendar header in place of the range start date until one is
+        /// selected. Defaults to <c>Start</c>.
+        /// </summary>
         [Parameter]
         public string StartDate
         {
@@ -119,6 +153,11 @@ namespace IgniteUI.Blazor.Controls
         private string _endDate;
 
         partial void OnEndDateChanging(ref string newValue);
+
+        /// <summary>
+        /// Placeholder shown in the calendar header in place of the range end date until one is
+        /// selected. Defaults to <c>End</c>.
+        /// </summary>
         [Parameter]
         public string EndDate
         {
@@ -136,6 +175,11 @@ namespace IgniteUI.Blazor.Controls
         private string _previousMonth;
 
         partial void OnPreviousMonthChanging(ref string newValue);
+
+        /// <summary>
+        /// The label of the navigation button that moves the days view one month back.
+        /// Defaults to <c>Previous Month</c>.
+        /// </summary>
         [Parameter]
         public string PreviousMonth
         {
@@ -153,6 +197,11 @@ namespace IgniteUI.Blazor.Controls
         private string _nextMonth;
 
         partial void OnNextMonthChanging(ref string newValue);
+
+        /// <summary>
+        /// The label of the navigation button that moves the days view one month forward.
+        /// Defaults to <c>Next Month</c>.
+        /// </summary>
         [Parameter]
         public string NextMonth
         {
@@ -170,6 +219,11 @@ namespace IgniteUI.Blazor.Controls
         private string _previousYear;
 
         partial void OnPreviousYearChanging(ref string newValue);
+
+        /// <summary>
+        /// The label of the navigation button that moves the months view one year back.
+        /// Defaults to <c>Previous Year</c>.
+        /// </summary>
         [Parameter]
         public string PreviousYear
         {
@@ -187,6 +241,11 @@ namespace IgniteUI.Blazor.Controls
         private string _nextYear;
 
         partial void OnNextYearChanging(ref string newValue);
+
+        /// <summary>
+        /// The label of the navigation button that moves the months view one year forward.
+        /// Defaults to <c>Next Year</c>.
+        /// </summary>
         [Parameter]
         public string NextYear
         {
@@ -204,6 +263,11 @@ namespace IgniteUI.Blazor.Controls
         private string _previousYears;
 
         partial void OnPreviousYearsChanging(ref string newValue);
+
+        /// <summary>
+        /// The label of the navigation button that moves the years view one page back.
+        /// Defaults to <c>Previous {0} Years</c>, where <c>{0}</c> is the number of years on a page.
+        /// </summary>
         [Parameter]
         public string PreviousYears
         {
@@ -221,6 +285,11 @@ namespace IgniteUI.Blazor.Controls
         private string _nextYears;
 
         partial void OnNextYearsChanging(ref string newValue);
+
+        /// <summary>
+        /// The label of the navigation button that moves the years view one page forward.
+        /// Defaults to <c>Next {0} Years</c>, where <c>{0}</c> is the number of years on a page.
+        /// </summary>
         [Parameter]
         public string NextYears
         {
@@ -238,6 +307,10 @@ namespace IgniteUI.Blazor.Controls
         private string _weekLabel;
 
         partial void OnWeekLabelChanging(ref string newValue);
+
+        /// <summary>
+        /// The header of the week numbers column in the days view. Defaults to <c>Wk</c>.
+        /// </summary>
         [Parameter]
         public string WeekLabel
         {
