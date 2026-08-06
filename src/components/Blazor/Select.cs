@@ -618,8 +618,6 @@ namespace IgniteUI.Blazor.Controls
 
                             {
                                 newValueValue = (string?)(args.Detail.Value);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -1131,8 +1129,6 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-
-        partial void OnEventUpdatingValue(string? oldValue, ref string? newValue);
 
         internal override void SerializeCore(RendererSerializer ser)
         {

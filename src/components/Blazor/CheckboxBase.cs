@@ -411,8 +411,6 @@ namespace IgniteUI.Blazor.Controls
 
                             {
                                 newValueChecked = (bool)(args.Detail.Checked);
-                                ;
-                                OnEventUpdatingChecked(this._checked, ref newValueChecked);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -616,8 +614,6 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-
-        partial void OnEventUpdatingChecked(bool oldValue, ref bool newValue);
 
         internal override void SerializeCore(RendererSerializer ser)
         {

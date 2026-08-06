@@ -431,8 +431,6 @@ namespace IgniteUI.Blazor.Controls
                             if (this.Selection == CalendarSelection.Single)
                             {
                                 newValueValue = (DateTime)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -450,8 +448,6 @@ namespace IgniteUI.Blazor.Controls
                             if (this.Selection != CalendarSelection.Single)
                             {
                                 newValueValues = (DateTime[])(DowncastArray<DateTime>(args.Detail));
-                                ;
-                                OnEventUpdatingValues(this._values, ref newValueValues);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -510,10 +506,6 @@ namespace IgniteUI.Blazor.Controls
                 this._change = null;
             }
         }
-
-        partial void OnEventUpdatingValue(DateTime oldValue, ref DateTime newValue);
-
-        partial void OnEventUpdatingValues(DateTime[] oldValue, ref DateTime[] newValue);
 
         internal override void SerializeCore(RendererSerializer ser)
         {

@@ -367,8 +367,6 @@ namespace IgniteUI.Blazor.Controls
 
                             {
                                 newValueSelected = (bool)(args.Detail);
-                                ;
-                                OnEventUpdatingSelected(this._selected, ref newValueSelected);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -418,8 +416,6 @@ namespace IgniteUI.Blazor.Controls
                 this._select = null;
             }
         }
-
-        partial void OnEventUpdatingSelected(bool oldValue, ref bool newValue);
 
         internal override void SerializeCore(RendererSerializer ser)
         {
