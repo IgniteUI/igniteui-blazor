@@ -1,189 +1,116 @@
 ---
 name: igniteui-blazor-grids
-description: "Provides guidance on all Ignite UI for Blazor data grid types (Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, Pivot Grid) including setup, column configuration, sorting, filtering, selection, editing, grouping, summaries, toolbar, export, paging, remote data, and state persistence. Use when users ask about grids, tables, data grids, tabular data display, cell editing, row selection, column pinning, column hiding, grouping rows, pivot tables, tree-structured data, hierarchical data, master-detail views, read-only data display, or exporting grid data. Do NOT use for non-grid UI components (forms, dialogs, navigation, charts) - use igniteui-blazor-components instead. Do NOT use for theming or styling - use igniteui-blazor-theming instead."
+description: "All Ignite UI for Blazor data grids — Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, Pivot Grid: setup, columns and templates, sorting, filtering, selection, cell and row editing, grouping, summaries, toolbar, Excel/CSV export, paging, remote and server-side data, virtualization, sizing, state persistence, and migrating Grid Lite to IgbGrid. Use for grids, tables, tabular data, cell editing, row selection, column pinning or hiding, grouped rows, pivot tables, tree or hierarchical data, master-detail views, and grid export. For non-grid components use igniteui-blazor-components; for theming use igniteui-blazor-theming."
 user-invocable: true
 ---
 
-# Ignite UI for Blazor - Grids Skill
+# Ignite UI for Blazor - Data Grids
 
+## How to use this skill
 
-## MANDATORY AGENT PROTOCOL - YOU MUST FOLLOW THIS BEFORE PRODUCING ANY OUTPUT
+1. Pick the grid type from the [decision guide](#choosing-a-grid-type).
+2. Read **every** reference file matching the request (in one parallel batch) — a request often spans several, e.g. remote paging plus editing needs `paging-remote.md` **and** `editing.md`.
+3. If the `igniteui-cli` MCP server is available, call `get_doc(framework: "blazor", name: "<slug>")` for the grid and each feature, and `search_api` / `get_api_reference` for exact signatures. MCP output wins over this skill on any conflict.
+4. Write code from what you read. Grid APIs differ sharply between Ignite UI's Angular, React, and Blazor products — do not carry syntax over from another framework, and say so plainly when something is not covered rather than guessing.
 
-**This file is a routing hub only. It contains NO code examples and NO API details.**
+**Without the MCP server this skill still works** — the reference files are self-contained. Do not configure MCP unprompted; if the user wants it, see [MCP server (optional)](#mcp-server-optional).
 
-> **DO NOT write any code, component parameters, event names, or property names from memory.**
-> Grid APIs change significantly between versions. Anything generated without reading the reference files will be wrong.
+### Routing table
 
-You are **required** to complete ALL of the following steps before producing any grid-related code or answer:
-
-**STEP 1 - Identify the grid type.**
-Use the Grid Selection Decision Guide below. If the grid type is not explicitly stated, infer it from context or ask.
-
-**STEP 2 - Identify every task category involved.**
-Map the user's request to one or more rows in the Task → Reference File table below. A single request often spans multiple categories (e.g., remote paging AND editing requires reading both `paging-remote.md` AND `editing.md`).
-
-**STEP 3 - Read every identified reference file in full (PARALLEL).**
-Call `read_file` (or equivalent) on **all** reference files identified in Step 2 **in a single parallel batch** - do NOT read them one at a time sequentially. You must do this even if you believe you already know the answer. Do not skip, skim, or partially read a reference file.
-
-**STEP 4 - Extract doc slugs, then call `get_doc` and API tools for the relevant grid and each feature.**
-Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. It returns the relevant grid docs, examples, and feature guidance. Do NOT skip this step.
-
-If a reference file does not list a slug for the requested grid feature, call `search_docs(framework: "blazor", query: "<grid feature>")` to find the correct doc. If no Blazor doc exists, say that the feature is not covered rather than guessing.
-
-Use `search_api` and `get_api_reference` for Blazor grid API details when property names, methods, events, enums, or signatures are needed.
-
-**STEP 5 - Only then produce output.**
-Base your code and explanation exclusively on what you read in Steps 3–4. If the reference files or MCP docs do not cover something, say so explicitly rather than guessing.
-
-### Task → Reference File
-
-| Task | Reference file |
+| Task | Read |
 |---|---|
-| Grid type selection, quick start, column configuration, column templates, column groups, multi-row layout, pinning, sorting UI, filtering UI, selection | [`references/structure.md`](./references/structure.md) |
-| Grouping, summaries, cell merging, toolbar, export, virtualization & performance, row drag, action strip, master-detail, clipboard | [`references/features.md`](./references/features.md) |
-| Tree Grid specifics, Hierarchical Grid specifics, Grid Lite setup, Grid Lite data operations, Pivot Grid setup | [`references/types.md`](./references/types.md) |
-| Programmatic sorting / filtering / grouping, `@ref` access, custom strategies | [`references/data-operations.md`](./references/data-operations.md) |
-| Cell editing, row editing, validation, custom editors | [`references/editing.md`](./references/editing.md) |
-| Paging, remote data, server-side ops, noop strategies, virtual scroll, multi-grid coordination | [`references/paging-remote.md`](./references/paging-remote.md) |
-| State persistence (IgbGridState, feature serialization, save/restore per grid type) | [`references/state.md`](./references/state.md) |
-| Grid sizing (width, height, column sizing, null/px/% modes, cell spacing CSS variables) | [`references/sizing.md`](./references/sizing.md) |
+| Quick start, columns, data types, cell/header/editor templates, column groups, multi-row layout, pinning, sorting UI, filtering UI, selection | [`references/structure.md`](./references/structure.md) |
+| Grouping, summaries, cell merging, toolbar, Excel/CSV export, virtualization, row drag, action strip, master-detail, clipboard | [`references/features.md`](./references/features.md) |
+| Grid Lite, Tree Grid, Hierarchical Grid, Pivot Grid specifics | [`references/types.md`](./references/types.md) |
+| Programmatic sort / filter / group, `@ref` access, custom strategies | [`references/data-operations.md`](./references/data-operations.md) |
+| Cell editing, row editing, validation, custom editors, add/delete rows | [`references/editing.md`](./references/editing.md) |
+| Paging, remote data, server-side operations, virtual scrolling | [`references/paging-remote.md`](./references/paging-remote.md) |
+| State persistence (`IgbGridState`, save/restore) | [`references/state.md`](./references/state.md) |
+| Grid width/height, column sizing, row height, density | [`references/sizing.md`](./references/sizing.md) |
+| Migrating `IgbGridLite` → `IgbGrid` | [`references/grid-migration.md`](./references/grid-migration.md) |
 
-> **When in doubt, read more rather than fewer reference files.** The cost of an unnecessary file read is negligible; the cost of hallucinated API usage is a broken application.
+## Choosing a grid type
 
----
+Ask in order:
+
+1. **Read-only display** with sorting, filtering, and virtualization but no editing, selection, or paging → **`IgbGridLite`** (MIT, separate package).
+2. **Pivot analytics** — rows/columns/values users can drag to reshape → **`IgbPivotGrid`**.
+3. **Parent-child where each level has a different schema** (Companies → Departments → Employees) → **`IgbHierarchicalGrid`**.
+4. **Parent-child within one schema** (`ManagerId` self-reference, or a nested children array) → **`IgbTreeGrid`**.
+5. **Flat table needing enterprise features** (editing, grouping, paging, export) → **`IgbGrid`**.
+
+When Grid Lite's capabilities run out, the upgrade path is always `IgbGrid` — never a non-grid component. See [`grid-migration.md`](./references/grid-migration.md).
+
+| Grid | Module | Package |
+|---|---|---|
+| `IgbGridLite` | `IgbGridLiteModule` | `IgniteUI.Blazor.GridLite` (MIT) |
+| `IgbGrid` | `IgbGridModule` | `IgniteUI.Blazor` / `.Trial` |
+| `IgbTreeGrid` | `IgbTreeGridModule` | `IgniteUI.Blazor` / `.Trial` |
+| `IgbHierarchicalGrid` | `IgbHierarchicalGridModule` | `IgniteUI.Blazor` / `.Trial` |
+| `IgbPivotGrid` | `IgbPivotGridModule` | `IgniteUI.Blazor` / `.Trial` |
+
+Grids are **not** included in `IgniteUI.Blazor.Lite`.
 
 ## Prerequisites
 
-Before using any Ignite UI for Blazor grid component you must have:
-
-| Requirement | Details |
+| Requirement | Value |
 |---|---|
-| .NET SDK | .NET 8+, 9+, or 10+ |
-| NuGet package | `IgniteUI.Blazor` (licensed) for all full-featured grids; `IgniteUI.Blazor.GridLite` (MIT, separate NuGet) for Grid Lite only - grids are **not** included in `IgniteUI.Blazor.Lite` |
-| Service registration | `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule), ...)` in **Program.cs** with required module types |
-| Using directive | `@using IgniteUI.Blazor.Controls` in **_Imports.razor** |
-| CSS theme (IgbGrid / IgbTreeGrid / IgbHierarchicalGrid / IgbPivotGrid) | Add **both** in **index.html** / **_Host.cshtml**: base theme `<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />` **and** grid-specific `<link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />` (always required when any full-featured grid is used) |
-| CSS theme (IgbGridLite) | `<link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />` — from the `IgniteUI.Blazor.GridLite` package; do **not** use the paths above |
-| JS interop script | `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` in **index.html** or **_Host.cshtml** |
-| Ignite UI CLI MCP | The **Ignite UI CLI MCP server** (`igniteui-cli`) available as a tool provider - see [`references/mcp-setup.md`](./references/mcp-setup.md) |
+| .NET SDK | 8.0 or later |
+| Registration | `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule), …)` in `Program.cs` |
+| Using directive | `@using IgniteUI.Blazor.Controls` in `_Imports.razor` |
+| CSS — full grids | **both** `_content/IgniteUI.Blazor/themes/light/bootstrap.css` **and** `_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css` |
+| CSS — Grid Lite | `_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css` only — not the two above |
+| Script | `_content/IgniteUI.Blazor/app.bundle.js` before the Blazor framework script |
 
-> **AGENT INSTRUCTION - MCP Server Setup (REQUIRED)**
->
-> Before using any Ignite UI CLI MCP tools, you MUST verify the MCP server is available
-> by calling `list_components(framework: "blazor", filter: "grid")` or `search_docs(framework: "blazor", query: "grid")`.
-> If the tool is not available or the call fails, you MUST automatically configure it by following the setup steps in [`references/mcp-setup.md`](./references/mcp-setup.md).
->
-> After writing the file, inform the user that the MCP server has been configured and they may need to reload the editor for the tools to activate. Do NOT skip this step or ask the user to do it manually.
+The grid-specific stylesheet is easy to miss and is required whenever any full-featured grid is on the page. Full setup detail lives in the components skill's [`setup.md`](../igniteui-blazor-components/references/setup.md).
 
-If these are not yet in place, read the `igniteui-blazor-components` skill's `references/setup.md` first.
+## Feature availability
 
----
-
-## Grid Selection Decision Guide
-
-Ignite UI for Blazor has **five grid types**. Ask these questions in order:
-
-1. **Does the user need a lightweight, read-only data display** with sorting, filtering, and virtualization but no editing, selection, or paging? → **Grid Lite** (`IgbGridLite`, MIT licensed, separate `IgniteUI.Blazor.GridLite` package). **If the user later needs features beyond Grid Lite's capabilities, upgrade strictly to `IgbGrid`** - never recommend non-grid components as a substitute.
-2. **Does the user need pivot-table analytics** (rows/columns/values/aggregations that users can drag-and-drop to reshape)? → **Pivot Grid** (`IgbPivotGrid`)
-3. **Does the data have parent-child relationships where each level has a DIFFERENT schema** (e.g., Companies → Departments → Employees)? → **Hierarchical Grid** (`IgbHierarchicalGrid`)
-4. **Does the data have parent-child relationships within a SINGLE schema** (e.g., Employees with a `ManagerId` field, or nested children arrays)? → **Tree Grid** (`IgbTreeGrid`)
-5. **Is the data a flat list/table with enterprise features needed** (editing, grouping, paging, export, etc.)? → **Flat Grid** (`IgbGrid`)
-
-After choosing the grid type, **you must still complete Steps 2–5 from the mandatory protocol above** - return to the routing table and read every applicable `references/` file before writing any code.
-
-> **AGENT INSTRUCTION - Documentation URL Pattern**: For grid-specific topics (sorting, filtering, editing, paging, etc.), docs URLs follow this naming pattern per grid type:
-> - Grid Lite: `.../components/grid-lite/{topic}`
-> - Flat Grid: `.../components/grids/grid/{topic}`
-> - Tree Grid: `.../components/grids/treegrid/{topic}`
-> - Hierarchical Grid: `.../components/grids/hierarchicalgrid/{topic}`
-> - Pivot Grid: `.../components/grids/pivotgrid/{topic}`
-
----
-
-## Grid Types & Registration
-
-| Grid Component | Module to Register | Package | Typical Use Case |
-|---|---|---|---|
-| `IgbGridLite` | `IgbGridLiteModule` | `IgniteUI.Blazor.GridLite` (MIT) | Read-only display with sorting, filtering, virtualization - no editing or selection |
-| `IgbGrid` | `IgbGridModule` | `IgniteUI.Blazor` (Commercial) | Flat tabular data, master-detail, CRUD, dashboards |
-| `IgbTreeGrid` | `IgbTreeGridModule` | `IgniteUI.Blazor` (Commercial) | Self-referencing tree data (org charts, file trees, BOM) |
-| `IgbHierarchicalGrid` | `IgbHierarchicalGridModule` | `IgniteUI.Blazor` (Commercial) | Multi-schema parent-child relationships (customers → orders → line items) |
-| `IgbPivotGrid` | `IgbPivotGridModule` | `IgniteUI.Blazor` (Commercial) | Pivot table analytics, aggregations across dimensions |
-
-> **AGENT INSTRUCTION - Grid Lite upgrade path**: When a user is working with `IgbGridLite` and their requirements exceed Grid Lite's capabilities (editing, selection, paging, grouping, summaries, export), you **MUST** recommend upgrading to `IgbGrid` from the `IgniteUI.Blazor` package. Never suggest a different component type - the upgrade path from Grid Lite is always to `IgbGrid`.
-
-### Registration example
-
-```csharp
-// Program.cs - register only the modules you use
-builder.Services.AddIgniteUIBlazor(
-    typeof(IgbGridLiteModule),         // Grid Lite (IgniteUI.Blazor.GridLite package)
-    typeof(IgbGridModule),             // Flat Grid
-    typeof(IgbTreeGridModule),         // Tree Grid
-    typeof(IgbHierarchicalGridModule), // Hierarchical Grid
-    typeof(IgbPivotGridModule)         // Pivot Grid
-);
-```
-
----
-
-## Feature Availability per Grid Type
-
-| Feature | IgbGridLite | IgbGrid | IgbTreeGrid | IgbHierarchicalGrid | IgbPivotGrid |
+| Feature | GridLite | Grid | TreeGrid | HierarchicalGrid | PivotGrid |
 |---|---|---|---|---|---|
-| Column sorting | ✅ | ✅ | ✅ | ✅ | ✅ (dimension-based) |
-| Column filtering | ✅ | ✅ | ✅ | ✅ | ✅ (dimension-based) |
-| Row selection | ❌ | ✅ | ✅ (cascade) | ✅ | ❌ |
-| Cell selection | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Column selection | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Grouping | ❌ | ✅ **Exclusive** | ❌ | ❌ | N/A (use dimensions) |
-| Summaries | ❌ | ✅ | ✅ | ✅ | N/A (built-in aggregations) |
-| Cell editing | ❌ | ✅ | ✅ | ✅ | ❌ (read-only) |
-| Row editing | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Row adding | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Batch editing | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Sorting | ✅ | ✅ | ✅ | ✅ | dimension-based |
+| Filtering | ✅ | ✅ | ✅ | ✅ | dimension-based |
+| Column hiding / resizing | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Row / cell / column selection | ❌ | ✅ | ✅ (cascade) | ✅ | ❌ |
+| Cell / row editing, row adding | ❌ | ✅ | ✅ | ✅ | ❌ |
+| Grouping | ❌ | ✅ **only** | ❌ | ❌ | use dimensions |
+| Summaries | ❌ | ✅ | ✅ | ✅ | built-in aggregations |
 | Paging | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Column pinning | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Column hiding | ✅ | ✅ | ✅ | ✅ | ❌ |
-| Column moving | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Column resizing | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Column pinning / moving | ❌ | ✅ | ✅ | ✅ | ❌ |
 | Multi-column headers | ❌ | ✅ | ✅ | ✅ | ❌ |
 | Row dragging | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Master-detail | ❌ | ✅ **Exclusive** | ❌ | N/A (use RowIsland) | ❌ |
-| Toolbar | ❌ | ✅ | ✅ | ✅ | ❌ |
-| Export (Excel/CSV) | ❌ | ✅ | ✅ | ✅ | ❌ |
+| Master-detail | ❌ | ✅ **only** | ❌ | use `IgbRowIsland` | ❌ |
+| Toolbar, Excel/CSV export | ❌ | ✅ | ✅ | ✅ | ❌ |
+| Cell merging | ❌ | ✅ **only** | ❌ | ❌ | ❌ |
 | State persistence | ❌ | ✅ | ✅ | ✅ | ✅ |
 | Virtualization | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Cell merging | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Load on demand | ❌ | ❌ | ✅ (JS interop via `LoadChildrenOnDemandScript`) | ✅ (`GridCreatedScript` on `IgbRowIsland` + JS interop) | ❌ |
-| Remote data ops | `DataPipelineConfiguration` | Events + noop strategies | Events + noop strategies | Events + noop strategies | N/A |
+| Load on demand | ❌ | ❌ | ✅ via `LoadChildrenOnDemandScript` | ✅ via `GridCreatedScript` | ❌ |
+| Remote data ops | `DataPipelineConfiguration` | events + noop strategies | events + noop strategies | events + noop strategies | ❌ |
 
----
+**Batch editing is not available in Blazor** on any grid type. Supported editing modes are cell editing and row editing only — never generate batch-editing code.
 
-## Key Blazor-Specific Notes
+## Grid-wide rules
 
-> **AGENT INSTRUCTION - Blazor API Lookup**
->
-> Use `search_api` and `get_api_reference` for Blazor grid property names, event names, method signatures, enums, and related API details.
+- **Set `PrimaryKey`.** Selection, editing, row-targeted APIs, and state persistence all depend on it.
+- **Set `Height`.** Row virtualization only activates with a fixed height; without one every row renders to the DOM.
+- **Prefer `AutoGenerate="false"`** so column order, types, and templates are explicit.
+- **Set `DataType` on every column** — it drives the filter conditions, sort comparison, editor, and formatting.
+- **`Data` must be a materialized collection** (`List<T>`, `T[]`), not `IQueryable` or JSON.
+- **Use `@ref` for programmatic access**, and only after first render — the reference is `null` in `OnInitialized`.
+- **Do not set column `Width` unless asked.** Without widths the grid distributes space proportionally and fills the container; fixed widths usually leave a gap on the right.
+- Docs slugs follow `components/grid-lite/{topic}` and `components/grids/{grid|treegrid|hierarchicalgrid|pivotgrid}/{topic}`.
 
-> **AGENT INSTRUCTION - `@ref` for programmatic access**
->
-> Use `@ref` to obtain a C# reference to the grid, then call methods on it:
->
-> ```razor
-> <IgbGrid @ref="Grid" />
-> @code { public IgbGrid Grid { get; set; } }
-> ```
+## MCP server (optional)
 
-> **AGENT INSTRUCTION - Batch Editing is NOT available for Blazor**
->
-> The Ignite UI for Blazor grid does **not** support batch editing. Supported editing modes are Cell editing and Row editing only. Do not suggest or generate batch editing code.
+`igniteui-cli` provides `list_components`, `get_doc`, `search_docs`, `search_api`, `get_api_reference`, all taking `framework: "blazor"`. To enable it, add to `.vscode/mcp.json` (VS Code, key `servers`) or `.cursor/mcp.json` / `claude_desktop_config.json` (key `mcpServers`):
 
----
+```json
+{ "servers": { "igniteui-cli": { "command": "npx", "args": ["-y", "igniteui-cli", "mcp"] } } }
+```
 
-## Related Skills
+Reload the editor afterwards. JetBrains: **Settings → Tools → AI Assistant → MCP Servers**, command `npx`, arguments `igniteui-cli mcp`.
 
-| Skill | Use for |
-|---|---|
-| `igniteui-blazor-components` | All non-grid `IgniteUI.Blazor.Lite` components (forms, layout, data display, feedback) and visualizations/charts available in `IgniteUI.Blazor` |
-| `igniteui-blazor-theming` | CSS custom properties, palettes, typography, theme switching, dark/light mode |
+## Related skills
+
+- [`igniteui-blazor-components`](../igniteui-blazor-components/SKILL.md) — every non-grid component, plus charts
+- [`igniteui-blazor-theming`](../igniteui-blazor-theming/SKILL.md) — themes, palettes, design tokens

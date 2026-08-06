@@ -1,260 +1,125 @@
 ---
 name: igniteui-blazor-theming
-description: "Covers theming and visual customization for Ignite UI for Blazor: choosing and switching built-in themes (Bootstrap, Material, Fluent, Indigo - light and dark variants), customizing component appearance with CSS custom properties (design tokens), using the igniteui-theming MCP server to generate component themes and palettes, applying custom palettes, setting roundness/spacing/sizing tokens globally, dark mode switching, scoped component theming, and CSS parts. Use when users ask about changing the look and feel of Ignite UI Blazor components, applying a color scheme, generating CSS variables, using CSS parts, or customizing design tokens. Do NOT use for grid data features or component configuration - use igniteui-blazor-grids or igniteui-blazor-components instead."
+description: "Theming and visual customization for Ignite UI for Blazor: choosing and switching the built-in Bootstrap, Material, Fluent and Indigo themes in light or dark, scoping a theme to part of the page with IgbThemeProvider, generating palettes and component design tokens with the igniteui-theming MCP server, overriding CSS custom properties, using CSS shadow parts, dark mode, and global roundness/spacing/size tokens. Use when changing the look and feel of Ignite UI Blazor components, applying a color scheme, or writing component CSS. For component configuration use igniteui-blazor-components; for grid data features use igniteui-blazor-grids."
 user-invocable: true
 ---
 
-# Ignite UI for Blazor - Theming and Styling
+# Ignite UI for Blazor - Theming & Styling
 
-## Description
+Blazor theming is **CSS-first**: a built-in theme stylesheet plus CSS custom properties. There is no Sass step. Ignite UI components render as web components with `igc-*` tag names, so every CSS selector targets `igc-button`, never `IgbButton`.
 
-This skill teaches AI agents how to theme Ignite UI for Blazor applications using built-in CSS theme files, CSS custom properties, CSS shadow parts, and the **Ignite UI Theming MCP server**. It covers theme switching, palette generation, component-level design tokens, global layout tokens, and scoped CSS customization.
+## How to use this skill
 
-## Prerequisites
+1. Identify the layer you need to change — the table below.
+2. For anything version-specific (palette variables, component token names, layout token CSS), call the `igniteui-theming` MCP tools rather than writing names from memory. Token names are not guessable from component names.
+3. Read [`references/common-patterns.md`](./references/common-patterns.md) for theme switching, dark mode, scoped overrides, and `::part()` recipes.
 
-- A Blazor project using Ignite UI for Blazor components
-- A theme CSS file and `_content/IgniteUI.Blazor/app.bundle.js` runtime script linked in the host page (see [`references/common-patterns.md`](./references/common-patterns.md))
-- The **Ignite UI Theming MCP server** (`igniteui-theming`) available as a tool provider
+**Without the MCP server this skill still works** for theme selection, `IgbThemeProvider`, dark mode, and CSS structure. What it cannot give you is the exact set of `--ig-<component>-<token>` names — in that case say the token list was not verified, or read the generated theme CSS in `_content/IgniteUI.Blazor/themes/` to confirm. Do not configure MCP unprompted; see [MCP server (optional)](#mcp-server-optional).
 
-> **AGENT INSTRUCTION - MCP Server Setup (REQUIRED)**
->
-> Before using any theming tools, you MUST verify the MCP server is available
-> by calling any lightweight theming MCP tool. 
-> This skill is already scoped to Ignite UI for Blazor, so use `platform: "blazor"`
-> in theming tool calls. If the theming tool is not available or the call fails,
-> you MUST automatically configure it by following the setup process steps described below.
->
-> After writing the file, inform the user that the MCP server has been
-> configured and they may need to reload the editor for the tools to activate.
-> Start the MCP server and wait for that MCP server to start before continuing the theming related work.
-> Do NOT skip this step or ask the user to do it manually.
-
-## Setting Up the Theming MCP Server
-
-> **Full setup instructions for VS Code, Cursor, Claude Desktop, and JetBrains IDEs are in [`references/mcp-setup.md`](./references/mcp-setup.md).** Read that file for editor-specific configuration steps and verification.
-
-## Theming Architecture
-
-| Layer | Purpose |
+| Layer | Mechanism |
 |---|---|
-| Built-in theme CSS | Baseline Bootstrap, Material, Fluent, or Indigo styling in light/dark variants |
-| Palette tokens | Global color CSS variables used across components |
-| Component design tokens | Component-scoped CSS custom properties generated or discovered with MCP |
-| CSS shadow parts | Fine-grained internal element styling only when the component doc lists supported parts |
-| Layout tokens | Global roundness, spacing, and size controls generated by MCP tools |
+| Baseline look | One built-in theme stylesheet: Bootstrap, Material, Fluent, Indigo × light, dark |
+| Theme for a page region | `IgbThemeProvider` component |
+| Global colors | Palette CSS custom properties in `:root` (`create_palette`) |
+| One component's appearance | Component design tokens (`get_component_design_tokens` → `create_component_theme`) |
+| Internal parts a token doesn't cover | `::part()` — only after confirming the part name |
+| Global density | `set_roundness`, `set_spacing`, `set_size` |
 
-Ignite UI for Blazor theming in this skill is CSS-first. Agents should generate or edit CSS custom properties and selectors for normal app styling.
+## Built-in themes
 
-## Built-In Themes
-
-Use built-in theme CSS files for the baseline visual system. Supported design systems are Bootstrap, Material, Fluent, and Indigo, with light and dark variants.
-
-Confirm exact file paths in [`references/common-patterns.md`](./references/common-patterns.md) before writing host-page markup. Only one built-in theme CSS file should be active at a time.
-
-## Color Palettes
-
-Use `create_palette(platform: "blazor", output: "css", ...)` for a generated palette from seed colors. Use `create_custom_palette(platform: "blazor", output: "css", ...)` only when the user needs explicit control over individual shade values.
-
-Palette CSS belongs in `:root` and must be loaded after the Ignite UI built-in theme CSS.
-
-For simple palette references, use `get_color` instead of writing color variable names from memory:
-
-```
-get_color(color: "primary", variant: "600")
-```
-
-Use `contrast: true` when you need the matching text color token.
-
-Raw color values are acceptable in the initial palette seed call. After the palette exists, component themes and custom CSS should use palette CSS custom properties wherever the desired color belongs to the theme.
-
-Palette shades: chromatic shades use `50` as the lightest shade and `900` as the darkest shade. Do not invert chromatic colors for dark themes; only gray is inverted for dark variants.
-
-Surface color must match the variant: use a light surface for `variant: "light"` and a dark surface for `variant: "dark"`.
-
-## Component-Level Theming
-
-For component styling, first call `get_component_design_tokens(component: "...")`, then call `create_component_theme(platform: "blazor", component: "...", tokens: {...}, output: "css")` or write CSS using the returned token names. Do not use `overrides`; the MCP argument is `tokens`.
-
-For components with variants, query the exact variant whenever possible. For example, use `contained-button`, `flat-button`, `outlined-button`, or `fab-button` instead of generic `button` before generating a component theme.
-
-Use palette token references such as `var(--ig-primary-500)` and `var(--ig-primary-500-contrast)` after a palette has been established. Do not pass raw hex/RGB/HSL values to component theme tokens unless the value is intentionally outside the theme palette.
-
-For CSS parts, call the component's Blazor `get_doc` entry first. Do not say a component exposes CSS parts unless the Blazor doc confirms the exact part names.
-
-### Discovering Available Tokens
-
-Each component has its own set of design tokens. Before theming a component, call `get_component_design_tokens` and use only token names returned by the tool.
-
-### Compound Components
-
-Some components are compound and may involve internally themed child components. When `get_component_design_tokens` returns compound guidance, follow the checklist from the tool response.
-
-For standard compound components, generate the related themes listed by the tool and scope them under the parent component selector. For composed compound components, use only the primary parent tokens unless the user explicitly requests a specific refinement token.
-
-## Layout Controls
-
-Use MCP layout tools for global or scoped layout changes:
-
-| Goal | MCP tool | Required value shape |
-|---|---|---|
-| Roundness | `set_roundness` | `radiusFactor: 0..1` |
-| Spacing | `set_spacing` | `spacing: number` plus optional `inline` / `block` |
-| Size | `set_size` | `size: "small" | "medium" | "large"` |
-
-Do not use legacy size names such as `compact`, `cosy`, or `comfortable` for Blazor theming tools.
-
-## Using the Theming MCP Server
-
-The Ignite UI Theming MCP server provides code generation and reference tools for Blazor-ready CSS custom properties. Agents can see tool schemas directly, so this section only records the Ignite UI for Blazor theming workflow and product-specific constraints.
-
-> **IMPORTANT - File Safety Rule**: When generating or updating theme code, **never overwrite existing style files directly**. Instead, propose the changes as an update and let the user review and approve before writing to disk. If an `app.css`, `site.css`, `.razor.css`, or other target style file already exists, show the generated code as a diff or suggestion rather than replacing the file contents. This prevents accidental loss of custom styles the user has already written.
-
-Always follow this workflow:
-
-### Step 1 - Verify Blazor Theming Context
-
-```
-Tool: read_resource
-Params: { uri: "theming://platforms/blazor" }
-```
-
-Use this as the lightweight availability check and platform reference for Blazor theming tasks.
-
-### Step 2 - Generate a Palette
-
-> **Note:** For Blazor (CSS-first, no Sass pipeline), use `create_palette` with `output: "css"` to get CSS custom properties directly. Do NOT use `create_theme` for Blazor - it always outputs Sass which requires a compilation step not present in standard Blazor projects. **Even passing `platform: "blazor"` to `create_theme` will still produce Sass output - the platform parameter does not change the output format.** The `create_palette` param names are `primary`/`secondary`/`surface` (not `primaryColor`/`secondaryColor`/`surfaceColor` - those belong to `create_theme`).
-
-```
-Tool: create_palette
-Params: {
-  platform: "blazor",
-  output: "css",
-  primary: "#3f51b5",
-  secondary: "#e91e63",
-  surface: "#ffffff",
-  variant: "light"
-}
-```
-
-For dark themes, use a dark surface color and `variant: "dark"`. Read `theming://guidance/colors/rules` first when surface or gray color choices are unclear.
-
-### Step 3 - Customize Individual Components
-
-```
-Tool: get_component_design_tokens
-Params: { component: "contained-button" }
-```
-
-Then generate CSS using only valid token names returned by the tool:
-
-```
-Tool: create_component_theme
-Params: {
-  platform: "blazor",
-  output: "css",
-  component: "contained-button",
-  tokens: {
-    "background": "var(--ig-primary-500)",
-    "foreground": "var(--ig-primary-500-contrast)"
-  }
-}
-```
-
-Use `tokens`, not `overrides`. If the token discovery response distinguishes primary tokens from refinement tokens, use only the primary tokens unless the user explicitly requested the refined state or subpart.
-
-### Step 4 - Adjust Global Layout Tokens
-
-```
-Tool: set_roundness
-Params: { platform: "blazor", output: "css", radiusFactor: 0.5 }
-
-Tool: set_spacing
-Params: { platform: "blazor", output: "css", spacing: 1.25 }
-
-Tool: set_size
-Params: { platform: "blazor", output: "css", size: "small" }
-```
-
-### Step 5 - Apply Generated CSS
-
-Place generated CSS in an app stylesheet loaded after the Ignite UI theme CSS, such as `wwwroot/css/app.css`.
+Link exactly **one** stylesheet in the host page; loading two conflicts.
 
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
-<link href="css/app.css" rel="stylesheet" />
+<link href="css/app.css" rel="stylesheet" />                    <!-- your overrides, after -->
 <script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
 ```
 
-Palette and global layout CSS normally go in `:root`. Component theme CSS goes on the generated `igc-*` selector or under a scoped wrapper selector.
+Paths are `_content/IgniteUI.Blazor/themes/{light|dark}/{bootstrap|material|fluent|indigo}.css`. Any full-featured grid needs the grid stylesheet in the same variant as well (`themes/grid/light/bootstrap.css`); `IgbGridLite` uses its own package path instead.
 
-In `.razor.css` isolation files, prefix `igc-*` selectors so Blazor CSS isolation does not block the override.
+## Scoped theming with `IgbThemeProvider`
 
-### Loading Reference Data
+`IgbThemeProvider` applies a theme and variant to its subtree, overriding the global theme for those components. It is the built-in way to preview themes, theme one region differently, or switch theme at runtime without swapping stylesheets.
 
-Use `read_resource` with these URIs for preset values and documentation:
+```razor
+<IgbThemeProvider Theme="Theme.Bootstrap" Variant="ThemeVariant.Dark">
+    <IgbCard>
+        <IgbCardHeader><h3 slot="title">Dark region</h3></IgbCardHeader>
+        <IgbCardContent><IgbButton>Sign In</IgbButton></IgbCardContent>
+    </IgbCard>
+</IgbThemeProvider>
+```
 
-| URI | Content |
-|---|---|
-| `theming://platforms/blazor` | Blazor platform specifics |
-| `theming://presets/palettes` | Preset palette colors |
-| `theming://guidance/colors/usage` | Which shades to use for which purpose |
-| `theming://guidance/colors/roles` | Semantic color roles |
-| `theming://guidance/colors/rules` | Light/dark theme color rules |
+`Theme`: `Material` (default), `Bootstrap`, `Indigo`, `Fluent`. `ThemeVariant`: `Light`, `Dark`. Register `IgbThemeProviderModule`. Bind the parameters to fields for a runtime theme switcher — no JS interop and no stylesheet juggling.
 
-## Mandatory Agent Protocol
+Use it when the change is scoped or interactive. Use a different stylesheet when the whole application should ship with one theme.
 
-> **DO NOT write CSS variable names, token names, or palette colors from memory.**
-> Design token names and values are version-specific and theme-specific. Anything generated without reading the reference files or querying the MCP theming server will produce incorrect CSS.
+## Palettes
 
-You are required to complete all of the following steps before producing any theming-related code or answer:
+```
+create_palette(platform: "blazor", output: "css",
+               primary: "#3f51b5", secondary: "#e91e63",
+               surface: "#ffffff", variant: "light")
+```
 
-**Step 1 - Identify the theming task.**
-Map the user's request to one or more rows in the Task to Reference File table below.
+- Use `create_palette` with `output: "css"`. **Do not use `create_theme` for Blazor** — it always emits Sass, which needs a compilation step no standard Blazor project has, and passing `platform: "blazor"` does not change that.
+- The parameter names are `primary` / `secondary` / `surface` (the `primaryColor`-style names belong to `create_theme`).
+- Use `create_custom_palette` only when the design needs explicit control over individual shades.
+- Palette CSS belongs in `:root` in a stylesheet loaded **after** the built-in theme.
+- Shades run `50` (lightest) to `900` (darkest). Do not invert chromatic colors for dark themes — only gray inverts.
+- Surface must match the variant: light surface with `variant: "light"`, dark with `variant: "dark"`. Act on any luminance warning the tool returns.
+- Raw hex belongs in the palette seed. After the palette exists, reference `var(--ig-primary-500)` and `var(--ig-primary-500-contrast)` downstream; `get_color(color: "primary", variant: "600")` resolves a token, with `contrast: true` for the matching text color.
 
-**Step 2 - Use the theming MCP tools for version-specific values.**
-For any task involving design token lookup, palette generation, component theme CSS, or global layout tokens, call the relevant Ignite UI Theming MCP tool. Do not infer token names, selector names, or palette variables from memory.
+## Component design tokens
 
-**Step 3 - Read the relevant reference files in parallel.**
-Call `read_file` on all identified reference files in a single parallel batch.
+```
+get_component_design_tokens(component: "contained-button")
 
-**Step 4 - Only then produce output.**
-Base CSS and instructions on what the MCP tools return and what the reference files say.
+create_component_theme(platform: "blazor", output: "css", component: "contained-button",
+                       tokens: { "background": "var(--ig-primary-500)",
+                                 "foreground": "var(--ig-primary-500-contrast)" })
+```
 
-### Task to Reference File
+- **Always discover before you write.** Use only token names the tool returned.
+- The argument is `tokens`, not `overrides`.
+- Query the **exact variant** for variant-based components: `contained-button`, `flat-button`, `outlined-button`, `fab-button` — not plain `button`.
+- If the response separates primary from refinement tokens, use the primary ones unless the user asked for a specific state or subpart.
+- Compound components: follow the checklist in the tool's response. Standard compounds want the related child themes generated and scoped under the parent selector; composed compounds want only the parent's tokens.
+- Charts, maps, gauges, and sparklines have **no** design tokens — style them through component parameters instead ([`charts.md`](../igniteui-blazor-components/references/charts.md)).
 
-| Task | Reference file to read |
-|---|---|
-| Switching themes (light/dark/Bootstrap/Material/Fluent/Indigo), adding the CSS link, dark mode toggle, scoped theming | [`references/common-patterns.md`](./references/common-patterns.md) |
-| Setting up the MCP theming server in VS Code, Cursor, Claude Desktop, or JetBrains IDEs | [`references/mcp-setup.md`](./references/mcp-setup.md) |
+## Global layout tokens
 
-## Key Blazor Theming Notes
+| Goal | Tool | Value |
+|---|---|---|
+| Roundness | `set_roundness` | `radiusFactor: 0..1` |
+| Spacing | `set_spacing` | `spacing: number`, optional `inline` / `block` |
+| Size / density | `set_size` | `size: "small" \| "medium" \| "large"` |
 
-> **AGENT INSTRUCTION - CSS customization**
->
-> For normal Ignite UI for Blazor app styling, generate CSS custom properties and selectors.
+All take `platform: "blazor"`, `output: "css"`, and their output goes in `:root`. Do not use the legacy names `compact` / `cosy` / `comfortable`.
 
-> **AGENT INSTRUCTION - CSS parts**
->
-> Some Ignite UI Blazor components expose CSS shadow parts via `::part()`. Use `get_doc` for the component to confirm whether parts are available and to get the exact part names. Use `get_component_design_tokens` to get token names; do not infer token names or part names from Angular, React, or Web Components examples.
+## Where generated CSS goes
 
-> **AGENT INSTRUCTION - Theming MCP server platform**
->
-> This skill already establishes the platform. When calling Ignite UI Theming MCP tools that accept a platform, always pass `platform: "blazor"`.
+- **Global stylesheet** (`wwwroot/css/app.css`) — use MCP output as-is, loaded after the built-in theme.
+- **`.razor.css` isolation file** — prefix every `igc-*` selector with `::deep`, or CSS isolation blocks it. Never add `::deep` to a `:root {}` block or a plain HTML class selector.
+- Palette and layout tokens go in `:root`; component themes go on the `igc-*` selector or a scoped wrapper.
 
-## Key Rules
+**Do not overwrite an existing stylesheet.** If `app.css`, `site.css`, or a `.razor.css` already exists, show the generated CSS as an addition for review rather than replacing the file — custom styles are easy to destroy and hard to recover.
 
-1. **Use `platform: "blazor"` and `output: "css"`** on theming tools that accept those parameters
-2. **Always call `get_component_design_tokens` before component CSS overrides**; token names are not guessable from component names
-3. **Use exact component variants** for variant components, such as `contained-button`, `flat-button`, `outlined-button`, and `fab-button`
-4. **Use `tokens` with `create_component_theme`**; do not use an `overrides` object
-5. **Use palette tokens after palette generation**; raw colors belong in palette seed inputs, not downstream component theme values
-6. **Place generated CSS after the built-in Ignite UI theme CSS** so overrides win in the cascade
-7. **Use `igc-*` selectors in CSS**, not Razor component names such as `IgbButton`
-8. **Use `::part()` only after confirming part names with Blazor docs**, and prefer design tokens when a token exists
-9. **Surface color must match the variant**; use a light surface for `light` and a dark surface for `dark`
-10. **Only one built-in theme CSS file should be active at a time**; link only one theme stylesheet in the host page (e.g., `_content/IgniteUI.Blazor/themes/light/bootstrap.css`) to avoid conflicts
+## MCP server (optional)
 
-## Related Skills
+`igniteui-theming` provides `create_palette`, `create_custom_palette`, `get_color`, `get_component_design_tokens`, `create_component_theme`, `set_roundness`, `set_spacing`, `set_size`, and `read_resource`. Always pass `platform: "blazor"` and `output: "css"` where accepted.
 
-- [`igniteui-blazor-components`](../igniteui-blazor-components/SKILL.md) - All non-grid UI components
-- [`igniteui-blazor-grids`](../igniteui-blazor-grids/SKILL.md) - Data Grids
+Reference resources: `theming://platforms/blazor`, `theming://presets/palettes`, `theming://guidance/colors/usage`, `theming://guidance/colors/roles`, `theming://guidance/colors/rules`.
+
+To enable the server, add to `.vscode/mcp.json` (VS Code, key `servers`) or `.cursor/mcp.json` / `claude_desktop_config.json` (key `mcpServers`):
+
+```json
+{ "servers": { "igniteui-theming": { "command": "npx", "args": ["-y", "igniteui-theming", "igniteui-theming-mcp"] } } }
+```
+
+Reload the editor afterwards. JetBrains: **Settings → Tools → AI Assistant → MCP Servers**, command `npx`, arguments `igniteui-theming igniteui-theming-mcp`.
+
+## Related skills
+
+- [`igniteui-blazor-components`](../igniteui-blazor-components/SKILL.md) — component APIs
+- [`igniteui-blazor-grids`](../igniteui-blazor-grids/SKILL.md) — grid features and the `--ig-size` density scale
