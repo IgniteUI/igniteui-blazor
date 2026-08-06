@@ -2,6 +2,7 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebDateRangePickerResourceStringsDescription } from "./WebDateRangePickerResourceStringsDescription";
+import { WebCalendarResourceStringsDescriptionMetadata } from "./WebCalendarResourceStringsDescriptionMetadata";
 
 /**
  * @hidden 
@@ -20,11 +21,16 @@ export class WebDateRangePickerResourceStringsDescriptionMetadata extends Base {
 		context.markSeen(WebDateRangePickerResourceStringsDescriptionMetadata._metadata);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
+		WebCalendarResourceStringsDescriptionMetadata.fillMetadata(metadata);
 		metadata.item("__qualifiedNameTS", "String:DateRangePickerResourceStrings");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
+		metadata.item("Separator", "String");
+		metadata.item("DoneButton", "(wc:Done)String");
+		metadata.item("CancelButton", "(wc:Cancel)String");
 	}
 	static register(context: TypeDescriptionContext): void {
+		WebCalendarResourceStringsDescriptionMetadata.register(context);
 		WebDateRangePickerResourceStringsDescriptionMetadata.ensureMetadata(context);
 		context.registerDescriptionConstructor("WebDateRangePickerResourceStrings", () => new WebDateRangePickerResourceStringsDescription());
 		context.register("WebDateRangePickerResourceStrings", WebDateRangePickerResourceStringsDescriptionMetadata._metadata);

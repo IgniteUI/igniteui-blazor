@@ -83,7 +83,9 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
         .Prop(c => c.UseTwoInputs, true)
         .Prop(c => c.UsePredefinedRanges, true)
         .Prop(c => c.Locale, "en-US")
-        .Prop(c => c.ResourceStrings, new IgbDateRangePickerResourceStrings(), wire: new JsonSubset("""{}"""))
+        .Prop(c => c.ResourceStrings,
+            new IgbDateRangePickerResourceStrings { Separator = "thru", CancelButton = "Discard", DoneButton = "OK", SelectDate = "Pick range" },
+            wire: new JsonSubset("""{ "separator": "thru", "cancelButton": "Discard", "doneButton": "OK", "selectDate": "Pick range" }"""))
         .Prop(c => c.ReadOnly, true)
         .Prop(c => c.NonEditable, true)
         .Prop(c => c.Outlined, true)
