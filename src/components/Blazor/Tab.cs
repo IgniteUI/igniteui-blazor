@@ -57,11 +57,8 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
-        partial void OnIgbTabDisposing();
         public void Dispose()
         {
-            OnIgbTabDisposing();
-
             if (TabsParent != null)
             {
                 var sv = (IgbTabs)TabsParent;
@@ -70,11 +67,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void OnIgbTabInitializing();
         protected override async Task OnInitializedAsync()
         {
-            OnIgbTabInitializing();
-
             if (TabsParent != null)
             {
                 var sv = (IgbTabs)TabsParent;

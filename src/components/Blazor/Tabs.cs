@@ -79,10 +79,6 @@ namespace IgniteUI.Blazor.Controls
                 return this._contentTabsCollection;
             }
         }
-        partial void GetSerializableTabsCollection(ref IgbTabs_TabCollection value)
-        {
-            value = ActualTabsCollection;
-        }
         private IgbTabs_TabCollection _actualTabsCollection = null;
 
         public IgbTabs_TabCollection ActualTabsCollection
@@ -122,8 +118,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private IgbTabs_TabCollection _tabsCollection = null;
-
-        partial void GetSerializableTabsCollection(ref IgbTabs_TabCollection value);
 
         public IgbTabs_TabCollection TabsCollection
         {
@@ -326,7 +320,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("TabsCollection"))
-            { var coll = this._tabsCollection; GetSerializableTabsCollection(ref coll); ser.AddCollectionProp("tabsCollection", coll); }
+            { ser.AddCollectionProp("tabsCollection", ActualTabsCollection); }
             if (IsPropDirty("Alignment"))
             { ser.AddEnumProp("alignment", this._alignment); }
             if (IsPropDirty("Activation"))
