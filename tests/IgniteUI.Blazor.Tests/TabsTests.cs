@@ -1,27 +1,46 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Tests;
 
 public class TabsTests : ComponentWithContractTestBase<IgbTabs>
 {
-    protected override ComponentContract<IgbTabs> InteropContract { get; } = new ComponentContract<IgbTabs>()
-        .Event(c => c.Change,
-            arrange: ps => ps.AddChildContent(builder =>
+    /// <summary>What each arranged tab's <c>@bind-Selected</c> received, filled during the dispatch.</summary>
+    static readonly bool?[] tabSelection = new bool?[2];
+
+    /// <summary>Two tabs, each binding SelectedChanged — IgbTab has no selection event of its own.</summary>
+    static readonly Action<ComponentParameterCollectionBuilder<IgbTabs>> tabsArrange = ps =>
+        {
+            tabSelection[0] = null;
+            tabSelection[1] = null;
+            ps.AddChildContent(builder =>
             {
                 builder.OpenComponent<IgbTab>(0);
                 builder.AddAttribute(1, "id", "tab-1");
+                builder.AddAttribute(2, "SelectedChanged", new EventCallback<bool>(null, (Action<bool>)(v => tabSelection[0] = v)));
                 builder.CloseComponent();
-                builder.OpenComponent<IgbTab>(2);
-                builder.AddAttribute(3, "id", "tab-2");
+                builder.OpenComponent<IgbTab>(3);
+                builder.AddAttribute(4, "id", "tab-2");
+                builder.AddAttribute(5, "SelectedChanged", new EventCallback<bool>(null, (Action<bool>)(v => tabSelection[1] = v)));
                 builder.CloseComponent();
-            }),
+            });
+        };
+
+    protected override ComponentContract<IgbTabs> InteropContract { get; } = new ComponentContract<IgbTabs>()
+        .Event(c => c.Change,
+            tabsArrange,
             argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tab:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) =>
             {
                 Assert.Same(cut.Instance.ActualTabsCollection[1], args.Detail);
-                Assert.True(args.Detail.Selected); // OnHandlingChange propagates selection
+                // The handler owns selection for every child: it writes each tab's Selected and
+                // pushes it through that tab's @bind-Selected, which is IgbTab's only route.
+                Assert.True(args.Detail.Selected);
+                Assert.False(cut.Instance.ActualTabsCollection[0].Selected);
+                Assert.False(tabSelection[0]);
+                Assert.True(tabSelection[1]);
             })
         .Method(c => c.SelectAsync("tab-1"), c => c.Select("tab-1"), "select", args: ["tab-1"], types: ["String"])
         .Getter(c => c.GetSelectedAsync(), c => c.GetSelected(), "Selected", returns: "tab-1");
@@ -82,6 +101,8 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     }
 }
 
+// IgbTab has no interop surface of its own: its @bind-Selected pair is driven entirely by
+// IgbTabs' Change handler, and is covered by that event's spec above.
 public class TabTests : BlazorComponentTestBase
 {
     [Fact]

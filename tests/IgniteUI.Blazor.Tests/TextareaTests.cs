@@ -19,6 +19,8 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
         .Event(c => c.Change,
             argsJson: """{"detail": "new value"}""",
             assert: args => Assert.Equal("new value", args.Detail))
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": "new value"}""", expect: "new value")
         .Event(c => c.Focus)
         .Event(c => c.Blur);
 
@@ -27,6 +29,9 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Textarea_RendersCorrectElement()

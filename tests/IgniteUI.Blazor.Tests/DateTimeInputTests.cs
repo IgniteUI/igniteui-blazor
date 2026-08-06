@@ -28,6 +28,9 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
         .Event(c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+            expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
         .Event(c => c.InputOcurred,
             argsJson: """{"detail": "typed text"}""", assert: args => Assert.Equal("typed text", args.Detail))
         .Event(c => c.Focus)
@@ -59,6 +62,9 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void DateTimeInput_RendersCorrectElement()

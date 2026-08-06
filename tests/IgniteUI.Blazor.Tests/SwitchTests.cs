@@ -23,6 +23,9 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
                 Assert.True(args.Detail.Checked);
                 Assert.Equal("switch-value", args.Detail.Value);
             })
+        .Bind(c => c.Checked, c => c.CheckedChanged, via: c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "switch-value"}}}""",
+            expect: true)
         .Event(c => c.Focus)
         .Event(c => c.Blur);
 
@@ -31,6 +34,9 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Switch_RendersCorrectElement()
