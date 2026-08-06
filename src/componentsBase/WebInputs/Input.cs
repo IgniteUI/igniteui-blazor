@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// 
+    /// Base class for <see cref="IgbInput" /> and <see cref="IgbMaskInput" />.
     /// </summary>
     public partial class IgbInputBase : BaseRendererControl
     {
@@ -29,6 +29,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private EventCallback<string>? _valueChanging = null;
+
+        /// <summary>
+        /// Emitted as the user types, carrying the current text of the input.
+        /// Raised alongside <see cref="InputOcurred"/>, whose payload it unwraps.
+        /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanging
         {

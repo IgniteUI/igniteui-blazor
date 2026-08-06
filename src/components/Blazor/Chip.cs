@@ -139,11 +139,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Returns the current selected state of the component.
+        /// </summary>
         public async Task<bool> GetCurrentSelectedAsync()
         {
             var iv = await InvokeMethod("p:Selected", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Returns the current selected state of the component.
+        /// </summary>
         public bool GetCurrentSelected()
         {
             var iv = InvokeMethodSync("p:Selected", new object[] { }, new string[] { });
@@ -199,6 +207,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private EventCallback<bool>? _selectedChanged = null;
+
+        /// <summary>
+        /// Emitted when the Selected state changes.
+        /// Enables two-way binding through <c>@bind-Selected</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<bool> SelectedChanged
         {
@@ -226,6 +239,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _removeRef = null;
         private string _removeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Remove"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string RemoveScript
         {
@@ -250,6 +271,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingRemove(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _remove = null;
+
+        /// <summary>
+        /// Emitted when the chip is removed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentBoolValueChangedEventArgs> Remove
         {
@@ -291,6 +316,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _selectRef = null;
         private string _selectScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string SelectScript
         {
@@ -315,6 +348,11 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingSelect(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _select = null;
+
+        /// <summary>
+        /// Emitted when the chip is selected or deselected, after any related animations
+        /// and transitions have completed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentBoolValueChangedEventArgs> Select
         {

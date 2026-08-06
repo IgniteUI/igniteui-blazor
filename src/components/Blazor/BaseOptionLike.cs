@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class shared by <see cref="IgbDropdownItem"/> and <see cref="IgbSelectItem"/>.
+    /// </summary>
     public partial class IgbBaseOptionLike : BaseRendererControl
     {
         public override string Type { get { return "WebBaseOptionLike"; } }
@@ -113,7 +116,7 @@ namespace IgniteUI.Blazor.Controls
         partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The current value of the item.
-        /// If not specified, the element's text content is used.
+        /// If not specified, the text content of the item is used.
         /// </summary>
         [Parameter]
         public string Value

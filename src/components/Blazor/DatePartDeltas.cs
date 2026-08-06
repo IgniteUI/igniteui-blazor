@@ -2,6 +2,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The amounts by which each date or time part is incremented or decremented on a step action
+    /// in a date-time input. Set through the <c>SpinDelta</c> property of
+    /// <see cref="IgbDateTimeInput"/>; every part defaults to <c>1</c>.
+    /// </summary>
     public partial class IgbDatePartDeltas : BaseRendererElement
     {
         public override string Type { get { return "DatePartDeltas"; } }
@@ -17,6 +22,10 @@ namespace IgniteUI.Blazor.Controls
         private double _date = 0;
 
         partial void OnDateChanging(ref double newValue);
+
+        /// <summary>
+        /// The number of days the date part is spun by.
+        /// </summary>
         [Parameter]
         public double Date
         {
@@ -34,6 +43,10 @@ namespace IgniteUI.Blazor.Controls
         private double _month = 0;
 
         partial void OnMonthChanging(ref double newValue);
+
+        /// <summary>
+        /// The number of months the month part is spun by.
+        /// </summary>
         [Parameter]
         public double Month
         {
@@ -51,6 +64,10 @@ namespace IgniteUI.Blazor.Controls
         private double _year = 0;
 
         partial void OnYearChanging(ref double newValue);
+
+        /// <summary>
+        /// The number of years the year part is spun by.
+        /// </summary>
         [Parameter]
         public double Year
         {
@@ -68,6 +85,10 @@ namespace IgniteUI.Blazor.Controls
         private double _hours = 0;
 
         partial void OnHoursChanging(ref double newValue);
+
+        /// <summary>
+        /// The number of hours the hours part is spun by.
+        /// </summary>
         [Parameter]
         public double Hours
         {
@@ -85,6 +106,10 @@ namespace IgniteUI.Blazor.Controls
         private double _minutes = 0;
 
         partial void OnMinutesChanging(ref double newValue);
+
+        /// <summary>
+        /// The number of minutes the minutes part is spun by.
+        /// </summary>
         [Parameter]
         public double Minutes
         {
@@ -102,6 +127,10 @@ namespace IgniteUI.Blazor.Controls
         private double _seconds = 0;
 
         partial void OnSecondsChanging(ref double newValue);
+
+        /// <summary>
+        /// The number of seconds the seconds part is spun by.
+        /// </summary>
         [Parameter]
         public double Seconds
         {

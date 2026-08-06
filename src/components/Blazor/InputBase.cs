@@ -56,7 +56,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
-        /// The placeholder attribute of the control.
+        /// The placeholder text of the control.
         /// </summary>
         [Parameter]
         public string Placeholder
@@ -96,7 +96,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
-        /// The disabled state of the component
+        /// The disabled state of the component.
         /// </summary>
         [Parameter]
         public bool Disabled
@@ -136,7 +136,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
-        /// Control the validity of the control.
+        /// Sets the control into invalid state (visual state only).
         /// </summary>
         [Parameter]
         public bool Invalid
@@ -187,6 +187,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("select", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Selects all the text inside the input.
+        /// </summary>
         public void Select()
         {
             InvokeMethodSync("select", new object[] { }, new string[] { });
@@ -201,6 +205,9 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
+        /// <summary>
+        /// Sets focus on the control.
+        /// </summary>
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
@@ -216,32 +223,43 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("blur", new object[] { }, new string[] { });
         }
 
+        /// <summary>
+        /// Removes focus from the control.
+        /// </summary>
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
             InvokeMethodSync("blur", new object[] { }, new string[] { });
         }
         /// <summary>
-        /// Checks for validity of the control and shows the browser message if it invalid.
+        /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
             var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and shows the browser message if it's invalid.
+        /// </summary>
         public bool ReportValidity()
         {
             var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Checks for validity of the control and emits the invalid event if it invalid.
+        /// Checks for validity of the control and emits the invalid event if it's invalid.
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
             var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and emits the invalid event if it's invalid.
+        /// </summary>
         public bool CheckValidity()
         {
             var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
@@ -249,12 +267,17 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Sets a custom validation message for the control.
-        /// As long as `message` is not empty, the control is considered invalid.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
             await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Sets a custom validation message for the control.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
+        /// </summary>
         public void SetCustomValidity(String message)
         {
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
@@ -262,6 +285,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputOcurredRef = null;
         private string _inputOcurredScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="InputOcurred"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputOcurredScript
         {
@@ -286,6 +317,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingInputOcurred(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _inputOcurred = null;
+
+        /// <summary>
+        /// Emitted when the control input receives user input.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> InputOcurred
         {
@@ -327,6 +362,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _focusRef = null;
         private string _focusScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string FocusScript
         {
@@ -351,6 +394,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
+
+        /// <summary>
+        /// Emitted when the component gains focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Focus
         {
@@ -392,6 +439,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _blurRef = null;
         private string _blurScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string BlurScript
         {
@@ -416,6 +471,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
+
+        /// <summary>
+        /// Emitted when the component loses focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Blur
         {

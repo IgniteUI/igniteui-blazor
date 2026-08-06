@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A container component for card media content such as images, GIFs, or videos.
-    /// This component should be used within an igc-card element to display visual content.
+    /// This component should be nested inside an <see cref="IgbCard"/> to display visual content.
     /// </summary>
     public partial class IgbCardMedia : BaseRendererControl
     {

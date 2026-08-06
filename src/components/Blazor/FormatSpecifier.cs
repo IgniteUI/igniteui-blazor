@@ -1,5 +1,9 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class for the format specifiers that describe how component values are formatted.
+    /// See <see cref="IgbNumberFormatSpecifier"/> for the number formatting options.
+    /// </summary>
     public partial class IgbFormatSpecifier : BaseRendererElement
     {
         public override string Type { get { return "FormatSpecifier"; } }
@@ -41,11 +45,21 @@ namespace IgniteUI.Blazor.Controls
 
             return null;
         }
+        /// <summary>
+        /// Gets the culture of the browser, expanded to a culture with a region when the browser
+        /// reports a bare language code.
+        /// </summary>
+        /// <returns>The resolved culture name.</returns>
         public async Task<String> GetLocalCultureAsync()
         {
             var iv = await InvokeMethod("getLocalCulture", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
+        /// <summary>
+        /// Gets the culture of the browser, expanded to a culture with a region when the browser
+        /// reports a bare language code.
+        /// </summary>
+        /// <returns>The resolved culture name.</returns>
         public String GetLocalCulture()
         {
             var iv = InvokeMethodSync("getLocalCulture", new object[] { }, new string[] { });

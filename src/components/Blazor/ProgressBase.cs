@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class shared by <see cref="IgbCircularProgress"/> and <see cref="IgbLinearProgress"/>.
+    /// </summary>
     public partial class IgbProgressBase : BaseRendererControl
     {
         public override string Type { get { return "WebProgressBase"; } }
@@ -48,7 +51,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnCreatedIgbProgressBase();
 
-        private double _max = 0;
+        private double _max = 100;
 
         partial void OnMaxChanging(ref double newValue);
         /// <summary>
@@ -108,7 +111,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _animationDuration = 0;
+        private double _animationDuration = 500;
 
         partial void OnAnimationDurationChanging(ref double newValue);
         /// <summary>
@@ -172,10 +175,11 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnLabelFormatChanging(ref string newValue);
         /// <summary>
-        /// Format string for the default label of the control.
-        /// Placeholders:
-        /// {0} - current value of the control.
-        /// {1} - max value of the control.
+        /// Format string for the default label of the control. Placeholders:
+        /// <list type="bullet">
+        ///   <item><description><c>{0}</c> - current value of the control.</description></item>
+        ///   <item><description><c>{1}</c> - max value of the control.</description></item>
+        /// </list>
         /// </summary>
         [Parameter]
         public string LabelFormat

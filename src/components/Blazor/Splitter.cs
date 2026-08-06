@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The `igc-splitter` component provides a resizable split-pane layout that divides the view
-    /// into two panels — *start* and *end* — separated by a draggable bar.
+    /// A splitter component that provides a resizable split-pane layout, dividing the view
+    /// into two panels — start and end — separated by a draggable bar.
     /// Panels can be resized by dragging the bar, using keyboard shortcuts, or collapsed/expanded
-    /// using the built-in collapse buttons or the programmatic `toggle()` API.
+    /// using the built-in collapse buttons or the <see cref="Toggle"/> method.
     /// Nested splitters are supported for more complex layouts.
     /// </summary>
     public partial class IgbSplitter : BaseRendererControl
@@ -87,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDisableCollapseChanging(ref bool newValue);
         /// <summary>
-        /// When true, prevents the user from collapsing either pane.
+        /// When <see langword="true"/>, prevents the user from collapsing either pane.
         /// This also hides the expand/collapse buttons on the splitter bar.
         /// </summary>
         [Parameter]
@@ -108,7 +108,8 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDisableResizeChanging(ref bool newValue);
         /// <summary>
-        /// When true, prevents the user from resizing the panes by dragging the splitter bar or using keyboard shortcuts.
+        /// When <see langword="true"/>, prevents the user from resizing the panes by dragging the splitter bar
+        /// or using keyboard shortcuts.
         /// This also hides the drag handle on the splitter bar.
         /// </summary>
         [Parameter]
@@ -129,9 +130,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHideCollapseButtonsChanging(ref bool newValue);
         /// <summary>
-        /// When true, hides the expand/collapse buttons on the splitter bar.
-        /// Note that the buttons will also be hidden if `disable-collapse` is true or
-        /// if a pane is currently collapsed.
+        /// When <see langword="true"/>, hides the expand/collapse buttons on the splitter bar.
+        /// Note that the buttons will also be hidden if <see cref="DisableCollapse"/> is
+        /// <see langword="true"/> or if a pane is currently collapsed.
         /// </summary>
         [Parameter]
         public bool HideCollapseButtons
@@ -151,8 +152,9 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHideDragHandleChanging(ref bool newValue);
         /// <summary>
-        /// When true, hides the drag handle on the splitter bar.
-        /// Note that the drag handle will also be hidden if `disable-resize` is true.
+        /// When <see langword="true"/>, hides the drag handle on the splitter bar.
+        /// Note that the drag handle will also be hidden if <see cref="DisableResize"/>
+        /// is <see langword="true"/>.
         /// </summary>
         [Parameter]
         public bool HideDragHandle
@@ -323,6 +325,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("toggle", new object[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
         }
+
+        /// <summary>
+        /// Toggles the collapsed state of the specified pane.
+        /// </summary>
         public void Toggle(PanePosition position)
         {
             InvokeMethodSync("toggle", new object[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
@@ -330,6 +336,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _resizeStartRef = null;
         private string _resizeStartScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ResizeStart"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ResizeStartScript
         {
@@ -354,6 +368,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingResizeStart(IgbSplitterResizeEventArgs args);
         private EventCallback<IgbSplitterResizeEventArgs>? _resizeStart = null;
+
+        /// <summary>
+        /// Emitted once when a resize operation begins (pointer drag or keyboard).
+        /// </summary>
         [Parameter]
         public EventCallback<IgbSplitterResizeEventArgs> ResizeStart
         {
@@ -395,6 +413,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _resizingRef = null;
         private string _resizingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Resizing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ResizingScript
         {
@@ -419,6 +445,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingResizing(IgbSplitterResizeEventArgs args);
         private EventCallback<IgbSplitterResizeEventArgs>? _resizing = null;
+
+        /// <summary>
+        /// Emitted continuously while a pane is being resized.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbSplitterResizeEventArgs> Resizing
         {
@@ -460,6 +490,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _resizeEndRef = null;
         private string _resizeEndScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ResizeEnd"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ResizeEndScript
         {
@@ -484,6 +522,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingResizeEnd(IgbSplitterResizeEventArgs args);
         private EventCallback<IgbSplitterResizeEventArgs>? _resizeEnd = null;
+
+        /// <summary>
+        /// Emitted once when a resize operation completes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbSplitterResizeEventArgs> ResizeEnd
         {

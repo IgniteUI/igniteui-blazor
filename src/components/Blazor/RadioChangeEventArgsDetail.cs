@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The payload of the <see cref="IgbRadio.Change"/> and <see cref="IgbRadioGroup.Change"/> events.
+    /// </summary>
     public partial class IgbRadioChangeEventArgsDetail : BaseRendererElement
     {
         public override string Type { get { return "WebRadioChangeEventArgsDetail"; } }
@@ -19,6 +22,10 @@ namespace IgniteUI.Blazor.Controls
         private bool _checked = false;
 
         partial void OnCheckedChanging(ref bool newValue);
+
+        /// <summary>
+        /// The checked state of the radio button after the change.
+        /// </summary>
         [Parameter]
         public bool Checked
         {
@@ -36,6 +43,10 @@ namespace IgniteUI.Blazor.Controls
         private string _value;
 
         partial void OnValueChanging(ref string newValue);
+
+        /// <summary>
+        /// The value of the radio button.
+        /// </summary>
         [Parameter]
         public string Value
         {

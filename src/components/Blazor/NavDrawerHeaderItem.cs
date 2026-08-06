@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A wrapper for navigation drawer's header.
+    /// Represents a navigation drawer header item.
     /// </summary>
     public partial class IgbNavDrawerHeaderItem : BaseRendererControl
     {

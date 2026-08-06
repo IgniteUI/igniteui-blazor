@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbDateRangePicker"/> events that carry a date range payload.
+    /// </summary>
     public partial class IgbDateRangeValueEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebDateRangeValueEventArgs"; } }
@@ -19,6 +22,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbDateRangeValueDetail _detail;
 
         partial void OnDetailChanging(ref IgbDateRangeValueDetail newValue);
+
+        /// <summary>
+        /// The date range carried by the event.
+        /// </summary>
         [Parameter]
         public IgbDateRangeValueDetail Detail
         {

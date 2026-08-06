@@ -2,6 +2,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbTree"/> events that concern a single item, such as
+    /// <see cref="IgbTree.ItemExpanding"/>, <see cref="IgbTree.ItemCollapsed"/> and
+    /// <see cref="IgbTree.ActiveItem"/>.
+    /// </summary>
     public partial class IgbTreeItemComponentEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebTreeItemComponentEventArgs"; } }
@@ -19,6 +24,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbTreeItem _detail;
 
         partial void OnDetailChanging(ref IgbTreeItem newValue);
+
+        /// <summary>
+        /// The tree item the event applies to.
+        /// </summary>
         [Parameter]
         public IgbTreeItem Detail
         {

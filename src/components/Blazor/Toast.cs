@@ -1,5 +1,8 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A toast component is used to show a brief, non-interactive notification.
+    /// </summary>
     public partial class IgbToast : IgbBaseAlertLike
     {
         public override string Type { get { return "WebToast"; } }

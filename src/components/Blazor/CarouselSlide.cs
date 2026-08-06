@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A single content container within a set of containers used in the context of an `igc-carousel`.
+    /// A single content container within a set of containers nested in an <see cref="IgbCarousel"/>.
     /// </summary>
     public partial class IgbCarouselSlide : BaseRendererControl
     {

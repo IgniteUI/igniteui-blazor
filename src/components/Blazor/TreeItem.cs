@@ -239,6 +239,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Returns the full path to the tree item, starting from the top-most ancestor.
+        /// </summary>
         public async Task<IgbTreeItem[]> GetPathAsync()
         {
             var iv = await InvokeMethod("p:Path", new object[] { }, new string[] { });
@@ -255,6 +259,10 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Returns the full path to the tree item, starting from the top-most ancestor.
+        /// </summary>
         public IgbTreeItem[] GetPath()
         {
             var iv = InvokeMethodSync("p:Path", new object[] { }, new string[] { });
@@ -322,6 +330,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("toggle", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Toggles tree item expansion state.
+        /// </summary>
         public void Toggle()
         {
             InvokeMethodSync("toggle", new object[] { }, new string[] { });
@@ -333,6 +345,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("expand", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Expands the tree item.
+        /// </summary>
         public void Expand()
         {
             InvokeMethodSync("expand", new object[] { }, new string[] { });
@@ -344,6 +360,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("collapse", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Collapses the tree item.
+        /// </summary>
         public void Collapse()
         {
             InvokeMethodSync("collapse", new object[] { }, new string[] { });

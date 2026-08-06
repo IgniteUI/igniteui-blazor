@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Configuration options for customizing the behavior and appearance of <see cref="IgbChat"/>.
+    /// </summary>
     public partial class IgbChatOptions : BaseRendererElement
     {
         public override string Type { get { return "WebChatOptions"; } }
@@ -38,7 +41,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDisableAutoScrollChanging(ref bool newValue);
         /// <summary>
-        /// If `true`, prevents the chat from automatically scrolling to the latest message.
+        /// If <see langword="true"/>, prevents the chat from automatically scrolling to the latest message.
         /// </summary>
         [Parameter]
         public bool DisableAutoScroll
@@ -58,8 +61,8 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnDisableInputAttachmentsChanging(ref bool newValue);
         /// <summary>
-        /// If `true`, disables the ability to upload and send attachments.
-        /// Defaults to `false`.
+        /// If <see langword="true"/>, disables the ability to upload and send attachments.
+        /// Defaults to <see langword="false"/>.
         /// </summary>
         [Parameter]
         public bool DisableInputAttachments
@@ -161,9 +164,13 @@ namespace IgniteUI.Blazor.Controls
         partial void OnSuggestionsPositionChanging(ref ChatSuggestionsPosition newValue);
         /// <summary>
         /// Controls the position of the chat suggestions within the component layout.
-        /// - `"below-input"`: Renders suggestions below the chat input area.
-        /// - `"below-messages"`: Renders suggestions below the chat messages area.
-        /// Default is `"below-messages"`.
+        /// <list type="bullet">
+        ///   <item><description><see cref="ChatSuggestionsPosition.BelowInput"/>: Renders suggestions
+        ///   below the chat input area.</description></item>
+        ///   <item><description><see cref="ChatSuggestionsPosition.BelowMessages"/>: Renders suggestions
+        ///   below the chat messages area.</description></item>
+        /// </list>
+        /// Defaults to <see cref="ChatSuggestionsPosition.BelowMessages"/>.
         /// </summary>
         [Parameter]
         public ChatSuggestionsPosition SuggestionsPosition
@@ -184,7 +191,7 @@ namespace IgniteUI.Blazor.Controls
         partial void OnStopTypingDelayChanging(ref double newValue);
         /// <summary>
         /// Time in milliseconds to wait before dispatching a stop typing event.
-        /// Default is `3000`.
+        /// Default is <c>3000</c>.
         /// </summary>
         [Parameter]
         public double StopTypingDelay
@@ -203,6 +210,16 @@ namespace IgniteUI.Blazor.Controls
         private bool _adoptRootStyles = false;
 
         partial void OnAdoptRootStylesChanging(ref bool newValue);
+
+        /// <summary>
+        /// When <see langword="true"/>, lets content rendered by custom renderers inside the component's
+        /// Shadow DOM inherit the styles of the document root.
+        /// </summary>
+        /// <remarks>
+        /// Use this only as a last resort. It breaks Shadow DOM encapsulation and lets global styles leak
+        /// into the component, which can produce unpredictable visuals. Prefer the exposed CSS parts and
+        /// custom properties, a linked style sheet, or inline styles within the custom renderer template.
+        /// </remarks>
         [Parameter]
         public bool AdoptRootStyles
         {

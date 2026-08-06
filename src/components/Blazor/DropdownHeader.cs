@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Represents a header item in a igc-dropdown list.
+    /// Represents a header item in a dropdown list.
     /// </summary>
     public partial class IgbDropdownHeader : BaseRendererControl
     {

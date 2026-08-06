@@ -153,6 +153,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Scrolls the view to a specific message by id.
+        /// </summary>
         public void ScrollToMessage(String messageId)
         {
             InvokeMethodSync("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
@@ -160,6 +164,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _messageCreatedRef = null;
         private string _messageCreatedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="MessageCreated"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageCreatedScript
         {
@@ -184,6 +196,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingMessageCreated(IgbChatMessageEventArgs args);
         private EventCallback<IgbChatMessageEventArgs>? _messageCreated = null;
+
+        /// <summary>
+        /// Dispatched when a new chat message is created (sent).
+        /// </summary>
         [Parameter]
         public EventCallback<IgbChatMessageEventArgs> MessageCreated
         {
@@ -225,6 +241,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _messageReactRef = null;
         private string _messageReactScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="MessageReact"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageReactScript
         {
@@ -249,6 +273,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingMessageReact(IgbChatMessageReactionEventArgs args);
         private EventCallback<IgbChatMessageReactionEventArgs>? _messageReact = null;
+
+        /// <summary>
+        /// Dispatched when a message is reacted to.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbChatMessageReactionEventArgs> MessageReact
         {
@@ -290,6 +318,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _attachmentClickRef = null;
         private string _attachmentClickScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="AttachmentClick"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string AttachmentClickScript
         {
@@ -314,6 +350,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingAttachmentClick(IgbChatMessageAttachmentEventArgs args);
         private EventCallback<IgbChatMessageAttachmentEventArgs>? _attachmentClick = null;
+
+        /// <summary>
+        /// Dispatched when a chat message attachment is clicked.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbChatMessageAttachmentEventArgs> AttachmentClick
         {
@@ -355,6 +395,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _typingChangeRef = null;
         private string _typingChangeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TypingChange"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TypingChangeScript
         {
@@ -379,6 +427,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingTypingChange(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _typingChange = null;
+
+        /// <summary>
+        /// Dispatched when the typing status changes (e.g. user starts or stops typing).
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentBoolValueChangedEventArgs> TypingChange
         {
@@ -420,6 +472,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputFocusRef = null;
         private string _inputFocusScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="InputFocus"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputFocusScript
         {
@@ -444,6 +504,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingInputFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _inputFocus = null;
+
+        /// <summary>
+        /// Dispatched when the chat input field gains focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> InputFocus
         {
@@ -485,6 +549,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputBlurRef = null;
         private string _inputBlurScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="InputBlur"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputBlurScript
         {
@@ -509,6 +581,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingInputBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _inputBlur = null;
+
+        /// <summary>
+        /// Dispatched when the chat input field loses focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> InputBlur
         {
@@ -550,6 +626,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputChangeRef = null;
         private string _inputChangeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="InputChange"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputChangeScript
         {
@@ -574,6 +658,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingInputChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _inputChange = null;
+
+        /// <summary>
+        /// Dispatched when the content of the chat input changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> InputChange
         {

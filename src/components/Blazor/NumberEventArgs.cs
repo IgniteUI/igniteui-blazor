@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for component events whose payload is a single number.
+    /// </summary>
     public partial class IgbNumberEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebNumberEventArgs"; } }
@@ -19,6 +22,11 @@ namespace IgniteUI.Blazor.Controls
         private double _detail = 0;
 
         partial void OnDetailChanging(ref double newValue);
+
+        /// <summary>
+        /// The numeric payload of the event. Its meaning depends on the event that carries it, for
+        /// example the new value of the control or the index of the affected item.
+        /// </summary>
         [Parameter]
         public double Detail
         {

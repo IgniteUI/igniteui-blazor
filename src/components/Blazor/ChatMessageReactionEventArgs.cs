@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbChat.MessageReact"/> event, carrying the reaction and
+    /// the chat message it applies to.
+    /// </summary>
     public partial class IgbChatMessageReactionEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebChatMessageReactionEventArgs"; } }
@@ -19,6 +23,9 @@ namespace IgniteUI.Blazor.Controls
         private IgbChatMessageReaction _detail;
 
         partial void OnDetailChanging(ref IgbChatMessageReaction newValue);
+        /// <summary>
+        /// The reaction the event was raised for, together with the chat message it is associated with.
+        /// </summary>
         [Parameter]
         public IgbChatMessageReaction Detail
         {
