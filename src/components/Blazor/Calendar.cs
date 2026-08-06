@@ -275,26 +275,6 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameCalendar(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCalendar(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
         private EventCallback<DateTime>? _valueChanged = null;
 
         /// <summary>

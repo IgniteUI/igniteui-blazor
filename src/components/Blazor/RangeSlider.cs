@@ -123,26 +123,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameRangeSlider(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRangeSlider(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
         private string _inputRef = null;
         private string _inputScript = null;
 

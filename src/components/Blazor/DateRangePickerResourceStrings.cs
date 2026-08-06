@@ -4,25 +4,5 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebDateRangePickerResourceStrings"; } }
 
-        partial void FindByNameDateRangePickerResourceStrings(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateRangePickerResourceStrings(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
     }
 }

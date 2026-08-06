@@ -209,22 +209,14 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToString(iv);
         }
 
-        partial void FindByNameTabs(string name, ref object item);
         public override object FindByName(string name)
         {
-
             var baseResult = base.FindByName(name);
             if (baseResult != null)
             {
                 return baseResult;
             }
 
-            object item = null;
-            FindByNameTabs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
             if (_actualTabsCollection != null && _actualTabsCollection.HasName(name))
             { return _actualTabsCollection.FindByName(name); }
 

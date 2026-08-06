@@ -69,26 +69,6 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToDate(iv);
         }
 
-        partial void FindByNameDateTimeInput(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateTimeInput(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
         /// <summary>
         /// Increments a date/time portion.
         /// </summary>

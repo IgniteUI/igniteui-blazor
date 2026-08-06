@@ -44,25 +44,5 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameSelectItem(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSelectItem(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
     }
 }

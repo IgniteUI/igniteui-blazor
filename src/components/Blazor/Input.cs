@@ -322,25 +322,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameInput(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameInput(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         /// <summary>
         /// Increments the numeric value of the input by one or more steps.
         /// </summary>

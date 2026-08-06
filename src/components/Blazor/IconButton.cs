@@ -137,26 +137,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameIconButton(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameIconButton(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
         /// <summary>
         /// Registers an icon by fetching it from a URL.
         /// </summary>

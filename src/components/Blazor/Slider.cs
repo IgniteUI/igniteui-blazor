@@ -103,25 +103,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameSlider(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSlider(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         /// <summary>
         /// Increments the value of the slider by <c>stepIncrement * step</c>, where
         /// <paramref name="stepIncrement"/> defaults to 1.
