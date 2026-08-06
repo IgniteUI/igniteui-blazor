@@ -17,6 +17,8 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
         .Event(c => c.Change,
             argsJson: """{"detail": 4}""",
             assert: args => Assert.Equal(4, args.Detail))
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": 4}""", expect: 4.0)
         .Event(c => c.Hover,
             argsJson: """{"detail": 2}""",
             assert: args => Assert.Equal(2, args.Detail));
@@ -26,6 +28,9 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Rating_RendersCorrectElement()
@@ -154,5 +159,18 @@ public class RatingSymbolTests : BlazorComponentTestBase
     {
         var cut = Render<IgbRatingSymbol>();
         cut.Find("igc-rating-symbol").Should_Exist();
+    }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbRating</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Rating_DefaultValues_MatchWebComponent()
+    {
+        var rating = new IgbRating();
+
+        Assert.Equal(5, rating.Max);
+        Assert.Equal(1, rating.Step);
     }
 }

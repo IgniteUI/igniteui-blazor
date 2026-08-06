@@ -51,6 +51,12 @@
     "ExcludedProps": [
       // BUG 35189
       "ValueFormatOptions"
+    ],
+    "ExcludedDefaultProps": [
+      // Derived on the client, not stored: upperBound reports max and lowerBound reports min
+      // while unset, so the wrapper cannot mirror either with a constant initializer.
+      "UpperBound",
+      "LowerBound"
     ]
   },
   "IgbTextarea": {
@@ -118,13 +124,6 @@
       "ReturnValue"
     ]
   },
-  "IgbDropdown": {
-    "DependantMethods": [
-      // BUG 35184
-      "ShowAsync",
-      "ToggleAsync"
-    ]
-  },
   "IgbStep": {
     "DependantMethods": [
       // BUG 35185
@@ -189,6 +188,12 @@
     "ExcludedProps": [
       // BUG 35189
       "ValueFormatOptions"
+    ],
+    "ExcludedDefaultProps": [
+      // Derived on the client, not stored: upperBound reports max and lowerBound reports min
+      // while unset, so the wrapper cannot mirror either with a constant initializer.
+      "UpperBound",
+      "LowerBound"
     ]
   },
   "IgbStepper": {

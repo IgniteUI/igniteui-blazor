@@ -7,6 +7,20 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 {
     public static class TestUtil
     {
+        /// <summary>
+        /// Whether a property's initial value can be compared against the client component's.
+        /// Only booleans, numbers and enums have an unambiguous representation on both sides;
+        /// strings, objects, collections and dates are left null by the wrapper while the client
+        /// reports an empty string or undefined, so comparing those would report noise instead
+        /// of defects.
+        /// </summary>
+        public static bool HasComparableDefault(PropertyInfo prop)
+        {
+            var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            return type == typeof(bool) || type.IsEnum || type == typeof(double)
+                || type == typeof(int) || type == typeof(float) || type == typeof(decimal) || type == typeof(long);
+        }
+
         public static bool PropertyValuesAreEqual(object? serverValue, string? clientValue, PropertyInfo prop)
         {
             string serverString = serverValue is Enum ?

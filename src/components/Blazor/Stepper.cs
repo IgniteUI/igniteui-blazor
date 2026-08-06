@@ -218,7 +218,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _animationDuration = 0;
+        private double _animationDuration = 320;
 
         partial void OnAnimationDurationChanging(ref double newValue);
         /// <summary>

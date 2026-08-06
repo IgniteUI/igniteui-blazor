@@ -23,6 +23,10 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
                 Assert.True(args.Detail.Checked);
                 Assert.Equal("option1", args.Detail.Value);
             })
+        // The bound value uses checked:
+        .Bind(c => c.Checked, c => c.CheckedChanged, via: c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "option1"}}}""",
+            expect: true)
         .Event(c => c.Focus)
         .Event(c => c.Blur);
 
@@ -31,6 +35,9 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Radio_RendersCorrectElement()
@@ -122,13 +129,20 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
             {
                 Assert.True(args.Detail.Checked);
                 Assert.Equal("selected-option", args.Detail.Value);
-            });
+            })
+        // The group binds the selected option's value:
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "selected-option"}}}""",
+            expect: "selected-option");
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void RadioGroup_RendersCorrectElement()
@@ -168,5 +182,17 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
     public void RadioGroup_InheritsFromBaseRendererControl()
     {
         Assert.True(typeof(IgbRadioGroup).IsSubclassOf(typeof(BaseRendererControl)));
+    }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbRadioGroup</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void RadioGroup_DefaultValues_MatchWebComponent()
+    {
+        var group = new IgbRadioGroup();
+
+        Assert.Equal(ContentOrientation.Vertical, group.Alignment);
     }
 }

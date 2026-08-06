@@ -74,6 +74,7 @@
         ReflectionUtils.dependantProps = app.config.GetSection(type + ":DependantProps")?.Get<string[]>()?.ToList() ?? new List<string>();
         ReflectionUtils.dependantMethods = app.config.GetSection(type + ":DependantMethods")?.Get<string[]>()?.ToList() ?? new List<string>();
         ReflectionUtils.excludedEvents = app.config.GetSection(type + ":ExcludedEvents")?.Get<string[]>()?.ToList() ?? new List<string>();
+        ReflectionUtils.excludedDefaultProps = app.config.GetSection(type + ":ExcludedDefaultProps")?.Get<string[]>()?.ToList() ?? new List<string>();
 
         app.StateHasChanged();
         await Task.Delay(1);
@@ -91,6 +92,8 @@
 
         app.componentParameters = new Dictionary<string, object>();
 
+        // Defaults first: it is the only point where nothing has been assigned yet.
+        await app.TestPropDefaults();
         await app.TestEvents();
         await app.TestServerTemplates();
         await app.TestClientTemplates();
@@ -222,6 +225,49 @@
                 errorMessages.Add("Method result mismatch after calling. Method name:  " + method.Name + ". Expected:" + expected + ", but got: " + actualResult);
             }
 
+        }
+    }
+
+    /// <summary>
+    /// The reverse of <see cref="TestProps"/>: instead of setting a value and checking it reaches
+    /// the client, this reads what the client component starts with and checks the wrapper reports
+    /// the same. Runs before any property is set, since that is the only moment the defaults are still intact.
+    /// </summary>
+    public async Task TestPropDefaults()
+    {
+        if (selectedType == null || dc == null)
+        {
+            return;
+        }
+
+        var props = ReflectionUtils.GetValidProps(selectedType)
+            .Where(x => TestUtil.HasComparableDefault(x) && !ReflectionUtils.excludedDefaultProps.Contains(x.Name));
+
+        foreach (var p in props)
+        {
+            var serverValue = p.GetValue(dc.Instance);
+            if (serverValue == null)
+            {
+                continue;
+            }
+
+            var clientPropName = ReflectionUtils.GetActualPropertyName(p);
+            var clientValue = await GetClientPropValue(clientPropName);
+            if (clientValue == null || clientValue == "undefined")
+            {
+                // The component does not expose the member yet (lazily created), nothing to compare.
+                continue;
+            }
+
+            if (!TestUtil.PropertyValuesAreEqual(serverValue, clientValue, p))
+            {
+                var serverString = serverValue is Enum
+                    ? TestUtil.EnumActualValue(serverValue)
+                    : serverValue.ToString();
+                this.errorMessages.Add("Default value mismatch before setting. Prop name:  " + p.Name
+                    + ". The wrapper reports:" + serverString
+                    + ", but the client component starts with: " + clientValue);
+            }
         }
     }
 

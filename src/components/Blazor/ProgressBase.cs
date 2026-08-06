@@ -51,7 +51,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnCreatedIgbProgressBase();
 
-        private double _max = 0;
+        private double _max = 100;
 
         partial void OnMaxChanging(ref double newValue);
         /// <summary>
@@ -111,7 +111,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _animationDuration = 0;
+        private double _animationDuration = 500;
 
         partial void OnAnimationDurationChanging(ref double newValue);
         /// <summary>
