@@ -49,8 +49,22 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
 
                 if (Page != null)
                 {
-                    await Page.GotoAsync("about:blank").ConfigureAwait(false);
-                    await Page.CloseAsync().ConfigureAwait(false);
+                    try
+                    {
+                        await Page.GotoAsync("about:blank").ConfigureAwait(false);
+                    }
+                    catch (PlaywrightException)
+                    {
+                        // Best-effort teardown.
+                    }
+                    try
+                    {
+                        await Page.CloseAsync().ConfigureAwait(false);
+                    }
+                    catch (PlaywrightException)
+                    {
+                        // Best-effort teardown.
+                    }
                 }
 
                 if (Context != null)

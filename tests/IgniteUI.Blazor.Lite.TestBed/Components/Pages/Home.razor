@@ -41,7 +41,9 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        this.pendingRender?.TrySetResult(true);
+        var renderTcs = this.pendingRender;
+        this.pendingRender = null;
+        renderTcs?.TrySetResult(true);
 
         if (firstRender)
         {
@@ -320,18 +322,25 @@
 
     private async Task WaitForRenderAsync(string propName, int timeoutMs = 1000)
     {
-        // new TaskCompletionSource that will wait for render
-        var renderTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-        this.pendingRender = renderTcs;
+        var renderTcs = this.pendingRender;
+        if (renderTcs == null || renderTcs.Task.IsCompleted)
+        {
+            renderTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            this.pendingRender = renderTcs;
+        }
 
         // trigger StateHasChanged to request a render.
         await InvokeAsync(StateHasChanged);
-
 
         // when render task finishes in OnAfterRenderAsync (or on timeout) continue.
         var completed = await Task.WhenAny(renderTcs.Task, Task.Delay(timeoutMs));
         if (completed != renderTcs.Task)
         {
+            if (ReferenceEquals(this.pendingRender, renderTcs))
+            {
+                this.pendingRender = null;
+            }
+
             this.errorMessages.Add("Timed out waiting for component render after setting property: " + propName);
         }
     }
