@@ -77,7 +77,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         get
         {
             var calls = new List<InteropMethodCall>();
-            foreach (var (containerId, message) in Messages())
+            foreach (var (containerId, message, elements) in Messages())
             {
                 if (message.GetProperty("type").GetString() != "invokeMethod")
                 {
@@ -94,6 +94,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
                     message.TryGetProperty("types", out var types)
                         ? [.. types.EnumerateArray().Select(t => t.GetString()!)]
                         : [],
+                    elements,
                     message));
             }
             return calls;
@@ -105,7 +106,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         get
         {
             var syncs = new List<InteropStateSync>();
-            foreach (var (containerId, message) in Messages())
+            foreach (var (containerId, message, _) in Messages())
             {
                 var type = message.GetProperty("type").GetString();
                 if (type is not ("description" or "descriptionDelta") ||
@@ -165,7 +166,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
             var messages = Messages().Where(m => m.ContainerId == containerId).Reverse().ToList();
 
             string? dataRefId = null;
-            foreach (var (_, message) in messages)
+            foreach (var (_, message, _) in messages)
             {
                 var type = message.GetProperty("type").GetString();
                 if (type is not ("description" or "descriptionDelta") ||
@@ -185,7 +186,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
                 }
             }
 
-            foreach (var (_, message) in messages)
+            foreach (var (_, message, _) in messages)
             {
                 if (message.GetProperty("type").GetString() == "refChanged" &&
                     message.TryGetProperty("refName", out var name) &&
@@ -233,8 +234,12 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         }
     }
 
-    /// <summary>Enumerates every recorded igSendMessage as (containerId, parsed message).</summary>
-    private IEnumerable<(string ContainerId, JsonElement Message)> Messages()
+    /// <summary>
+    /// Enumerates every recorded igSendMessage as (containerId, parsed message, element handles).
+    /// Element handles are not part of the JSON envelope on this stack — they ride as a
+    /// trailing marshalled argument of the call, alongside the component's object reference.
+    /// </summary>
+    private IEnumerable<(string ContainerId, JsonElement Message, IReadOnlyList<ElementReference> Elements)> Messages()
     {
         foreach (var invocation in SnapshotInvocations())
         {
@@ -257,7 +262,10 @@ public sealed class RendererMessageInteropHarness : InteropHarness
                 continue;
             }
 
-            yield return (containerId, message);
+            var elements = invocation.Arguments.Count > 3 && invocation.Arguments[3] is ElementReference[] refs
+                ? refs
+                : [];
+            yield return (containerId, message, elements);
         }
     }
 

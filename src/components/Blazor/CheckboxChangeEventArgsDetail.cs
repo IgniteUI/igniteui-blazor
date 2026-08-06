@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The payload of the <c>Change</c> event of <see cref="IgbCheckbox"/> and <see cref="IgbSwitch"/>.
+    /// </summary>
     public partial class IgbCheckboxChangeEventArgsDetail : BaseRendererElement
     {
         public override string Type { get { return "WebCheckboxChangeEventArgsDetail"; } }
@@ -19,6 +22,9 @@ namespace IgniteUI.Blazor.Controls
         private bool _checked = false;
 
         partial void OnCheckedChanging(ref bool newValue);
+        /// <summary>
+        /// The checked state of the control after the change.
+        /// </summary>
         [Parameter]
         public bool Checked
         {
@@ -36,6 +42,9 @@ namespace IgniteUI.Blazor.Controls
         private string _value;
 
         partial void OnValueChanging(ref string newValue);
+        /// <summary>
+        /// The value of the control.
+        /// </summary>
         [Parameter]
         public string Value
         {

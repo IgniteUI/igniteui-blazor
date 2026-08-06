@@ -13,13 +13,18 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
             assert: args => Assert.True(args.Detail))
         .Event(c => c.Remove,
             argsJson: """{"detail": true}""",
-            assert: args => Assert.True(args.Detail));
+            assert: args => Assert.True(args.Detail))
+        .Bind(c => c.Selected, c => c.SelectedChanged, via: c => c.Select,
+            argsJson: """{"detail": true}""", expect: true);
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Chip_RendersCorrectElement()

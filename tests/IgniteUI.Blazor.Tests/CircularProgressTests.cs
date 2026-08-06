@@ -93,4 +93,17 @@ public class CircularProgressTests : BlazorComponentTestBase
 
         Assert.Contains("igc-circular-gradient", cut.Find("igc-circular-progress").InnerHtml);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbCircularProgress</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void CircularProgress_DefaultValues_MatchWebComponent()
+    {
+        var progress = new IgbCircularProgress();
+
+        Assert.Equal(100, progress.Max);
+        Assert.Equal(500, progress.AnimationDuration);
+    }
 }

@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A container component for the card's main text content.
-    /// This component should be used within an igc-card element to display the primary content.
+    /// Nest inside an <see cref="IgbCard"/> to display the primary content.
     /// </summary>
     public partial class IgbCardContent : BaseRendererControl
     {

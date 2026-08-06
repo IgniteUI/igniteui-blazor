@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbStepper.ActiveStepChanging"/> event, raised before the
+    /// active step changes.
+    /// </summary>
     public partial class IgbActiveStepChangingEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebActiveStepChangingEventArgs"; } }
@@ -19,6 +23,11 @@ namespace IgniteUI.Blazor.Controls
         private IgbActiveStepChangingEventArgsDetail _detail;
 
         partial void OnDetailChanging(ref IgbActiveStepChangingEventArgsDetail newValue);
+
+        /// <summary>
+        /// The payload of the event, carrying the index of the currently active step and the index of
+        /// the step that is about to become active.
+        /// </summary>
         [Parameter]
         public IgbActiveStepChangingEventArgsDetail Detail
         {

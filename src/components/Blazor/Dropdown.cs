@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Represents a DropDown component.
+    /// Represents a dropdown component.
     /// </summary>
     public partial class IgbDropdown : IgbComboBoxBaseLike
     {
@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnCreatedIgbDropdown();
 
-        private PopoverPlacement _placement = PopoverPlacement.Top;
+        private PopoverPlacement _placement = PopoverPlacement.BottomStart;
 
         partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>
@@ -99,7 +99,7 @@ namespace IgniteUI.Blazor.Controls
         partial void OnFlipChanging(ref bool newValue);
         /// <summary>
         /// Whether the component should be flipped to the opposite side of the target once it's about to overflow the visible area.
-        /// When true, once enough space is detected on its preferred side, it will flip back.
+        /// When <see langword="true"/>, once enough space is detected on its preferred side, it will flip back.
         /// </summary>
         [Parameter]
         public bool Flip
@@ -155,6 +155,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Returns the items of the dropdown.
+        /// </summary>
         public async Task<IgbDropdownItem[]> GetItemsAsync()
         {
             var iv = await InvokeMethod("p:Items", new object[] { }, new string[] { });
@@ -171,6 +175,10 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Returns the items of the dropdown.
+        /// </summary>
         public IgbDropdownItem[] GetItems()
         {
             var iv = InvokeMethodSync("p:Items", new object[] { }, new string[] { });
@@ -187,6 +195,10 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Returns the group items of the dropdown.
+        /// </summary>
         public async Task<IgbDropdownGroup[]> GetGroupsAsync()
         {
             var iv = await InvokeMethod("p:Groups", new object[] { }, new string[] { });
@@ -203,6 +215,10 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Returns the group items of the dropdown.
+        /// </summary>
         public IgbDropdownGroup[] GetGroups()
         {
             var iv = InvokeMethodSync("p:Groups", new object[] { }, new string[] { });
@@ -219,6 +235,10 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Returns the selected item from the dropdown, or <see langword="null"/> if there is no selection.
+        /// </summary>
         public async Task<IgbDropdownItem?> GetSelectedItemAsync()
         {
             var iv = await InvokeMethod("p:SelectedItem", new object[] { }, new string[] { });
@@ -235,6 +255,10 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Returns the selected item from the dropdown, or <see langword="null"/> if there is no selection.
+        /// </summary>
         public IgbDropdownItem? GetSelectedItem()
         {
             var iv = InvokeMethodSync("p:SelectedItem", new object[] { }, new string[] { });
@@ -272,8 +296,9 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
         /// <summary>
-        /// Navigates to the item at the specified index. If it exists, returns the found item, otherwise - null.
+        /// Navigates to the item at the specified index.
         /// </summary>
+        /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
         public async Task<IgbDropdownItem> NavigateToAsync(Object index)
         {
             var iv = await InvokeMethod("navigateTo", new object[] { ObjectToParam(index) }, new string[] { "Json" });
@@ -290,6 +315,11 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Navigates to the item at the specified index.
+        /// </summary>
+        /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
         public IgbDropdownItem NavigateTo(Object index)
         {
             var iv = InvokeMethodSync("navigateTo", new object[] { ObjectToParam(index) }, new string[] { "Json" });
@@ -307,8 +337,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
         /// <summary>
-        /// Selects the item with the specified value. If it exists, returns the found item, otherwise - null.
+        /// Selects the item with the specified value.
         /// </summary>
+        /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
         public async Task<IgbDropdownItem> SelectAsync(Object value)
         {
             var iv = await InvokeMethod("select", new object[] { ObjectToParam(value) }, new string[] { "Json" });
@@ -325,6 +356,11 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Selects the item with the specified value.
+        /// </summary>
+        /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
         public IgbDropdownItem Select(Object value)
         {
             var iv = InvokeMethodSync("select", new object[] { ObjectToParam(value) }, new string[] { "Json" });
@@ -356,6 +392,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("clearSelection", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Clears the current selection of the dropdown.
+        /// </summary>
         public void ClearSelection()
         {
             InvokeMethodSync("clearSelection", new object[] { }, new string[] { });
@@ -363,6 +403,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openingRef = null;
         private string _openingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpeningScript
         {
@@ -387,6 +435,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingOpening(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opening = null;
+
+        /// <summary>
+        /// Emitted just before the dropdown is opened.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Opening
         {
@@ -428,6 +480,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openedRef = null;
         private string _openedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpenedScript
         {
@@ -452,6 +512,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingOpened(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opened = null;
+
+        /// <summary>
+        /// Emitted after the dropdown is opened.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Opened
         {
@@ -493,6 +557,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closingRef = null;
         private string _closingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosingScript
         {
@@ -517,6 +589,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
+
+        /// <summary>
+        /// Emitted just before the dropdown is closed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closing
         {
@@ -558,6 +634,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closedRef = null;
         private string _closedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosedScript
         {
@@ -582,6 +666,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
+
+        /// <summary>
+        /// Emitted after the dropdown is closed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closed
         {
@@ -623,6 +711,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -647,6 +743,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbDropdownItemComponentEventArgs args);
         private EventCallback<IgbDropdownItemComponentEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the selected item changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbDropdownItemComponentEventArgs> Change
         {

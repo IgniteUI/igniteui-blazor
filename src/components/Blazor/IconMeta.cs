@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Identifies a registered icon by its name and the collection it belongs to.
+    /// </summary>
     public partial class IgbIconMeta : BaseRendererElement
     {
         public override string Type { get { return "WebIconMeta"; } }
@@ -19,6 +22,10 @@ namespace IgniteUI.Blazor.Controls
         private string _collection;
 
         partial void OnCollectionChanging(ref string newValue);
+
+        /// <summary>
+        /// The name of the collection the icon is registered in.
+        /// </summary>
         [Parameter]
         public string Collection
         {

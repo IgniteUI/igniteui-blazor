@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for the <see cref="IgbRadio.Change"/> and <see cref="IgbRadioGroup.Change"/>
+    /// events, raised when the checked state of a radio button changes.
+    /// </summary>
     public partial class IgbRadioChangeEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebRadioChangeEventArgs"; } }
@@ -19,6 +23,10 @@ namespace IgniteUI.Blazor.Controls
         private IgbRadioChangeEventArgsDetail _detail;
 
         partial void OnDetailChanging(ref IgbRadioChangeEventArgsDetail newValue);
+
+        /// <summary>
+        /// The payload of the event, carrying the new checked state and the value of the radio button.
+        /// </summary>
         [Parameter]
         public IgbRadioChangeEventArgsDetail Detail
         {

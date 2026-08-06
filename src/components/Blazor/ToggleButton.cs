@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The `igc-toggle-button` wraps a native button element and exposes additional `value` and `selected` properties.
-    /// It is used in the context of an `igc-button-group` to facilitate the creation of group/toolbar like UX behaviors.
+    /// The <see cref="IgbToggleButton"/> wraps a native button element and exposes additional
+    /// <see cref="Value"/> and <see cref="Selected"/> properties.
+    /// It is used in the context of an <see cref="IgbButtonGroup"/> to facilitate the creation of
+    /// group/toolbar like UX behaviors.
     /// </summary>
     public partial class IgbToggleButton : BaseRendererControl
     {
@@ -64,7 +66,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnValueChanging(ref string newValue);
         /// <summary>
-        /// The value attribute of the control.
+        /// The value of the control.
         /// </summary>
         [Parameter]
         public string Value
@@ -158,6 +160,9 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
+        /// <summary>
+        /// Sets focus on the button.
+        /// </summary>
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
@@ -173,18 +178,25 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("blur", new object[] { }, new string[] { });
         }
 
+        /// <summary>
+        /// Removes focus from the button.
+        /// </summary>
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
             InvokeMethodSync("blur", new object[] { }, new string[] { });
         }
         /// <summary>
-        /// Simulates a mouse click on the element.
+        /// Simulates a mouse click on the button.
         /// </summary>
         public async Task ClickAsync()
         {
             await InvokeMethod("click", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Simulates a mouse click on the button.
+        /// </summary>
         public void Click()
         {
             InvokeMethodSync("click", new object[] { }, new string[] { });

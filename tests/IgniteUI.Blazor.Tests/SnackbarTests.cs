@@ -86,4 +86,16 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
 
         Assert.Contains("Item deleted", cut.Markup);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbSnackbar</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Snackbar_DefaultValues_MatchWebComponent()
+    {
+        var snackbar = new IgbSnackbar();
+
+        Assert.Equal(4000, snackbar.DisplayTime);
+    }
 }

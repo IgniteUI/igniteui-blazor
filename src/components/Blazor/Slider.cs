@@ -74,11 +74,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Gets the current value of the component.
+        /// </summary>
         public async Task<double> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
+
+        /// <summary>
+        /// Gets the current value of the component.
+        /// </summary>
         public double GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
@@ -88,7 +96,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
-        /// Control the validity of the control.
+        /// Sets the control into invalid state (visual state only).
         /// </summary>
         [Parameter]
         public bool Invalid
@@ -125,52 +133,72 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
         /// <summary>
-        /// Increments the value of the slider by `stepIncrement * step`, where `stepIncrement` defaults to 1.
-        /// stepIncrement Optional step increment. If no parameter is passed, it defaults to 1.
+        /// Increments the value of the slider by <c>stepIncrement * step</c>, where
+        /// <paramref name="stepIncrement"/> defaults to 1.
         /// </summary>
         /// <param name="stepIncrement">Optional step increment. If no parameter is passed, it defaults to 1.</param>
         public async Task StepUpAsync(double stepIncrement = 1)
         {
             await InvokeMethod("stepUp", new object[] { stepIncrement }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Increments the value of the slider by <c>stepIncrement * step</c>, where
+        /// <paramref name="stepIncrement"/> defaults to 1.
+        /// </summary>
+        /// <param name="stepIncrement">Optional step increment. If no parameter is passed, it defaults to 1.</param>
         public void StepUp(double stepIncrement = 1)
         {
             InvokeMethodSync("stepUp", new object[] { stepIncrement }, new string[] { "Number" });
         }
         /// <summary>
-        /// Decrements the value of the slider by `stepDecrement * step`, where `stepDecrement` defaults to 1.
-        /// stepDecrement Optional step decrement. If no parameter is passed, it defaults to 1.
+        /// Decrements the value of the slider by <c>stepDecrement * step</c>, where
+        /// <paramref name="stepDecrement"/> defaults to 1.
         /// </summary>
         /// <param name="stepDecrement">Optional step decrement. If no parameter is passed, it defaults to 1.</param>
         public async Task StepDownAsync(double stepDecrement = 1)
         {
             await InvokeMethod("stepDown", new object[] { stepDecrement }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Decrements the value of the slider by <c>stepDecrement * step</c>, where
+        /// <paramref name="stepDecrement"/> defaults to 1.
+        /// </summary>
+        /// <param name="stepDecrement">Optional step decrement. If no parameter is passed, it defaults to 1.</param>
         public void StepDown(double stepDecrement = 1)
         {
             InvokeMethodSync("stepDown", new object[] { stepDecrement }, new string[] { "Number" });
         }
         /// <summary>
-        /// Checks for validity of the control and shows the browser message if it invalid.
+        /// Checks the validity of the control and shows the browser message if it is invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
             var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks the validity of the control and shows the browser message if it is invalid.
+        /// </summary>
         public bool ReportValidity()
         {
             var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Checks for validity of the control and emits the invalid event if it invalid.
+        /// Checks the validity of the control and emits the invalid event if it is invalid.
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
             var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks the validity of the control and emits the invalid event if it is invalid.
+        /// </summary>
         public bool CheckValidity()
         {
             var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
@@ -178,18 +206,28 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Sets a custom validation message for the control.
-        /// As long as `message` is not empty, the control is considered invalid.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
             await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Sets a custom validation message for the control.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
+        /// </summary>
         public void SetCustomValidity(String message)
         {
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
         private EventCallback<double>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<double> ValueChanged
         {
@@ -217,6 +255,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputRef = null;
         private string _inputScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Input"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputScript
         {
@@ -241,6 +287,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingInput(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _input = null;
+
+        /// <summary>
+        /// Emitted when a value is changed via thumb drag or keyboard interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbNumberEventArgs> Input
         {
@@ -282,6 +332,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -306,6 +364,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when a value change is committed on a thumb drag end or keyboard interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbNumberEventArgs> Change
         {

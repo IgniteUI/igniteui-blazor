@@ -23,19 +23,19 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
         .Method(c => c.ShowAllAsync(), c => c.ShowAll(), "showAll")
         .Event(c => c.Opening,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-expansion-panel:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-expansion-panel:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbExpansionPanel>()[1].Instance, args.Detail))
         .Event(c => c.Opened,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-expansion-panel:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-expansion-panel:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbExpansionPanel>()[1].Instance, args.Detail))
         .Event(c => c.Closing,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-expansion-panel:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-expansion-panel:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbExpansionPanel>()[1].Instance, args.Detail))
         .Event(c => c.Closed,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-expansion-panel:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-expansion-panel:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.FindComponents<IgbExpansionPanel>()[1].Instance, args.Detail));
 
     [Fact]

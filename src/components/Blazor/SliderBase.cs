@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class shared by <see cref="IgbRangeSlider"/> and <see cref="IgbSlider"/>.
+    /// </summary>
     public partial class IgbSliderBase : BaseRendererControl
     {
         public override string Type { get { return "WebSliderBase"; } }
@@ -61,10 +64,10 @@ namespace IgniteUI.Blazor.Controls
         partial void OnMinChanging(ref double newValue);
         /// <summary>
         /// The minimum value of the slider scale. Defaults to 0.
-        /// If `min` is greater than `max` the call is a no-op.
-        /// If `labels` are provided (projected), then `min` is always set to 0.
-        /// If `lowerBound` ends up being less than than the current `min` value,
-        /// it is automatically assigned the new `min` value.
+        /// If <see cref="Min"/> is greater than <see cref="Max"/> the assignment is a no-op.
+        /// If <see cref="IgbSliderLabel"/> children are provided, then <see cref="Min"/> is always set to 0.
+        /// If <see cref="LowerBound"/> ends up being less than the current <see cref="Min"/> value,
+        /// it is automatically assigned the new <see cref="Min"/> value.
         /// </summary>
         [Parameter]
         public double Min
@@ -80,16 +83,16 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _max = 0;
+        private double _max = 100;
 
         partial void OnMaxChanging(ref double newValue);
         /// <summary>
         /// The maximum value of the slider scale. Defaults to 100.
-        /// If `max` is less than `min` the call is a no-op.
-        /// If `labels` are provided (projected), then `max` is always set to
+        /// If <see cref="Max"/> is less than <see cref="Min"/> the assignment is a no-op.
+        /// If <see cref="IgbSliderLabel"/> children are provided, then <see cref="Max"/> is always set to
         /// the number of labels.
-        /// If `upperBound` ends up being greater than than the current `max` value,
-        /// it is automatically assigned the new `max` value.
+        /// If <see cref="UpperBound"/> ends up being greater than the current <see cref="Max"/> value,
+        /// it is automatically assigned the new <see cref="Max"/> value.
         /// </summary>
         [Parameter]
         public double Max
@@ -109,7 +112,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnLowerBoundChanging(ref double newValue);
         /// <summary>
-        /// The lower bound of the slider value. If not set, the `min` value is applied.
+        /// The lower bound of the slider value. If not set, the <see cref="Min"/> value is applied.
         /// </summary>
         [Parameter]
         public double LowerBound
@@ -129,7 +132,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnUpperBoundChanging(ref double newValue);
         /// <summary>
-        /// The upper bound of the slider value. If not set, the `max` value is applied.
+        /// The upper bound of the slider value. If not set, the <see cref="Max"/> value is applied.
         /// </summary>
         [Parameter]
         public double UpperBound
@@ -170,7 +173,8 @@ namespace IgniteUI.Blazor.Controls
         partial void OnDiscreteTrackChanging(ref bool newValue);
         /// <summary>
         /// Marks the slider track as discrete so it displays the steps.
-        /// If the `step` is 0, the slider will remain continuos even if `discreteTrack` is `true`.
+        /// If <see cref="Step"/> is 0, the slider remains continuous even if <see cref="DiscreteTrack"/>
+        /// is <see langword="true"/>.
         /// </summary>
         [Parameter]
         public bool DiscreteTrack
@@ -206,13 +210,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _step = 0;
+        private double _step = 1;
 
         partial void OnStepChanging(ref double newValue);
         /// <summary>
         /// Specifies the granularity that the value must adhere to.
         /// If set to 0 no stepping is implied and any value in the range is allowed.
-        /// If `labels` are provided (projected) then the step is always assumed to be 1 since it is a discrete slider.
+        /// If <see cref="IgbSliderLabel"/> children are provided then the step is always assumed to be 1,
+        /// since it is a discrete slider.
         /// </summary>
         [Parameter]
         public double Step

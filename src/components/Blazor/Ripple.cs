@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A ripple can be applied to an element to represent
-    /// interactive surface.
+    /// an interactive surface.
     /// </summary>
     public partial class IgbRipple : BaseRendererControl
     {

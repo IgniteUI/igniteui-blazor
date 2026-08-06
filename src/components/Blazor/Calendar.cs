@@ -42,6 +42,11 @@ namespace IgniteUI.Blazor.Controls
         private DateTime _value = DateTime.MinValue;
 
         partial void OnValueChanging(ref DateTime newValue);
+
+        /// <summary>
+        /// The current value of the calendar.
+        /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Single"/>.
+        /// </summary>
         [Parameter]
         public DateTime Value
         {
@@ -56,11 +61,21 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Get the current value of the calendar.
+        /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Single"/>.
+        /// </summary>
         public async Task<DateTime> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToDate(iv);
         }
+
+        /// <summary>
+        /// Get the current value of the calendar.
+        /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Single"/>.
+        /// </summary>
         public DateTime GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
@@ -69,6 +84,12 @@ namespace IgniteUI.Blazor.Controls
         private DateTime[] _values;
 
         partial void OnValuesChanging(ref DateTime[] newValue);
+
+        /// <summary>
+        /// The current values of the calendar.
+        /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
+        /// or <see cref="CalendarSelection.Range"/>.
+        /// </summary>
         [Parameter]
         public DateTime[] Values
         {
@@ -83,11 +104,23 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Get the current values of the calendar.
+        /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
+        /// or <see cref="CalendarSelection.Range"/>.
+        /// </summary>
         public async Task<DateTime[]> GetCurrentValuesAsync()
         {
             var iv = await InvokeMethod("p:Values", new object[] { }, new string[] { });
             return ReturnToDateArray(iv);
         }
+
+        /// <summary>
+        /// Get the current values of the calendar.
+        /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
+        /// or <see cref="CalendarSelection.Range"/>.
+        /// </summary>
         public DateTime[] GetCurrentValues()
         {
             var iv = InvokeMethodSync("p:Values", new object[] { }, new string[] { });
@@ -117,7 +150,7 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHideOutsideDaysChanging(ref bool newValue);
         /// <summary>
-        /// Whether to show the dates that do not belong to the current active month.
+        /// Whether to hide the dates that do not belong to the current active month.
         /// </summary>
         [Parameter]
         public bool HideOutsideDays
@@ -138,7 +171,8 @@ namespace IgniteUI.Blazor.Controls
         partial void OnHideHeaderChanging(ref bool newValue);
         /// <summary>
         /// Whether to render the calendar header part.
-        /// When the calendar selection is set to `multiple` the header is always hidden.
+        /// When <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
+        /// the header is always hidden.
         /// </summary>
         [Parameter]
         public bool HideHeader
@@ -195,7 +229,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _visibleMonths = 0;
+        private double _visibleMonths = 1;
 
         partial void OnVisibleMonthsChanging(ref double newValue);
         /// <summary>
@@ -283,6 +317,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private EventCallback<DateTime>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<DateTime> ValueChanged
         {
@@ -309,6 +348,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private EventCallback<DateTime[]>? _valuesChanged = null;
+
+        /// <summary>
+        /// Emitted when the Values property changes.
+        /// Enables two-way binding through <c>@bind-Values</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<DateTime[]> ValuesChanged
         {
@@ -336,6 +380,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -360,6 +412,10 @@ namespace IgniteUI.Blazor.Controls
 
         partial void OnHandlingChange(IgbComponentDataValueChangedEventArgs args);
         private EventCallback<IgbComponentDataValueChangedEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the calendar changes its value.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentDataValueChangedEventArgs> Change
         {

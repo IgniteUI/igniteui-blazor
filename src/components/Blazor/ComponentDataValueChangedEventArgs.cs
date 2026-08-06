@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for component events that carry an arbitrary data payload.
+    /// The type and meaning of <see cref="Detail"/> depend on the event that raises it.
+    /// </summary>
     public partial class IgbComponentDataValueChangedEventArgs : BaseRendererElement
     {
         public override string Type { get { return "WebComponentDataValueChangedEventArgs"; } }
@@ -17,6 +21,10 @@ namespace IgniteUI.Blazor.Controls
         private object _detail;
 
         partial void OnDetailChanging(ref object newValue);
+
+        /// <summary>
+        /// The value carried by the event.
+        /// </summary>
         [Parameter]
         public object Detail
         {

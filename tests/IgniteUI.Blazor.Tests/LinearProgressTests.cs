@@ -104,4 +104,17 @@ public class LinearProgressTests : BlazorComponentTestBase
         var element = cut.Find("igc-linear-progress");
         Assert.Equal("500", element.GetAttribute("animation-duration"));
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbLinearProgress</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void LinearProgress_DefaultValues_MatchWebComponent()
+    {
+        var progress = new IgbLinearProgress();
+
+        Assert.Equal(100, progress.Max);
+        Assert.Equal(500, progress.AnimationDuration);
+    }
 }

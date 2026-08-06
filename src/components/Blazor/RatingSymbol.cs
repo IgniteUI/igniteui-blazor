@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Used when a custom icon/symbol/element needs to be passed to the igc-rating component.
+    /// Used when a custom icon/symbol/element needs to be passed to an <see cref="IgbRating"/> component.
     /// </summary>
     public partial class IgbRatingSymbol : BaseRendererControl
     {
