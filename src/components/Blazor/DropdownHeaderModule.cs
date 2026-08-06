@@ -1,21 +1,39 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Obsolete. Registering this module has no effect and is no longer required.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="IgbDropdownHeader"/> is only ever used inside <see cref="IgbDropdown"/>, and the parent's web component registers its children itself, so this module never needed a separate registration.
+    /// The type and its members are kept so existing registrations keep compiling; they do nothing.
+    /// </remarks>
+    [Obsolete("Registering IgbDropdownHeaderModule is not required and has no effect. Remove it from your AddIgniteUIBlazor registration.")]
     public partial class IgbDropdownHeaderModule
     {
+        /// <summary>
+        /// No-op. Kept for source compatibility.
+        /// </summary>
+        /// <param name="runtime">Unused.</param>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebDropdownHeaderModule");
-
         }
 
+        /// <summary>
+        /// No-op. Kept for source compatibility.
+        /// </summary>
+        /// <param name="runtime">Unused.</param>
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebDropdownHeaderModule");
         }
 
+        /// <summary>
+        /// Always returns <c>true</c> - there is nothing for this module to load.
+        /// </summary>
+        /// <param name="runtime">Unused.</param>
+        /// <returns><c>true</c>.</returns>
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebDropdownHeaderModule");
+            return true;
         }
     }
 }

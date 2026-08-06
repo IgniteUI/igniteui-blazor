@@ -1,21 +1,39 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Obsolete. Registering this module has no effect and is no longer required.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="IgbSliderBase"/> is a shared base class, not a component you place in markup - it has no client resources of its own. Everything <see cref="IgbSlider"/> or <see cref="IgbRangeSlider"/> needs is loaded by its own module.
+    /// The type and its members are kept so existing registrations keep compiling; they do nothing.
+    /// </remarks>
+    [Obsolete("Registering IgbSliderBaseModule is not required and has no effect. Remove it from your AddIgniteUIBlazor registration.")]
     public partial class IgbSliderBaseModule
     {
+        /// <summary>
+        /// No-op. Kept for source compatibility.
+        /// </summary>
+        /// <param name="runtime">Unused.</param>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebSliderBaseModule");
-
         }
 
+        /// <summary>
+        /// No-op. Kept for source compatibility.
+        /// </summary>
+        /// <param name="runtime">Unused.</param>
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebSliderBaseModule");
         }
 
+        /// <summary>
+        /// Always returns <c>true</c> - there is nothing for this module to load.
+        /// </summary>
+        /// <param name="runtime">Unused.</param>
+        /// <returns><c>true</c>.</returns>
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebSliderBaseModule");
+            return true;
         }
     }
 }

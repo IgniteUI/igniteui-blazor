@@ -12,10 +12,7 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbTileModule.IsLoadRequested(IgBlazor))
-            {
-                IgbTileModule.Register(IgBlazor);
-            }
+            ModuleLoader.Load(IgBlazor, "WebTileManagerModule");
         }
 
         protected override string ResolveDisplay()

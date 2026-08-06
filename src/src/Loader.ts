@@ -167,62 +167,6 @@ export class Loader {
         break;
       }
 
-      case 'WebCardActionsModule': {
-        let { IgcCardActionsComponent } = await import('igniteui-webcomponents');
-        let { WebCardActionsDescriptionModule } = await import('igniteui-core/WebCardActionsDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcCardActionsComponent.register();
-        TypeRegistrar.registerCons('IgcCardActionsComponent', IgcCardActionsComponent);
-
-        WebCardActionsDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebCardContentModule': {
-        let { IgcCardContentComponent } = await import('igniteui-webcomponents');
-        let { WebCardContentDescriptionModule } = await import('igniteui-core/WebCardContentDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcCardContentComponent.register();
-        TypeRegistrar.registerCons('IgcCardContentComponent', IgcCardContentComponent);
-
-        WebCardContentDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebCardHeaderModule': {
-        let { IgcCardHeaderComponent } = await import('igniteui-webcomponents');
-        let { WebCardHeaderDescriptionModule } = await import('igniteui-core/WebCardHeaderDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcCardHeaderComponent.register();
-        TypeRegistrar.registerCons('IgcCardHeaderComponent', IgcCardHeaderComponent);
-
-        WebCardHeaderDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebCardMediaModule': {
-        let { IgcCardMediaComponent } = await import('igniteui-webcomponents');
-        let { WebCardMediaDescriptionModule } = await import('igniteui-core/WebCardMediaDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcCardMediaComponent.register();
-        TypeRegistrar.registerCons('IgcCardMediaComponent', IgcCardMediaComponent);
-
-        WebCardMediaDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebCardModule': {
         let { IgcCardComponent } = await import('igniteui-webcomponents');
         let { WebCardDescriptionModule } = await import('igniteui-core/WebCardDescriptionModule');
@@ -237,21 +181,6 @@ export class Loader {
         break;
       }
 
-      case 'WebCarouselIndicatorModule': {
-        let { IgcCarouselIndicatorComponent } = await import('igniteui-webcomponents');
-        let { WebCarouselIndicatorDescriptionModule } =
-          await import('igniteui-core/WebCarouselIndicatorDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcCarouselIndicatorComponent.register();
-        TypeRegistrar.registerCons('IgcCarouselIndicatorComponent', IgcCarouselIndicatorComponent);
-
-        WebCarouselIndicatorDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebCarouselModule': {
         let { IgcCarouselComponent } = await import('igniteui-webcomponents');
         let { WebCarouselDescriptionModule } = await import('igniteui-core/WebCarouselDescriptionModule');
@@ -262,20 +191,6 @@ export class Loader {
         TypeRegistrar.registerCons('IgcCarouselComponent', IgcCarouselComponent);
 
         WebCarouselDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebCarouselSlideModule': {
-        let { IgcCarouselSlideComponent } = await import('igniteui-webcomponents');
-        let { WebCarouselSlideDescriptionModule } = await import('igniteui-core/WebCarouselSlideDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcCarouselSlideComponent.register();
-        TypeRegistrar.registerCons('IgcCarouselSlideComponent', IgcCarouselSlideComponent);
-
-        WebCarouselSlideDescriptionModule.register(cr.context);
         this.checkDone();
         break;
       }
@@ -436,48 +351,6 @@ export class Loader {
         break;
       }
 
-      case 'WebDropdownGroupModule': {
-        let { IgcDropdownGroupComponent } = await import('igniteui-webcomponents');
-        let { WebDropdownGroupDescriptionModule } = await import('igniteui-core/WebDropdownGroupDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcDropdownGroupComponent.register();
-        TypeRegistrar.registerCons('IgcDropdownGroupComponent', IgcDropdownGroupComponent);
-
-        WebDropdownGroupDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebDropdownHeaderModule': {
-        let { IgcDropdownHeaderComponent } = await import('igniteui-webcomponents');
-        let { WebDropdownHeaderDescriptionModule } = await import('igniteui-core/WebDropdownHeaderDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcDropdownHeaderComponent.register();
-        TypeRegistrar.registerCons('IgcDropdownHeaderComponent', IgcDropdownHeaderComponent);
-
-        WebDropdownHeaderDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebDropdownItemModule': {
-        let { IgcDropdownItemComponent } = await import('igniteui-webcomponents');
-        let { WebDropdownItemDescriptionModule } = await import('igniteui-core/WebDropdownItemDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcDropdownItemComponent.register();
-        TypeRegistrar.registerCons('IgcDropdownItemComponent', IgcDropdownItemComponent);
-
-        WebDropdownItemDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebDropdownModule': {
         let { IgcDropdownComponent } = await import('igniteui-webcomponents');
         let { WebDropdownDescriptionModule } = await import('igniteui-core/WebDropdownDescriptionModule');
@@ -585,34 +458,6 @@ export class Loader {
         break;
       }
 
-      case 'WebListHeaderModule': {
-        let { IgcListHeaderComponent } = await import('igniteui-webcomponents');
-        let { WebListHeaderDescriptionModule } = await import('igniteui-core/WebListHeaderDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcListHeaderComponent.register();
-        TypeRegistrar.registerCons('IgcListHeaderComponent', IgcListHeaderComponent);
-
-        WebListHeaderDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebListItemModule': {
-        let { IgcListItemComponent } = await import('igniteui-webcomponents');
-        let { WebListItemDescriptionModule } = await import('igniteui-core/WebListItemDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcListItemComponent.register();
-        TypeRegistrar.registerCons('IgcListItemComponent', IgcListItemComponent);
-
-        WebListItemDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebListModule': {
         let { IgcListComponent } = await import('igniteui-webcomponents');
         let { WebListDescriptionModule } = await import('igniteui-core/WebListDescriptionModule');
@@ -637,35 +482,6 @@ export class Loader {
         TypeRegistrar.registerCons('IgcMaskInputComponent', IgcMaskInputComponent);
 
         WebMaskInputDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebNavDrawerHeaderItemModule': {
-        let { IgcNavDrawerHeaderItemComponent } = await import('igniteui-webcomponents');
-        let { WebNavDrawerHeaderItemDescriptionModule } =
-          await import('igniteui-core/WebNavDrawerHeaderItemDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcNavDrawerHeaderItemComponent.register();
-        TypeRegistrar.registerCons('IgcNavDrawerHeaderItemComponent', IgcNavDrawerHeaderItemComponent);
-
-        WebNavDrawerHeaderItemDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebNavDrawerItemModule': {
-        let { IgcNavDrawerItemComponent } = await import('igniteui-webcomponents');
-        let { WebNavDrawerItemDescriptionModule } = await import('igniteui-core/WebNavDrawerItemDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcNavDrawerItemComponent.register();
-        TypeRegistrar.registerCons('IgcNavDrawerItemComponent', IgcNavDrawerItemComponent);
-
-        WebNavDrawerItemDescriptionModule.register(cr.context);
         this.checkDone();
         break;
       }
@@ -764,20 +580,6 @@ export class Loader {
         break;
       }
 
-      case 'WebRatingSymbolModule': {
-        let { IgcRatingSymbolComponent } = await import('igniteui-webcomponents');
-        let { WebRatingSymbolDescriptionModule } = await import('igniteui-core/WebRatingSymbolDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcRatingSymbolComponent.register();
-        TypeRegistrar.registerCons('IgcRatingSymbolComponent', IgcRatingSymbolComponent);
-
-        WebRatingSymbolDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebRippleModule': {
         let { IgcRippleComponent } = await import('igniteui-webcomponents');
         let { WebRippleDescriptionModule } = await import('igniteui-core/WebRippleDescriptionModule');
@@ -792,48 +594,6 @@ export class Loader {
         break;
       }
 
-      case 'WebSelectGroupModule': {
-        let { IgcSelectGroupComponent } = await import('igniteui-webcomponents');
-        let { WebSelectGroupDescriptionModule } = await import('igniteui-core/WebSelectGroupDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcSelectGroupComponent.register();
-        TypeRegistrar.registerCons('IgcSelectGroupComponent', IgcSelectGroupComponent);
-
-        WebSelectGroupDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebSelectHeaderModule': {
-        let { IgcSelectHeaderComponent } = await import('igniteui-webcomponents');
-        let { WebSelectHeaderDescriptionModule } = await import('igniteui-core/WebSelectHeaderDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcSelectHeaderComponent.register();
-        TypeRegistrar.registerCons('IgcSelectHeaderComponent', IgcSelectHeaderComponent);
-
-        WebSelectHeaderDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebSelectItemModule': {
-        let { IgcSelectItemComponent } = await import('igniteui-webcomponents');
-        let { WebSelectItemDescriptionModule } = await import('igniteui-core/WebSelectItemDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcSelectItemComponent.register();
-        TypeRegistrar.registerCons('IgcSelectItemComponent', IgcSelectItemComponent);
-
-        WebSelectItemDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebSelectModule': {
         let { IgcSelectComponent } = await import('igniteui-webcomponents');
         let { WebSelectDescriptionModule } = await import('igniteui-core/WebSelectDescriptionModule');
@@ -844,20 +604,6 @@ export class Loader {
         TypeRegistrar.registerCons('IgcSelectComponent', IgcSelectComponent);
 
         WebSelectDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebSliderLabelModule': {
-        let { IgcSliderLabelComponent } = await import('igniteui-webcomponents');
-        let { WebSliderLabelDescriptionModule } = await import('igniteui-core/WebSliderLabelDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcSliderLabelComponent.register();
-        TypeRegistrar.registerCons('IgcSliderLabelComponent', IgcSliderLabelComponent);
-
-        WebSliderLabelDescriptionModule.register(cr.context);
         this.checkDone();
         break;
       }
@@ -900,20 +646,6 @@ export class Loader {
         TypeRegistrar.registerCons('IgcSplitterComponent', IgcSplitterComponent);
 
         WebSplitterDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebStepModule': {
-        let { IgcStepComponent } = await import('igniteui-webcomponents');
-        let { WebStepDescriptionModule } = await import('igniteui-core/WebStepDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcStepComponent.register();
-        TypeRegistrar.registerCons('IgcStepComponent', IgcStepComponent);
-
-        WebStepDescriptionModule.register(cr.context);
         this.checkDone();
         break;
       }
@@ -1016,20 +748,6 @@ export class Loader {
         break;
       }
 
-      case 'WebTileModule': {
-        let { IgcTileComponent } = await import('igniteui-webcomponents');
-        let { WebTileDescriptionModule } = await import('igniteui-core/WebTileDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcTileComponent.register();
-        TypeRegistrar.registerCons('IgcTileComponent', IgcTileComponent);
-
-        WebTileDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebToastModule': {
         let { IgcToastComponent } = await import('igniteui-webcomponents');
         let { WebToastDescriptionModule } = await import('igniteui-core/WebToastDescriptionModule');
@@ -1044,20 +762,6 @@ export class Loader {
         break;
       }
 
-      case 'WebToggleButtonModule': {
-        let { IgcToggleButtonComponent } = await import('igniteui-webcomponents');
-        let { WebToggleButtonDescriptionModule } = await import('igniteui-core/WebToggleButtonDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcToggleButtonComponent.register();
-        TypeRegistrar.registerCons('IgcToggleButtonComponent', IgcToggleButtonComponent);
-
-        WebToggleButtonDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebTooltipModule': {
         let { IgcTooltipComponent } = await import('igniteui-webcomponents');
         let { WebTooltipDescriptionModule } = await import('igniteui-core/WebTooltipDescriptionModule');
@@ -1068,20 +772,6 @@ export class Loader {
         TypeRegistrar.registerCons('IgcTooltipComponent', IgcTooltipComponent);
 
         WebTooltipDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
-      case 'WebTreeItemModule': {
-        let { IgcTreeItemComponent } = await import('igniteui-webcomponents');
-        let { WebTreeItemDescriptionModule } = await import('igniteui-core/WebTreeItemDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcTreeItemComponent.register();
-        TypeRegistrar.registerCons('IgcTreeItemComponent', IgcTreeItemComponent);
-
-        WebTreeItemDescriptionModule.register(cr.context);
         this.checkDone();
         break;
       }

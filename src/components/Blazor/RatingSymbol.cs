@@ -9,10 +9,7 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbRatingSymbolModule.IsLoadRequested(IgBlazor))
-            {
-                IgbRatingSymbolModule.Register(IgBlazor);
-            }
+            ModuleLoader.Load(IgBlazor, "WebRatingModule");
         }
 
         protected override string ResolveDisplay()

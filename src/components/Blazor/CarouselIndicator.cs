@@ -9,10 +9,7 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbCarouselIndicatorModule.IsLoadRequested(IgBlazor))
-            {
-                IgbCarouselIndicatorModule.Register(IgBlazor);
-            }
+            ModuleLoader.Load(IgBlazor, "WebCarouselModule");
         }
 
         protected override string ResolveDisplay()

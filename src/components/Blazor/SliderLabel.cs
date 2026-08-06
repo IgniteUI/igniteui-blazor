@@ -10,9 +10,11 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbSliderLabelModule.IsLoadRequested(IgBlazor))
+            // Labels belong to either slider flavour; the range slider already brings them in,
+            // so only fall back to the plain slider module when it has not been requested.
+            if (!ModuleLoader.IsLoadRequested(IgBlazor, "WebRangeSliderModule"))
             {
-                IgbSliderLabelModule.Register(IgBlazor);
+                ModuleLoader.Load(IgBlazor, "WebSliderModule");
             }
         }
 

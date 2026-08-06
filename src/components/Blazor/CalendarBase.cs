@@ -9,14 +9,6 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebCalendarBase"; } }
 
-        protected override void EnsureModulesLoaded()
-        {
-            if (!IgbCalendarBaseModule.IsLoadRequested(IgBlazor))
-            {
-                IgbCalendarBaseModule.Register(IgBlazor);
-            }
-        }
-
         protected override string ResolveDisplay()
         {
             return "inline-block";

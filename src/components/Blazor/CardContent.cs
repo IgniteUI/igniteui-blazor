@@ -10,10 +10,7 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbCardContentModule.IsLoadRequested(IgBlazor))
-            {
-                IgbCardContentModule.Register(IgBlazor);
-            }
+            ModuleLoader.Load(IgBlazor, "WebCardModule");
         }
 
         protected override string ResolveDisplay()
