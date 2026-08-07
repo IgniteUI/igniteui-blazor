@@ -55,7 +55,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _autocomplete;
 
-        partial void OnAutocompleteChanging(ref string newValue);
         /// <summary>
         /// Specifies what permission, if any, the browser has to provide automated assistance in filling
         /// out form field values, as well as guidance to the browser as to the type of information
@@ -79,7 +78,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _autocapitalize;
 
-        partial void OnAutocapitalizeChanging(ref string newValue);
         /// <summary>
         /// Controls whether and how text input is automatically capitalized as it is entered/edited by the user.
         /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize">
@@ -101,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _inputMode;
 
-        partial void OnInputModeChanging(ref string newValue);
         /// <summary>
         /// Hints at the type of data that might be entered by the user while editing the control or its contents.
         /// This allows a browser to display an appropriate virtual keyboard.
@@ -125,7 +122,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label for the control.
         /// </summary>
@@ -145,7 +141,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _maxLength = 0;
 
-        partial void OnMaxLengthChanging(ref double newValue);
         /// <summary>
         /// The maximum number of characters (UTF-16 code units) that the user can enter.
         /// If this value isn't specified, the user can enter an unlimited number of characters.
@@ -167,7 +162,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _minLength = 0;
 
-        partial void OnMinLengthChanging(ref double newValue);
         /// <summary>
         /// The minimum number of characters (UTF-16 code units) that the user is required to enter.
         /// </summary>
@@ -188,7 +182,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Whether the control will have outlined appearance.
         /// </summary>
@@ -208,7 +201,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholder;
 
-        partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
@@ -228,7 +220,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -249,7 +240,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TextareaResize _resize = TextareaResize.Vertical;
 
-        partial void OnResizeChanging(ref TextareaResize newValue);
         /// <summary>
         /// Controls whether the control can be resized.
         /// When <see cref="TextareaResize.Auto"/> is set, the control will try to expand and fit its content.
@@ -270,7 +260,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _rows = 3;
 
-        partial void OnRowsChanging(ref double newValue);
         /// <summary>
         /// The number of visible text lines for the control. If it is specified, it must be a positive integer.
         /// If it is not specified, the default value is 3.
@@ -291,7 +280,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the component.
         /// </summary>
@@ -329,7 +317,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _spellcheck = true;
 
-        partial void OnSpellcheckChanging(ref bool newValue);
         /// <summary>
         /// Controls whether the control may be checked for spelling errors.
         /// </summary>
@@ -349,7 +336,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TextareaWrap _wrap = TextareaWrap.Soft;
 
-        partial void OnWrapChanging(ref TextareaWrap newValue);
         /// <summary>
         /// Indicates how the control should wrap the value for form submission.
         /// Refer to
@@ -373,7 +359,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _validateOnly = false;
 
-        partial void OnValidateOnlyChanging(ref bool newValue);
         /// <summary>
         /// Enables validation rules to be evaluated without restricting user input. This applies to the
         /// <see cref="MaxLength"/> property when it is defined.
@@ -394,7 +379,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -414,7 +398,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -434,7 +417,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>
@@ -453,25 +435,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTextarea(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTextarea(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -610,7 +573,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _input = null;
 
         /// <summary>
@@ -630,11 +592,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
                     {
                         _input = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -687,7 +645,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
 
         /// <summary>
@@ -709,14 +666,10 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {
                                 newValueValue = (string)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -799,7 +752,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
 
         /// <summary>
@@ -819,11 +771,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value, (args) =>
-                        {
-                            OnHandlingFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -876,7 +824,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
 
         /// <summary>
@@ -896,11 +843,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value, (args) =>
-                        {
-                            OnHandlingBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -921,15 +864,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(string oldValue, ref string newValue);
-
-        partial void SerializeCoreIgbTextarea(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTextarea(ser);
 
             if (IsPropDirty("Autocomplete"))
             { ser.AddStringProp("autocomplete", this._autocomplete); }

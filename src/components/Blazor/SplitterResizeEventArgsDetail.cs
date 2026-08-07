@@ -14,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _startPanelSize = 0;
 
-        partial void OnStartPanelSizeChanging(ref double newValue);
         /// <summary>
         /// The current size of the start panel in pixels.
         /// </summary>
@@ -34,7 +33,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _endPanelSize = 0;
 
-        partial void OnEndPanelSizeChanging(ref double newValue);
         /// <summary>
         /// The current size of the end panel in pixels.
         /// </summary>
@@ -54,7 +52,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _delta = 0;
 
-        partial void OnDeltaChanging(ref double newValue);
         /// <summary>
         /// The change in size since the resize operation started. Only set for
         /// <see cref="IgbSplitter.Resizing"/> and <see cref="IgbSplitter.ResizeEnd"/>.
@@ -74,25 +71,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameSplitterResizeEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSplitterResizeEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -102,13 +80,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbSplitterResizeEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSplitterResizeEventArgsDetail(ser);
 
             if (IsPropDirty("StartPanelSize"))
             { ser.AddNumberProp("startPanelSize", this._startPanelSize); }

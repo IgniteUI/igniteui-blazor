@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _actionText;
 
-        partial void OnActionTextChanging(ref string newValue);
         /// <summary>
         /// The text of the action button.
         /// </summary>
@@ -71,26 +70,6 @@ namespace IgniteUI.Blazor.Controls
                 this._actionText = value;
 
             }
-        }
-
-        partial void FindByNameSnackbar(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSnackbar(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
         }
 
         private string _actionRef = null;
@@ -125,7 +104,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingAction(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _action = null;
 
         /// <summary>
@@ -145,11 +123,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _action, ref eventCallbacksCache))
                     {
                         _action = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value, (args) =>
-                        {
-                            OnHandlingAction(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value);
                         this.OnRefChanged("Action", null, "event:::Action", true, false, (refName, oldValue, newValue) =>
                         {
                             this._actionRef = refName;
@@ -170,13 +144,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbSnackbar(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSnackbar(ser);
 
             if (IsPropDirty("ActionText"))
             { ser.AddStringProp("actionText", this._actionText); }

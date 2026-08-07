@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private DateRangeType _rangeType = DateRangeType.After;
 
-        partial void OnRangeTypeChanging(ref DateRangeType newValue);
-
         /// <summary>
         /// The kind of range being described, which determines how <see cref="DateRange"/> is matched.
         /// </summary>
@@ -32,8 +30,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private object _dateRange;
-
-        partial void OnDateRangeChanging(ref object newValue);
 
         /// <summary>
         /// The date or dates the descriptor applies to, interpreted according to <see cref="RangeType"/>.
@@ -57,33 +53,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDateRangeDescriptor(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateRangeDescriptor(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbDateRangeDescriptor(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDateRangeDescriptor(ser);
 
             if (IsPropDirty("RangeType"))
             { ser.AddEnumProp("rangeType", this._rangeType); }

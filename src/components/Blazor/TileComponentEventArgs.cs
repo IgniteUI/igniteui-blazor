@@ -15,8 +15,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTile _detail;
 
-        partial void OnDetailChanging(ref IgbTile newValue);
-
         /// <summary>
         /// The tile the operation applies to.
         /// </summary>
@@ -35,33 +33,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTileComponentEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTileComponentEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbTileComponentEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTileComponentEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

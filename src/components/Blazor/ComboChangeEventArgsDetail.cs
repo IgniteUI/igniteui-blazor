@@ -11,7 +11,6 @@ namespace IgniteUI.Blazor.Controls
         private string _newValueRef;
         private object[] _newValue;
 
-        partial void OnNewValueChanging(ref object[] newValue);
         [Parameter]
         public object[] NewValue
         {
@@ -20,7 +19,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._newValue;
-                OnNewValueChanging(ref value);
 
                 if (oldValue != value || !IsPropDirty("NewValue"))
                 {
@@ -61,7 +59,6 @@ namespace IgniteUI.Blazor.Controls
         private string _itemsRef;
         private object[] _items;
 
-        partial void OnItemsChanging(ref object[] newValue);
         [Parameter]
         public object[] Items
         {
@@ -70,7 +67,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._items;
-                OnItemsChanging(ref value);
 
                 if (oldValue != value || !IsPropDirty("Items"))
                 {
@@ -110,7 +106,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ComboChangeType _changeType = ComboChangeType.Selection;
 
-        partial void OnChangeTypeChanging(ref ComboChangeType newValue);
         [Parameter]
         [WCWidgetMemberName("Type")]
         public ComboChangeType ChangeType
@@ -127,25 +122,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameComboChangeEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameComboChangeEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -155,13 +131,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbComboChangeEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComboChangeEventArgsDetail(ser);
 
             if (IsPropDirty("NewValue"))
             { ser.AddArrayProp("newValue", this._newValue); }

@@ -17,7 +17,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _keepOpenOnSelect = false;
 
-        partial void OnKeepOpenOnSelectChanging(ref bool newValue);
         /// <summary>
         /// Whether the component dropdown should be kept open on selection.
         /// </summary>
@@ -37,7 +36,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _keepOpenOnOutsideClick = false;
 
-        partial void OnKeepOpenOnOutsideClickChanging(ref bool newValue);
         /// <summary>
         /// Whether the component dropdown should be kept open on clicking outside of it.
         /// </summary>
@@ -56,33 +54,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameComboBoxBaseLike(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameComboBoxBaseLike(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbComboBoxBaseLike(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComboBoxBaseLike(ser);
 
             if (IsPropDirty("KeepOpenOnSelect"))
             { ser.AddBooleanProp("keepOpenOnSelect", this._keepOpenOnSelect); }

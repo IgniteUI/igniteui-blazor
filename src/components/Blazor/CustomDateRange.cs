@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
-
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
@@ -32,8 +30,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangeValue _dateRange;
 
-        partial void OnDateRangeChanging(ref IgbDateRangeValue newValue);
-
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
@@ -43,7 +39,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._dateRange; }
             set
             {
-                OnDateRangeChanging(ref value);
                 MarkPropDirty("DateRange");
                 if (this._dateRange != null)
                 {
@@ -58,25 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameCustomDateRange(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCustomDateRange(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -86,13 +62,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbCustomDateRange(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCustomDateRange(ser);
 
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }

@@ -16,8 +16,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbExpansionPanel _detail;
 
-        partial void OnDetailChanging(ref IgbExpansionPanel newValue);
-
         /// <summary>
         /// The expansion panel the event was raised for.
         /// </summary>
@@ -36,33 +34,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameExpansionPanelComponentEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameExpansionPanelComponentEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbExpansionPanelComponentEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbExpansionPanelComponentEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

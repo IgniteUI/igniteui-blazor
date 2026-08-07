@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTreeItem[] _newSelection;
 
-        partial void OnNewSelectionChanging(ref IgbTreeItem[] newValue);
-
         /// <summary>
         /// The tree items that will make up the new selection.
         /// </summary>
@@ -34,33 +32,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTreeSelectionEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTreeSelectionEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbTreeSelectionEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTreeSelectionEventArgsDetail(ser);
 
             if (IsPropDirty("NewSelection"))
             { ser.AddSerializableArrayProp("newSelection", this._newSelection); }

@@ -12,8 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _preventScroll = false;
 
-        partial void OnPreventScrollChanging(ref bool newValue);
-
         /// <summary>
         /// Whether the browser should keep the current scroll position instead of scrolling the newly
         /// focused component into view. Defaults to <see langword="false"/>.
@@ -33,33 +31,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameFocusOptions(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameFocusOptions(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbFocusOptions(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbFocusOptions(ser);
 
             if (IsPropDirty("PreventScroll"))
             { ser.AddBooleanProp("preventScroll", this._preventScroll); }

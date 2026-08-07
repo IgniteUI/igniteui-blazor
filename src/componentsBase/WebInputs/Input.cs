@@ -20,7 +20,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputOcurred(IgbComponentValueChangedEventArgs args)
+        private void RaiseValueChanging(IgbComponentValueChangedEventArgs args)
         {
             if (!EventCallback<string>.Empty.Equals(ValueChanging))
             {

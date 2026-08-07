@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _lower = 0;
 
-        partial void OnLowerChanging(ref double newValue);
-
         /// <summary>
         /// The value of the lower thumb.
         /// </summary>
@@ -34,8 +32,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _upper = 0;
 
-        partial void OnUpperChanging(ref double newValue);
-
         /// <summary>
         /// The value of the upper thumb.
         /// </summary>
@@ -54,33 +50,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameRangeSliderValue(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRangeSliderValue(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbRangeSliderValue(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRangeSliderValue(ser);
 
             if (IsPropDirty("Lower"))
             { ser.AddNumberProp("lower", this._lower); }

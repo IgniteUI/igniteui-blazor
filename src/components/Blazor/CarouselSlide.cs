@@ -53,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _active = false;
 
-        partial void OnActiveChanging(ref bool newValue);
         /// <summary>
         /// The current active slide for the carousel component.
         /// </summary>
@@ -72,25 +71,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCarouselSlide(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCarouselSlide(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -100,13 +80,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbCarouselSlide(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCarouselSlide(ser);
 
             if (IsPropDirty("Active"))
             { ser.AddBooleanProp("active", this._active); }

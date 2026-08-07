@@ -6,12 +6,6 @@ namespace IgniteUI.Blazor.Controls
     /// </remarks>
     public partial class IgbChat
     {
-        partial void OnOptionsChanging(ref IgbChatOptions? newValue)
-        {
-            newValue ??= new IgbChatOptions();
-            newValue.DisableInputAttachments = true;
-        }
-
         public IgbChatDraftMessage GetCurrentDraftMessage()
         {
             var iv = InvokeMethodSync("p:DraftMessage", new object[] { }, new string[] { });

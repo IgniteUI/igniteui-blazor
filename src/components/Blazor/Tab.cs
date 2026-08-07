@@ -57,11 +57,8 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
-        partial void OnIgbTabDisposing();
         public void Dispose()
         {
-            OnIgbTabDisposing();
-
             if (TabsParent != null)
             {
                 var sv = (IgbTabs)TabsParent;
@@ -70,11 +67,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void OnIgbTabInitializing();
         protected override async Task OnInitializedAsync()
         {
-            OnIgbTabInitializing();
-
             if (TabsParent != null)
             {
                 var sv = (IgbTabs)TabsParent;
@@ -85,7 +79,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The tab item label.
         /// </summary>
@@ -105,7 +98,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the tab is selected.
         /// </summary>
@@ -125,7 +117,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the tab is disabled.
         /// </summary>
@@ -144,25 +135,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTab(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTab(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -172,13 +144,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbTab(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTab(ser);
 
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
