@@ -5,10 +5,9 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
 {
     public class TestUtil
     {
-        private static List<string> excluded = new List<string>();
+        private static readonly List<string> excluded = new List<string>();
         public static List<string> GetComponentsForTesting()
         {
-            var result = new List<string>();
             var asm = Assembly.Load("IgniteUI.Blazor.Lite");
             var classes = asm.GetTypes().Where(p =>
                   p.Namespace == "IgniteUI.Blazor.Controls" &&
