@@ -11,10 +11,7 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbNavDrawerItemModule.IsLoadRequested(IgBlazor))
-            {
-                IgbNavDrawerItemModule.Register(IgBlazor);
-            }
+            ModuleLoader.Load(IgBlazor, "WebNavDrawerModule");
         }
 
         protected override string ResolveDisplay()

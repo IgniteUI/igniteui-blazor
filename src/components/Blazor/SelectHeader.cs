@@ -9,10 +9,7 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbSelectHeaderModule.IsLoadRequested(IgBlazor))
-            {
-                IgbSelectHeaderModule.Register(IgBlazor);
-            }
+            ModuleLoader.Load(IgBlazor, "WebSelectModule");
         }
 
         protected override string ResolveDisplay()

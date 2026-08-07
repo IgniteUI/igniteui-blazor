@@ -14,10 +14,7 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbToggleButtonModule.IsLoadRequested(IgBlazor))
-            {
-                IgbToggleButtonModule.Register(IgBlazor);
-            }
+            ModuleLoader.Load(IgBlazor, "WebButtonGroupModule");
         }
 
         protected override string ResolveDisplay()

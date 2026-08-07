@@ -11,10 +11,7 @@ namespace IgniteUI.Blazor.Controls
 
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbTreeItemModule.IsLoadRequested(IgBlazor))
-            {
-                IgbTreeItemModule.Register(IgBlazor);
-            }
+            ModuleLoader.Load(IgBlazor, "WebTreeModule");
         }
 
         protected override string ResolveDisplay()
