@@ -55,7 +55,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _singleBranchExpand = false;
 
-        partial void OnSingleBranchExpandChanging(ref bool newValue);
         /// <summary>
         /// Whether a single or multiple of a parent's child items can be expanded.
         /// </summary>
@@ -75,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _toggleNodeOnClick = false;
 
-        partial void OnToggleNodeOnClickChanging(ref bool newValue);
         /// <summary>
         /// Whether clicking over nodes will change their expanded state or not.
         /// </summary>
@@ -95,7 +93,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TreeSelection _selection = TreeSelection.None;
 
-        partial void OnSelectionChanging(ref TreeSelection newValue);
         /// <summary>
         /// The selection state of the tree.
         /// </summary>
@@ -114,21 +111,20 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTree(string name, ref object item);
         public override object FindByName(string name)
         {
-
             var baseResult = base.FindByName(name);
             if (baseResult != null)
             {
                 return baseResult;
             }
 
-            object item = null;
-            FindByNameTree(name, ref item);
-            if (item != null)
+            foreach (var item in ContentItems)
             {
-                return item;
+                if (item.Name == name || item.ContainerId == name)
+                {
+                    return item;
+                }
             }
 
             return null;
@@ -182,7 +178,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSelectionChanged(IgbTreeSelectionEventArgs args);
         private EventCallback<IgbTreeSelectionEventArgs>? _selectionChanged = null;
 
         /// <summary>
@@ -202,11 +197,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _selectionChanged, ref eventCallbacksCache))
                     {
                         _selectionChanged = value;
-                        this.SetHandler<IgbTreeSelectionEventArgs>(this.Name, "SelectionChanged", value, (args) =>
-                        {
-                            OnHandlingSelectionChanged(args);
-
-                        });
+                        this.SetHandler<IgbTreeSelectionEventArgs>(this.Name, "SelectionChanged", value);
                         this.OnRefChanged("SelectionChanged", null, "event:::SelectionChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._selectionChangedRef = refName;
@@ -259,7 +250,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingItemExpanding(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemExpanding = null;
 
         /// <summary>
@@ -279,11 +269,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _itemExpanding, ref eventCallbacksCache))
                     {
                         _itemExpanding = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanding", value, (args) =>
-                        {
-                            OnHandlingItemExpanding(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanding", value);
                         this.OnRefChanged("ItemExpanding", null, "event:::ItemExpanding", true, false, (refName, oldValue, newValue) =>
                         {
                             this._itemExpandingRef = refName;
@@ -336,7 +322,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingItemExpanded(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemExpanded = null;
 
         /// <summary>
@@ -356,11 +341,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _itemExpanded, ref eventCallbacksCache))
                     {
                         _itemExpanded = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanded", value, (args) =>
-                        {
-                            OnHandlingItemExpanded(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanded", value);
                         this.OnRefChanged("ItemExpanded", null, "event:::ItemExpanded", true, false, (refName, oldValue, newValue) =>
                         {
                             this._itemExpandedRef = refName;
@@ -413,7 +394,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingItemCollapsing(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemCollapsing = null;
 
         /// <summary>
@@ -433,11 +413,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _itemCollapsing, ref eventCallbacksCache))
                     {
                         _itemCollapsing = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsing", value, (args) =>
-                        {
-                            OnHandlingItemCollapsing(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsing", value);
                         this.OnRefChanged("ItemCollapsing", null, "event:::ItemCollapsing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._itemCollapsingRef = refName;
@@ -490,7 +466,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingItemCollapsed(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _itemCollapsed = null;
 
         /// <summary>
@@ -510,11 +485,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _itemCollapsed, ref eventCallbacksCache))
                     {
                         _itemCollapsed = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsed", value, (args) =>
-                        {
-                            OnHandlingItemCollapsed(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsed", value);
                         this.OnRefChanged("ItemCollapsed", null, "event:::ItemCollapsed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._itemCollapsedRef = refName;
@@ -567,7 +538,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingActiveItem(IgbTreeItemComponentEventArgs args);
         private EventCallback<IgbTreeItemComponentEventArgs>? _activeItem = null;
 
         /// <summary>
@@ -587,11 +557,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _activeItem, ref eventCallbacksCache))
                     {
                         _activeItem = value;
-                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ActiveItem", value, (args) =>
-                        {
-                            OnHandlingActiveItem(args);
-
-                        });
+                        this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ActiveItem", value);
                         this.OnRefChanged("ActiveItem", null, "event:::ActiveItem", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeItemRef = refName;
@@ -612,13 +578,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTree(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTree(ser);
 
             if (IsPropDirty("SingleBranchExpand"))
             { ser.AddBooleanProp("singleBranchExpand", this._singleBranchExpand); }

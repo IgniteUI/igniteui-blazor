@@ -48,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _value = 0;
 
-        partial void OnValueChanging(ref double newValue);
         /// <summary>
         /// The current value of the component.
         /// </summary>
@@ -86,7 +85,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>
@@ -105,25 +103,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameSlider(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSlider(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         /// <summary>
         /// Increments the value of the slider by <c>stepIncrement * step</c>, where
         /// <paramref name="stepIncrement"/> defaults to 1.
@@ -277,7 +256,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _input = null;
 
         /// <summary>
@@ -297,11 +275,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
                     {
                         _input = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -354,7 +328,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _change = null;
 
         /// <summary>
@@ -376,14 +349,10 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(double);
 
                             {
                                 newValueValue = (double)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -434,15 +403,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(double oldValue, ref double newValue);
-
-        partial void SerializeCoreIgbSlider(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSlider(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddNumberProp("value", this._value); }

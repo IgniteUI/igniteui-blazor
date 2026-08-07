@@ -12,8 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private object _detail;
 
-        partial void OnDetailChanging(ref object newValue);
-
         /// <summary>
         /// The value carried by the event.
         /// </summary>
@@ -32,33 +30,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameComponentDataValueChangedEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameComponentDataValueChangedEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbComponentDataValueChangedEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComponentDataValueChangedEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddPrimitiveProp("detail", this._detail); }

@@ -54,7 +54,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _singleExpand = false;
 
-        partial void OnSingleExpandChanging(ref bool newValue);
         /// <summary>
         /// Allows only one panel to be expanded at a time.
         /// </summary>
@@ -73,21 +72,20 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameAccordion(string name, ref object item);
         public override object FindByName(string name)
         {
-
             var baseResult = base.FindByName(name);
             if (baseResult != null)
             {
                 return baseResult;
             }
 
-            object item = null;
-            FindByNameAccordion(name, ref item);
-            if (item != null)
+            foreach (var item in ContentItems)
             {
-                return item;
+                if (item.Name == name || item.ContainerId == name)
+                {
+                    return item;
+                }
             }
 
             return null;
@@ -163,7 +161,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpening(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _opening = null;
 
         /// <summary>
@@ -183,11 +180,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
                     {
                         _opening = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", value, (args) =>
-                        {
-                            OnHandlingOpening(args);
-
-                        });
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -240,7 +233,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpened(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _opened = null;
 
         /// <summary>
@@ -260,11 +252,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
                     {
                         _opened = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", value, (args) =>
-                        {
-                            OnHandlingOpened(args);
-
-                        });
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -317,7 +305,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _closing = null;
 
         /// <summary>
@@ -337,11 +324,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
                     {
                         _closing = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -394,7 +377,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _closed = null;
 
         /// <summary>
@@ -414,11 +396,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
                     {
                         _closed = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -439,13 +417,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbAccordion(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbAccordion(ser);
 
             if (IsPropDirty("SingleExpand"))
             { ser.AddBooleanProp("singleExpand", this._singleExpand); }

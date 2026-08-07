@@ -49,7 +49,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _striped = false;
 
-        partial void OnStripedChanging(ref bool newValue);
         /// <summary>
         /// Sets the striped look of the control.
         /// </summary>
@@ -69,7 +68,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private LinearProgressLabelAlign _labelAlign = LinearProgressLabelAlign.TopStart;
 
-        partial void OnLabelAlignChanging(ref LinearProgressLabelAlign newValue);
         /// <summary>
         /// The position for the default label of the control.
         /// </summary>
@@ -88,33 +86,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameLinearProgress(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameLinearProgress(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbLinearProgress(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbLinearProgress(ser);
 
             if (IsPropDirty("Striped"))
             { ser.AddBooleanProp("striped", this._striped); }

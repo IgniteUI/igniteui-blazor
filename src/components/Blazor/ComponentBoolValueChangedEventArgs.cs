@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _detail = false;
 
-        partial void OnDetailChanging(ref bool newValue);
-
         /// <summary>
         /// The Boolean value carried by the event.
         /// </summary>
@@ -34,33 +32,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameComponentBoolValueChangedEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameComponentBoolValueChangedEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbComponentBoolValueChangedEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComponentBoolValueChangedEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddBooleanProp("detail", this._detail); }

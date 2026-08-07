@@ -56,7 +56,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -76,7 +75,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the button is selected.
         /// </summary>
@@ -96,7 +94,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the button is disabled.
         /// </summary>
@@ -115,25 +112,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameToggleButton(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameToggleButton(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -194,13 +172,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("click", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbToggleButton(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbToggleButton(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }

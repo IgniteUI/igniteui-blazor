@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTabs : BaseRendererControl
     {
 
-        partial void OnHandlingChange(IgbTabComponentEventArgs args)
+        private void SyncSelectedTab(IgbTabComponentEventArgs args)
         {
             var selectedTab = args.Detail;
             // add check in case something triggers event without args.

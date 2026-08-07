@@ -46,7 +46,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbChatMessage[] _messages;
 
-        partial void OnMessagesChanging(ref IgbChatMessage[] newValue);
         /// <summary>
         /// The list of chat messages currently displayed.
         /// Use this property to set or update the message history.
@@ -67,7 +66,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatDraftMessage _draftMessage;
 
-        partial void OnDraftMessageChanging(ref IgbChatDraftMessage newValue);
         /// <summary>
         /// The chat message currently being composed but not yet sent.
         /// Includes the draft text and any attachments.
@@ -78,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._draftMessage; }
             set
             {
-                OnDraftMessageChanging(ref value);
                 MarkPropDirty("DraftMessage");
                 if (this._draftMessage != null)
                 {
@@ -94,7 +91,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatOptions? _options;
 
-        partial void OnOptionsChanging(ref IgbChatOptions? newValue);
         /// <summary>
         /// Controls the chat behavior and appearance through a configuration object.
         /// Use this to toggle UI options, provide suggestions, templates, etc.
@@ -105,7 +101,9 @@ namespace IgniteUI.Blazor.Controls
             get { return this._options; }
             set
             {
-                OnOptionsChanging(ref value);
+                // Never store a null options object, and input attachments are not supported yet.
+                value ??= new IgbChatOptions();
+                value.DisableInputAttachments = true;
                 MarkPropDirty("Options");
                 if (this._options != null)
                 {
@@ -120,25 +118,6 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameChat(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChat(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -195,7 +174,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingMessageCreated(IgbChatMessageEventArgs args);
         private EventCallback<IgbChatMessageEventArgs>? _messageCreated = null;
 
         /// <summary>
@@ -215,11 +193,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _messageCreated, ref eventCallbacksCache))
                     {
                         _messageCreated = value;
-                        this.SetHandler<IgbChatMessageEventArgs>(this.Name, "MessageCreated", value, (args) =>
-                        {
-                            OnHandlingMessageCreated(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageEventArgs>(this.Name, "MessageCreated", value);
                         this.OnRefChanged("MessageCreated", null, "event:::MessageCreated", true, false, (refName, oldValue, newValue) =>
                         {
                             this._messageCreatedRef = refName;
@@ -272,7 +246,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingMessageReact(IgbChatMessageReactionEventArgs args);
         private EventCallback<IgbChatMessageReactionEventArgs>? _messageReact = null;
 
         /// <summary>
@@ -292,11 +265,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _messageReact, ref eventCallbacksCache))
                     {
                         _messageReact = value;
-                        this.SetHandler<IgbChatMessageReactionEventArgs>(this.Name, "MessageReact", value, (args) =>
-                        {
-                            OnHandlingMessageReact(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageReactionEventArgs>(this.Name, "MessageReact", value);
                         this.OnRefChanged("MessageReact", null, "event:::MessageReact", true, false, (refName, oldValue, newValue) =>
                         {
                             this._messageReactRef = refName;
@@ -349,7 +318,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingAttachmentClick(IgbChatMessageAttachmentEventArgs args);
         private EventCallback<IgbChatMessageAttachmentEventArgs>? _attachmentClick = null;
 
         /// <summary>
@@ -369,11 +337,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _attachmentClick, ref eventCallbacksCache))
                     {
                         _attachmentClick = value;
-                        this.SetHandler<IgbChatMessageAttachmentEventArgs>(this.Name, "AttachmentClick", value, (args) =>
-                        {
-                            OnHandlingAttachmentClick(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageAttachmentEventArgs>(this.Name, "AttachmentClick", value);
                         this.OnRefChanged("AttachmentClick", null, "event:::AttachmentClick", true, false, (refName, oldValue, newValue) =>
                         {
                             this._attachmentClickRef = refName;
@@ -426,7 +390,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTypingChange(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _typingChange = null;
 
         /// <summary>
@@ -446,11 +409,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _typingChange, ref eventCallbacksCache))
                     {
                         _typingChange = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "TypingChange", value, (args) =>
-                        {
-                            OnHandlingTypingChange(args);
-
-                        });
+                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "TypingChange", value);
                         this.OnRefChanged("TypingChange", null, "event:::TypingChange", true, false, (refName, oldValue, newValue) =>
                         {
                             this._typingChangeRef = refName;
@@ -503,7 +462,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _inputFocus = null;
 
         /// <summary>
@@ -523,11 +481,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _inputFocus, ref eventCallbacksCache))
                     {
                         _inputFocus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputFocus", value, (args) =>
-                        {
-                            OnHandlingInputFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputFocus", value);
                         this.OnRefChanged("InputFocus", null, "event:::InputFocus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputFocusRef = refName;
@@ -580,7 +534,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _inputBlur = null;
 
         /// <summary>
@@ -600,11 +553,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _inputBlur, ref eventCallbacksCache))
                     {
                         _inputBlur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputBlur", value, (args) =>
-                        {
-                            OnHandlingInputBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputBlur", value);
                         this.OnRefChanged("InputBlur", null, "event:::InputBlur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputBlurRef = refName;
@@ -657,7 +606,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _inputChange = null;
 
         /// <summary>
@@ -677,11 +625,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _inputChange, ref eventCallbacksCache))
                     {
                         _inputChange = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputChange", value, (args) =>
-                        {
-                            OnHandlingInputChange(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputChange", value);
                         this.OnRefChanged("InputChange", null, "event:::InputChange", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputChangeRef = refName;
@@ -702,13 +646,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbChat(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChat(ser);
 
             if (IsPropDirty("Messages"))
             { ser.AddSerializableArrayProp("messages", this._messages); }

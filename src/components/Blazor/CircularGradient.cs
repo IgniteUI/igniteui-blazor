@@ -57,7 +57,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _offset;
 
-        partial void OnOffsetChanging(ref string newValue);
         /// <summary>
         /// Defines where the gradient stop is placed along the gradient vector.
         /// </summary>
@@ -77,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _color;
 
-        partial void OnColorChanging(ref string newValue);
         /// <summary>
         /// Defines the color of the gradient stop.
         /// </summary>
@@ -97,7 +95,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _opacity = 1;
 
-        partial void OnOpacityChanging(ref double newValue);
         /// <summary>
         /// Defines the opacity of the gradient stop.
         /// </summary>
@@ -116,25 +113,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCircularGradient(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCircularGradient(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -144,13 +122,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbCircularGradient(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCircularGradient(ser);
 
             if (IsPropDirty("Offset"))
             { ser.AddStringProp("offset", this._offset); }

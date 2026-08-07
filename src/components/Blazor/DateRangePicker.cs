@@ -34,7 +34,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbDateRangeValue? _value;
 
-        partial void OnValueChanging(ref IgbDateRangeValue? newValue);
         /// <summary>
         /// The value of the picker.
         /// </summary>
@@ -44,7 +43,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._value; }
             set
             {
-                OnValueChanging(ref value);
                 MarkPropDirty("Value");
                 if (this._value != null)
                 {
@@ -100,7 +98,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbCustomDateRange[] _customRanges;
 
-        partial void OnCustomRangesChanging(ref IgbCustomDateRange[] newValue);
         /// <summary>
         /// Renders chips with custom ranges based on the elements of the array.
         /// </summary>
@@ -120,7 +117,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private PickerMode _mode = PickerMode.Dropdown;
 
-        partial void OnModeChanging(ref PickerMode newValue);
         /// <summary>
         /// Determines whether the calendar is opened in a dropdown or a modal dialog.
         /// </summary>
@@ -140,7 +136,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _useTwoInputs = false;
 
-        partial void OnUseTwoInputsChanging(ref bool newValue);
         /// <summary>
         /// Use two inputs to display the date range values. Makes the input editable in dropdown mode.
         /// </summary>
@@ -160,7 +155,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _usePredefinedRanges = false;
 
-        partial void OnUsePredefinedRangesChanging(ref bool newValue);
         /// <summary>
         /// Whether the control will show chips with predefined ranges.
         /// </summary>
@@ -180,7 +174,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _locale;
 
-        partial void OnLocaleChanging(ref string newValue);
         /// <summary>
         /// The locale settings used to display the value.
         /// </summary>
@@ -200,7 +193,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangePickerResourceStrings _resourceStrings;
 
-        partial void OnResourceStringsChanging(ref IgbDateRangePickerResourceStrings newValue);
         /// <summary>
         /// The resource strings of the date range picker.
         /// </summary>
@@ -210,7 +202,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._resourceStrings; }
             set
             {
-                OnResourceStringsChanging(ref value);
                 MarkPropDirty("ResourceStrings");
                 if (this._resourceStrings != null)
                 {
@@ -226,7 +217,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -247,7 +237,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _nonEditable = false;
 
-        partial void OnNonEditableChanging(ref bool newValue);
         /// <summary>
         /// Whether to allow typing in the input.
         /// </summary>
@@ -267,7 +256,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Whether the control will have outlined appearance.
         /// </summary>
@@ -287,7 +275,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label of the control (single input).
         /// </summary>
@@ -307,7 +294,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _labelStart;
 
-        partial void OnLabelStartChanging(ref string newValue);
         /// <summary>
         /// The label of the start input.
         /// </summary>
@@ -327,7 +313,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _labelEnd;
 
-        partial void OnLabelEndChanging(ref string newValue);
         /// <summary>
         /// The label of the end input.
         /// </summary>
@@ -347,7 +332,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholder;
 
-        partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the control (single input).
         /// </summary>
@@ -367,7 +351,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholderStart;
 
-        partial void OnPlaceholderStartChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the start input.
         /// </summary>
@@ -387,7 +370,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholderEnd;
 
-        partial void OnPlaceholderEndChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the end input.
         /// </summary>
@@ -407,7 +389,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _prompt;
 
-        partial void OnPromptChanging(ref string newValue);
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask.
         /// </summary>
@@ -427,7 +408,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _displayFormat;
 
-        partial void OnDisplayFormatChanging(ref string newValue);
         /// <summary>
         /// Format to display the value in when not editing.
         /// Defaults to the locale format if not set.
@@ -448,7 +428,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _inputFormat;
 
-        partial void OnInputFormatChanging(ref string newValue);
         /// <summary>
         /// The date format to apply on the inputs.
         /// Defaults to the current locale of the client <c>Intl.DateTimeFormat</c>
@@ -469,7 +448,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime? _min = DateTime.MinValue;
 
-        partial void OnMinChanging(ref DateTime? newValue);
         /// <summary>
         /// The minimum value required for the date range picker to remain valid.
         /// </summary>
@@ -489,7 +467,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime? _max = DateTime.MinValue;
 
-        partial void OnMaxChanging(ref DateTime? newValue);
         /// <summary>
         /// The maximum value required for the date range picker to remain valid.
         /// </summary>
@@ -509,7 +486,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangeDescriptor[] _disabledDates;
 
-        partial void OnDisabledDatesChanging(ref IgbDateRangeDescriptor[] newValue);
         /// <summary>
         /// Gets/sets disabled dates.
         /// </summary>
@@ -528,8 +504,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _visibleMonths = 2;
-
-        partial void OnVisibleMonthsChanging(ref double newValue);
 
         /// <summary>
         /// The number of months displayed in the calendar.
@@ -550,7 +524,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ContentOrientation _headerOrientation = ContentOrientation.Horizontal;
 
-        partial void OnHeaderOrientationChanging(ref ContentOrientation newValue);
         /// <summary>
         /// The orientation of the calendar header.
         /// </summary>
@@ -570,7 +543,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ContentOrientation _orientation = ContentOrientation.Horizontal;
 
-        partial void OnOrientationChanging(ref ContentOrientation newValue);
         /// <summary>
         /// The orientation of the multiple months displayed in the calendar's days view.
         /// </summary>
@@ -590,7 +562,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideHeader = false;
 
-        partial void OnHideHeaderChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the calendar hides its header.
         /// </summary>
@@ -610,7 +581,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime _activeDate = DateTime.MinValue;
 
-        partial void OnActiveDateChanging(ref DateTime newValue);
         /// <summary>
         /// Gets/Sets the date which is shown in the calendar picker and is highlighted.
         /// By default it is the current date.
@@ -631,7 +601,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _showWeekNumbers = false;
 
-        partial void OnShowWeekNumbersChanging(ref bool newValue);
         /// <summary>
         /// Whether to show the number of the week in the calendar.
         /// </summary>
@@ -651,7 +620,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideOutsideDays = false;
 
-        partial void OnHideOutsideDaysChanging(ref bool newValue);
         /// <summary>
         /// Controls the visibility of the dates that do not belong to the current month.
         /// </summary>
@@ -671,7 +639,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangeDescriptor[] _specialDates;
 
-        partial void OnSpecialDatesChanging(ref IgbDateRangeDescriptor[] newValue);
         /// <summary>
         /// Gets/sets special dates.
         /// </summary>
@@ -691,7 +658,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private WeekDays _weekStart = WeekDays.Sunday;
 
-        partial void OnWeekStartChanging(ref WeekDays newValue);
         /// <summary>
         /// Sets the start day of the week for the calendar.
         /// </summary>
@@ -711,7 +677,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -731,7 +696,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -751,7 +715,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>
@@ -770,25 +733,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDateRangePicker(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateRangePicker(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         /// <summary>
         /// Clears the input parts of the component of any user input.
         /// </summary>
@@ -934,7 +878,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpening(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opening = null;
 
         /// <summary>
@@ -954,11 +897,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
                     {
                         _opening = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value, (args) =>
-                        {
-                            OnHandlingOpening(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -1011,7 +950,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpened(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opened = null;
 
         /// <summary>
@@ -1031,11 +969,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
                     {
                         _opened = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value, (args) =>
-                        {
-                            OnHandlingOpened(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -1088,7 +1022,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
 
         /// <summary>
@@ -1108,11 +1041,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -1165,7 +1094,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
 
         /// <summary>
@@ -1185,11 +1113,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -1242,7 +1166,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbDateRangeValueEventArgs args);
         private EventCallback<IgbDateRangeValueEventArgs>? _change = null;
 
         /// <summary>
@@ -1264,8 +1187,6 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbDateRangeValueEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(IgbDateRangeValue?);
 
                             {
@@ -1275,8 +1196,6 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this.AttachChild(newValueValue);
                                 }
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -1359,7 +1278,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbDateRangeValueEventArgs args);
         private EventCallback<IgbDateRangeValueEventArgs>? _input = null;
 
         /// <summary>
@@ -1379,11 +1297,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
                     {
                         _input = value;
-                        this.SetHandler<IgbDateRangeValueEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbDateRangeValueEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -1404,15 +1318,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(IgbDateRangeValue? oldValue, ref IgbDateRangeValue? newValue);
-
-        partial void SerializeCoreIgbDateRangePicker(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDateRangePicker(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddSerializableProp("value", this._value); }

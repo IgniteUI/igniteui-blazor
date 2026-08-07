@@ -57,7 +57,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _caseSensitive = false;
 
-        partial void OnCaseSensitiveChanging(ref bool newValue);
         /// <summary>
         /// Whether to match the searched text with case sensitivity in mind.
         /// When <see langword="true"/>, only exact-case occurrences of <see cref="SearchText"/> are highlighted.
@@ -78,7 +77,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _searchText;
 
-        partial void OnSearchTextChanging(ref string newValue);
         /// <summary>
         /// The string to search and highlight in the DOM content of the component.
         /// Setting this property triggers a new search automatically.
@@ -143,25 +141,6 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToDouble(iv);
         }
 
-        partial void FindByNameHighlight(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameHighlight(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -262,13 +241,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("search", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbHighlight(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbHighlight(ser);
 
             if (IsPropDirty("CaseSensitive"))
             { ser.AddBooleanProp("caseSensitive", this._caseSensitive); }

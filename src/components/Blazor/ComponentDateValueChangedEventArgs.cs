@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private DateTime _detail = DateTime.MinValue;
 
-        partial void OnDetailChanging(ref DateTime newValue);
-
         /// <summary>
         /// The date value carried by the event.
         /// </summary>
@@ -34,33 +32,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameComponentDateValueChangedEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameComponentDateValueChangedEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbComponentDateValueChangedEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComponentDateValueChangedEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddDateTimeProp("detail", this._detail); }

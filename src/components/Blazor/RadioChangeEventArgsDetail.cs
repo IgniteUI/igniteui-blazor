@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _checked = false;
 
-        partial void OnCheckedChanging(ref bool newValue);
-
         /// <summary>
         /// The checked state of the radio button after the change.
         /// </summary>
@@ -34,8 +32,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
-
         /// <summary>
         /// The value of the radio button.
         /// </summary>
@@ -54,25 +50,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameRadioChangeEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRadioChangeEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -82,13 +59,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbRadioChangeEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRadioChangeEventArgsDetail(ser);
 
             if (IsPropDirty("Checked"))
             { ser.AddBooleanProp("checked", this._checked); }

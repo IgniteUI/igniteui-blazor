@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private double _oldIndex = 0;
 
-        partial void OnOldIndexChanging(ref double newValue);
-
         /// <summary>
         /// The index of the step that is currently active.
         /// </summary>
@@ -34,8 +32,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _newIndex = 0;
 
-        partial void OnNewIndexChanging(ref double newValue);
-
         /// <summary>
         /// The index of the step that is about to become active.
         /// </summary>
@@ -54,33 +50,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameActiveStepChangingEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameActiveStepChangingEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbActiveStepChangingEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbActiveStepChangingEventArgsDetail(ser);
 
             if (IsPropDirty("OldIndex"))
             { ser.AddNumberProp("oldIndex", this._oldIndex); }

@@ -48,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _indeterminate = false;
 
-        partial void OnIndeterminateChanging(ref bool newValue);
         /// <summary>
         /// Draws the checkbox in indeterminate state.
         /// </summary>
@@ -67,33 +66,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCheckbox(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCheckbox(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbCheckbox(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCheckbox(ser);
 
             if (IsPropDirty("Indeterminate"))
             { ser.AddBooleanProp("indeterminate", this._indeterminate); }

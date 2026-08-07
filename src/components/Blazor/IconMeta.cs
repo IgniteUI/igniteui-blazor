@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _collection;
 
-        partial void OnCollectionChanging(ref string newValue);
-
         /// <summary>
         /// The name of the collection the icon is registered in.
         /// </summary>
@@ -33,33 +31,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameIconMeta(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameIconMeta(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbIconMeta(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbIconMeta(ser);
 
             if (IsPropDirty("Collection"))
             { ser.AddStringProp("collection", this._collection); }

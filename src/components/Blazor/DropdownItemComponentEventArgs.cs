@@ -14,8 +14,6 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbDropdownItem _detail;
 
-        partial void OnDetailChanging(ref IgbDropdownItem newValue);
-
         /// <summary>
         /// The dropdown item that became selected.
         /// </summary>
@@ -34,33 +32,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDropdownItemComponentEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDropdownItemComponentEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbDropdownItemComponentEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDropdownItemComponentEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }
