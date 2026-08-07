@@ -124,9 +124,6 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
             cut.Instance.ActualTabsCollection);
     }
 
-    // Regression: IgbTab.Dispose called ContentTabsCollection.Add instead of Remove, so a
-    // disposed tab was re-added and ended up in ActualTabsCollection twice — the collection
-    // grew on teardown instead of shrinking, and the stale tab kept being serialized.
     [Fact]
     public void Tabs_DisposedChildTab_LeavesTheCollection()
     {
