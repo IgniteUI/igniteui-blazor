@@ -73,7 +73,13 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                   p.Name.StartsWith("Igb")
             ).ToList();
 
-            var match = classes.Find(x => x.Name == type);
+            var match = classes.Find(x => x.Name.Contains(type));
+            if (match is not null && match.IsGenericTypeDefinition)
+            {
+                var typeArgs = match.GetGenericArguments();
+                var concreteArgs = typeArgs.Select(_ => typeof(object)).ToArray();
+                match = match.MakeGenericType(concreteArgs);
+            }
             return match;
         }
 

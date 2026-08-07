@@ -16,23 +16,7 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
                   p.IsSubclassOf(typeof(BaseRendererControl)) &&
                   !p.Name.Contains("Base")
             ).ToList();
-            foreach (var c in classes)
-            {
-                try
-                {
-                    var instance = Activator.CreateInstance(c);
-                    var a = c.GetProperty("Type")?.GetValue(instance)?.ToString()?.StartsWith("Web");
-                    if (a == true)
-                    {
-                        result.Add(c.Name);
-                    }
-                }
-                catch (Exception)
-                {
-                }
-            }
-
-            return result.Where(x => !excluded.Contains(x)).ToList();
+            return classes.Select(x => x.IsGenericType ? x.Name[..x.Name.IndexOf('`')] : x.Name).Where(x => !excluded.Contains(x)).ToList();
         }
     }
 }
