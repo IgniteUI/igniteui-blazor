@@ -99,6 +99,53 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     {
         Assert.True(typeof(IgbTabs).IsSubclassOf(typeof(BaseRendererControl)));
     }
+
+    /// <summary>Renders <paramref name="labels"/> as <see cref="IgbTab"/> children.</summary>
+    static Action<ComponentParameterCollectionBuilder<IgbTabs>> TabsWith(params string[] labels) => ps =>
+        ps.AddChildContent(builder =>
+        {
+            var seq = 0;
+            foreach (var label in labels)
+            {
+                builder.OpenComponent<IgbTab>(seq++);
+                builder.AddAttribute(seq++, "Label", label);
+                builder.CloseComponent();
+            }
+        });
+
+    [Fact]
+    public void Tabs_ChildTabs_RegisterOnInitialize()
+    {
+        var cut = Render<IgbTabs>(TabsWith("one", "two"));
+
+        Assert.Equal(2, cut.Instance.ActualTabsCollection.Count);
+        Assert.Equal(
+            cut.FindComponents<IgbTab>().Select(t => t.Instance),
+            cut.Instance.ActualTabsCollection);
+    }
+
+    [Fact]
+    public void Tabs_DisposedChildTab_LeavesTheCollection()
+    {
+        var cut = Render<IgbTabs>(TabsWith("one", "two"));
+        Assert.Equal(2, cut.Instance.ActualTabsCollection.Count);
+
+        // Re-render without the second tab; Blazor disposes the removed component.
+        cut.Render(TabsWith("one"));
+
+        var remaining = Assert.Single(cut.FindComponents<IgbTab>()).Instance;
+        Assert.Same(remaining, Assert.Single(cut.Instance.ActualTabsCollection));
+    }
+
+    [Fact]
+    public void Tabs_AllChildTabsDisposed_EmptiesTheCollection()
+    {
+        var cut = Render<IgbTabs>(TabsWith("one", "two"));
+
+        cut.Render(ps => ps.AddChildContent(builder => { }));
+
+        Assert.Empty(cut.Instance.ActualTabsCollection);
+    }
 }
 
 // IgbTab has no interop surface of its own: its @bind-Selected pair is driven entirely by
