@@ -67,7 +67,6 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static Type? GetComponentByType(string type)
         {
-            var fullName = "Igb" + type;
             var asm = Assembly.Load("IgniteUI.Blazor.Lite");
             var classes = asm.GetTypes().Where(p =>
                  p.Namespace == "IgniteUI.Blazor.Controls" &&
@@ -75,10 +74,12 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                   p.IsSubclassOf(typeof(BaseRendererControl))
             ).ToList();
 
+            // The names come from TestUtil.GetComponentsForTesting and already carry the
+            // Igb prefix, matching the componentsConfig.json keys.
             var match = classes.Find(x =>
             {
                 var name = x.IsGenericType ? x.Name[..x.Name.IndexOf('`')] : x.Name;
-                return name == fullName;
+                return name == type;
             });
             if (match is not null && match.IsGenericTypeDefinition)
             {
