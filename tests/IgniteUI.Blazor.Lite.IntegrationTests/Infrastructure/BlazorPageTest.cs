@@ -7,6 +7,8 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
     public class BlazorPageTest<TProgram> : BrowserTest
         where TProgram : class
     {
+        private static int hostDescribed;
+
         private BlazorApplicationFactory<TProgram>? host;
 
         public IBrowserContext Context { get; private set; } = null!;
@@ -35,6 +37,12 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
             var options = ContextOptions() ?? new BrowserNewContextOptions();
             options.BaseURL = Host.ServerAddress;
             options.IgnoreHTTPSErrors = true;
+
+            // All the hosts are configured the same, so this is worth reporting once per run.
+            if (Interlocked.Exchange(ref hostDescribed, 1) == 0)
+            {
+                TestContext.Out.WriteLine($"[host] {Host.Describe()}");
+            }
 
             Context = await NewContext(options).ConfigureAwait(false);
             Page = await Context.NewPageAsync().ConfigureAwait(false);

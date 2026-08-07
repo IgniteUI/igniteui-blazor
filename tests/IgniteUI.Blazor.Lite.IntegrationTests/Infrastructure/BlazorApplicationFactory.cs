@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
 {
@@ -39,6 +40,32 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
             // Setting port to 0 means that Kestrel will pick any free a port.
             // but we don't want freedom, just use to use same port
             builder.UseUrls("http://127.0.0.1:5249");
+
+            builder.ConfigureLogging(logging =>
+            {
+                // Each test builds two hosts (TestServer + Kestrel), both logging their whole
+                // lifetime to the console. Keep issues only, reported through the test.
+                logging.ClearProviders();
+                logging.AddProvider(new TestOutputLoggerProvider());
+
+                // Not SetMinimumLevel: appsettings.json sets a Default level for the null
+                // category, and a matching rule always wins over MinLevel.
+                logging.Services.PostConfigure<LoggerFilterOptions>(options =>
+                {
+                    options.Rules.Clear();
+                    options.MinLevel = LogLevel.Warning;
+                });
+            });
+        }
+
+        /// <summary>
+        /// The startup details the host's own logging would have printed, for the test to log.
+        /// </summary>
+        public string Describe()
+        {
+            EnsureServer();
+            var env = host?.Services.GetRequiredService<IWebHostEnvironment>();
+            return $"listening on {ServerAddress} - environment {env?.EnvironmentName}, content root {env?.ContentRootPath}";
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
