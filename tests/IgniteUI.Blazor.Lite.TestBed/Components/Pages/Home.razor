@@ -26,6 +26,7 @@
     private Dictionary<string, object> componentParameters = new();
     private List<string> errorMessages = new List<string>();
     private string eventMessage = string.Empty;
+    private ComponentRunSummary summary = new();
 
     private IConfigurationRoot config;
 
@@ -53,21 +54,22 @@
     }
 
     [JSInvokable("SetComponentType")]
-    public static async Task<bool> SetComponentType(string type)
+    public static async Task<ComponentRunSummary> SetComponentType(string type)
     {
         var app = _app;
         if (app == null)
         {
-            return false;
+            return ComponentRunSummary.Failed(type, "the test bed page is not initialized");
         }
 
         var component = ReflectionUtils.GetComponentByType(type);
         if (component == null)
         {
-            return false;
+            return ComponentRunSummary.Failed(type, "no component type matches that name");
         }
 
         app.errorMessages.Clear();
+        app.summary = new ComponentRunSummary { Component = type };
         app.selectedType = component;
 
         ReflectionUtils.excludedProps = app.config.GetSection(type + ":ExcludedProps")?.Get<string[]>()?.ToList() ?? new List<string>();
@@ -81,13 +83,14 @@
 
         if (app.dc?.Instance is not BaseRendererControl renderer)
         {
-            return false;
+            return ComponentRunSummary.Failed(type, "the rendered component is not a BaseRendererControl");
         }
 
         await renderer.EnsureReady();
         await Task.Delay(100);
 
         app.componentSelector = ReflectionUtils.GetComponentSelector(app.dc.Instance, type);
+        app.summary.Selector = app.componentSelector;
         await app.JS.InvokeAsync<string>("setSelector", app.componentSelector);
 
         app.componentParameters = new Dictionary<string, object>();
@@ -100,7 +103,9 @@
         await app.TestProps();
         await app.TestAPI();
 
-        return true;
+        app.summary.Errors = app.errorMessages.Count;
+
+        return app.summary;
     }
 
     public async Task TestServerTemplates()
@@ -124,6 +129,7 @@
             await Task.Delay(1);
             var clientPropName = char.ToLower(tmpl.Name[0]) + tmpl.Name.Substring(1);
             var res = await JS.InvokeAsync<bool>("checkServerTemplate", clientPropName);
+            summary.ServerTemplates++;
 
             if (!res)
             {
@@ -153,6 +159,7 @@
             await Task.Delay(100);
 
             var res = await JS.InvokeAsync<bool>("checkClientTemplate", tmplName);
+            summary.ClientTemplates++;
             if (!res)
             {
                 errorMessages.Add("Template not set for prop:  " + scriptProp.Name);
@@ -196,6 +203,7 @@
             }
             var syncName = method.Name.Replace("Async", "");
             var clientMethodName = ReflectionUtils.Camelize(syncName);
+            summary.Methods++;
             await JS.InvokeVoidAsync("spyOnMethod", clientMethodName);
             object? res = null;
             try
@@ -259,6 +267,8 @@
                 continue;
             }
 
+            summary.Defaults++;
+
             if (!TestUtil.PropertyValuesAreEqual(serverValue, clientValue, p))
             {
                 var serverString = serverValue is Enum
@@ -305,6 +315,7 @@
 
             var clientPropName = ReflectionUtils.GetActualPropertyName(p);
             var clientValue = await GetClientPropValue(clientPropName);
+            summary.Properties++;
             if (!TestUtil.PropertyValuesAreEqual(value, clientValue, p))
             {
                 string serverString = value is Enum ?
@@ -391,6 +402,7 @@
 
             eventMessage = "";
             await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend, detailType == typeof(DateTime));
+            summary.Events++;
             await Task.Delay(100);
 
             if (eventMessage != $"Event fired.")

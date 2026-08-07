@@ -1,4 +1,5 @@
 using IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure;
+using IgniteUI.Blazor.Lite.TestBed.Components.Common;
 using Microsoft.Playwright;
 using NUnit.Framework.Internal;
 
@@ -33,9 +34,18 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             });
             //await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-            await Page.EvaluateAsync(@"renderComponent('" + this.componentName + "');");
+            var summary = await Page.EvaluateAsync<ComponentRunSummary>(
+                @"renderComponent('" + this.componentName + "')");
             string[] error = await Page.EvaluateAsync<string[]>(@"getErrors();");
-            Assert.That(error.Length == 0, "There were errors : " + string.Join(", \n", error));
+
+            Assert.That(summary, Is.Not.Null, "The run returned no summary.");
+            TestContext.Out.WriteLine(summary.ToString());
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(error, Is.Empty, "There were errors : " + string.Join(", \n", error));
+                Assert.That(summary.Failure, Is.Null);
+            });
         }
     }
 }
