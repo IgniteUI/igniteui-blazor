@@ -11,17 +11,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbActiveStepChangedEventArgsDetail() : base()
-        {
-            OnCreatedIgbActiveStepChangedEventArgsDetail();
-
-        }
-
-        partial void OnCreatedIgbActiveStepChangedEventArgsDetail();
-
         private double _index = 0;
-
-        partial void OnIndexChanging(ref double newValue);
 
         /// <summary>
         /// The index of the step that became active.
@@ -41,33 +31,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameActiveStepChangedEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameActiveStepChangedEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbActiveStepChangedEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbActiveStepChangedEventArgsDetail(ser);
 
             if (IsPropDirty("Index"))
             { ser.AddNumberProp("index", this._index); }

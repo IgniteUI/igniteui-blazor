@@ -12,17 +12,8 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbChatMessageEventArgs() : base()
-        {
-            OnCreatedIgbChatMessageEventArgs();
-
-        }
-
-        partial void OnCreatedIgbChatMessageEventArgs();
-
         private IgbChatMessage _detail;
 
-        partial void OnDetailChanging(ref IgbChatMessage newValue);
         /// <summary>
         /// The chat message the event was raised for.
         /// </summary>
@@ -32,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -47,33 +37,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameChatMessageEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChatMessageEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbChatMessageEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatMessageEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

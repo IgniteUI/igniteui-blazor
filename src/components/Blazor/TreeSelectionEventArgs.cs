@@ -11,17 +11,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbTreeSelectionEventArgs() : base()
-        {
-            OnCreatedIgbTreeSelectionEventArgs();
-
-        }
-
-        partial void OnCreatedIgbTreeSelectionEventArgs();
-
         private IgbTreeSelectionEventArgsDetail _detail;
-
-        partial void OnDetailChanging(ref IgbTreeSelectionEventArgsDetail newValue);
 
         /// <summary>
         /// The selection the tree is about to apply.
@@ -32,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -47,33 +36,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameTreeSelectionEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTreeSelectionEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbTreeSelectionEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTreeSelectionEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

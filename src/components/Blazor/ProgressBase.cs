@@ -43,17 +43,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbProgressBase() : base()
-        {
-            OnCreatedIgbProgressBase();
-
-        }
-
-        partial void OnCreatedIgbProgressBase();
-
         private double _max = 100;
 
-        partial void OnMaxChanging(ref double newValue);
         /// <summary>
         /// Maximum value of the control.
         /// </summary>
@@ -73,7 +64,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _value = 0;
 
-        partial void OnValueChanging(ref double newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -93,7 +83,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StyleVariant _variant = StyleVariant.Primary;
 
-        partial void OnVariantChanging(ref StyleVariant newValue);
         /// <summary>
         /// The variant of the control.
         /// </summary>
@@ -113,7 +102,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _animationDuration = 500;
 
-        partial void OnAnimationDurationChanging(ref double newValue);
         /// <summary>
         /// Animation duration in milliseconds.
         /// </summary>
@@ -133,7 +121,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _indeterminate = false;
 
-        partial void OnIndeterminateChanging(ref bool newValue);
         /// <summary>
         /// The indeterminate state of the control.
         /// </summary>
@@ -153,7 +140,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideLabel = false;
 
-        partial void OnHideLabelChanging(ref bool newValue);
         /// <summary>
         /// Shows/hides the label of the control.
         /// </summary>
@@ -173,7 +159,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _labelFormat;
 
-        partial void OnLabelFormatChanging(ref string newValue);
         /// <summary>
         /// Format string for the default label of the control. Placeholders:
         /// <list type="bullet">
@@ -196,25 +181,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameProgressBase(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameProgressBase(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -224,13 +190,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbProgressBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbProgressBase(ser);
 
             if (IsPropDirty("Max"))
             { ser.AddNumberProp("max", this._max); }

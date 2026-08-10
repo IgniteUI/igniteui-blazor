@@ -53,17 +53,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbRating() : base()
-        {
-            OnCreatedIgbRating();
-
-        }
-
-        partial void OnCreatedIgbRating();
-
         private double _max = 5;
 
-        partial void OnMaxChanging(ref double newValue);
         /// <summary>
         /// The maximum value for the rating.
         /// If there are projected symbols, the maximum value will be resolved
@@ -85,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _step = 1;
 
-        partial void OnStepChanging(ref double newValue);
         /// <summary>
         /// The minimum value change allowed.
         /// Valid values are in the interval between 0 and 1 inclusive.
@@ -106,7 +96,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label of the control.
         /// </summary>
@@ -126,7 +115,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _valueFormat;
 
-        partial void OnValueFormatChanging(ref string newValue);
         /// <summary>
         /// A format string which sets aria-valuetext. Instances of <c>{0}</c> will be replaced
         /// with the current value of the control and instances of <c>{1}</c> with the maximum value for the control.
@@ -148,7 +136,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _value = 0;
 
-        partial void OnValueChanging(ref double newValue);
         /// <summary>
         /// The value of the component.
         /// </summary>
@@ -186,7 +173,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hoverPreview = false;
 
-        partial void OnHoverPreviewChanging(ref bool newValue);
         /// <summary>
         /// Sets hover preview behavior for the component.
         /// </summary>
@@ -206,7 +192,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -227,7 +212,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _single = false;
 
-        partial void OnSingleChanging(ref bool newValue);
         /// <summary>
         /// Toggles single selection visual mode.
         /// </summary>
@@ -247,7 +231,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _allowReset = false;
 
-        partial void OnAllowResetChanging(ref bool newValue);
         /// <summary>
         /// Whether to reset the rating when the user selects the same value.
         /// </summary>
@@ -267,7 +250,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -287,7 +269,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>
@@ -306,25 +287,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameRating(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRating(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -482,7 +444,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _change = null;
 
         /// <summary>
@@ -504,14 +465,10 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(double);
 
                             {
                                 newValueValue = (double)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -594,7 +551,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingHover(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _hover = null;
 
         /// <summary>
@@ -614,11 +570,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _hover, ref eventCallbacksCache))
                     {
                         _hover = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", value, (args) =>
-                        {
-                            OnHandlingHover(args);
-
-                        });
+                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", value);
                         this.OnRefChanged("Hover", null, "event:::Hover", true, false, (refName, oldValue, newValue) =>
                         {
                             this._hoverRef = refName;
@@ -639,15 +591,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(double oldValue, ref double newValue);
-
-        partial void SerializeCoreIgbRating(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRating(ser);
 
             if (IsPropDirty("Max"))
             { ser.AddNumberProp("max", this._max); }

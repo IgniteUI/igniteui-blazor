@@ -52,17 +52,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbAvatar() : base()
-        {
-            OnCreatedIgbAvatar();
-
-        }
-
-        partial void OnCreatedIgbAvatar();
-
         private string _src;
 
-        partial void OnSrcChanging(ref string newValue);
         /// <summary>
         /// The image source to use.
         /// </summary>
@@ -82,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _alt;
 
-        partial void OnAltChanging(ref string newValue);
         /// <summary>
         /// Alternative text for the image.
         /// </summary>
@@ -102,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _initials;
 
-        partial void OnInitialsChanging(ref string newValue);
         /// <summary>
         /// Initials to use as a fallback when no image is available.
         /// </summary>
@@ -122,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private AvatarShape _shape = AvatarShape.Square;
 
-        partial void OnShapeChanging(ref AvatarShape newValue);
         /// <summary>
         /// The shape of the avatar.
         /// </summary>
@@ -141,25 +129,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameAvatar(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameAvatar(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -169,13 +138,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbAvatar(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbAvatar(ser);
 
             if (IsPropDirty("Src"))
             { ser.AddStringProp("src", this._src); }

@@ -9,17 +9,8 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebFilteringOptions"; } }
 
-        public IgbFilteringOptions() : base()
-        {
-            OnCreatedIgbFilteringOptions();
-
-        }
-
-        partial void OnCreatedIgbFilteringOptions();
-
         private string _filterKey;
 
-        partial void OnFilterKeyChanging(ref string newValue);
         /// <summary>
         /// The key in the data source used when filtering the list of options.
         /// </summary>
@@ -39,7 +30,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _caseSensitive = false;
 
-        partial void OnCaseSensitiveChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the filtering operation should be case sensitive.
         /// </summary>
@@ -59,7 +49,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _matchDiacritics = false;
 
-        partial void OnMatchDiacriticsChanging(ref bool newValue);
         /// <summary>
         /// When <see langword="true"/>, the filter distinguishes between accented letters and their base letters.
         /// </summary>
@@ -78,25 +67,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameFilteringOptions(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameFilteringOptions(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -106,13 +76,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbFilteringOptions(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbFilteringOptions(ser);
 
             if (IsPropDirty("FilterKey"))
             { ser.AddStringProp("filterKey", this._filterKey); }

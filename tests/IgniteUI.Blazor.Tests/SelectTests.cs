@@ -75,13 +75,21 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             {
                 Assert.Same(cut.FindComponents<IgbSelectItem>()[1].Instance, args.Detail);
                 Assert.Equal("ca", args.Detail.Value); // Change propagates Detail.Value into Select.Value
-            });
+            })
+        // The detail is the selected item; the binding receives that item's Value.
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            arrange: arrangeItems,
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(2)")}}}"}}"""),
+            expect: "ca");
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Select_RendersCorrectElement()

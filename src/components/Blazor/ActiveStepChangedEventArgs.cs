@@ -12,17 +12,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbActiveStepChangedEventArgs() : base()
-        {
-            OnCreatedIgbActiveStepChangedEventArgs();
-
-        }
-
-        partial void OnCreatedIgbActiveStepChangedEventArgs();
-
         private IgbActiveStepChangedEventArgsDetail _detail;
-
-        partial void OnDetailChanging(ref IgbActiveStepChangedEventArgsDetail newValue);
 
         /// <summary>
         /// The payload of the event, carrying the index of the step that became active.
@@ -33,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -48,33 +37,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameActiveStepChangedEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameActiveStepChangedEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbActiveStepChangedEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbActiveStepChangedEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

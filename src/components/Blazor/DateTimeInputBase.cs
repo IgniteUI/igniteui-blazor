@@ -27,17 +27,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbDateTimeInputBase() : base()
-        {
-            OnCreatedIgbDateTimeInputBase();
-
-        }
-
-        partial void OnCreatedIgbDateTimeInputBase();
-
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Whether the control will have outlined appearance.
         /// </summary>
@@ -57,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholder;
 
-        partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
@@ -77,7 +67,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label for the control.
         /// </summary>
@@ -96,8 +85,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _inputFormat;
-
-        partial void OnInputFormatChanging(ref string newValue);
 
         /// <summary>
         /// The date format to apply on the input.
@@ -118,7 +105,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime? _min = DateTime.MinValue;
 
-        partial void OnMinChanging(ref DateTime? newValue);
         /// <summary>
         /// The minimum value required for the input to remain valid.
         /// </summary>
@@ -138,7 +124,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime? _max = DateTime.MinValue;
 
-        partial void OnMaxChanging(ref DateTime? newValue);
         /// <summary>
         /// The maximum value required for the input to remain valid.
         /// </summary>
@@ -158,7 +143,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _displayFormat;
 
-        partial void OnDisplayFormatChanging(ref string newValue);
         /// <summary>
         /// Format to display the value in when not editing.
         /// Defaults to the locale format if not set.
@@ -179,7 +163,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDatePartDeltas _spinDelta;
 
-        partial void OnSpinDeltaChanging(ref IgbDatePartDeltas newValue);
         /// <summary>
         /// Delta values used to increment or decrement each date part on step actions.
         /// All values default to <c>1</c>.
@@ -190,7 +173,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._spinDelta; }
             set
             {
-                OnSpinDeltaChanging(ref value);
                 MarkPropDirty("SpinDelta");
                 if (this._spinDelta != null)
                 {
@@ -206,7 +188,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _spinLoop = true;
 
-        partial void OnSpinLoopChanging(ref bool newValue);
         /// <summary>
         /// Sets whether to loop over the currently spun segment.
         /// </summary>
@@ -226,7 +207,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _locale;
 
-        partial void OnLocaleChanging(ref string newValue);
         /// <summary>
         /// Gets/Sets the locale used for formatting the display value.
         /// </summary>
@@ -246,7 +226,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -266,7 +245,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _mask;
 
-        partial void OnMaskChanging(ref string newValue);
         /// <summary>
         /// The mask pattern of the component.
         /// </summary>
@@ -286,7 +264,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _prompt;
 
-        partial void OnPromptChanging(ref string newValue);
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
         /// Defaults to <c>_</c>.
@@ -307,7 +284,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -327,7 +303,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -347,7 +322,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>
@@ -366,25 +340,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDateTimeInputBase(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateTimeInputBase(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -563,13 +518,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
-        partial void SerializeCoreIgbDateTimeInputBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDateTimeInputBase(ser);
 
             if (IsPropDirty("Outlined"))
             { ser.AddBooleanProp("outlined", this._outlined); }

@@ -51,17 +51,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCheckboxBase() : base()
-        {
-            OnCreatedIgbCheckboxBase();
-
-        }
-
-        partial void OnCreatedIgbCheckboxBase();
-
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -81,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _checked = false;
 
-        partial void OnCheckedChanging(ref bool newValue);
         /// <summary>
         /// The checked state of the control.
         /// </summary>
@@ -119,7 +109,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ToggleLabelPosition _labelPosition = ToggleLabelPosition.After;
 
-        partial void OnLabelPositionChanging(ref ToggleLabelPosition newValue);
         /// <summary>
         /// The label position of the control.
         /// </summary>
@@ -139,7 +128,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -159,7 +147,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -179,7 +166,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>
@@ -198,25 +184,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCheckboxBase(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCheckboxBase(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -391,7 +358,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbCheckboxChangeEventArgs args);
         private EventCallback<IgbCheckboxChangeEventArgs>? _change = null;
 
         /// <summary>
@@ -413,14 +379,10 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbCheckboxChangeEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueChecked = default(bool);
 
                             {
                                 newValueChecked = (bool)(args.Detail.Checked);
-                                ;
-                                OnEventUpdatingChecked(this._checked, ref newValueChecked);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -503,7 +465,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
 
         /// <summary>
@@ -523,11 +484,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value, (args) =>
-                        {
-                            OnHandlingFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -580,7 +537,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
 
         /// <summary>
@@ -600,11 +556,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value, (args) =>
-                        {
-                            OnHandlingBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -625,15 +577,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingChecked(bool oldValue, ref bool newValue);
-
-        partial void SerializeCoreIgbCheckboxBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCheckboxBase(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }

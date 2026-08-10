@@ -11,17 +11,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbComboChangeEventArgs() : base()
-        {
-            OnCreatedIgbComboChangeEventArgs();
-
-        }
-
-        partial void OnCreatedIgbComboChangeEventArgs();
-
         private IgbComboChangeEventArgsDetail _detail;
-
-        partial void OnDetailChanging(ref IgbComboChangeEventArgsDetail newValue);
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
@@ -32,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -47,33 +36,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameComboChangeEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameComboChangeEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbComboChangeEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComboChangeEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

@@ -12,17 +12,8 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbCheckboxChangeEventArgs() : base()
-        {
-            OnCreatedIgbCheckboxChangeEventArgs();
-
-        }
-
-        partial void OnCreatedIgbCheckboxChangeEventArgs();
-
         private IgbCheckboxChangeEventArgsDetail _detail;
 
-        partial void OnDetailChanging(ref IgbCheckboxChangeEventArgsDetail newValue);
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the control.
         /// </summary>
@@ -32,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -47,33 +37,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameCheckboxChangeEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCheckboxChangeEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbCheckboxChangeEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCheckboxChangeEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

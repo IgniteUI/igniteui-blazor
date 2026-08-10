@@ -66,17 +66,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbNavDrawer() : base()
-        {
-            OnCreatedIgbNavDrawer();
-
-        }
-
-        partial void OnCreatedIgbNavDrawer();
-
         private NavDrawerPosition _position = NavDrawerPosition.Start;
 
-        partial void OnPositionChanging(ref NavDrawerPosition newValue);
         /// <summary>
         /// Sets the position of the drawer.
         /// <list type="bullet">
@@ -113,7 +104,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the drawer is open.
         /// </summary>
@@ -133,7 +123,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _keepOpenOnEscape = false;
 
-        partial void OnKeepOpenOnEscapeChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the drawer should remain open when the Escape key is pressed.
         /// This is only applicable when the drawer is in a non-relative position,
@@ -154,8 +143,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _label;
-
-        partial void OnLabelChanging(ref string newValue);
 
         /// <summary>
         /// Sets an accessible label for the drawer.
@@ -179,25 +166,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameNavDrawer(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameNavDrawer(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -308,7 +276,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
 
         /// <summary>
@@ -328,11 +295,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -385,7 +348,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
 
         /// <summary>
@@ -405,11 +367,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -430,13 +388,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbNavDrawer(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbNavDrawer(ser);
 
             if (IsPropDirty("Position"))
             { ser.AddEnumProp("position", this._position); }

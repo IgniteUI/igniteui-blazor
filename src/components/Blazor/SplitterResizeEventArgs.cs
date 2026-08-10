@@ -11,17 +11,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbSplitterResizeEventArgs() : base()
-        {
-            OnCreatedIgbSplitterResizeEventArgs();
-
-        }
-
-        partial void OnCreatedIgbSplitterResizeEventArgs();
-
         private IgbSplitterResizeEventArgsDetail _detail;
-
-        partial void OnDetailChanging(ref IgbSplitterResizeEventArgsDetail newValue);
 
         /// <summary>
         /// The current sizes of the panes adjacent to the resized splitter bar.
@@ -32,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -47,33 +36,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameSplitterResizeEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSplitterResizeEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbSplitterResizeEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSplitterResizeEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

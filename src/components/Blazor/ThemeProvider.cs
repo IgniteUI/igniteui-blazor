@@ -55,17 +55,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbThemeProvider() : base()
-        {
-            OnCreatedIgbThemeProvider();
-
-        }
-
-        partial void OnCreatedIgbThemeProvider();
-
         private Theme _theme = Theme.Bootstrap;
 
-        partial void OnThemeChanging(ref Theme newValue);
         /// <summary>
         /// The theme to provide to descendant components.
         /// </summary>
@@ -85,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ThemeVariant _variant = ThemeVariant.Light;
 
-        partial void OnVariantChanging(ref ThemeVariant newValue);
         /// <summary>
         /// The theme variant to provide to descendant components.
         /// </summary>
@@ -104,25 +94,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameThemeProvider(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameThemeProvider(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -132,13 +103,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbThemeProvider(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbThemeProvider(ser);
 
             if (IsPropDirty("Theme"))
             { ser.AddEnumProp("theme", this._theme); }

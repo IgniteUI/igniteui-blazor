@@ -10,17 +10,7 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebRangeSliderValueEventArgs"; } }
 
-        public IgbRangeSliderValueEventArgs() : base()
-        {
-            OnCreatedIgbRangeSliderValueEventArgs();
-
-        }
-
-        partial void OnCreatedIgbRangeSliderValueEventArgs();
-
         private IgbRangeSliderValue _detail;
-
-        partial void OnDetailChanging(ref IgbRangeSliderValue newValue);
 
         /// <summary>
         /// The lower and upper thumb values of the range slider.
@@ -31,7 +21,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -46,33 +35,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameRangeSliderValueEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRangeSliderValueEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbRangeSliderValueEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRangeSliderValueEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

@@ -13,17 +13,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbTileChangeStateEventArgs() : base()
-        {
-            OnCreatedIgbTileChangeStateEventArgs();
-
-        }
-
-        partial void OnCreatedIgbTileChangeStateEventArgs();
-
         private IgbTileChangeStateEventArgsDetail _detail;
-
-        partial void OnDetailChanging(ref IgbTileChangeStateEventArgsDetail newValue);
 
         /// <summary>
         /// The affected tile and the state it is changing to.
@@ -34,7 +24,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -49,33 +38,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameTileChangeStateEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTileChangeStateEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbTileChangeStateEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTileChangeStateEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

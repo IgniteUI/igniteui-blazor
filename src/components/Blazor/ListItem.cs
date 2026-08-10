@@ -52,17 +52,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbListItem() : base()
-        {
-            OnCreatedIgbListItem();
-
-        }
-
-        partial void OnCreatedIgbListItem();
-
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Defines if the list item is selected or not.
         /// </summary>
@@ -81,25 +72,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameListItem(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameListItem(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -109,13 +81,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbListItem(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbListItem(ser);
 
             if (IsPropDirty("Selected"))
             { ser.AddBooleanProp("selected", this._selected); }

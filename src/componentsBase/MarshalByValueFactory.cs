@@ -7,8 +7,6 @@ namespace IgniteUI.Blazor.Controls
             switch (typeName)
             {
                 //@@MustMarshalByValue
-                case "CalendarDate":
-                    return true;
                 case "CalendarFormatOptions":
                     return true;
                 case "FocusOptions":
@@ -132,7 +130,7 @@ namespace IgniteUI.Blazor.Controls
                 case "WebTreeSelectionEventArgsDetail":
                     return true;
 
-                    //@@MustMarshalByValueEnd                
+                    //@@MustMarshalByValueEnd
             }
             return false;
         }
@@ -142,9 +140,6 @@ namespace IgniteUI.Blazor.Controls
             switch (typeName)
             {
                 //@@MarshalByValue
-                case "CalendarDate":
-                    return new IgbCalendarDate();
-                    break;
                 case "CalendarFormatOptions":
                     return new IgbCalendarFormatOptions();
                     break;

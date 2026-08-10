@@ -51,17 +51,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTileManager() : base()
-        {
-            OnCreatedIgbTileManager();
-
-        }
-
-        partial void OnCreatedIgbTileManager();
-
         private TileManagerResizeMode _resizeMode = TileManagerResizeMode.None;
 
-        partial void OnResizeModeChanging(ref TileManagerResizeMode newValue);
         /// <summary>
         /// Whether resize operations are enabled.
         /// </summary>
@@ -81,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TileManagerDragMode _dragMode = TileManagerDragMode.None;
 
-        partial void OnDragModeChanging(ref TileManagerDragMode newValue);
         /// <summary>
         /// Whether drag and drop operations are enabled.
         /// </summary>
@@ -100,8 +90,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _columnCount = 0;
-
-        partial void OnColumnCountChanging(ref double newValue);
 
         /// <summary>
         /// Sets the number of columns for the tile manager.
@@ -123,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _minColumnWidth;
 
-        partial void OnMinColumnWidthChanging(ref string? newValue);
         /// <summary>
         /// Sets the minimum width for a column unit in the tile manager.
         /// </summary>
@@ -143,7 +130,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _minRowHeight;
 
-        partial void OnMinRowHeightChanging(ref string? newValue);
         /// <summary>
         /// Sets the minimum height for a row unit in the tile manager.
         /// </summary>
@@ -163,7 +149,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _gap;
 
-        partial void OnGapChanging(ref string? newValue);
         /// <summary>
         /// Sets the gap size between tiles in the tile manager.
         /// </summary>
@@ -222,21 +207,20 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameTileManager(string name, ref object item);
         public override object FindByName(string name)
         {
-
             var baseResult = base.FindByName(name);
             if (baseResult != null)
             {
                 return baseResult;
             }
 
-            object item = null;
-            FindByNameTileManager(name, ref item);
-            if (item != null)
+            foreach (var item in ContentItems)
             {
-                return item;
+                if (item.Name == name || item.ContainerId == name)
+                {
+                    return item;
+                }
             }
 
             return null;
@@ -314,7 +298,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileFullscreen(IgbTileChangeStateEventArgs args);
         private EventCallback<IgbTileChangeStateEventArgs>? _tileFullscreen = null;
 
         /// <summary>
@@ -334,11 +317,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _tileFullscreen, ref eventCallbacksCache))
                     {
                         _tileFullscreen = value;
-                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileFullscreen", value, (args) =>
-                        {
-                            OnHandlingTileFullscreen(args);
-
-                        });
+                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileFullscreen", value);
                         this.OnRefChanged("TileFullscreen", null, "event:::TileFullscreen", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileFullscreenRef = refName;
@@ -391,7 +370,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileMaximize(IgbTileChangeStateEventArgs args);
         private EventCallback<IgbTileChangeStateEventArgs>? _tileMaximize = null;
 
         /// <summary>
@@ -411,11 +389,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _tileMaximize, ref eventCallbacksCache))
                     {
                         _tileMaximize = value;
-                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileMaximize", value, (args) =>
-                        {
-                            OnHandlingTileMaximize(args);
-
-                        });
+                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileMaximize", value);
                         this.OnRefChanged("TileMaximize", null, "event:::TileMaximize", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileMaximizeRef = refName;
@@ -468,7 +442,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileDragStart(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileDragStart = null;
 
         /// <summary>
@@ -488,11 +461,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _tileDragStart, ref eventCallbacksCache))
                     {
                         _tileDragStart = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragStart", value, (args) =>
-                        {
-                            OnHandlingTileDragStart(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragStart", value);
                         this.OnRefChanged("TileDragStart", null, "event:::TileDragStart", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragStartRef = refName;
@@ -545,7 +514,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileDragEnd(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileDragEnd = null;
 
         /// <summary>
@@ -565,11 +533,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _tileDragEnd, ref eventCallbacksCache))
                     {
                         _tileDragEnd = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragEnd", value, (args) =>
-                        {
-                            OnHandlingTileDragEnd(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragEnd", value);
                         this.OnRefChanged("TileDragEnd", null, "event:::TileDragEnd", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragEndRef = refName;
@@ -622,7 +586,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileDragCancel(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileDragCancel = null;
 
         /// <summary>
@@ -642,11 +605,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _tileDragCancel, ref eventCallbacksCache))
                     {
                         _tileDragCancel = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragCancel", value, (args) =>
-                        {
-                            OnHandlingTileDragCancel(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragCancel", value);
                         this.OnRefChanged("TileDragCancel", null, "event:::TileDragCancel", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragCancelRef = refName;
@@ -699,7 +658,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileResizeStart(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileResizeStart = null;
 
         /// <summary>
@@ -719,11 +677,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _tileResizeStart, ref eventCallbacksCache))
                     {
                         _tileResizeStart = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeStart", value, (args) =>
-                        {
-                            OnHandlingTileResizeStart(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeStart", value);
                         this.OnRefChanged("TileResizeStart", null, "event:::TileResizeStart", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeStartRef = refName;
@@ -776,7 +730,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileResizeEnd(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileResizeEnd = null;
 
         /// <summary>
@@ -796,11 +749,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _tileResizeEnd, ref eventCallbacksCache))
                     {
                         _tileResizeEnd = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeEnd", value, (args) =>
-                        {
-                            OnHandlingTileResizeEnd(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeEnd", value);
                         this.OnRefChanged("TileResizeEnd", null, "event:::TileResizeEnd", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeEndRef = refName;
@@ -853,7 +802,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileResizeCancel(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileResizeCancel = null;
 
         /// <summary>
@@ -873,11 +821,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _tileResizeCancel, ref eventCallbacksCache))
                     {
                         _tileResizeCancel = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeCancel", value, (args) =>
-                        {
-                            OnHandlingTileResizeCancel(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeCancel", value);
                         this.OnRefChanged("TileResizeCancel", null, "event:::TileResizeCancel", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeCancelRef = refName;
@@ -898,13 +842,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTileManager(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTileManager(ser);
 
             if (IsPropDirty("ResizeMode"))
             { ser.AddEnumProp("resizeMode", this._resizeMode); }

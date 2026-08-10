@@ -92,7 +92,6 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 - Prefer `var` when type is obvious; avoid `dynamic`
 - Use `[Parameter]` for component inputs exposed to consumers
 - Prefer `EventCallback<T>` over `Action<T>` for event parameters to integrate with the Blazor render pipeline
-- Use `partial` classes and `partial void` hooks (e.g., `OnCreatedIgbButton()`) for extensibility
 
 ### TypeScript
 

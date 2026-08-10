@@ -6,18 +6,9 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "WebChatRenderers"; } }
 
-        public IgbChatRenderers() : base()
-        {
-            OnCreatedIgbChatRenderers();
-
-        }
-
-        partial void OnCreatedIgbChatRenderers();
-
         private string _attachmentRef;
         private RenderFragment<IgbChatAttachmentRenderContext> _attachment;
 
-        partial void OnAttachmentChanging(ref RenderFragment<IgbChatAttachmentRenderContext> newValue);
         /// <summary>
         /// Custom renderer for a single chat message attachment.
         /// </summary>
@@ -29,7 +20,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._attachment;
-                OnAttachmentChanging(ref value);
                 if (oldValue != value || !IsPropDirty("Attachment"))
                 {
                     MarkPropDirty("Attachment");
@@ -78,7 +68,6 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentContentRef;
         private RenderFragment<IgbChatAttachmentRenderContext> _attachmentContent;
 
-        partial void OnAttachmentContentChanging(ref RenderFragment<IgbChatAttachmentRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the content of an attachment.
         /// </summary>
@@ -90,7 +79,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._attachmentContent;
-                OnAttachmentContentChanging(ref value);
                 if (oldValue != value || !IsPropDirty("AttachmentContent"))
                 {
                     MarkPropDirty("AttachmentContent");
@@ -139,7 +127,6 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentHeaderRef;
         private RenderFragment<IgbChatAttachmentRenderContext> _attachmentHeader;
 
-        partial void OnAttachmentHeaderChanging(ref RenderFragment<IgbChatAttachmentRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the header of an attachment.
         /// </summary>
@@ -151,7 +138,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._attachmentHeader;
-                OnAttachmentHeaderChanging(ref value);
                 if (oldValue != value || !IsPropDirty("AttachmentHeader"))
                 {
                     MarkPropDirty("AttachmentHeader");
@@ -200,7 +186,6 @@ namespace IgniteUI.Blazor.Controls
         private string _inputRef;
         private RenderFragment<IgbChatInputRenderContext> _input;
 
-        partial void OnInputChanging(ref RenderFragment<IgbChatInputRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the main chat input field.
         /// </summary>
@@ -212,7 +197,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._input;
-                OnInputChanging(ref value);
                 if (oldValue != value || !IsPropDirty("Input"))
                 {
                     MarkPropDirty("Input");
@@ -261,7 +245,6 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsRef;
         private RenderFragment<IgbChatRenderContext> _inputActions;
 
-        partial void OnInputActionsChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the actions container within the input area.
         /// </summary>
@@ -273,7 +256,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._inputActions;
-                OnInputActionsChanging(ref value);
                 if (oldValue != value || !IsPropDirty("InputActions"))
                 {
                     MarkPropDirty("InputActions");
@@ -322,7 +304,6 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsEndRef;
         private RenderFragment<IgbChatRenderContext> _inputActionsEnd;
 
-        partial void OnInputActionsEndChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the actions at the end of the input area.
         /// </summary>
@@ -334,7 +315,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._inputActionsEnd;
-                OnInputActionsEndChanging(ref value);
                 if (oldValue != value || !IsPropDirty("InputActionsEnd"))
                 {
                     MarkPropDirty("InputActionsEnd");
@@ -383,7 +363,6 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsStartRef;
         private RenderFragment<IgbChatRenderContext> _inputActionsStart;
 
-        partial void OnInputActionsStartChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the actions at the start of the input area.
         /// </summary>
@@ -395,7 +374,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._inputActionsStart;
-                OnInputActionsStartChanging(ref value);
                 if (oldValue != value || !IsPropDirty("InputActionsStart"))
                 {
                     MarkPropDirty("InputActionsStart");
@@ -444,7 +422,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageRef;
         private RenderFragment<IgbChatMessageRenderContext> _message;
 
-        partial void OnMessageChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for an entire chat message bubble.
         /// </summary>
@@ -456,7 +433,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._message;
-                OnMessageChanging(ref value);
                 if (oldValue != value || !IsPropDirty("Message"))
                 {
                     MarkPropDirty("Message");
@@ -505,7 +481,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageActionsRef;
         private RenderFragment<IgbChatMessageRenderContext> _messageActions;
 
-        partial void OnMessageActionsChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for message-specific actions (e.g. reply or delete buttons).
         /// </summary>
@@ -517,7 +492,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._messageActions;
-                OnMessageActionsChanging(ref value);
                 if (oldValue != value || !IsPropDirty("MessageActions"))
                 {
                     MarkPropDirty("MessageActions");
@@ -566,7 +540,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageAttachmentsRef;
         private RenderFragment<IgbChatMessageRenderContext> _messageAttachments;
 
-        partial void OnMessageAttachmentsChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the attachments associated with a message.
         /// </summary>
@@ -578,7 +551,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._messageAttachments;
-                OnMessageAttachmentsChanging(ref value);
                 if (oldValue != value || !IsPropDirty("MessageAttachments"))
                 {
                     MarkPropDirty("MessageAttachments");
@@ -627,7 +599,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageContentRef;
         private RenderFragment<IgbChatMessageRenderContext> _messageContent;
 
-        partial void OnMessageContentChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the main text and content of a message.
         /// </summary>
@@ -639,7 +610,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._messageContent;
-                OnMessageContentChanging(ref value);
                 if (oldValue != value || !IsPropDirty("MessageContent"))
                 {
                     MarkPropDirty("MessageContent");
@@ -688,7 +658,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageHeaderRef;
         private RenderFragment<IgbChatMessageRenderContext> _messageHeader;
 
-        partial void OnMessageHeaderChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the header of a message, including sender and timestamp.
         /// </summary>
@@ -700,7 +669,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._messageHeader;
-                OnMessageHeaderChanging(ref value);
                 if (oldValue != value || !IsPropDirty("MessageHeader"))
                 {
                     MarkPropDirty("MessageHeader");
@@ -749,7 +717,6 @@ namespace IgniteUI.Blazor.Controls
         private string _sendButtonRef;
         private RenderFragment<IgbChatRenderContext> _sendButton;
 
-        partial void OnSendButtonChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the message send button.
         /// </summary>
@@ -761,7 +728,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._sendButton;
-                OnSendButtonChanging(ref value);
                 if (oldValue != value || !IsPropDirty("SendButton"))
                 {
                     MarkPropDirty("SendButton");
@@ -810,7 +776,6 @@ namespace IgniteUI.Blazor.Controls
         private string _suggestionPrefixRef;
         private RenderFragment<IgbChatRenderContext> _suggestionPrefix;
 
-        partial void OnSuggestionPrefixChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the prefix text shown before suggestions.
         /// </summary>
@@ -822,7 +787,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._suggestionPrefix;
-                OnSuggestionPrefixChanging(ref value);
                 if (oldValue != value || !IsPropDirty("SuggestionPrefix"))
                 {
                     MarkPropDirty("SuggestionPrefix");
@@ -869,33 +833,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameChatRenderers(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChatRenderers(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbChatRenderers(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatRenderers(ser);
 
             if (IsPropDirty("AttachmentRef"))
             { ser.AddStringProp("attachmentRef", this._attachmentRef); }

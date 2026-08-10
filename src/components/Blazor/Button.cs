@@ -50,17 +50,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbButton() : base()
-        {
-            OnCreatedIgbButton();
-
-        }
-
-        partial void OnCreatedIgbButton();
-
         private ButtonVariant _variant = ButtonVariant.Contained;
 
-        partial void OnVariantChanging(ref ButtonVariant newValue);
         /// <summary>
         /// The variant of the button which determines its visual appearance.
         /// <list type="bullet">
@@ -89,33 +80,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameButton(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameButton(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbButton(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbButton(ser);
 
             if (IsPropDirty("Variant"))
             { ser.AddEnumProp("variant", this._variant); }

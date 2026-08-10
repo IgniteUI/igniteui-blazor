@@ -13,17 +13,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbTreeItemComponentEventArgs() : base()
-        {
-            OnCreatedIgbTreeItemComponentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbTreeItemComponentEventArgs();
-
         private IgbTreeItem _detail;
-
-        partial void OnDetailChanging(ref IgbTreeItem newValue);
 
         /// <summary>
         /// The tree item the event applies to.
@@ -43,33 +33,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTreeItemComponentEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTreeItemComponentEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbTreeItemComponentEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTreeItemComponentEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

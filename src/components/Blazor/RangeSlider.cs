@@ -46,17 +46,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbRangeSlider() : base()
-        {
-            OnCreatedIgbRangeSlider();
-
-        }
-
-        partial void OnCreatedIgbRangeSlider();
-
         private double _lower = 0;
 
-        partial void OnLowerChanging(ref double newValue);
         /// <summary>
         /// The current value of the lower thumb.
         /// </summary>
@@ -76,7 +67,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _upper = 0;
 
-        partial void OnUpperChanging(ref double newValue);
         /// <summary>
         /// The current value of the upper thumb.
         /// </summary>
@@ -96,7 +86,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _thumbLabelLower;
 
-        partial void OnThumbLabelLowerChanging(ref string newValue);
         /// <summary>
         /// The aria label for the lower thumb.
         /// </summary>
@@ -116,7 +105,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _thumbLabelUpper;
 
-        partial void OnThumbLabelUpperChanging(ref string newValue);
         /// <summary>
         /// The aria label for the upper thumb.
         /// </summary>
@@ -133,26 +121,6 @@ namespace IgniteUI.Blazor.Controls
                 this._thumbLabelUpper = value;
 
             }
-        }
-
-        partial void FindByNameRangeSlider(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRangeSlider(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
         }
 
         private string _inputRef = null;
@@ -187,7 +155,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbRangeSliderValueEventArgs args);
         private EventCallback<IgbRangeSliderValueEventArgs>? _input = null;
 
         /// <summary>
@@ -207,11 +174,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
                     {
                         _input = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -264,7 +227,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbRangeSliderValueEventArgs args);
         private EventCallback<IgbRangeSliderValueEventArgs>? _change = null;
 
         /// <summary>
@@ -284,11 +246,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
                     {
                         _change = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", value, (args) =>
-                        {
-                            OnHandlingChange(args);
-
-                        });
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", value);
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {
                             this._changeRef = refName;
@@ -309,13 +267,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbRangeSlider(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRangeSlider(ser);
 
             if (IsPropDirty("Lower"))
             { ser.AddNumberProp("lower", this._lower); }

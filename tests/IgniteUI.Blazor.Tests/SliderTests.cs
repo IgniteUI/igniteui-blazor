@@ -20,13 +20,18 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             assert: args => Assert.Equal(3, args.Detail))
         .Event(c => c.Change,
             argsJson: """{"detail": 5}""",
-            assert: args => Assert.Equal(5, args.Detail));
+            assert: args => Assert.Equal(5, args.Detail))
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": 5}""", expect: 5.0);
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Slider_RendersCorrectElement()

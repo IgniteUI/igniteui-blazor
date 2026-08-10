@@ -12,17 +12,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbTabComponentEventArgs() : base()
-        {
-            OnCreatedIgbTabComponentEventArgs();
-
-        }
-
-        partial void OnCreatedIgbTabComponentEventArgs();
-
         private IgbTab _detail;
-
-        partial void OnDetailChanging(ref IgbTab newValue);
 
         /// <summary>
         /// The tab that became selected.
@@ -42,33 +32,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTabComponentEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTabComponentEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbTabComponentEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTabComponentEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

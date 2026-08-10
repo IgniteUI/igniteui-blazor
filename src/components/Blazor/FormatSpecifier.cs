@@ -18,33 +18,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbFormatSpecifier() : base()
-        {
-            OnCreatedIgbFormatSpecifier();
-
-        }
-
-        partial void OnCreatedIgbFormatSpecifier();
-
-        partial void FindByNameFormatSpecifier(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameFormatSpecifier(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         /// <summary>
         /// Gets the culture of the browser, expanded to a culture with a region when the browser
         /// reports a bare language code.
@@ -64,16 +37,6 @@ namespace IgniteUI.Blazor.Controls
         {
             var iv = InvokeMethodSync("getLocalCulture", new object[] { }, new string[] { });
             return ReturnToString(iv);
-        }
-
-        partial void SerializeCoreIgbFormatSpecifier(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbFormatSpecifier(ser);
-
         }
 
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)

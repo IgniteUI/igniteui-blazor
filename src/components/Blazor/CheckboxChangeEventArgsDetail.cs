@@ -11,17 +11,8 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbCheckboxChangeEventArgsDetail() : base()
-        {
-            OnCreatedIgbCheckboxChangeEventArgsDetail();
-
-        }
-
-        partial void OnCreatedIgbCheckboxChangeEventArgsDetail();
-
         private bool _checked = false;
 
-        partial void OnCheckedChanging(ref bool newValue);
         /// <summary>
         /// The checked state of the control after the change.
         /// </summary>
@@ -41,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -60,25 +50,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCheckboxChangeEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCheckboxChangeEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -88,13 +59,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbCheckboxChangeEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCheckboxChangeEventArgsDetail(ser);
 
             if (IsPropDirty("Checked"))
             { ser.AddBooleanProp("checked", this._checked); }

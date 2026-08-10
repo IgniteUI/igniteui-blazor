@@ -79,10 +79,6 @@ namespace IgniteUI.Blazor.Controls
                 return this._contentTabsCollection;
             }
         }
-        partial void GetSerializableTabsCollection(ref IgbTabs_TabCollection value)
-        {
-            value = ActualTabsCollection;
-        }
         private IgbTabs_TabCollection _actualTabsCollection = null;
 
         public IgbTabs_TabCollection ActualTabsCollection
@@ -98,9 +94,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="IgbTabs"/>.
+        /// </summary>
         public IgbTabs() : base()
         {
-            OnCreatedIgbTabs();
+            // Ensure Change handler so selection syncs back to the child IgbTab instances
+            EnsureChangeHandled();
 
             _allTabsCollection = new IgbTabs_TabCollection(this, "TabsCollection");
             _tabsCollectionAdapter = new CollectionAdapter<IgbTab, IgbTab>(
@@ -117,13 +117,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void OnCreatedIgbTabs();
-
         private IgbTabs_TabCollection _tabsCollection = null;
-
-        partial void GetSerializableTabsCollection(ref IgbTabs_TabCollection value);
-
-        partial void OnTabsCollectionChanging(ref IgbTabs_TabCollection newValue);
 
         public IgbTabs_TabCollection TabsCollection
         {
@@ -148,7 +142,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TabsAlignment _alignment = TabsAlignment.Start;
 
-        partial void OnAlignmentChanging(ref TabsAlignment newValue);
         /// <summary>
         /// Sets the alignment for the tab headers.
         /// </summary>
@@ -168,7 +161,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private TabsActivation _activation = TabsActivation.Auto;
 
-        partial void OnActivationChanging(ref TabsActivation newValue);
         /// <summary>
         /// Determines the tab activation. When set to <see cref="TabsActivation.Auto"/>,
         /// the tab is instantly selected while navigating with the Left/Right Arrows, Home or End keys
@@ -211,22 +203,14 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToString(iv);
         }
 
-        partial void FindByNameTabs(string name, ref object item);
         public override object FindByName(string name)
         {
-
             var baseResult = base.FindByName(name);
             if (baseResult != null)
             {
                 return baseResult;
             }
 
-            object item = null;
-            FindByNameTabs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
             if (_actualTabsCollection != null && _actualTabsCollection.HasName(name))
             { return _actualTabsCollection.FindByName(name); }
 
@@ -288,7 +272,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbTabComponentEventArgs args);
         private EventCallback<IgbTabComponentEventArgs>? _change = null;
 
         /// <summary>
@@ -310,8 +293,7 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
+                            SyncSelectedTab(args);
                         });
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {
@@ -333,16 +315,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTabs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
 
-            SerializeCoreIgbTabs(ser);
-
             if (IsPropDirty("TabsCollection"))
-            { var coll = this._tabsCollection; GetSerializableTabsCollection(ref coll); ser.AddCollectionProp("tabsCollection", coll); }
+            { ser.AddCollectionProp("tabsCollection", ActualTabsCollection); }
             if (IsPropDirty("Alignment"))
             { ser.AddEnumProp("alignment", this._alignment); }
             if (IsPropDirty("Activation"))

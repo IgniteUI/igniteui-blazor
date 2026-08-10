@@ -43,17 +43,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbBaseAlertLike() : base()
-        {
-            OnCreatedIgbBaseAlertLike();
-
-        }
-
-        partial void OnCreatedIgbBaseAlertLike();
-
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the component is in shown state.
         /// </summary>
@@ -73,7 +64,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _displayTime = 4000;
 
-        partial void OnDisplayTimeChanging(ref double newValue);
         /// <summary>
         /// Determines the duration in milliseconds in which the component will be visible.
         /// </summary>
@@ -93,7 +83,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _keepOpen = false;
 
-        partial void OnKeepOpenChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the component should close after the <see cref="DisplayTime"/> is over.
         /// </summary>
@@ -113,7 +102,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private AbsolutePosition _position = AbsolutePosition.Bottom;
 
-        partial void OnPositionChanging(ref AbsolutePosition newValue);
         /// <summary>
         /// Sets the position of the component in the viewport.
         /// <list type="bullet">
@@ -145,7 +133,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private NotificationPositioning _positioning = NotificationPositioning.Viewport;
 
-        partial void OnPositioningChanging(ref NotificationPositioning newValue);
         /// <summary>
         /// Sets the positioning strategy of the component.
         /// <list type="bullet">
@@ -175,25 +162,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameBaseAlertLike(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameBaseAlertLike(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -288,13 +256,9 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
-        partial void SerializeCoreIgbBaseAlertLike(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbBaseAlertLike(ser);
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }

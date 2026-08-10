@@ -51,17 +51,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbChip() : base()
-        {
-            OnCreatedIgbChip();
-
-        }
-
-        partial void OnCreatedIgbChip();
-
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Sets the disabled state for the chip.
         /// </summary>
@@ -81,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _removable = false;
 
-        partial void OnRemovableChanging(ref bool newValue);
         /// <summary>
         /// Defines if the chip is removable or not.
         /// </summary>
@@ -101,7 +91,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selectable = false;
 
-        partial void OnSelectableChanging(ref bool newValue);
         /// <summary>
         /// Defines if the chip is selectable or not.
         /// </summary>
@@ -121,7 +110,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Defines if the chip is selected or not.
         /// </summary>
@@ -159,7 +147,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StyleVariant _variant = StyleVariant.Primary;
 
-        partial void OnVariantChanging(ref StyleVariant newValue);
         /// <summary>
         /// A property that sets the color variant of the chip component.
         /// </summary>
@@ -178,25 +165,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameChip(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChip(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -269,7 +237,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingRemove(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _remove = null;
 
         /// <summary>
@@ -289,11 +256,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _remove, ref eventCallbacksCache))
                     {
                         _remove = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", value, (args) =>
-                        {
-                            OnHandlingRemove(args);
-
-                        });
+                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", value);
                         this.OnRefChanged("Remove", null, "event:::Remove", true, false, (refName, oldValue, newValue) =>
                         {
                             this._removeRef = refName;
@@ -346,7 +309,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSelect(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _select = null;
 
         /// <summary>
@@ -369,14 +331,10 @@ namespace IgniteUI.Blazor.Controls
                         _select = value;
                         this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Select", value, (args) =>
                         {
-                            OnHandlingSelect(args);
-
                             var newValueSelected = default(bool);
 
                             {
                                 newValueSelected = (bool)(args.Detail);
-                                ;
-                                OnEventUpdatingSelected(this._selected, ref newValueSelected);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -427,15 +385,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingSelected(bool oldValue, ref bool newValue);
-
-        partial void SerializeCoreIgbChip(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChip(ser);
 
             if (IsPropDirty("Disabled"))
             { ser.AddBooleanProp("disabled", this._disabled); }

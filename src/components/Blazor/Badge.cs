@@ -52,17 +52,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbBadge() : base()
-        {
-            OnCreatedIgbBadge();
-
-        }
-
-        partial void OnCreatedIgbBadge();
-
         private StyleVariant _variant = StyleVariant.Primary;
 
-        partial void OnVariantChanging(ref StyleVariant newValue);
         /// <summary>
         /// The type (style variant) of the badge.
         /// </summary>
@@ -82,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Sets whether to draw an outlined version of the badge.
         /// </summary>
@@ -102,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private BadgeShape _shape = BadgeShape.Rounded;
 
-        partial void OnShapeChanging(ref BadgeShape newValue);
         /// <summary>
         /// The shape of the badge.
         /// </summary>
@@ -122,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _dot = false;
 
-        partial void OnDotChanging(ref bool newValue);
         /// <summary>
         /// Sets whether to render a dot type badge.
         /// When enabled, the badge appears as a small dot without any content.
@@ -142,25 +130,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameBadge(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameBadge(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -170,13 +139,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbBadge(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbBadge(ser);
 
             if (IsPropDirty("Variant"))
             { ser.AddEnumProp("variant", this._variant); }

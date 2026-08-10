@@ -12,17 +12,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbRadioChangeEventArgs() : base()
-        {
-            OnCreatedIgbRadioChangeEventArgs();
-
-        }
-
-        partial void OnCreatedIgbRadioChangeEventArgs();
-
         private IgbRadioChangeEventArgsDetail _detail;
-
-        partial void OnDetailChanging(ref IgbRadioChangeEventArgsDetail newValue);
 
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the radio button.
@@ -33,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -48,33 +37,9 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameRadioChangeEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRadioChangeEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbRadioChangeEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRadioChangeEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }

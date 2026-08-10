@@ -47,17 +47,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbInput() : base()
-        {
-            OnCreatedIgbInput();
-
-        }
-
-        partial void OnCreatedIgbInput();
-
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -95,7 +86,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private InputType _displayType = InputType.Text;
 
-        partial void OnDisplayTypeChanging(ref InputType newValue);
         /// <summary>
         /// The type attribute of the control.
         /// </summary>
@@ -116,7 +106,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -137,7 +126,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _inputMode;
 
-        partial void OnInputModeChanging(ref string newValue);
         /// <summary>
         /// The input mode attribute of the control.
         /// See the relevant MDN article on
@@ -160,7 +148,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _pattern;
 
-        partial void OnPatternChanging(ref string? newValue);
         /// <summary>
         /// The pattern attribute of the control.
         /// </summary>
@@ -180,7 +167,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _minLength = 0;
 
-        partial void OnMinLengthChanging(ref double? newValue);
         /// <summary>
         /// The minimum string length required by the control.
         /// </summary>
@@ -201,7 +187,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _maxLength = 0;
 
-        partial void OnMaxLengthChanging(ref double? newValue);
         /// <summary>
         /// The maximum string length of the control.
         /// </summary>
@@ -222,7 +207,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _min = 0;
 
-        partial void OnMinChanging(ref double? newValue);
         /// <summary>
         /// The min attribute of the control.
         /// </summary>
@@ -242,7 +226,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _max = 0;
 
-        partial void OnMaxChanging(ref double? newValue);
         /// <summary>
         /// The max attribute of the control.
         /// </summary>
@@ -262,7 +245,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _step = 0;
 
-        partial void OnStepChanging(ref double? newValue);
         /// <summary>
         /// The step attribute of the control.
         /// </summary>
@@ -282,7 +264,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _autofocus = false;
 
-        partial void OnAutofocusChanging(ref bool newValue);
         /// <summary>
         /// The autofocus attribute of the control.
         /// </summary>
@@ -302,7 +283,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _autocomplete;
 
-        partial void OnAutocompleteChanging(ref string newValue);
         /// <summary>
         /// The autocomplete attribute of the control.
         /// </summary>
@@ -322,7 +302,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _validateOnly = false;
 
-        partial void OnValidateOnlyChanging(ref bool newValue);
         /// <summary>
         /// Enables validation rules to be evaluated without restricting user input.
         /// This applies to the <see cref="MaxLength"/> property for string-type inputs, or allows spin buttons
@@ -343,25 +322,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameInput(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameInput(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         /// <summary>
         /// Increments the numeric value of the input by one or more steps.
         /// </summary>
@@ -456,7 +416,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
 
         /// <summary>
@@ -478,14 +437,10 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {
                                 newValueValue = (string)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -536,15 +491,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(string oldValue, ref string newValue);
-
-        partial void SerializeCoreIgbInput(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbInput(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }

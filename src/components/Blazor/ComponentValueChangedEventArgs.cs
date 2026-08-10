@@ -12,17 +12,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbComponentValueChangedEventArgs() : base()
-        {
-            OnCreatedIgbComponentValueChangedEventArgs();
-
-        }
-
-        partial void OnCreatedIgbComponentValueChangedEventArgs();
-
         private string _detail;
-
-        partial void OnDetailChanging(ref string newValue);
 
         /// <summary>
         /// The string value carried by the event.
@@ -42,33 +32,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameComponentValueChangedEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameComponentValueChangedEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbComponentValueChangedEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComponentValueChangedEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddStringProp("detail", this._detail); }

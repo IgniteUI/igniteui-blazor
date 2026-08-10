@@ -11,17 +11,8 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbChatMessageReaction() : base()
-        {
-            OnCreatedIgbChatMessageReaction();
-
-        }
-
-        partial void OnCreatedIgbChatMessageReaction();
-
         private IgbChatMessage _message;
 
-        partial void OnMessageChanging(ref IgbChatMessage newValue);
         /// <summary>
         /// The chat message that the reaction is associated with.
         /// </summary>
@@ -31,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._message; }
             set
             {
-                OnMessageChanging(ref value);
                 MarkPropDirty("Message");
                 if (this._message != null)
                 {
@@ -47,7 +37,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _reaction;
 
-        partial void OnReactionChanging(ref string newValue);
         /// <summary>
         /// The string representation of the reaction, such as an emoji or a string;
         /// </summary>
@@ -66,25 +55,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameChatMessageReaction(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChatMessageReaction(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -94,13 +64,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbChatMessageReaction(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatMessageReaction(ser);
 
             if (IsPropDirty("Message"))
             { ser.AddSerializableProp("message", this._message); }

@@ -25,16 +25,5 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTree(string name, ref object item)
-        {
-            foreach (var it in ContentItems)
-            {
-                if (it.Name == name || it.ContainerId == name)
-                {
-                    item = it;
-                    return;
-                }
-            }
-        }
     }
 }

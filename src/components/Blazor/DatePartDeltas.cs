@@ -11,17 +11,7 @@ namespace IgniteUI.Blazor.Controls
     {
         public override string Type { get { return "DatePartDeltas"; } }
 
-        public IgbDatePartDeltas() : base()
-        {
-            OnCreatedIgbDatePartDeltas();
-
-        }
-
-        partial void OnCreatedIgbDatePartDeltas();
-
         private double _date = 0;
-
-        partial void OnDateChanging(ref double newValue);
 
         /// <summary>
         /// The number of days the date part is spun by.
@@ -42,8 +32,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _month = 0;
 
-        partial void OnMonthChanging(ref double newValue);
-
         /// <summary>
         /// The number of months the month part is spun by.
         /// </summary>
@@ -62,8 +50,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _year = 0;
-
-        partial void OnYearChanging(ref double newValue);
 
         /// <summary>
         /// The number of years the year part is spun by.
@@ -84,8 +70,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _hours = 0;
 
-        partial void OnHoursChanging(ref double newValue);
-
         /// <summary>
         /// The number of hours the hours part is spun by.
         /// </summary>
@@ -104,8 +88,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private double _minutes = 0;
-
-        partial void OnMinutesChanging(ref double newValue);
 
         /// <summary>
         /// The number of minutes the minutes part is spun by.
@@ -126,8 +108,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _seconds = 0;
 
-        partial void OnSecondsChanging(ref double newValue);
-
         /// <summary>
         /// The number of seconds the seconds part is spun by.
         /// </summary>
@@ -146,33 +126,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDatePartDeltas(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDatePartDeltas(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbDatePartDeltas(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDatePartDeltas(ser);
 
             if (IsPropDirty("Date"))
             { ser.AddNumberProp("date", this._date); }

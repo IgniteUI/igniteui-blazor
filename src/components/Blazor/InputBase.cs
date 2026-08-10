@@ -24,17 +24,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbInputBase() : base()
-        {
-            OnCreatedIgbInputBase();
-
-        }
-
-        partial void OnCreatedIgbInputBase();
-
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Whether the control will have outlined appearance.
         /// </summary>
@@ -54,7 +45,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholder;
 
-        partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
@@ -74,7 +64,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label for the control.
         /// </summary>
@@ -94,7 +83,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// The disabled state of the component.
         /// </summary>
@@ -114,7 +102,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -134,7 +121,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Sets the control into invalid state (visual state only).
         /// </summary>
@@ -153,25 +139,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameInputBase(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameInputBase(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -315,7 +282,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputOcurred(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _inputOcurred = null;
 
         /// <summary>
@@ -337,8 +303,7 @@ namespace IgniteUI.Blazor.Controls
                         _inputOcurred = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", value, (args) =>
                         {
-                            OnHandlingInputOcurred(args);
-
+                            RaiseValueChanging(args);
                         });
                         this.OnRefChanged("InputOcurred", null, "event:::InputOcurred", true, false, (refName, oldValue, newValue) =>
                         {
@@ -392,7 +357,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
 
         /// <summary>
@@ -412,11 +376,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value, (args) =>
-                        {
-                            OnHandlingFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -469,7 +429,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
 
         /// <summary>
@@ -489,11 +448,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value, (args) =>
-                        {
-                            OnHandlingBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -514,13 +469,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbInputBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbInputBase(ser);
 
             if (IsPropDirty("Outlined"))
             { ser.AddBooleanProp("outlined", this._outlined); }

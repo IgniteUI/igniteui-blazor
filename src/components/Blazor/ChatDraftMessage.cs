@@ -8,17 +8,8 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbChatDraftMessage() : base()
-        {
-            OnCreatedIgbChatDraftMessage();
-
-        }
-
-        partial void OnCreatedIgbChatDraftMessage();
-
         private string _text;
 
-        partial void OnTextChanging(ref string newValue);
         /// <summary>
         /// The textual content of the draft message.
         /// </summary>
@@ -38,7 +29,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatMessageAttachment[] _attachments;
 
-        partial void OnAttachmentsChanging(ref IgbChatMessageAttachment[] newValue);
         /// <summary>
         /// An array of attachments associated with the draft message.
         /// </summary>
@@ -57,25 +47,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameChatDraftMessage(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChatDraftMessage(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -85,13 +56,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbChatDraftMessage(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatDraftMessage(ser);
 
             if (IsPropDirty("Text"))
             { ser.AddStringProp("text", this._text); }

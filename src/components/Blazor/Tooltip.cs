@@ -53,17 +53,8 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTooltip() : base()
-        {
-            OnCreatedIgbTooltip();
-
-        }
-
-        partial void OnCreatedIgbTooltip();
-
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the tooltip is showing.
         /// </summary>
@@ -83,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _withArrow = false;
 
-        partial void OnWithArrowChanging(ref bool newValue);
         /// <summary>
         /// Whether to render an arrow indicator for the tooltip.
         /// </summary>
@@ -103,7 +93,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _offset = 6;
 
-        partial void OnOffsetChanging(ref double newValue);
         /// <summary>
         /// The offset of the tooltip from the anchor in pixels.
         /// </summary>
@@ -123,7 +112,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private PopoverPlacement _placement = PopoverPlacement.Bottom;
 
-        partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>
         /// Where to place the tooltip relative to its anchor element.
         /// </summary>
@@ -143,7 +131,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _anchor;
 
-        partial void OnAnchorChanging(ref string newValue);
         /// <summary>
         /// The ID of the element to use as the anchor for the tooltip.
         /// </summary>
@@ -163,7 +150,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _showTriggers;
 
-        partial void OnShowTriggersChanging(ref string newValue);
         /// <summary>
         /// Which event triggers will show the tooltip.
         /// Expects a comma separated string of different event triggers.
@@ -184,7 +170,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _hideTriggers;
 
-        partial void OnHideTriggersChanging(ref string newValue);
         /// <summary>
         /// Which event triggers will hide the tooltip.
         /// Expects a comma separated string of different event triggers.
@@ -205,7 +190,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _showDelay = 200;
 
-        partial void OnShowDelayChanging(ref double newValue);
         /// <summary>
         /// Specifies the number of milliseconds that should pass before showing the tooltip.
         /// </summary>
@@ -225,7 +209,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _hideDelay = 300;
 
-        partial void OnHideDelayChanging(ref double newValue);
         /// <summary>
         /// Specifies the number of milliseconds that should pass before hiding the tooltip.
         /// </summary>
@@ -245,7 +228,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _message;
 
-        partial void OnMessageChanging(ref string newValue);
         /// <summary>
         /// Specifies plain text as the tooltip content.
         /// </summary>
@@ -265,7 +247,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _sticky = false;
 
-        partial void OnStickyChanging(ref bool newValue);
         /// <summary>
         /// Specifies if the tooltip remains visible until the user closes it via the close button or Esc key.
         /// </summary>
@@ -284,25 +265,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTooltip(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTooltip(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -397,7 +359,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpening(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opening = null;
 
         /// <summary>
@@ -417,11 +378,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
                     {
                         _opening = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value, (args) =>
-                        {
-                            OnHandlingOpening(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -474,7 +431,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpened(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opened = null;
 
         /// <summary>
@@ -494,11 +450,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
                     {
                         _opened = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value, (args) =>
-                        {
-                            OnHandlingOpened(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -551,7 +503,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
 
         /// <summary>
@@ -571,11 +522,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -628,7 +575,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
 
         /// <summary>
@@ -648,11 +594,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -673,13 +615,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTooltip(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTooltip(ser);
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }

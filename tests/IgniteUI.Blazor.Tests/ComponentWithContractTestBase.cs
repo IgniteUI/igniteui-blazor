@@ -52,6 +52,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// <code>Methods_FollowContract() => <see cref="VerifyMethodContract"/></code>
     /// <code>Props_FollowContract() => <see cref="VerifyPropContract"/></code>
     /// <code>Events_FollowContract() => <see cref="VerifyEventContract"/></code>
+    /// <code>Binds_FollowContract() => <see cref="VerifyBindContract"/></code>
     /// Each method, property, and event in the contract is exercised in isolation, with a fresh component instance (or a shared instance for methods that don't require an arrangement).
     /// The harness is primed to a ready state before each test, and any stubbed return values are set up before invoking the method or reading the property.
     /// The test asserts that the expected interop calls are made with the correct arguments and types, and that the return values are as expected.
@@ -73,6 +74,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
         RequireSectionFact(contract.Methods.Count > 0, "Methods_FollowContract", nameof(VerifyMethodContract));
         RequireSectionFact(contract.Props.Count > 0, "Props_FollowContract", nameof(VerifyPropContract));
         RequireSectionFact(contract.Events.Count > 0, "Events_FollowContract", nameof(VerifyEventContract));
+        RequireSectionFact(contract.Binds.Count > 0, "Binds_FollowContract", nameof(VerifyBindContract));
     }
 
     private void RequireSectionFact(bool hasSpecs, string factName, string runnerName)
@@ -304,6 +306,127 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     }
 
     /// <summary>
+    /// Runner for the contract's <c>.Bind</c> specs — expose it on the suite as
+    /// <c>[Fact] public void Binds_FollowContract() => VerifyBindContract();</c>.
+    /// Renders a fresh instance per spec bound exactly as <c>@bind-X</c> would, then dispatches
+    /// the paired event and verifies the round trip <b>inbound</b> side: binding alone transmitted that
+    /// paired event's registration (the client's cue to report changes) and the member kept the callback;
+    /// the dispatch pushed the decoded value to the binding; and the component's own property adopted it.
+    /// </summary>
+    /// <exception cref="ContractViolationException">
+    /// Any spec failure, naming the violated pair and carrying the declaring contract
+    /// line as the top stack frame.
+    /// </exception>
+    protected void VerifyBindContract()
+    {
+        var harness = InteropFor<TComponent>();
+        // Dispatch needs no readiness, but arranged data (items referenced by uuid) only
+        // transfers once ready — same reasoning as the event runner.
+        harness.PrimeReady();
+
+        foreach (var bind in InteropContract.Binds)
+        {
+            try
+            {
+                object? received = null;
+                var delivered = false;
+                void Sink(object? value)
+                {
+                    // Record only: OnRaiseEvent swallows exceptions, so anything thrown in here
+                    // would vanish and read as "never invoked".
+                    received = value;
+                    delivered = true;
+                }
+
+                var cut = Render<TComponent>(ps =>
+                {
+                    bind.Arrange?.Invoke(ps);
+                    bind.BindPair(ps, Sink);
+                });
+
+                // A setter whose emptiness guard is wrong can drop the callback, leaving the
+                // binding silently dead however well the rest of the wiring behaves.
+                Assert.True(
+                    bind.ChangedIsBound(cut.Instance),
+                    $"{bind.PropertyName}Changed did not keep the bound callback — check its setter's empty-callback guard");
+
+                // Read where the property actually starts: if that is already the expected value,
+                // everything below would pass without the dispatch changing anything.
+                if (Equals(bind.ReadProperty(cut.Instance), bind.Expected))
+                {
+                    throw new XunitException(
+                        $"{bind.PropertyName} already holds the expected value before the dispatch — expect a " +
+                        "different one, or state an initial: the change moves away from");
+                }
+
+                // Binding only the callback must still subscribe the client, by forcing the
+                // paired event's registration onto the wire.
+                var containerId = harness.ContainerIdOf(cut);
+                var registration = harness.FindPropertyUpdate(containerId, WireMemberName(bind.DrivingEvent))
+                    ?? throw new XunitException(
+                        $"binding transmitted no \"{bind.DrivingEvent}\" event registration — without it the " +
+                        "client never reports changes, so the binding can never fire");
+                Assert.Equal(bind.DrivingEvent, registration.GetString());
+
+                harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
+
+                if (!delivered)
+                {
+                    throw new XunitException(
+                        $"the {bind.PropertyName}Changed binding was never invoked — dispatch failures are " +
+                        "swallowed by the control, so check the driving event, the args JSON shape, and that " +
+                        "the payload decodes to the bound type");
+                }
+                // What the binding was handed is the decode's result.
+                if (bind.AssertValue is null)
+                {
+                    AssertReturn(bind.Expected, received);
+                }
+                else
+                {
+                    bind.AssertValue(received);
+                }
+
+                // And the property is written from that same decoded value, so the two must agree.
+                var adopted = bind.ReadProperty(cut.Instance);
+                try
+                {
+                    Assert.Equal(received, adopted);
+                }
+                catch (XunitException mismatch)
+                {
+                    throw new XunitException(
+                        $"{bind.PropertyName} did not adopt the value pushed to the binding — {mismatch.Message}");
+                }
+
+                // TODO: unbinding is blocked by the same defect as an event callback's, so one fix
+                // covers both — clearing the parameter arrives as a callback with a Receiver and a
+                // null Delegate, which fails the setter's Empty check, takes the *bound* branch, and
+                // NREs in BaseRendererControl.CompareEventCallbacks on leftDelegate.Equals(...).
+                // What to assert differs from an event's, though: a bind member's empty branch only
+                // nulls its field (no SetHandler(null), no OnRefChanged), so the driving event stays
+                // registered and the property keeps adopting client changes — only the callback
+                // stops. Needs BindPair to accept a null sink, as EventContractSpec.Bind already
+                // does. Then:
+                // received = null;
+                // cut.Render(ps => bind.BindPair(ps, null));
+                // Assert.False(bind.ChangedIsBound(cut.Instance));   // member resets to Empty
+                // harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
+                // Assert.Null(received);                             // the callback stops firing
+                // Assert.NotNull(bind.ReadProperty(cut.Instance));   // but the property still tracks
+            }
+            catch (Exception ex) when (ex is not ContractViolationException)
+            {
+                throw Violation($"binding \"{bind.PropertyName}\"", bind.Source, ex);
+            }
+        }
+    }
+
+    /// <summary>The wire spelling of a member name — camelCase, as the serializer and <c>OnPropertyPropagatedOut</c> emit it.</summary>
+    private static string WireMemberName(string memberName) =>
+        char.ToLowerInvariant(memberName[0]) + memberName[1..];
+
+    /// <summary>
     /// Runner for the contract's <c>.Event</c> specs — expose it on the suite as
     /// <c>[Fact] public void Events_FollowContract() => VerifyEventContract();</c>.
     /// Renders a fresh instance per spec with the callback bound (plus any arrangement),
@@ -344,7 +467,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 // identity; dispatch alone can't catch a registration that never
                 // reached the wire.
                 Assert.Equal(bound, evt.Get(cut.Instance));
-                var wireName = char.ToLowerInvariant(evt.EventName[0]) + evt.EventName[1..];
+                var wireName = WireMemberName(evt.EventName);
                 var registration = harness.FindPropertyUpdate(containerId, wireName)
                     ?? throw new XunitException("no event-handler registration transmission was observed");
                 Assert.Equal(evt.EventName, registration.GetString());
@@ -372,7 +495,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 // a raw Empty (what bUnit/programmatic SetParameters passes) does reach the
                 // unset branch and NREs in OnRefChanged on newValue.ToString(). Once fixed,
                 // validate the removal round-trip; pin the actual cleared wire shape then:
-                // cut.SetParametersAndRender(ps => bound = evt.Bind(ps, null));
+                // cut.Render(ps => bound = evt.Bind(ps, null));   // bUnit 2.x: no SetParametersAndRender
                 // Assert.Equal(bound, evt.Get(cut.Instance)); // member resets to the empty callback
                 // var cleared = harness.FindPropertyUpdate(containerId, wireName);
                 // Assert.Equal(JsonValueKind.Null, cleared!.Value.ValueKind);
@@ -478,12 +601,45 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// <summary>Compares a decoded .NET return against the spec's expected value.</summary>
     private static void AssertReturn(object? expected, object? actual)
     {
-        // Date returns are decoded to local time; compare instants instead of kinds.
-        if (expected is DateTime expectedDate && actual is DateTime actualDate)
+        switch (expected)
         {
-            Assert.Equal(expectedDate.ToUniversalTime(), actualDate.ToUniversalTime());
-            return;
+            case DateTime expectedInstant:
+                AssertDecodedDate(expectedInstant, actual);
+                break;
+            case IEnumerable<DateTime> expectedInstants:
+                // Dates in a collection follow the same rule; xUnit's own equality would compare
+                // them by reading alone, which is neither the instant nor the conversion.
+                var expectedList = expectedInstants.ToList();
+                var actualList = Assert.IsAssignableFrom<IEnumerable<DateTime>>(actual).ToList();
+                Assert.Equal(expectedList.Count, actualList.Count);
+                for (var i = 0; i < expectedList.Count; i++)
+                {
+                    AssertDecodedDate(expectedList[i], actualList[i]);
+                }
+                break;
+            default:
+                Assert.Equal(expected, actual);
+                break;
         }
-        Assert.Equal(expected, actual);
+    }
+
+    /// <summary>
+    /// One decoded date: stated by the spec as the UTC instant that crossed the wire, and required
+    /// to arrive as the local rendering of it — reading *and* <see cref="DateTimeKind"/>. Asserting
+    /// the kind is what pins the conversion in every timezone, including the one where local and
+    /// UTC coincide and a plain instant comparison could not tell the two apart.
+    /// </summary>
+    private static void AssertDecodedDate(DateTime expectedInstant, object? actual)
+    {
+        if (expectedInstant.Kind == DateTimeKind.Unspecified)
+        {
+            throw new XunitException(
+                $"expected date {expectedInstant:o} has Kind=Unspecified — state the instant explicitly " +
+                "(DateTimeKind.Utc), since ToLocalTime and ToUniversalTime read an unspecified kind in " +
+                "opposite directions and would shift it silently");
+        }
+        var actualDate = Assert.IsType<DateTime>(actual);
+        Assert.Equal(expectedInstant.ToLocalTime(), actualDate);
+        Assert.Equal(DateTimeKind.Local, actualDate.Kind);
     }
 }
