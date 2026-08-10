@@ -201,7 +201,7 @@ builder.Services.AddIgniteUIBlazor(
 );
 ```
 
-Module names follow the pattern `Igb{ComponentName}Module`. If unsure of the module name, call `get_doc` for that component - every doc shows the exact `typeof(...)` registration call. Use `search_api` and `get_api_reference` for component API details.
+Module names follow the pattern `Igb{ComponentName}Module`. If unsure of the module name, call `get_example` (or `get_doc`) for that component - every doc shows the exact `typeof(...)` registration call. Use `search_api` and `get_api_reference` for component API details.
 
 ---
 

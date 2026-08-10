@@ -45,8 +45,8 @@ Map the user's request to one or more rows in the Task → Reference File table 
 **STEP 2 - Read every identified reference file in full (PARALLEL).**
 Call `read_file` (or equivalent) on **all** reference files identified in Step 1 **in a single parallel batch**. Reference files map components to their MCP doc slugs and explain which MCP calls to make.
 
-**STEP 3 - Extract doc slugs, then call `get_doc` and API tools for each component involved.**
-Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. It returns the actual registration pattern, Razor markup, examples, and CSS parts. Do NOT skip this step.
+**STEP 3 - Extract doc slugs, then call `get_example` (and API tools) for each component involved.**
+Use the Ignite UI MCP `get_example` tool with `framework: "blazor"` and `component` set to the doc slug listed in the reference files you just read — it returns working Razor markup, props, and event handler patterns. Do NOT skip this step.
 
 If a reference file does not list a slug for the requested component, call `search_docs(framework: "blazor", query: "<component or feature>")` to find the correct doc. If no Blazor doc exists, say that the component or feature is not covered instead of guessing.
 

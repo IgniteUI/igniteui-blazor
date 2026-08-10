@@ -14,7 +14,7 @@
 ---
 
 ## Overview
-This reference gives high-level guidance on feedback and overlay components, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
+This reference gives high-level guidance on feedback and overlay components, their key features, and common API members. For detailed documentation and working code examples, call `get_example` from `igniteui-cli` (or `get_doc` when explanation context matters); use `search_api` and `get_api_reference` for Blazor API details.
 
 ## Dialog
 
@@ -102,7 +102,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbToastModule));
 }
 ```
 
-> **AGENT INSTRUCTION - Toast vs Snackbar:** `IgbToast` is a simple auto-dismissing notification with no action button. Use `IgbSnackbar` when you need an action button (e.g., "Undo"). Check the doc via `get_doc` for the current difference, as these components evolve.
+> **AGENT INSTRUCTION - Toast vs Snackbar:** `IgbToast` is a simple auto-dismissing notification with no action button. Use `IgbSnackbar` when you need an action button (e.g., "Undo"). Check via `get_example` (or `get_doc` for behavioral details) for the current difference, as these components evolve.
 
 ---
 

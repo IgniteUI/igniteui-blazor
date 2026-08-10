@@ -14,7 +14,7 @@ Before writing any implementation code, you must complete these steps in order:
 2. Read [references/component-mapping.md](references/component-mapping.md).
 3. This skill is Blazor-only. Check NuGet package (`IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and light-weight grid, or `IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` for specialized feature-rich grids and charts) only when theming or component availability depends on it.
 4. To apply a theme, use the theming workflow from this skill and the dedicated `igniteui-blazor-theming` skill; use the `igniteui-theming` MCP tools instead of styling from memory.
-5. Call `get_doc` for every chosen component family before using it.
+5. Call `get_example` (or `get_doc` when explanation context matters) for every chosen component family before using it.
 6. **Read [references/gotchas.md](references/gotchas.md) now — after docs, before writing any code.** Read the file in full. Some entries are component-specific; others apply broadly to any chart, any themed component, or any scoped CSS. Apply every entry that is relevant to what you are building. This is a blocking step: do not start implementation until you have read the whole file and checked it against your component list.
 7. Only then start coding.
 
@@ -25,7 +25,7 @@ Before writing any implementation code, you must complete these steps in order:
 1. **Analyze the design image** - Read the image, identify every UI section, component, layout structure.
 2. **Confirm NuGet package if needed** - this skill is Blazor-only; use `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and the light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts.
 3. **Discover components** - Call `list_components` with targeted filters and `framework: "blazor"` to find matching components for each UI pattern.
-4. **Look up component docs** - Call `get_doc` for every chosen component family before coding.
+4. **Look up component docs** - Call `get_example` (or `get_doc` when explanation context matters) for every chosen component family before coding.
 5. **Generate theme** - (a) Extract colors and call `create_palette` or `create_custom_palette` with `platform: "blazor"` and `output: "css"` — do **not** use `create_theme` for Blazor, it produces Sass requiring compilation. Optionally call `create_elevations` and `create_typography` for elevation and font overrides. (b) After a palette exists, prefer using design tokens or scoped semantic CSS variables over raw literals. (c) For every Ignite UI component, call `get_component_design_tokens`, map extracted image tokens to token roles, then call `create_component_theme` with the tokens differing from the global theme for the specific component.
 6. **Implement** - Build the screenshot-first layout, data, and view components.
 7. **Refine** - Use the `set_size`, `set_spacing`, `set_roundness` tools to refine the view's visual fidelity against the image, then iterate on implementation and theming until the view matches the design closely.
@@ -96,7 +96,7 @@ For component-to-Ignite-UI mapping, see [references/component-mapping.md](refere
 
 ## Step 4: Look Up Component API
 
-For every chosen component category, call `get_doc` with the doc name from `list_components` results (e.g., `name: "card"`, `framework: "blazor"`). Use the doc `name` field from the MCP results, not the result title shown in the list. This is mandatory before coding and gives exact usage patterns, parameters, and Razor markup structure.
+For every chosen component category, call `get_example` with the doc name from `list_components` results (e.g., `component: "card"`, `framework: "blazor"`). Use the doc `name` field from the MCP results, not the result title shown in the list. This is mandatory before coding and gives exact usage patterns, parameters, and Razor markup structure. Prefer `get_example` for working code; fall back to `get_doc` when you need explanation context (event lifecycle, option tradeoffs, feature interactions).
 
 Call `search_docs` for feature-based questions (e.g., "how to configure [component] for [specific behavior or styling need]").
 

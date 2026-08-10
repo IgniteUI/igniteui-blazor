@@ -16,7 +16,7 @@
 ---
 
 ## Overview
-This reference gives high-level guidance on layout and navigation components, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
+This reference gives high-level guidance on layout and navigation components, their key features, and common API members. For detailed documentation and working code examples, call `get_example` from `igniteui-cli` (or `get_doc` when explanation context matters); use `search_api` and `get_api_reference` for Blazor API details.
 
 ## Tabs
 

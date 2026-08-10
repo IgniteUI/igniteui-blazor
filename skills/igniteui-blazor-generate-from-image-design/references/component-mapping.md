@@ -72,7 +72,7 @@ Component decision matrix (by visual pattern, domain-neutral):
 | Financial chart | `IgbFinancialChart` | `ChartType`, OHLC member paths, `DataSource` |
 | Complex multi-series | `IgbDataChart` | Multiple `IgbSeries` + `IgbAxis` children |
 | Hierarchical part-to-whole (weighted tree) | `IgbTreemap` | `DataSource`, `LabelMemberPath`, `ValueMemberPath` |
-| Auto-generated dashboard widget from data | `IgbDashboardTile` | Verify supported chart modes and binding shape with `get_doc` before use |
+| Auto-generated dashboard widget from data | `IgbDashboardTile` | Verify supported chart modes and binding shape with `get_example` (or `get_doc`) before use |
 
 Decision rules:
 
@@ -288,4 +288,4 @@ builder.Services.AddIgniteUIBlazor(
 
 ---
 
-Treat this file as a component selection reference, not as authoritative API guidance for a specific version. Confirm exact parameters and behavior from `get_doc` results and the current workspace's reference files (`igniteui-blazor-components` skill).
+Treat this file as a component selection reference, not as authoritative API guidance for a specific version. Confirm exact parameters and behavior from `get_example` results (or `get_doc` for behavioral context) and the current workspace's reference files (`igniteui-blazor-components` skill).

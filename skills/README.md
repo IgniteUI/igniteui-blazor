@@ -40,7 +40,7 @@ Both servers must be configured in your AI tool. Setup instructions are in each 
 
 | Server | Purpose | Key tools |
 |---|---|---|
-| **`igniteui-cli`** | Component docs, API reference, scaffolding | `list_components`, `get_doc`, `search_docs`, `get_api_reference`, `search_api` |
+| **`igniteui-cli`** | Component docs, API reference, scaffolding | `list_components`, `get_doc`, `get_example`, `search_docs`, `get_api_reference`, `search_api` |
 | **`igniteui-theming`** | CSS palette and token generation | `create_palette`, `get_component_design_tokens`, `create_component_theme`, `set_roundness`, `set_spacing`, `set_size` |
 
 ---

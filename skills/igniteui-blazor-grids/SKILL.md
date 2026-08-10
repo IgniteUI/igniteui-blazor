@@ -25,8 +25,8 @@ Map the user's request to one or more rows in the Task → Reference File table 
 **STEP 3 - Read every identified reference file in full (PARALLEL).**
 Call `read_file` (or equivalent) on **all** reference files identified in Step 2 **in a single parallel batch** - do NOT read them one at a time sequentially. You must do this even if you believe you already know the answer. Do not skip, skim, or partially read a reference file.
 
-**STEP 4 - Extract doc slugs, then call `get_doc` and API tools for the relevant grid and each feature.**
-Use the Ignite UI MCP `get_doc` tool with `framework: "blazor"` and the exact doc slug listed in the reference files you just read. It returns the relevant grid docs, examples, and feature guidance. Do NOT skip this step.
+**STEP 4 - Extract doc slugs, then call `get_example` (and API tools) for the relevant grid and each feature.**
+Use the Ignite UI MCP `get_example` tool with `framework: "blazor"` and `component` set to the doc slug — it returns working code for the grid type and feature. Prefer `get_example` for code output. Fall back to `get_doc` when you need explanation context (event lifecycle, option tradeoffs, feature interactions) rather than just working code. Do NOT skip this step.
 
 If a reference file does not list a slug for the requested grid feature, call `search_docs(framework: "blazor", query: "<grid feature>")` to find the correct doc. If no Blazor doc exists, say that the feature is not covered rather than guessing.
 
