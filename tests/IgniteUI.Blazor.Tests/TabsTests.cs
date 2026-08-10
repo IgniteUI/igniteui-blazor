@@ -100,6 +100,8 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
         Assert.True(typeof(IgbTabs).IsSubclassOf(typeof(BaseRendererControl)));
     }
 
+    #region Child collection lifecycle
+
     /// <summary>Renders <paramref name="labels"/> as <see cref="IgbTab"/> children.</summary>
     static Action<ComponentParameterCollectionBuilder<IgbTabs>> TabsWith(params string[] labels) => ps =>
         ps.AddChildContent(builder =>
@@ -146,6 +148,21 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
 
         Assert.Empty(cut.Instance.ActualTabsCollection);
     }
+
+    [Fact]
+    public void Tabs_ChildTabRenderedAgainAfterRemoval_Reregisters()
+    {
+        var cut = Render<IgbTabs>(TabsWith("one", "two"));
+
+        cut.Render(TabsWith("one"));
+        cut.Render(TabsWith("one", "two"));
+
+        Assert.Equal(
+            cut.FindComponents<IgbTab>().Select(t => t.Instance),
+            cut.Instance.ActualTabsCollection);
+    }
+
+    #endregion
 }
 
 // IgbTab has no interop surface of its own: its @bind-Selected pair is driven entirely by

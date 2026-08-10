@@ -155,6 +155,52 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
 
         Assert.Contains("Child", cut.Find("igc-tree-item").InnerHtml);
     }
+
+    #region Child collection lifecycle
+
+    /// <summary>Renders <paramref name="count"/> top-level <see cref="IgbTreeItem"/> children.</summary>
+    static Action<ComponentParameterCollectionBuilder<IgbTree>> TreeWith(int count) => ps =>
+        ps.AddChildContent(builder =>
+        {
+            for (var i = 0; i < count; i++)
+            {
+                builder.OpenComponent<IgbTreeItem>(i);
+                builder.CloseComponent();
+            }
+        });
+
+    [Fact]
+    public void Tree_ChildItems_RegisterOnInitialize()
+    {
+        var cut = Render<IgbTree>(TreeWith(2));
+
+        Assert.Equal(
+            cut.FindComponents<IgbTreeItem>().Select(i => i.Instance),
+            cut.Instance.ContentItems);
+    }
+
+    [Fact]
+    public void Tree_DisposedChildItem_LeavesTheCollection()
+    {
+        var cut = Render<IgbTree>(TreeWith(2));
+        var survivor = cut.FindComponents<IgbTreeItem>()[0].Instance;
+
+        cut.Render(TreeWith(1));
+
+        Assert.Same(survivor, Assert.Single(cut.Instance.ContentItems));
+    }
+
+    [Fact]
+    public void Tree_AllChildItemsDisposed_EmptiesTheCollection()
+    {
+        var cut = Render<IgbTree>(TreeWith(2));
+
+        cut.Render(ps => ps.AddChildContent(builder => { }));
+
+        Assert.Empty(cut.Instance.ContentItems);
+    }
+
+    #endregion
 }
 
 public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
