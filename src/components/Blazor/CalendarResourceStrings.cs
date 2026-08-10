@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
 
 
         /// <summary>
-        /// The accessibility attribute `aria-label` of the header button that switches the calendar to the months view.
+        /// The accessibility attribute <c>aria-label</c> of the header button that switches the calendar to the months view.
         /// </summary>
         [Parameter]
         public string SelectMonth
@@ -34,7 +34,7 @@ namespace IgniteUI.Blazor.Controls
 
 
         /// <summary>
-        /// The accessibility attribute `aria-label` of the header button that switches the calendar to the years view.
+        /// The accessibility attribute <c>aria-label</c> of the header button that switches the calendar to the years view.
         /// </summary>
         [Parameter]
         public string SelectYear
@@ -161,7 +161,7 @@ namespace IgniteUI.Blazor.Controls
 
 
         /// <summary>
-        /// The accessibility attribute `aria-label` of the navigation button that moves the days view one month back.
+        /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the days view one month back.
         /// Defaults to <c>Previous Month</c>.
         /// </summary>
         [Parameter]
@@ -182,7 +182,7 @@ namespace IgniteUI.Blazor.Controls
 
 
         /// <summary>
-        /// The accessibility attribute `aria-label` of the navigation button that moves the days view one month forward.
+        /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the days view one month forward.
         /// Defaults to <c>Next Month</c>.
         /// </summary>
         [Parameter]
@@ -203,7 +203,7 @@ namespace IgniteUI.Blazor.Controls
 
 
         /// <summary>
-        /// The accessibility attribute `aria-label` of the navigation button that moves the months view one year back.
+        /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the months view one year back.
         /// Defaults to <c>Previous Year</c>.
         /// </summary>
         [Parameter]
@@ -224,7 +224,7 @@ namespace IgniteUI.Blazor.Controls
 
 
         /// <summary>
-        /// The accessibility attribute `aria-label` of the navigation button that moves the months view one year forward.
+        /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the months view one year forward.
         /// Defaults to <c>Next Year</c>.
         /// </summary>
         [Parameter]
@@ -245,7 +245,7 @@ namespace IgniteUI.Blazor.Controls
 
 
         /// <summary>
-        /// The accessibility attribute `aria-label` of the navigation button that moves the years view one page back.
+        /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the years view one page back.
         /// Defaults to <c>Previous {0} Years</c>, where <c>{0}</c> is the number of years on a page.
         /// </summary>
         [Parameter]
@@ -266,7 +266,7 @@ namespace IgniteUI.Blazor.Controls
 
 
         /// <summary>
-        /// The accessibility attribute `aria-label` of the navigation button that moves the years view one page forward.
+        /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the years view one page forward.
         /// Defaults to <c>Next {0} Years</c>, where <c>{0}</c> is the number of years on a page.
         /// </summary>
         [Parameter]
