@@ -125,7 +125,7 @@ Enable with `HasSummary="true"` on a column. The built-in summaries depend on th
 
 Custom summaries in Blazor are implemented via JavaScript using `ColumnInitScript`. Define a JavaScript class with an `operate(data, allData, fieldName)` method that returns an array of `{ key, label, summaryResult }` objects, then assign it during column initialization.
 
-> For full custom summary class syntax, call `get_example(framework: "blazor", component: "grid", topic: "summaries")` (or `get_doc` for behavioral details) for the JavaScript pattern and template usage.
+> For full custom summary class syntax, call `get_example(framework: "blazor", component: "grid-summaries")` (or `get_doc` for behavioral details) for the JavaScript pattern and template usage.
 
 ### Summary position
 
