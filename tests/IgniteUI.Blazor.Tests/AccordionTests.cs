@@ -91,4 +91,50 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
     {
         Assert.True(typeof(IgbAccordion).IsSubclassOf(typeof(BaseRendererControl)));
     }
+
+    #region Child collection lifecycle
+
+    /// <summary>Renders <paramref name="count"/> <see cref="IgbExpansionPanel"/> children.</summary>
+    static Action<ComponentParameterCollectionBuilder<IgbAccordion>> AccordionWith(int count) => ps =>
+        ps.AddChildContent(builder =>
+        {
+            for (var i = 0; i < count; i++)
+            {
+                builder.OpenComponent<IgbExpansionPanel>(i);
+                builder.CloseComponent();
+            }
+        });
+
+    [Fact]
+    public void Accordion_ChildPanels_RegisterOnInitialize()
+    {
+        var cut = Render<IgbAccordion>(AccordionWith(2));
+
+        Assert.Equal(
+            cut.FindComponents<IgbExpansionPanel>().Select(p => p.Instance),
+            cut.Instance.ContentItems);
+    }
+
+    [Fact]
+    public void Accordion_DisposedChildPanel_LeavesTheCollection()
+    {
+        var cut = Render<IgbAccordion>(AccordionWith(2));
+        var survivor = cut.FindComponents<IgbExpansionPanel>()[0].Instance;
+
+        cut.Render(AccordionWith(1));
+
+        Assert.Same(survivor, Assert.Single(cut.Instance.ContentItems));
+    }
+
+    [Fact]
+    public void Accordion_AllChildPanelsDisposed_EmptiesTheCollection()
+    {
+        var cut = Render<IgbAccordion>(AccordionWith(2));
+
+        cut.Render(ps => ps.AddChildContent(builder => { }));
+
+        Assert.Empty(cut.Instance.ContentItems);
+    }
+
+    #endregion Child collection lifecycle
 }

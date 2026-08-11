@@ -53,6 +53,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(ExposeInternalsToTests)' != 'false'">
+    <InternalsVisibleTo Include="IgniteUI.Blazor.Tests" />
+  </ItemGroup>
+
   <ItemGroup>
     <!-- Exclude the TypeScript interop source (src/) and its build output (dist/) -->
     <Compile Remove="dist\**" />
@@ -81,7 +85,7 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-  
+
   <!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="npm run build &amp;&amp; npm run copythemes" />
   </Target>-->

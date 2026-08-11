@@ -299,4 +299,50 @@ public class DropdownHeaderTests : BlazorComponentTestBase
 
         Assert.Equal(PopoverPlacement.BottomStart, dropdown.Placement);
     }
+
+    #region Child collection lifecycle
+
+    /// <summary>Renders <paramref name="count"/> <see cref="IgbDropdownItem"/> children.</summary>
+    static Action<ComponentParameterCollectionBuilder<IgbDropdown>> DropdownWith(int count) => ps =>
+        ps.AddChildContent(builder =>
+        {
+            for (var i = 0; i < count; i++)
+            {
+                builder.OpenComponent<IgbDropdownItem>(i);
+                builder.CloseComponent();
+            }
+        });
+
+    [Fact]
+    public void Dropdown_ChildItems_RegisterOnInitialize()
+    {
+        var cut = Render<IgbDropdown>(DropdownWith(2));
+
+        Assert.Equal(
+            cut.FindComponents<IgbDropdownItem>().Select(i => i.Instance),
+            cut.Instance.ContentItems);
+    }
+
+    [Fact]
+    public void Dropdown_DisposedChildItem_LeavesTheCollection()
+    {
+        var cut = Render<IgbDropdown>(DropdownWith(2));
+        var survivor = cut.FindComponents<IgbDropdownItem>()[0].Instance;
+
+        cut.Render(DropdownWith(1));
+
+        Assert.Same(survivor, Assert.Single(cut.Instance.ContentItems));
+    }
+
+    [Fact]
+    public void Dropdown_AllChildItemsDisposed_EmptiesTheCollection()
+    {
+        var cut = Render<IgbDropdown>(DropdownWith(2));
+
+        cut.Render(ps => ps.AddChildContent(builder => { }));
+
+        Assert.Empty(cut.Instance.ContentItems);
+    }
+
+    #endregion Child collection lifecycle
 }

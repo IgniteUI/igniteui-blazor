@@ -62,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
             if (TabsParent != null)
             {
                 var sv = (IgbTabs)TabsParent;
-                sv.ContentTabsCollection.Add(this);
+                sv.ContentTabsCollection.Remove(this);
             }
 
         }
