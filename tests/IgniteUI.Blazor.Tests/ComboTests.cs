@@ -284,7 +284,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     }
 }
 
-// TODO: Mismatched T=int - handling (T[])DowncastArray<T>(Detail.NewValue) for
+// TODO: Mismatched T=int inbound handling (T[])DowncastArray<T>(Detail.NewValue) for
 // two-way Value propagation: a mismatched T (e.g. the item type on a keyed combo)
 // throws InvalidCastException — swallowed by OnRaiseEvent, so delivery silently dies;
 // and numeric keys decode as JSON numbers → boxed double, so T=int fails the unbox
@@ -311,12 +311,13 @@ public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>
                 // Two-way Value propagation through the generated wrapper works when T
                 // matches the key value type.
                 Assert.Equal(2.0, Assert.Single(cut.Instance.Value));
-            });
-    // TODO: Value set with struct types (int, double) doesn't work - RendererSerializer.AddArrayProp object cast
-    // .Prop(c => c.Value,
-    //     value: [1, 3],
-    //     arrange,
-    //     wire: (interop, cut) => new JsonSubset("[1, 3]"))
+            })
+        // A value-type value array (double[] here) crosses as plain JSON numbers — the keys
+        // themselves, no data-source refs, since a keyed combo's value is the key.
+        .Prop(c => c.Value,
+            value: [1, 3],
+            arrange: arrange,
+            wire: new RawJson("[1, 3]"));
 
     [Fact]
     public void Props_FollowContract() => VerifyPropContract();
