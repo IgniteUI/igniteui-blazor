@@ -10,7 +10,7 @@
 - [WebStorm / JetBrains IDEs](#webstorm--jetbrains-ides)
 - [Verifying the Setup](#verifying-the-setup)
 
-The Ignite UI CLI MCP server enables AI assistants to discover Ignite UI components, access Blazor documentation, and support related Ignite UI workflows. It must be configured in your editor before these tools become available.
+The Ignite UI CLI MCP server enables AI assistants to discover Ignite UI components, access Blazor documentation, retrieve working code examples, and support related Ignite UI workflows. It exposes `list_components`, `get_doc`, `get_example`, `search_docs`, `search_api`, and `get_api_reference`. It must be configured in your editor before these tools become available.
 
 ## VS Code
 

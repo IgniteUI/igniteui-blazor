@@ -24,7 +24,7 @@
 ## Overview
 
 Ignite UI for Blazor provides 65+ chart types for data visualization. Charts are part of the IgniteUI.Blazor package (trial watermarked version available in the IgniteUI.Blazor.Trial public NuGet package).
-This reference gives high-level guidance on when to use some of the chart types, their key features, and common API members. For detailed documentation, call `get_doc` and `get_api_reference` from `igniteui-cli` with the specific chart component or feature you're interested in.
+This reference gives high-level guidance on when to use some of the chart types, their key features, and common API members. For detailed documentation and working code examples, call `get_example` (or `get_doc` when explanation context matters) from `igniteui-cli` with the specific chart component or feature you're interested in.
 
 ## Chart Type Decision Guide
 
@@ -120,7 +120,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbDataChartCoreModule), typeof(IgbDat
 
 Every series must reference its axes by matching `Name` and `XAxisName` / `YAxisName`.
 
-> **AGENT INSTRUCTION:** `IgbDataChart` requires separate NuGet module registrations for each category of series. Always check `get_doc` to find the exact module names, for example category, scatter, polar, radial, stacked, or financial modules.
+> **AGENT INSTRUCTION:** `IgbDataChart` requires separate NuGet module registrations for each category of series. Always check `get_example` (or `get_doc` for module name reference) to find the exact module names, for example category, scatter, polar, radial, stacked, or financial modules.
 
 ---
 
@@ -217,7 +217,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbSparklineModule));
 
 ## Treemap
 
-Always call `get_doc("blazor", "treemap-chart")` before writing markup because hierarchy binding, member paths, and layout options are component-specific.
+Always call `get_example(framework: "blazor", component: "treemap-chart")` (or `get_doc` for behavioral details) before writing markup because hierarchy binding, member paths, and layout options are component-specific.
 
 ---
 
@@ -294,7 +294,7 @@ Use Dashboard Tile when the requested component should infer or render compact d
 ## Key Rules
 
 1. **`IgbCategoryChart` is the fastest path for standard charts.** It auto-generates series from data. Use `IgbDataChart` only when you need multiple series types, custom axes, or advanced features.
-2. **`IgbDataChart` requires one module per series category.** Check `get_doc` for the exact module name.
+2. **`IgbDataChart` requires one module per series category.** Check `get_example` (or `get_doc` for module name reference) for the exact module name.
 3. **Financial chart data must have `Open`, `High`, `Low`, `Close` fields.** If the data model is different, the chart will not render correctly.
 4. **Always set explicit `Width` and `Height` on charts.** Charts do not auto-size to their container without a height.
 5. **`IgbDataChart` series must match axes by name.** The `XAxisName` / `YAxisName` on each series must match the `Name` attribute of the axis component.
