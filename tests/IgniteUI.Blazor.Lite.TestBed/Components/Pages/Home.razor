@@ -130,7 +130,7 @@
             var r = ReflectionUtils.CreateRenderFragmentForType(arg, instance!);
 
             parameters.Add(tmpl.Name, r);
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
             var clientPropName = char.ToLower(tmpl.Name[0]) + tmpl.Name.Substring(1);
             var res = await WaitForClientCheck("checkServerTemplate", clientPropName);
             summary.ServerTemplates++;
@@ -159,7 +159,7 @@
             var tmplName = ReflectionUtils.Camelize(scriptProp.Name.Replace("Script", ""));
             await JS.InvokeVoidAsync("generateClientTmpl", tmplName);
             parameters.Add(scriptProp.Name, tmplName);
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
 
             var res = await WaitForClientCheck("checkClientTemplate", tmplName);
             summary.ClientTemplates++;
@@ -313,37 +313,40 @@
             }
             // set prop and wait for state to change
             parameters.Add(p.Name, value!);
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
 
             var clientPropName = ReflectionUtils.GetActualPropertyName(p);
-            var clientValue = await WaitForClientPropValue(clientPropName, value, p);
+            var (clientValue, matched) = await WaitForClientPropValue(clientPropName, value, p);
             summary.Properties++;
-            if (!TestUtil.PropertyValuesAreEqual(value, clientValue, p))
+            if (!matched)
             {
                 string serverString = value is Enum ?
                value.ToString()?.ToLowerInvariant() ?? string.Empty :
                JsonConvert.SerializeObject(value, new JsonSerializerSettings()
                     { ContractResolver = new IgnorePropertiesResolver(ReflectionUtils.IgnoredProps().ToArray()) });
-                this.errorMessages.Add("Property value mismatch after setting. Prop name:  " + p.Name + ". Expected:" + serverString + ", but got the following on the client: " + clientValue);
+                // Naming the wait rules out a premature read, so the value is wrong rather than late.
+                this.errorMessages.Add("Property value mismatch after setting. Prop name:  " + p.Name + ". Expected:" + serverString + ", but after " + PropagationTimeoutMs + "ms got the following on the client: " + clientValue);
             }
         }
     }
 
     /// <summary>
     /// Reads the client value, retrying until it matches what was set or the timeout runs out.
+    /// Reports the last value seen and whether it ever matched.
     /// </summary>
-    private async Task<string> WaitForClientPropValue(string clientPropName, object? expected, PropertyInfo prop)
+    private async Task<(string Value, bool Matched)> WaitForClientPropValue(string clientPropName, object? expected, PropertyInfo prop)
     {
         var clientValue = await GetClientPropValue(clientPropName);
-        for (var waited = 0;
-            waited < PropagationTimeoutMs && !TestUtil.PropertyValuesAreEqual(expected, clientValue, prop);
-            waited += PollIntervalMs)
+        var matched = TestUtil.PropertyValuesAreEqual(expected, clientValue, prop);
+
+        for (var waited = 0; !matched && waited < PropagationTimeoutMs; waited += PollIntervalMs)
         {
             await Task.Delay(PollIntervalMs);
             clientValue = await GetClientPropValue(clientPropName);
+            matched = TestUtil.PropertyValuesAreEqual(expected, clientValue, prop);
         }
 
-        return clientValue;
+        return (clientValue, matched);
     }
 
     /// <summary>
@@ -419,7 +422,7 @@
 
             parameters.Add(evt.Name, instance);
 
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
             var evtName = evt.Name == "Focus" || evt.Name == "Blur" ? evt.Name.ToLower() : "igc" + evt.Name;
 
             // event is renamed on the client side, so we need to handle that case
