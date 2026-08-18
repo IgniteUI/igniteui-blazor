@@ -26,6 +26,12 @@
     private Dictionary<string, object> componentParameters = new();
     private List<string> errorMessages = new List<string>();
     private string eventMessage = string.Empty;
+    private ComponentRunSummary summary = new();
+
+    // BaseRendererControl.QueueUpdate flushes to the client on a queued, fire-and-forget pass
+    // timed by the thread pool, so wait for results to show up, not for a fixed delay.
+    private const int PropagationTimeoutMs = 1000;
+    private const int PollIntervalMs = 20;
 
     private IConfigurationRoot config;
 
@@ -53,21 +59,22 @@
     }
 
     [JSInvokable("SetComponentType")]
-    public static async Task<bool> SetComponentType(string type)
+    public static async Task<ComponentRunSummary> SetComponentType(string type)
     {
         var app = _app;
         if (app == null)
         {
-            return false;
+            return ComponentRunSummary.Failed(type, "the test bed page is not initialized");
         }
 
         var component = ReflectionUtils.GetComponentByType(type);
         if (component == null)
         {
-            return false;
+            return ComponentRunSummary.Failed(type, "no component type matches that name");
         }
 
         app.errorMessages.Clear();
+        app.summary = new ComponentRunSummary { Component = type };
         app.selectedType = component;
 
         ReflectionUtils.excludedProps = app.config.GetSection(type + ":ExcludedProps")?.Get<string[]>()?.ToList() ?? new List<string>();
@@ -81,13 +88,14 @@
 
         if (app.dc?.Instance is not BaseRendererControl renderer)
         {
-            return false;
+            return ComponentRunSummary.Failed(type, "the rendered component is not a BaseRendererControl");
         }
 
         await renderer.EnsureReady();
         await Task.Delay(100);
 
         app.componentSelector = ReflectionUtils.GetComponentSelector(app.dc.Instance, type);
+        app.summary.Selector = app.componentSelector;
         await app.JS.InvokeAsync<string>("setSelector", app.componentSelector);
 
         app.componentParameters = new Dictionary<string, object>();
@@ -100,7 +108,9 @@
         await app.TestProps();
         await app.TestAPI();
 
-        return true;
+        app.summary.Errors = app.errorMessages.Count;
+
+        return app.summary;
     }
 
     public async Task TestServerTemplates()
@@ -120,10 +130,10 @@
             var r = ReflectionUtils.CreateRenderFragmentForType(arg, instance!);
 
             parameters.Add(tmpl.Name, r);
-            StateHasChanged();
-            await Task.Delay(1);
+            await InvokeAsync(StateHasChanged);
             var clientPropName = char.ToLower(tmpl.Name[0]) + tmpl.Name.Substring(1);
-            var res = await JS.InvokeAsync<bool>("checkServerTemplate", clientPropName);
+            var res = await WaitForClientCheck("checkServerTemplate", clientPropName);
+            summary.ServerTemplates++;
 
             if (!res)
             {
@@ -149,10 +159,10 @@
             var tmplName = ReflectionUtils.Camelize(scriptProp.Name.Replace("Script", ""));
             await JS.InvokeVoidAsync("generateClientTmpl", tmplName);
             parameters.Add(scriptProp.Name, tmplName);
-            StateHasChanged();
-            await Task.Delay(100);
+            await InvokeAsync(StateHasChanged);
 
-            var res = await JS.InvokeAsync<bool>("checkClientTemplate", tmplName);
+            var res = await WaitForClientCheck("checkClientTemplate", tmplName);
+            summary.ClientTemplates++;
             if (!res)
             {
                 errorMessages.Add("Template not set for prop:  " + scriptProp.Name);
@@ -196,6 +206,7 @@
             }
             var syncName = method.Name.Replace("Async", "");
             var clientMethodName = ReflectionUtils.Camelize(syncName);
+            summary.Methods++;
             await JS.InvokeVoidAsync("spyOnMethod", clientMethodName);
             object? res = null;
             try
@@ -259,6 +270,8 @@
                 continue;
             }
 
+            summary.Defaults++;
+
             if (!TestUtil.PropertyValuesAreEqual(serverValue, clientValue, p))
             {
                 var serverString = serverValue is Enum
@@ -300,20 +313,55 @@
             }
             // set prop and wait for state to change
             parameters.Add(p.Name, value!);
-            StateHasChanged();
-            await Task.Delay(1);
+            await InvokeAsync(StateHasChanged);
 
             var clientPropName = ReflectionUtils.GetActualPropertyName(p);
-            var clientValue = await GetClientPropValue(clientPropName);
-            if (!TestUtil.PropertyValuesAreEqual(value, clientValue, p))
+            var (clientValue, matched) = await WaitForClientPropValue(clientPropName, value, p);
+            summary.Properties++;
+            if (!matched)
             {
                 string serverString = value is Enum ?
                value.ToString()?.ToLowerInvariant() ?? string.Empty :
                JsonConvert.SerializeObject(value, new JsonSerializerSettings()
                     { ContractResolver = new IgnorePropertiesResolver(ReflectionUtils.IgnoredProps().ToArray()) });
-                this.errorMessages.Add("Property value mismatch after setting. Prop name:  " + p.Name + ". Expected:" + serverString + ", but got the following on the client: " + clientValue);
+                // Naming the wait rules out a premature read, so the value is wrong rather than late.
+                this.errorMessages.Add("Property value mismatch after setting. Prop name:  " + p.Name + ". Expected:" + serverString + ", but after " + PropagationTimeoutMs + "ms got the following on the client: " + clientValue);
             }
         }
+    }
+
+    /// <summary>
+    /// Reads the client value, retrying until it matches what was set or the timeout runs out.
+    /// Reports the last value seen and whether it ever matched.
+    /// </summary>
+    private async Task<(string Value, bool Matched)> WaitForClientPropValue(string clientPropName, object? expected, PropertyInfo prop)
+    {
+        var clientValue = await GetClientPropValue(clientPropName);
+        var matched = TestUtil.PropertyValuesAreEqual(expected, clientValue, prop);
+
+        for (var waited = 0; !matched && waited < PropagationTimeoutMs; waited += PollIntervalMs)
+        {
+            await Task.Delay(PollIntervalMs);
+            clientValue = await GetClientPropValue(clientPropName);
+            matched = TestUtil.PropertyValuesAreEqual(expected, clientValue, prop);
+        }
+
+        return (clientValue, matched);
+    }
+
+    /// <summary>
+    /// Runs a client-side check, retrying until it reports true or the timeout runs out.
+    /// </summary>
+    private async Task<bool> WaitForClientCheck(string jsFunction, string arg)
+    {
+        var result = await JS.InvokeAsync<bool>(jsFunction, arg);
+        for (var waited = 0; waited < PropagationTimeoutMs && !result; waited += PollIntervalMs)
+        {
+            await Task.Delay(PollIntervalMs);
+            result = await JS.InvokeAsync<bool>(jsFunction, arg);
+        }
+
+        return result;
     }
 
     // in cases of slower operations, connection closes and execution stops, hence adding a try catch with a 5 second timeout and retry if needed.
@@ -366,7 +414,7 @@
             {
                 argDetailToSend = ReflectionUtils.GetSimpleType(detailType);
             }
-            var instance = Activator.CreateInstance(evt.PropertyType, [this, (Action)EventHandler]);
+            var instance = Activator.CreateInstance(evt.PropertyType, [this, (Action)(() => eventMessage = evt.Name)]);
             if (instance == null)
             {
                 continue;
@@ -374,8 +422,7 @@
 
             parameters.Add(evt.Name, instance);
 
-            StateHasChanged();
-            await Task.Delay(1);
+            await InvokeAsync(StateHasChanged);
             var evtName = evt.Name == "Focus" || evt.Name == "Blur" ? evt.Name.ToLower() : "igc" + evt.Name;
 
             // event is renamed on the client side, so we need to handle that case
@@ -390,18 +437,26 @@
             }
 
             eventMessage = "";
-            await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend, detailType == typeof(DateTime));
-            await Task.Delay(100);
+            summary.Events++;
 
-            if (eventMessage != $"Event fired.")
+            // The client-side subscription lands on the same flush as properties, so an event
+            // dispatched too early goes nowhere; re-dispatch until it takes. Matching on the
+            // name keeps a late duplicate from reading as the next event firing.
+            for (var waited = 0; waited < PropagationTimeoutMs; waited += PollIntervalMs)
+            {
+                await Task.Delay(PollIntervalMs);
+                if (eventMessage == evt.Name)
+                {
+                    break;
+                }
+
+                await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend, detailType == typeof(DateTime));
+            }
+
+            if (eventMessage != evt.Name)
             {
                 this.errorMessages.Add("Event with name: " + evt.Name + " did not fire.");
             }
         }
-    }
-
-    private void EventHandler()
-    {
-        eventMessage = $"Event fired.";
     }
 }

@@ -1,10 +1,14 @@
-﻿//function that invokes the server-side render of a component by name
+﻿//function that invokes the server-side render of a component by name,
+//resolving with a summary of what the run checked
 async function renderComponent(componentName) {
   var res = await DotNet.invokeMethodAsync('IgniteUI.Blazor.Lite.TestBed', 'SetComponentType', componentName);
-  console.log('Task completed successfully: ' + res);
+  console.log('Task completed successfully: ', res);
+  return res;
 }
 
 function onAfterRender() {
+  //a flag, so a test can check for load it if it missed the message
+  window.appLoaded = true;
   console.log('App Loaded.');
 }
 

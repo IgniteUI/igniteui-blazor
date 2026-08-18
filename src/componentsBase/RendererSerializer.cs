@@ -182,15 +182,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void AddArrayProp(string propertyName, object values)
+        public void AddArrayProp<T>(string propertyName, IEnumerable<T> values)
         {
+            var items = values == null ? null : values as IList<T> ?? values.ToList();
             bool containsSub = false;
-            var valuesArray = values as object[];
-            if (values != null)
+            if (items != null)
             {
-                for (int i = 0; i < valuesArray.Length; i++)
+                foreach (var val in items)
                 {
-                    object val = valuesArray[i];
                     if (val is BaseRendererControl || val is BaseRendererElement)
                     {
                         containsSub = true;
@@ -210,7 +209,7 @@ namespace IgniteUI.Blazor.Controls
                     context = new SerializationContext(_context.Writer, null);
                 }
             }
-            if (values == null)
+            if (items == null)
             {
                 //_properties.Add("\"" + propertyName + "\"" + ": null");
                 context.Writer.WriteNull(propertyName);
@@ -218,9 +217,8 @@ namespace IgniteUI.Blazor.Controls
             }
             //string[] strValues = new string[values.Length];
             context.Writer.WriteStartArray(propertyName);
-            for (int i = 0; i < valuesArray.Length; i++)
+            foreach (object val in items)
             {
-                object val = valuesArray[i];
                 if (val is String)
                 {
                     context.Writer.WriteStringValue((string)val);
