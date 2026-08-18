@@ -30,7 +30,7 @@ namespace IgniteUI.Blazor.Controls
         Queued
     }
 
-    public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IDisposable
+    public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IDisposable, IAsyncDisposable
     {
         private IIgniteUIBlazor _igBlazor;
         [Inject]
@@ -3136,10 +3136,20 @@ namespace IgniteUI.Blazor.Controls
         private bool _shouldReevaluateRuntime = false;
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (disposedValue)
             {
-                _shouldReevaluateRuntime = true;
-                SendCleanupMessage();
+                return;
+            }
+
+            _shouldReevaluateRuntime = true;
+            try
+            {
+                // Fire-and-forget, but observed: TrySendCleanupAsync never throws,
+                // so the returned Task cannot surface as an UnobservedTaskException.
+                _ = TrySendCleanupAsync();
+            }
+            finally
+            {
                 _shouldReevaluateRuntime = false;
 
                 if (disposing && _objRef != null)
@@ -3151,6 +3161,48 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        public async ValueTask DisposeAsync()
+        {
+            if (disposedValue)
+            {
+                return;
+            }
+
+            _shouldReevaluateRuntime = true;
+            try
+            {
+                await TrySendCleanupAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                _shouldReevaluateRuntime = false;
+
+                if (_objRef != null)
+                {
+                    _objRef.Dispose();
+                }
+
+                disposedValue = true;
+            }
+
+            // Invoke IDisposable.Dispose on the actual runtime type so derived
+            // classes that re-implement IDisposable (method-hiding pattern for
+            // parent-collection cleanup on IgbTab / IgbTreeItem / IgbTile /
+            // IgbSelectItem / IgbDropdownItem / IgbAccordion) still get their
+            // cleanup called when Blazor prefers the async disposal path.
+            // Base Dispose(bool) is a no-op at this point (disposedValue is set).
+            try
+            {
+                ((IDisposable)this).Dispose();
+            }
+            catch
+            {
+                // Disposal must not throw; subclass cleanup errors are swallowed.
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
         internal void RefreshDynamicContent()
         {
             if (Holder != null)
@@ -3159,13 +3211,25 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void SendCleanupMessage()
+        private async Task TrySendCleanupAsync()
         {
-            RendererMessage m = new RendererMessage();
-            m.Type = ("cleanup");
+            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+            {
+                return;
+            }
 
-            _messageQueue.Clear();
-            var ret = SendMessageImmediate(m);
+            try
+            {
+                RendererMessage m = new RendererMessage();
+                m.Type = ("cleanup");
+
+                _messageQueue.Clear();
+                await SendMessageImmediate(m).ConfigureAwait(false);
+            }
+            catch (JSDisconnectedException) { }
+            catch (TaskCanceledException) { }
+            catch (OperationCanceledException) { }
+            catch (ObjectDisposedException) { }
         }
 
         public async Task<object> SetResourceStringAsync(string grouping, string id, string value)
