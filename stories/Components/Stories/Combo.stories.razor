@@ -122,7 +122,7 @@
         new(10, "Osaka", "Japan")
     ];
 
-    private int[] _selectedCityIds = [1, 4];
+    private readonly int[] _selectedCityIds = [1, 4];
 
     public record City(string Id, string Name, string Country);
     public record CityNumIds(int Id, string Name, string Country);
