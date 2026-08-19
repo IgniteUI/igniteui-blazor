@@ -1288,6 +1288,12 @@ namespace IgniteUI.Blazor.Controls
                     refId = _dataSourceManager.OnRefChanged(propertyName, newValue);
                 }
             }
+            else if (newValue == null)
+            {
+                // Clearing an event handler or script ref: the client is told the ref is gone, so it
+                // unsubscribes. Without this the unset path threw on newValue.ToString().
+                OnRefChanged(refId, null);
+            }
             else
             {
                 var str = newValue.ToString();
