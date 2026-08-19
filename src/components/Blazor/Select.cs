@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSelect : IgbComboBoxBaseLike
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSelect"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbSelectModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -394,6 +400,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         public override object FindByName(string name)
         {
             var baseResult = base.FindByName(name);
@@ -1085,6 +1092,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

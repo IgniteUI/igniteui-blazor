@@ -9,6 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbDatePartDeltas : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "DatePartDeltas"; } }
 
         private double _date = 0;
@@ -126,6 +127,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

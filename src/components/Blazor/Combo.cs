@@ -14,8 +14,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCombo<T> : IgbBaseComboBox
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCombo"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbComboModule.IsLoadRequested(IgBlazor))
@@ -24,11 +26,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -1338,6 +1342,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

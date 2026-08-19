@@ -7,13 +7,16 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbBaseAlertLike : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebBaseAlertLike"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -22,6 +25,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -256,6 +262,7 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

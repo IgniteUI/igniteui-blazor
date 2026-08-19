@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbChatDraftMessage : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatDraftMessage"; } }
 
         private static bool _marshalByValue = true;
@@ -56,6 +57,7 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -67,6 +69,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -78,6 +81,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

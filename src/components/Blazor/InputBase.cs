@@ -4,13 +4,16 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbInputBase : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebInputBase"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -19,6 +22,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
@@ -469,6 +473,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

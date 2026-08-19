@@ -7,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbDateRangeDescriptor : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "DateRangeDescriptor"; } }
 
         private DateRangeType _rangeType = DateRangeType.After;
@@ -53,6 +54,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

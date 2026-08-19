@@ -9,8 +9,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbDateRangePicker : IgbComboBoxBaseLike
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDateRangePicker"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbDateRangePickerModule.IsLoadRequested(IgBlazor))
@@ -19,11 +21,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -1318,6 +1322,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

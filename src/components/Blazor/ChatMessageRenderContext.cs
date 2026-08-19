@@ -7,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatMessageRenderContext : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatMessageRenderContext"; } }
 
         private IgbChatMessage _message;
@@ -43,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

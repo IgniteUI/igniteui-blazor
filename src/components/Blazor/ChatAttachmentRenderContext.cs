@@ -7,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatAttachmentRenderContext : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatAttachmentRenderContext"; } }
 
         private IgbChatMessageAttachment _attachment;
@@ -43,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

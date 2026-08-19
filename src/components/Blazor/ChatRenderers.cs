@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbChatRenderers : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatRenderers"; } }
 
         private string _attachmentRef;
@@ -833,6 +834,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

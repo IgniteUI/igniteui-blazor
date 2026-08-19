@@ -7,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatInputRenderContext : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatInputRenderContext"; } }
 
         private string _value;
@@ -38,6 +39,7 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
+        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
