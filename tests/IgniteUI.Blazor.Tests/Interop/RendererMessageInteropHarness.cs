@@ -235,16 +235,33 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     }
 
     /// <summary>
+    /// How many sends to skip: bUnit's invocation record is append-only, so forgetting earlier
+    /// traffic means remembering where the test asked to start looking.
+    /// </summary>
+    private int _observedFrom;
+
+    public override void ClearObserved() =>
+        _observedFrom = SnapshotInvocations().Count(i => i.Identifier == SendMessage);
+
+    /// <summary>
     /// Enumerates every recorded igSendMessage as (containerId, parsed message, element handles).
     /// Element handles are not part of the JSON envelope on this stack — they ride as a
     /// trailing marshalled argument of the call, alongside the component's object reference.
     /// </summary>
     private IEnumerable<(string ContainerId, JsonElement Message, IReadOnlyList<ElementReference> Elements)> Messages()
     {
+        var seen = 0;
         foreach (var invocation in SnapshotInvocations())
         {
-            if (invocation.Identifier != SendMessage ||
-                invocation.Arguments.Count < 2 ||
+            if (invocation.Identifier != SendMessage)
+            {
+                continue;
+            }
+            if (seen++ < _observedFrom)
+            {
+                continue;
+            }
+            if (invocation.Arguments.Count < 2 ||
                 invocation.Arguments[0] is not string containerId ||
                 invocation.Arguments[1] is not string json)
             {
