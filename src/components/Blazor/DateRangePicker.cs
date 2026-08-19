@@ -830,7 +830,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbDateRangeValue?>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
                     {
@@ -892,7 +892,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
                     {
@@ -964,7 +964,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
                     {
@@ -1036,7 +1036,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
                     {
@@ -1108,7 +1108,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
                     {
@@ -1180,7 +1180,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbDateRangeValueEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
                     {
@@ -1292,7 +1292,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbDateRangeValueEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
                     {

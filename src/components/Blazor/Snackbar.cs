@@ -118,7 +118,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _action, ref eventCallbacksCache))
                     {

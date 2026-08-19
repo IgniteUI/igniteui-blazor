@@ -310,7 +310,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<bool>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _checkedChanged, ref eventCallbacksCache))
                     {
@@ -372,7 +372,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbCheckboxChangeEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
                     {
@@ -479,7 +479,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
                     {
@@ -551,7 +551,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
                     if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
                     {

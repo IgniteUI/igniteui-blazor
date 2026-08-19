@@ -43,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
                     if (!value.Equals(_valueChanging))
                     {
