@@ -2,6 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbTree
     {
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get

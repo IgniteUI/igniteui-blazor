@@ -12,6 +12,7 @@ namespace IgniteUI.Blazor.Controls
             set;
         }
 
+        /// <inheritdoc />
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -63,6 +64,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override void BuildRenderTree(RenderTreeBuilder __builder)
         {
             __builder.OpenElement(0, "div");
@@ -158,6 +160,7 @@ namespace IgniteUI.Blazor.Controls
             ControlType = t;
         }
 
+        /// <inheritdoc />
         protected override void OnComponentChanged(object oldValue, object component)
         {
             //if (component != null)
@@ -262,6 +265,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override void OnComponentChanged(object oldValue, object component)
         {
             if (component is IgbTemplateContent<T>)
@@ -285,11 +289,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         public override void UpdateTemplate(object template)
         {
             Template = (RenderFragment<T>)template;
         }
 
+        /// <inheritdoc />
         public override void UpdateContext(object context)
         {
             Context = (T)context;
