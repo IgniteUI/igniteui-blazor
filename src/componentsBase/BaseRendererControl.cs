@@ -2934,6 +2934,32 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync"/> so that
+        /// exceptions raised by asynchronous consumer handlers are not silently swallowed.
+        /// Synchronous faults are rethrown to preserve the previous behavior; asynchronous
+        /// faults are surfaced through the same error channel as the interop dispatcher.
+        /// </summary>
+        internal static void ObserveHandlerTask(System.Threading.Tasks.Task task)
+        {
+            if (task == null)
+            {
+                return;
+            }
+            if (task.IsCompleted)
+            {
+                if (task.Exception != null)
+                {
+                    throw task.Exception;
+                }
+                return;
+            }
+            task.ContinueWith(static t =>
+            {
+                Console.WriteLine(t.Exception!.ToString());
+            }, System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted | System.Threading.Tasks.TaskContinuationOptions.ExecuteSynchronously);
+        }
+
         internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T> onArgs = null) where T : BaseRendererElement, new()
         {
             if (!handler.HasValue)
@@ -2954,10 +2980,7 @@ namespace IgniteUI.Blazor.Controls
                     onArgs(a);
                 }
                 var task = handler?.InvokeAsync(a);
-                if (task.Exception != null)
-                {
-                    throw task.Exception;
-                }
+                ObserveHandlerTask(task);
                 ele.ToEventJson(this, (Dictionary<string, object>)args);
                 ele.Parent = (null);
             };
@@ -2983,10 +3006,7 @@ namespace IgniteUI.Blazor.Controls
                     onArgs(a);
                 }
                 var task = handler?.InvokeAsync(a);
-                if (task.Exception != null)
-                {
-                    throw task.Exception;
-                }
+                ObserveHandlerTask(task);
             };
 
             //Console.WriteLine("setting handler: " + name + "/" + propertyName);

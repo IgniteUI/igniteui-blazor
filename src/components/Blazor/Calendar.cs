@@ -427,19 +427,13 @@ namespace IgniteUI.Blazor.Controls
                             if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                             if (!EventCallback<DateTime[]>.Empty.Equals(ValuesChanged))
                             {
                                 var task = ValuesChanged.InvokeAsync(newValueValues);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });

@@ -398,10 +398,7 @@ namespace IgniteUI.Blazor.Controls
                             if (!EventCallback<bool>.Empty.Equals(CheckedChanged))
                             {
                                 var task = CheckedChanged.InvokeAsync(newValueChecked);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
