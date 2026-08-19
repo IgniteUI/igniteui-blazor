@@ -65,40 +65,40 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override void BuildRenderTree(RenderTreeBuilder __builder)
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            __builder.OpenElement(0, "div");
-            __builder.AddAttribute(1, "class", "ig-dynamic-content-holder");
-            __builder.AddAttribute(2, "style", "display: none");
-            __builder.AddMarkupContent(3, "\r\n");
+            builder.OpenElement(0, "div");
+            builder.AddAttribute(1, "class", "ig-dynamic-content-holder");
+            builder.AddAttribute(2, "style", "display: none");
+            builder.AddMarkupContent(3, "\r\n");
             var current = DynamicContentInfo.First;
             while (current != null)
             {
                 var item = current.Value;
-                __builder.AddContent(4, "        ");
-                __builder.OpenElement(5, "div");
-                __builder.AddAttribute(6, "id", item.RefDivName);
-                __builder.SetKey(item.RefDivName);
-                __builder.AddMarkupContent(7, "\r\n            ");
-                __builder.OpenElement(8, "div");
-                __builder.AddAttribute(9, "id", item.RefName);
-                __builder.AddMarkupContent(10, "\r\n            ");
-                __builder.OpenComponent(11, item.ControlType);
-                __builder.SetKey(item.RefName);
-                __builder.AddComponentReferenceCapture(12, delegate (object __value)
+                builder.AddContent(4, "        ");
+                builder.OpenElement(5, "div");
+                builder.AddAttribute(6, "id", item.RefDivName);
+                builder.SetKey(item.RefDivName);
+                builder.AddMarkupContent(7, "\r\n            ");
+                builder.OpenElement(8, "div");
+                builder.AddAttribute(9, "id", item.RefName);
+                builder.AddMarkupContent(10, "\r\n            ");
+                builder.OpenComponent(11, item.ControlType);
+                builder.SetKey(item.RefName);
+                builder.AddComponentReferenceCapture(12, delegate (object __value)
                 {
                     OnDynamicChildRef(item.RefName, __value);
                 });
-                __builder.CloseComponent();
-                __builder.AddMarkupContent(13, "\r\n        ");
-                __builder.CloseElement();
-                __builder.AddMarkupContent(14, "\r\n        ");
-                __builder.CloseElement();
-                __builder.AddMarkupContent(15, "\r\n");
+                builder.CloseComponent();
+                builder.AddMarkupContent(13, "\r\n        ");
+                builder.CloseElement();
+                builder.AddMarkupContent(14, "\r\n        ");
+                builder.CloseElement();
+                builder.AddMarkupContent(15, "\r\n");
 
                 current = current.Next;
             }
-            __builder.CloseElement();
+            builder.CloseElement();
         }
     }
 
