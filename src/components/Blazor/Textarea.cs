@@ -527,7 +527,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_valueChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -589,7 +589,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_input))
                     {
                         _input = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Input", value);
@@ -661,7 +661,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
@@ -768,7 +768,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
@@ -840,7 +840,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);

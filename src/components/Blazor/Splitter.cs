@@ -344,7 +344,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _resizeStart, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_resizeStart))
                     {
                         _resizeStart = value;
                         this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "ResizeStart", value);
@@ -416,7 +416,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _resizing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_resizing))
                     {
                         _resizing = value;
                         this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "Resizing", value);
@@ -488,7 +488,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _resizeEnd, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_resizeEnd))
                     {
                         _resizeEnd = value;
                         this.SetHandler<IgbSplitterResizeEventArgs>(this.Name, "ResizeEnd", value);

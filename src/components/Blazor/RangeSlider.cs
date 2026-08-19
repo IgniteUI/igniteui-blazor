@@ -171,7 +171,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_input))
                     {
                         _input = value;
                         this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", value);
@@ -243,7 +243,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", value);

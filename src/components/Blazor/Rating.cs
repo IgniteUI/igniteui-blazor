@@ -398,7 +398,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_valueChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -460,7 +460,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", value, (args) =>
@@ -567,7 +567,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _hover, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_hover))
                     {
                         _hover = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", value);

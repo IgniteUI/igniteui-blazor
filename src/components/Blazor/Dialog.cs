@@ -310,7 +310,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
@@ -382,7 +382,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);

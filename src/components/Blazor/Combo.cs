@@ -785,7 +785,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_valueChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -847,7 +847,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbComboChangeEventArgs>(this.Name, "Change", value, (args) =>
@@ -954,7 +954,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
@@ -1026,7 +1026,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
@@ -1098,7 +1098,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value);
@@ -1170,7 +1170,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value);
@@ -1242,7 +1242,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
@@ -1314,7 +1314,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);

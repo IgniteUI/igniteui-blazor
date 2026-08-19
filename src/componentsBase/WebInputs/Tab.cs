@@ -21,7 +21,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _selectedChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_selectedChanged))
                     {
                         _selectedChanged = value;
                     }

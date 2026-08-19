@@ -45,7 +45,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!value.Equals(_valueChanging))
+                    if (!value.EqualsCompat(_valueChanging))
                     {
                         this.EnsureInputOcurredHandled();
 

@@ -194,7 +194,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _selectionChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_selectionChanged))
                     {
                         _selectionChanged = value;
                         this.SetHandler<IgbTreeSelectionEventArgs>(this.Name, "SelectionChanged", value);
@@ -266,7 +266,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _itemExpanding, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_itemExpanding))
                     {
                         _itemExpanding = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanding", value);
@@ -338,7 +338,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _itemExpanded, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_itemExpanded))
                     {
                         _itemExpanded = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanded", value);
@@ -410,7 +410,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _itemCollapsing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_itemCollapsing))
                     {
                         _itemCollapsing = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsing", value);
@@ -482,7 +482,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _itemCollapsed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_itemCollapsed))
                     {
                         _itemCollapsed = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsed", value);
@@ -554,7 +554,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _activeItem, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_activeItem))
                     {
                         _activeItem = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ActiveItem", value);

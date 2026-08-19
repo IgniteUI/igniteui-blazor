@@ -360,7 +360,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _activeStepChanging, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_activeStepChanging))
                     {
                         _activeStepChanging = value;
                         this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", value);
@@ -432,7 +432,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _activeStepChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_activeStepChanged))
                     {
                         _activeStepChanged = value;
                         this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value);

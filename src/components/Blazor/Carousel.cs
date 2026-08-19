@@ -495,7 +495,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _slideChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_slideChanged))
                     {
                         _slideChanged = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value);
@@ -567,7 +567,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _playing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_playing))
                     {
                         _playing = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value);
@@ -639,7 +639,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _paused, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_paused))
                     {
                         _paused = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value);
