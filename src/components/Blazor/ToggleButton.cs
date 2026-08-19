@@ -179,7 +179,6 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("click", new object[] { }, new string[] { });
         }
 
-        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

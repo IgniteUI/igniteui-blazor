@@ -522,7 +522,6 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
-        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

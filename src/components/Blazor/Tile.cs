@@ -838,7 +838,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        /// <inheritdoc />
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
