@@ -12,7 +12,6 @@ namespace IgniteUI.Blazor.Controls
 
         private string _selectMonth;
 
-
         /// <summary>
         /// The accessibility attribute <c>aria-label</c> of the header button that switches the calendar to the months view.
         /// </summary>
@@ -31,7 +30,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _selectYear;
-
 
         /// <summary>
         /// The accessibility attribute <c>aria-label</c> of the header button that switches the calendar to the years view.
@@ -52,9 +50,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _selectDate;
 
-
         /// <summary>
-        /// Title shown in the calendar header until a date is selected, in single selection mode.
+        /// Title shown in the calendar header in single selection mode.
         /// Defaults to <c>Select Date</c>.
         /// </summary>
         [Parameter]
@@ -73,9 +70,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _selectRange;
 
-
         /// <summary>
-        /// Title shown in the calendar header until a range is selected, in range selection mode.
+        /// Title shown in the calendar header in range selection mode.
         /// Defaults to <c>Select Range</c>.
         /// </summary>
         [Parameter]
@@ -94,14 +90,11 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _selectedDate;
 
-
         /// <summary>
         /// The label for the currently selected date.
         /// </summary>
-        /// <remarks>
-        /// Not mapped to any string in the current localization pipeline and has no effect.
-        /// </remarks>
         [Parameter]
+        [Obsolete("This property is not used in the current localization pipeline and has no effect. It will be removed in a future release.")]
         public string SelectedDate
         {
             get { return this._selectedDate; }
@@ -117,10 +110,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _startDate;
 
-
         /// <summary>
-        /// Placeholder shown in the calendar header in place of the range start date until one is
-        /// selected. Defaults to <c>Start</c>.
+        /// Placeholder shown in the calendar header in place of the range start date until one is selected.
+        /// Defaults to <c>Start</c>.
         /// </summary>
         [Parameter]
         public string StartDate
@@ -138,10 +130,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _endDate;
 
-
         /// <summary>
-        /// Placeholder shown in the calendar header in place of the range end date until one is
-        /// selected. Defaults to <c>End</c>.
+        /// Placeholder shown in the calendar header in place of the range end date until one is selected.
+        /// Defaults to <c>End</c>.
         /// </summary>
         [Parameter]
         public string EndDate
@@ -158,7 +149,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _previousMonth;
-
 
         /// <summary>
         /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the days view one month back.
@@ -180,7 +170,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _nextMonth;
 
-
         /// <summary>
         /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the days view one month forward.
         /// Defaults to <c>Next Month</c>.
@@ -200,7 +189,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _previousYear;
-
 
         /// <summary>
         /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the months view one year back.
@@ -222,7 +210,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _nextYear;
 
-
         /// <summary>
         /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the months view one year forward.
         /// Defaults to <c>Next Year</c>.
@@ -242,7 +229,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _previousYears;
-
 
         /// <summary>
         /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the years view one page back.
@@ -264,7 +250,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _nextYears;
 
-
         /// <summary>
         /// The accessibility attribute <c>aria-label</c> of the navigation button that moves the years view one page forward.
         /// Defaults to <c>Next {0} Years</c>, where <c>{0}</c> is the number of years on a page.
@@ -284,7 +269,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _weekLabel;
-
 
         /// <summary>
         /// The header of the week numbers column in the days view. Defaults to <c>Wk</c>.
