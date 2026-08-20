@@ -7,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatMessage : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatMessage"; } }
 
         private static bool _marshalByValue = true;
@@ -155,6 +156,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -174,6 +176,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

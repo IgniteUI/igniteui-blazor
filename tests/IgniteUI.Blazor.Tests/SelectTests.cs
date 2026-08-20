@@ -306,4 +306,50 @@ public class SelectHeaderTests : BlazorComponentTestBase
 
         Assert.Equal(PopoverPlacement.BottomStart, select.Placement);
     }
+
+    #region Child collection lifecycle
+
+    /// <summary>Renders <paramref name="count"/> <see cref="IgbSelectItem"/> children.</summary>
+    static Action<ComponentParameterCollectionBuilder<IgbSelect>> SelectWith(int count) => ps =>
+        ps.AddChildContent(builder =>
+        {
+            for (var i = 0; i < count; i++)
+            {
+                builder.OpenComponent<IgbSelectItem>(i);
+                builder.CloseComponent();
+            }
+        });
+
+    [Fact]
+    public void Select_ChildItems_RegisterOnInitialize()
+    {
+        var cut = Render<IgbSelect>(SelectWith(2));
+
+        Assert.Equal(
+            cut.FindComponents<IgbSelectItem>().Select(i => i.Instance),
+            cut.Instance.ContentItems);
+    }
+
+    [Fact]
+    public void Select_DisposedChildItem_LeavesTheCollection()
+    {
+        var cut = Render<IgbSelect>(SelectWith(2));
+        var survivor = cut.FindComponents<IgbSelectItem>()[0].Instance;
+
+        cut.Render(SelectWith(1));
+
+        Assert.Same(survivor, Assert.Single(cut.Instance.ContentItems));
+    }
+
+    [Fact]
+    public void Select_AllChildItemsDisposed_EmptiesTheCollection()
+    {
+        var cut = Render<IgbSelect>(SelectWith(2));
+
+        cut.Render(ps => ps.AddChildContent(builder => { }));
+
+        Assert.Empty(cut.Instance.ContentItems);
+    }
+
+    #endregion
 }

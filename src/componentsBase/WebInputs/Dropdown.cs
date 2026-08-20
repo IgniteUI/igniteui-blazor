@@ -77,6 +77,7 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get
