@@ -42,7 +42,8 @@ supply-chain and secure-defaults surface.
 - Internal implementation of `igniteui-webcomponents` / `igniteui-core` / `lit-html` —
   trusted-but-verified dependencies; their behaviour at the rendering boundary *is* in
   scope (TM-DOM-01).
-- The ASP.NET Core Blazor framework. Framework guarantees are assumptions (§5).
+- The ASP.NET Core Blazor framework. Framework guarantees are assumptions
+  ([§5](#5-assumptions-and-consumer-responsibilities)).
 - Storybook stories, tests and samples.
 
 ## 3. Architecture and trust boundaries
@@ -95,62 +96,61 @@ Three boundaries:
 | A5 | Framework limits (`CircuitOptions`, `MaximumReceiveMessageSize`, interop call timeout) are left at or below their defaults. |
 | A6 | Developers using the templates review and adapt the generated security configuration before production deployment. |
 
-## 6. Threats — `IgniteUI.Blazor.Lite`
+## 6. Analysis areas
 
-Severity is the residual severity **given** A1–A6. Status: `Open`, `Mitigated`,
-`By design`, `Accepted`, `Verified — no finding`.
+Threat identification is performed per trust boundary against the areas below. This
+document records **what is analysed and how**; the concrete findings produced by that
+analysis are **not published here** — see [§7](#7-how-findings-are-handled).
 
-### TB2 — client → server (JS interop callbacks)
+### `IgniteUI.Blazor.Lite`
 
-| ID | Threat | STRIDE | Sev | Status |
-|---|---|---|---|---|
-| **TM-IX-01** | `WebCallback` is a **public** class whose `[JSInvokable]` methods (`OnReady`, `OnInvokeReturn`, `OnRaiseEvent`, `AdjustDynamicContent`, `AdjustDynamicContentBatch`) all take a **client-supplied `containerId`** used as a key into a process-wide `_controlsMap`. A caller that reaches the reference can address *any* registered control in the circuit, not only the one it legitimately owns — event raising and dynamic-content mutation can be driven cross-instance. This is the largest single item in the model. | S, T, E | **High** | **Open** |
-| **TM-IX-02** | `OnInvokeReturn` accepts `object returnValue` — an untyped, polymorphic value deserialized from the client and passed on to `control.OnInvokeReturn`. Weakest input contract in the surface. | T, E | Medium | **Open** |
-| **TM-IX-03** | `AdjustDynamicContentBatch` deserializes a client-supplied `batch` string into a dictionary array and iterates it, driving render-tree mutation from untrusted input. | T, D | Medium | **Open** |
-| **TM-IX-04** | `_controlsMap` is keyed by `ContainerId` and populated via `Register`, with no validation that the caller is entitled to that key, and `Add` (not indexer assignment) will throw on a duplicate key. | S, D | Medium | **Open** |
-| **TM-IX-05** | Untrusted event args flow into consumer event handlers. If the app forwards them into dynamic LINQ, SQL or reflection, this becomes injection. | T, E | High *(consumer-facing)* | **Open** — needs documentation |
+| Area | Boundary | What is analysed |
+|---|---|---|
+| JS interop callback surface | TB2 | Every `[JSInvokable]` entry point: caller identification, parameter typing, deserialization of client-supplied payloads, and the routing of untrusted event data into consumer handlers. |
+| Unmarshalled data path | TB1b | Memory safety and layout agreement between the managed side and the JS reader, plus behaviour when the fast path is unavailable. |
+| Serialization boundary | TB1 | What consumer data leaves the server, and its exposure under prerendering. |
+| Rendering path | TB1 | Whether bound values can reach markup-interpreting APIs (`AddMarkupContent`, `innerHTML`, `unsafeHTML`), and dynamic-code constructs (`eval`, `new Function`). |
+| Supply chain, build and release | — | Bundled third-party JavaScript, dependency scanning coverage, signing and signature-validation gates, and the compiler safety settings of the shipped projects. |
 
-### TB1b — memory safety (WASM unmarshalled path)
-
-| ID | Threat | STRIDE | Sev | Status |
-|---|---|---|---|---|
-| **TM-MEM-01** | `RuntimeHelper` reflection-discovers `InvokeUnmarshalled` on the WASM runtime, builds a delegate with `Expression.Compile()`, and invokes it from `unsafe` methods passing `UnmarshalledColumn[]` — raw pointers into the WASM heap. `AllowUnsafeBlocks=true`. A mismatch between the managed layout and the JS-side reader is a memory-corruption / type-confusion condition rather than a normal exception. | T, E | **High** | **Open** — needs justification or scope limit |
-| **TM-MEM-02** | The unmarshalled API is deprecated and reached only by reflection, so a runtime change silently disables the fast path. Behaviour then diverges between runtimes with no signal. | R | Low | **Open** |
-| **TM-MEM-03** | `Expression.Compile()` requires a JIT and is incompatible with full AOT/trimming. A compatibility constraint rather than a vulnerability, recorded here because it constrains the mitigation options for TM-MEM-01. | — | — | **Note** |
-
-### TB1 — server → client (serialization and rendering)
-
-| ID | Threat | STRIDE | Sev | Status |
-|---|---|---|---|---|
-| **TM-SER-01** | Bound data is serialized to the browser through `JsonDataSource` / `RendererSerializer`. Consumers binding ORM entities ship every property — including PII and internal fields — to the client. | I | High *(consumer-facing)* | **Open** — needs documentation |
-| **TM-SER-02** | Under server-side prerendering the serialized state is embedded in the initial HTML response and subject to intermediary/browser caching. | I | Low | **Accepted** |
-| **TM-DOM-01** | Whether `igniteui-webcomponents` / `lit-html` render bound values as text or as markup determines whether untrusted data yields DOM XSS. `lit-html` escapes interpolations by default but exposes `unsafeHTML`; usage must be confirmed for the shipped component set. To resolve: confirm with the `igniteui-webcomponents` team whether any bound value reaches `unsafeHTML`, `innerHTML` or `insertAdjacentHTML`, and record the answer plus the version it was verified against. | T | **To determine** | **Open** — must be answered before sign-off |
-| **TM-DOM-02** | Consumer-supplied `RenderFragment` templates (`IgbTemplateContent`) render arbitrary consumer markup inside component-owned containers. Razor escapes `@value` by default, so this is safe unless the consumer opts into `MarkupString`. | T | Low | **By design** — documented consumer responsibility |
-| — | `DynamicContentHolder.BuildRenderTree` calls `AddMarkupContent`. Microsoft's guidance explicitly names this API as an XSS vector when passed user input. **Verified**: every call site passes a static whitespace literal (`"\r\n"`, indentation) — never user data. | — | — | **Verified — no finding** |
-| — | `eval` / `new Function` in first-party TypeScript. None present. | — | — | **Verified — no finding** |
-
-### Supply chain, build and release
-
-| ID | Threat | STRIDE | Sev | Status |
-|---|---|---|---|---|
-| **TM-SC-01** | `igniteui-webcomponents` (`~7.2.4`) and `lit-html` are bundled *inside* the .nupkg. Consumers cannot patch an upstream JS CVE independently. Upstream CVEs are handled under the `SECURITY.md` disclosure SLAs: acknowledgement within 3 business days, triage within 7 business days, fix timeline by severity. | T | Medium | **By design** — covered by the published SLAs |
-| **TM-SC-02** | No SCA, CodeQL, `npm audit` or dependency-review gate. `ci.yml` runs formatting, build and tests only. | — | **High** | **Open** |
-| **TM-BLD-01** | `igniteui-blazor-lite-release.yml` references `${{ env.BUILD_CONFIGURATION }}` in the signing and signature-validation steps, but that variable is **never defined**. It expands to empty, so the signing base directory becomes `src/bin/` rather than `src/bin/Release/`. It currently works only because the recursive `**/*.dll` glob still reaches the Release output — the integrity gate is scanning an unintended path. | T, R | Medium | **Open** |
-| **TM-BLD-02** | Unlike the DLL step, "Validate DLL signatures" does not fail when *zero* DLLs are found — an empty result set passes the gate. | R | Medium | **Open** |
-| **TM-BLD-03** | `<Nullable>disable</Nullable>` on `IgniteUI.Blazor.Lite.csproj` (generated sources are unannotated), removing compiler-enforced null safety across the shipped surface. | — | Low | **Accepted** — tracked TODO in the project file |
-
-## 7. Threats — `IgniteUI.Blazor.Templates`
+### `IgniteUI.Blazor.Templates`
 
 A template package executes no code at runtime; its risk is what it *emits* and what it
 *carries*.
 
-| ID | Threat | STRIDE | Sev | Status |
-|---|---|---|---|---|
-| **TM-PKG-01** | `NoDefaultExcludes=true` combined with `Content Include="templates\**\*"` excluding only `bin`/`obj` packs **everything else in the tree** — dotfiles, `.env`, editor state, stray credentials — into the shipped package. | I | **High** | **Open** |
-| **TM-PKG-02** | `test-templates.ps1` / `test-templates.sh` live in the template project; must be confirmed not to land under `content/`. | I | Medium | **Open** |
-| **TM-TPL-01** | Insecure defaults in the scaffolded app (missing CSP, HSTS, HTTPS redirection, antiforgery; any CDN `<script>`/`<link>` without SRI) are replicated into every consumer project. Highest-leverage item in the template package. | T, I | **High** | **Open** — requires a secure-defaults checklist |
-| **TM-TPL-02** | Template-pinned package versions drift from the libraries and go stale, scaffolding projects onto known-vulnerable versions. | T | Medium | **Open** |
-| **TM-TPL-03** | `<Version>0.0.1</Version>` is hard-coded in the template project rather than driven by the release tag. | R | Low | **Open** |
+| Area | What is analysed |
+|---|---|
+| Package content | Which files the pack globs actually include, and whether repository or developer artefacts can leak into the shipped package. |
+| Scaffolded-app defaults | The security posture the template hands to every generated project (transport security, antiforgery, content policy, integrity of external references). |
+| Version hygiene | Whether template-pinned package and template versions are release-driven rather than hard-coded or stale. |
+
+## 7. How findings are handled
+
+Findings are **tracked privately**, not enumerated in this repository. Publishing an
+unfixed, exploitable weakness ahead of a fix would put consumers at risk, so this document
+defines the process instead of the results.
+
+1. **Recording.** Each finding is filed in the maintainers' private security tracker with
+   an identifier, the affected package, the trust boundary, a STRIDE classification and a
+   residual severity assessed **given** A1–A6.
+2. **Triage.** Findings are triaged under the timelines published in
+   [`SECURITY.md`](../../SECURITY.md) — acknowledgement within 3 business days, triage
+   within 7 business days — regardless of whether they originated internally or from an
+   external reporter.
+3. **Disposition.** Every finding reaches one of: `Fixed`, `Mitigated` (a named
+   compensating control), `By design` (documented consumer responsibility), or `Accepted`
+   (residual risk with a named approver and a date).
+4. **Release gate.** No finding of severity High or above may ship while it is still open.
+   The gate is enforced at review time via [review-template.md](review-template.md).
+5. **Disclosure.** Fixed findings are disclosed after a fix is available, through a
+   GitHub Security Advisory and the release notes, following the coordinated-disclosure
+   process in `SECURITY.md`. Consumer-facing findings that require action by the
+   application developer are additionally documented in the public product documentation.
+6. **Re-analysis triggers.** The analysis in [§6](#6-analysis-areas) is re-run whenever the JS interop surface,
+   the unmarshalled data path, the bundled third-party JavaScript, or the template content
+   changes, and at minimum once per major release.
+
+To report a suspected vulnerability, follow [`SECURITY.md`](../../SECURITY.md). Please do
+not open a public issue.
 
 ## 8. Existing controls
 
@@ -177,12 +177,11 @@ Verified in `.github/workflows/igniteui-blazor-lite-release.yml`, `ci.yml` and t
 
 ## 9. Residual risk
 
-| ID | Accepted risk | Justification | Approver | Date |
-|---|---|---|---|---|
-| TM-SER-02 | Prerendered state in initial HTML | Inherent to Blazor SSR; mitigated by app-level cache headers | <!-- TODO --> | |
-| TM-DOM-02 | Consumer templates render consumer markup | Razor escapes by default; `MarkupString` is an explicit consumer opt-in | <!-- TODO --> | |
-| TM-SC-01 | Bundled third-party JS | Required for a single-package consumer experience; offset by the `SECURITY.md` disclosure SLAs (3-day acknowledgement, 7-day triage, fix by severity) applying equally to upstream CVEs | <!-- TODO --> | |
-| TM-BLD-03 | `Nullable` disabled on the Lite project | Generated sources are unannotated; enabling would emit thousands of warnings | <!-- TODO --> | |
+Accepted residual risks are recorded against their finding in the private tracker and in
+the corresponding security review record, each with a named approver and a date. They are
+not itemised here. Residual risks that require action or awareness on the consuming
+application's part are surfaced in the public product documentation and in
+[§5](#5-assumptions-and-consumer-responsibilities) ("Assumptions and consumer responsibilities").
 
 ## 10. Review and sign-off log
 
@@ -194,4 +193,11 @@ Release gate: **no `Open` finding of severity High or above may ship.**
 
 ## 11. References
 
-See [PR.md](../../PR.md#references) in the repository root.
+- [`SECURITY.md`](../../SECURITY.md) — this repository's vulnerability reporting and
+  disclosure policy.
+- [`CONTRIBUTING.md`](../../.github/CONTRIBUTING.md) — contribution and review process.
+- [review-template.md](review-template.md) — the security review record template.
+- [Threat mitigation guidance for ASP.NET Core Blazor interactive server-side rendering](https://learn.microsoft.com/aspnet/core/blazor/security/interactive-server-side-rendering)
+- [ASP.NET Core Blazor authentication and authorization](https://learn.microsoft.com/aspnet/core/blazor/security/)
+- [Prevent cross-site scripting (XSS) in ASP.NET Core](https://learn.microsoft.com/aspnet/core/security/cross-site-scripting)
+- [Microsoft Threat Modeling / STRIDE](https://learn.microsoft.com/azure/security/develop/threat-modeling-tool-threats)
