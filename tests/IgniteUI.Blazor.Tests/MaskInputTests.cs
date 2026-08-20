@@ -26,6 +26,8 @@ public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
             "setCustomValidity", args: ["custom message"], types: ["String"])
         .Event(c => c.Change,
             argsJson: """{"detail": "new value"}""", assert: args => Assert.Equal("new value", args.Detail))
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": "new value"}""", expect: "new value")
         .Event(c => c.InputOcurred,
             argsJson: """{"detail": "typed text"}""", assert: args => Assert.Equal("typed text", args.Detail))
         .Event(c => c.Focus)
@@ -50,6 +52,9 @@ public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void MaskInput_RendersCorrectElement()

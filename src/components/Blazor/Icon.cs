@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbIcon : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebIcon"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbIconModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,22 +52,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbIcon() : base()
-        {
-            OnCreatedIgbIcon();
-
-        }
-
-        partial void OnCreatedIgbIcon();
-
         private string _iconName;
 
-        partial void OnIconNameChanging(ref string newValue);
         /// <summary>
         /// The name of the icon glyph to draw.
         /// </summary>
@@ -82,7 +80,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _collection;
 
-        partial void OnCollectionChanging(ref string newValue);
         /// <summary>
         /// The name of the registered collection for look up of icons.
         /// </summary>
@@ -102,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _mirrored = false;
 
-        partial void OnMirroredChanging(ref bool newValue);
         /// <summary>
         /// Whether to flip the icon horizontally. Useful for RTL (right-to-left) layouts.
         /// </summary>
@@ -121,25 +117,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameIcon(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameIcon(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -215,13 +192,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
         }
 
-        partial void SerializeCoreIgbIcon(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbIcon(ser);
 
             if (IsPropDirty("IconName"))
             { ser.AddStringProp("iconName", this._iconName); }

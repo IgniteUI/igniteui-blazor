@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbButtonGroup : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebButtonGroup"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbButtonGroupModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,22 +53,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbButtonGroup() : base()
-        {
-            OnCreatedIgbButtonGroup();
-
-        }
-
-        partial void OnCreatedIgbButtonGroup();
-
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Disables all buttons inside the group.
         /// </summary>
@@ -82,7 +80,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ContentOrientation _alignment = ContentOrientation.Horizontal;
 
-        partial void OnAlignmentChanging(ref ContentOrientation newValue);
         /// <summary>
         /// Sets the orientation of the buttons in the group.
         /// </summary>
@@ -102,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ButtonGroupSelection _selection = ButtonGroupSelection.Single;
 
-        partial void OnSelectionChanging(ref ButtonGroupSelection newValue);
         /// <summary>
         /// Controls the mode of selection for the button group.
         /// </summary>
@@ -122,8 +118,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string[] _selectedItems;
 
-        partial void OnSelectedItemsChanging(ref string[] newValue);
-
         /// <summary>
         /// Gets or sets the values of the currently selected buttons.
         /// </summary>
@@ -142,25 +136,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameButtonGroup(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameButtonGroup(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -202,7 +177,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSelect(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _select = null;
 
         /// <summary>
@@ -222,11 +196,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _select, ref eventCallbacksCache))
                     {
                         _select = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", value, (args) =>
-                        {
-                            OnHandlingSelect(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", value);
                         this.OnRefChanged("Select", null, "event:::Select", true, false, (refName, oldValue, newValue) =>
                         {
                             this._selectRef = refName;
@@ -279,7 +249,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingDeselect(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _deselect = null;
 
         /// <summary>
@@ -299,11 +268,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _deselect, ref eventCallbacksCache))
                     {
                         _deselect = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", value, (args) =>
-                        {
-                            OnHandlingDeselect(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", value);
                         this.OnRefChanged("Deselect", null, "event:::Deselect", true, false, (refName, oldValue, newValue) =>
                         {
                             this._deselectRef = refName;
@@ -324,13 +289,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbButtonGroup(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbButtonGroup(ser);
 
             if (IsPropDirty("Disabled"))
             { ser.AddBooleanProp("disabled", this._disabled); }

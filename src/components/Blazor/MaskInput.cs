@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbMaskInput : IgbInputBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebMaskInput"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbMaskInputModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,17 +35,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbMaskInput() : base()
-        {
-            OnCreatedIgbMaskInput();
-
-        }
-
-        partial void OnCreatedIgbMaskInput();
-
         private MaskInputValueMode _valueMode = MaskInputValueMode.Raw;
 
-        partial void OnValueModeChanging(ref MaskInputValueMode newValue);
         /// <summary>
         /// Dictates the behavior when retrieving the value of the control.
         /// <list type="bullet">
@@ -71,7 +66,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the input.
         /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
@@ -112,7 +106,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _mask;
 
-        partial void OnMaskChanging(ref string newValue);
         /// <summary>
         /// The masked pattern of the component.
         /// </summary>
@@ -132,7 +125,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _prompt;
 
-        partial void OnPromptChanging(ref string newValue);
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
         /// </summary>
@@ -152,7 +144,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -169,26 +160,6 @@ namespace IgniteUI.Blazor.Controls
                 this._readOnly = value;
 
             }
-        }
-
-        partial void FindByNameMaskInput(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameMaskInput(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -286,7 +257,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
 
         /// <summary>
@@ -308,14 +278,10 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {
                                 newValueValue = (string)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -366,15 +332,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(string oldValue, ref string newValue);
-
-        partial void SerializeCoreIgbMaskInput(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbMaskInput(ser);
 
             if (IsPropDirty("ValueMode"))
             { ser.AddEnumProp("valueMode", this._valueMode); }

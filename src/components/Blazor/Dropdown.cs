@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbDropdown : IgbComboBoxBaseLike
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDropdown"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbDropdownModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,17 +52,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbDropdown() : base()
-        {
-            OnCreatedIgbDropdown();
-
-        }
-
-        partial void OnCreatedIgbDropdown();
-
         private PopoverPlacement _placement = PopoverPlacement.BottomStart;
 
-        partial void OnPlacementChanging(ref PopoverPlacement newValue);
         /// <summary>
         /// The preferred placement of the component around the target element.
         /// </summary>
@@ -76,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private PopoverScrollStrategy _scrollStrategy = PopoverScrollStrategy.Scroll;
 
-        partial void OnScrollStrategyChanging(ref PopoverScrollStrategy newValue);
         /// <summary>
         /// Determines the behavior of the component during scrolling of the parent container.
         /// </summary>
@@ -96,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _flip = false;
 
-        partial void OnFlipChanging(ref bool newValue);
         /// <summary>
         /// Whether the component should be flipped to the opposite side of the target once it's about to overflow the visible area.
         /// When <see langword="true"/>, once enough space is detected on its preferred side, it will flip back.
@@ -117,7 +112,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _distance = 0;
 
-        partial void OnDistanceChanging(ref double newValue);
         /// <summary>
         /// The distance from the target element.
         /// </summary>
@@ -137,7 +131,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _sameWidth = false;
 
-        partial void OnSameWidthChanging(ref bool newValue);
         /// <summary>
         /// Whether the dropdown's width should be the same as the target's one.
         /// </summary>
@@ -276,21 +269,21 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameDropdown(string name, ref object item);
+        /// <inheritdoc />
         public override object FindByName(string name)
         {
-
             var baseResult = base.FindByName(name);
             if (baseResult != null)
             {
                 return baseResult;
             }
 
-            object item = null;
-            FindByNameDropdown(name, ref item);
-            if (item != null)
+            foreach (var item in ContentItems)
             {
-                return item;
+                if (item.Name == name || item.ContainerId == name)
+                {
+                    return item;
+                }
             }
 
             return null;
@@ -433,7 +426,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpening(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opening = null;
 
         /// <summary>
@@ -453,11 +445,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
                     {
                         _opening = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value, (args) =>
-                        {
-                            OnHandlingOpening(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -510,7 +498,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpened(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _opened = null;
 
         /// <summary>
@@ -530,11 +517,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
                     {
                         _opened = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value, (args) =>
-                        {
-                            OnHandlingOpened(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -587,7 +570,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
 
         /// <summary>
@@ -607,11 +589,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -664,7 +642,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
 
         /// <summary>
@@ -684,11 +661,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -741,7 +714,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbDropdownItemComponentEventArgs args);
         private EventCallback<IgbDropdownItemComponentEventArgs>? _change = null;
 
         /// <summary>
@@ -761,11 +733,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
                     {
                         _change = value;
-                        this.SetHandler<IgbDropdownItemComponentEventArgs>(this.Name, "Change", value, (args) =>
-                        {
-                            OnHandlingChange(args);
-
-                        });
+                        this.SetHandler<IgbDropdownItemComponentEventArgs>(this.Name, "Change", value);
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {
                             this._changeRef = refName;
@@ -786,13 +754,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbDropdown(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDropdown(ser);
 
             if (IsPropDirty("Placement"))
             { ser.AddEnumProp("placement", this._placement); }

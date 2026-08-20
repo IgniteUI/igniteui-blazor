@@ -199,6 +199,52 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
 
         Assert.Contains("Tile content", cut.Find("igc-tile").InnerHtml);
     }
+
+    #region Child collection lifecycle
+
+    /// <summary>Renders <paramref name="count"/> <see cref="IgbTile"/> children.</summary>
+    static Action<ComponentParameterCollectionBuilder<IgbTileManager>> TileManagerWith(int count) => ps =>
+        ps.AddChildContent(builder =>
+        {
+            for (var i = 0; i < count; i++)
+            {
+                builder.OpenComponent<IgbTile>(i);
+                builder.CloseComponent();
+            }
+        });
+
+    [Fact]
+    public void TileManager_ChildTiles_RegisterOnInitialize()
+    {
+        var cut = Render<IgbTileManager>(TileManagerWith(2));
+
+        Assert.Equal(
+            cut.FindComponents<IgbTile>().Select(t => t.Instance),
+            cut.Instance.ContentItems);
+    }
+
+    [Fact]
+    public void TileManager_DisposedChildTile_LeavesTheCollection()
+    {
+        var cut = Render<IgbTileManager>(TileManagerWith(2));
+        var survivor = cut.FindComponents<IgbTile>()[0].Instance;
+
+        cut.Render(TileManagerWith(1));
+
+        Assert.Same(survivor, Assert.Single(cut.Instance.ContentItems));
+    }
+
+    [Fact]
+    public void TileManager_AllChildTilesDisposed_EmptiesTheCollection()
+    {
+        var cut = Render<IgbTileManager>(TileManagerWith(2));
+
+        cut.Render(ps => ps.AddChildContent(builder => { }));
+
+        Assert.Empty(cut.Instance.ContentItems);
+    }
+
+    #endregion
 }
 
 public class TileTests : ComponentWithContractTestBase<IgbTile>

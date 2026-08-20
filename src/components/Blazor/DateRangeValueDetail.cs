@@ -8,21 +8,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbDateRangeValueDetail : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDateRangeValueDetail"; } }
 
         private static bool _marshalByValue = true;
 
-        public IgbDateRangeValueDetail() : base()
-        {
-            OnCreatedIgbDateRangeValueDetail();
-
-        }
-
-        partial void OnCreatedIgbDateRangeValueDetail();
-
         private DateTime _start = DateTime.MinValue;
-
-        partial void OnStartChanging(ref DateTime newValue);
 
         /// <summary>
         /// The first date of the range.
@@ -43,8 +34,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime _end = DateTime.MinValue;
 
-        partial void OnEndChanging(ref DateTime newValue);
-
         /// <summary>
         /// The last date of the range.
         /// </summary>
@@ -63,25 +52,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDateRangeValueDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateRangeValueDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -91,13 +61,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbDateRangeValueDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDateRangeValueDetail(ser);
 
             if (IsPropDirty("Start"))
             { ser.AddDateTimeProp("start", this._start); }
@@ -106,6 +72,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -117,6 +84,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

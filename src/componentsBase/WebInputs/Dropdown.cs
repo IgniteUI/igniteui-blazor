@@ -77,6 +77,7 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get
@@ -100,17 +101,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDropdown(string name, ref object item)
-        {
-            foreach (var it in ContentItems)
-            {
-                if (it.Name == name || it.ContainerId == name)
-                {
-                    item = it;
-                    return;
-                }
-            }
-        }
     }
 
 }

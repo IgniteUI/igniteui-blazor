@@ -12,8 +12,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbIconButton : IgbButtonBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebIconButton"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbIconButtonModule.IsLoadRequested(IgBlazor))
@@ -22,11 +24,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -35,6 +39,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -43,6 +48,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -51,17 +57,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbIconButton() : base()
-        {
-            OnCreatedIgbIconButton();
-
-        }
-
-        partial void OnCreatedIgbIconButton();
-
         private string _iconName;
 
-        partial void OnIconNameChanging(ref string newValue);
         /// <summary>
         /// The name of the icon to display.
         /// </summary>
@@ -82,7 +79,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _collection;
 
-        partial void OnCollectionChanging(ref string newValue);
         /// <summary>
         /// The collection the icon belongs to.
         /// </summary>
@@ -102,7 +98,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _mirrored = false;
 
-        partial void OnMirroredChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the icon should be mirrored in right-to-left contexts.
         /// </summary>
@@ -122,7 +117,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IconButtonVariant _variant = IconButtonVariant.Contained;
 
-        partial void OnVariantChanging(ref IconButtonVariant newValue);
         /// <summary>
         /// The variant of the button which determines its visual appearance.
         /// <list type="bullet">
@@ -147,26 +141,6 @@ namespace IgniteUI.Blazor.Controls
                 this._variant = value;
 
             }
-        }
-
-        partial void FindByNameIconButton(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameIconButton(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -213,13 +187,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
-        partial void SerializeCoreIgbIconButton(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbIconButton(ser);
 
             if (IsPropDirty("IconName"))
             { ser.AddStringProp("iconName", this._iconName); }

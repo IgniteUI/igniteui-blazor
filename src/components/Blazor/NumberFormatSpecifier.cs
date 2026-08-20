@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbNumberFormatSpecifier : IgbFormatSpecifier
     {
+        /// <inheritdoc />
         public override string Type { get { return "NumberFormatSpecifier"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbNumberFormatSpecifierModule.IsLoadRequested(IgBlazor))
@@ -20,17 +22,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbNumberFormatSpecifier() : base()
-        {
-            OnCreatedIgbNumberFormatSpecifier();
-
-        }
-
-        partial void OnCreatedIgbNumberFormatSpecifier();
-
         private string _locale;
-
-        partial void OnLocaleChanging(ref string newValue);
 
         /// <summary>
         /// The culture used to format the number. When not set, the browser culture returned by
@@ -52,8 +44,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _compactDisplay;
 
-        partial void OnCompactDisplayChanging(ref string newValue);
-
         /// <summary>
         /// The form of the compact notation, either <c>short</c> or <c>long</c>. Applies only when
         /// <see cref="Notation"/> is <c>compact</c>.
@@ -74,8 +64,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _currency;
 
-        partial void OnCurrencyChanging(ref string newValue);
-
         /// <summary>
         /// The currency used in currency formatting, given as an ISO 4217 currency code.
         /// </summary>
@@ -94,8 +82,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _currencyDisplay;
-
-        partial void OnCurrencyDisplayChanging(ref string newValue);
 
         /// <summary>
         /// How the currency is shown, one of <c>symbol</c>, <c>narrowSymbol</c>, <c>code</c> or
@@ -117,8 +103,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _currencySign;
 
-        partial void OnCurrencySignChanging(ref string newValue);
-
         /// <summary>
         /// How negative currency amounts are rendered, either <c>standard</c> or <c>accounting</c>.
         /// </summary>
@@ -137,8 +121,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _currencyCode;
-
-        partial void OnCurrencyCodeChanging(ref string newValue);
 
         /// <summary>
         /// The currency code applied when <see cref="Style"/> is <c>currency</c>. It takes precedence
@@ -160,8 +142,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _localeMatcher;
 
-        partial void OnLocaleMatcherChanging(ref string newValue);
-
         /// <summary>
         /// The locale matching algorithm, either <c>lookup</c> or <c>best fit</c>.
         /// </summary>
@@ -180,8 +160,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _notation;
-
-        partial void OnNotationChanging(ref string newValue);
 
         /// <summary>
         /// The formatting notation, one of <c>standard</c>, <c>scientific</c>, <c>engineering</c> or
@@ -203,8 +181,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _numberingSystem;
 
-        partial void OnNumberingSystemChanging(ref string newValue);
-
         /// <summary>
         /// The numbering system used to render the digits.
         /// </summary>
@@ -223,8 +199,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _signDisplay;
-
-        partial void OnSignDisplayChanging(ref string newValue);
 
         /// <summary>
         /// When the sign is shown, one of <c>auto</c>, <c>never</c>, <c>always</c> or
@@ -246,8 +220,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _style;
 
-        partial void OnStyleChanging(ref string newValue);
-
         /// <summary>
         /// The formatting style, one of <c>decimal</c>, <c>currency</c>, <c>percent</c> or
         /// <c>unit</c>.
@@ -268,8 +240,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _unit;
 
-        partial void OnUnitChanging(ref string newValue);
-
         /// <summary>
         /// The unit used when <see cref="Style"/> is <c>unit</c>.
         /// </summary>
@@ -288,8 +258,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string _unitDisplay;
-
-        partial void OnUnitDisplayChanging(ref string newValue);
 
         /// <summary>
         /// How the unit is shown, one of <c>short</c>, <c>narrow</c> or <c>long</c>.
@@ -310,8 +278,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _useGrouping = false;
 
-        partial void OnUseGroupingChanging(ref bool newValue);
-
         /// <summary>
         /// Whether grouping separators, such as thousands separators, are used.
         /// </summary>
@@ -330,8 +296,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private int _minimumIntegerDigits = 0;
-
-        partial void OnMinimumIntegerDigitsChanging(ref int newValue);
 
         /// <summary>
         /// The minimum number of integer digits to use.
@@ -352,8 +316,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private int _minimumFractionDigits = 0;
 
-        partial void OnMinimumFractionDigitsChanging(ref int newValue);
-
         /// <summary>
         /// The minimum number of fraction digits to use.
         /// </summary>
@@ -372,8 +334,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private int _maximumFractionDigits = 0;
-
-        partial void OnMaximumFractionDigitsChanging(ref int newValue);
 
         /// <summary>
         /// The maximum number of fraction digits to use.
@@ -394,8 +354,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private int _minimumSignificantDigits = 0;
 
-        partial void OnMinimumSignificantDigitsChanging(ref int newValue);
-
         /// <summary>
         /// The minimum number of significant digits to use.
         /// </summary>
@@ -415,8 +373,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private int _maximumSignificantDigits = 0;
 
-        partial void OnMaximumSignificantDigitsChanging(ref int newValue);
-
         /// <summary>
         /// The maximum number of significant digits to use.
         /// </summary>
@@ -435,33 +391,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameNumberFormatSpecifier(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameNumberFormatSpecifier(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbNumberFormatSpecifier(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbNumberFormatSpecifier(ser);
 
             if (IsPropDirty("Locale"))
             { ser.AddStringProp("locale", this._locale); }
@@ -504,6 +436,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -549,6 +482,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

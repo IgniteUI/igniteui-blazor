@@ -21,6 +21,18 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
         .Event(c => c.Change,
             argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
             assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), ((DateTime)args.Detail).ToUniversalTime()))
+        // Single selection:
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
+            expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
+        // Multiple selection:
+        .Bind(c => c.Values, c => c.ValuesChanged, via: c => c.Change,
+            arrange: ps => ps.Add(c => c.Selection, CalendarSelection.Multiple),
+            argsJson: """{"detail": {"retType": "Array", "type": "", "value": [{"retType": "date", "value": "2026-01-02T03:04:05.000Z"}, {"retType": "date", "value": "2026-01-03T03:04:05.000Z"}]}}""",
+            expect: [
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc),
+            ])
         .Prop(c => c.Selection, CalendarSelection.Range, wire: "range")
         .Prop(c => c.ShowWeekNumbers, true)
         .Prop(c => c.WeekStart, WeekDays.Monday, wire: "monday")
@@ -69,6 +81,9 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void Calendar_TypeMetadata()

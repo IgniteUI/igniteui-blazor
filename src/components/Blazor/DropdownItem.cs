@@ -5,18 +5,22 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbDropdownItem : IgbBaseOptionLike
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDropdownItem"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             ModuleLoader.Load(IgBlazor, "WebDropdownModule");
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -25,6 +29,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -33,50 +38,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
             {
                 return "igc-dropdown-item";
             }
-        }
-
-        public IgbDropdownItem() : base()
-        {
-            OnCreatedIgbDropdownItem();
-
-        }
-
-        partial void OnCreatedIgbDropdownItem();
-
-        partial void FindByNameDropdownItem(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDropdownItem(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbDropdownItem(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbDropdownItem(ser);
-
         }
 
     }

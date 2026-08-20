@@ -8,21 +8,13 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatMessageReactionEventArgs : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatMessageReactionEventArgs"; } }
 
         private static bool _marshalByValue = true;
 
-        public IgbChatMessageReactionEventArgs() : base()
-        {
-            OnCreatedIgbChatMessageReactionEventArgs();
-
-        }
-
-        partial void OnCreatedIgbChatMessageReactionEventArgs();
-
         private IgbChatMessageReaction _detail;
 
-        partial void OnDetailChanging(ref IgbChatMessageReaction newValue);
         /// <summary>
         /// The reaction the event was raised for, together with the chat message it is associated with.
         /// </summary>
@@ -32,7 +24,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._detail; }
             set
             {
-                OnDetailChanging(ref value);
                 MarkPropDirty("Detail");
                 if (this._detail != null)
                 {
@@ -47,39 +38,16 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameChatMessageReactionEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChatMessageReactionEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbChatMessageReactionEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatMessageReactionEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddSerializableProp("detail", this._detail); }
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -89,6 +57,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

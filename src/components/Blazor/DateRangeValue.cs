@@ -7,19 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbDateRangeValue : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDateRangeValue"; } }
 
-        public IgbDateRangeValue() : base()
-        {
-            OnCreatedIgbDateRangeValue();
-
-        }
-
-        partial void OnCreatedIgbDateRangeValue();
-
         private DateTime _start = DateTime.MinValue;
-
-        partial void OnStartChanging(ref DateTime newValue);
 
         /// <summary>
         /// The first date of the range.
@@ -40,8 +31,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime _end = DateTime.MinValue;
 
-        partial void OnEndChanging(ref DateTime newValue);
-
         /// <summary>
         /// The last date of the range.
         /// </summary>
@@ -60,25 +49,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDateRangeValue(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateRangeValue(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -88,13 +58,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbDateRangeValue(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDateRangeValue(ser);
 
             if (IsPropDirty("Start"))
             { ser.AddDateTimeProp("start", this._start); }

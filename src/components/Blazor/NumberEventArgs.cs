@@ -7,21 +7,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbNumberEventArgs : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebNumberEventArgs"; } }
 
         private static bool _marshalByValue = true;
 
-        public IgbNumberEventArgs() : base()
-        {
-            OnCreatedIgbNumberEventArgs();
-
-        }
-
-        partial void OnCreatedIgbNumberEventArgs();
-
         private double _detail = 0;
-
-        partial void OnDetailChanging(ref double newValue);
 
         /// <summary>
         /// The numeric payload of the event. Its meaning depends on the event that carries it, for
@@ -42,39 +33,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameNumberEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameNumberEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbNumberEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbNumberEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddNumberProp("detail", this._detail); }
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -84,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

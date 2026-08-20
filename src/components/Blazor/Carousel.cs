@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCarousel : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCarousel"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbCarouselModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,22 +53,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCarousel() : base()
-        {
-            OnCreatedIgbCarousel();
-
-        }
-
-        partial void OnCreatedIgbCarousel();
-
         private bool _disableLoop = false;
 
-        partial void OnDisableLoopChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should skip rotating to the first slide after it reaches the last.
         /// </summary>
@@ -82,7 +80,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disablePauseOnInteraction = false;
 
-        partial void OnDisablePauseOnInteractionChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should ignore user interactions and not pause on them.
         /// </summary>
@@ -102,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideNavigation = false;
 
-        partial void OnHideNavigationChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should skip rendering of the default navigation buttons.
         /// </summary>
@@ -122,7 +118,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideIndicators = false;
 
-        partial void OnHideIndicatorsChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should skip rendering of the indicator controls (dots).
         /// </summary>
@@ -142,7 +137,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _vertical = false;
 
-        partial void OnVerticalChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel has vertical alignment.
         /// </summary>
@@ -162,7 +156,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private CarouselIndicatorsOrientation _indicatorsOrientation = CarouselIndicatorsOrientation.End;
 
-        partial void OnIndicatorsOrientationChanging(ref CarouselIndicatorsOrientation newValue);
         /// <summary>
         /// Sets the orientation of the indicator controls (dots).
         /// </summary>
@@ -182,7 +175,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _indicatorsLabelFormat;
 
-        partial void OnIndicatorsLabelFormatChanging(ref string newValue);
         /// <summary>
         /// The format used to set the aria-label on the carousel indicators.
         /// Instances of <c>{0}</c> will be replaced with the index of the corresponding slide.
@@ -203,7 +195,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _slidesLabelFormat;
 
-        partial void OnSlidesLabelFormatChanging(ref string newValue);
         /// <summary>
         /// The format used to set the aria-label on the carousel slides and the text displayed
         /// when the number of indicators is greater than the maximum indicator count.
@@ -226,7 +217,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _interval = 0;
 
-        partial void OnIntervalChanging(ref double newValue);
         /// <summary>
         /// The duration in milliseconds between changing the active slide.
         /// </summary>
@@ -246,7 +236,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _maximumIndicatorsCount = 10;
 
-        partial void OnMaximumIndicatorsCountChanging(ref double newValue);
         /// <summary>
         /// The maximum number of indicator controls (dots) that can be shown. Defaults to <c>10</c>.
         /// </summary>
@@ -266,7 +255,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private HorizontalTransitionAnimation _animationType = HorizontalTransitionAnimation.Slide;
 
-        partial void OnAnimationTypeChanging(ref HorizontalTransitionAnimation newValue);
         /// <summary>
         /// The animation type.
         /// </summary>
@@ -357,25 +345,6 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
-        partial void FindByNameCarousel(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCarousel(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -517,7 +486,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSlideChanged(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _slideChanged = null;
 
         /// <summary>
@@ -537,11 +505,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _slideChanged, ref eventCallbacksCache))
                     {
                         _slideChanged = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value, (args) =>
-                        {
-                            OnHandlingSlideChanged(args);
-
-                        });
+                        this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value);
                         this.OnRefChanged("SlideChanged", null, "event:::SlideChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._slideChangedRef = refName;
@@ -594,7 +558,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingPlaying(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _playing = null;
 
         /// <summary>
@@ -614,11 +577,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _playing, ref eventCallbacksCache))
                     {
                         _playing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value, (args) =>
-                        {
-                            OnHandlingPlaying(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value);
                         this.OnRefChanged("Playing", null, "event:::Playing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._playingRef = refName;
@@ -671,7 +630,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingPaused(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _paused = null;
 
         /// <summary>
@@ -691,11 +649,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!CompareEventCallbacks(value, _paused, ref eventCallbacksCache))
                     {
                         _paused = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value, (args) =>
-                        {
-                            OnHandlingPaused(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value);
                         this.OnRefChanged("Paused", null, "event:::Paused", true, false, (refName, oldValue, newValue) =>
                         {
                             this._pausedRef = refName;
@@ -716,13 +670,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbCarousel(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCarousel(ser);
 
             if (IsPropDirty("DisableLoop"))
             { ser.AddBooleanProp("disableLoop", this._disableLoop); }

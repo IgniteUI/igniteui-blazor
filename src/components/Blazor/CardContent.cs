@@ -6,18 +6,22 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCardContent : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCardContent"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             ModuleLoader.Load(IgBlazor, "WebCardModule");
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -26,6 +30,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -34,6 +39,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -42,38 +48,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCardContent() : base()
-        {
-            OnCreatedIgbCardContent();
-
-        }
-
-        partial void OnCreatedIgbCardContent();
-
-        partial void FindByNameCardContent(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCardContent(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -81,16 +61,6 @@ namespace IgniteUI.Blazor.Controls
         public void SetNativeElement(Object element)
         {
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
-        partial void SerializeCoreIgbCardContent(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbCardContent(ser);
-
         }
 
     }

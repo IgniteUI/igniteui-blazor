@@ -42,6 +42,12 @@
       "FocusComponentAsync"
     ]
   },
+  "IgbCombo": {
+    "DependantMethods": [
+      // BUG 35183
+      "FocusComponentAsync"
+    ]
+  },
   "IgbRating": {
     "DependantMethods": [],
     "ExcludedEvents": []

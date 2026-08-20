@@ -7,13 +7,16 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSliderBase : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSliderBase"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -22,6 +25,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -38,22 +43,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbSliderBase() : base()
-        {
-            OnCreatedIgbSliderBase();
-
-        }
-
-        partial void OnCreatedIgbSliderBase();
-
         private double _min = 0;
 
-        partial void OnMinChanging(ref double newValue);
         /// <summary>
         /// The minimum value of the slider scale. Defaults to 0.
         /// If <see cref="Min"/> is greater than <see cref="Max"/> the assignment is a no-op.
@@ -77,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _max = 100;
 
-        partial void OnMaxChanging(ref double newValue);
         /// <summary>
         /// The maximum value of the slider scale. Defaults to 100.
         /// If <see cref="Max"/> is less than <see cref="Min"/> the assignment is a no-op.
@@ -102,7 +98,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _lowerBound = 0;
 
-        partial void OnLowerBoundChanging(ref double newValue);
         /// <summary>
         /// The lower bound of the slider value. If not set, the <see cref="Min"/> value is applied.
         /// </summary>
@@ -122,7 +117,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _upperBound = 0;
 
-        partial void OnUpperBoundChanging(ref double newValue);
         /// <summary>
         /// The upper bound of the slider value. If not set, the <see cref="Max"/> value is applied.
         /// </summary>
@@ -142,7 +136,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Disables the UI interactions of the slider.
         /// </summary>
@@ -162,7 +155,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _discreteTrack = false;
 
-        partial void OnDiscreteTrackChanging(ref bool newValue);
         /// <summary>
         /// Marks the slider track as discrete so it displays the steps.
         /// If <see cref="Step"/> is 0, the slider remains continuous even if <see cref="DiscreteTrack"/>
@@ -184,7 +176,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideTooltip = false;
 
-        partial void OnHideTooltipChanging(ref bool newValue);
         /// <summary>
         /// Hides the thumb tooltip.
         /// </summary>
@@ -204,7 +195,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _step = 1;
 
-        partial void OnStepChanging(ref double newValue);
         /// <summary>
         /// Specifies the granularity that the value must adhere to.
         /// If set to 0 no stepping is implied and any value in the range is allowed.
@@ -227,7 +217,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _primaryTicks = 0;
 
-        partial void OnPrimaryTicksChanging(ref double newValue);
         /// <summary>
         /// The number of primary ticks. It defaults to 0 which means no primary ticks are displayed.
         /// </summary>
@@ -247,7 +236,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _secondaryTicks = 0;
 
-        partial void OnSecondaryTicksChanging(ref double newValue);
         /// <summary>
         /// The number of secondary ticks. It defaults to 0 which means no secondary ticks are displayed.
         /// </summary>
@@ -267,7 +255,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private SliderTickOrientation _tickOrientation = SliderTickOrientation.End;
 
-        partial void OnTickOrientationChanging(ref SliderTickOrientation newValue);
         /// <summary>
         /// Changes the orientation of the ticks.
         /// </summary>
@@ -287,7 +274,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hidePrimaryLabels = false;
 
-        partial void OnHidePrimaryLabelsChanging(ref bool newValue);
         /// <summary>
         /// Hides the primary tick labels.
         /// </summary>
@@ -307,7 +293,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideSecondaryLabels = false;
 
-        partial void OnHideSecondaryLabelsChanging(ref bool newValue);
         /// <summary>
         /// Hides the secondary tick labels.
         /// </summary>
@@ -327,7 +312,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _locale;
 
-        partial void OnLocaleChanging(ref string newValue);
         /// <summary>
         /// The locale used to format the thumb and tick label values in the slider.
         /// </summary>
@@ -347,7 +331,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _valueFormat;
 
-        partial void OnValueFormatChanging(ref string newValue);
         /// <summary>
         /// String format used for the thumb and tick label values in the slider.
         /// </summary>
@@ -367,7 +350,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private SliderTickLabelRotation _tickLabelRotation = SliderTickLabelRotation.Zero;
 
-        partial void OnTickLabelRotationChanging(ref SliderTickLabelRotation newValue);
         /// <summary>
         /// The degrees for the rotation of the tick labels. Defaults to 0.
         /// </summary>
@@ -387,7 +369,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbNumberFormatSpecifier _valueFormatOptions;
 
-        partial void OnValueFormatOptionsChanging(ref IgbNumberFormatSpecifier newValue);
         /// <summary>
         /// Number format options used for the thumb and tick label values in the slider.
         /// </summary>
@@ -406,25 +387,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameSliderBase(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSliderBase(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -434,13 +396,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbSliderBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSliderBase(ser);
 
             if (IsPropDirty("Min"))
             { ser.AddNumberProp("min", this._min); }

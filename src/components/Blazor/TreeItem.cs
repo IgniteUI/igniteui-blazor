@@ -7,18 +7,22 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbTreeItem : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTreeItem"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             ModuleLoader.Load(IgBlazor, "WebTreeModule");
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -27,6 +31,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -35,6 +40,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -43,22 +49,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTreeItem() : base()
-        {
-            OnCreatedIgbTreeItem();
-
-        }
-
-        partial void OnCreatedIgbTreeItem();
-
         private IgbTreeItem _parent;
 
-        partial void OnParentChanging(ref IgbTreeItem newValue);
         /// <summary>
         /// The parent item of the current tree item (if any)
         /// </summary>
@@ -78,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _level = 0;
 
-        partial void OnLevelChanging(ref double newValue);
         /// <summary>
         /// The depth of the item, relative to the root.
         /// </summary>
@@ -98,7 +95,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The tree item label.
         /// </summary>
@@ -118,7 +114,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _expanded = false;
 
-        partial void OnExpandedChanging(ref bool newValue);
         /// <summary>
         /// The tree item expansion state.
         /// </summary>
@@ -138,7 +133,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _active = false;
 
-        partial void OnActiveChanging(ref bool newValue);
         /// <summary>
         /// Marks the item as the tree's active item.
         /// </summary>
@@ -158,7 +152,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Get/Set whether the tree item is disabled. Disabled items are ignored for user interactions.
         /// </summary>
@@ -178,7 +171,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// The tree item selection state.
         /// </summary>
@@ -198,7 +190,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _loading = false;
 
-        partial void OnLoadingChanging(ref bool newValue);
         /// <summary>
         /// To be used for load-on-demand scenarios in order to specify whether the item is loading data.
         /// </summary>
@@ -218,7 +209,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private object _value;
 
-        partial void OnValueChanging(ref object newValue);
         /// <summary>
         /// The value entry that the tree item is visualizing. Required for searching through items.
         /// </summary>
@@ -277,25 +267,6 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameTreeItem(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTreeItem(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -366,13 +337,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("collapse", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbTreeItem(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTreeItem(ser);
 
             if (IsPropDirty("Parent"))
             { ser.AddSerializableProp("parent", this._parent); }

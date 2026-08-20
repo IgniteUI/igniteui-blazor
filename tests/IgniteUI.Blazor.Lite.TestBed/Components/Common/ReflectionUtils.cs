@@ -70,10 +70,23 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             var asm = Assembly.Load("IgniteUI.Blazor.Lite");
             var classes = asm.GetTypes().Where(p =>
                  p.Namespace == "IgniteUI.Blazor.Controls" &&
-                  p.Name.StartsWith("Igb")
+                  p.Name.StartsWith("Igb") &&
+                  p.IsSubclassOf(typeof(BaseRendererControl))
             ).ToList();
 
-            var match = classes.Find(x => x.Name == type);
+            // The names come from TestUtil.GetComponentsForTesting and already carry the
+            // Igb prefix, matching the componentsConfig.json keys.
+            var match = classes.Find(x =>
+            {
+                var name = x.IsGenericType ? x.Name[..x.Name.IndexOf('`')] : x.Name;
+                return name == type;
+            });
+            if (match is not null && match.IsGenericTypeDefinition)
+            {
+                var typeArgs = match.GetGenericArguments();
+                var concreteArgs = typeArgs.Select(_ => typeof(object)).ToArray();
+                match = match.MakeGenericType(concreteArgs);
+            }
             return match;
         }
 

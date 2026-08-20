@@ -11,8 +11,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbHighlight : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebHighlight"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbHighlightModule.IsLoadRequested(IgBlazor))
@@ -21,11 +23,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -34,6 +38,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -42,6 +47,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -50,22 +56,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbHighlight() : base()
-        {
-            OnCreatedIgbHighlight();
-
-        }
-
-        partial void OnCreatedIgbHighlight();
-
         private bool _caseSensitive = false;
 
-        partial void OnCaseSensitiveChanging(ref bool newValue);
         /// <summary>
         /// Whether to match the searched text with case sensitivity in mind.
         /// When <see langword="true"/>, only exact-case occurrences of <see cref="SearchText"/> are highlighted.
@@ -86,7 +84,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _searchText;
 
-        partial void OnSearchTextChanging(ref string newValue);
         /// <summary>
         /// The string to search and highlight in the DOM content of the component.
         /// Setting this property triggers a new search automatically.
@@ -151,25 +148,6 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToDouble(iv);
         }
 
-        partial void FindByNameHighlight(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameHighlight(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -270,13 +248,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("search", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbHighlight(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbHighlight(ser);
 
             if (IsPropDirty("CaseSensitive"))
             { ser.AddBooleanProp("caseSensitive", this._caseSensitive); }

@@ -7,29 +7,23 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCalendarBase : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCalendarBase"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbCalendarBase() : base()
-        {
-            OnCreatedIgbCalendarBase();
-
-        }
-
-        partial void OnCreatedIgbCalendarBase();
-
         private CalendarSelection _selection = CalendarSelection.Single;
 
-        partial void OnSelectionChanging(ref CalendarSelection newValue);
         /// <summary>
         /// Sets the type of selection in the component.
         /// </summary>
@@ -49,7 +43,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _showWeekNumbers = false;
 
-        partial void OnShowWeekNumbersChanging(ref bool newValue);
         /// <summary>
         /// Whether to show the week numbers.
         /// </summary>
@@ -69,7 +62,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private WeekDays _weekStart = WeekDays.Sunday;
 
-        partial void OnWeekStartChanging(ref WeekDays newValue);
         /// <summary>
         /// Gets/Sets the first day of the week.
         /// </summary>
@@ -89,7 +81,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _locale;
 
-        partial void OnLocaleChanging(ref string newValue);
         /// <summary>
         /// Gets/Sets the locale used for formatting and displaying the dates in the component.
         /// </summary>
@@ -109,7 +100,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbCalendarResourceStrings _resourceStrings;
 
-        partial void OnResourceStringsChanging(ref IgbCalendarResourceStrings newValue);
         /// <summary>
         /// The resource strings for localization.
         /// </summary>
@@ -119,7 +109,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._resourceStrings; }
             set
             {
-                OnResourceStringsChanging(ref value);
                 MarkPropDirty("ResourceStrings");
                 if (this._resourceStrings != null)
                 {
@@ -135,7 +124,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangeDescriptor[]? _specialDates;
 
-        partial void OnSpecialDatesChanging(ref IgbDateRangeDescriptor[]? newValue);
         /// <summary>
         /// Gets/Sets the special dates for the component.
         /// </summary>
@@ -155,7 +143,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDateRangeDescriptor[]? _disabledDates;
 
-        partial void OnDisabledDatesChanging(ref IgbDateRangeDescriptor[]? newValue);
         /// <summary>
         /// Gets/Sets the disabled dates for the component.
         /// </summary>
@@ -174,25 +161,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCalendarBase(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCalendarBase(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -202,13 +170,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbCalendarBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCalendarBase(ser);
 
             if (IsPropDirty("Selection"))
             { ser.AddEnumProp("selection", this._selection); }

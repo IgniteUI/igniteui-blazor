@@ -849,7 +849,6 @@ export class Loader {
     if (Loader.marshalByValueSet == null) {
       Loader.marshalByValueSet = new Set<string>();
       //@@MarshalByValue
-      Loader.marshalByValueSet.add('CalendarDate');
       Loader.marshalByValueSet.add('CalendarFormatOptions');
       Loader.marshalByValueSet.add('FocusOptions');
       Loader.marshalByValueSet.add('FormatSpecifier');

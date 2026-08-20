@@ -5,18 +5,22 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbRatingSymbol : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebRatingSymbol"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             ModuleLoader.Load(IgBlazor, "WebRatingModule");
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -25,6 +29,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -33,6 +38,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -41,38 +47,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbRatingSymbol() : base()
-        {
-            OnCreatedIgbRatingSymbol();
-
-        }
-
-        partial void OnCreatedIgbRatingSymbol();
-
-        partial void FindByNameRatingSymbol(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRatingSymbol(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -88,16 +68,6 @@ namespace IgniteUI.Blazor.Controls
         public void ConnectedCallback()
         {
             InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
-        }
-
-        partial void SerializeCoreIgbRatingSymbol(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbRatingSymbol(ser);
-
         }
 
     }

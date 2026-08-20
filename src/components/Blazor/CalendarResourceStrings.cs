@@ -4,19 +4,11 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbCalendarResourceStrings : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCalendarResourceStrings"; } }
-
-        public IgbCalendarResourceStrings() : base()
-        {
-            OnCreatedIgbCalendarResourceStrings();
-
-        }
-
-        partial void OnCreatedIgbCalendarResourceStrings();
 
         private string _selectMonth;
 
-        partial void OnSelectMonthChanging(ref string newValue);
         [Parameter]
         public string SelectMonth
         {
@@ -33,7 +25,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _selectYear;
 
-        partial void OnSelectYearChanging(ref string newValue);
         [Parameter]
         public string SelectYear
         {
@@ -50,7 +41,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _selectDate;
 
-        partial void OnSelectDateChanging(ref string newValue);
         [Parameter]
         public string SelectDate
         {
@@ -67,7 +57,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _selectRange;
 
-        partial void OnSelectRangeChanging(ref string newValue);
         [Parameter]
         public string SelectRange
         {
@@ -84,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _selectedDate;
 
-        partial void OnSelectedDateChanging(ref string newValue);
         [Parameter]
         public string SelectedDate
         {
@@ -101,7 +89,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _startDate;
 
-        partial void OnStartDateChanging(ref string newValue);
         [Parameter]
         public string StartDate
         {
@@ -118,7 +105,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _endDate;
 
-        partial void OnEndDateChanging(ref string newValue);
         [Parameter]
         public string EndDate
         {
@@ -135,7 +121,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _previousMonth;
 
-        partial void OnPreviousMonthChanging(ref string newValue);
         [Parameter]
         public string PreviousMonth
         {
@@ -152,7 +137,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _nextMonth;
 
-        partial void OnNextMonthChanging(ref string newValue);
         [Parameter]
         public string NextMonth
         {
@@ -169,7 +153,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _previousYear;
 
-        partial void OnPreviousYearChanging(ref string newValue);
         [Parameter]
         public string PreviousYear
         {
@@ -186,7 +169,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _nextYear;
 
-        partial void OnNextYearChanging(ref string newValue);
         [Parameter]
         public string NextYear
         {
@@ -203,7 +185,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _previousYears;
 
-        partial void OnPreviousYearsChanging(ref string newValue);
         [Parameter]
         public string PreviousYears
         {
@@ -220,7 +201,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _nextYears;
 
-        partial void OnNextYearsChanging(ref string newValue);
         [Parameter]
         public string NextYears
         {
@@ -237,7 +217,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _weekLabel;
 
-        partial void OnWeekLabelChanging(ref string newValue);
         [Parameter]
         public string WeekLabel
         {
@@ -253,33 +232,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCalendarResourceStrings(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCalendarResourceStrings(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbCalendarResourceStrings(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCalendarResourceStrings(ser);
 
             if (IsPropDirty("SelectMonth"))
             { ser.AddStringProp("selectMonth", this._selectMonth); }

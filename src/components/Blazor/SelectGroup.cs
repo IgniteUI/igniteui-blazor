@@ -7,18 +7,22 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSelectGroup : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSelectGroup"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             ModuleLoader.Load(IgBlazor, "WebSelectModule");
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -27,6 +31,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -35,6 +40,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -43,22 +49,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbSelectGroup() : base()
-        {
-            OnCreatedIgbSelectGroup();
-
-        }
-
-        partial void OnCreatedIgbSelectGroup();
-
         private IgbSelectItem[] _items;
 
-        partial void OnItemsChanging(ref IgbSelectItem[] newValue);
         /// <summary>
         /// All child <see cref="IgbSelectItem"/> components.
         /// </summary>
@@ -78,7 +76,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Whether the group item and all its children are disabled.
         /// </summary>
@@ -97,25 +94,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameSelectGroup(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSelectGroup(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -125,13 +103,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbSelectGroup(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSelectGroup(ser);
 
             if (IsPropDirty("Items"))
             { ser.AddSerializableArrayProp("items", this._items); }

@@ -8,18 +8,22 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbStep : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebStep"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             ModuleLoader.Load(IgBlazor, "WebStepperModule");
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -28,6 +32,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -36,6 +41,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -44,22 +50,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbStep() : base()
-        {
-            OnCreatedIgbStep();
-
-        }
-
-        partial void OnCreatedIgbStep();
-
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is invalid.
         /// Invalid steps are styled with an error state and are not
@@ -81,7 +79,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _active = false;
 
-        partial void OnActiveChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is active.
         /// Active steps are styled with an active state and their content is visible.
@@ -102,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _optional = false;
 
-        partial void OnOptionalChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is optional.
         /// Optional steps validity does not affect the default behavior when the stepper is in linear mode i.e.
@@ -124,7 +120,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is disabled.
         /// Disabled steps are styled with a disabled state and are not interactive.
@@ -145,7 +140,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _complete = false;
 
-        partial void OnCompleteChanging(ref bool newValue);
         /// <summary>
         /// Whether the step is completed.
         /// </summary>
@@ -164,25 +158,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameStep(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameStep(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -192,13 +167,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbStep(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbStep(ser);
 
             if (IsPropDirty("Invalid"))
             { ser.AddBooleanProp("invalid", this._invalid); }
