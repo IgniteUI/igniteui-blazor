@@ -8,7 +8,10 @@ namespace IgniteUI.Blazor.Tests;
 /// Tests around <see cref="BaseRendererControl.DisposeAsync"/> — the async disposal
 /// path must be resilient to JS interop failures, since disposal typically runs
 /// while the Blazor circuit / JS runtime is being torn down and any interop call
-/// can legitimately throw.
+/// can legitimately throw. <see cref="BaseRendererControl"/> intentionally does
+/// not implement <see cref="IDisposable"/> per Blazor guidance
+/// (https://learn.microsoft.com/aspnet/core/blazor/components/component-disposal):
+/// when both are implemented the framework only invokes the async overload.
 /// </summary>
 public class BaseRendererControlDisposalTests : BlazorComponentTestBase
 {
@@ -103,74 +106,4 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         var ex = await Record.ExceptionAsync(async () => await instance.DisposeAsync());
         Assert.Null(ex);
     }
-
-    [Fact]
-    public void Dispose_WhenInteropThrowsJSException_DoesNotThrow()
-    {
-        var cut = Render<IgbButton>();
-        var instance = cut.Instance;
-
-        JSInterop.Setup<object>("igSendMessage", _ => true)
-            .SetException(new JSException("simulated JS failure during cleanup"));
-
-        var ex = Record.Exception(() => ((IDisposable)instance).Dispose());
-        Assert.Null(ex);
-    }
-
-    [Fact]
-    public void Dispose_WhenCircuitDisconnected_DoesNotThrow()
-    {
-        var cut = Render<IgbButton>();
-        var instance = cut.Instance;
-
-        JSInterop.Setup<object>("igSendMessage", _ => true)
-            .SetException(new JSDisconnectedException("circuit gone"));
-
-        var ex = Record.Exception(() => ((IDisposable)instance).Dispose());
-        Assert.Null(ex);
-    }
-
-    [Fact]
-    public void Dispose_WhenUnexpectedExceptionFromInterop_IsSwallowed()
-    {
-        // The synchronous path is fire-and-forget; the catch-all inside
-        // TrySendCleanupAsync must prevent an UnobservedTaskException from ever
-        // being surfaced by the ignored Task.
-        var cut = Render<IgbButton>();
-        var instance = cut.Instance;
-
-        JSInterop.Setup<object>("igSendMessage", _ => true)
-            .SetException(new InvalidOperationException("unexpected interop failure"));
-
-        var ex = Record.Exception(() => ((IDisposable)instance).Dispose());
-        Assert.Null(ex);
-    }
-
-    [Fact]
-    public void Dispose_CalledTwice_IsIdempotent()
-    {
-        var cut = Render<IgbButton>();
-        var instance = (IDisposable)cut.Instance;
-
-        instance.Dispose();
-
-        var ex = Record.Exception(() => instance.Dispose());
-        Assert.Null(ex);
-    }
-
-    [Fact]
-    public async Task Dispose_ThenDisposeAsync_IsIdempotent()
-    {
-        // Sync-then-async: the async path must observe the disposedValue flag
-        // set by Dispose and return without re-entering cleanup.
-        var cut = Render<IgbButton>();
-        var instance = cut.Instance;
-
-        ((IDisposable)instance).Dispose();
-
-        var ex = await Record.ExceptionAsync(async () =>
-            await ((IAsyncDisposable)instance).DisposeAsync());
-        Assert.Null(ex);
-    }
-
 }

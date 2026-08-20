@@ -31,7 +31,7 @@ namespace IgniteUI.Blazor.Controls
         Queued
     }
 
-    public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IDisposable, IAsyncDisposable
+    public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
     {
         private IIgniteUIBlazor _igBlazor;
         [Inject]
@@ -3135,29 +3135,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private bool _shouldReevaluateRuntime = false;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposedValue || !disposing)
-            {
-                return;
-            }
 
-            disposedValue = true;
-            _shouldReevaluateRuntime = true;
-            try
-            {
-                // Fire-and-forget, but observed: TrySendCleanupAsync never throws,
-                // so the returned Task cannot surface as an UnobservedTaskException.
-                _ = TrySendCleanupAsync();
-            }
-            finally
-            {
-                _shouldReevaluateRuntime = false;
-                _objRef?.Dispose();
-            }
-        }
-
-        public async ValueTask DisposeAsync()
+        public virtual async ValueTask DisposeAsync()
         {
             if (disposedValue)
             {
@@ -3176,29 +3155,6 @@ namespace IgniteUI.Blazor.Controls
                 _objRef?.Dispose();
             }
 
-            // Invoke IDisposable.Dispose on the actual runtime type so derived
-            // classes that re-implement IDisposable (method-hiding pattern for
-            // parent-collection cleanup on IgbTab / IgbTreeItem / IgbTile /
-            // IgbSelectItem / IgbDropdownItem / IgbAccordion) still get their
-            // cleanup called when Blazor prefers the async disposal path.
-            // Base Dispose(bool) is a no-op at this point (disposedValue is set).
-            try
-            {
-                ((IDisposable)this).Dispose();
-            }
-            catch (ObjectDisposedException ex)
-            {
-                // Underlying handle/object was already disposed (double-dispose race
-                // between sync and async disposal paths). Intentionally swallowed.
-                Debug.WriteLine($"[IgniteUI.Blazor] DisposeAsync: subclass Dispose observed an already-disposed target; ignored. {ex.Message}");
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Typical during parent-collection cleanup when the parent is mid-
-                // enumeration or already torn down. Intentionally swallowed.
-                Debug.WriteLine($"[IgniteUI.Blazor] DisposeAsync: subclass Dispose reported invalid state; ignored. {ex.Message}");
-
-            }
             GC.SuppressFinalize(this);
         }
 
@@ -3443,11 +3399,6 @@ namespace IgniteUI.Blazor.Controls
             IHandleEvent leftHandle = (IHandleEvent)(eventFields["Receiver"].GetValue(left));
             IHandleEvent rightHandle = (IHandleEvent)(eventFields["Receiver"].GetValue(right));
             return leftDelegate.Equals(rightDelegate) && leftHandle.Equals(rightHandle);
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
         }
     }
 

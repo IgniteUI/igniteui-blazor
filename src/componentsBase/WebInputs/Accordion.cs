@@ -29,7 +29,7 @@ namespace IgniteUI.Blazor.Controls
 
     }
 
-    public partial class IgbExpansionPanel : IDisposable
+    public partial class IgbExpansionPanel
     {
         [CascadingParameter(Name = "AccordionParent")]
         protected BaseRendererControl AccordionParent
@@ -37,13 +37,14 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
-        public void Dispose()
+        public override async ValueTask DisposeAsync()
         {
             if (AccordionParent != null)
             {
                 var sv = (IgbAccordion)AccordionParent;
                 sv.ContentItems.Remove(this);
             }
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
         protected override async Task OnInitializedAsync()

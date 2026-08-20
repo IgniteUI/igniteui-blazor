@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A tab nested in an <see cref="IgbTabs"/> component.
     /// </summary>
-    public partial class IgbTab : BaseRendererControl, IDisposable
+    public partial class IgbTab : BaseRendererControl
     {
         public override string Type { get { return "WebTab"; } }
 
@@ -57,14 +57,14 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
-        public void Dispose()
+        public override async ValueTask DisposeAsync()
         {
             if (TabsParent != null)
             {
                 var sv = (IgbTabs)TabsParent;
                 sv.ContentTabsCollection.Remove(this);
             }
-
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
         protected override async Task OnInitializedAsync()
