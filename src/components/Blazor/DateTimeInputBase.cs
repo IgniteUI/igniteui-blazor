@@ -7,13 +7,16 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbDateTimeInputBase : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDateTimeInputBase"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -22,6 +25,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }

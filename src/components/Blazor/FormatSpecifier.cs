@@ -6,8 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbFormatSpecifier : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "FormatSpecifier"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbFormatSpecifierModule.IsLoadRequested(IgBlazor))
@@ -39,12 +41,14 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToString(iv);
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);
