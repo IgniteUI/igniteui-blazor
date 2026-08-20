@@ -12,9 +12,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbSliderLabelModule.IsLoadRequested(IgBlazor))
+            if (!IgbSliderModule.IsLoadRequested(IgBlazor))
             {
-                IgbSliderLabelModule.Register(IgBlazor);
+                IgbSliderModule.Register(IgBlazor);
             }
         }
 
