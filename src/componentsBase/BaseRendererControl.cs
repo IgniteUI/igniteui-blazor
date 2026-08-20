@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -3136,11 +3137,12 @@ namespace IgniteUI.Blazor.Controls
         private bool _shouldReevaluateRuntime = false;
         protected virtual void Dispose(bool disposing)
         {
-            if (disposedValue)
+            if (disposedValue || !disposing)
             {
                 return;
             }
 
+            disposedValue = true;
             _shouldReevaluateRuntime = true;
             try
             {
@@ -3151,13 +3153,7 @@ namespace IgniteUI.Blazor.Controls
             finally
             {
                 _shouldReevaluateRuntime = false;
-
-                if (disposing && _objRef != null)
-                {
-                    _objRef.Dispose();
-                }
-
-                disposedValue = true;
+                _objRef?.Dispose();
             }
         }
 
@@ -3168,6 +3164,7 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
+            disposedValue = true;
             _shouldReevaluateRuntime = true;
             try
             {
@@ -3176,13 +3173,7 @@ namespace IgniteUI.Blazor.Controls
             finally
             {
                 _shouldReevaluateRuntime = false;
-
-                if (_objRef != null)
-                {
-                    _objRef.Dispose();
-                }
-
-                disposedValue = true;
+                _objRef?.Dispose();
             }
 
             // Invoke IDisposable.Dispose on the actual runtime type so derived
@@ -3195,11 +3186,19 @@ namespace IgniteUI.Blazor.Controls
             {
                 ((IDisposable)this).Dispose();
             }
-            catch
+            catch (ObjectDisposedException ex)
             {
-                // Disposal must not throw; subclass cleanup errors are swallowed.
+                // Underlying handle/object was already disposed (double-dispose race
+                // between sync and async disposal paths). Intentionally swallowed.
+                Debug.WriteLine($"[IgniteUI.Blazor] DisposeAsync: subclass Dispose observed an already-disposed target; ignored. {ex.Message}");
             }
+            catch (InvalidOperationException ex)
+            {
+                // Typical during parent-collection cleanup when the parent is mid-
+                // enumeration or already torn down. Intentionally swallowed.
+                Debug.WriteLine($"[IgniteUI.Blazor] DisposeAsync: subclass Dispose reported invalid state; ignored. {ex.Message}");
 
+            }
             GC.SuppressFinalize(this);
         }
 
@@ -3213,23 +3212,59 @@ namespace IgniteUI.Blazor.Controls
 
         private async Task TrySendCleanupAsync()
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
-            {
-                return;
-            }
-
             try
             {
+                if (IgBlazor == null || !IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+                {
+                    return;
+                }
+
                 RendererMessage m = new RendererMessage();
                 m.Type = ("cleanup");
 
                 _messageQueue.Clear();
                 await SendMessageImmediate(m).ConfigureAwait(false);
             }
-            catch (JSDisconnectedException) { }
-            catch (TaskCanceledException) { }
-            catch (OperationCanceledException) { }
-            catch (ObjectDisposedException) { }
+            catch (JSDisconnectedException ex)
+            {
+                // The Blazor circuit is gone (browser tab closed, SignalR connection dropped,
+                // or server-side circuit torn down). The JS side has already been discarded,
+                // so there is nothing to clean up — safe to swallow.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: JS circuit disconnected; cleanup skipped. {ex.Message}");
+            }
+            catch (TaskCanceledException ex)
+            {
+                // The interop call was canceled (typically because the circuit/renderer is
+                // shutting down). No further cleanup is possible or required.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: interop task canceled during shutdown. {ex.Message}");
+            }
+            catch (OperationCanceledException ex)
+            {
+                // Cooperative cancellation from the host (e.g. app stopping). Same rationale
+                // as TaskCanceledException — cleanup is moot once the host is tearing down.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: operation canceled during shutdown. {ex.Message}");
+            }
+            catch (ObjectDisposedException ex)
+            {
+                // The underlying JS runtime / DotNetObjectReference was already disposed
+                // (double-dispose race or host-driven teardown). Nothing left to release.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: target already disposed; cleanup skipped. {ex.Message}");
+            }
+            catch (JSException ex)
+            {
+                // The JS side rejected or errored during cleanup. There is no meaningful
+                // recovery from a JS-side failure in a dispose path, and surfacing it would
+                // either fault the fire-and-forget task or bubble out of DisposeAsync.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: JS interop error during cleanup; ignored. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Final safety net: cleanup is best-effort and must never throw. Anything
+                // reaching here (e.g. reflection failure inside IsRuntimeValid, null-ref from
+                // a partially-initialized component) is logged and swallowed so that neither
+                // the fire-and-forget task nor DisposeAsync can propagate the failure.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: unexpected error during cleanup; ignored. {ex}");
+            }
         }
 
         public async Task<object> SetResourceStringAsync(string grouping, string id, string value)
@@ -3410,15 +3445,9 @@ namespace IgniteUI.Blazor.Controls
             return leftDelegate.Equals(rightDelegate) && leftHandle.Equals(rightHandle);
         }
 
-        ~BaseRendererControl()
-        {
-            Dispose(disposing: false);
-        }
-
         public void Dispose()
         {
             Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 
