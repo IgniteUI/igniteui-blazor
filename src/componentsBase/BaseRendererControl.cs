@@ -458,6 +458,7 @@ namespace IgniteUI.Blazor.Controls
             return info;
         }
 
+        /// <inheritdoc />
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             string spinalName = ToSpinal(this.Type);
@@ -767,6 +768,7 @@ namespace IgniteUI.Blazor.Controls
 
         private DynamicContentHolder Holder { get; set; }
 
+        /// <inheritdoc />
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)

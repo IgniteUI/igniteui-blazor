@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbCalendarResourceStrings : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCalendarResourceStrings"; } }
 
         private string _selectMonth;

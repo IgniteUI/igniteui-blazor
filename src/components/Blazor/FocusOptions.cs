@@ -8,6 +8,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbFocusOptions : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "FocusOptions"; } }
 
         private bool _preventScroll = false;

@@ -19,6 +19,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override async Task OnInitializedAsync()
         {
             if (SelectParent != null)

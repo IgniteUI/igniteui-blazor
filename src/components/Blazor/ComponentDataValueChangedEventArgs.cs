@@ -8,6 +8,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbComponentDataValueChangedEventArgs : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebComponentDataValueChangedEventArgs"; } }
 
         private object _detail;
@@ -39,6 +40,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -48,6 +50,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);
