@@ -2667,6 +2667,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal string ObjectArrayToParam(object[] arr)
         {
+            return ObjectArrayToParam<object>(arr);
+        }
+
+        internal string ObjectArrayToParam<T>(T[] arr)
+        {
             if (arr == null)
             {
                 return null;
@@ -2704,30 +2709,6 @@ namespace IgniteUI.Blazor.Controls
             // {
             //     return null;
             // }
-        }
-
-        internal string ObjectArrayToParam<T>(T[] arr)
-        {
-            if (arr == null)
-            {
-                return null;
-            }
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (Utf8JsonWriter w = new Utf8JsonWriter(ms))
-                {
-                    SerializationContext c = new SerializationContext(w, null);
-                    w.WriteStartArray();
-                    for (int i = 0; i < arr.Length; i++)
-                    {
-                        var val = arr[i];
-                        ObjectToParam(c, val);
-                    }
-                    w.WriteEndArray();
-                    w.Flush();
-                    return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-                }
-            }
         }
 
         internal string StringArrayToString(string[] arr)
@@ -2833,16 +2814,36 @@ namespace IgniteUI.Blazor.Controls
             {
                 return null;
             }
-            val = ConvertReturnValue(val);
+
+            // Fast path: already a typed or resolved array (e.g. passed in as object[] after prior ConvertReturnValue, or after DowncastArray resolved).
+            if (val is T[] tArr)
+            {
+                return tArr;
+            }
+            if (val is object[])
+            {
+                return DowncastArray<T>(val);
+            }
+
+            // Use transformArrays=true so that array elements with uuid/name refs are resolved
+            // to their actual data-source objects before we attempt to cast them.
+            val = ConvertReturnValue(val, transformArrays: true);
+
+            // ConvertReturnValue with transformArrays produces an object[] for Array-typed wrappers;
+            // downcast its elements to T
+            if (val is object[] resolved)
+            {
+                return DowncastArray<T>(resolved);
+            }
+
+            // Fallback: val is a raw JSON string — try direct deserialization for simple value types.
             try
             {
-                var arr = JsonSerializer.Deserialize<T[]>((string)val.ToString(), SerializerOptions);
+                var arr = JsonSerializer.Deserialize<Dictionary<string, object>[]>((string)val.ToString(), SerializerOptions);
                 T[] ret = new T[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
                     Object ele = arr[i];
-                    //Console.WriteLine("converting obj");
-                    //Console.WriteLine(ele);
                     ele = ConvertReturnValue(ele, false, typeGuess);
                     ret[i] = (T)ele;
                 }

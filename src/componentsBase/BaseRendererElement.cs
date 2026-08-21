@@ -714,15 +714,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal string ObjectArrayToParam(object[] arr)
         {
-            EnsureValid();
-            if (CurrParent is BaseRendererElement)
-            {
-                return ((BaseRendererElement)CurrParent).ObjectArrayToParam(arr);
-            }
-            else
-            {
-                return ((BaseRendererControl)CurrParent).ObjectArrayToParam(arr);
-            }
+            return ObjectArrayToParam<object>(arr);
         }
 
         internal string ObjectArrayToParam<T>(T[] arr)
@@ -887,15 +879,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal object ConvertReturnValue(object val, string typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
-            EnsureValid();
-            if (CurrParent is BaseRendererElement)
-            {
-                return ((BaseRendererElement)CurrParent).ConvertReturnValue(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
-            }
-            else
-            {
-                return ((BaseRendererControl)CurrParent).ConvertReturnValue(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
-            }
+            return ConvertReturnValue<object>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
         }
 
         internal object ConvertReturnValue<T>(object val, string typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
