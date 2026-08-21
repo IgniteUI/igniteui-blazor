@@ -43,9 +43,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!value.Equals(_valueChanging))
+                    if (!value.EqualsCompat(_valueChanging))
                     {
                         this.EnsureInputOcurredHandled();
 
