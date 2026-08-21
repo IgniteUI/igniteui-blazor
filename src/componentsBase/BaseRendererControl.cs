@@ -3138,6 +3138,7 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _shouldReevaluateRuntime = false;
 
+        /// <inheritdoc />
         public virtual async ValueTask DisposeAsync()
         {
             if (disposedValue)
