@@ -12,9 +12,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbCardContentModule.IsLoadRequested(IgBlazor))
+            if (!IgbCardModule.IsLoadRequested(IgBlazor))
             {
-                IgbCardContentModule.Register(IgBlazor);
+                IgbCardModule.Register(IgBlazor);
             }
         }
 

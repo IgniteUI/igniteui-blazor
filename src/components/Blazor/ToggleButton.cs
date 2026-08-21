@@ -16,9 +16,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbToggleButtonModule.IsLoadRequested(IgBlazor))
+            if (!IgbButtonGroupModule.IsLoadRequested(IgBlazor))
             {
-                IgbToggleButtonModule.Register(IgBlazor);
+                IgbButtonGroupModule.Register(IgBlazor);
             }
         }
 

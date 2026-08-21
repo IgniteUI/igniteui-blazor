@@ -14,9 +14,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbStepModule.IsLoadRequested(IgBlazor))
+            if (!IgbStepperModule.IsLoadRequested(IgBlazor))
             {
-                IgbStepModule.Register(IgBlazor);
+                IgbStepperModule.Register(IgBlazor);
             }
         }
 
