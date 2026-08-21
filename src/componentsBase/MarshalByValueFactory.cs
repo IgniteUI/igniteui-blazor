@@ -137,6 +137,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal static object CreateInstance(string typeName)
         {
+            return CreateInstance<object>(typeName);
+        }
+
+        internal static object CreateInstance<T>(string typeName)
+        {
             switch (typeName)
             {
                 //@@MarshalByValue
@@ -206,11 +211,11 @@ namespace IgniteUI.Blazor.Controls
                     break;
                 case "ComboChangeEventArgs":
                 case "WebComboChangeEventArgs":
-                    return new IgbComboChangeEventArgs();
+                    return new IgbComboChangeEventArgs<T>();
                     break;
                 case "ComboChangeEventArgsDetail":
                 case "WebComboChangeEventArgsDetail":
-                    return new IgbComboChangeEventArgsDetail();
+                    return new IgbComboChangeEventArgsDetail<T>();
                     break;
                 case "ComponentBoolValueChangedEventArgs":
                 case "WebComponentBoolValueChangedEventArgs":

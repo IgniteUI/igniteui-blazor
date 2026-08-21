@@ -5,20 +5,20 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for the <see cref="IgbCombo{T}.Change"/> event.
     /// </summary>
-    public partial class IgbComboChangeEventArgs : BaseRendererElement
+    public partial class IgbComboChangeEventArgs<T> : BaseRendererElement
     {
         /// <inheritdoc />
         public override string Type { get { return "WebComboChangeEventArgs"; } }
 
         private static bool _marshalByValue = true;
 
-        private IgbComboChangeEventArgsDetail _detail;
+        private IgbComboChangeEventArgsDetail<T> _detail;
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
         /// </summary>
         [Parameter]
-        public IgbComboChangeEventArgsDetail Detail
+        public IgbComboChangeEventArgsDetail<T> Detail
         {
             get { return this._detail; }
             set
@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbComboChangeEventArgsDetail)ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true); }
+            { this.Detail = (IgbComboChangeEventArgsDetail<T>)ConvertReturnValue<T>(args["detail"], "ComboChangeEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

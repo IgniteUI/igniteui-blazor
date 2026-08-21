@@ -1878,6 +1878,10 @@ namespace IgniteUI.Blazor.Controls
 
         internal object ConvertReturnValue(object returnValue, bool transformArrays = false, string typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
+            return ConvertReturnValue<object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+        internal object ConvertReturnValue<T>(object returnValue, bool transformArrays = false, string typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
             try
             {
                 //Console.WriteLine(returnValue.GetType().ToString());
@@ -2038,7 +2042,7 @@ namespace IgniteUI.Blazor.Controls
                                 object o = null;
                                 if (type != null)
                                 {
-                                    o = MarshalByValueFactory.CreateInstance(type);
+                                    o = MarshalByValueFactory.CreateInstance<T>(type);
                                 }
                                 if (o != null)
                                 {
@@ -2702,6 +2706,30 @@ namespace IgniteUI.Blazor.Controls
             // }
         }
 
+        internal string ObjectArrayToParam<T>(T[] arr)
+        {
+            if (arr == null)
+            {
+                return null;
+            }
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (Utf8JsonWriter w = new Utf8JsonWriter(ms))
+                {
+                    SerializationContext c = new SerializationContext(w, null);
+                    w.WriteStartArray();
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        var val = arr[i];
+                        ObjectToParam(c, val);
+                    }
+                    w.WriteEndArray();
+                    w.Flush();
+                    return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }
+        }
+
         internal string StringArrayToString(string[] arr)
         {
             // object jarr = new JSONArray();
@@ -2808,7 +2836,7 @@ namespace IgniteUI.Blazor.Controls
             val = ConvertReturnValue(val);
             try
             {
-                var arr = JsonSerializer.Deserialize<Dictionary<string, object>[]>((string)val.ToString(), SerializerOptions);
+                var arr = JsonSerializer.Deserialize<T[]>((string)val.ToString(), SerializerOptions);
                 T[] ret = new T[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {

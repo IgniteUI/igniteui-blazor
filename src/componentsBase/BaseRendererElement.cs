@@ -725,6 +725,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        internal string ObjectArrayToParam<T>(T[] arr)
+        {
+            EnsureValid();
+            if (CurrParent is BaseRendererElement)
+            {
+                return ((BaseRendererElement)CurrParent).ObjectArrayToParam(arr);
+            }
+            else
+            {
+                return ((BaseRendererControl)CurrParent).ObjectArrayToParam(arr);
+            }
+        }
+
         internal object[] ReturnToObjectArray(Object val)
         {
             EnsureValid();
@@ -882,6 +895,19 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 return ((BaseRendererControl)CurrParent).ConvertReturnValue(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+            }
+        }
+
+        internal object ConvertReturnValue<T>(object val, string typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            EnsureValid();
+            if (CurrParent is BaseRendererElement)
+            {
+                return ((BaseRendererElement)CurrParent).ConvertReturnValue<T>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+            }
+            else
+            {
+                return ((BaseRendererControl)CurrParent).ConvertReturnValue<T>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
         }
 
@@ -1058,6 +1084,7 @@ namespace IgniteUI.Blazor.Controls
         {
 
         }
+
         protected internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
 
