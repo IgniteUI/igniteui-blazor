@@ -27,8 +27,7 @@ Based on `dpetev/event-callback-compare-fix`: its `EventCallbackExtensions.Equal
 |---|---|---|
 | `BaseRendererControl.InvokeSendMessageSync` | IL2026 | Arguments are strings, `DotNetObjectReference`, `ElementReference[]`; the return is only consumed as opaque `JsonElement` — no user types cross the JS interop boundary. |
 | `BaseRendererControl.GetWCEnumTransform` (helper extracted from `BuildSequenceInfo`) | IL2070 | ILLink preserves all fields of kept enum types; enum parameter property types are kept with their declaring component. Validated in the trimmed browser smoke (enum values render as camelCase strings, not numbers). |
-| `RendererSerializer.AddEnumProp` | IL2075 | Same enum-field preservation. |
-| `Utils.TryGetWCEnumName` | IL2070 | Same enum-field preservation. Deliberately suppressed instead of annotated: DAM-annotated *method parameters* on component base classes trigger IL2111 in every consuming app, because `OpenComponent<T>` roots component members "via reflection". |
+| `Utils.TryGetWCEnumName` | IL2070 | Same enum-field preservation. Deliberately suppressed instead of annotated: DAM-annotated *method parameters* on component base classes trigger IL2111 in every consuming app, because `OpenComponent<T>` roots component members "via reflection". (This de-annotation also made a former `AddEnumProp` suppression dead; it was removed.) |
 | `IgniteUIBlazor` ctor (legacy settings `Register` loop) | IL2075 | Reflection over the legacy `WithModulesToLoad` Type collection; the `IgbModuleRef`/collection call shapes are the trim-safe paths — documented in TRIMMING.md. |
 | `IgniteUIBlazor.IsRuntimeValid` | IL2075 | Probes optional `RemoteJSRuntime.IsInitialized`; in supported trim scenarios (WASM, MAUI BlazorWebView) the type doesn't exist and the probe correctly finds nothing. A string `DynamicDependency` can't be used (IL2035 when the Server assembly is absent). |
 | `RuntimeHelper` ctor | IL2075, IL2060, IL2026 | net8-only `InvokeUnmarshalled` probe (API removed from the framework in net9+), preserved via the existing `DynamicDependency`; absence degrades to the raw-pointer `InvokeVoid` path that is the only path on net9+. IL2026: `GetMethods()` reflection-marks the runtime's RUC members (net10 `GetValue`/`SetValue`/…), which the probe never invokes. |
@@ -39,7 +38,7 @@ Based on `dpetev/event-callback-compare-fix`: its `EventCallbackExtensions.Equal
 
 ### Guards & docs
 
-- Library csproj: the full IL2xxx trim-analyzer code range is now `WarningsAsErrors` — newly-added trim-unsafe code fails the build.
+- Trim regression guard: `dotnet_analyzer_diagnostic.category-Trimming.severity = error` (plus `category-SingleFile`) in the repo `.editorconfig` — category bulk-config covers current *and future* IL2xxx codes (no `IL*` wildcard exists; enumerating codes would go stale). Inert outside the library, since only it enables the trim analyzer. Verified: removing a suppression fails the build with `error IL2070`. The suppression policy lives next to `IsTrimmable` in the library csproj. (For comparison, aspnetcore enforces via blanket `-warnAsError` in CI, which this repo's pre-existing CS1591s rule out.)
 - New **`TRIMMING.md`** (linked from README): consumer guidance — preserving data item types (including nested complex types), the trim-safe module registration overload, AOT status.
 - New **`tests/IgniteUI.Blazor.Lite.PublishSmoke`**: Blazor WASM app publishing the library trimmed with `TrimmerSingleWarn=false` + `ILLinkTreatWarningsAsErrors=true`; named publish-scoped so the future AOT pass reuses it.
 

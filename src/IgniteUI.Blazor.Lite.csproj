@@ -34,13 +34,14 @@
     <RepositoryUrl>https://github.com/IgniteUI/igniteui-blazor</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IsTrimmable>true</IsTrimmable>
-    <!-- Keep the library trim-clean: any newly introduced trim-analysis warning fails the build.
+    <!-- The library must stay trim-clean: every trim-analysis diagnostic is an error, enforced
+         by `dotnet_analyzer_diagnostic.category-Trimming.severity = error` in the repo
+         .editorconfig (category bulk-config — covers future IL2xxx codes too).
          Suppression policy: fix the warning if possible (typed JsonTypeInfo, DAM annotations);
          otherwise use [UnconditionalSuppressMessage] on the narrowest member — extract a small
          helper if needed so the justification matches exactly what the member does. Never use
          #pragma for ILxxxx: it silences only the build analyzer and leaves no metadata for
          publish-time trim tooling (ILLink/NativeAOT ILCompiler). -->
-    <WarningsAsErrors>$(WarningsAsErrors);IL2026;IL2032;IL2046;IL2050;IL2055;IL2057;IL2058;IL2059;IL2060;IL2061;IL2062;IL2063;IL2064;IL2065;IL2066;IL2067;IL2068;IL2069;IL2070;IL2071;IL2072;IL2073;IL2074;IL2075;IL2076;IL2077;IL2078;IL2079;IL2080;IL2081;IL2082;IL2083;IL2084;IL2085;IL2086;IL2087;IL2088;IL2089;IL2090;IL2091;IL2092;IL2093;IL2094;IL2095;IL2096;IL2097;IL2098;IL2103;IL2106;IL2107;IL2109;IL2110;IL2111;IL2112;IL2113;IL2114;IL2115;IL2116;IL2117;IL2118;IL2119;IL2120;IL2121;IL2122</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

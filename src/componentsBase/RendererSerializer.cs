@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
@@ -285,7 +284,6 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "The trimmer preserves all fields of enum types that are kept, and any enum value reaching here is of a kept component parameter type.")]
         public void AddEnumProp(string propertyName, Enum value)
         {
             if (_context.Filter != null)
