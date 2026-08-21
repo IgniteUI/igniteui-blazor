@@ -48,4 +48,100 @@ public class InteropEventTests : BlazorComponentTestBase
         // No handler bound — dispatch must be a no-op rather than an error.
         Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Closing");
     }
+
+    /// <summary>
+    /// Regression coverage for <c>BaseRendererControl.ObserveHandlerTask</c>: an async
+    /// <see cref="EventCallback{T}"/> handler that faults *after* an await returns a
+    /// task that completes asynchronously. Without observation those exceptions would
+    /// be silently dropped by the interop dispatch path (which does not itself await
+    /// the returned task). The observer surfaces the fault through the same error
+    /// channel as the interop dispatcher — captured here via <see cref="Console.Out"/>.
+    /// </summary>
+    [Fact]
+    public async Task AsyncHandler_FaultingAfterAwait_IsObservedNotSwallowed()
+    {
+        var gate = new TaskCompletionSource();
+        const string faultMessage = "async handler fault after await";
+
+        var cut = Render<IgbChip>(parameters => parameters
+            .Add(c => c.Select, _ => { })
+            .Add<bool>(c => c.SelectedChanged, async _ =>
+            {
+                await gate.Task;
+                throw new InvalidOperationException(faultMessage);
+            }));
+
+        var originalOut = Console.Out;
+        var writer = new StringWriter();
+        Console.SetOut(writer);
+        try
+        {
+            // Dispatch must not throw — the handler is still awaiting the gate,
+            // so InvokeAsync returns an incomplete task.
+            Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Select", """{"detail": true}""");
+
+            Assert.DoesNotContain(faultMessage, writer.ToString());
+
+            // Release the async handler; ObserveHandlerTask's continuation runs
+            // synchronously (TaskContinuationOptions.ExecuteSynchronously) on the
+            // completing thread and must log the fault.
+            gate.SetResult();
+
+            // Belt-and-braces: if the continuation is deferred, give it a bounded
+            // window so the test stays deterministic without racing forever.
+            for (var i = 0; i < 50 && !writer.ToString().Contains(faultMessage); i++)
+            {
+                await Task.Delay(10);
+            }
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+        }
+
+        Assert.Contains(faultMessage, writer.ToString());
+    }
+
+    /// <summary>
+    /// Negative control for <c>ObserveHandlerTask</c>: a successfully-completing
+    /// async handler must not write anything to the interop error channel. Guards
+    /// against a regression where the observer logs on every completion rather
+    /// than only on faults.
+    /// </summary>
+    [Fact]
+    public async Task AsyncHandler_CompletingSuccessfully_IsNotReportedAsError()
+    {
+        var gate = new TaskCompletionSource();
+        var completed = false;
+
+        var cut = Render<IgbChip>(parameters => parameters
+            .Add(c => c.Select, _ => { })
+            .Add<bool>(c => c.SelectedChanged, async _ =>
+            {
+                await gate.Task;
+                completed = true;
+            }));
+
+        var originalOut = Console.Out;
+        var writer = new StringWriter();
+        Console.SetOut(writer);
+        try
+        {
+            Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Select", """{"detail": true}""");
+            gate.SetResult();
+
+            // Give any (unwanted) continuation a chance to run.
+            for (var i = 0; i < 10 && !completed; i++)
+            {
+                await Task.Delay(10);
+            }
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+        }
+
+        Assert.True(completed);
+        Assert.Equal(string.Empty, writer.ToString());
+    }
 }
