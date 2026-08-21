@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for the <see cref="IgbStep"/> child component of <see cref="IgbStepper"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbStepModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbStepModule
+    public partial class IgbStepModule : IIgbModule
     {
         /// <summary>
         /// No-op.

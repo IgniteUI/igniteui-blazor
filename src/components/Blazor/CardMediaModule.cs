@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for the <see cref="IgbCardMedia"/> child component of <see cref="IgbCard"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbCardMediaModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbCardMediaModule
+    public partial class IgbCardMediaModule : IIgbModule
     {
         /// <summary>
         /// No-op.

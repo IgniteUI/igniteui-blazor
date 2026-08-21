@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for the <see cref="IgbNavDrawerItem"/> child component of <see cref="IgbNavDrawer"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbNavDrawerItemModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbNavDrawerItemModule
+    public partial class IgbNavDrawerItemModule : IIgbModule
     {
         /// <summary>
         /// No-op.

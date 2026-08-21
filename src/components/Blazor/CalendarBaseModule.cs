@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for <see cref="IgbCalendarBase"/>. Registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbCalendarBaseModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbCalendarBaseModule
+    public partial class IgbCalendarBaseModule : IIgbModule
     {
         /// <summary>
         /// No-op.

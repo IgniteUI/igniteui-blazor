@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <!-- Publish-compatibility smoke app: publishes the library under assembly trimming
+       (and, as future work, AOT compilation) and exercises the reflection-adjacent
+       features in the browser. See TRIMMING.md at the repo root. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Surface every ILLink warning individually and fail the publish on any.
+         Linker *analysis* warnings stay suppressed (the Blazor default): the framework's own
+         assemblies emit them under WASM trimming, so unmuzzling drowns the gate in noise we
+         can't fix. The library's analysis cleanliness is enforced at build time instead, via
+         WarningsAsErrors in its csproj; this publish gate catches the rest (e.g. IL2035
+         unresolved DynamicDependency assemblies) plus the browser runtime checks. -->
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\IgniteUI.Blazor.Lite.csproj" />
+  </ItemGroup>
+
+</Project>
