@@ -678,20 +678,6 @@ export class Loader {
         break;
       }
 
-      case 'WebTabModule': {
-        let { IgcTabComponent } = await import('igniteui-webcomponents');
-        let { WebTabDescriptionModule } = await import('igniteui-core/WebTabDescriptionModule');
-
-        this._loadingSet.delete(module);
-
-        IgcTabComponent.register();
-        TypeRegistrar.registerCons('IgcTabComponent', IgcTabComponent);
-
-        WebTabDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-      }
-
       case 'WebTabsModule': {
         let { IgcTabsComponent } = await import('igniteui-webcomponents');
         let { WebTabsDescriptionModule } = await import('igniteui-core/WebTabsDescriptionModule');
