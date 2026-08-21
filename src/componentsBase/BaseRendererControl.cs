@@ -2950,14 +2950,16 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (task.Exception != null)
                 {
-                    throw task.Exception;
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(task.Exception).Throw();
                 }
                 return;
             }
             task.ContinueWith(static t =>
             {
-                Console.WriteLine(t.Exception!.ToString());
-            }, System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted | System.Threading.Tasks.TaskContinuationOptions.ExecuteSynchronously);
+                Console.WriteLine(t.Exception!);
+            }, System.Threading.CancellationToken.None,
+            System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted | System.Threading.Tasks.TaskContinuationOptions.ExecuteSynchronously,
+            System.Threading.Tasks.TaskScheduler.Default);
         }
 
         internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T> onArgs = null) where T : BaseRendererElement, new()
