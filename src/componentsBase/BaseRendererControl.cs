@@ -2836,7 +2836,7 @@ namespace IgniteUI.Blazor.Controls
                 return DowncastArray<T>(resolved);
             }
 
-            // Fallback: val is a raw JSON string — try direct deserialization for simple value types.
+            // Fallback: val is a raw JSON string - try direct deserialization for simple value types.
             try
             {
                 var arr = JsonSerializer.Deserialize<Dictionary<string, object>[]>((string)val.ToString(), SerializerOptions);

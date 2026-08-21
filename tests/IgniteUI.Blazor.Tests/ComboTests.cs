@@ -9,7 +9,7 @@ public class ComboItem
 {
     public required string Text { get; set; }
     public required int Id { get; set; }
-    public string StringId { get; set; }
+    public string? StringId { get; set; }
 }
 
 public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
@@ -291,7 +291,7 @@ public abstract class ComboValueKeyTestsBase<T> : ComponentWithContractTestBase<
     protected static readonly ComboItem Item1 = new() { Id = 1, StringId = "UK01", Text = "First" };
     protected static readonly ComboItem Item2 = new() { Id = 2, StringId = "UK02", Text = "Second" };
 
-    protected static Action<ComponentParameterCollectionBuilder<IgbCombo<T>>> Arrange =>
+    protected virtual Action<ComponentParameterCollectionBuilder<IgbCombo<T>>> Arrange =>
         ps => ps
             .Add(c => c.Data, new[] { Item1, Item2 })
             .Add(c => c.ValueKey, "Id");
@@ -351,6 +351,11 @@ public class ComboValueKeyDoubleTests : ComboValueKeyTestsBase<double>
 
 public class ComboValueKeyStringTests : ComboValueKeyTestsBase<string>
 {
+    protected override Action<ComponentParameterCollectionBuilder<IgbCombo<string>>> Arrange =>
+    ps => ps
+        .Add(c => c.Data, new[] { Item1, Item2 })
+        .Add(c => c.ValueKey, "StringId");
+
     protected override string EventKeyValue => "\"UK02\"";
     protected override string ExpectedKeyValue => "UK02";
     protected override string[] PropValues => ["UK01", "UK03"];
