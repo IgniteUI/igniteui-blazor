@@ -1,21 +1,25 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Provides the module for the <see cref="IgbCardContent"/> child component of <see cref="IgbCard"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbCardContentModule is no longer required, has no effect and can be safely removed.")]
     public partial class IgbCardContentModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebCardContentModule");
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebCardContentModule");
         }
 
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebCardContentModule");
+            return true;
         }
     }
 }

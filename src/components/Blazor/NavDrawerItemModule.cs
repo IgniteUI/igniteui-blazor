@@ -1,21 +1,25 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Provides the module for the <see cref="IgbNavDrawerItem"/> child component of <see cref="IgbNavDrawer"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbNavDrawerItemModule is no longer required, has no effect and can be safely removed.")]
     public partial class IgbNavDrawerItemModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebNavDrawerItemModule");
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebNavDrawerItemModule");
         }
 
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebNavDrawerItemModule");
+            return true;
         }
     }
 }
