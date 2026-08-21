@@ -72,7 +72,7 @@ public class InteropEventTests : BlazorComponentTestBase
             }));
 
         var originalOut = Console.Out;
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         Console.SetOut(writer);
         try
         {
@@ -123,7 +123,7 @@ public class InteropEventTests : BlazorComponentTestBase
             }));
 
         var originalOut = Console.Out;
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         Console.SetOut(writer);
         try
         {
