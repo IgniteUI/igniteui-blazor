@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
@@ -163,11 +162,6 @@ namespace IgniteUI.Blazor.Controls
         private bool _serializeDirty = false;
 
         protected string _name = Guid.NewGuid().ToString();
-
-        /**
-         * Cache the delegate and receiver field of each EventCallback type for increased performance when comparing.
-         */
-        protected Dictionary<Type, Dictionary<string, FieldInfo>> eventCallbacksCache = new Dictionary<Type, Dictionary<string, FieldInfo>>();
 
         [Parameter]
         public string Name
@@ -1100,14 +1094,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        /**
-         * Workaround for comparing EventCallbacks correctly. It has been fixed only in .net 9 sadly. See: https://github.com/dotnet/aspnetcore/issues/53361
-         * Basically access the Delegate and Receiver property that is not public for each callback and evaluate them manually.
-         */
-        protected static bool CompareEventCallbacks<T>(T left, T right, ref Dictionary<Type, Dictionary<string, FieldInfo>> eventFieldsDictionary)
-        {
-            return BaseRendererControl.CompareEventCallbacks(left, right, ref eventFieldsDictionary);
-        }
     }
 
 }
