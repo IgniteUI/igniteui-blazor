@@ -38,6 +38,7 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
+        /// <inheritdoc/>
         public override async ValueTask DisposeAsync()
         {
             if (AccordionParent != null)
