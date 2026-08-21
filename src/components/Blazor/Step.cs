@@ -14,7 +14,10 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            ModuleLoader.Load(IgBlazor, "WebStepperModule");
+            if (!IgbStepperModule.IsLoadRequested(IgBlazor))
+            {
+                IgbStepperModule.Register(IgBlazor);
+            }
         }
 
         /// <inheritdoc />

@@ -11,7 +11,10 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            ModuleLoader.Load(IgBlazor, "WebDropdownModule");
+            if (!IgbDropdownModule.IsLoadRequested(IgBlazor))
+            {
+                IgbDropdownModule.Register(IgBlazor);
+            }
         }
 
         /// <inheritdoc />

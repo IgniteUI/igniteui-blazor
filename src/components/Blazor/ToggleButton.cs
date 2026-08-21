@@ -16,7 +16,10 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            ModuleLoader.Load(IgBlazor, "WebButtonGroupModule");
+            if (!IgbButtonGroupModule.IsLoadRequested(IgBlazor))
+            {
+                IgbButtonGroupModule.Register(IgBlazor);
+            }
         }
 
         /// <inheritdoc />
