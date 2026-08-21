@@ -9,6 +9,7 @@ public class ComboItem
 {
     public required string Text { get; set; }
     public required int Id { get; set; }
+    public string? StringId { get; set; }
 }
 
 public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
@@ -284,44 +285,79 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     }
 }
 
-// TODO: Mismatched T=int inbound handling (T[])DowncastArray<T>(Detail.NewValue) for
-// two-way Value propagation: a mismatched T (e.g. the item type on a keyed combo)
-// throws InvalidCastException — swallowed by OnRaiseEvent, so delivery silently dies;
-// and numeric keys decode as JSON numbers → boxed double, so T=int fails the unbox
-// cast too — numeric keys need T=double (or object).
-public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>>
+public abstract class ComboValueKeyTestsBase<T> : ComponentWithContractTestBase<IgbCombo<T>>
+    where T : notnull
 {
+    protected static readonly ComboItem Item1 = new() { Id = 1, StringId = "UK01", Text = "First" };
+    protected static readonly ComboItem Item2 = new() { Id = 2, StringId = "UK02", Text = "Second" };
 
-    private static readonly ComboItem _item1 = new() { Id = 1, Text = "First" };
-    private static readonly ComboItem _item2 = new() { Id = 2, Text = "Second" };
-
-    static readonly Action<ComponentParameterCollectionBuilder<IgbCombo<double>>> arrange =
+    protected virtual Action<ComponentParameterCollectionBuilder<IgbCombo<T>>> Arrange =>
         ps => ps
-            .Add(c => c.Data, new[] { _item1, _item2 })
+            .Add(c => c.Data, new[] { Item1, Item2 })
             .Add(c => c.ValueKey, "Id");
 
-    protected override ComponentContract<IgbCombo<double>> InteropContract { get; } = new ComponentContract<IgbCombo<double>>()
-        .Event(c => c.Change,
-            arrange,
-            argsJson: FromRender.Of((interop, cut) => ComboTests.ChangeDetail("2", ComboTests.UuidRef(interop, cut, 1))),
-            assert: (cut, args) =>
-            {
-                Assert.Equal(2.0, Assert.Single(args.Detail.NewValue)); // numbers decode as double
-                Assert.Same(_item2, Assert.Single(args.Detail.Items));
-                // Two-way Value propagation through the generated wrapper works when T
-                // matches the key value type.
-                Assert.Equal(2.0, Assert.Single(cut.Instance.Value));
-            })
-        // A value-type value array (double[] here) crosses as plain JSON numbers — the keys
-        // themselves, no data-source refs, since a keyed combo's value is the key.
-        .Prop(c => c.Value,
-            value: [1, 3],
-            arrange: arrange,
-            wire: new RawJson("[1, 3]"));
+    protected abstract string EventKeyValue { get; }
+
+    protected abstract T ExpectedKeyValue { get; }
+
+    protected abstract T[] PropValues { get; }
+
+    protected abstract string ExpectedValue { get; }
+
+    protected override ComponentContract<IgbCombo<T>> InteropContract => BuildContract();
+
+    private ComponentContract<IgbCombo<T>> BuildContract() =>
+        new ComponentContract<IgbCombo<T>>()
+            .Event(c => c.Change,
+                Arrange,
+                argsJson: FromRender.Of((interop, cut) => ComboTests.ChangeDetail(EventKeyValue, ComboTests.UuidRef(interop, cut, 1))),
+                assert: (cut, args) =>
+                {
+                    Assert.Equal(ExpectedKeyValue, Assert.Single(args.Detail.NewValue));
+                    Assert.Same(Item2, Assert.Single(args.Detail.Items));
+                    // Two-way Value propagation through the generated wrapper works when T
+                    // matches the key value type.
+                    Assert.Equal(ExpectedKeyValue, Assert.Single(cut.Instance.Value));
+                })
+            // A value-type value array crosses as plain JSON numbers — the keys
+            // themselves, no data-source refs, since a keyed combo's value is the key.
+            .Prop(c => c.Value,
+                value: PropValues,
+                arrange: Arrange,
+                wire: new RawJson(ExpectedValue));
 
     [Fact]
     public void Props_FollowContract() => VerifyPropContract();
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+}
+
+public class ComboValueKeyIntTests : ComboValueKeyTestsBase<int>
+{
+    protected override string EventKeyValue => "2";
+    protected override int ExpectedKeyValue => 2;
+    protected override int[] PropValues => [1, 3];
+    protected override string ExpectedValue => "[1, 3]";
+}
+
+public class ComboValueKeyDoubleTests : ComboValueKeyTestsBase<double>
+{
+    protected override string EventKeyValue => "2";
+    protected override double ExpectedKeyValue => 2;
+    protected override double[] PropValues => [1, 3];
+    protected override string ExpectedValue => "[1, 3]";
+}
+
+public class ComboValueKeyStringTests : ComboValueKeyTestsBase<string>
+{
+    protected override Action<ComponentParameterCollectionBuilder<IgbCombo<string>>> Arrange =>
+    ps => ps
+        .Add(c => c.Data, new[] { Item1, Item2 })
+        .Add(c => c.ValueKey, "StringId");
+
+    protected override string EventKeyValue => "\"UK02\"";
+    protected override string ExpectedKeyValue => "UK02";
+    protected override string[] PropValues => ["UK01", "UK03"];
+    protected override string ExpectedValue => """["UK01", "UK03"]""";
 }

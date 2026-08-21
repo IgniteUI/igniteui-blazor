@@ -835,17 +835,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComboChangeEventArgs>? _change = null;
+        private EventCallback<IgbComboChangeEventArgs<T>>? _change = null;
 
         /// <summary>
         /// Emitted when the control's selection has changed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComboChangeEventArgs> Change
+        public EventCallback<IgbComboChangeEventArgs<T>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbComboChangeEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbComboChangeEventArgs<T>>.Empty;
             }
             set
             {
@@ -854,7 +854,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComboChangeEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComboChangeEventArgs<T>>(this.Name, "Change", value, (args) =>
                         {
                             var newValueValue = default(T[]);
 
@@ -892,7 +892,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComboChangeEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComboChangeEventArgs<T>>(this.Name, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -903,9 +903,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbComboChangeEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbComboChangeEventArgs<T>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbComboChangeEventArgs>(null, (Action<IgbComboChangeEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbComboChangeEventArgs<T>>(null, (Action<IgbComboChangeEventArgs<T>>)((e) => { }));
                 this._change = null;
             }
         }
