@@ -9,6 +9,7 @@ namespace IgniteUI.Blazor.Controls
         [Inject]
         private ILogger<IgbRating> Logger { get; set; } = default;
 
+        /// <inheritdoc />
         public override Task SetParametersAsync(ParameterView parameters)
         {
             // Params are case-insensitive & can't keep old name as deprecated,

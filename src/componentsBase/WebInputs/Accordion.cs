@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbAccordion
     {
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get
@@ -46,6 +47,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override async Task OnInitializedAsync()
         {
             if (AccordionParent != null)

@@ -4,13 +4,16 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbInputBase : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebInputBase"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -19,6 +22,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
@@ -296,9 +300,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _inputOcurred, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_inputOcurred))
                     {
                         _inputOcurred = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", value, (args) =>
@@ -371,9 +375,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
@@ -443,9 +447,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);

@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbAccordion : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebAccordion"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbAccordionModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,6 +53,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -72,6 +79,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         public override object FindByName(string name)
         {
             var baseResult = base.FindByName(name);
@@ -175,9 +183,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
                         this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", value);
@@ -247,9 +255,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
                         this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", value);
@@ -319,9 +327,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
                         this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", value);
@@ -391,9 +399,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
                         this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", value);

@@ -2,6 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbSelect
     {
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get

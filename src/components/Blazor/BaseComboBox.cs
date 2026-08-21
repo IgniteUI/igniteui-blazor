@@ -7,13 +7,16 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbBaseComboBox : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebBaseComboBox"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
