@@ -1867,7 +1867,7 @@ namespace IgniteUI.Blazor.Controls
                 var ret = new T[objArr.Length];
                 for (var i = 0; i < objArr.Length; i++)
                 {
-                    ret[i] = (T)objArr[i];
+                    ret[i] = (T)Convert.ChangeType(objArr[i], typeof(T));
                 }
 
                 return ret;
