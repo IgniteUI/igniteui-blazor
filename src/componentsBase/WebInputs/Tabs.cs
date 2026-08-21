@@ -29,10 +29,7 @@ namespace IgniteUI.Blazor.Controls
                 if (!EventCallback<bool>.Empty.Equals(item.SelectedChanged))
                 {
                     var task = item.SelectedChanged.InvokeAsync(item.Selected);
-                    if (task.Exception != null)
-                    {
-                        throw task.Exception;
-                    }
+                    ObserveHandlerTask(task);
                 }
             }
 
