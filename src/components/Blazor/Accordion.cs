@@ -183,9 +183,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
                         this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", value);
@@ -255,9 +255,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
                         this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", value);
@@ -327,9 +327,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
                         this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", value);
@@ -399,9 +399,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
                         this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", value);

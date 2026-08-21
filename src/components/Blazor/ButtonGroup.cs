@@ -191,9 +191,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _select, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_select))
                     {
                         _select = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", value);
@@ -263,9 +263,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _deselect, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_deselect))
                     {
                         _deselect = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", value);

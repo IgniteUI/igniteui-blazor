@@ -295,9 +295,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTabComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", value, (args) =>
