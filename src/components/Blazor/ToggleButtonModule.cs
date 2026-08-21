@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for the <see cref="IgbToggleButton"/> child component of <see cref="IgbButtonGroup"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbToggleButtonModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbToggleButtonModule
+    public partial class IgbToggleButtonModule : IIgbModule
     {
         /// <summary>
         /// No-op.

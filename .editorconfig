@@ -330,6 +330,16 @@ dotnet_diagnostic.IDE0005.severity = warning
 # end_of_line = crlf
 # charset = utf-8
 
+#### Trimming ####
+
+# REPO: keep the library trim-clean — every trim-analysis diagnostic (IL2xxx) is an error.
+# Category bulk-config covers current and future codes (no IL* wildcard exists); the trim
+# analyzer only runs in projects that enable it (IsTrimmable in the library csproj), so this
+# is inert elsewhere. Suppression policy lives next to IsTrimmable in the library csproj.
+# For future AOT work: dotnet_analyzer_diagnostic.category-AOT.severity = error
+dotnet_analyzer_diagnostic.category-Trimming.severity = error
+dotnet_analyzer_diagnostic.category-SingleFile.severity = error
+
 #### Generated code — keep LAST so it overrides all sections above ####
 
 # Generated TS interop sources (ingested; tab-indented) — leave untouched so

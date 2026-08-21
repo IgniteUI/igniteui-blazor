@@ -25,21 +25,27 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </remarks>
         /// <param name="collection">The service collection to add the runtime to.</param>
         /// <param name="modulesToLoad">
-        /// Client resource module types to preload, such as <see cref="IgbTreeModule"/>.
+        /// Client resource modules to preload, such as <c>typeof(IgbTreeModule)</c> (module types
+        /// convert implicitly to <see cref="IgbModuleRef"/>); the types must implement
+        /// <see cref="IIgbModule"/>. The typed reference keeps the registration trim-safe.
         /// </param>
         /// <returns>The same service collection, so further calls can be chained.</returns>
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddIgniteUIBlazor(this Microsoft.Extensions.DependencyInjection.IServiceCollection collection,
-            params Type[] modulesToLoad)
+            params IgbModuleRef[] modulesToLoad)
         {
-            // Snapshot the caller's array immediately so any later mutation has no effect.
-            Type[] snapshot = modulesToLoad != null && modulesToLoad.Length > 0 ? [.. modulesToLoad] : [];
+            // Registrations are resolved immediately, so any later mutation of the caller's array has no effect.
+            var modules = new IgbModuleCollection();
+            foreach (var moduleRef in modulesToLoad ?? [])
+            {
+                modules.Add(moduleRef);
+            }
 
             var s = collection.AddScoped(
                 typeof(IIgniteUIBlazorSettings),
                 (sp) =>
                 {
                     var bs = new IgniteUIBlazorSettings();
-                    bs = bs.WithModulesToLoad(snapshot.Length > 0 ? new ReadOnlyCollection<Type>(snapshot) : null);
+                    bs = bs.WithModuleRegistrations(modules.Registrations.Count > 0 ? modules.Registrations : null);
                     return bs;
                 });
 
@@ -66,27 +72,112 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="collection">The service collection to add the runtime to.</param>
         /// <param name="settings">
         /// Runtime settings controlling how data is marshalled and serialized to the client.
-        /// Modules the settings already carry are kept, with <paramref name="modulesToLoad"/> added
-        /// to them.
+        /// Modules and registrations the settings already carry are kept, with
+        /// <paramref name="modulesToLoad"/> added to them.
         /// </param>
         /// <param name="modulesToLoad">
-        /// Client resource module types to preload, such as <see cref="IgbTreeModule"/>.
+        /// Client resource modules to preload, such as <c>typeof(IgbTreeModule)</c> (module types
+        /// convert implicitly to <see cref="IgbModuleRef"/>); the types must implement
+        /// <see cref="IIgbModule"/>. The typed reference keeps the registration trim-safe.
         /// </param>
         /// <returns>The same service collection, so further calls can be chained.</returns>
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddIgniteUIBlazor(this Microsoft.Extensions.DependencyInjection.IServiceCollection collection,
             IIgniteUIBlazorSettings settings,
-            params Type[] modulesToLoad)
+            params IgbModuleRef[] modulesToLoad)
         {
+            var modules = new IgbModuleCollection();
+            foreach (var moduleRef in modulesToLoad ?? [])
+            {
+                modules.Add(moduleRef);
+            }
+
             var s = collection.AddScoped(
                 typeof(IIgniteUIBlazorSettings),
                 (sp) =>
                 {
                     var bs = new IgniteUIBlazorSettings(settings);
-                    // The params add to whatever the settings already carry rather than replacing them
-                    Type[] modules = [.. (settings?.ModulesToLoad ?? Enumerable.Empty<Type>())
-                        .Concat(modulesToLoad ?? Enumerable.Empty<Type>())
-                        .Distinct()];
-                    bs = bs.WithModulesToLoad(modules.Length > 0 ? new ReadOnlyCollection<Type>(modules) : null);
+                    // The params add to whatever registrations the settings already carry rather than replacing them
+                    var merged = (settings?.ModuleRegistrations ?? Enumerable.Empty<Action<IIgniteUIBlazor>>())
+                        .Concat(modules.Registrations)
+                        .ToList();
+                    bs = bs.WithModuleRegistrations(merged.Count > 0 ? merged : null);
+                    return bs;
+                });
+
+            return s.AddScoped(
+                typeof(IIgniteUIBlazor),
+                typeof(IgniteUIBlazor));
+        }
+
+        /// <summary>
+        /// Registers the Ignite UI Blazor runtime, preloading client resource modules through a
+        /// trim-safe module collection.
+        /// </summary>
+        /// <remarks>
+        /// Unlike the <see cref="Type"/>-based overloads, modules added here register through their
+        /// static <c>Register</c> method without reflection, so registration keeps working in
+        /// applications published with assembly trimming.
+        /// </remarks>
+        /// <param name="collection">The service collection to add the runtime to.</param>
+        /// <param name="configureModules">
+        /// Configures the modules to preload, e.g. <c>m => m.Add&lt;IgbTreeModule&gt;()</c>.
+        /// </param>
+        /// <returns>The same service collection, so further calls can be chained.</returns>
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddIgniteUIBlazor(this Microsoft.Extensions.DependencyInjection.IServiceCollection collection,
+            Action<IgbModuleCollection> configureModules)
+        {
+            var modules = new IgbModuleCollection();
+            configureModules?.Invoke(modules);
+
+            var s = collection.AddScoped(
+                typeof(IIgniteUIBlazorSettings),
+                (sp) =>
+                {
+                    var bs = new IgniteUIBlazorSettings();
+                    bs = bs.WithModuleRegistrations(modules.Registrations.Count > 0 ? modules.Registrations : null);
+                    return bs;
+                });
+
+            return s.AddScoped(
+                typeof(IIgniteUIBlazor),
+                typeof(IgniteUIBlazor));
+        }
+
+        /// <summary>
+        /// Registers the Ignite UI Blazor runtime with the given settings, preloading client
+        /// resource modules through a trim-safe module collection.
+        /// </summary>
+        /// <remarks>
+        /// Unlike the <see cref="Type"/>-based overloads, modules added here register through their
+        /// static <c>Register</c> method without reflection, so registration keeps working in
+        /// applications published with assembly trimming. Module registrations the settings already
+        /// carry are kept, with the configured modules added to them.
+        /// </remarks>
+        /// <param name="collection">The service collection to add the runtime to.</param>
+        /// <param name="settings">
+        /// Runtime settings controlling how data is marshalled and serialized to the client.
+        /// </param>
+        /// <param name="configureModules">
+        /// Configures the modules to preload, e.g. <c>m => m.Add&lt;IgbTreeModule&gt;()</c>.
+        /// </param>
+        /// <returns>The same service collection, so further calls can be chained.</returns>
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddIgniteUIBlazor(this Microsoft.Extensions.DependencyInjection.IServiceCollection collection,
+            IIgniteUIBlazorSettings settings,
+            Action<IgbModuleCollection> configureModules)
+        {
+            var modules = new IgbModuleCollection();
+            configureModules?.Invoke(modules);
+
+            var s = collection.AddScoped(
+                typeof(IIgniteUIBlazorSettings),
+                (sp) =>
+                {
+                    var bs = new IgniteUIBlazorSettings(settings);
+                    // The configured modules add to whatever the settings already carry rather than replacing them
+                    var merged = (settings?.ModuleRegistrations ?? Enumerable.Empty<Action<IIgniteUIBlazor>>())
+                        .Concat(modules.Registrations)
+                        .ToList();
+                    bs = bs.WithModuleRegistrations(merged.Count > 0 ? merged : null);
                     return bs;
                 });
 

@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for the <see cref="IgbTab"/> child component of <see cref="IgbTabs"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbTabModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbTabModule
+    public partial class IgbTabModule : IIgbModule
     {
         /// <summary>
         /// No-op.

@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
@@ -29,6 +30,9 @@ namespace IgniteUI.Blazor.Controls
         Queued
     }
 
+    // PublicProperties are required by the BuildSequenceInfo parameter walk; components are only ever
+    // rendered through OpenComponent<T> (DynamicallyAccessedMemberTypes.All), so this adds no real trim cost.
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IDisposable
     {
         private IIgniteUIBlazor _igBlazor;
@@ -289,7 +293,7 @@ namespace IgniteUI.Blazor.Controls
             EnsureSequenceInfo();
 
             var ser = Serialize();
-            var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(ser);
+            var data = JsonSerializer.Deserialize(ser, SerializerContext.DictionaryStringObject);
             Dictionary<string, object> ret = new Dictionary<string, object>();
             foreach (var key in data.Keys)
             {
@@ -426,26 +430,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     if (pType.IsEnum)
                     {
-
-                        foreach (var f in pType.GetFields())
-                        {
-                            if (f.IsPublic && !f.IsSpecialName)
-                            {
-                                foreach (var attr in f.GetCustomAttributes(true))
-                                {
-                                    if (attr.GetType().Name == "WCEnumNameAttribute")
-                                    {
-                                        if (wcEnumTransform == null)
-                                        {
-                                            wcEnumTransform = new Dictionary<string, string>();
-                                        }
-                                        var wc = (WCEnumNameAttribute)attr;
-                                        var wcEnumName = Camelize(wc.Name);
-                                        wcEnumTransform.Add(f.Name.ToLower(), wcEnumName);
-                                    }
-                                }
-                            }
-                        }
+                        wcEnumTransform = GetWCEnumTransform(pType);
                     }
                 }
 
@@ -456,6 +441,34 @@ namespace IgniteUI.Blazor.Controls
             }
 
             return info;
+        }
+
+        // NOTE: enumType stays unannotated on purpose — it comes from PropertyInfo.PropertyType,
+        // which cannot carry annotations; annotating it would only move the warning to the caller.
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "The trimmer preserves all fields of enum types that are kept, and enum parameter property types are kept with their declaring component.")]
+        private Dictionary<string, string> GetWCEnumTransform(Type enumType)
+        {
+            Dictionary<string, string> wcEnumTransform = null;
+            foreach (var f in enumType.GetFields())
+            {
+                if (f.IsPublic && !f.IsSpecialName)
+                {
+                    foreach (var attr in f.GetCustomAttributes(true))
+                    {
+                        if (attr.GetType().Name == "WCEnumNameAttribute")
+                        {
+                            if (wcEnumTransform == null)
+                            {
+                                wcEnumTransform = new Dictionary<string, string>();
+                            }
+                            var wc = (WCEnumNameAttribute)attr;
+                            var wcEnumName = Camelize(wc.Name);
+                            wcEnumTransform.Add(f.Name.ToLower(), wcEnumName);
+                        }
+                    }
+                }
+            }
+            return wcEnumTransform;
         }
 
         /// <inheritdoc />
@@ -635,7 +648,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal Dictionary<string, object>[] DeserializeDictionaryArray(string batch)
         {
-            return JsonSerializer.Deserialize<Dictionary<string, object>[]>(batch, SerializerOptions);
+            return JsonSerializer.Deserialize(batch, SerializerContext.DictionaryStringObjectArray);
         }
 
         private Dictionary<string, DynamicContentInfo> _dynamicContentInfos = new Dictionary<string, DynamicContentInfo>();
@@ -704,7 +717,7 @@ namespace IgniteUI.Blazor.Controls
                         object context = null;
                         if (args != null)
                         {
-                            var argsDic = JsonSerializer.Deserialize<Dictionary<string, object>>(args, SerializerOptions);
+                            var argsDic = JsonSerializer.Deserialize(args, SerializerContext.DictionaryStringObject);
                             context = ConvertReturnValue(argsDic);
                         }
                         dynamicContent.UpdateContext(context);
@@ -957,19 +970,19 @@ namespace IgniteUI.Blazor.Controls
             return InvokeMethodHelperSync(null, methodName, arguments, types, nativeElements);
         }
 
-        private JsonSerializerOptions _serializerOptions = null;
-        private JsonSerializerOptions SerializerOptions
+        private IgbJsonContext _serializerContext = null;
+        private IgbJsonContext SerializerContext
         {
             get
             {
-                if (_serializerOptions == null)
+                if (_serializerContext == null)
                 {
                     var def = IgBlazor.Settings.JsonSerializerOptions;
                     var options = new JsonSerializerOptions();
                     options.MaxDepth = def.MaxDepth;
-                    _serializerOptions = options;
+                    _serializerContext = new IgbJsonContext(options);
                 }
-                return _serializerOptions;
+                return _serializerContext;
             }
         }
 
@@ -1008,7 +1021,7 @@ namespace IgniteUI.Blazor.Controls
             if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
             {
                 var str = ((JsonElement)ret).GetString();
-                var retDict = JsonSerializer.Deserialize<Dictionary<string, object>>(str, SerializerOptions);
+                var retDict = JsonSerializer.Deserialize(str, SerializerContext.DictionaryStringObject);
 
                 if (retDict.ContainsKey("retType") &&
                     retDict["retType"] is JsonElement &&
@@ -1060,7 +1073,7 @@ namespace IgniteUI.Blazor.Controls
             if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
             {
                 var str = ((JsonElement)ret).GetString();
-                var retDict = JsonSerializer.Deserialize<Dictionary<string, object>>(str, SerializerOptions);
+                var retDict = JsonSerializer.Deserialize(str, SerializerContext.DictionaryStringObject);
                 ret = retDict;
 
                 if (retDict.ContainsKey("retType") &&
@@ -1731,19 +1744,25 @@ namespace IgniteUI.Blazor.Controls
             }
 
             string json = m.ToJson();
-            ElementReference[] nativeElements = m.NativeElements;
 
+            //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
+            return InvokeSendMessageSync(json, m.NativeElements);
+        }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Arguments are strings, DotNetObjectReference and ElementReference[]; the return value is only consumed as an opaque JsonElement — no user types cross this boundary.")]
+        private object InvokeSendMessageSync(string json, ElementReference[] nativeElements)
+        {
             if (nativeElements != null)
             {
-                //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-                return this.JsInProcessRuntime.Invoke<object>("igSendMessage", new object[] { this._containerId, json,
-                GetObjectRef(), nativeElements });
+                return this.JsInProcessRuntime.Invoke<object>("igSendMessage",
+                    new object[] { this._containerId, json,
+                    GetObjectRef(), nativeElements });
             }
             else
             {
-                //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-                return this.JsInProcessRuntime.Invoke<object>("igSendMessage", new object[] { this._containerId, json,
-                GetObjectRef()});
+                return this.JsInProcessRuntime.Invoke<object>("igSendMessage",
+                    new object[] { this._containerId, json,
+                    GetObjectRef() });
             }
         }
 
@@ -1828,20 +1847,7 @@ namespace IgniteUI.Blazor.Controls
         {
             //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
 
-            if (nativeElements != null)
-            {
-                JsInProcessRuntime.Invoke<object>("igSendMessage",
-                    new object[] {
-                    this._containerId, json,
-                    GetObjectRef(), nativeElements });
-            }
-            else
-            {
-                JsInProcessRuntime.Invoke<object>("igSendMessage",
-                    new object[] {
-                    this._containerId, json,
-                    GetObjectRef() });
-            }
+            InvokeSendMessageSync(json, nativeElements);
         }
 
         internal object ReturnToPrimitive(object returnValue)
@@ -1886,7 +1892,7 @@ namespace IgniteUI.Blazor.Controls
                     Dictionary<string, object> obj;
                     if (returnValue is String)
                     {
-                        obj = JsonSerializer.Deserialize<Dictionary<string, object>>((string)returnValue, SerializerOptions);
+                        obj = JsonSerializer.Deserialize((string)returnValue, SerializerContext.DictionaryStringObject);
                     }
                     else if (returnValue is JsonElement)
                     {
@@ -1923,7 +1929,7 @@ namespace IgniteUI.Blazor.Controls
                             JsonDocument document = JsonDocument.Parse(str);
                             if (document.RootElement.ValueKind == JsonValueKind.Array)
                             {
-                                returnValue = JsonSerializer.Deserialize<Dictionary<string, object>[]>((string)j.ToString(), SerializerOptions);
+                                returnValue = JsonSerializer.Deserialize((string)j.ToString(), SerializerContext.DictionaryStringObjectArray);
                             }
                             else
                             {
@@ -1934,7 +1940,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             //var str = j.ToString();
                             //Console.WriteLine(j.ToString());
-                            obj = JsonSerializer.Deserialize<Dictionary<string, object>>((string)j.ToString(), SerializerOptions);
+                            obj = JsonSerializer.Deserialize((string)j.ToString(), SerializerContext.DictionaryStringObject);
                         }
                     }
                     else
@@ -2048,7 +2054,7 @@ namespace IgniteUI.Blazor.Controls
                                         var v = ((JsonElement)obj["value"]);
                                         var str = v.ToString();
                                         //Console.WriteLine(str);
-                                        var ev = JsonSerializer.Deserialize<Dictionary<string, object>>(str, SerializerOptions);
+                                        var ev = JsonSerializer.Deserialize(str, SerializerContext.DictionaryStringObject);
                                         ((BaseRendererElement)o).FromEventJson(this, ev);
                                         returnValue = o;
                                     }
@@ -2069,7 +2075,7 @@ namespace IgniteUI.Blazor.Controls
                                         return null;
                                     }
                                     var ret = obj["value"].ToString();
-                                    returnValue = JsonSerializer.Deserialize<Dictionary<string, object>>(ret, SerializerOptions);
+                                    returnValue = JsonSerializer.Deserialize(ret, SerializerContext.DictionaryStringObject);
                                 }
                             }
                             else
@@ -2106,7 +2112,7 @@ namespace IgniteUI.Blazor.Controls
             if (returnValue is JsonElement && ((JsonElement)returnValue).ValueKind == JsonValueKind.String)
             {
                 var str = ((JsonElement)returnValue).GetString();
-                result = JsonSerializer.Deserialize<Dictionary<string, object>>(str, SerializerOptions);
+                result = JsonSerializer.Deserialize(str, SerializerContext.DictionaryStringObject);
 
             }
             InvokeAsync(() =>
@@ -2246,7 +2252,7 @@ namespace IgniteUI.Blazor.Controls
             }
             try
             {
-                var arr = JsonSerializer.Deserialize<object[]>((string)val.ToString(), SerializerOptions);
+                var arr = JsonSerializer.Deserialize((string)val.ToString(), SerializerContext.ObjectArray);
                 DateTime[] ret = new DateTime[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -2601,7 +2607,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal string StringToString(object val)
         {
-            return val == null ? null : JsonSerializer.Serialize(val.ToString(), SerializerOptions);
+            return val == null ? null : JsonSerializer.Serialize(val.ToString(), SerializerContext.String);
             //return val == null ? null : val.ToString();
         }
 
@@ -2715,7 +2721,7 @@ namespace IgniteUI.Blazor.Controls
             // return jarr.toString();
             try
             {
-                return JsonSerializer.Serialize(arr, SerializerOptions);
+                return JsonSerializer.Serialize(arr, SerializerContext.StringArray);
             }
             catch (Exception e)
             {
@@ -2736,7 +2742,7 @@ namespace IgniteUI.Blazor.Controls
             // return jarr.toString();
             try
             {
-                return JsonSerializer.Serialize(arr, SerializerOptions);
+                return JsonSerializer.Serialize(arr, SerializerContext.Int32Array);
             }
             catch (Exception e)
             {
@@ -2757,7 +2763,7 @@ namespace IgniteUI.Blazor.Controls
             // return jarr.toString();
             try
             {
-                return JsonSerializer.Serialize(arr, SerializerOptions);
+                return JsonSerializer.Serialize(arr, SerializerContext.DoubleArray);
             }
             catch (Exception e)
             {
@@ -2778,7 +2784,7 @@ namespace IgniteUI.Blazor.Controls
             }
             try
             {
-                var arr = JsonSerializer.Deserialize<object[]>((string)val.ToString(), SerializerOptions);
+                var arr = JsonSerializer.Deserialize((string)val.ToString(), SerializerContext.ObjectArray);
                 Object[] ret = new Object[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -2808,7 +2814,7 @@ namespace IgniteUI.Blazor.Controls
             val = ConvertReturnValue(val);
             try
             {
-                var arr = JsonSerializer.Deserialize<Dictionary<string, object>[]>((string)val.ToString(), SerializerOptions);
+                var arr = JsonSerializer.Deserialize((string)val.ToString(), SerializerContext.DictionaryStringObjectArray);
                 T[] ret = new T[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -2840,7 +2846,7 @@ namespace IgniteUI.Blazor.Controls
             try
             {
                 var valStr = val.ToString();
-                var arr = JsonSerializer.Deserialize<string[]>((string)valStr, SerializerOptions);
+                var arr = JsonSerializer.Deserialize((string)valStr, SerializerContext.StringArray);
                 string[] ret = new string[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -2864,7 +2870,7 @@ namespace IgniteUI.Blazor.Controls
             val = ConvertReturnValue(val);
             try
             {
-                var arr = JsonSerializer.Deserialize<object[]>((string)val.ToString(), SerializerOptions);
+                var arr = JsonSerializer.Deserialize((string)val.ToString(), SerializerContext.ObjectArray);
                 double[] ret = new double[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -2888,7 +2894,7 @@ namespace IgniteUI.Blazor.Controls
             val = ConvertReturnValue(val);
             try
             {
-                var arr = JsonSerializer.Deserialize<object[]>((string)val.ToString(), SerializerOptions);
+                var arr = JsonSerializer.Deserialize((string)val.ToString(), SerializerContext.ObjectArray);
                 int[] ret = new int[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -3059,13 +3065,13 @@ namespace IgniteUI.Blazor.Controls
                 Object senderObj = null;
                 try
                 {
-                    var obj = JsonSerializer.Deserialize<Dictionary<string, object>>((string)args.ToString(), SerializerOptions);
+                    var obj = JsonSerializer.Deserialize((string)args.ToString(), SerializerContext.DictionaryStringObject);
                     //Console.WriteLine(args.ToString());
 
                     object sender = obj["sender"];
                     if (sender is JsonElement && ((JsonElement)sender).ValueKind == JsonValueKind.String)
                     {
-                        sender = JsonSerializer.Deserialize<Dictionary<string, object>>(((JsonElement)sender).GetString(), SerializerOptions);
+                        sender = JsonSerializer.Deserialize(((JsonElement)sender).GetString(), SerializerContext.DictionaryStringObject);
                     }
 
                     senderObj = ConvertReturnValue(sender);
@@ -3089,7 +3095,7 @@ namespace IgniteUI.Blazor.Controls
                         //Console.WriteLine(doc.RootElement.ValueKind.ToString());
                         if (doc.RootElement.ValueKind == JsonValueKind.Object)
                         {
-                            var dict = JsonSerializer.Deserialize<Dictionary<string, object>>((string)argsString, SerializerOptions);
+                            var dict = JsonSerializer.Deserialize((string)argsString, SerializerContext.DictionaryStringObject);
                             val = dict;
 
                             // Avoid double unwrapping primitive value types. This primarily only applies to events with primitive types for event args which
@@ -3112,7 +3118,7 @@ namespace IgniteUI.Blazor.Controls
                         }
                         else
                         {
-                            val = JsonSerializer.Deserialize<object>((string)argsString, SerializerOptions);
+                            val = JsonSerializer.Deserialize((string)argsString, SerializerContext.Object);
                         }
                     }
                     //Console.WriteLine("calling handler");
@@ -3355,6 +3361,12 @@ namespace IgniteUI.Blazor.Controls
         bool ForceJsonDataMarshalling { get; }
         IgniteUIJsonSerializerOptions JsonSerializerOptions { get; }
         ReadOnlyCollection<Type> ModulesToLoad { get; }
+        /// <summary>
+        /// Module registrations collected through <see cref="IgbModuleCollection"/>; ran when the
+        /// runtime is created. Has a default implementation so existing custom settings
+        /// implementations keep compiling.
+        /// </summary>
+        IReadOnlyList<Action<IIgniteUIBlazor>> ModuleRegistrations => null;
     }
 
     public class IgniteUIBlazorSettings
@@ -3363,12 +3375,18 @@ namespace IgniteUI.Blazor.Controls
         public bool ForceJsonDataMarshalling { get; private set; }
         public IgniteUIJsonSerializerOptions JsonSerializerOptions { get; private set; }
         public ReadOnlyCollection<Type> ModulesToLoad { get; private set; }
+        /// <summary>
+        /// Module registrations collected through <see cref="IgbModuleCollection"/>; ran when the
+        /// runtime is created.
+        /// </summary>
+        public IReadOnlyList<Action<IIgniteUIBlazor>> ModuleRegistrations { get; private set; }
 
         public IgniteUIBlazorSettings()
         {
             ForceJsonDataMarshalling = false;
             JsonSerializerOptions = new IgniteUIJsonSerializerOptions();
             ModulesToLoad = null;
+            ModuleRegistrations = null;
         }
 
         public static IgniteUIBlazorSettings Create()
@@ -3404,11 +3422,22 @@ namespace IgniteUI.Blazor.Controls
             return newSettings;
         }
 
+        /// <summary>
+        /// Returns a copy of the settings carrying the given module registrations.
+        /// </summary>
+        public IgniteUIBlazorSettings WithModuleRegistrations(IReadOnlyList<Action<IIgniteUIBlazor>> moduleRegistrations)
+        {
+            var newSettings = new IgniteUIBlazorSettings(this);
+            newSettings.ModuleRegistrations = moduleRegistrations;
+            return newSettings;
+        }
+
         internal IgniteUIBlazorSettings(IIgniteUIBlazorSettings settings)
         {
             ForceJsonDataMarshalling = settings.ForceJsonDataMarshalling;
             JsonSerializerOptions = new IgniteUIJsonSerializerOptions(settings.JsonSerializerOptions);
             ModulesToLoad = settings.ModulesToLoad;
+            ModuleRegistrations = settings.ModuleRegistrations;
         }
     }
 
@@ -3430,6 +3459,7 @@ namespace IgniteUI.Blazor.Controls
         private bool _isRemoteRuntime = false;
         private System.Reflection.PropertyInfo _remoteRuntimeProp;
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Reflection-based module preload over user-supplied Types; trimmed apps must use the IgbModuleCollection overload of AddIgniteUIBlazor instead, or preserve their module types' Register methods — see TRIMMING.md.")]
         public IgniteUIBlazor(IJSRuntime runtime, IIgniteUIBlazorSettings settings)
         {
             JsRuntime = runtime;
@@ -3453,6 +3483,13 @@ namespace IgniteUI.Blazor.Controls
                                     meth.Invoke(null, new object[] { this });
                                 }
                             }
+                        }
+                    }
+                    if (Settings.ModuleRegistrations != null)
+                    {
+                        foreach (var register in Settings.ModuleRegistrations)
+                        {
+                            register(this);
                         }
                     }
                 }
@@ -3498,6 +3535,7 @@ namespace IgniteUI.Blazor.Controls
             _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the optional RemoteJSRuntime.IsInitialized property. In the supported trimming scenarios (WebAssembly, MAUI BlazorWebView) that runtime type does not exist and the probe correctly finds nothing. Trimmed self-contained Blazor Server publishes could strip the property, but trimming server apps is unsupported by the platform. A string-based DynamicDependency cannot be used: it fails with IL2035 when the Server assembly is absent.")]
         public bool IsRuntimeValid(bool reevaluate = false)
         {
             if (JsRuntime == null)

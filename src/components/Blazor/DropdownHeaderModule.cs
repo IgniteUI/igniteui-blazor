@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for the <see cref="IgbDropdownHeader"/> child component of <see cref="IgbDropdown"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbDropdownHeaderModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbDropdownHeaderModule
+    public partial class IgbDropdownHeaderModule : IIgbModule
     {
         /// <summary>
         /// No-op.

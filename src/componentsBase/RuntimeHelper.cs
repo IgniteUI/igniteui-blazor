@@ -23,6 +23,9 @@ namespace IgniteUI.Blazor.Controls
             "Microsoft.AspNetCore.Components.WebAssembly")]
 #endif
         //[System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicMethods, typeof(WebAssemblyJSRuntime))]
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the optional InvokeUnmarshalled methods (net8-only; removed from the framework in net9+), preserved via the DynamicDependency above on WebAssembly; absence degrades to the raw-pointer InvokeVoid path that is the only path on net9+.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The generic InvokeUnmarshalled instantiation only uses framework and library types that are statically referenced by this constructor.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "GetMethods() reflection-marks the runtime's RequiresUnreferencedCode members (GetValue/SetValue/Invoke/InvokeConstructor); the probe only looks for InvokeUnmarshalled by name and never invokes them.")]
         public RuntimeHelper(IJSRuntime runtime, IIgniteUIBlazor igBlazor)
         {
             _igBlazor = igBlazor;

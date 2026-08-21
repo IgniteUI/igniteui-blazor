@@ -169,6 +169,10 @@ Build and run the Blazor app.
 
 <!-- ![](images/general/getting-started-blazor-card.jpg) -->
 
+### Publishing with trimming
+
+The library is trim-compatible. Applications publishing with `PublishTrimmed=true` (the Blazor WebAssembly default) should read [TRIMMING.md](TRIMMING.md) for the two things that need app-side care: preserving data item types and using the trim-safe module registration overload.
+
 ## Building and Running Locally
 
 **Prerequisites:** [Node.js](https://nodejs.org/) 22 or later.
