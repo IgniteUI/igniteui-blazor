@@ -7,6 +7,8 @@ async function renderComponent(componentName) {
 }
 
 function onAfterRender() {
+  //a flag, so a test can check for load it if it missed the message
+  window.appLoaded = true;
   console.log('App Loaded.');
 }
 

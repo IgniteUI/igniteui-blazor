@@ -41,6 +41,7 @@ namespace IgniteUI.Blazor.Controls
             return array;
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
@@ -52,6 +53,7 @@ namespace IgniteUI.Blazor.Controls
             NotifyParent();
         }
 
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
             var item = this[index];
@@ -64,6 +66,7 @@ namespace IgniteUI.Blazor.Controls
             NotifyParent();
         }
 
+        /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
             base.SetItem(index, item);
@@ -127,6 +130,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override void ClearItems()
         {
             for (var i = 0; i < Count; i++)

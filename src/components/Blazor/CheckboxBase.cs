@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCheckboxBase : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCheckboxBase"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbCheckboxBaseModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -310,9 +317,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<bool>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _checkedChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_checkedChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -372,9 +379,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbCheckboxChangeEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbCheckboxChangeEventArgs>(this.Name, "Change", value, (args) =>
@@ -479,9 +486,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
@@ -551,9 +558,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);

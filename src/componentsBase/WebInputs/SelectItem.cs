@@ -20,6 +20,7 @@ namespace IgniteUI.Blazor.Controls
             await base.DisposeAsync().ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         protected override async Task OnInitializedAsync()
         {
             if (SelectParent != null)

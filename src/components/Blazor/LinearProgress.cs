@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbLinearProgress : IgbProgressBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebLinearProgress"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbLinearProgressModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get

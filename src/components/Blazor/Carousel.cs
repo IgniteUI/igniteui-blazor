@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCarousel : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCarousel"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbCarouselModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,6 +53,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -493,9 +500,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbNumberEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _slideChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_slideChanged))
                     {
                         _slideChanged = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value);
@@ -565,9 +572,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _playing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_playing))
                     {
                         _playing = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value);
@@ -637,9 +644,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _paused, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_paused))
                     {
                         _paused = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value);

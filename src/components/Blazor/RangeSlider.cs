@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbRangeSlider : IgbSliderBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebRangeSlider"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbRangeSliderModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -169,9 +175,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbRangeSliderValueEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_input))
                     {
                         _input = value;
                         this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", value);
@@ -241,9 +247,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbRangeSliderValueEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", value);

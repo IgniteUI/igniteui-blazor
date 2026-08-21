@@ -7,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCheckboxChangeEventArgsDetail : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCheckboxChangeEventArgsDetail"; } }
 
         private static bool _marshalByValue = true;
@@ -70,6 +71,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -81,6 +83,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbTab : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTab"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbTabModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -67,6 +74,7 @@ namespace IgniteUI.Blazor.Controls
             await base.DisposeAsync().ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         protected override async Task OnInitializedAsync()
         {
             if (TabsParent != null)

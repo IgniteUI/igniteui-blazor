@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
@@ -166,11 +165,6 @@ namespace IgniteUI.Blazor.Controls
         private bool _ready = false;
         private Dictionary<string, Action<object, object>> _handlers = new Dictionary<string, Action<object, object>>();
         private bool _updateQueued = false;
-
-        /**
-        * Cache the delegate and receiver field of each EventCallback type for increased performance when comparing.
-        */
-        protected Dictionary<Type, Dictionary<string, FieldInfo>> eventCallbacksCache = new Dictionary<Type, Dictionary<string, FieldInfo>>();
 
         /// <summary>
         /// Gets or sets what type of date conversion to make when round tripping dates.
@@ -465,6 +459,7 @@ namespace IgniteUI.Blazor.Controls
             return info;
         }
 
+        /// <inheritdoc />
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             string spinalName = ToSpinal(this.Type);
@@ -774,6 +769,7 @@ namespace IgniteUI.Blazor.Controls
 
         private DynamicContentHolder Holder { get; set; }
 
+        /// <inheritdoc />
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -1294,6 +1290,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     refId = _dataSourceManager.OnRefChanged(propertyName, newValue);
                 }
+            }
+            else if (newValue == null)
+            {
+                // Clearing an event handler or script ref: the client is told the ref is gone, so it
+                // unsubscribes. Without this the unset path threw on newValue.ToString().
+                OnRefChanged(refId, null);
             }
             else
             {
@@ -3366,39 +3368,6 @@ namespace IgniteUI.Blazor.Controls
                     property.SetValue(item, value);
                     break;
             }
-        }
-
-        /**
-         * Workaround for comparing EventCallbacks correctly. It has been fixed only in .net 9 sadly. See: https://github.com/dotnet/aspnetcore/issues/53361
-         * Basically access the Delegate and Receiver property that is not public for each callback and evaluate them manually.
-         */
-        public static bool CompareEventCallbacks<T>(T left, T right, ref Dictionary<Type, Dictionary<string, FieldInfo>> eventFieldsDictionary)
-        {
-            if (left.Equals(null) || right.Equals(null))
-            {
-                return false;
-            }
-            if (left.GetHashCode() == right.GetHashCode() || left.Equals(right))
-            {
-                return true;
-            }
-
-            Dictionary<string, FieldInfo> eventFields;
-            Type leftType = left.GetType();
-            if (!eventFieldsDictionary.TryGetValue(leftType, out eventFields))
-            {
-                eventFields = new Dictionary<string, FieldInfo> {
-                { "Delegate", leftType.GetField("Delegate", BindingFlags.NonPublic | BindingFlags.Instance) },
-                { "Receiver", leftType.GetField("Receiver", BindingFlags.NonPublic | BindingFlags.Instance) }
-            };
-                eventFieldsDictionary.Add(leftType, eventFields);
-            }
-
-            Delegate leftDelegate = (Delegate)(eventFields["Delegate"].GetValue(left));
-            Delegate rightDelegate = (Delegate)(eventFields["Delegate"].GetValue(right));
-            IHandleEvent leftHandle = (IHandleEvent)(eventFields["Receiver"].GetValue(left));
-            IHandleEvent rightHandle = (IHandleEvent)(eventFields["Receiver"].GetValue(right));
-            return leftDelegate.Equals(rightDelegate) && leftHandle.Equals(rightHandle);
         }
     }
 

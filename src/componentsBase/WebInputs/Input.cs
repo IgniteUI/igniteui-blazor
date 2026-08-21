@@ -43,9 +43,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!value.Equals(_valueChanging))
+                    if (!value.EqualsCompat(_valueChanging))
                     {
                         this.EnsureInputOcurredHandled();
 
@@ -59,6 +59,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         public override Task SetParametersAsync(ParameterView parameters)
         {
             // Params are case-insensitive & can't keep old name as deprecated,
@@ -78,6 +79,7 @@ namespace IgniteUI.Blazor.Controls
 
     public partial class IgbInput
     {
+        /// <inheritdoc />
         public override Task SetParametersAsync(ParameterView parameters)
         {
             // Params are case-insensitive & can't keep old name as deprecated,

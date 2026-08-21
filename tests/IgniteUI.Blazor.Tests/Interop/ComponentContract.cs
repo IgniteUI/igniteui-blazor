@@ -155,14 +155,27 @@ public sealed class EventContractSpec<TComponent> where TComponent : IComponent
 
     /// <summary>
     /// Sets the event parameter and returns the boxed <see cref="EventCallback{TValue}"/> it
-    /// assigned, so the runner can assert the member round-trips that exact value: with a
-    /// sink, a callback forwarding received args to it; with null, an empty callback (the
-    /// removal round-trip — bUnit has no parameter removal, unbinding IS an add).
+    /// assigned: with a sink, a callback forwarding received args to it; with a null sink, one of the
+    /// two callbacks that carry no handler — <c>default</c>, or <see cref="EventCallback{TValue}.Empty"/>
+    /// when <paramref name="useEmpty"/> is set. (bUnit has no parameter removal, so unbinding IS an add.)
     /// </summary>
-    public required Func<ComponentParameterCollectionBuilder<TComponent>, Action<object>?, object> Bind { get; init; }
+    public delegate object BindEvent(
+        ComponentParameterCollectionBuilder<TComponent> ps,
+        Action<object>? sink,
+        bool useEmpty = false);
+
+    /// <inheritdoc cref="BindEvent"/>
+    public required BindEvent Bind { get; init; }
 
     /// <summary>Reads the event member back (boxed) — the typed read half of <see cref="Bind"/>.</summary>
     public required Func<TComponent, object> Get { get; init; }
+
+    /// <summary>
+    /// Whether the member holds a live subscription. What was assigned and what reads back differ
+    /// when clearing with <c>default</c> — the getter substitutes <c>Empty</c> for its null backing
+    /// field — so unbinding is asserted through this rather than against the assigned value.
+    /// </summary>
+    public required Func<TComponent, bool> IsBound { get; init; }
 
     /// <summary>The declared event args type; the runner asserts the received args are assignable to it.</summary>
     public required Type ArgsType { get; init; }
@@ -198,9 +211,16 @@ public sealed class BindContractSpec<TComponent> where TComponent : IComponent
     /// <summary>
     /// Arranges the render exactly as <c>@bind-X</c> would (bUnit's <c>ps.Bind</c>), routing the
     /// pushed value to the sink so the spec asserts the user-facing contract rather than the
-    /// callback member. Returns nothing — the sink is the observation.
+    /// callback member. Returns nothing — the sink is the observation. A null sink clears the
+    /// callback instead, as <c>default</c> or as <c>Empty</c> when <paramref name="useEmpty"/> is set.
     /// </summary>
-    public required Action<ComponentParameterCollectionBuilder<TComponent>, Action<object?>> BindPair { get; init; }
+    public delegate void BindPairSetup(
+        ComponentParameterCollectionBuilder<TComponent> ps,
+        Action<object?>? sink,
+        bool useEmpty = false);
+
+    /// <inheritdoc cref="BindPairSetup"/>
+    public required BindPairSetup BindPair { get; init; }
 
     /// <summary>Reads the bound property back off the component, to assert it was updated.</summary>
     public required Func<TComponent, object?> ReadProperty { get; init; }
@@ -685,8 +705,9 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         _events.Add(new EventContractSpec<TComponent>
         {
             EventName = name ?? MemberName(member),
-            Bind = (ps, on) => BindMember(ps, member, on),
+            Bind = (ps, on, useEmpty) => BindMember(ps, member, on, useEmpty),
             Get = GetterOf(member),
+            IsBound = IsBoundOf(member),
             ArgsType = typeof(IgbVoidEventArgs),
             Source = new SpecSource(atFile, atLine),
         });
@@ -744,9 +765,19 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             DrivingEvent = MemberName(via),
             // Exactly what @bind-X expands to, via bUnit's own two-way binding helper. The
             // wrappers have no <Prop>Expression parameter, so the value expression is omitted.
-            BindPair = (ps, sink) => ps.Bind(property, initial, value => sink(value)),
+            BindPair = (ps, sink, useEmpty) =>
+            {
+                if (sink is null)
+                {
+                    ps.Add(changed, useEmpty ? EventCallback<TValue>.Empty : default);
+                }
+                else
+                {
+                    ps.Bind(property, initial, value => sink(value));
+                }
+            },
             ReadProperty = c => readProp(c),
-            ChangedIsBound = c => !EventCallback<TValue>.Empty.Equals(readChanged(c)),
+            ChangedIsBound = c => readChanged(c).HasHandler(),
             ArgsJson = argsJson,
             Expected = expect,
             AssertValue = assert is null ? null : o => assert((TValue)o!),
@@ -778,8 +809,9 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         _events.Add(new EventContractSpec<TComponent>
         {
             EventName = name ?? MemberName(member),
-            Bind = (ps, on) => BindMember(ps, member, on),
+            Bind = (ps, on, useEmpty) => BindMember(ps, member, on, useEmpty),
             Get = GetterOf(member),
+            IsBound = IsBoundOf(member),
             ArgsType = typeof(TArgs),
             ArgsJson = argsJson,
             AssertArgs = assert is null ? null : o => assert((TArgs)o),
@@ -803,8 +835,9 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         _events.Add(new EventContractSpec<TComponent>
         {
             EventName = MemberName(member),
-            Bind = (ps, on) => BindMember(ps, member, on),
+            Bind = (ps, on, useEmpty) => BindMember(ps, member, on, useEmpty),
             Get = GetterOf(member),
+            IsBound = IsBoundOf(member),
             ArgsType = typeof(TArgs),
             ArgsJson = argsJson,
             AssertWithComponent = (c, o) => assert(c, (TArgs)o),
@@ -831,8 +864,9 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         _events.Add(new EventContractSpec<TComponent>
         {
             EventName = MemberName(member),
-            Bind = (ps, on) => BindMember(ps, member, on),
+            Bind = (ps, on, useEmpty) => BindMember(ps, member, on, useEmpty),
             Get = GetterOf(member),
+            IsBound = IsBoundOf(member),
             ArgsType = typeof(TArgs),
             Arrange = arrange,
             ArgsJson = argsJson,
@@ -851,16 +885,20 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         MemberOf(member).Name;
 
     /// <summary>
-    /// The write half of an event spec's bind/read loop, captured here where the args type
-    /// is known: assigns the parameter (an empty callback when <paramref name="sink"/> is
-    /// null) and returns the exact boxed callback for the runner's round-trip assert.
+    /// The write half of an event spec's bind/read loop, captured here where the args type is known.
+    /// Assigns the parameter and returns exactly what it assigned. A null <paramref name="sink"/>
+    /// clears it, as either of the two callbacks that carry no handler — <c>default</c>, or
+    /// <see cref="EventCallback{TValue}.Empty"/> when <paramref name="useEmpty"/> is set.
     /// </summary>
     private static EventCallback<TArgs> BindMember<TArgs>(
         ComponentParameterCollectionBuilder<TComponent> ps,
         Expression<Func<TComponent, EventCallback<TArgs>>> member,
-        Action<object>? sink)
+        Action<object>? sink,
+        bool useEmpty = false)
     {
-        var callback = sink is null ? default : new EventCallback<TArgs>(null, sink);
+        var callback = sink is null
+            ? (useEmpty ? EventCallback<TArgs>.Empty : default)
+            : new EventCallback<TArgs>(null, sink);
         ps.Add(member, callback);
         return callback;
     }
@@ -870,6 +908,13 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     {
         var get = member.Compile();
         return c => get(c);
+    }
+
+    /// <summary>Reads whether the member holds a live subscription (see <see cref="EventContractSpec{TComponent}.IsBound"/>).</summary>
+    private static Func<TComponent, bool> IsBoundOf<TArgs>(Expression<Func<TComponent, EventCallback<TArgs>>> member)
+    {
+        var get = member.Compile();
+        return c => get(c).HasHandler();
     }
 
     /// <summary>Derives the wire return kind from the .NET return type; exotic shapes use the InteropReturn overloads.</summary>

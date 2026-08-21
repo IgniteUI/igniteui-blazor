@@ -52,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             if (ComponentType != null)

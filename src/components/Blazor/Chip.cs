@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChip : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChip"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbChipModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -189,9 +196,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<bool>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _selectedChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_selectedChanged))
                     {
                         this.EnsureSelectHandled();
 
@@ -251,9 +258,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentBoolValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _remove, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_remove))
                     {
                         _remove = value;
                         this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", value);
@@ -324,9 +331,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentBoolValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _select, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_select))
                     {
                         _select = value;
                         this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Select", value, (args) =>

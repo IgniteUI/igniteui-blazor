@@ -10,8 +10,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbBanner : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebBanner"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbBannerModule.IsLoadRequested(IgBlazor))
@@ -20,11 +22,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -33,6 +37,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -41,6 +46,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -49,6 +55,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -196,9 +203,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
@@ -268,9 +275,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
