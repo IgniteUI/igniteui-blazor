@@ -317,9 +317,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<bool>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _checkedChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_checkedChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -379,9 +379,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbRadioChangeEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", value, (args) =>
@@ -486,9 +486,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
@@ -558,9 +558,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);

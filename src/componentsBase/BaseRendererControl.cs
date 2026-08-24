@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
@@ -30,7 +30,7 @@ namespace IgniteUI.Blazor.Controls
         Queued
     }
 
-    public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IDisposable
+    public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
     {
         private IIgniteUIBlazor _igBlazor;
         [Inject]
@@ -165,11 +165,6 @@ namespace IgniteUI.Blazor.Controls
         private bool _ready = false;
         private Dictionary<string, Action<object, object>> _handlers = new Dictionary<string, Action<object, object>>();
         private bool _updateQueued = false;
-
-        /**
-        * Cache the delegate and receiver field of each EventCallback type for increased performance when comparing.
-        */
-        protected Dictionary<Type, Dictionary<string, FieldInfo>> eventCallbacksCache = new Dictionary<Type, Dictionary<string, FieldInfo>>();
 
         /// <summary>
         /// Gets or sets what type of date conversion to make when round tripping dates.
@@ -1295,6 +1290,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     refId = _dataSourceManager.OnRefChanged(propertyName, newValue);
                 }
+            }
+            else if (newValue == null)
+            {
+                // Clearing an event handler or script ref: the client is told the ref is gone, so it
+                // unsubscribes. Without this the unset path threw on newValue.ToString().
+                OnRefChanged(refId, null);
             }
             else
             {
@@ -3136,21 +3137,28 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private bool _shouldReevaluateRuntime = false;
-        protected virtual void Dispose(bool disposing)
+
+        /// <inheritdoc />
+        public virtual async ValueTask DisposeAsync()
         {
-            if (!disposedValue)
+            if (disposedValue)
             {
-                _shouldReevaluateRuntime = true;
-                SendCleanupMessage();
-                _shouldReevaluateRuntime = false;
-
-                if (disposing && _objRef != null)
-                {
-                    _objRef.Dispose();
-                }
-
-                disposedValue = true;
+                return;
             }
+
+            disposedValue = true;
+            _shouldReevaluateRuntime = true;
+            try
+            {
+                await TrySendCleanupAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                _shouldReevaluateRuntime = false;
+                _objRef?.Dispose();
+            }
+
+            GC.SuppressFinalize(this);
         }
 
         internal void RefreshDynamicContent()
@@ -3161,13 +3169,61 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void SendCleanupMessage()
+        private async Task TrySendCleanupAsync()
         {
-            RendererMessage m = new RendererMessage();
-            m.Type = ("cleanup");
+            try
+            {
+                if (IgBlazor == null || !IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+                {
+                    return;
+                }
 
-            _messageQueue.Clear();
-            var ret = SendMessageImmediate(m);
+                RendererMessage m = new RendererMessage();
+                m.Type = ("cleanup");
+
+                _messageQueue.Clear();
+                await SendMessageImmediate(m).ConfigureAwait(false);
+            }
+            catch (JSDisconnectedException ex)
+            {
+                // The Blazor circuit is gone (browser tab closed, SignalR connection dropped,
+                // or server-side circuit torn down). The JS side has already been discarded,
+                // so there is nothing to clean up — safe to swallow.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: JS circuit disconnected; cleanup skipped. {ex.Message}");
+            }
+            catch (TaskCanceledException ex)
+            {
+                // The interop call was canceled (typically because the circuit/renderer is
+                // shutting down). No further cleanup is possible or required.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: interop task canceled during shutdown. {ex.Message}");
+            }
+            catch (OperationCanceledException ex)
+            {
+                // Cooperative cancellation from the host (e.g. app stopping). Same rationale
+                // as TaskCanceledException — cleanup is moot once the host is tearing down.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: operation canceled during shutdown. {ex.Message}");
+            }
+            catch (ObjectDisposedException ex)
+            {
+                // The underlying JS runtime / DotNetObjectReference was already disposed
+                // (double-dispose race or host-driven teardown). Nothing left to release.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: target already disposed; cleanup skipped. {ex.Message}");
+            }
+            catch (JSException ex)
+            {
+                // The JS side rejected or errored during cleanup. There is no meaningful
+                // recovery from a JS-side failure in a dispose path, and surfacing it would
+                // either fault the fire-and-forget task or bubble out of DisposeAsync.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: JS interop error during cleanup; ignored. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Final safety net: cleanup is best-effort and must never throw. Anything
+                // reaching here (e.g. reflection failure inside IsRuntimeValid, null-ref from
+                // a partially-initialized component) is logged and swallowed so that neither
+                // the fire-and-forget task nor DisposeAsync can propagate the failure.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: unexpected error during cleanup; ignored. {ex}");
+            }
         }
 
         public async Task<object> SetResourceStringAsync(string grouping, string id, string value)
@@ -3313,50 +3369,6 @@ namespace IgniteUI.Blazor.Controls
                     property.SetValue(item, value);
                     break;
             }
-        }
-
-        /**
-         * Workaround for comparing EventCallbacks correctly. It has been fixed only in .net 9 sadly. See: https://github.com/dotnet/aspnetcore/issues/53361
-         * Basically access the Delegate and Receiver property that is not public for each callback and evaluate them manually.
-         */
-        public static bool CompareEventCallbacks<T>(T left, T right, ref Dictionary<Type, Dictionary<string, FieldInfo>> eventFieldsDictionary)
-        {
-            if (left.Equals(null) || right.Equals(null))
-            {
-                return false;
-            }
-            if (left.GetHashCode() == right.GetHashCode() || left.Equals(right))
-            {
-                return true;
-            }
-
-            Dictionary<string, FieldInfo> eventFields;
-            Type leftType = left.GetType();
-            if (!eventFieldsDictionary.TryGetValue(leftType, out eventFields))
-            {
-                eventFields = new Dictionary<string, FieldInfo> {
-                { "Delegate", leftType.GetField("Delegate", BindingFlags.NonPublic | BindingFlags.Instance) },
-                { "Receiver", leftType.GetField("Receiver", BindingFlags.NonPublic | BindingFlags.Instance) }
-            };
-                eventFieldsDictionary.Add(leftType, eventFields);
-            }
-
-            Delegate leftDelegate = (Delegate)(eventFields["Delegate"].GetValue(left));
-            Delegate rightDelegate = (Delegate)(eventFields["Delegate"].GetValue(right));
-            IHandleEvent leftHandle = (IHandleEvent)(eventFields["Receiver"].GetValue(left));
-            IHandleEvent rightHandle = (IHandleEvent)(eventFields["Receiver"].GetValue(right));
-            return leftDelegate.Equals(rightDelegate) && leftHandle.Equals(rightHandle);
-        }
-
-        ~BaseRendererControl()
-        {
-            Dispose(disposing: false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 

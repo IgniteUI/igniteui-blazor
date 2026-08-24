@@ -193,9 +193,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbChatMessageEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _messageCreated, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_messageCreated))
                     {
                         _messageCreated = value;
                         this.SetHandler<IgbChatMessageEventArgs>(this.Name, "MessageCreated", value);
@@ -265,9 +265,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbChatMessageReactionEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _messageReact, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_messageReact))
                     {
                         _messageReact = value;
                         this.SetHandler<IgbChatMessageReactionEventArgs>(this.Name, "MessageReact", value);
@@ -337,9 +337,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbChatMessageAttachmentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _attachmentClick, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_attachmentClick))
                     {
                         _attachmentClick = value;
                         this.SetHandler<IgbChatMessageAttachmentEventArgs>(this.Name, "AttachmentClick", value);
@@ -409,9 +409,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentBoolValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _typingChange, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_typingChange))
                     {
                         _typingChange = value;
                         this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "TypingChange", value);
@@ -481,9 +481,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _inputFocus, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_inputFocus))
                     {
                         _inputFocus = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "InputFocus", value);
@@ -553,9 +553,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _inputBlur, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_inputBlur))
                     {
                         _inputBlur = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "InputBlur", value);
@@ -625,9 +625,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _inputChange, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_inputChange))
                     {
                         _inputChange = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputChange", value);

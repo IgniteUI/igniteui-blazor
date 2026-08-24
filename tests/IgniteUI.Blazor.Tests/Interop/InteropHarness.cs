@@ -158,6 +158,13 @@ public abstract class InteropHarness
     /// </summary>
     public abstract JsonElement? FindPropertyUpdate(string containerId, string wireName);
 
+    /// <summary>
+    /// Forgets the traffic observed so far, so <see cref="MethodCalls"/>, <see cref="StateSyncs"/> and
+    /// <see cref="FindPropertyUpdate"/> report only what crosses from here on instead of at any point.
+    /// For tests with phases - bind, then unbind, etc - ensures the next phase's observations are correct.
+    /// </summary>
+    public abstract void ClearObserved();
+
     public IEnumerable<InteropMethodCall> CallsOf(string methodName, string? containerId = null) =>
         MethodCalls.Where(c => c.MethodName == methodName && (containerId is null || c.ContainerId == containerId));
 

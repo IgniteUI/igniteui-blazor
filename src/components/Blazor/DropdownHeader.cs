@@ -11,9 +11,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbDropdownHeaderModule.IsLoadRequested(IgBlazor))
+            if (!IgbDropdownModule.IsLoadRequested(IgBlazor))
             {
-                IgbDropdownHeaderModule.Register(IgBlazor);
+                IgbDropdownModule.Register(IgBlazor);
             }
         }
 

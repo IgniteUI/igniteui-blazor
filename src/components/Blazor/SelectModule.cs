@@ -18,9 +18,6 @@ namespace IgniteUI.Blazor.Controls
 
             IgbIconModule.MarkIsLoadRequested(runtime);
             IgbInputModule.MarkIsLoadRequested(runtime);
-            IgbSelectGroupModule.MarkIsLoadRequested(runtime);
-            IgbSelectHeaderModule.MarkIsLoadRequested(runtime);
-            IgbSelectItemModule.MarkIsLoadRequested(runtime);
 
         }
 

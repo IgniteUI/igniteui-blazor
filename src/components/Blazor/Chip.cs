@@ -196,9 +196,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<bool>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _selectedChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_selectedChanged))
                     {
                         this.EnsureSelectHandled();
 
@@ -258,9 +258,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentBoolValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _remove, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_remove))
                     {
                         _remove = value;
                         this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", value);
@@ -331,9 +331,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentBoolValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _select, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_select))
                     {
                         _select = value;
                         this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Select", value, (args) =>

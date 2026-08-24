@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
@@ -82,6 +83,17 @@ public class ScriptPropTests : BlazorComponentTestBase
                     $"{componentType.Name}.{prop.Name}: no script-ref transmission observed for \"{wireName}\"");
             }
             Assert.Equal(scriptName, actual.Value.GetString());
+
+            // Clear:
+            interop.ClearObserved();
+            prop.SetValue(cut.Instance, null);
+            var cleared = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), wireName);
+            if (cleared is null)
+            {
+                throw new Xunit.Sdk.XunitException(
+                    $"{componentType.Name}.{prop.Name}: clearing it transmitted no \"{wireName}\" ref");
+            }
+            Assert.Equal(JsonValueKind.Null, cleared.Value.ValueKind);
         }
     }
 }
