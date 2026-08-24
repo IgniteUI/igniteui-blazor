@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -119,11 +119,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconAsync(String name, String url, String? collection = null)
         {
-            await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
+            await InvokeMethod("registerIcon", new object?[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIcon(String name, String url, String? collection = null)
         {
-            InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
+            InvokeMethodSync("registerIcon", new object?[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconFromTextAsync(String name, String iconText, String? collection = null)
         {
-            await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
+            await InvokeMethod("registerIconFromText", new object?[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIconFromText(String name, String iconText, String? collection = null)
         {
-            InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
+            InvokeMethodSync("registerIconFromText", new object?[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="icon">The target icon metadata (name and collection).</param>
         public async Task SetIconRefAsync(String name, String collection, IgbIconMeta icon)
         {
-            await InvokeMethod("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
+            await InvokeMethod("setIconRef", new object?[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="icon">The target icon metadata (name and collection).</param>
         public void SetIconRef(String name, String collection, IgbIconMeta icon)
         {
-            InvokeMethodSync("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
+            InvokeMethodSync("setIconRef", new object?[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

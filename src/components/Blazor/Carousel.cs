@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -278,7 +278,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<double> GetTotalAsync()
         {
-            var iv = await InvokeMethod("p:Total", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Total", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -287,7 +287,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public double GetTotal()
         {
-            var iv = InvokeMethodSync("p:Total", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Total", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -296,7 +296,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<double> GetCurrentAsync()
         {
-            var iv = await InvokeMethod("p:Current", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Current", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -305,7 +305,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public double GetCurrent()
         {
-            var iv = InvokeMethodSync("p:Current", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Current", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -314,7 +314,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> GetIsPlayingAsync()
         {
-            var iv = await InvokeMethod("p:IsPlaying", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:IsPlaying", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -323,7 +323,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool GetIsPlaying()
         {
-            var iv = InvokeMethodSync("p:IsPlaying", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:IsPlaying", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -332,7 +332,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> GetIsPausedAsync()
         {
-            var iv = await InvokeMethod("p:IsPaused", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:IsPaused", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -341,24 +341,24 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool GetIsPaused()
         {
-            var iv = InvokeMethodSync("p:IsPaused", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:IsPaused", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Resumes playing of the carousel slides.
         /// </summary>
         public async Task PlayAsync()
         {
-            await InvokeMethod("play", new object[] { }, new string[] { });
+            await InvokeMethod("play", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -366,14 +366,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Play()
         {
-            InvokeMethodSync("play", new object[] { }, new string[] { });
+            InvokeMethodSync("play", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Pauses the rotation of the carousel slides.
         /// </summary>
         public async Task PauseAsync()
         {
-            await InvokeMethod("pause", new object[] { }, new string[] { });
+            await InvokeMethod("pause", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Pause()
         {
-            InvokeMethodSync("pause", new object[] { }, new string[] { });
+            InvokeMethodSync("pause", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Switches to the next slide, running any animations.
@@ -391,7 +391,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> NextAsync()
         {
-            var iv = await InvokeMethod("next", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("next", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -403,7 +403,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Next()
         {
-            var iv = InvokeMethodSync("next", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("next", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -414,7 +414,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> PrevAsync()
         {
-            var iv = await InvokeMethod("prev", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("prev", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -426,7 +426,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Prev()
         {
-            var iv = InvokeMethodSync("prev", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("prev", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -438,7 +438,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> SelectAsync(double index, CarouselAnimationDirection? animationDirection = null)
         {
-            var iv = await InvokeMethod("select", new object[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
+            var iv = await InvokeMethod("select", new object?[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
             return ReturnToBoolean(iv);
         }
 
@@ -450,7 +450,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Select(double index, CarouselAnimationDirection? animationDirection = null)
         {
-            var iv = InvokeMethodSync("select", new object[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
+            var iv = InvokeMethodSync("select", new object?[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
             return ReturnToBoolean(iv);
         }
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -235,7 +235,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbTreeItem[]> GetPathAsync()
         {
-            var iv = await InvokeMethod("p:Path", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Path", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -255,7 +255,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbTreeItem[] GetPath()
         {
-            var iv = InvokeMethodSync("p:Path", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Path", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -272,34 +272,34 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public async Task ConnectedCallbackAsync()
         {
-            await InvokeMethod("connectedCallback", new object[] { }, new string[] { });
+            await InvokeMethod("connectedCallback", new object?[] { }, new string[] { });
         }
         public void ConnectedCallback()
         {
-            InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
+            InvokeMethodSync("connectedCallback", new object?[] { }, new string[] { });
         }
         public async Task DisconnectedCallbackAsync()
         {
-            await InvokeMethod("disconnectedCallback", new object[] { }, new string[] { });
+            await InvokeMethod("disconnectedCallback", new object?[] { }, new string[] { });
         }
         public void DisconnectedCallback()
         {
-            InvokeMethodSync("disconnectedCallback", new object[] { }, new string[] { });
+            InvokeMethodSync("disconnectedCallback", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Toggles tree item expansion state.
         /// </summary>
         public async Task ToggleAsync()
         {
-            await InvokeMethod("toggle", new object[] { }, new string[] { });
+            await InvokeMethod("toggle", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -307,14 +307,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Toggle()
         {
-            InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            InvokeMethodSync("toggle", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Expands the tree item.
         /// </summary>
         public async Task ExpandAsync()
         {
-            await InvokeMethod("expand", new object[] { }, new string[] { });
+            await InvokeMethod("expand", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -322,14 +322,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Expand()
         {
-            InvokeMethodSync("expand", new object[] { }, new string[] { });
+            InvokeMethodSync("expand", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Collapses the tree item.
         /// </summary>
         public async Task CollapseAsync()
         {
-            await InvokeMethod("collapse", new object[] { }, new string[] { });
+            await InvokeMethod("collapse", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Collapse()
         {
-            InvokeMethodSync("collapse", new object[] { }, new string[] { });
+            InvokeMethodSync("collapse", new object?[] { }, new string[] { });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

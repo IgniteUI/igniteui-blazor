@@ -109,7 +109,7 @@
                     else
                     {
                         //Console.WriteLine("json datasource");
-                        _dataSources[id] = JsonDataSource.Create(data, this);
+                        _dataSources[id] = JsonDataSource.Create(data, this)!;
                     }
                 }
                 _idLookup[data] = id;

@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components;
 
@@ -66,7 +66,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbDateRangeValue?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbDateRangeValue? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -742,7 +742,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task ClearAsync()
         {
-            await InvokeMethod("clear", new object[] { }, new string[] { });
+            await InvokeMethod("clear", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -750,14 +750,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Clear()
         {
-            InvokeMethodSync("clear", new object[] { }, new string[] { });
+            InvokeMethodSync("clear", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Selects a date range value in the picker.
         /// </summary>
         public async Task SelectAsync(IgbDateRangeValue value)
         {
-            await InvokeMethod("select", new object[] { ObjectToParam(value) }, new string[] { "Json" });
+            await InvokeMethod("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -765,14 +765,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Select(IgbDateRangeValue value)
         {
-            InvokeMethodSync("select", new object[] { ObjectToParam(value) }, new string[] { "Json" });
+            InvokeMethodSync("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
         }
         /// <summary>
         /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
-            var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -781,7 +781,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool ReportValidity()
         {
-            var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -789,7 +789,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
-            var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -798,7 +798,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool CheckValidity()
         {
-            var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -807,7 +807,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
-            await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            await InvokeMethod("setCustomValidity", new object?[] { StringToString(message)! }, new string[] { "String" });
         }
 
         /// <summary>
@@ -816,7 +816,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetCustomValidity(String message)
         {
-            InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message)! }, new string[] { "String" });
         }
 
         private EventCallback<IgbDateRangeValue?>? _valueChanged = null;

@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbStep[]> GetStepsAsync()
         {
-            var iv = await InvokeMethod("p:Steps", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Steps", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -83,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbStep[] GetSteps()
         {
-            var iv = InvokeMethodSync("p:Steps", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Steps", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -252,18 +252,18 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Activates the step at a given index.
         /// </summary>
         public async Task NavigateToAsync(double index)
         {
-            await InvokeMethod("navigateTo", new object[] { index }, new string[] { "Number" });
+            await InvokeMethod("navigateTo", new object?[] { index }, new string[] { "Number" });
         }
 
         /// <summary>
@@ -271,14 +271,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void NavigateTo(double index)
         {
-            InvokeMethodSync("navigateTo", new object[] { index }, new string[] { "Number" });
+            InvokeMethodSync("navigateTo", new object?[] { index }, new string[] { "Number" });
         }
         /// <summary>
         /// Activates the next enabled step.
         /// </summary>
         public async Task NextAsync()
         {
-            await InvokeMethod("next", new object[] { }, new string[] { });
+            await InvokeMethod("next", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -286,14 +286,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Next()
         {
-            InvokeMethodSync("next", new object[] { }, new string[] { });
+            InvokeMethodSync("next", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Activates the previous enabled step.
         /// </summary>
         public async Task PrevAsync()
         {
-            await InvokeMethod("prev", new object[] { }, new string[] { });
+            await InvokeMethod("prev", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -301,14 +301,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Prev()
         {
-            InvokeMethodSync("prev", new object[] { }, new string[] { });
+            InvokeMethodSync("prev", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Resets the stepper to its initial state, i.e. activates the first step.
         /// </summary>
         public async Task ResetAsync()
         {
-            await InvokeMethod("reset", new object[] { }, new string[] { });
+            await InvokeMethod("reset", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -316,7 +316,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Reset()
         {
-            InvokeMethodSync("reset", new object[] { }, new string[] { });
+            InvokeMethodSync("reset", new object?[] { }, new string[] { });
         }
 
         private string? _activeStepChangingRef = null;

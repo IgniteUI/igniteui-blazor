@@ -1,4 +1,4 @@
-ï»¿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -120,11 +120,11 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The variant of the button which determines its visual appearance.
         /// <list type="bullet">
-        ///   <item><description><see cref="IconButtonVariant.Contained"/> â€“ filled background;
+        ///   <item><description><see cref="IconButtonVariant.Contained"/> – filled background;
         ///     highest visual emphasis (default).</description></item>
-        ///   <item><description><see cref="IconButtonVariant.Outlined"/> â€“ transparent background
+        ///   <item><description><see cref="IconButtonVariant.Outlined"/> – transparent background
         ///     with a visible border.</description></item>
-        ///   <item><description><see cref="IconButtonVariant.Flat"/> â€“ no background or border;
+        ///   <item><description><see cref="IconButtonVariant.Flat"/> – no background or border;
         ///     lowest visual emphasis.</description></item>
         /// </list>
         /// </summary>
@@ -151,7 +151,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconAsync(String name, String url, String? collection = null)
         {
-            await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
+            await InvokeMethod("registerIcon", new object?[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIcon(String name, String url, String? collection = null)
         {
-            InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
+            InvokeMethodSync("registerIcon", new object?[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconFromTextAsync(String name, String iconText, String? collection = null)
         {
-            await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
+            await InvokeMethod("registerIconFromText", new object?[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIconFromText(String name, String iconText, String? collection = null)
         {
-            InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
+            InvokeMethodSync("registerIconFromText", new object?[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

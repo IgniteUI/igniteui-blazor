@@ -281,18 +281,18 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Toggles the collapsed state of the specified pane.
         /// </summary>
         public async Task ToggleAsync(PanePosition position)
         {
-            await InvokeMethod("toggle", new object[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
+            await InvokeMethod("toggle", new object?[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Toggle(PanePosition position)
         {
-            InvokeMethodSync("toggle", new object[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
+            InvokeMethodSync("toggle", new object?[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
         }
 
         private string? _resizeStartRef = null;

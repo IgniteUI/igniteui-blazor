@@ -154,7 +154,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbDropdownItem[]> GetItemsAsync()
         {
-            var iv = await InvokeMethod("p:Items", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Items", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -174,7 +174,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbDropdownItem[] GetItems()
         {
-            var iv = InvokeMethodSync("p:Items", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Items", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -194,7 +194,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbDropdownGroup[]> GetGroupsAsync()
         {
-            var iv = await InvokeMethod("p:Groups", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Groups", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -214,7 +214,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbDropdownGroup[] GetGroups()
         {
-            var iv = InvokeMethodSync("p:Groups", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Groups", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -234,7 +234,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbDropdownItem?> GetSelectedItemAsync()
         {
-            var iv = await InvokeMethod("p:SelectedItem", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:SelectedItem", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -254,7 +254,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbDropdownItem? GetSelectedItem()
         {
-            var iv = InvokeMethodSync("p:SelectedItem", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:SelectedItem", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -294,7 +294,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
         public async Task<IgbDropdownItem> NavigateToAsync(Object index)
         {
-            var iv = await InvokeMethod("navigateTo", new object[] { ObjectToParam(index) }, new string[] { "Json" });
+            var iv = await InvokeMethod("navigateTo", new object?[] { ObjectToParam(index) }, new string[] { "Json" });
 
             if (iv == null)
             {
@@ -315,7 +315,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
         public IgbDropdownItem NavigateTo(Object index)
         {
-            var iv = InvokeMethodSync("navigateTo", new object[] { ObjectToParam(index) }, new string[] { "Json" });
+            var iv = InvokeMethodSync("navigateTo", new object?[] { ObjectToParam(index) }, new string[] { "Json" });
 
             if (iv == null)
             {
@@ -335,7 +335,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
         public async Task<IgbDropdownItem> SelectAsync(Object value)
         {
-            var iv = await InvokeMethod("select", new object[] { ObjectToParam(value) }, new string[] { "Json" });
+            var iv = await InvokeMethod("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
 
             if (iv == null)
             {
@@ -356,7 +356,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
         public IgbDropdownItem Select(Object value)
         {
-            var iv = InvokeMethodSync("select", new object[] { ObjectToParam(value) }, new string[] { "Json" });
+            var iv = InvokeMethodSync("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
 
             if (iv == null)
             {
@@ -372,18 +372,18 @@ namespace IgniteUI.Blazor.Controls
         }
         public async Task DisconnectedCallbackAsync()
         {
-            await InvokeMethod("disconnectedCallback", new object[] { }, new string[] { });
+            await InvokeMethod("disconnectedCallback", new object?[] { }, new string[] { });
         }
         public void DisconnectedCallback()
         {
-            InvokeMethodSync("disconnectedCallback", new object[] { }, new string[] { });
+            InvokeMethodSync("disconnectedCallback", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Clears the current selection of the dropdown.
         /// </summary>
         public async Task ClearSelectionAsync()
         {
-            await InvokeMethod("clearSelection", new object[] { }, new string[] { });
+            await InvokeMethod("clearSelection", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void ClearSelection()
         {
-            InvokeMethodSync("clearSelection", new object[] { }, new string[] { });
+            InvokeMethodSync("clearSelection", new object?[] { }, new string[] { });
         }
 
         private string? _openingRef = null;

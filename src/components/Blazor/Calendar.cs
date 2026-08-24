@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -62,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<DateTime> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
 
@@ -72,7 +72,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public DateTime GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
         private DateTime[]? _values;
@@ -104,7 +104,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<DateTime[]> GetCurrentValuesAsync()
         {
-            var iv = await InvokeMethod("p:Values", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Values", new object?[] { }, new string[] { });
             return ReturnToDateArray(iv);
         }
 
@@ -115,7 +115,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public DateTime[] GetCurrentValues()
         {
-            var iv = InvokeMethodSync("p:Values", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Values", new object?[] { }, new string[] { });
             return ReturnToDateArray(iv);
         }
         private DateTime _activeDate = DateTime.MinValue;

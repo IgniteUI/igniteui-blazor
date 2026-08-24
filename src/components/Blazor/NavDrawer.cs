@@ -1,4 +1,4 @@
-ï»¿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -79,19 +79,19 @@ namespace IgniteUI.Blazor.Controls
         /// Sets the position of the drawer.
         /// <list type="bullet">
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.Start"/> â€” anchored to the inline-start edge (default).
+        ///   <see cref="NavDrawerPosition.Start"/> — anchored to the inline-start edge (default).
         ///   </description></item>
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.End"/> â€” anchored to the inline-end edge.
+        ///   <see cref="NavDrawerPosition.End"/> — anchored to the inline-end edge.
         ///   </description></item>
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.Top"/> â€” anchored to the block-start edge.
+        ///   <see cref="NavDrawerPosition.Top"/> — anchored to the block-start edge.
         ///   </description></item>
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.Bottom"/> â€” anchored to the block-end edge.
+        ///   <see cref="NavDrawerPosition.Bottom"/> — anchored to the block-end edge.
         ///   </description></item>
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.Relative"/> â€” rendered inline within the page flow; no modal backdrop.
+        ///   <see cref="NavDrawerPosition.Relative"/> — rendered inline within the page flow; no modal backdrop.
         ///   </description></item>
         /// </list>
         /// </summary>
@@ -175,11 +175,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Opens the drawer.
@@ -190,7 +190,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> ShowAsync()
         {
-            var iv = await InvokeMethod("show", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -203,7 +203,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Show()
         {
-            var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -215,7 +215,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> HideAsync()
         {
-            var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -228,7 +228,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Hide()
         {
-            var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -237,7 +237,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> ToggleAsync()
         {
-            var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -247,7 +247,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool Toggle()
         {
-            var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 

@@ -949,12 +949,12 @@ namespace IgniteUI.Blazor.Controls
         private Object _semLock = new Object();
 
         static long _invokeId = 0;
-        protected async Task<object> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
+        protected async Task<object> InvokeMethod(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(null, methodName, arguments, types, nativeElements);
         }
 
-        protected object InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
+        protected object InvokeMethodSync(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(null, methodName, arguments, types, nativeElements);
         }
@@ -975,7 +975,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object InvokeMethodHelperSync(string? target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
+        internal object InvokeMethodHelperSync(string? target, string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (!_ready)
             {
@@ -987,7 +987,7 @@ namespace IgniteUI.Blazor.Controls
             }
             RendererMessage m = new RendererMessage();
             m.Type = ("invokeMethod");
-            string[] args = new string[arguments.Length];
+            string?[] args = new string?[arguments.Length];
             string[] typeStrings = new string[arguments.Length];
             long invokeId = _invokeId++;
             for (int i = 0; i < arguments.Length; i++)
@@ -1029,7 +1029,7 @@ namespace IgniteUI.Blazor.Controls
 
         Dictionary<long, TaskCompletionSource<object>> _methodTasks = new Dictionary<long, TaskCompletionSource<object>>();
 
-        internal async Task<object> InvokeMethodHelper(string? target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
+        internal async Task<object> InvokeMethodHelper(string? target, string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (!_ready)
             {
@@ -1037,7 +1037,7 @@ namespace IgniteUI.Blazor.Controls
             }
             RendererMessage m = new RendererMessage();
             m.Type = ("invokeMethod");
-            string[] args = new string[arguments.Length];
+            string?[] args = new string?[arguments.Length];
             string[] typeStrings = new string[arguments.Length];
             long invokeId = _invokeId++;
             for (int i = 0; i < arguments.Length; i++)
@@ -2001,7 +2001,7 @@ namespace IgniteUI.Blazor.Controls
                             var arr = ((JsonElement)obj["value"]);
                             if (transformArrays && arr.ValueKind == JsonValueKind.Array)
                             {
-                                object[] ret = new object[arr.GetArrayLength()];
+                                object?[] ret = new object?[arr.GetArrayLength()];
                                 for (var i = 0; i < arr.GetArrayLength(); i++)
                                 {
                                     var item = arr[i];
@@ -2849,7 +2849,7 @@ namespace IgniteUI.Blazor.Controls
                 for (int i = 0; i < arr.Length; i++)
                 {
                     string? ele = arr[i] != null ? arr[i].ToString() : null;
-                    ret[i] = ele;
+                    ret[i] = ele!;
                 }
                 return ret;
             }

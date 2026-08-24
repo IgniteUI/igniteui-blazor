@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace IgniteUI.Blazor.Controls
@@ -1048,11 +1048,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
 
         }
-        protected internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
 
         }

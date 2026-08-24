@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<DateTime?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
 
@@ -69,7 +69,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public DateTime? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
 
@@ -78,7 +78,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepUpAsync(DatePart? datePart = null, double delta = -1)
         {
-            await InvokeMethod("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            await InvokeMethod("stepUp", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepUp(DatePart? datePart = null, double delta = -1)
         {
-            InvokeMethodSync("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            InvokeMethodSync("stepUp", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepDownAsync(DatePart? datePart = null, double delta = -1)
         {
-            await InvokeMethod("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            await InvokeMethod("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -102,14 +102,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepDown(DatePart? datePart = null, double delta = -1)
         {
-            InvokeMethodSync("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            InvokeMethodSync("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
         /// <summary>
         /// Clears the component of any user input.
         /// </summary>
         public async Task ClearAsync()
         {
-            await InvokeMethod("clear", new object[] { }, new string[] { });
+            await InvokeMethod("clear", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Clear()
         {
-            InvokeMethodSync("clear", new object[] { }, new string[] { });
+            InvokeMethodSync("clear", new object?[] { }, new string[] { });
         }
 
         private EventCallback<DateTime?>? _valueChanged = null;

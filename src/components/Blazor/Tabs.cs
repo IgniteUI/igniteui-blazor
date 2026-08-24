@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -197,7 +197,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
         public async Task<string> GetSelectedAsync()
         {
-            var iv = await InvokeMethod("p:Selected", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Selected", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
@@ -207,7 +207,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
         public string GetSelected()
         {
-            var iv = InvokeMethodSync("p:Selected", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Selected", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
@@ -227,18 +227,18 @@ namespace IgniteUI.Blazor.Controls
         }
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Selects the specified tab and displays the corresponding panel.
         /// </summary>
         public async Task SelectAsync(String id)
         {
-            await InvokeMethod("select", new object[] { StringToString(id) }, new string[] { "String" });
+            await InvokeMethod("select", new object?[] { StringToString(id) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Select(String id)
         {
-            InvokeMethodSync("select", new object[] { StringToString(id) }, new string[] { "String" });
+            InvokeMethodSync("select", new object?[] { StringToString(id) }, new string[] { "String" });
         }
 
         private string? _changeRef = null;

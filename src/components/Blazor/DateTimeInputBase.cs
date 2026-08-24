@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -346,18 +346,18 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Selects all the text inside the input.
         /// </summary>
         public async Task SelectAsync()
         {
-            await InvokeMethod("select", new object[] { }, new string[] { });
+            await InvokeMethod("select", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Select()
         {
-            InvokeMethodSync("select", new object[] { }, new string[] { });
+            InvokeMethodSync("select", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Sets focus on the control.
@@ -374,7 +374,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public async Task FocusComponentAsync(IgbFocusOptions options)
         {
-            await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            await InvokeMethod("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
-            InvokeMethodSync("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            InvokeMethodSync("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
         /// <summary>
         /// Removes focus from the control.
@@ -392,7 +392,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public async Task BlurComponentAsync()
         {
-            await InvokeMethod("blur", new object[] { }, new string[] { });
+            await InvokeMethod("blur", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -401,14 +401,14 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
-            InvokeMethodSync("blur", new object[] { }, new string[] { });
+            InvokeMethodSync("blur", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Clears the component of any user input.
         /// </summary>
         public async Task ClearAsync()
         {
-            await InvokeMethod("clear", new object[] { }, new string[] { });
+            await InvokeMethod("clear", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -416,26 +416,26 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Clear()
         {
-            InvokeMethodSync("clear", new object[] { }, new string[] { });
+            InvokeMethodSync("clear", new object?[] { }, new string[] { });
         }
         public async Task<bool> HasDatePartsAsync()
         {
-            var iv = await InvokeMethod("hasDateParts", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hasDateParts", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         public bool HasDateParts()
         {
-            var iv = InvokeMethodSync("hasDateParts", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hasDateParts", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         public async Task<bool> HasTimePartsAsync()
         {
-            var iv = await InvokeMethod("hasTimeParts", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hasTimeParts", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         public bool HasTimeParts()
         {
-            var iv = InvokeMethodSync("hasTimeParts", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hasTimeParts", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -444,7 +444,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetSelectionRangeAsync(double start = -1, double end = -1, String? direction = null)
         {
-            await InvokeMethod("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
+            await InvokeMethod("setSelectionRange", new object?[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
 
         /// <summary>
@@ -452,7 +452,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetSelectionRange(double start = -1, double end = -1, String? direction = null)
         {
-            InvokeMethodSync("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
+            InvokeMethodSync("setSelectionRange", new object?[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
 
         /// <summary>
@@ -460,7 +460,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String? selectMode = null)
         {
-            await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
+            await InvokeMethod("setRangeText", new object?[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
 
         /// <summary>
@@ -468,14 +468,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetRangeText(String replacement, double start = -1, double end = -1, String? selectMode = null)
         {
-            InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
+            InvokeMethodSync("setRangeText", new object?[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
         /// <summary>
         /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
-            var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -484,7 +484,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool ReportValidity()
         {
-            var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -492,7 +492,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
-            var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -501,7 +501,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool CheckValidity()
         {
-            var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -510,7 +510,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
-            await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            await InvokeMethod("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetCustomValidity(String message)
         {
-            InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

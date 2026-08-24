@@ -141,7 +141,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> GetFullscreenAsync()
         {
-            var iv = await InvokeMethod("p:Fullscreen", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Fullscreen", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -150,7 +150,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool GetFullscreen()
         {
-            var iv = InvokeMethodSync("p:Fullscreen", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Fullscreen", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         private bool _maximized = false;
@@ -255,11 +255,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         private string? _tileFullscreenRef = null;

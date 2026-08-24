@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -125,18 +125,18 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Scrolls the view to a specific message by id.
         /// </summary>
         public async Task ScrollToMessageAsync(String messageId)
         {
-            await InvokeMethod("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
+            await InvokeMethod("scrollToMessage", new object?[] { StringToString(messageId) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void ScrollToMessage(String messageId)
         {
-            InvokeMethodSync("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
+            InvokeMethodSync("scrollToMessage", new object?[] { StringToString(messageId) }, new string[] { "String" });
         }
 
         private string? _messageCreatedRef = null;

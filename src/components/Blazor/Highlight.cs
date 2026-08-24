@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -112,7 +112,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<double> GetSizeAsync()
         {
-            var iv = await InvokeMethod("p:Size", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Size", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -124,7 +124,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public double GetSize()
         {
-            var iv = InvokeMethodSync("p:Size", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Size", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -134,7 +134,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The index of the active match, or <c>0</c> when there are no matches.</returns>
         public async Task<double> GetCurrentAsync()
         {
-            var iv = await InvokeMethod("p:Current", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Current", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -144,17 +144,17 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The index of the active match, or <c>0</c> when there are no matches.</returns>
         public double GetCurrent()
         {
-            var iv = InvokeMethodSync("p:Current", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Current", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Moves the active highlight to the next match.
@@ -165,7 +165,7 @@ namespace IgniteUI.Blazor.Controls
         /// </param>
         public async Task NextAsync(IgbHighlightNavigation options)
         {
-            await InvokeMethod("next", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            await InvokeMethod("next", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace IgniteUI.Blazor.Controls
         /// </param>
         public void Next(IgbHighlightNavigation options)
         {
-            InvokeMethodSync("next", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            InvokeMethodSync("next", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
         /// <summary>
         /// Moves the active highlight to the previous match.
@@ -188,7 +188,7 @@ namespace IgniteUI.Blazor.Controls
         /// </param>
         public async Task PreviousAsync(IgbHighlightNavigation options)
         {
-            await InvokeMethod("previous", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            await InvokeMethod("previous", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace IgniteUI.Blazor.Controls
         /// </param>
         public void Previous(IgbHighlightNavigation options)
         {
-            InvokeMethodSync("previous", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            InvokeMethodSync("previous", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace IgniteUI.Blazor.Controls
         /// </param>
         public async Task SetActiveAsync(double index, IgbHighlightNavigation options)
         {
-            await InvokeMethod("setActive", new object[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
+            await InvokeMethod("setActive", new object?[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace IgniteUI.Blazor.Controls
         /// </param>
         public void SetActive(double index, IgbHighlightNavigation options)
         {
-            InvokeMethodSync("setActive", new object[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
+            InvokeMethodSync("setActive", new object?[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
         }
         /// <summary>
         /// Re-runs the highlight search based on the current <see cref="SearchText"/>
@@ -234,7 +234,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SearchAsync()
         {
-            await InvokeMethod("search", new object[] { }, new string[] { });
+            await InvokeMethod("search", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Search()
         {
-            InvokeMethodSync("search", new object[] { }, new string[] { });
+            InvokeMethodSync("search", new object?[] { }, new string[] { });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

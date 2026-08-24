@@ -1,4 +1,4 @@
-ï»¿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -54,10 +54,10 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The type of the button, which determines its behavior and semantics.
         /// <list type="bullet">
-        ///   <item><description><see cref="ButtonBaseType.Button"/> â€“ no default action.</description></item>
-        ///   <item><description><see cref="ButtonBaseType.Submit"/> â€“ submits the associated form when
+        ///   <item><description><see cref="ButtonBaseType.Button"/> – no default action.</description></item>
+        ///   <item><description><see cref="ButtonBaseType.Submit"/> – submits the associated form when
         ///   clicked.</description></item>
-        ///   <item><description><see cref="ButtonBaseType.Reset"/> â€“ resets the associated form fields to
+        ///   <item><description><see cref="ButtonBaseType.Reset"/> – resets the associated form fields to
         ///   their initial values.</description></item>
         /// </list>
         /// Ignored when the button is rendered as a link (i.e. <see cref="Href"/> is set).
@@ -125,12 +125,12 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Where to open the linked document. Only effective when <see cref="Href"/> is set.
         /// <list type="bullet">
-        ///   <item><description><see cref="ButtonBaseTarget._self"/> â€“ current browsing context
+        ///   <item><description><see cref="ButtonBaseTarget._self"/> – current browsing context
         ///   (default browser behavior).</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._blank"/> â€“ new tab or window.</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._parent"/> â€“ parent browsing context; falls back to
+        ///   <item><description><see cref="ButtonBaseTarget._blank"/> – new tab or window.</description></item>
+        ///   <item><description><see cref="ButtonBaseTarget._parent"/> – parent browsing context; falls back to
         ///   <see cref="ButtonBaseTarget._self"/> if none.</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._top"/> â€“ top-level browsing context; falls back to
+        ///   <item><description><see cref="ButtonBaseTarget._top"/> – top-level browsing context; falls back to
         ///   <see cref="ButtonBaseTarget._self"/> if none.</description></item>
         /// </list>
         /// </summary>
@@ -241,7 +241,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public async Task FocusComponentAsync(IgbFocusOptions options)
         {
-            await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            await InvokeMethod("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
-            InvokeMethodSync("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            InvokeMethodSync("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
         /// <summary>
         /// Removes focus from the button.
@@ -259,7 +259,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public async Task BlurComponentAsync()
         {
-            await InvokeMethod("blur", new object[] { }, new string[] { });
+            await InvokeMethod("blur", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -268,22 +268,22 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
-            InvokeMethodSync("blur", new object[] { }, new string[] { });
+            InvokeMethodSync("blur", new object?[] { }, new string[] { });
         }
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Simulates a mouse click on the button, triggering its click handler and any associated form action.
         /// </summary>
         public async Task ClickAsync()
         {
-            await InvokeMethod("click", new object[] { }, new string[] { });
+            await InvokeMethod("click", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Click()
         {
-            InvokeMethodSync("click", new object[] { }, new string[] { });
+            InvokeMethodSync("click", new object?[] { }, new string[] { });
         }
 
         private string? _focusRef = null;

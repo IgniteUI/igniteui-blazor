@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -78,7 +78,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<string> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
@@ -87,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public string GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
         private InputType _displayType = InputType.Text;
@@ -333,7 +333,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepUpAsync(double n = -1)
         {
-            await InvokeMethod("stepUp", new object[] { n }, new string[] { "Number" });
+            await InvokeMethod("stepUp", new object?[] { n }, new string[] { "Number" });
         }
 
         /// <summary>
@@ -341,14 +341,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepUp(double n = -1)
         {
-            InvokeMethodSync("stepUp", new object[] { n }, new string[] { "Number" });
+            InvokeMethodSync("stepUp", new object?[] { n }, new string[] { "Number" });
         }
         /// <summary>
         /// Decrements the numeric value of the input by one or more steps.
         /// </summary>
         public async Task StepDownAsync(double n = -1)
         {
-            await InvokeMethod("stepDown", new object[] { n }, new string[] { "Number" });
+            await InvokeMethod("stepDown", new object?[] { n }, new string[] { "Number" });
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepDown(double n = -1)
         {
-            InvokeMethodSync("stepDown", new object[] { n }, new string[] { "Number" });
+            InvokeMethodSync("stepDown", new object?[] { n }, new string[] { "Number" });
         }
 
         private EventCallback<string>? _valueChanged = null;

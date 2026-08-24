@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -274,11 +274,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Shows the tooltip if not already showing.
@@ -286,7 +286,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> ShowAsync(String? target = null)
         {
-            var iv = await InvokeMethod("show", new object[] { StringToString(target) }, new string[] { "String" });
+            var iv = await InvokeMethod("show", new object?[] { StringToString(target) }, new string[] { "String" });
             return ReturnToBoolean(iv);
         }
 
@@ -296,7 +296,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool Show(String? target = null)
         {
-            var iv = InvokeMethodSync("show", new object[] { StringToString(target) }, new string[] { "String" });
+            var iv = InvokeMethodSync("show", new object?[] { StringToString(target) }, new string[] { "String" });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -304,7 +304,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> HideAsync()
         {
-            var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -313,7 +313,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool Hide()
         {
-            var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -321,7 +321,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> ToggleAsync()
         {
-            var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -330,7 +330,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool Toggle()
         {
-            var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 

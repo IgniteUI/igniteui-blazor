@@ -100,18 +100,18 @@ namespace IgniteUI.Blazor.Controls
         }
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Hides all of the child expansion panels' contents.
         /// </summary>
         public async Task HideAllAsync()
         {
-            await InvokeMethod("hideAll", new object[] { }, new string[] { });
+            await InvokeMethod("hideAll", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -119,14 +119,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void HideAll()
         {
-            InvokeMethodSync("hideAll", new object[] { }, new string[] { });
+            InvokeMethodSync("hideAll", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Shows all of the child expansion panels' contents.
         /// </summary>
         public async Task ShowAllAsync()
         {
-            await InvokeMethod("showAll", new object[] { }, new string[] { });
+            await InvokeMethod("showAll", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void ShowAll()
         {
-            InvokeMethodSync("showAll", new object[] { }, new string[] { });
+            InvokeMethodSync("showAll", new object?[] { }, new string[] { });
         }
 
         private string? _openingRef = null;

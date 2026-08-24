@@ -77,7 +77,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<double> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public double GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
         private bool _invalid = false;
@@ -116,7 +116,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="stepIncrement">Optional step increment. If no parameter is passed, it defaults to 1.</param>
         public async Task StepUpAsync(double stepIncrement = 1)
         {
-            await InvokeMethod("stepUp", new object[] { stepIncrement }, new string[] { "Number" });
+            await InvokeMethod("stepUp", new object?[] { stepIncrement }, new string[] { "Number" });
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="stepIncrement">Optional step increment. If no parameter is passed, it defaults to 1.</param>
         public void StepUp(double stepIncrement = 1)
         {
-            InvokeMethodSync("stepUp", new object[] { stepIncrement }, new string[] { "Number" });
+            InvokeMethodSync("stepUp", new object?[] { stepIncrement }, new string[] { "Number" });
         }
         /// <summary>
         /// Decrements the value of the slider by <c>stepDecrement * step</c>, where
@@ -135,7 +135,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="stepDecrement">Optional step decrement. If no parameter is passed, it defaults to 1.</param>
         public async Task StepDownAsync(double stepDecrement = 1)
         {
-            await InvokeMethod("stepDown", new object[] { stepDecrement }, new string[] { "Number" });
+            await InvokeMethod("stepDown", new object?[] { stepDecrement }, new string[] { "Number" });
         }
 
         /// <summary>
@@ -145,14 +145,14 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="stepDecrement">Optional step decrement. If no parameter is passed, it defaults to 1.</param>
         public void StepDown(double stepDecrement = 1)
         {
-            InvokeMethodSync("stepDown", new object[] { stepDecrement }, new string[] { "Number" });
+            InvokeMethodSync("stepDown", new object?[] { stepDecrement }, new string[] { "Number" });
         }
         /// <summary>
         /// Checks the validity of the control and shows the browser message if it is invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
-            var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -161,7 +161,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool ReportValidity()
         {
-            var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -169,7 +169,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
-            var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -178,7 +178,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool CheckValidity()
         {
-            var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -187,7 +187,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
-            await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            await InvokeMethod("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetCustomValidity(String message)
         {
-            InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         private EventCallback<double>? _valueChanged = null;

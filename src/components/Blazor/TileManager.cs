@@ -179,7 +179,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbTile[]> GetTilesAsync()
         {
-            var iv = await InvokeMethod("p:Tiles", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Tiles", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -199,7 +199,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbTile[] GetTiles()
         {
-            var iv = InvokeMethodSync("p:Tiles", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Tiles", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
@@ -235,18 +235,18 @@ namespace IgniteUI.Blazor.Controls
         }
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Returns the properties of the current tile collections as a JSON payload.
         /// </summary>
         public async Task<String> SaveLayoutAsync()
         {
-            var iv = await InvokeMethod("saveLayout", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("saveLayout", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
@@ -255,7 +255,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public String SaveLayout()
         {
-            var iv = InvokeMethodSync("saveLayout", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("saveLayout", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
         /// <summary>
@@ -263,7 +263,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task LoadLayoutAsync(String data)
         {
-            await InvokeMethod("loadLayout", new object[] { StringToString(data) }, new string[] { "String" });
+            await InvokeMethod("loadLayout", new object?[] { StringToString(data) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void LoadLayout(String data)
         {
-            InvokeMethodSync("loadLayout", new object[] { StringToString(data) }, new string[] { "String" });
+            InvokeMethodSync("loadLayout", new object?[] { StringToString(data) }, new string[] { "String" });
         }
 
         private string? _tileFullscreenRef = null;

@@ -20,7 +20,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<bool> ShowAsync(Object target_)
         {
             //Console.WriteLine(ComponentToJson(target_));
-            var iv = await InvokeMethod("show", new object[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
+            var iv = await InvokeMethod("show", new object?[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
             target_ is ElementReference ? new ElementReference[] { (ElementReference)target_ } : null);
             return ReturnToBoolean(iv);
         }
@@ -38,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already open.</returns>
         public bool Show(Object target_)
         {
-            var iv = InvokeMethodSync("show", new object[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
+            var iv = InvokeMethodSync("show", new object?[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
             target_ is ElementReference ? new ElementReference[] { (ElementReference)target_ } : null);
             return ReturnToBoolean(iv);
         }
@@ -55,7 +55,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns><see langword="true"/> when the open state was changed.</returns>
         public async Task<bool> ToggleAsync(Object target_)
         {
-            var iv = await InvokeMethod("toggle", new object[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
+            var iv = await InvokeMethod("toggle", new object?[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
             target_ is ElementReference ? new ElementReference[] { (ElementReference)target_ } : null);
             return ReturnToBoolean(iv);
         }
@@ -72,7 +72,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns><see langword="true"/> when the open state was changed.</returns>
         public bool Toggle(Object target_)
         {
-            var iv = InvokeMethodSync("toggle", new object[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
+            var iv = InvokeMethodSync("toggle", new object?[] { ComponentToJson(target_, 0) }, new string[] { "Component" },
             target_ is ElementReference ? new ElementReference[] { (ElementReference)target_ } : null);
             return ReturnToBoolean(iv);
         }
