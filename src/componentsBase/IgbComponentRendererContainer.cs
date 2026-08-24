@@ -25,8 +25,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private object _rootComponent = null;
-        public object RootComponent
+        private object? _rootComponent = null;
+        public object? RootComponent
         {
             get
             {

@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
 #if NET5_0
         private IJSUnmarshalledRuntime _unmarshalledRuntime;
 #else
-        private Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[], string> _callSendUnmarshalledColumnMessage;
+        private Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn?[]?, string> _callSendUnmarshalledColumnMessage;
         private Func<IJSInProcessRuntime, string, string, string, string> _callSendUnmarshalledColumnDataIntentMessage;
 #endif
         private IJSInProcessRuntime _inprocRuntime;
@@ -72,7 +72,7 @@ namespace IgniteUI.Blazor.Controls
                         indexParam, columnsParam);
 
                         _callSendUnmarshalledColumnMessage =
-                        (Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[], string>)Expression.Lambda(
+                        (Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn?[]?, string>)Expression.Lambda(
                             call, jsRuntimeParam, methodNameParam, refNameParam, indexParam, columnsParam).Compile();
                     }
 
@@ -105,12 +105,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public unsafe string SendUnmarshalledColumnMessage(string methodName, string refName, int index, UnmarshalledColumn[] columns)
+        public unsafe string SendUnmarshalledColumnMessage(string methodName, string refName, int index, UnmarshalledColumn?[]? columns)
         {
 #if NET5_0
             if (_unmarshalledRuntime != null)
             {
-                return _unmarshalledRuntime.InvokeUnmarshalled<string, int, UnmarshalledColumn[], string>(methodName, refName, index, columns);
+                return _unmarshalledRuntime.InvokeUnmarshalled<string, int, UnmarshalledColumn?[]?, string>(methodName, refName, index, columns);
             }
 #else
             if (_callSendUnmarshalledColumnMessage != null)

@@ -9,8 +9,8 @@ namespace IgniteUI.Blazor.Controls
         private Guid _id;
         private bool _isNull = false;
         private bool _isDataSource = true;
-        private IJSDataSource _source = null;
-        private string _parentId = null;
+        private IJSDataSource? _source = null;
+        private string? _parentId = null;
         private Dictionary<string, object> _values = new Dictionary<string, object>();
         private Dictionary<string, JSDataSourceSchemaType> _valueTypes = new Dictionary<string, JSDataSourceSchemaType>();
 
@@ -39,12 +39,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSource Source
+        public IJSDataSource? Source
         {
             get { return _source; }
         }
 
-        public string ParentId
+        public string? ParentId
         {
             get
             {
@@ -52,7 +52,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public object GetValue(string key)
+        public object? GetValue(string key)
         {
             if (_values.ContainsKey(key))
                 return _values[key];
@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public static JSDataSourceSchema ExtractSchema(object item)
+        public static JSDataSourceSchema? ExtractSchema(object? item)
         {
             if (item == null)
             {
@@ -112,14 +112,14 @@ namespace IgniteUI.Blazor.Controls
             newItem.Read(item, schema, manager);
             return newItem;
         }
-        public static JsonDataSourceItem Create(object item, JSDataSourceSchema schema, DataSourceManager manager, JsonDataSourceItem parentItem)
+        public static JsonDataSourceItem Create(object? item, JSDataSourceSchema? schema, DataSourceManager manager, JsonDataSourceItem parentItem)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem();
             newItem._parentId = parentItem.ParentId != null ? parentItem.ParentId + "/" + parentItem.Id.ToString() : parentItem.Id.ToString();
             newItem.Read(item, schema, manager);
             return newItem;
         }
-        public static JsonDataSourceItem Create(object item, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
+        public static JsonDataSourceItem Create(object? item, JSDataSourceSchema? schema, DataSourceManager? manager, string? parentId)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem();
             newItem._parentId = parentId;
@@ -139,8 +139,8 @@ namespace IgniteUI.Blazor.Controls
             Read(item, schema, manager);
         }
 
-        private JSDataSourceSchema _schema = null;
-        private void Read(Object item, JSDataSourceSchema schema, DataSourceManager manager)
+        private JSDataSourceSchema? _schema = null;
+        private void Read(Object? item, JSDataSourceSchema? schema, DataSourceManager? manager)
         {
             if (schema == null || item == null)
             {
@@ -198,14 +198,14 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        public void GetDateCacheAsJson(System.Text.Json.Utf8JsonWriter writer, string parentKey = null)
+        public void GetDateCacheAsJson(System.Text.Json.Utf8JsonWriter writer, string? parentKey = null)
         {
             if (_isNull)
             {
                 return;
             }
 
-            if (_schema.IsDataSource)
+            if (_schema?.IsDataSource == true)
             {
                 var itemSchema = _schema.GetSubSchema("Items");
                 GetDateCacheAsJson(itemSchema, writer, parentKey + "[]");
@@ -215,7 +215,7 @@ namespace IgniteUI.Blazor.Controls
                 GetDateCacheAsJson(_schema, writer, parentKey);
             }
         }
-        public void GetDateCacheAsJson(JSDataSourceSchema schema, System.Text.Json.Utf8JsonWriter writer, string parentKey = null)
+        public void GetDateCacheAsJson(JSDataSourceSchema? schema, System.Text.Json.Utf8JsonWriter writer, string? parentKey = null)
         {
             if (schema == null)
             {

@@ -119,8 +119,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private object _component = null;
-        public object Component
+        private object? _component = null;
+        public object? Component
         {
             get
             {

@@ -5,9 +5,9 @@ namespace IgniteUI.Blazor.Controls
     public class SerializationContext
     {
         public System.Text.Json.Utf8JsonWriter Writer { get; set; }
-        public SerializationFilter Filter { get; set; }
+        public SerializationFilter? Filter { get; set; }
 
-        public SerializationContext(System.Text.Json.Utf8JsonWriter writer, SerializationFilter filter)
+        public SerializationContext(System.Text.Json.Utf8JsonWriter writer, SerializationFilter? filter)
         {
             Writer = writer;
             Filter = filter;
@@ -16,7 +16,7 @@ namespace IgniteUI.Blazor.Controls
 
     public interface JsonSerializable
     {
-        void Serialize(SerializationContext writer, string propertyName = null);
+        void Serialize(SerializationContext writer, string? propertyName = null);
     }
 
 }

@@ -5,8 +5,8 @@ namespace IgniteUI.Blazor.Controls
     internal class RendererMessage
     {
         private Dictionary<string, string> _data = new Dictionary<string, string>();
-        private String _type = null;
-        public string Type
+        private String? _type = null;
+        public string? Type
         {
             get
             {
@@ -35,7 +35,7 @@ namespace IgniteUI.Blazor.Controls
             return "{" + string.Join(",\n", props) + "}";
         }
 
-        public ElementReference[] NativeElements { get; set; }
+        public ElementReference[]? NativeElements { get; set; }
     }
 
 }

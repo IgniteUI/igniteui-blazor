@@ -207,8 +207,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private object _tempParent = null;
-        internal object TempParent
+        private object? _tempParent = null;
+        internal object? TempParent
         {
             get
             {
@@ -220,14 +220,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private Object _parent = null;
+        private Object? _parent = null;
 
         private class RefChange
         {
-            public String propertyName;
-            public Object oldValue;
-            public Object newValue;
-            public Action<string, object, object> refChanged;
+            public String propertyName = null!;
+            public Object? oldValue;
+            public Object? newValue;
+            public Action<string, object?, object?> refChanged = null!;
             public bool isScript;
             public bool isElement;
         }
@@ -235,7 +235,7 @@ namespace IgniteUI.Blazor.Controls
         private List<Action> _queuedTemplateUpdates = new List<Action>();
         private List<Action> _deferredNameChanges = new List<Action>();
 
-        private void QueueRefChange(String propertyName, Object oldValue, Object newValue, bool isScript, bool isElement, Action<string, object, object> refChanged)
+        private void QueueRefChange(String propertyName, Object? oldValue, Object? newValue, bool isScript, bool isElement, Action<string, object?, object?> refChanged)
         {
             RefChange c = new RefChange();
             c.propertyName = propertyName;
@@ -257,7 +257,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public object Parent
+        public object? Parent
         {
             get
             {
@@ -265,7 +265,7 @@ namespace IgniteUI.Blazor.Controls
             }
             internal set
             {
-                Object oldParent = _parent;
+                Object? oldParent = _parent;
                 _parent = value;
                 _serializeDirty = true;
                 if (_parent != null)
@@ -327,17 +327,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected async Task<object> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[] nativeElements = null)
+        protected async Task<object> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(MethodTarget, methodName, arguments, types, nativeElements);
         }
 
-        protected object InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[] nativeElements = null)
+        protected object InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(MethodTarget, methodName, arguments, types, nativeElements);
         }
 
-        protected async Task<object> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[] nativeElements)
+        protected async Task<object> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (CurrParent == null)
             {
@@ -353,7 +353,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected object InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[] nativeElements)
+        protected object InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (CurrParent == null)
             {
@@ -410,7 +410,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void OnRefChanged(string propertyName, object oldValue, object newValue, bool isScript, bool isElement, Action<string, object, object> refChanged)
+        internal void OnRefChanged(string propertyName, object? oldValue, object? newValue, bool isScript, bool isElement, Action<string, object?, object?> refChanged)
         {
             _isDirtyRef[propertyName] = true;
             _isDirty[propertyName] = true;
@@ -523,7 +523,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext context, string propertyName = null)
+        public void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;
@@ -736,7 +736,7 @@ namespace IgniteUI.Blazor.Controls
         {
             return ReturnToObjectArray<T>(val, null);
         }
-        internal T[] ReturnToObjectArray<T>(Object val, string typeGuess)
+        internal T[] ReturnToObjectArray<T>(Object val, string? typeGuess)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -866,7 +866,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object ConvertReturnValue(object val, string typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object ConvertReturnValue(object val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -907,7 +907,7 @@ namespace IgniteUI.Blazor.Controls
 
         private List<Action> _deferredHandlers = new List<Action>();
 
-        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T> onArgs = null) where T : BaseRendererElement, new()
+        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
         {
             Action add = () =>
             {
@@ -929,7 +929,7 @@ namespace IgniteUI.Blazor.Controls
             add();
         }
 
-        internal void SetHandlerSimple<T>(string name, string propertyName, EventCallback<T>? handler, Func<object, T> getReturn, Action<T> onArgs = null)
+        internal void SetHandlerSimple<T>(string name, string propertyName, EventCallback<T>? handler, Func<object, T> getReturn, Action<T>? onArgs = null)
         {
             Action add = () =>
             {
@@ -951,7 +951,7 @@ namespace IgniteUI.Blazor.Controls
             add();
         }
 
-        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T> onArgs = null) where T : BaseRendererElement, new()
+        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
         {
             Action add = () =>
             {
@@ -974,7 +974,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        internal void SetActionHandlerSimple<T>(string name, string propertyName, Action<T> handler, Func<object, T> getReturn, Action<T> onArgs = null)
+        internal void SetActionHandlerSimple<T>(string name, string propertyName, Action<T> handler, Func<object, T> getReturn, Action<T>? onArgs = null)
         {
             Action add = () =>
             {

@@ -79,7 +79,7 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        private void WriteDataIntentsAsJson(string propertyName, System.Text.Json.Utf8JsonWriter uw)
+        private void WriteDataIntentsAsJson(string? propertyName, System.Text.Json.Utf8JsonWriter uw)
         {
             if (propertyName != null)
             {
@@ -192,7 +192,7 @@ namespace IgniteUI.Blazor.Controls
             uw.WriteEndObject();
         }
 
-        public string GetDataIntentsAsJson()
+        public string? GetDataIntentsAsJson()
         {
             if (!HasDataIntents())
             {
@@ -257,16 +257,15 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (key is string)
                 {
-                    if (item[key] == null)
+                    var keyValue = item[key];
+                    if (keyValue == null)
                     {
                         continue;
                     }
-
-                    List<IDataIntentAttribute> dataIntents = null;
                     names.Add((string)key);
                     s._buildingPropertiesDataIntents.Add(null);
 
-                    Type ret = item[key].GetType();
+                    var ret = keyValue.GetType();
                     types.Add(ret);
 
                     JSDataSourceSchemaType type = s.ResolveSchemaType(ret);
@@ -486,9 +485,9 @@ namespace IgniteUI.Blazor.Controls
             return "null";
         }
 
-        private JSDataSourceSchema _itemSchema = null;
+        private JSDataSourceSchema? _itemSchema = null;
 
-        public JSDataSourceSchema ItemSchema
+        public JSDataSourceSchema? ItemSchema
         {
             get
             {
@@ -505,12 +504,12 @@ namespace IgniteUI.Blazor.Controls
 
         private List<PropertyInfo> _buildingProperties = new List<PropertyInfo>();
         private List<JSDataSourceSchemaType> _buildingPropertiesTypes = new List<JSDataSourceSchemaType>();
-        private List<IDataIntentAttribute[]> _buildingPropertiesDataIntents = new List<IDataIntentAttribute[]>();
+        private List<IDataIntentAttribute[]?> _buildingPropertiesDataIntents = new List<IDataIntentAttribute[]?>();
         private List<FieldInfo> _buildingFields = new List<FieldInfo>();
         private List<JSDataSourceSchemaType> _buildingFieldsTypes = new List<JSDataSourceSchemaType>();
-        private List<IDataIntentAttribute[]> _buildingFieldsDataIntents = new List<IDataIntentAttribute[]>();
+        private List<IDataIntentAttribute[]?> _buildingFieldsDataIntents = new List<IDataIntentAttribute[]?>();
 
-        private Dictionary<string, JSDataSourceSchema> _subSchemas = new Dictionary<string, JSDataSourceSchema>();
+        private Dictionary<string, JSDataSourceSchema?> _subSchemas = new Dictionary<string, JSDataSourceSchema?>();
 
         public bool IsNullable(string propertyName)
         {
@@ -732,14 +731,14 @@ namespace IgniteUI.Blazor.Controls
         public Delegate[] TypedPropertyGetters;
         public Delegate[] TypedFieldGetters;
         public JSDataSourceSchemaType[] PropertyTypes;
-        public IDataIntentAttribute[][] PropertyDataIntents;
+        public IDataIntentAttribute[]?[] PropertyDataIntents;
         public System.Text.Json.JsonEncodedText[] JsonPropertyNames;
         public System.Text.Json.JsonEncodedText[] JsonFieldNames;
         public String[] PropertyNames;
         public String[] FieldNames;
         public FieldInfo[] Fields;
         public JSDataSourceSchemaType[] FieldTypes;
-        public IDataIntentAttribute[][] FieldDataIntents;
+        public IDataIntentAttribute[]?[] FieldDataIntents;
 
         private System.Linq.Expressions.UnaryExpression GetConversion(Type type, System.Linq.Expressions.Expression expression)
         {

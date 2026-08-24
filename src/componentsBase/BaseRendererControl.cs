@@ -31,13 +31,15 @@ namespace IgniteUI.Blazor.Controls
 
     public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IDisposable
     {
-        private IIgniteUIBlazor _igBlazor;
+        private static readonly SerializationFilter DefaultSerializationFilter = static (_, _) => true;
+
+        private IIgniteUIBlazor? _igBlazor;
         [Inject]
         protected IIgniteUIBlazor IgBlazor
         {
             get
             {
-                return _igBlazor;
+                return _igBlazor!;
             }
             set
             {
@@ -58,17 +60,17 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private IJSRuntime JsRuntime
+        private IJSRuntime? JsRuntime
         {
             get
             {
-                return IgBlazor != null ? IgBlazor.JsRuntime : null;
+                return _igBlazor != null ? _igBlazor.JsRuntime : null;
             }
         }
 
-        private IJSInProcessRuntime _inproc = null;
+        private IJSInProcessRuntime? _inproc = null;
         private bool _checkedInproc = false;
-        private IJSInProcessRuntime JsInProcessRuntime
+        private IJSInProcessRuntime? JsInProcessRuntime
         {
             get
             {
@@ -83,25 +85,25 @@ namespace IgniteUI.Blazor.Controls
         }
 
         [Parameter]
-        public string Height
+        public string? Height
         {
             get; set;
         }
 
         [Parameter]
-        public string Width
+        public string? Width
         {
             get; set;
         }
 
         [Parameter]
-        public string Class
+        public string? Class
         {
             get; set;
         }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public Dictionary<string, object> AdditionalAttributes { get; set; }
+        public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
         protected virtual string ParentTypeName
         {
@@ -137,15 +139,15 @@ namespace IgniteUI.Blazor.Controls
             return EventBehavior;
         }
 
-        [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter] public RenderFragment? ChildContent { get; set; }
 
         private ElementReference contEle;
         private Dictionary<string, bool> _isDirty = new Dictionary<string, bool>();
         private Dictionary<string, bool> _isDirtyRef = new Dictionary<string, bool>();
         private bool _hasDirty = false;
         private bool _serializeDirty = true;
-        private DataSourceManager _dataSourceManager;
-        internal DataSourceManager DataSourceManager
+        private DataSourceManager? _dataSourceManager;
+        internal DataSourceManager? DataSourceManager
         {
             get { return _dataSourceManager; }
         }
@@ -171,7 +173,7 @@ namespace IgniteUI.Blazor.Controls
         [Parameter]
         public RoundTripDateConversion RoundTripDateConversion { get; set; } = RoundTripDateConversion.Auto;
 
-        private DotNetObjectReference<WebCallback> _objRef;
+        private DotNetObjectReference<WebCallback>? _objRef;
 
         private DotNetObjectReference<WebCallback> GetObjectRef()
         {
@@ -197,7 +199,7 @@ namespace IgniteUI.Blazor.Controls
             return "block";
         }
 
-        protected string ToSpinal(string value)
+        protected string? ToSpinal(string? value)
         {
             if (value == null)
             {
@@ -390,7 +392,7 @@ namespace IgniteUI.Blazor.Controls
             return value;
         }
 
-        private SequenceInfo _sequenceInfo = null;
+        private SequenceInfo? _sequenceInfo = null;
 
         protected virtual SequenceInfo BuildSequenceInfo(int startSequence)
         {
@@ -401,7 +403,7 @@ namespace IgniteUI.Blazor.Controls
             foreach (var prop in props)
             {
                 bool isParam = false;
-                string wcName = null;
+                string? wcName = null;
                 foreach (var attr in prop.GetCustomAttributes(true))
                 {
                     if (attr.GetType().Name == "ParameterAttribute")
@@ -421,7 +423,7 @@ namespace IgniteUI.Blazor.Controls
                 }
 
                 var pType = prop.PropertyType;
-                Dictionary<string, string> wcEnumTransform = null;
+                Dictionary<string, string>? wcEnumTransform = null;
                 if (pType != null)
                 {
                     if (pType.IsEnum)
@@ -648,7 +650,7 @@ namespace IgniteUI.Blazor.Controls
             _contentTemplateTypes[templateId] = type;
         }
 
-        internal object FindTemplate(string templateId)
+        internal object? FindTemplate(string templateId)
         {
             if (_contentTemplates.ContainsKey(templateId))
             {
@@ -657,7 +659,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        internal void AdjustDynamicContent(string containerId, string contentType, string templateId, string contentId, string actionType, string args)
+        internal void AdjustDynamicContent(string containerId, string contentType, string templateId, string contentId, string actionType, string? args)
         {
             switch (actionType)
             {
@@ -701,20 +703,20 @@ namespace IgniteUI.Blazor.Controls
                     {
                         DynamicContentInfo dynamicContent = _dynamicContentInfos[contentId];
 
-                        object context = null;
+                        object? context = null;
                         if (args != null)
                         {
                             var argsDic = JsonSerializer.Deserialize<Dictionary<string, object>>(args, SerializerOptions);
-                            context = ConvertReturnValue(argsDic);
+                            context = ConvertReturnValue(argsDic!);
                         }
-                        dynamicContent.UpdateContext(context);
+                        dynamicContent.UpdateContext(context!);
                     }
                     break;
                 }
             }
         }
 
-        protected Type TemplateContentType(string templateId)
+        protected Type? TemplateContentType(string templateId)
         {
             if (!_contentTemplateTypes.ContainsKey(templateId))
             {
@@ -725,7 +727,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private Dictionary<Type, Func<DynamicContentInfo>> _dynamicContentBuilders = new Dictionary<Type, Func<DynamicContentInfo>>();
-        private DynamicContentInfo BuildDynamicContentInfo(string contentType, string templateId)
+        private DynamicContentInfo? BuildDynamicContentInfo(string contentType, string templateId)
         {
             var templateContentType = TemplateContentType(templateId);
             if (templateContentType != null)
@@ -745,17 +747,17 @@ namespace IgniteUI.Blazor.Controls
                     else
                     {
                         //TODO: other types
-                        _dynamicContentBuilders[templateContentType] = () => null;
+                        _dynamicContentBuilders[templateContentType] = () => null!;
                     }
                 }
             }
             else
             {
                 //TODO: other types
-                _dynamicContentBuilders[templateContentType] = () => null;
+                _dynamicContentBuilders[templateContentType!] = () => null!;
             }
 
-            return _dynamicContentBuilders[templateContentType]();
+            return _dynamicContentBuilders[templateContentType!]();
         }
 
         protected virtual bool NeedsDynamicContent
@@ -912,7 +914,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext context, string propertyName = null)
+        public void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;
@@ -929,7 +931,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     using (Utf8JsonWriter uw = new Utf8JsonWriter(stream))
                     {
-                        SerializationContext c = new SerializationContext(uw, null);
+                        SerializationContext c = new SerializationContext(uw, DefaultSerializationFilter);
                         //RendererSerializer ser = new RendererSerializer(uw);
 
                         Serialize(c);
@@ -947,17 +949,17 @@ namespace IgniteUI.Blazor.Controls
         private Object _semLock = new Object();
 
         static long _invokeId = 0;
-        protected async Task<object> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[] nativeElements = null)
+        protected async Task<object> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(null, methodName, arguments, types, nativeElements);
         }
 
-        protected object InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[] nativeElements = null)
+        protected object InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(null, methodName, arguments, types, nativeElements);
         }
 
-        private JsonSerializerOptions _serializerOptions = null;
+        private JsonSerializerOptions? _serializerOptions = null;
         private JsonSerializerOptions SerializerOptions
         {
             get
@@ -973,7 +975,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[] nativeElements)
+        internal object InvokeMethodHelperSync(string? target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (!_ready)
             {
@@ -1027,7 +1029,7 @@ namespace IgniteUI.Blazor.Controls
 
         Dictionary<long, TaskCompletionSource<object>> _methodTasks = new Dictionary<long, TaskCompletionSource<object>>();
 
-        internal async Task<object> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[] nativeElements)
+        internal async Task<object> InvokeMethodHelper(string? target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (!_ready)
             {
@@ -1086,7 +1088,7 @@ namespace IgniteUI.Blazor.Controls
             return result;
         }
 
-        private string GetStringArg(object argument, string type)
+        private string? GetStringArg(object? argument, string type)
         {
             if (argument == null)
             {
@@ -1184,7 +1186,7 @@ namespace IgniteUI.Blazor.Controls
             return argument.ToString();
         }
 
-        internal void OnRefChanged(string propertyName, object oldValue, object newValue, bool isScript, bool isElement, Action<string, object, object> refChanged)
+        internal void OnRefChanged(string propertyName, object? oldValue, object? newValue, bool isScript, bool isElement, Action<string, object?, object?> refChanged)
         {
             _isDirtyRef[propertyName] = true;
             _isDirty[propertyName] = true;
@@ -1213,8 +1215,8 @@ namespace IgniteUI.Blazor.Controls
                         using (var stream = new System.IO.MemoryStream())
                         using (var writer = new System.Text.Json.Utf8JsonWriter(stream))
                         {
-                            var context = new SerializationContext(writer, null);
-                            ((JsonSerializable)newValue).Serialize(context, null);
+                            var context = new SerializationContext(writer, DefaultSerializationFilter);
+                            ((JsonSerializable)newValue).Serialize(context);
                             writer.Flush();
                             var json = System.Text.Encoding.UTF8.GetString(stream.ToArray());
 
@@ -1405,7 +1407,7 @@ namespace IgniteUI.Blazor.Controls
             _dataSourceManager.NotifyUpdateItem(refName, index, refItem, syncDataOnly);
         }
 
-        public void OnRefChanged(string refName, object refValue)
+        public void OnRefChanged(string refName, object? refValue)
         {
             RendererMessage m = new RendererMessage();
             m.Type = ("refChanged");
@@ -1876,7 +1878,7 @@ namespace IgniteUI.Blazor.Controls
             return (T[])val;
         }
 
-        internal object ConvertReturnValue(object returnValue, bool transformArrays = false, string typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object ConvertReturnValue(object returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             try
             {
@@ -2368,7 +2370,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 using (Utf8JsonWriter w = new Utf8JsonWriter(ms))
                 {
-                    SerializationContext c = new SerializationContext(w, null);
+                    SerializationContext c = new SerializationContext(w, DefaultSerializationFilter);
                     ObjectToParam(c, val);
                     w.Flush();
                     return System.Text.Encoding.UTF8.GetString(ms.ToArray());
@@ -2382,7 +2384,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 using (Utf8JsonWriter w = new Utf8JsonWriter(ms))
                 {
-                    SerializationContext c = new SerializationContext(w, null);
+                    SerializationContext c = new SerializationContext(w, DefaultSerializationFilter);
                     ObjectToParam(c, type, val);
                     w.Flush();
                     return System.Text.Encoding.UTF8.GetString(ms.ToArray());
@@ -2671,7 +2673,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 using (Utf8JsonWriter w = new Utf8JsonWriter(ms))
                 {
-                    SerializationContext c = new SerializationContext(w, null);
+                    SerializationContext c = new SerializationContext(w, DefaultSerializationFilter);
                     w.WriteStartArray();
                     for (int i = 0; i < arr.Length; i++)
                     {
@@ -2794,12 +2796,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T[] ReturnToObjectArray<T>(object val)
+        internal T[]? ReturnToObjectArray<T>(object val)
         {
             return ReturnToObjectArray<T>(val, null);
         }
 
-        internal T[] ReturnToObjectArray<T>(object val, string typeGuess)
+        internal T[]? ReturnToObjectArray<T>(object val, string? typeGuess)
         {
             if (val == null)
             {
@@ -2808,7 +2810,7 @@ namespace IgniteUI.Blazor.Controls
             val = ConvertReturnValue(val);
             try
             {
-                var arr = JsonSerializer.Deserialize<Dictionary<string, object>[]>((string)val.ToString(), SerializerOptions);
+                var arr = JsonSerializer.Deserialize<Dictionary<string, object>[]>(val.ToString(), SerializerOptions);
                 T[] ret = new T[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -2936,7 +2938,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T> onArgs = null) where T : BaseRendererElement, new()
+        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
         {
             if (!handler.HasValue)
             {
@@ -2956,7 +2958,7 @@ namespace IgniteUI.Blazor.Controls
                     onArgs(a);
                 }
                 var task = handler?.InvokeAsync(a);
-                if (task.Exception != null)
+                if (task?.Exception != null)
                 {
                     throw task.Exception;
                 }
@@ -2968,7 +2970,7 @@ namespace IgniteUI.Blazor.Controls
             _handlers[name + "/" + propertyName] = inner;
         }
 
-        internal void SetHandlerSimple<T>(string name, string propertyName, EventCallback<T>? handler, Func<object, T> getReturn, Action<T> onArgs = null)
+        internal void SetHandlerSimple<T>(string name, string propertyName, EventCallback<T>? handler, Func<object, T> getReturn, Action<T>? onArgs = null)
         {
             if (!handler.HasValue)
             {
@@ -2985,7 +2987,7 @@ namespace IgniteUI.Blazor.Controls
                     onArgs(a);
                 }
                 var task = handler?.InvokeAsync(a);
-                if (task.Exception != null)
+                if (task?.Exception != null)
                 {
                     throw task.Exception;
                 }
@@ -2995,7 +2997,7 @@ namespace IgniteUI.Blazor.Controls
             _handlers[name + "/" + propertyName] = inner;
         }
 
-        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T> onArgs = null) where T : BaseRendererElement, new()
+        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
         {
             if (handler == null)
             {
@@ -3023,7 +3025,7 @@ namespace IgniteUI.Blazor.Controls
             _handlers[name + "/" + propertyName] = inner;
         }
 
-        internal void SetActionHandlerSimple<T>(string name, string propertyName, Action<T> handler, Func<object, T> getReturn, Action<T> onArgs = null)
+        internal void SetActionHandlerSimple<T>(string name, string propertyName, Action<T> handler, Func<object, T> getReturn, Action<T>? onArgs = null)
         {
             if (handler == null)
             {
@@ -3354,7 +3356,7 @@ namespace IgniteUI.Blazor.Controls
     {
         bool ForceJsonDataMarshalling { get; }
         IgniteUIJsonSerializerOptions JsonSerializerOptions { get; }
-        ReadOnlyCollection<Type> ModulesToLoad { get; }
+        ReadOnlyCollection<Type>? ModulesToLoad { get; }
     }
 
     public class IgniteUIBlazorSettings
@@ -3362,7 +3364,7 @@ namespace IgniteUI.Blazor.Controls
     {
         public bool ForceJsonDataMarshalling { get; private set; }
         public IgniteUIJsonSerializerOptions JsonSerializerOptions { get; private set; }
-        public ReadOnlyCollection<Type> ModulesToLoad { get; private set; }
+        public ReadOnlyCollection<Type>? ModulesToLoad { get; private set; }
 
         public IgniteUIBlazorSettings()
         {
@@ -3536,7 +3538,7 @@ namespace IgniteUI.Blazor.Controls
 
     public class SequenceInfo
     {
-        private ReadOnlyCollection<string> _attributeKeys = null;
+        private ReadOnlyCollection<string>? _attributeKeys = null;
         public ReadOnlyCollection<string> AttributeKeys
         {
             get
@@ -3593,7 +3595,7 @@ namespace IgniteUI.Blazor.Controls
             return fieldName;
         }
 
-        internal void AddSequence(string attributeKey, string wcName = null, Dictionary<string, string> wcEnumTransform = null)
+        internal void AddSequence(string attributeKey, string? wcName = null, Dictionary<string, string>? wcEnumTransform = null)
         {
             if (!_keysSet.Contains(attributeKey))
             {

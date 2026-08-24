@@ -18,7 +18,7 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _hasShiftedOnceAlready;
 
-        public CollectionAdapter(IList<T> query, IList<J> target, IList<T> allList, Func<T, J> toTarget, Action<T> onItemAdded, Action<T> onItemRemoved, Func<T, string> collisionChecker = null)
+        public CollectionAdapter(IList<T> query, IList<J> target, IList<T> allList, Func<T, J> toTarget, Action<T> onItemAdded, Action<T> onItemRemoved, Func<T, string>? collisionChecker = null)
         {
             if (collisionChecker != null)
             {
@@ -40,9 +40,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private Func<T, string> _collisionChecker = null;
+        private Func<T, string>? _collisionChecker = null;
 
-        public Func<T, string> CollisionChecker
+        public Func<T, string>? CollisionChecker
         {
             get
             {

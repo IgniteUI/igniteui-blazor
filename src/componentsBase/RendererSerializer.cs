@@ -21,9 +21,9 @@ namespace IgniteUI.Blazor.Controls
         private SerializationContext _context;
 
         //private List<string> _properties = new List<string>();
-        private string _type = null;
+        private string? _type = null;
 
-        public string Type
+        public string? Type
         {
             get
             {
@@ -64,7 +64,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": \"" + (value == null ? "null" : value) + "\"");
         }
 
-        public void AddPrimitiveProp(object val)
+        public void AddPrimitiveProp(object? val)
         {
             if (val is Array)
             {
@@ -356,7 +356,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": \"" + value.ToString("o") + "\"");
         }
 
-        public void Start(string propertyName = null)
+        public void Start(string? propertyName = null)
         {
             if (propertyName != null)
             {

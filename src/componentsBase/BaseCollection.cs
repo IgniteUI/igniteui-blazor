@@ -61,7 +61,7 @@ namespace IgniteUI.Blazor.Controls
             if (item is BaseRendererElement)
             {
                 BaseRendererElement c = (BaseRendererElement)(object)item;
-                c.Parent = null;
+                c.Parent = null!;
             }
             NotifyParent();
         }
@@ -78,7 +78,7 @@ namespace IgniteUI.Blazor.Controls
             NotifyParent();
         }
 
-        internal object Parent
+        internal object? Parent
         {
             get
             {
@@ -90,9 +90,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private object _parent = null;
-        private string _propertyName = null;
-        internal string PropertyName
+        private object? _parent = null;
+        private string? _propertyName = null;
+        internal string? PropertyName
         {
             get
             {
@@ -104,7 +104,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public BaseCollection(object parent, string propertyName)
+        public BaseCollection(object? parent, string? propertyName)
         {
             _parent = parent;
             _propertyName = propertyName;
@@ -139,14 +139,14 @@ namespace IgniteUI.Blazor.Controls
                 if (item is BaseRendererElement)
                 {
                     BaseRendererElement c = (BaseRendererElement)(object)item;
-                    c.Parent = null;
+                    c.Parent = null!;
                 }
             }
             base.ClearItems();
             NotifyParent();
         }
 
-        public void Serialize(SerializationContext context, string propertyName = null)
+        public void Serialize(SerializationContext context, string? propertyName = null)
         {
             //var vals = new List<string>();
             if (propertyName != null)
