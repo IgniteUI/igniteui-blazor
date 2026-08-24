@@ -154,8 +154,8 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
         }
 
-        private string _selectionChangedRef = null;
-        private string _selectionChangedScript = null;
+        private string? _selectionChangedRef = null;
+        private string? _selectionChangedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="SelectionChanged"/> event in the browser instead.
@@ -226,8 +226,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemExpandingRef = null;
-        private string _itemExpandingScript = null;
+        private string? _itemExpandingRef = null;
+        private string? _itemExpandingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ItemExpanding"/> event in the browser instead.
@@ -298,8 +298,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemExpandedRef = null;
-        private string _itemExpandedScript = null;
+        private string? _itemExpandedRef = null;
+        private string? _itemExpandedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ItemExpanded"/> event in the browser instead.
@@ -370,8 +370,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemCollapsingRef = null;
-        private string _itemCollapsingScript = null;
+        private string? _itemCollapsingRef = null;
+        private string? _itemCollapsingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ItemCollapsing"/> event in the browser instead.
@@ -442,8 +442,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemCollapsedRef = null;
-        private string _itemCollapsedScript = null;
+        private string? _itemCollapsedRef = null;
+        private string? _itemCollapsedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ItemCollapsed"/> event in the browser instead.
@@ -514,8 +514,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _activeItemRef = null;
-        private string _activeItemScript = null;
+        private string? _activeItemRef = null;
+        private string? _activeItemScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ActiveItem"/> event in the browser instead.

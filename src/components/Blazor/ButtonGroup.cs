@@ -145,8 +145,8 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        private string _selectRef = null;
-        private string _selectScript = null;
+        private string? _selectRef = null;
+        private string? _selectScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
@@ -217,8 +217,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _deselectRef = null;
-        private string _deselectScript = null;
+        private string? _deselectRef = null;
+        private string? _deselectScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Deselect"/> event in the browser instead.

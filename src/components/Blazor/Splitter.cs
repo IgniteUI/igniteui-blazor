@@ -303,8 +303,8 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("toggle", new object[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
         }
 
-        private string _resizeStartRef = null;
-        private string _resizeStartScript = null;
+        private string? _resizeStartRef = null;
+        private string? _resizeStartScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ResizeStart"/> event in the browser instead.
@@ -375,8 +375,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _resizingRef = null;
-        private string _resizingScript = null;
+        private string? _resizingRef = null;
+        private string? _resizingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Resizing"/> event in the browser instead.
@@ -447,8 +447,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _resizeEndRef = null;
-        private string _resizeEndScript = null;
+        private string? _resizeEndRef = null;
+        private string? _resizeEndScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ResizeEnd"/> event in the browser instead.

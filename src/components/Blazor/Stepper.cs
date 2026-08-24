@@ -319,8 +319,8 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("reset", new object[] { }, new string[] { });
         }
 
-        private string _activeStepChangingRef = null;
-        private string _activeStepChangingScript = null;
+        private string? _activeStepChangingRef = null;
+        private string? _activeStepChangingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ActiveStepChanging"/> event in the browser instead.
@@ -391,8 +391,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _activeStepChangedRef = null;
-        private string _activeStepChangedScript = null;
+        private string? _activeStepChangedRef = null;
+        private string? _activeStepChangedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ActiveStepChanged"/> event in the browser instead.

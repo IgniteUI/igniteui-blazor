@@ -284,7 +284,7 @@ namespace IgniteUI.Blazor.Controls
         /// Shows the tooltip if not already showing.
         /// If <paramref name="target"/> is provided, it is set as a transient anchor.
         /// </summary>
-        public async Task<bool> ShowAsync(String target = null)
+        public async Task<bool> ShowAsync(String? target = null)
         {
             var iv = await InvokeMethod("show", new object[] { StringToString(target) }, new string[] { "String" });
             return ReturnToBoolean(iv);
@@ -294,7 +294,7 @@ namespace IgniteUI.Blazor.Controls
         /// Shows the tooltip if not already showing.
         /// If <paramref name="target"/> is provided, it is set as a transient anchor.
         /// </summary>
-        public bool Show(String target = null)
+        public bool Show(String? target = null)
         {
             var iv = InvokeMethodSync("show", new object[] { StringToString(target) }, new string[] { "String" });
             return ReturnToBoolean(iv);
@@ -334,8 +334,8 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
-        private string _openingRef = null;
-        private string _openingScript = null;
+        private string? _openingRef = null;
+        private string? _openingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
@@ -406,8 +406,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _openedRef = null;
-        private string _openedScript = null;
+        private string? _openedRef = null;
+        private string? _openedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
@@ -478,8 +478,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _closingRef = null;
-        private string _closingScript = null;
+        private string? _closingRef = null;
+        private string? _closingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
@@ -550,8 +550,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _closedRef = null;
-        private string _closedScript = null;
+        private string? _closedRef = null;
+        private string? _closedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.

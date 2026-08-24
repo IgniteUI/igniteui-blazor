@@ -78,8 +78,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _actionRef = null;
-        private string _actionScript = null;
+        private string? _actionRef = null;
+        private string? _actionScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Action"/> event in the browser instead.

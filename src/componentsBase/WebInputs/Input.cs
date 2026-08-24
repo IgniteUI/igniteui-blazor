@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbInputBase : BaseRendererControl
     {
         [Inject]
-        internal ILogger<IgbInputBase> Logger { get; set; } = default;
+        internal ILogger<IgbInputBase> Logger { get; set; } = default!;
 
         private void EnsureInputOcurredHandled()
         {

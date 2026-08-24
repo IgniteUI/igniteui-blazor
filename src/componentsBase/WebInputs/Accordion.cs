@@ -13,7 +13,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseCollection<IgbExpansionPanel> _contentItems = null;
+        private BaseCollection<IgbExpansionPanel>? _contentItems = null;
 
         internal BaseCollection<IgbExpansionPanel> ContentItems
         {
@@ -33,7 +33,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbExpansionPanel : IDisposable
     {
         [CascadingParameter(Name = "AccordionParent")]
-        protected BaseRendererControl AccordionParent
+        protected BaseRendererControl? AccordionParent
         {
             get; set;
         }

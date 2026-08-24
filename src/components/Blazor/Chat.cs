@@ -147,8 +147,8 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
         }
 
-        private string _messageCreatedRef = null;
-        private string _messageCreatedScript = null;
+        private string? _messageCreatedRef = null;
+        private string? _messageCreatedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="MessageCreated"/> event in the browser instead.
@@ -219,8 +219,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _messageReactRef = null;
-        private string _messageReactScript = null;
+        private string? _messageReactRef = null;
+        private string? _messageReactScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="MessageReact"/> event in the browser instead.
@@ -291,8 +291,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _attachmentClickRef = null;
-        private string _attachmentClickScript = null;
+        private string? _attachmentClickRef = null;
+        private string? _attachmentClickScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="AttachmentClick"/> event in the browser instead.
@@ -363,8 +363,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _typingChangeRef = null;
-        private string _typingChangeScript = null;
+        private string? _typingChangeRef = null;
+        private string? _typingChangeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TypingChange"/> event in the browser instead.
@@ -435,8 +435,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputFocusRef = null;
-        private string _inputFocusScript = null;
+        private string? _inputFocusRef = null;
+        private string? _inputFocusScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputFocus"/> event in the browser instead.
@@ -507,8 +507,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputBlurRef = null;
-        private string _inputBlurScript = null;
+        private string? _inputBlurRef = null;
+        private string? _inputBlurScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputBlur"/> event in the browser instead.
@@ -579,8 +579,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputChangeRef = null;
-        private string _inputChangeScript = null;
+        private string? _inputChangeRef = null;
+        private string? _inputChangeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputChange"/> event in the browser instead.

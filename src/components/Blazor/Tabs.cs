@@ -73,7 +73,7 @@ namespace IgniteUI.Blazor.Controls
 
         private CollectionAdapter<IgbTab, IgbTab> _tabsCollectionAdapter;
         private IgbTabs_TabCollection _allTabsCollection;
-        private IgbTabs_TabCollection _contentTabsCollection = null;
+        private IgbTabs_TabCollection? _contentTabsCollection = null;
 
         public IgbTabs_TabCollection ContentTabsCollection
         {
@@ -87,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
                 return this._contentTabsCollection;
             }
         }
-        private IgbTabs_TabCollection _actualTabsCollection = null;
+        private IgbTabs_TabCollection? _actualTabsCollection = null;
 
         public IgbTabs_TabCollection ActualTabsCollection
         {
@@ -125,7 +125,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private IgbTabs_TabCollection _tabsCollection = null;
+        private IgbTabs_TabCollection? _tabsCollection = null;
 
         public IgbTabs_TabCollection TabsCollection
         {
@@ -249,8 +249,8 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("select", new object[] { StringToString(id) }, new string[] { "String" });
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.

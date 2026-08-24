@@ -254,8 +254,8 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
-        private string _inputOcurredRef = null;
-        private string _inputOcurredScript = null;
+        private string? _inputOcurredRef = null;
+        private string? _inputOcurredScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputOcurred"/> event in the browser instead.
@@ -329,8 +329,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _focusRef = null;
-        private string _focusScript = null;
+        private string? _focusRef = null;
+        private string? _focusScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
@@ -401,8 +401,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _blurRef = null;
-        private string _blurScript = null;
+        private string? _blurRef = null;
+        private string? _blurScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.

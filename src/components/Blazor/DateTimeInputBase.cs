@@ -442,7 +442,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Sets the text selection range of the control.
         /// </summary>
-        public async Task SetSelectionRangeAsync(double start = -1, double end = -1, String direction = null)
+        public async Task SetSelectionRangeAsync(double start = -1, double end = -1, String? direction = null)
         {
             await InvokeMethod("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
@@ -450,7 +450,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Sets the text selection range of the control.
         /// </summary>
-        public void SetSelectionRange(double start = -1, double end = -1, String direction = null)
+        public void SetSelectionRange(double start = -1, double end = -1, String? direction = null)
         {
             InvokeMethodSync("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
@@ -458,7 +458,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Replaces the selected text in the control and re-applies the mask.
         /// </summary>
-        public async Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String selectMode = null)
+        public async Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String? selectMode = null)
         {
             await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
@@ -466,7 +466,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Replaces the selected text in the control and re-applies the mask.
         /// </summary>
-        public void SetRangeText(String replacement, double start = -1, double end = -1, String selectMode = null)
+        public void SetRangeText(String replacement, double start = -1, double end = -1, String? selectMode = null)
         {
             InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }

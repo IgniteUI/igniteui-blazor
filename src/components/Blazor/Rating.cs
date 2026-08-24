@@ -419,8 +419,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
@@ -526,8 +526,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _hoverRef = null;
-        private string _hoverScript = null;
+        private string? _hoverRef = null;
+        private string? _hoverScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Hover"/> event in the browser instead.

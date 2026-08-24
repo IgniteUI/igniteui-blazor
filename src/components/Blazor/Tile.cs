@@ -262,8 +262,8 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        private string _tileFullscreenRef = null;
-        private string _tileFullscreenScript = null;
+        private string? _tileFullscreenRef = null;
+        private string? _tileFullscreenScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileFullscreen"/> event in the browser instead.
@@ -334,8 +334,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileMaximizeRef = null;
-        private string _tileMaximizeScript = null;
+        private string? _tileMaximizeRef = null;
+        private string? _tileMaximizeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileMaximize"/> event in the browser instead.
@@ -406,8 +406,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileDragStartRef = null;
-        private string _tileDragStartScript = null;
+        private string? _tileDragStartRef = null;
+        private string? _tileDragStartScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileDragStart"/> event in the browser instead.
@@ -478,8 +478,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileDragEndRef = null;
-        private string _tileDragEndScript = null;
+        private string? _tileDragEndRef = null;
+        private string? _tileDragEndScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileDragEnd"/> event in the browser instead.
@@ -550,8 +550,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileDragCancelRef = null;
-        private string _tileDragCancelScript = null;
+        private string? _tileDragCancelRef = null;
+        private string? _tileDragCancelScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileDragCancel"/> event in the browser instead.
@@ -622,8 +622,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileResizeStartRef = null;
-        private string _tileResizeStartScript = null;
+        private string? _tileResizeStartRef = null;
+        private string? _tileResizeStartScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileResizeStart"/> event in the browser instead.
@@ -694,8 +694,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileResizeEndRef = null;
-        private string _tileResizeEndScript = null;
+        private string? _tileResizeEndRef = null;
+        private string? _tileResizeEndScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileResizeEnd"/> event in the browser instead.
@@ -766,8 +766,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileResizeCancelRef = null;
-        private string _tileResizeCancelScript = null;
+        private string? _tileResizeCancelRef = null;
+        private string? _tileResizeCancelScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileResizeCancel"/> event in the browser instead.

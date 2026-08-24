@@ -132,7 +132,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="name">The unique name for the icon.</param>
         /// <param name="url">The URL to fetch the SVG icon from.</param>
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        public async Task RegisterIconAsync(String name, String url, String collection = null)
+        public async Task RegisterIconAsync(String name, String url, String? collection = null)
         {
             await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
@@ -143,7 +143,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="name">The unique name for the icon.</param>
         /// <param name="url">The URL to fetch the SVG icon from.</param>
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        public void RegisterIcon(String name, String url, String collection = null)
+        public void RegisterIcon(String name, String url, String? collection = null)
         {
             InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
@@ -154,7 +154,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="name">The unique name for the icon.</param>
         /// <param name="iconText">The SVG markup as a string.</param>
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        public async Task RegisterIconFromTextAsync(String name, String iconText, String collection = null)
+        public async Task RegisterIconFromTextAsync(String name, String iconText, String? collection = null)
         {
             await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
@@ -165,7 +165,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="name">The unique name for the icon.</param>
         /// <param name="iconText">The SVG markup as a string.</param>
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        public void RegisterIconFromText(String name, String iconText, String collection = null)
+        public void RegisterIconFromText(String name, String iconText, String? collection = null)
         {
             InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }

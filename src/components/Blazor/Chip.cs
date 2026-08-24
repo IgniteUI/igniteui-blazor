@@ -212,8 +212,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _removeRef = null;
-        private string _removeScript = null;
+        private string? _removeRef = null;
+        private string? _removeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Remove"/> event in the browser instead.
@@ -284,8 +284,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _selectRef = null;
-        private string _selectScript = null;
+        private string? _selectRef = null;
+        private string? _selectScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.

@@ -454,8 +454,8 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToBoolean(iv);
         }
 
-        private string _slideChangedRef = null;
-        private string _slideChangedScript = null;
+        private string? _slideChangedRef = null;
+        private string? _slideChangedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="SlideChanged"/> event in the browser instead.
@@ -526,8 +526,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _playingRef = null;
-        private string _playingScript = null;
+        private string? _playingRef = null;
+        private string? _playingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Playing"/> event in the browser instead.
@@ -598,8 +598,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _pausedRef = null;
-        private string _pausedScript = null;
+        private string? _pausedRef = null;
+        private string? _pausedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Paused"/> event in the browser instead.

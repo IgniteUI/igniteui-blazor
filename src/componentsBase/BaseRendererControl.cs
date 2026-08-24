@@ -2601,7 +2601,7 @@ namespace IgniteUI.Blazor.Controls
             return val.ToString();
         }
 
-        internal string StringToString(object val)
+        internal string? StringToString(object? val)
         {
             return val == null ? null : JsonSerializer.Serialize(val.ToString(), SerializerOptions);
             //return val == null ? null : val.ToString();

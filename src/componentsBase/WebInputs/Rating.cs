@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRating
     {
         [Inject]
-        private ILogger<IgbRating> Logger { get; set; } = default;
+        private ILogger<IgbRating> Logger { get; set; } = default!;
 
         /// <inheritdoc />
         public override Task SetParametersAsync(ParameterView parameters)
