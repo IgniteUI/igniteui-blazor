@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         [CascadingParameter(Name = "TabsParent")]
-        protected BaseRendererControl TabsParent
+        protected BaseRendererControl? TabsParent
         {
             get; set;
         }
@@ -85,13 +85,13 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The tab item label.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set

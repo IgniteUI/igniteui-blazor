@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -58,13 +58,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _actionText;
+        private string? _actionText;
 
         /// <summary>
         /// The text of the action button.
         /// </summary>
         [Parameter]
-        public string ActionText
+        public string? ActionText
         {
             get { return this._actionText; }
             set

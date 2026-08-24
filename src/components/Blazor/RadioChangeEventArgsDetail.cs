@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -31,13 +31,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the radio button.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set

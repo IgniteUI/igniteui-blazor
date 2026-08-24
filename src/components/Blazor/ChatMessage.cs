@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string _id;
+        private string? _id;
 
         /// <summary>
         /// A unique identifier for the message.
         /// </summary>
         [Parameter]
-        public string Id
+        public string? Id
         {
             get { return this._id; }
             set
@@ -31,13 +31,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _text;
+        private string? _text;
 
         /// <summary>
         /// The textual content of the message.
         /// </summary>
         [Parameter]
-        public string Text
+        public string? Text
         {
             get { return this._text; }
             set
@@ -50,13 +50,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _sender;
+        private string? _sender;
 
         /// <summary>
         /// The identifier or name of the sender of the message.
         /// </summary>
         [Parameter]
-        public string Sender
+        public string? Sender
         {
             get { return this._sender; }
             set
@@ -69,13 +69,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _timestamp;
+        private string? _timestamp;
 
         /// <summary>
         /// The timestamp indicating when the message was sent.
         /// </summary>
         [Parameter]
-        public string Timestamp
+        public string? Timestamp
         {
             get { return this._timestamp; }
             set
@@ -88,14 +88,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbChatMessageAttachment[] _attachments;
+        private IgbChatMessageAttachment[]? _attachments;
 
         /// <summary>
         /// Optional list of attachments associated with the message,
         /// such as images, files, or links.
         /// </summary>
         [Parameter]
-        public IgbChatMessageAttachment[] Attachments
+        public IgbChatMessageAttachment[]? Attachments
         {
             get { return this._attachments; }
             set
@@ -108,13 +108,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[] _reactions;
+        private string[]? _reactions;
 
         /// <summary>
         /// Optional list of reactions associated with the message.
         /// </summary>
         [Parameter]
-        public string[] Reactions
+        public string[]? Reactions
         {
             get { return this._reactions; }
             set

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -41,14 +41,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _dataRef;
-        private Object _data;
+        private string? _dataRef;
+        private Object? _data;
 
         /// <summary>
         /// The data source used to generate the list of options.
         /// </summary>
         [Parameter]
-        public Object Data
+        public Object? Data
         {
             get { return this._data; }
 
@@ -69,7 +69,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _dataScript;
+        private string? _dataScript;
 
         ///<summary>Provides a means of setting Data in the JavaScript environment.</summary>
         [Parameter]
@@ -168,13 +168,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// Gets/Sets the locale used for getting language, affecting resource strings.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -187,13 +187,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label of the control.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -206,13 +206,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholder;
+        private string? _placeholder;
 
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
         [Parameter]
-        public string Placeholder
+        public string? Placeholder
         {
             get { return this._placeholder; }
             set
@@ -225,13 +225,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholderSearch;
+        private string? _placeholderSearch;
 
         /// <summary>
         /// The placeholder text of the search input.
         /// </summary>
         [Parameter]
-        public string PlaceholderSearch
+        public string? PlaceholderSearch
         {
             get { return this._placeholderSearch; }
             set
@@ -282,13 +282,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _groupKey;
+        private string? _groupKey;
 
         /// <summary>
         /// The key in the data source used to group items in the list.
         /// </summary>
         [Parameter]
-        public string GroupKey
+        public string? GroupKey
         {
             get { return this._groupKey; }
             set
@@ -320,13 +320,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbFilteringOptions _filteringOptions;
+        private IgbFilteringOptions? _filteringOptions;
 
         /// <summary>
         /// An object that configures the filtering of the combo.
         /// </summary>
         [Parameter]
-        public IgbFilteringOptions FilteringOptions
+        public IgbFilteringOptions? FilteringOptions
         {
             get { return this._filteringOptions; }
             set
@@ -401,7 +401,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private T[] _value;
+        private T[]? _value;
 
         /// <summary>
         /// The value of the control, that is the currently selected items.
@@ -410,7 +410,7 @@ namespace IgniteUI.Blazor.Controls
         /// of <see cref="ValueKey"/>.
         /// </summary>
         [Parameter]
-        public T[] Value
+        public T[]? Value
         {
             get { return this._value; }
             set
@@ -443,7 +443,7 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
             return ReturnToObjectArray(iv).Cast<T>().ToArray();
         }
-        private string _selectionRef;
+        private string? _selectionRef;
 
         /// <summary>
         /// Returns the current selection of the combo.
@@ -521,14 +521,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _itemTemplateRef;
-        private RenderFragment<object> _itemTemplate;
+        private string? _itemTemplateRef;
+        private RenderFragment<object>? _itemTemplate;
 
         /// <summary>
         /// The template used for the content of each combo item.
         /// </summary>
         [Parameter]
-        public RenderFragment<object> ItemTemplate
+        public RenderFragment<object>? ItemTemplate
         {
             get { return this._itemTemplate; }
 
@@ -550,8 +550,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemTemplateTemplateId;
-        private string _itemTemplateScript;
+        private string? _itemTemplateTemplateId;
+        private string? _itemTemplateScript;
 
         /// <summary>
         /// Name of a client-side function that renders the template used for the content of each combo item.
@@ -580,14 +580,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _groupHeaderTemplateRef;
-        private RenderFragment<object> _groupHeaderTemplate;
+        private string? _groupHeaderTemplateRef;
+        private RenderFragment<object>? _groupHeaderTemplate;
 
         /// <summary>
         /// The template used for the content of each combo group header.
         /// </summary>
         [Parameter]
-        public RenderFragment<object> GroupHeaderTemplate
+        public RenderFragment<object>? GroupHeaderTemplate
         {
             get { return this._groupHeaderTemplate; }
 
@@ -609,8 +609,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _groupHeaderTemplateTemplateId;
-        private string _groupHeaderTemplateScript;
+        private string? _groupHeaderTemplateTemplateId;
+        private string? _groupHeaderTemplateScript;
 
         /// <summary>
         /// Name of a client-side function that renders the template used for the content of each combo group header.

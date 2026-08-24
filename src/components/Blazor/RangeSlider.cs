@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -90,13 +90,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _thumbLabelLower;
+        private string? _thumbLabelLower;
 
         /// <summary>
         /// The aria label for the lower thumb.
         /// </summary>
         [Parameter]
-        public string ThumbLabelLower
+        public string? ThumbLabelLower
         {
             get { return this._thumbLabelLower; }
             set
@@ -109,13 +109,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _thumbLabelUpper;
+        private string? _thumbLabelUpper;
 
         /// <summary>
         /// The aria label for the upper thumb.
         /// </summary>
         [Parameter]
-        public string ThumbLabelUpper
+        public string? ThumbLabelUpper
         {
             get { return this._thumbLabelUpper; }
             set

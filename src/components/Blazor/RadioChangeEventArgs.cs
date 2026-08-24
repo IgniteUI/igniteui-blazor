@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbRadioChangeEventArgsDetail _detail;
+        private IgbRadioChangeEventArgsDetail? _detail;
 
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the radio button.
         /// </summary>
         [Parameter]
-        public IgbRadioChangeEventArgsDetail Detail
+        public IgbRadioChangeEventArgsDetail? Detail
         {
             get { return this._detail; }
             set

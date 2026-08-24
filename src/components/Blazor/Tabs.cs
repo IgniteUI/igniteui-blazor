@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -71,8 +71,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private CollectionAdapter<IgbTab, IgbTab> _tabsCollectionAdapter;
-        private IgbTabs_TabCollection _allTabsCollection;
+        private CollectionAdapter<IgbTab, IgbTab>? _tabsCollectionAdapter;
+        private IgbTabs_TabCollection? _allTabsCollection;
         private IgbTabs_TabCollection? _contentTabsCollection = null;
 
         public IgbTabs_TabCollection ContentTabsCollection

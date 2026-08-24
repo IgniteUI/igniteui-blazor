@@ -1,4 +1,4 @@
-namespace IgniteUI.Blazor.Controls
+﻿namespace IgniteUI.Blazor.Controls
 {
     internal class DataSourceManager
     {
@@ -10,12 +10,12 @@ namespace IgniteUI.Blazor.Controls
             _refSink = sink;
         }
 
-        private RuntimeHelper _helper;
+        private RuntimeHelper? _helper;
 
         // public int ChunkAmount { get; set; }
         // public int ChunkSlicingWait { get; set; }
 
-        private RefSink _refSink;
+        private RefSink? _refSink;
         private Dictionary<string, object> _refs = new Dictionary<string, object>();
         private Dictionary<string, object> _refsById = new Dictionary<string, object>();
         private Dictionary<string, IJSDataSource> _dataSources = new Dictionary<string, IJSDataSource>();

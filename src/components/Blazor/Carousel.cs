@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -173,14 +173,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _indicatorsLabelFormat;
+        private string? _indicatorsLabelFormat;
 
         /// <summary>
         /// The format used to set the aria-label on the carousel indicators.
         /// Instances of <c>{0}</c> will be replaced with the index of the corresponding slide.
         /// </summary>
         [Parameter]
-        public string IndicatorsLabelFormat
+        public string? IndicatorsLabelFormat
         {
             get { return this._indicatorsLabelFormat; }
             set
@@ -193,7 +193,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _slidesLabelFormat;
+        private string? _slidesLabelFormat;
 
         /// <summary>
         /// The format used to set the aria-label on the carousel slides and the text displayed
@@ -202,7 +202,7 @@ namespace IgniteUI.Blazor.Controls
         /// Instances of <c>{1}</c> will be replaced with the total amount of slides.
         /// </summary>
         [Parameter]
-        public string SlidesLabelFormat
+        public string? SlidesLabelFormat
         {
             get { return this._slidesLabelFormat; }
             set

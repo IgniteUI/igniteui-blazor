@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -14,13 +14,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTile _detail;
+        private IgbTile? _detail;
 
         /// <summary>
         /// The tile the operation applies to.
         /// </summary>
         [Parameter]
-        public IgbTile Detail
+        public IgbTile? Detail
         {
             get { return this._detail; }
             set

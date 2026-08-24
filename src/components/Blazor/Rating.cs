@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -101,13 +101,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label of the control.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -120,7 +120,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _valueFormat;
+        private string? _valueFormat;
 
         /// <summary>
         /// A format string which sets aria-valuetext. Instances of <c>{0}</c> will be replaced
@@ -128,7 +128,7 @@ namespace IgniteUI.Blazor.Controls
         /// Important for screen-readers and useful for localization.
         /// </summary>
         [Parameter]
-        public string ValueFormat
+        public string? ValueFormat
         {
             get { return this._valueFormat; }
             set

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -9,13 +9,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string _text;
+        private string? _text;
 
         /// <summary>
         /// The textual content of the draft message.
         /// </summary>
         [Parameter]
-        public string Text
+        public string? Text
         {
             get { return this._text; }
             set
@@ -28,13 +28,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbChatMessageAttachment[] _attachments;
+        private IgbChatMessageAttachment[]? _attachments;
 
         /// <summary>
         /// An array of attachments associated with the draft message.
         /// </summary>
         [Parameter]
-        public IgbChatMessageAttachment[] Attachments
+        public IgbChatMessageAttachment[]? Attachments
         {
             get { return this._attachments; }
             set

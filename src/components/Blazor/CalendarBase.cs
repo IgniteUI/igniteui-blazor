@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -88,13 +88,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// Gets/Sets the locale used for formatting and displaying the dates in the component.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -107,13 +107,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbCalendarResourceStrings _resourceStrings;
+        private IgbCalendarResourceStrings? _resourceStrings;
 
         /// <summary>
         /// The resource strings for localization.
         /// </summary>
         [Parameter]
-        public IgbCalendarResourceStrings ResourceStrings
+        public IgbCalendarResourceStrings? ResourceStrings
         {
             get { return this._resourceStrings; }
             set

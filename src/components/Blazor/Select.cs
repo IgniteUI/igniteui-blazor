@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -146,13 +146,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label of the control.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -165,13 +165,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholder;
+        private string? _placeholder;
 
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
         [Parameter]
-        public string Placeholder
+        public string? Placeholder
         {
             get { return this._placeholder; }
             set

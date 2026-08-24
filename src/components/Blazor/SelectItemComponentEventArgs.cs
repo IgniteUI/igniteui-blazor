@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbSelectItem _detail;
+        private IgbSelectItem? _detail;
 
         /// <summary>
         /// The select item that became selected.
         /// </summary>
         [Parameter]
-        public IgbSelectItem Detail
+        public IgbSelectItem? Detail
         {
             get { return this._detail; }
             set

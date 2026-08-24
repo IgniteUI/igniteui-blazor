@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string _id;
+        private string? _id;
 
         /// <summary>
         /// A unique identifier for the attachment.
         /// </summary>
         [Parameter]
-        public string Id
+        public string? Id
         {
             get { return this._id; }
             set
@@ -31,14 +31,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _url;
+        private string? _url;
 
         /// <summary>
         /// The URL from which the attachment can be downloaded or viewed.
         /// Typically used for attachments stored on a server or CDN.
         /// </summary>
         [Parameter]
-        public string Url
+        public string? Url
         {
             get { return this._url; }
             set
@@ -51,14 +51,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _attachmentType;
+        private string? _attachmentType;
 
         /// <summary>
         /// The MIME type or a custom type identifier for the attachment (e.g. "image/png", "pdf", "audio").
         /// </summary>
         [Parameter]
         [WCWidgetMemberName("Type")]
-        public string AttachmentType
+        public string? AttachmentType
         {
             get { return this._attachmentType; }
             set
@@ -71,13 +71,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _thumbnail;
+        private string? _thumbnail;
 
         /// <summary>
         /// Optional URL to a thumbnail preview of the attachment (e.g. for images or videos).
         /// </summary>
         [Parameter]
-        public string Thumbnail
+        public string? Thumbnail
         {
             get { return this._thumbnail; }
             set

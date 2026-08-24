@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -319,13 +319,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// The locale used to format the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -338,13 +338,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _valueFormat;
+        private string? _valueFormat;
 
         /// <summary>
         /// String format used for the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public string ValueFormat
+        public string? ValueFormat
         {
             get { return this._valueFormat; }
             set
@@ -376,13 +376,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbNumberFormatSpecifier _valueFormatOptions;
+        private IgbNumberFormatSpecifier? _valueFormatOptions;
 
         /// <summary>
         /// Number format options used for the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public IgbNumberFormatSpecifier ValueFormatOptions
+        public IgbNumberFormatSpecifier? ValueFormatOptions
         {
             get { return this._valueFormatOptions; }
             set

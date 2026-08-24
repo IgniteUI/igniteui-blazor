@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -77,14 +77,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the group, reflecting the value of the currently checked <see cref="IgbRadio"/> button.
         /// Setting it checks the <see cref="IgbRadio"/> button in the group with a matching value.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTreeItem[] _newSelection;
+        private IgbTreeItem[]? _newSelection;
 
         /// <summary>
         /// The tree items that will make up the new selection.
         /// </summary>
         [Parameter]
-        public IgbTreeItem[] NewSelection
+        public IgbTreeItem[]? NewSelection
         {
             get { return this._newSelection; }
             set

@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Microsoft.JSInterop;
@@ -8,13 +8,13 @@ namespace IgniteUI.Blazor.Controls
     internal class RuntimeHelper
     {
 #if NET5_0
-        private IJSUnmarshalledRuntime _unmarshalledRuntime;
+        private IJSUnmarshalledRuntime? _unmarshalledRuntime;
 #else
-        private Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn?[]?, string> _callSendUnmarshalledColumnMessage;
-        private Func<IJSInProcessRuntime, string, string, string, string> _callSendUnmarshalledColumnDataIntentMessage;
+        private Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn?[]?, string>? _callSendUnmarshalledColumnMessage;
+        private Func<IJSInProcessRuntime, string, string, string, string>? _callSendUnmarshalledColumnDataIntentMessage;
 #endif
-        private IJSInProcessRuntime _inprocRuntime;
-        private IIgniteUIBlazor _igBlazor;
+        private IJSInProcessRuntime? _inprocRuntime;
+        private IIgniteUIBlazor? _igBlazor;
 
 #if !NETSTANDARD
         [DynamicDependency(

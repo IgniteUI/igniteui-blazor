@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -9,11 +9,11 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string _newValueRef;
-        private object[] _newValue;
+        private string? _newValueRef;
+        private object[]? _newValue;
 
         [Parameter]
-        public object[] NewValue
+        public object[]? NewValue
         {
             get { return this._newValue; }
 
@@ -34,7 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _newValueScript;
+        private string? _newValueScript;
 
         ///<summary>Provides a means of setting NewValue in the JavaScript environment.</summary>
         [Parameter]
@@ -57,11 +57,11 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _itemsRef;
-        private object[] _items;
+        private string? _itemsRef;
+        private object[]? _items;
 
         [Parameter]
-        public object[] Items
+        public object[]? Items
         {
             get { return this._items; }
 
@@ -82,7 +82,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemsScript;
+        private string? _itemsScript;
 
         ///<summary>Provides a means of setting Items in the JavaScript environment.</summary>
         [Parameter]

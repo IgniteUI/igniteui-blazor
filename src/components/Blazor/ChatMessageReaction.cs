@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbChatMessage _message;
+        private IgbChatMessage? _message;
 
         /// <summary>
         /// The chat message that the reaction is associated with.
         /// </summary>
         [Parameter]
-        public IgbChatMessage Message
+        public IgbChatMessage? Message
         {
             get { return this._message; }
             set
@@ -36,13 +36,13 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-        private string _reaction;
+        private string? _reaction;
 
         /// <summary>
         /// The string representation of the reaction, such as an emoji or a string;
         /// </summary>
         [Parameter]
-        public string Reaction
+        public string? Reaction
         {
             get { return this._reaction; }
             set

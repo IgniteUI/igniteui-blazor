@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -11,13 +11,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebRangeSliderValueEventArgs"; } }
 
-        private IgbRangeSliderValue _detail;
+        private IgbRangeSliderValue? _detail;
 
         /// <summary>
         /// The lower and upper thumb values of the range slider.
         /// </summary>
         [Parameter]
-        public IgbRangeSliderValue Detail
+        public IgbRangeSliderValue? Detail
         {
             get { return this._detail; }
             set

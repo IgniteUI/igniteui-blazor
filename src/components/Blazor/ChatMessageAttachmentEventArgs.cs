@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbChatMessageAttachment _detail;
+        private IgbChatMessageAttachment? _detail;
 
         /// <summary>
         /// The chat message attachment the event was raised for.
         /// </summary>
         [Parameter]
-        public IgbChatMessageAttachment Detail
+        public IgbChatMessageAttachment? Detail
         {
             get { return this._detail; }
             set

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbActiveStepChangedEventArgsDetail _detail;
+        private IgbActiveStepChangedEventArgsDetail? _detail;
 
         /// <summary>
         /// The payload of the event, carrying the index of the step that became active.
         /// </summary>
         [Parameter]
-        public IgbActiveStepChangedEventArgsDetail Detail
+        public IgbActiveStepChangedEventArgsDetail? Detail
         {
             get { return this._detail; }
             set

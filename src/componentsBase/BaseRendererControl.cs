@@ -768,7 +768,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private DynamicContentHolder Holder { get; set; }
+        private DynamicContentHolder? Holder { get; set; }
 
         /// <inheritdoc />
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -3430,7 +3430,7 @@ namespace IgniteUI.Blazor.Controls
         private bool _isRuntimeValid = false;
         private bool _isRuntimeChecked = false;
         private bool _isRemoteRuntime = false;
-        private System.Reflection.PropertyInfo _remoteRuntimeProp;
+        private System.Reflection.PropertyInfo? _remoteRuntimeProp;
 
         public IgniteUIBlazor(IJSRuntime runtime, IIgniteUIBlazorSettings settings)
         {
@@ -3469,7 +3469,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public IJSRuntime JsRuntime { get; private set; }
-        public IIgniteUIBlazorSettings Settings { get; private set; }
+        public IIgniteUIBlazorSettings? Settings { get; private set; }
         public WebCallback WebCallback { get; private set; }
 
         private ConcurrentDictionary<string, bool> _loadedCache = new ConcurrentDictionary<string, bool>();

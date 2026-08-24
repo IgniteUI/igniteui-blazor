@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -163,7 +163,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _labelFormat;
+        private string? _labelFormat;
 
         /// <summary>
         /// Format string for the default label of the control. Placeholders:
@@ -173,7 +173,7 @@ namespace IgniteUI.Blazor.Controls
         /// </list>
         /// </summary>
         [Parameter]
-        public string LabelFormat
+        public string? LabelFormat
         {
             get { return this._labelFormat; }
             set

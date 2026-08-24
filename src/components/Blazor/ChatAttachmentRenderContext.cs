@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatAttachmentRenderContext"; } }
 
-        private IgbChatMessageAttachment _attachment;
+        private IgbChatMessageAttachment? _attachment;
 
         /// <summary>
         /// The specific attachment being rendered.
         /// </summary>
         [Parameter]
-        public IgbChatMessageAttachment Attachment
+        public IgbChatMessageAttachment? Attachment
         {
             get { return this._attachment; }
             set

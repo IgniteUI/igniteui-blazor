@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string _detail;
+        private string? _detail;
 
         /// <summary>
         /// The string value carried by the event.
         /// </summary>
         [Parameter]
-        public string Detail
+        public string? Detail
         {
             get { return this._detail; }
             set

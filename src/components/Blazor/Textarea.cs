@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _autocomplete;
+        private string? _autocomplete;
 
         /// <summary>
         /// Specifies what permission, if any, the browser has to provide automated assistance in filling
@@ -70,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
         /// for additional information.
         /// </summary>
         [Parameter]
-        public string Autocomplete
+        public string? Autocomplete
         {
             get { return this._autocomplete; }
             set
@@ -83,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _autocapitalize;
+        private string? _autocapitalize;
 
         /// <summary>
         /// Controls whether and how text input is automatically capitalized as it is entered/edited by the user.
@@ -91,7 +91,7 @@ namespace IgniteUI.Blazor.Controls
         /// MDN documentation</see>.
         /// </summary>
         [Parameter]
-        public string Autocapitalize
+        public string? Autocapitalize
         {
             get { return this._autocapitalize; }
             set
@@ -104,7 +104,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputMode;
+        private string? _inputMode;
 
         /// <summary>
         /// Hints at the type of data that might be entered by the user while editing the control or its contents.
@@ -114,7 +114,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         [Parameter]
         [WCAttributeName("inputmode")]
-        public string InputMode
+        public string? InputMode
         {
             get { return this._inputMode; }
             set
@@ -127,13 +127,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label for the control.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -206,13 +206,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholder;
+        private string? _placeholder;
 
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
         [Parameter]
-        public string Placeholder
+        public string? Placeholder
         {
             get { return this._placeholder; }
             set
@@ -285,13 +285,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the component.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set

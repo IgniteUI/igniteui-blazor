@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -136,13 +136,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _anchor;
+        private string? _anchor;
 
         /// <summary>
         /// The ID of the element to use as the anchor for the tooltip.
         /// </summary>
         [Parameter]
-        public string Anchor
+        public string? Anchor
         {
             get { return this._anchor; }
             set
@@ -155,14 +155,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _showTriggers;
+        private string? _showTriggers;
 
         /// <summary>
         /// Which event triggers will show the tooltip.
         /// Expects a comma separated string of different event triggers.
         /// </summary>
         [Parameter]
-        public string ShowTriggers
+        public string? ShowTriggers
         {
             get { return this._showTriggers; }
             set
@@ -175,14 +175,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _hideTriggers;
+        private string? _hideTriggers;
 
         /// <summary>
         /// Which event triggers will hide the tooltip.
         /// Expects a comma separated string of different event triggers.
         /// </summary>
         [Parameter]
-        public string HideTriggers
+        public string? HideTriggers
         {
             get { return this._hideTriggers; }
             set
@@ -233,13 +233,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _message;
+        private string? _message;
 
         /// <summary>
         /// Specifies plain text as the tooltip content.
         /// </summary>
         [Parameter]
-        public string Message
+        public string? Message
         {
             get { return this._message; }
             set

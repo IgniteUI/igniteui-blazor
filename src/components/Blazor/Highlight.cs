@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -82,7 +82,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _searchText;
+        private string? _searchText;
 
         /// <summary>
         /// The string to search and highlight in the DOM content of the component.
@@ -90,7 +90,7 @@ namespace IgniteUI.Blazor.Controls
         /// An empty string clears all highlights.
         /// </summary>
         [Parameter]
-        public string SearchText
+        public string? SearchText
         {
             get { return this._searchText; }
             set

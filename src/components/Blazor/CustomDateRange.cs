@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebCustomDateRange"; } }
 
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -29,13 +29,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeValue _dateRange;
+        private IgbDateRangeValue? _dateRange;
 
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
         [Parameter]
-        public IgbDateRangeValue DateRange
+        public IgbDateRangeValue? DateRange
         {
             get { return this._dateRange; }
             set

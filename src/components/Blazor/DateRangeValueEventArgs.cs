@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbDateRangeValueDetail _detail;
+        private IgbDateRangeValueDetail? _detail;
 
         /// <summary>
         /// The date range carried by the event.
         /// </summary>
         [Parameter]
-        public IgbDateRangeValueDetail Detail
+        public IgbDateRangeValueDetail? Detail
         {
             get { return this._detail; }
             set

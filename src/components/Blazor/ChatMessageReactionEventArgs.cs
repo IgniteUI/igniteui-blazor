@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbChatMessageReaction _detail;
+        private IgbChatMessageReaction? _detail;
 
         /// <summary>
         /// The reaction the event was raised for, together with the chat message it is associated with.
         /// </summary>
         [Parameter]
-        public IgbChatMessageReaction Detail
+        public IgbChatMessageReaction? Detail
         {
             get { return this._detail; }
             set

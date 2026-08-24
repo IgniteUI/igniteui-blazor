@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -58,13 +58,13 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private IgbTreeItem _parent;
+        private IgbTreeItem? _parent;
 
         /// <summary>
         /// The parent item of the current tree item (if any)
         /// </summary>
         [Parameter]
-        public IgbTreeItem Parent
+        public IgbTreeItem? Parent
         {
             get { return this._parent; }
             set
@@ -96,13 +96,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The tree item label.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -210,13 +210,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private object _value;
+        private object? _value;
 
         /// <summary>
         /// The value entry that the tree item is visualizing. Required for searching through items.
         /// </summary>
         [Parameter]
-        public object Value
+        public object? Value
         {
             get { return this._value; }
             set

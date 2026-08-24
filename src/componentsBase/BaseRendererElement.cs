@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace IgniteUI.Blazor.Controls
@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
         //     Console.WriteLine("constructing: " + this.GetType().Name);
         // }
 
-        private IIgniteUIBlazor _igBlazor;
+        private IIgniteUIBlazor? _igBlazor;
         [Inject]
         protected IIgniteUIBlazor IgBlazor
         {
@@ -97,7 +97,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter] public RenderFragment? ChildContent { get; set; }
 
         protected virtual bool SupportsVisualChildren
         {

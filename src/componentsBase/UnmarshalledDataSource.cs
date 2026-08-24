@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 
@@ -18,7 +18,7 @@ namespace IgniteUI.Blazor.Controls
             SubSchema = null;
         }
 
-        public string PropertyPath { get; set; }
+        public string? PropertyPath { get; set; }
         public JSDataSourceSchemaType Type { get; set; }
         public int[]? IntValues { get; set; }
         public long[]? LongValues { get; set; }
@@ -34,14 +34,14 @@ namespace IgniteUI.Blazor.Controls
 
         public UnmarshalledColumnData[]? SubColumns { get; set; }
         public JSDataSourceSchema? SubSchema { get; set; }
-        public Action<int, UnmarshalledColumnData, int, object?> Insert { get; internal set; }
-        public Action<int, UnmarshalledColumnData, int, object, object> Update { get; internal set; }
-        public Action<int, UnmarshalledColumnData, int> Remove { get; internal set; }
+        public Action<int, UnmarshalledColumnData, int, object?>? Insert { get; internal set; }
+        public Action<int, UnmarshalledColumnData, int, object, object>? Update { get; internal set; }
+        public Action<int, UnmarshalledColumnData, int>? Remove { get; internal set; }
         public bool IsIDColumn { get; internal set; }
-        public Action<int, UnmarshalledColumnData> Clear { get; internal set; }
-        public string PropertyName { get; internal set; }
+        public Action<int, UnmarshalledColumnData>? Clear { get; internal set; }
+        public string? PropertyName { get; internal set; }
         public bool IsSubDataSource { get; internal set; }
-        public Delegate Getter { get; internal set; }
+        public Delegate? Getter { get; internal set; }
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 56)]
@@ -83,12 +83,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         public bool IsSent { get; set; }
-        private object _originalData;
+        private object? _originalData;
 
         private Dictionary<Guid, object> _uuidToOriginal = new Dictionary<Guid, object>();
         private Dictionary<object, Guid> _originalToUuid = new Dictionary<object, Guid>();
         //private Dictionary<string, Guid> _stringToUuid = new Dictionary<string, Guid>();
-        private RuntimeHelper _helper;
+        private RuntimeHelper? _helper;
         private JSDataSourceSchema? _parentSchema = null;
         private string? _parentId;
         private DataSourceManager? _manager = null;
@@ -97,7 +97,7 @@ namespace IgniteUI.Blazor.Controls
 
         private Dictionary<Guid, Dictionary<string, UnmarshalledDataSource>> _subDataSources = new Dictionary<Guid, Dictionary<string, UnmarshalledDataSource>>();
 
-        private Func<object, Guid> _idGetter;
+        private Func<object, Guid>? _idGetter;
 
         private int _size = 0;
         private int _capacity = 0;

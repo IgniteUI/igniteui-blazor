@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace IgniteUI.Blazor.Controls
@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public class IgbComponentRendererContainer : ComponentBase
     {
 
-        private Type _componentType;
+        private Type? _componentType;
         [Parameter]
         public Type ComponentType
         {
@@ -70,15 +70,15 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public event ComponentRendererComponentChangedEventHandler ComponentChanged;
+        public event ComponentRendererComponentChangedEventHandler? ComponentChanged;
     }
 
     public delegate void ComponentRendererComponentChangedEventHandler(object sender, ComponentRendererComponentChangedEventArgs args);
 
     public class ComponentRendererComponentChangedEventArgs
     {
-        public object OldComponent { get; internal set; }
-        public object NewComponent { get; internal set; }
+        public object? OldComponent { get; internal set; }
+        public object? NewComponent { get; internal set; }
     }
 
 }

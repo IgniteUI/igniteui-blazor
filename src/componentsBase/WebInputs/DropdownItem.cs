@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDropdownItem : IDisposable
     {
         [CascadingParameter(Name = "DropdownParent")]
-        protected BaseRendererControl DropdownParent
+        protected BaseRendererControl? DropdownParent
         {
             get; set;
         }

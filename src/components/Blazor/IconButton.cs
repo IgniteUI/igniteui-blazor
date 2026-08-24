@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -57,14 +57,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _iconName;
+        private string? _iconName;
 
         /// <summary>
         /// The name of the icon to display.
         /// </summary>
         [Parameter]
         [WCWidgetMemberName("Name")]
-        public string IconName
+        public string? IconName
         {
             get { return this._iconName; }
             set
@@ -77,13 +77,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _collection;
+        private string? _collection;
 
         /// <summary>
         /// The collection the icon belongs to.
         /// </summary>
         [Parameter]
-        public string Collection
+        public string? Collection
         {
             get { return this._collection; }
             set

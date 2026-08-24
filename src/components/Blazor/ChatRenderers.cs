@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -7,14 +7,14 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatRenderers"; } }
 
-        private string _attachmentRef;
-        private RenderFragment<IgbChatAttachmentRenderContext> _attachment;
+        private string? _attachmentRef;
+        private RenderFragment<IgbChatAttachmentRenderContext>? _attachment;
 
         /// <summary>
         /// Custom renderer for a single chat message attachment.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatAttachmentRenderContext> Attachment
+        public RenderFragment<IgbChatAttachmentRenderContext>? Attachment
         {
             get { return this._attachment; }
 
@@ -36,8 +36,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _attachmentTemplateId;
-        private string _attachmentScript;
+        private string? _attachmentTemplateId;
+        private string? _attachmentScript;
 
         /// <summary>
         /// Name of a client-side function that renders a single chat message attachment.
@@ -66,14 +66,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _attachmentContentRef;
-        private RenderFragment<IgbChatAttachmentRenderContext> _attachmentContent;
+        private string? _attachmentContentRef;
+        private RenderFragment<IgbChatAttachmentRenderContext>? _attachmentContent;
 
         /// <summary>
         /// Custom renderer for the content of an attachment.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatAttachmentRenderContext> AttachmentContent
+        public RenderFragment<IgbChatAttachmentRenderContext>? AttachmentContent
         {
             get { return this._attachmentContent; }
 
@@ -95,8 +95,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _attachmentContentTemplateId;
-        private string _attachmentContentScript;
+        private string? _attachmentContentTemplateId;
+        private string? _attachmentContentScript;
 
         /// <summary>
         /// Name of a client-side function that renders the content of an attachment.
@@ -125,14 +125,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _attachmentHeaderRef;
-        private RenderFragment<IgbChatAttachmentRenderContext> _attachmentHeader;
+        private string? _attachmentHeaderRef;
+        private RenderFragment<IgbChatAttachmentRenderContext>? _attachmentHeader;
 
         /// <summary>
         /// Custom renderer for the header of an attachment.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatAttachmentRenderContext> AttachmentHeader
+        public RenderFragment<IgbChatAttachmentRenderContext>? AttachmentHeader
         {
             get { return this._attachmentHeader; }
 
@@ -154,8 +154,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _attachmentHeaderTemplateId;
-        private string _attachmentHeaderScript;
+        private string? _attachmentHeaderTemplateId;
+        private string? _attachmentHeaderScript;
 
         /// <summary>
         /// Name of a client-side function that renders the header of an attachment.
@@ -184,14 +184,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _inputRef;
-        private RenderFragment<IgbChatInputRenderContext> _input;
+        private string? _inputRef;
+        private RenderFragment<IgbChatInputRenderContext>? _input;
 
         /// <summary>
         /// Custom renderer for the main chat input field.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatInputRenderContext> Input
+        public RenderFragment<IgbChatInputRenderContext>? Input
         {
             get { return this._input; }
 
@@ -213,8 +213,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputTemplateId;
-        private string _inputScript;
+        private string? _inputTemplateId;
+        private string? _inputScript;
 
         /// <summary>
         /// Name of a client-side function that renders the main chat input field.
@@ -243,14 +243,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _inputActionsRef;
-        private RenderFragment<IgbChatRenderContext> _inputActions;
+        private string? _inputActionsRef;
+        private RenderFragment<IgbChatRenderContext>? _inputActions;
 
         /// <summary>
         /// Custom renderer for the actions container within the input area.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatRenderContext> InputActions
+        public RenderFragment<IgbChatRenderContext>? InputActions
         {
             get { return this._inputActions; }
 
@@ -272,8 +272,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputActionsTemplateId;
-        private string _inputActionsScript;
+        private string? _inputActionsTemplateId;
+        private string? _inputActionsScript;
 
         /// <summary>
         /// Name of a client-side function that renders the actions container within the input area.
@@ -302,14 +302,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _inputActionsEndRef;
-        private RenderFragment<IgbChatRenderContext> _inputActionsEnd;
+        private string? _inputActionsEndRef;
+        private RenderFragment<IgbChatRenderContext>? _inputActionsEnd;
 
         /// <summary>
         /// Custom renderer for the actions at the end of the input area.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatRenderContext> InputActionsEnd
+        public RenderFragment<IgbChatRenderContext>? InputActionsEnd
         {
             get { return this._inputActionsEnd; }
 
@@ -331,8 +331,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputActionsEndTemplateId;
-        private string _inputActionsEndScript;
+        private string? _inputActionsEndTemplateId;
+        private string? _inputActionsEndScript;
 
         /// <summary>
         /// Name of a client-side function that renders the actions at the end of the input area.
@@ -361,14 +361,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _inputActionsStartRef;
-        private RenderFragment<IgbChatRenderContext> _inputActionsStart;
+        private string? _inputActionsStartRef;
+        private RenderFragment<IgbChatRenderContext>? _inputActionsStart;
 
         /// <summary>
         /// Custom renderer for the actions at the start of the input area.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatRenderContext> InputActionsStart
+        public RenderFragment<IgbChatRenderContext>? InputActionsStart
         {
             get { return this._inputActionsStart; }
 
@@ -390,8 +390,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputActionsStartTemplateId;
-        private string _inputActionsStartScript;
+        private string? _inputActionsStartTemplateId;
+        private string? _inputActionsStartScript;
 
         /// <summary>
         /// Name of a client-side function that renders the actions at the start of the input area.
@@ -420,14 +420,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _messageRef;
-        private RenderFragment<IgbChatMessageRenderContext> _message;
+        private string? _messageRef;
+        private RenderFragment<IgbChatMessageRenderContext>? _message;
 
         /// <summary>
         /// Custom renderer for an entire chat message bubble.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatMessageRenderContext> Message
+        public RenderFragment<IgbChatMessageRenderContext>? Message
         {
             get { return this._message; }
 
@@ -449,8 +449,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _messageTemplateId;
-        private string _messageScript;
+        private string? _messageTemplateId;
+        private string? _messageScript;
 
         /// <summary>
         /// Name of a client-side function that renders an entire chat message bubble.
@@ -479,14 +479,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _messageActionsRef;
-        private RenderFragment<IgbChatMessageRenderContext> _messageActions;
+        private string? _messageActionsRef;
+        private RenderFragment<IgbChatMessageRenderContext>? _messageActions;
 
         /// <summary>
         /// Custom renderer for message-specific actions (e.g. reply or delete buttons).
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatMessageRenderContext> MessageActions
+        public RenderFragment<IgbChatMessageRenderContext>? MessageActions
         {
             get { return this._messageActions; }
 
@@ -508,8 +508,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _messageActionsTemplateId;
-        private string _messageActionsScript;
+        private string? _messageActionsTemplateId;
+        private string? _messageActionsScript;
 
         /// <summary>
         /// Name of a client-side function that renders message-specific actions (e.g. reply or delete buttons).
@@ -538,14 +538,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _messageAttachmentsRef;
-        private RenderFragment<IgbChatMessageRenderContext> _messageAttachments;
+        private string? _messageAttachmentsRef;
+        private RenderFragment<IgbChatMessageRenderContext>? _messageAttachments;
 
         /// <summary>
         /// Custom renderer for the attachments associated with a message.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatMessageRenderContext> MessageAttachments
+        public RenderFragment<IgbChatMessageRenderContext>? MessageAttachments
         {
             get { return this._messageAttachments; }
 
@@ -567,8 +567,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _messageAttachmentsTemplateId;
-        private string _messageAttachmentsScript;
+        private string? _messageAttachmentsTemplateId;
+        private string? _messageAttachmentsScript;
 
         /// <summary>
         /// Name of a client-side function that renders the attachments associated with a message.
@@ -597,14 +597,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _messageContentRef;
-        private RenderFragment<IgbChatMessageRenderContext> _messageContent;
+        private string? _messageContentRef;
+        private RenderFragment<IgbChatMessageRenderContext>? _messageContent;
 
         /// <summary>
         /// Custom renderer for the main text and content of a message.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatMessageRenderContext> MessageContent
+        public RenderFragment<IgbChatMessageRenderContext>? MessageContent
         {
             get { return this._messageContent; }
 
@@ -626,8 +626,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _messageContentTemplateId;
-        private string _messageContentScript;
+        private string? _messageContentTemplateId;
+        private string? _messageContentScript;
 
         /// <summary>
         /// Name of a client-side function that renders the main text and content of a message.
@@ -656,14 +656,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _messageHeaderRef;
-        private RenderFragment<IgbChatMessageRenderContext> _messageHeader;
+        private string? _messageHeaderRef;
+        private RenderFragment<IgbChatMessageRenderContext>? _messageHeader;
 
         /// <summary>
         /// Custom renderer for the header of a message, including sender and timestamp.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatMessageRenderContext> MessageHeader
+        public RenderFragment<IgbChatMessageRenderContext>? MessageHeader
         {
             get { return this._messageHeader; }
 
@@ -685,8 +685,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _messageHeaderTemplateId;
-        private string _messageHeaderScript;
+        private string? _messageHeaderTemplateId;
+        private string? _messageHeaderScript;
 
         /// <summary>
         /// Name of a client-side function that renders the header of a message, including sender and timestamp.
@@ -715,14 +715,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _sendButtonRef;
-        private RenderFragment<IgbChatRenderContext> _sendButton;
+        private string? _sendButtonRef;
+        private RenderFragment<IgbChatRenderContext>? _sendButton;
 
         /// <summary>
         /// Custom renderer for the message send button.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatRenderContext> SendButton
+        public RenderFragment<IgbChatRenderContext>? SendButton
         {
             get { return this._sendButton; }
 
@@ -744,8 +744,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _sendButtonTemplateId;
-        private string _sendButtonScript;
+        private string? _sendButtonTemplateId;
+        private string? _sendButtonScript;
 
         /// <summary>
         /// Name of a client-side function that renders the message send button.
@@ -774,14 +774,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _suggestionPrefixRef;
-        private RenderFragment<IgbChatRenderContext> _suggestionPrefix;
+        private string? _suggestionPrefixRef;
+        private RenderFragment<IgbChatRenderContext>? _suggestionPrefix;
 
         /// <summary>
         /// Custom renderer for the prefix text shown before suggestions.
         /// </summary>
         [Parameter]
-        public RenderFragment<IgbChatRenderContext> SuggestionPrefix
+        public RenderFragment<IgbChatRenderContext>? SuggestionPrefix
         {
             get { return this._suggestionPrefix; }
 
@@ -803,8 +803,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _suggestionPrefixTemplateId;
-        private string _suggestionPrefixScript;
+        private string? _suggestionPrefixTemplateId;
+        private string? _suggestionPrefixScript;
 
         /// <summary>
         /// Name of a client-side function that renders the prefix text shown before suggestions.

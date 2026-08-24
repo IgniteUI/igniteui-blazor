@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components;
 
@@ -100,13 +100,13 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
-        private IgbCustomDateRange[] _customRanges;
+        private IgbCustomDateRange[]? _customRanges;
 
         /// <summary>
         /// Renders chips with custom ranges based on the elements of the array.
         /// </summary>
         [Parameter]
-        public IgbCustomDateRange[] CustomRanges
+        public IgbCustomDateRange[]? CustomRanges
         {
             get { return this._customRanges; }
             set
@@ -176,13 +176,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// The locale settings used to display the value.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -195,13 +195,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangePickerResourceStrings _resourceStrings;
+        private IgbDateRangePickerResourceStrings? _resourceStrings;
 
         /// <summary>
         /// The resource strings of the date range picker.
         /// </summary>
         [Parameter]
-        public IgbDateRangePickerResourceStrings ResourceStrings
+        public IgbDateRangePickerResourceStrings? ResourceStrings
         {
             get { return this._resourceStrings; }
             set
@@ -277,13 +277,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label of the control (single input).
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -296,13 +296,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _labelStart;
+        private string? _labelStart;
 
         /// <summary>
         /// The label of the start input.
         /// </summary>
         [Parameter]
-        public string LabelStart
+        public string? LabelStart
         {
             get { return this._labelStart; }
             set
@@ -315,13 +315,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _labelEnd;
+        private string? _labelEnd;
 
         /// <summary>
         /// The label of the end input.
         /// </summary>
         [Parameter]
-        public string LabelEnd
+        public string? LabelEnd
         {
             get { return this._labelEnd; }
             set
@@ -334,13 +334,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholder;
+        private string? _placeholder;
 
         /// <summary>
         /// The placeholder text of the control (single input).
         /// </summary>
         [Parameter]
-        public string Placeholder
+        public string? Placeholder
         {
             get { return this._placeholder; }
             set
@@ -353,13 +353,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholderStart;
+        private string? _placeholderStart;
 
         /// <summary>
         /// The placeholder text of the start input.
         /// </summary>
         [Parameter]
-        public string PlaceholderStart
+        public string? PlaceholderStart
         {
             get { return this._placeholderStart; }
             set
@@ -372,13 +372,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholderEnd;
+        private string? _placeholderEnd;
 
         /// <summary>
         /// The placeholder text of the end input.
         /// </summary>
         [Parameter]
-        public string PlaceholderEnd
+        public string? PlaceholderEnd
         {
             get { return this._placeholderEnd; }
             set
@@ -391,13 +391,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _prompt;
+        private string? _prompt;
 
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask.
         /// </summary>
         [Parameter]
-        public string Prompt
+        public string? Prompt
         {
             get { return this._prompt; }
             set
@@ -410,14 +410,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _displayFormat;
+        private string? _displayFormat;
 
         /// <summary>
         /// Format to display the value in when not editing.
         /// Defaults to the locale format if not set.
         /// </summary>
         [Parameter]
-        public string DisplayFormat
+        public string? DisplayFormat
         {
             get { return this._displayFormat; }
             set
@@ -430,14 +430,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputFormat;
+        private string? _inputFormat;
 
         /// <summary>
         /// The date format to apply on the inputs.
         /// Defaults to the current locale of the client <c>Intl.DateTimeFormat</c>
         /// </summary>
         [Parameter]
-        public string InputFormat
+        public string? InputFormat
         {
             get { return this._inputFormat; }
             set
@@ -488,13 +488,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[] _disabledDates;
+        private IgbDateRangeDescriptor[]? _disabledDates;
 
         /// <summary>
         /// Gets/sets disabled dates.
         /// </summary>
         [Parameter]
-        public IgbDateRangeDescriptor[] DisabledDates
+        public IgbDateRangeDescriptor[]? DisabledDates
         {
             get { return this._disabledDates; }
             set
@@ -641,13 +641,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[] _specialDates;
+        private IgbDateRangeDescriptor[]? _specialDates;
 
         /// <summary>
         /// Gets/sets special dates.
         /// </summary>
         [Parameter]
-        public IgbDateRangeDescriptor[] SpecialDates
+        public IgbDateRangeDescriptor[]? SpecialDates
         {
             get { return this._specialDates; }
             set

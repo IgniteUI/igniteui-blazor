@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -59,13 +59,13 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _src;
+        private string? _src;
 
         /// <summary>
         /// The image source to use.
         /// </summary>
         [Parameter]
-        public string Src
+        public string? Src
         {
             get { return this._src; }
             set
@@ -78,13 +78,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _alt;
+        private string? _alt;
 
         /// <summary>
         /// Alternative text for the image.
         /// </summary>
         [Parameter]
-        public string Alt
+        public string? Alt
         {
             get { return this._alt; }
             set
@@ -97,13 +97,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _initials;
+        private string? _initials;
 
         /// <summary>
         /// Initials to use as a fallback when no image is available.
         /// </summary>
         [Parameter]
-        public string Initials
+        public string? Initials
         {
             get { return this._initials; }
             set

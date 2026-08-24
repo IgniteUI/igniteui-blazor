@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -50,13 +50,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholder;
+        private string? _placeholder;
 
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
         [Parameter]
-        public string Placeholder
+        public string? Placeholder
         {
             get { return this._placeholder; }
             set
@@ -69,13 +69,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label for the control.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -88,13 +88,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputFormat;
+        private string? _inputFormat;
 
         /// <summary>
         /// The date format to apply on the input.
         /// </summary>
         [Parameter]
-        public string InputFormat
+        public string? InputFormat
         {
             get { return this._inputFormat; }
             set
@@ -145,14 +145,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _displayFormat;
+        private string? _displayFormat;
 
         /// <summary>
         /// Format to display the value in when not editing.
         /// Defaults to the locale format if not set.
         /// </summary>
         [Parameter]
-        public string DisplayFormat
+        public string? DisplayFormat
         {
             get { return this._displayFormat; }
             set
@@ -165,14 +165,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDatePartDeltas _spinDelta;
+        private IgbDatePartDeltas? _spinDelta;
 
         /// <summary>
         /// Delta values used to increment or decrement each date part on step actions.
         /// All values default to <c>1</c>.
         /// </summary>
         [Parameter]
-        public IgbDatePartDeltas SpinDelta
+        public IgbDatePartDeltas? SpinDelta
         {
             get { return this._spinDelta; }
             set
@@ -209,13 +209,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// Gets/Sets the locale used for formatting the display value.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -247,13 +247,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _mask;
+        private string? _mask;
 
         /// <summary>
         /// The mask pattern of the component.
         /// </summary>
         [Parameter]
-        public string Mask
+        public string? Mask
         {
             get { return this._mask; }
             set
@@ -266,14 +266,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _prompt;
+        private string? _prompt;
 
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
         /// Defaults to <c>_</c>.
         /// </summary>
         [Parameter]
-        public string Prompt
+        public string? Prompt
         {
             get { return this._prompt; }
             set

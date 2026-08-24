@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace IgniteUI.Blazor.Controls
@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
 
     public class DynamicContentHolder : ComponentBase
     {
-        protected LinkedList<DynamicContentInfo> DynamicContentInfo
+        protected LinkedList<DynamicContentInfo>? DynamicContentInfo
         {
             get;
             set;
@@ -104,7 +104,7 @@ namespace IgniteUI.Blazor.Controls
 
     public abstract class DynamicContentInfo
     {
-        public Type ControlType { get; set; }
+        public Type? ControlType { get; set; }
         public DynamicContentInfo()
         {
             RefName = Guid.NewGuid().ToString();
@@ -134,7 +134,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public BaseRendererControl Owner { get; internal set; }
+        public BaseRendererControl? Owner { get; internal set; }
 
         protected virtual void OnComponentChanged(object oldValue, object component)
         {
@@ -215,15 +215,15 @@ namespace IgniteUI.Blazor.Controls
             return tcs.Task;
         }
 
-        public event DynamicComponentChangingEventHandler OnComponentChanging;
+        public event DynamicComponentChangingEventHandler? OnComponentChanging;
     }
 
     public delegate void DynamicComponentChangingEventHandler(object sender, DynamicComponentChangingEventArgs e);
 
     public class DynamicComponentChangingEventArgs
     {
-        public object OldComponent { get; internal set; }
-        public object NewComponent { get; internal set; }
+        public object? OldComponent { get; internal set; }
+        public object? NewComponent { get; internal set; }
     }
 
     public class DynamicContentInfo<T>
@@ -234,8 +234,8 @@ namespace IgniteUI.Blazor.Controls
             ControlType = typeof(IgbTemplateContent<T>);
         }
 
-        private RenderFragment<T> _template;
-        private T _context;
+        private RenderFragment<T>? _template;
+        private T? _context;
 
         private bool _hasPopulatedContext = false;
 

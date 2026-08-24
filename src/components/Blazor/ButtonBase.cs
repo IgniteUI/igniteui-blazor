@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -77,7 +77,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _href;
+        private string? _href;
 
         /// <summary>
         /// The URL the button points to. When set, the component renders as an
@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
         /// for full anchor semantics.
         /// </summary>
         [Parameter]
-        public string Href
+        public string? Href
         {
             get { return this._href; }
             set
@@ -99,7 +99,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _download;
+        private string? _download;
 
         /// <summary>
         /// Prompts the browser to download the linked resource rather than navigating
@@ -107,7 +107,7 @@ namespace IgniteUI.Blazor.Controls
         /// Only effective when <see cref="Href"/> is set.
         /// </summary>
         [Parameter]
-        public string Download
+        public string? Download
         {
             get { return this._download; }
             set
@@ -148,7 +148,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _rel;
+        private string? _rel;
 
         /// <summary>
         /// The relationship between the current document and the linked URL.
@@ -158,7 +158,7 @@ namespace IgniteUI.Blazor.Controls
         /// strongly recommended for security.
         /// </summary>
         [Parameter]
-        public string Rel
+        public string? Rel
         {
             get { return this._rel; }
             set
@@ -190,7 +190,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _command;
+        private string? _command;
 
         /// <summary>
         /// The command to invoke on the target element specified by <see cref="Commandfor"/>.
@@ -199,7 +199,7 @@ namespace IgniteUI.Blazor.Controls
         /// Custom commands must start with two dashes (e.g. <c>--my-command</c>).
         /// </summary>
         [Parameter]
-        public string Command
+        public string? Command
         {
             get { return this._command; }
             set

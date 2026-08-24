@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTile _tile;
+        private IgbTile? _tile;
 
         /// <summary>
         /// The tile whose state is changing.
         /// </summary>
         [Parameter]
-        public IgbTile Tile
+        public IgbTile? Tile
         {
             get { return this._tile; }
             set

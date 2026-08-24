@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
@@ -15,10 +15,10 @@ namespace IgniteUI.Blazor.Controls
             _component = component;
         }
 
-        private string _name;
-        private ComponentBase _component;
+        private string? _name;
+        private ComponentBase? _component;
 
-        private SerializationContext _context;
+        private SerializationContext? _context;
 
         //private List<string> _properties = new List<string>();
         private string? _type = null;

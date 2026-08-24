@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -22,14 +22,14 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// The culture used to format the number. When not set, the browser culture returned by
         /// <see cref="IgbFormatSpecifier.GetLocalCulture"/> is used.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -42,14 +42,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _compactDisplay;
+        private string? _compactDisplay;
 
         /// <summary>
         /// The form of the compact notation, either <c>short</c> or <c>long</c>. Applies only when
         /// <see cref="Notation"/> is <c>compact</c>.
         /// </summary>
         [Parameter]
-        public string CompactDisplay
+        public string? CompactDisplay
         {
             get { return this._compactDisplay; }
             set
@@ -62,13 +62,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _currency;
+        private string? _currency;
 
         /// <summary>
         /// The currency used in currency formatting, given as an ISO 4217 currency code.
         /// </summary>
         [Parameter]
-        public string Currency
+        public string? Currency
         {
             get { return this._currency; }
             set
@@ -81,14 +81,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _currencyDisplay;
+        private string? _currencyDisplay;
 
         /// <summary>
         /// How the currency is shown, one of <c>symbol</c>, <c>narrowSymbol</c>, <c>code</c> or
         /// <c>name</c>.
         /// </summary>
         [Parameter]
-        public string CurrencyDisplay
+        public string? CurrencyDisplay
         {
             get { return this._currencyDisplay; }
             set
@@ -101,13 +101,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _currencySign;
+        private string? _currencySign;
 
         /// <summary>
         /// How negative currency amounts are rendered, either <c>standard</c> or <c>accounting</c>.
         /// </summary>
         [Parameter]
-        public string CurrencySign
+        public string? CurrencySign
         {
             get { return this._currencySign; }
             set
@@ -120,14 +120,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _currencyCode;
+        private string? _currencyCode;
 
         /// <summary>
         /// The currency code applied when <see cref="Style"/> is <c>currency</c>. It takes precedence
         /// over <see cref="Currency"/>; when not set, the code is resolved from the culture.
         /// </summary>
         [Parameter]
-        public string CurrencyCode
+        public string? CurrencyCode
         {
             get { return this._currencyCode; }
             set
@@ -140,13 +140,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _localeMatcher;
+        private string? _localeMatcher;
 
         /// <summary>
         /// The locale matching algorithm, either <c>lookup</c> or <c>best fit</c>.
         /// </summary>
         [Parameter]
-        public string LocaleMatcher
+        public string? LocaleMatcher
         {
             get { return this._localeMatcher; }
             set
@@ -159,14 +159,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _notation;
+        private string? _notation;
 
         /// <summary>
         /// The formatting notation, one of <c>standard</c>, <c>scientific</c>, <c>engineering</c> or
         /// <c>compact</c>.
         /// </summary>
         [Parameter]
-        public string Notation
+        public string? Notation
         {
             get { return this._notation; }
             set
@@ -179,13 +179,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _numberingSystem;
+        private string? _numberingSystem;
 
         /// <summary>
         /// The numbering system used to render the digits.
         /// </summary>
         [Parameter]
-        public string NumberingSystem
+        public string? NumberingSystem
         {
             get { return this._numberingSystem; }
             set
@@ -198,14 +198,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _signDisplay;
+        private string? _signDisplay;
 
         /// <summary>
         /// When the sign is shown, one of <c>auto</c>, <c>never</c>, <c>always</c> or
         /// <c>exceptZero</c>.
         /// </summary>
         [Parameter]
-        public string SignDisplay
+        public string? SignDisplay
         {
             get { return this._signDisplay; }
             set
@@ -218,14 +218,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _style;
+        private string? _style;
 
         /// <summary>
         /// The formatting style, one of <c>decimal</c>, <c>currency</c>, <c>percent</c> or
         /// <c>unit</c>.
         /// </summary>
         [Parameter]
-        public string Style
+        public string? Style
         {
             get { return this._style; }
             set
@@ -238,13 +238,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _unit;
+        private string? _unit;
 
         /// <summary>
         /// The unit used when <see cref="Style"/> is <c>unit</c>.
         /// </summary>
         [Parameter]
-        public string Unit
+        public string? Unit
         {
             get { return this._unit; }
             set
@@ -257,13 +257,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _unitDisplay;
+        private string? _unitDisplay;
 
         /// <summary>
         /// How the unit is shown, one of <c>short</c>, <c>narrow</c> or <c>long</c>.
         /// </summary>
         [Parameter]
-        public string UnitDisplay
+        public string? UnitDisplay
         {
             get { return this._unitDisplay; }
             set

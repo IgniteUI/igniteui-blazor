@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -154,14 +154,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _title;
+        private string? _title;
 
         /// <summary>
         /// The title displayed in the dialog header.
         /// Overridden by any content projected into the <c>title</c> slot.
         /// </summary>
         [Parameter]
-        public string Title
+        public string? Title
         {
             get { return this._title; }
             set
@@ -174,7 +174,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _returnValue;
+        private string? _returnValue;
 
         /// <summary>
         /// The return value of the dialog.
@@ -183,7 +183,7 @@ namespace IgniteUI.Blazor.Controls
         /// be set programmatically before calling <see cref="Hide"/>.
         /// </summary>
         [Parameter]
-        public string ReturnValue
+        public string? ReturnValue
         {
             get { return this._returnValue; }
             set

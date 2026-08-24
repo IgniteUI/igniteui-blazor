@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbComboChangeEventArgsDetail _detail;
+        private IgbComboChangeEventArgsDetail? _detail;
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
         /// </summary>
         [Parameter]
-        public IgbComboChangeEventArgsDetail Detail
+        public IgbComboChangeEventArgsDetail? Detail
         {
             get { return this._detail; }
             set

@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
 
         private Dictionary<string, bool> _checkedArray = new Dictionary<string, bool>();
 
-        public Action NotifyModified { get; set; }
+        public Action? NotifyModified { get; set; }
 
         private bool HasDataIntents()
         {
@@ -725,20 +725,20 @@ namespace IgniteUI.Blazor.Controls
             _buildingFieldsTypes.Add(type);
         }
 
-        public PropertyInfo[] Properties;
-        public Func<object, object>[] PropertyGetters;
-        public Func<object, object>[] FieldGetters;
-        public Delegate[] TypedPropertyGetters;
-        public Delegate[] TypedFieldGetters;
-        public JSDataSourceSchemaType[] PropertyTypes;
-        public IDataIntentAttribute[]?[] PropertyDataIntents;
-        public System.Text.Json.JsonEncodedText[] JsonPropertyNames;
-        public System.Text.Json.JsonEncodedText[] JsonFieldNames;
-        public String[] PropertyNames;
-        public String[] FieldNames;
-        public FieldInfo[] Fields;
-        public JSDataSourceSchemaType[] FieldTypes;
-        public IDataIntentAttribute[]?[] FieldDataIntents;
+        public PropertyInfo[]? Properties;
+        public Func<object, object>[]? PropertyGetters;
+        public Func<object, object>[]? FieldGetters;
+        public Delegate[]? TypedPropertyGetters;
+        public Delegate[]? TypedFieldGetters;
+        public JSDataSourceSchemaType[]? PropertyTypes;
+        public IDataIntentAttribute[]?[]? PropertyDataIntents;
+        public System.Text.Json.JsonEncodedText[]? JsonPropertyNames;
+        public System.Text.Json.JsonEncodedText[]? JsonFieldNames;
+        public String[]? PropertyNames;
+        public String[]? FieldNames;
+        public FieldInfo[]? Fields;
+        public JSDataSourceSchemaType[]? FieldTypes;
+        public IDataIntentAttribute[]?[]? FieldDataIntents;
 
         private System.Linq.Expressions.UnaryExpression GetConversion(Type type, System.Linq.Expressions.Expression expression)
         {

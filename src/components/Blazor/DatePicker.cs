@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -35,13 +35,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label of the datepicker.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -283,13 +283,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[] _disabledDates;
+        private IgbDateRangeDescriptor[]? _disabledDates;
 
         /// <summary>
         /// Gets/sets disabled dates.
         /// </summary>
         [Parameter]
-        public IgbDateRangeDescriptor[] DisabledDates
+        public IgbDateRangeDescriptor[]? DisabledDates
         {
             get { return this._disabledDates; }
             set
@@ -302,13 +302,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[] _specialDates;
+        private IgbDateRangeDescriptor[]? _specialDates;
 
         /// <summary>
         /// Gets/sets special dates.
         /// </summary>
         [Parameter]
-        public IgbDateRangeDescriptor[] SpecialDates
+        public IgbDateRangeDescriptor[]? SpecialDates
         {
             get { return this._specialDates; }
             set
@@ -340,13 +340,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholder;
+        private string? _placeholder;
 
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
         [Parameter]
-        public string Placeholder
+        public string? Placeholder
         {
             get { return this._placeholder; }
             set
@@ -397,14 +397,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _displayFormat;
+        private string? _displayFormat;
 
         /// <summary>
         /// Format to display the value in when not editing.
         /// Defaults to the locale format if not set.
         /// </summary>
         [Parameter]
-        public string DisplayFormat
+        public string? DisplayFormat
         {
             get { return this._displayFormat; }
             set
@@ -417,14 +417,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputFormat;
+        private string? _inputFormat;
 
         /// <summary>
         /// The date format to apply on the input.
         /// Defaults to the current locale of the client <c>Intl.DateTimeFormat</c>
         /// </summary>
         [Parameter]
-        public string InputFormat
+        public string? InputFormat
         {
             get { return this._inputFormat; }
             set
@@ -437,13 +437,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _prompt;
+        private string? _prompt;
 
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask.
         /// </summary>
         [Parameter]
-        public string Prompt
+        public string? Prompt
         {
             get { return this._prompt; }
             set
@@ -456,13 +456,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// Gets/Sets the locale used for formatting the display value.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -475,13 +475,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbCalendarResourceStrings _resourceStrings;
+        private IgbCalendarResourceStrings? _resourceStrings;
 
         /// <summary>
         /// The resource strings for localization.
         /// </summary>
         [Parameter]
-        public IgbCalendarResourceStrings ResourceStrings
+        public IgbCalendarResourceStrings? ResourceStrings
         {
             get { return this._resourceStrings; }
             set

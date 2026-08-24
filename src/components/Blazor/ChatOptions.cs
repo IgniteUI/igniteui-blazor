@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatOptions"; } }
 
-        private string _currentUserId;
+        private string? _currentUserId;
 
         /// <summary>
         /// The ID of the current user. Used to differentiate between incoming and outgoing messages.
         /// </summary>
         [Parameter]
-        public string CurrentUserId
+        public string? CurrentUserId
         {
             get { return this._currentUserId; }
             set
@@ -87,13 +87,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _headerText;
+        private string? _headerText;
 
         /// <summary>
         /// Optional header text to display at the top of the chat component.
         /// </summary>
         [Parameter]
-        public string HeaderText
+        public string? HeaderText
         {
             get { return this._headerText; }
             set
@@ -106,14 +106,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputPlaceholder;
+        private string? _inputPlaceholder;
 
         /// <summary>
         /// Optional placeholder text for the chat input area.
         /// Provides a hint to the user about what they can type (e.g. "Type a message...").
         /// </summary>
         [Parameter]
-        public string InputPlaceholder
+        public string? InputPlaceholder
         {
             get { return this._inputPlaceholder; }
             set
@@ -126,13 +126,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[] _suggestions;
+        private string[]? _suggestions;
 
         /// <summary>
         /// Suggested text snippets or quick replies that can be shown as user-selectable options.
         /// </summary>
         [Parameter]
-        public string[] Suggestions
+        public string[]? Suggestions
         {
             get { return this._suggestions; }
             set
@@ -216,13 +216,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbChatRenderers _renderers;
+        private IgbChatRenderers? _renderers;
 
         /// <summary>
         /// An object containing a collection of custom renderers for different parts of the chat UI.
         /// </summary>
         [Parameter]
-        public IgbChatRenderers Renderers
+        public IgbChatRenderers? Renderers
         {
             get { return this._renderers; }
             set

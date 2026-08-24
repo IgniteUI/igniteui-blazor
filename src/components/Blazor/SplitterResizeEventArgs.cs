@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbSplitterResizeEventArgsDetail _detail;
+        private IgbSplitterResizeEventArgsDetail? _detail;
 
         /// <summary>
         /// The current sizes of the panes adjacent to the resized splitter bar.
         /// </summary>
         [Parameter]
-        public IgbSplitterResizeEventArgsDetail Detail
+        public IgbSplitterResizeEventArgsDetail? Detail
         {
             get { return this._detail; }
             set

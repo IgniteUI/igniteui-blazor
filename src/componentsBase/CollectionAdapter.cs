@@ -1,4 +1,4 @@
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -6,15 +6,15 @@ namespace IgniteUI.Blazor.Controls
         where T : class
         where J : class
     {
-        private IList<T> _queryItems;
+        private IList<T>? _queryItems;
         private IList<T> _manualItems = new List<T>();
 
-        private IList<T> _allList;
-        private IList<J> _target;
-        private IList<T> _query;
-        private Func<T, J> _toTarget;
-        private Action<T> _onItemAdded;
-        private Action<T> _onItemRemoved;
+        private IList<T>? _allList;
+        private IList<J>? _target;
+        private IList<T>? _query;
+        private Func<T, J>? _toTarget;
+        private Action<T>? _onItemAdded;
+        private Action<T>? _onItemRemoved;
 
         private bool _hasShiftedOnceAlready;
 

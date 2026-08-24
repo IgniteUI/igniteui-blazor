@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -58,13 +58,13 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private IgbSelectItem[] _items;
+        private IgbSelectItem[]? _items;
 
         /// <summary>
         /// All child <see cref="IgbSelectItem"/> components.
         /// </summary>
         [Parameter]
-        public IgbSelectItem[] Items
+        public IgbSelectItem[]? Items
         {
             get { return this._items; }
             set

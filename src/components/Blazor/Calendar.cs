@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -75,7 +75,7 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
             return ReturnToDate(iv);
         }
-        private DateTime[] _values;
+        private DateTime[]? _values;
 
         /// <summary>
         /// The current values of the calendar.
@@ -83,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
         [Parameter]
-        public DateTime[] Values
+        public DateTime[]? Values
         {
             get { return this._values; }
             set
@@ -254,13 +254,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbCalendarFormatOptions _formatOptions;
+        private IgbCalendarFormatOptions? _formatOptions;
 
         /// <summary>
         /// The options used to format the months and the weekdays in the calendar views.
         /// </summary>
         [Parameter]
-        public IgbCalendarFormatOptions FormatOptions
+        public IgbCalendarFormatOptions? FormatOptions
         {
             get { return this._formatOptions; }
             set

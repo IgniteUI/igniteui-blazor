@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -7,10 +7,10 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebCalendarResourceStrings"; } }
 
-        private string _selectMonth;
+        private string? _selectMonth;
 
         [Parameter]
-        public string SelectMonth
+        public string? SelectMonth
         {
             get { return this._selectMonth; }
             set
@@ -23,10 +23,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _selectYear;
+        private string? _selectYear;
 
         [Parameter]
-        public string SelectYear
+        public string? SelectYear
         {
             get { return this._selectYear; }
             set
@@ -39,10 +39,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _selectDate;
+        private string? _selectDate;
 
         [Parameter]
-        public string SelectDate
+        public string? SelectDate
         {
             get { return this._selectDate; }
             set
@@ -55,10 +55,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _selectRange;
+        private string? _selectRange;
 
         [Parameter]
-        public string SelectRange
+        public string? SelectRange
         {
             get { return this._selectRange; }
             set
@@ -71,10 +71,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _selectedDate;
+        private string? _selectedDate;
 
         [Parameter]
-        public string SelectedDate
+        public string? SelectedDate
         {
             get { return this._selectedDate; }
             set
@@ -87,10 +87,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _startDate;
+        private string? _startDate;
 
         [Parameter]
-        public string StartDate
+        public string? StartDate
         {
             get { return this._startDate; }
             set
@@ -103,10 +103,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _endDate;
+        private string? _endDate;
 
         [Parameter]
-        public string EndDate
+        public string? EndDate
         {
             get { return this._endDate; }
             set
@@ -119,10 +119,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _previousMonth;
+        private string? _previousMonth;
 
         [Parameter]
-        public string PreviousMonth
+        public string? PreviousMonth
         {
             get { return this._previousMonth; }
             set
@@ -135,10 +135,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _nextMonth;
+        private string? _nextMonth;
 
         [Parameter]
-        public string NextMonth
+        public string? NextMonth
         {
             get { return this._nextMonth; }
             set
@@ -151,10 +151,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _previousYear;
+        private string? _previousYear;
 
         [Parameter]
-        public string PreviousYear
+        public string? PreviousYear
         {
             get { return this._previousYear; }
             set
@@ -167,10 +167,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _nextYear;
+        private string? _nextYear;
 
         [Parameter]
-        public string NextYear
+        public string? NextYear
         {
             get { return this._nextYear; }
             set
@@ -183,10 +183,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _previousYears;
+        private string? _previousYears;
 
         [Parameter]
-        public string PreviousYears
+        public string? PreviousYears
         {
             get { return this._previousYears; }
             set
@@ -199,10 +199,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _nextYears;
+        private string? _nextYears;
 
         [Parameter]
-        public string NextYears
+        public string? NextYears
         {
             get { return this._nextYears; }
             set
@@ -215,10 +215,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _weekLabel;
+        private string? _weekLabel;
 
         [Parameter]
-        public string WeekLabel
+        public string? WeekLabel
         {
             get { return this._weekLabel; }
             set

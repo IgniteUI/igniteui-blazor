@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -116,13 +116,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[] _selectedItems;
+        private string[]? _selectedItems;
 
         /// <summary>
         /// Gets or sets the values of the currently selected buttons.
         /// </summary>
         [Parameter]
-        public string[] SelectedItems
+        public string[]? SelectedItems
         {
             get { return this._selectedItems; }
             set

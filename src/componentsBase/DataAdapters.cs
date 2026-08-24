@@ -1,4 +1,4 @@
-namespace IgniteUI.Blazor.Controls
+﻿namespace IgniteUI.Blazor.Controls
 {
     public class LocalJson
     {
@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
             return new LocalJson(json);
         }
 
-        private string _json;
+        private string? _json;
         public string Json { get { return _json; } }
 
         internal string ToRef()
@@ -38,8 +38,8 @@ namespace IgniteUI.Blazor.Controls
             return new RemoteJson(uri);
         }
 
-        private string _uri;
-        public string Uri { get { return _uri; } }
+        private string? _uri;
+        public string? Uri { get { return _uri; } }
 
         internal string ToRef()
         {

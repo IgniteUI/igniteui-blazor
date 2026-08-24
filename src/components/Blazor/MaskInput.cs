@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -64,14 +64,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the input.
         /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set
@@ -104,13 +104,13 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
-        private string _mask;
+        private string? _mask;
 
         /// <summary>
         /// The masked pattern of the component.
         /// </summary>
         [Parameter]
-        public string Mask
+        public string? Mask
         {
             get { return this._mask; }
             set
@@ -123,13 +123,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _prompt;
+        private string? _prompt;
 
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
         /// </summary>
         [Parameter]
-        public string Prompt
+        public string? Prompt
         {
             get { return this._prompt; }
             set
