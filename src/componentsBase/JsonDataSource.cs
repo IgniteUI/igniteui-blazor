@@ -120,7 +120,7 @@ namespace IgniteUI.Blazor.Controls
                         for (var i = 0; i < e.NewItems.Count; i++)
                         {
                             var item = e.NewItems[i];
-                            var refName = _manager.GetRefId(_originalData);
+                            var refName = _manager!.GetRefId(_originalData);
                             if (refName == null)
                             {
                                 return;
@@ -137,7 +137,7 @@ namespace IgniteUI.Blazor.Controls
                         for (var i = 0; i < e.OldItems.Count; i++)
                         {
                             var item = e.OldItems[i];
-                            var refName = _manager.GetRefId(_originalData);
+                            var refName = _manager!.GetRefId(_originalData);
                             if (refName == null)
                             {
                                 return;
@@ -154,7 +154,7 @@ namespace IgniteUI.Blazor.Controls
                         for (var i = 0; i < e.OldItems.Count; i++)
                         {
                             var item = e.OldItems[i];
-                            var refName = _manager.GetRefId(_originalData);
+                            var refName = _manager!.GetRefId(_originalData);
                             if (refName == null)
                             {
                                 return;
@@ -167,7 +167,7 @@ namespace IgniteUI.Blazor.Controls
                         for (var i = 0; i < e.NewItems.Count; i++)
                         {
                             var item = e.NewItems[i];
-                            var refName = _manager.GetRefId(_originalData);
+                            var refName = _manager!.GetRefId(_originalData);
                             if (refName == null)
                             {
                                 return;
@@ -179,7 +179,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 case NotifyCollectionChangedAction.Reset:
                 {
-                    var refName = _manager.GetRefId(_originalData);
+                    var refName = _manager!.GetRefId(_originalData);
                     if (refName == null)
                     {
                         return;
@@ -388,10 +388,10 @@ namespace IgniteUI.Blazor.Controls
 
             if (schema != null)
             {
-                for (int i = 0; i < schema.PropertyNames.Length; i++)
+                for (int i = 0; i < schema!.PropertyNames!.Length; i++)
                 {
                     var propertyName = schema.PropertyNames[i];
-                    var propertyType = schema.PropertyTypes[i];
+                    var propertyType = schema!.PropertyTypes![i];
                     if (propertyType == JSDataSourceSchemaType.ObjectValue)
                     {
                         var subSchema = schema.GetSubSchema(propertyName);

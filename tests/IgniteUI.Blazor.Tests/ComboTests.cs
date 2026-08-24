@@ -65,7 +65,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             argsJson: FromRender.Of((interop, cut) => ChangeDetail(UuidRef(interop, cut, 0), UuidRef(interop, cut, 0))),
             assert: (cut, args) =>
             {
-                Assert.Same(_valueItem1, Assert.Single(args.Detail.NewValue));
+                Assert.Same(_valueItem1, Assert.Single(args!.Detail!.NewValue));
                 Assert.Same(_valueItem1, Assert.Single(args.Detail.Items));
                 Assert.Equal(ComboChangeType.Selection, args.Detail.ChangeType);
             })
@@ -76,7 +76,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             argsJson: FromRender.Of((interop, cut) => ChangeDetail("", UuidRef(interop, cut, 0), "deselection")),
             assert: (cut, args) =>
             {
-                Assert.Empty(args.Detail.NewValue);
+                Assert.Empty(args!.Detail!.NewValue);
                 Assert.Same(_valueItem1, Assert.Single(args.Detail.Items));
                 // TODO: wire detail carries kind as "type", but FromEventJson reads "changeType", so
                 // Detail.ChangeType never decodes and stays default (wrong for deselection events):
@@ -90,9 +90,9 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             assert: (cut, args) =>
             {
                 // Multi-selection: every element resolves back to its original data instance.
-                Assert.Equal([_valueItem1, _valueItem2], args.Detail.NewValue);
+                Assert.Equal([_valueItem1, _valueItem2], args!.Detail!.NewValue);
                 Assert.Equal([_valueItem1, _valueItem2], args.Detail.Items);
-                Assert.Same(args.Detail.NewValue[0], args.Detail.Items[0]);
+                Assert.Same(args!.Detail!.NewValue![0], args!.Detail!.Items![0]);
             })
         .Event(c => c.Focus)
         .Event(c => c.Blur)
@@ -306,7 +306,7 @@ public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>
             argsJson: FromRender.Of((interop, cut) => ComboTests.ChangeDetail("2", ComboTests.UuidRef(interop, cut, 1))),
             assert: (cut, args) =>
             {
-                Assert.Equal(2.0, Assert.Single(args.Detail.NewValue)); // numbers decode as double
+                Assert.Equal(2.0, Assert.Single(args!.Detail!.NewValue)); // numbers decode as double
                 Assert.Same(_item2, Assert.Single(args.Detail.Items));
                 // Two-way Value propagation through the generated wrapper works when T
                 // matches the key value type.

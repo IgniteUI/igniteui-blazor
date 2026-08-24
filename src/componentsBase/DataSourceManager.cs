@@ -1,4 +1,4 @@
-﻿namespace IgniteUI.Blazor.Controls
+namespace IgniteUI.Blazor.Controls
 {
     internal class DataSourceManager
     {
@@ -101,7 +101,7 @@
                 IncrementRef(id);
                 if (!_dataSources.ContainsKey(id))
                 {
-                    if (_helper.IsInproc && !_helper.IsForcedJsonDataMarshalling)
+                    if (_helper!.IsInproc && !_helper.IsForcedJsonDataMarshalling)
                     {
                         //Console.WriteLine("unmarshalled datasource");
                         _dataSources[id] = UnmarshalledDataSource.Create(data, this, _helper);
@@ -113,7 +113,7 @@
                     }
                 }
                 _idLookup[data] = id;
-                _refSink.OnRefChanged(id, _dataSources[id]);
+                _refSink!.OnRefChanged(id, _dataSources[id]);
             }
 
             if (data == null)
@@ -164,7 +164,7 @@
                     }
                     _dataSources.Remove(id);
                     _refsById.Remove(id);
-                    _refSink.OnRefChanged(id, null);
+                    _refSink!.OnRefChanged(id, null);
                 }
             }
         }
@@ -183,7 +183,7 @@
                 object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
                 IJSDataSourceItem newItem = dataSource.NotifyInsertItem(data, index, refItem);
-                _refSink.OnRefNotifyInsertItem(dataSource, refName, index, newItem);
+                _refSink!.OnRefNotifyInsertItem(dataSource, refName, index, newItem);
             }
         }
         public void NotifyRemoveItem(String refName, int index, Object oldItem)
@@ -198,7 +198,7 @@
                 Object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
                 IJSDataSourceItem oldItemJson = dataSource.NotifyRemoveItem(data, index, oldItem);
-                _refSink.OnRefNotifyRemoveItem(dataSource, refName, index, oldItemJson);
+                _refSink!.OnRefNotifyRemoveItem(dataSource, refName, index, oldItemJson);
             }
         }
         public void NotifyClearItems(string refName)
@@ -213,7 +213,7 @@
                 Object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
                 dataSource.NotifyClearItems(data);
-                _refSink.OnRefNotifyClearItems(dataSource, refName, dataSource);
+                _refSink!.OnRefNotifyClearItems(dataSource, refName, dataSource);
             }
         }
         public void NotifySetItem(string refName, int index, object oldItem, object newItem)
@@ -228,7 +228,7 @@
                 IJSDataSource dataSource = _dataSources[refName];
                 IJSDataSourceItem? oldItemJson = dataSource.DataSourceType == JSDataSourceType.Json ? ((JsonDataSource)dataSource)[index] : null;
                 IJSDataSourceItem newItemJson = dataSource.NotifySetItem(data, index, oldItem, newItem);
-                _refSink.OnRefNotifySetItem(dataSource, refName, index, oldItemJson, newItemJson);
+                _refSink!.OnRefNotifySetItem(dataSource, refName, index, oldItemJson, newItemJson);
             }
         }
         public void NotifyUpdateItem(string refName, int index, object refItem, bool syncDataOnly)
@@ -242,7 +242,7 @@
                 object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
                 IJSDataSourceItem newItemJson = dataSource.NotifyUpdateItem(data, index, refItem);
-                _refSink.OnRefNotifyUpdateItem(dataSource, refName, index, newItemJson, syncDataOnly);
+                _refSink!.OnRefNotifyUpdateItem(dataSource, refName, index, newItemJson, syncDataOnly);
             }
         }
 

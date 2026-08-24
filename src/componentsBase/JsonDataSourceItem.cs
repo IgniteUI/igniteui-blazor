@@ -160,21 +160,21 @@ namespace IgniteUI.Blazor.Controls
                 _values["value"] = item;
                 _valueTypes["value"] = schema.PrimitiveType;
             }
-            for (int i = 0; i < schema.PropertyNames.Length; i++)
+            for (int i = 0; i < schema!.PropertyNames!.Length; i++)
             {
                 String name = schema.PropertyNames[i];
-                Func<object, object> propGetter = schema.PropertyGetters[i];
-                JSDataSourceSchemaType type = schema.PropertyTypes[i];
+                Func<object, object> propGetter = schema!.PropertyGetters![i];
+                JSDataSourceSchemaType type = schema!.PropertyTypes![i];
                 Object val = schema.ResolveValue(name, item, propGetter, this, type, manager);
 
                 _values[name] = val;
                 _valueTypes[name] = type;
             }
-            for (int i = 0; i < schema.Fields.Length; i++)
+            for (int i = 0; i < schema!.Fields!.Length; i++)
             {
                 String name = schema.Fields[i].Name;
-                Func<object, object> fieldGetter = schema.FieldGetters[i];
-                JSDataSourceSchemaType type = schema.FieldTypes[i];
+                Func<object, object> fieldGetter = schema!.FieldGetters![i];
+                JSDataSourceSchemaType type = schema!.FieldTypes![i];
                 Object val = schema.ResolveFieldValue(name, item, fieldGetter, this, type, manager);
 
                 _values[name] = val;
@@ -223,16 +223,16 @@ namespace IgniteUI.Blazor.Controls
             }
 
             parentKey = parentKey != null ? parentKey + "." : "";
-            for (int i = 0; i < schema.PropertyTypes.Length; i++)
+            for (int i = 0; i < schema!.PropertyTypes!.Length; i++)
             {
                 if (schema.PropertyTypes[i] == JSDataSourceSchemaType.DateTimeValue ||
                     schema.PropertyTypes[i] == JSDataSourceSchemaType.NullableDateTimeValue)
                 {
-                    writer.WriteStringValue(parentKey + schema.PropertyNames[i]);
+                    writer.WriteStringValue(parentKey + schema!.PropertyNames![i]);
                 }
                 if (schema.PropertyTypes[i] == JSDataSourceSchemaType.ObjectValue)
                 {
-                    var subSchema = schema.GetSubSchema(schema.PropertyNames[i]);
+                    var subSchema = schema.GetSubSchema(schema!.PropertyNames![i]);
                     if (subSchema != null)
                     {
                         if (subSchema.IsDataSource)
@@ -261,7 +261,7 @@ namespace IgniteUI.Blazor.Controls
                 ((JsonDataSource)_source).ToJson(writer);
                 return;
             }
-            if (_schema.IsPrimitive)
+            if (_schema!.IsPrimitive)
             {
                 ValueToJson("value", new System.Text.Json.JsonEncodedText(), writer);
                 return;
@@ -271,17 +271,17 @@ namespace IgniteUI.Blazor.Controls
 
             var propertyNames = _schema.PropertyNames;
             var jsonPropertyNames = _schema.JsonPropertyNames;
-            var len = propertyNames.Length;
+            var len = propertyNames!.Length;
             for (var i = 0; i < len; i++)
             {
-                ValueToJson(propertyNames[i], jsonPropertyNames[i], writer);
+                ValueToJson(propertyNames[i], jsonPropertyNames![i], writer);
             }
             var fieldNames = _schema.FieldNames;
             var jsonFieldNames = _schema.JsonFieldNames;
-            len = fieldNames.Length;
+            len = fieldNames!.Length;
             for (var i = 0; i < len; i++)
             {
-                ValueToJson(fieldNames[i], jsonFieldNames[i], writer);
+                ValueToJson(fieldNames[i], jsonFieldNames![i], writer);
             }
 
             writer.WriteString("___id", _parentId != null ? _parentId + "/" + _id.ToString() : _id.ToString());
@@ -304,12 +304,12 @@ namespace IgniteUI.Blazor.Controls
 
             writer.WriteStartObject(propertyName);
 
-            var propertyNames = _schema.PropertyNames;
+            var propertyNames = _schema!.PropertyNames;
             var jsonPropertyNames = _schema.JsonPropertyNames;
-            var len = propertyNames.Length;
+            var len = propertyNames!.Length;
             for (var i = 0; i < len; i++)
             {
-                ValueToJson(propertyNames[i], jsonPropertyNames[i], writer);
+                ValueToJson(propertyNames[i], jsonPropertyNames![i], writer);
             }
 
             writer.WriteString("___id", _id);

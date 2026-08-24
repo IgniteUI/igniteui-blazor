@@ -29,15 +29,15 @@ namespace IgniteUI.Blazor.Controls
                     if (_subSchemas["___self"] != null)
                     {
                         //Console.WriteLine("has item schema");
-                        return _subSchemas["___self"].HasDataIntents();
+                        return _subSchemas!["___self"]!.HasDataIntents();
                     }
                 }
             }
             else
             {
-                for (var i = 0; i < PropertyDataIntents.Length; i++)
+                for (var i = 0; i < PropertyDataIntents!.Length; i++)
                 {
-                    var prop = PropertyNames[i];
+                    var prop = PropertyNames![i];
                     if (_subSchemas.ContainsKey(prop))
                     {
                         var sub = _subSchemas[prop];
@@ -55,9 +55,9 @@ namespace IgniteUI.Blazor.Controls
                         return true;
                     }
                 }
-                for (var i = 0; i < FieldDataIntents.Length; i++)
+                for (var i = 0; i < FieldDataIntents!.Length; i++)
                 {
-                    var field = FieldNames[i];
+                    var field = FieldNames![i];
                     if (_subSchemas.ContainsKey(field))
                     {
                         var sub = _subSchemas[field];
@@ -108,23 +108,23 @@ namespace IgniteUI.Blazor.Controls
                     {
                         //Console.WriteLine("has item schema");
                         uw.WriteBoolean("subProps", true);
-                        _subSchemas["___self"].WriteDataIntentsAsJson("subIntents", uw);
+                        _subSchemas!["___self"]!.WriteDataIntentsAsJson("subIntents", uw);
                     }
                 }
             }
             else
             {
-                for (var i = 0; i < PropertyNames.Length; i++)
+                for (var i = 0; i < PropertyNames!.Length; i++)
                 {
                     var currProp = PropertyNames[i];
-                    var intents = PropertyDataIntents[i];
+                    var intents = PropertyDataIntents![i];
 
                     if (_subSchemas.ContainsKey(currProp))
                     {
-                        if (_subSchemas[currProp].HasDataIntents())
+                        if (_subSchemas![currProp]!.HasDataIntents())
                         {
                             var sub = _subSchemas[currProp];
-                            if (sub.IsDataSource)
+                            if (sub!.IsDataSource)
                             {
                                 uw.WriteStartObject(currProp);
                                 uw.WriteBoolean("subProps", true);
@@ -151,17 +151,17 @@ namespace IgniteUI.Blazor.Controls
                     }
                 }
 
-                for (var i = 0; i < Fields.Length; i++)
+                for (var i = 0; i < Fields!.Length; i++)
                 {
-                    var currProp = FieldNames[i];
-                    var intents = FieldDataIntents[i];
+                    var currProp = FieldNames![i];
+                    var intents = FieldDataIntents![i];
 
                     if (_subSchemas.ContainsKey(currProp))
                     {
-                        if (_subSchemas[currProp].HasDataIntents())
+                        if (_subSchemas![currProp]!.HasDataIntents())
                         {
                             var sub = _subSchemas[currProp];
-                            if (sub.IsDataSource)
+                            if (sub!.IsDataSource)
                             {
                                 uw.WriteStartObject(currProp);
                                 uw.WriteBoolean("subProps", true);
@@ -425,7 +425,7 @@ namespace IgniteUI.Blazor.Controls
             if (subObject is IEnumerable)
             {
                 var collection = subObject as IEnumerable;
-                foreach (var item in collection)
+                foreach (var item in collection!)
                 {
                     if (item != null)
                     {
@@ -436,7 +436,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 if (itemSchema != null)
                 {
-                    schema.SetSubSchema("Items", itemSchema);
+                    schema!.SetSubSchema("Items", itemSchema);
                 }
             }
             else
@@ -446,12 +446,12 @@ namespace IgniteUI.Blazor.Controls
 
             if (itemSchema != null)
             {
-                for (int i = 0; i < itemSchema.PropertyTypes.Length; i++)
+                for (int i = 0; i < itemSchema!.PropertyTypes!.Length; i++)
                 {
                     if (itemSchema.PropertyTypes[i] == JSDataSourceSchemaType.ObjectValue)
                     {
-                        var obj = itemSchema.PropertyGetters[i](subObject);
-                        itemSchema.SetSubSchema(itemSchema.PropertyNames[i], BuildSubObjectSchema(obj));
+                        var obj = itemSchema!.PropertyGetters![i](subObject);
+                        itemSchema.SetSubSchema(itemSchema!.PropertyNames![i], BuildSubObjectSchema(obj));
                     }
                 }
             }
@@ -518,11 +518,11 @@ namespace IgniteUI.Blazor.Controls
                 //TODO: maybe true here.
                 return false;
             }
-            for (int i = 0; i < PropertyNames.Length; i++)
+            for (int i = 0; i < PropertyNames!.Length; i++)
             {
                 if (PropertyNames[i] == propertyName)
                 {
-                    return IsNullable(Properties[i].PropertyType);
+                    return IsNullable(Properties![i].PropertyType);
                 }
             }
             return false;

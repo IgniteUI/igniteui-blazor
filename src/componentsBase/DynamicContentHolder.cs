@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace IgniteUI.Blazor.Controls
@@ -29,7 +29,7 @@ namespace IgniteUI.Blazor.Controls
         public void AddDynamicContent(DynamicContentInfo content)
         {
             _contentInfos[content.RefName] = content;
-            _contentInfoNode[content.RefName] = DynamicContentInfo.AddLast(content);
+            _contentInfoNode[content.RefName] = DynamicContentInfo!.AddLast(content);
             _isDirty = true;
         }
 
@@ -39,7 +39,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 _contentInfos.Remove(content.RefName);
 
-                DynamicContentInfo.Remove(_contentInfoNode[content.RefName]);
+                DynamicContentInfo!.Remove(_contentInfoNode[content.RefName]);
                 _contentInfoNode.Remove(content.RefName);
 
                 _isDirty = true;
@@ -71,7 +71,7 @@ namespace IgniteUI.Blazor.Controls
             builder.AddAttribute(1, "class", "ig-dynamic-content-holder");
             builder.AddAttribute(2, "style", "display: none");
             builder.AddMarkupContent(3, "\r\n");
-            var current = DynamicContentInfo.First;
+            var current = DynamicContentInfo!.First;
             while (current != null)
             {
                 var item = current.Value;
@@ -206,7 +206,7 @@ namespace IgniteUI.Blazor.Controls
 
             if (component != null)
             {
-                foreach (var item in toSignal)
+                foreach (var item in toSignal!)
                 {
                     item.SetResult(Component);
                 }

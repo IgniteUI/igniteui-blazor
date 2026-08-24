@@ -20,7 +20,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "checkbox-value"}}}""",
             assert: args =>
             {
-                Assert.True(args.Detail.Checked);
+                Assert.True(args!.Detail!.Checked);
                 Assert.Equal("checkbox-value", args.Detail.Value);
             })
         .Bind(c => c.Checked, c => c.CheckedChanged, via: c => c.Change,

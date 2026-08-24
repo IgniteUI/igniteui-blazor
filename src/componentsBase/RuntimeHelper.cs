@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Microsoft.JSInterop;
@@ -44,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
                 _unmarshalledRuntime = _inprocRuntime as IJSUnmarshalledRuntime;
 #else
                 //Console.WriteLine("inproc type: " + _inprocRuntime.GetType().Name);
-                var unmarshalled = inprocRuntime.GetType().GetMethods().Where(m => m.Name == "InvokeUnmarshalled").ToList();
+                var unmarshalled = inprocRuntime!.GetType().GetMethods().Where(m => m.Name == "InvokeUnmarshalled").ToList();
 
                 var name = inprocRuntime.GetType().Assembly.GetName();
                 if (unmarshalled.Count > 0)
@@ -136,7 +136,7 @@ namespace IgniteUI.Blazor.Controls
             if (_callSendUnmarshalledColumnMessage != null)
             {
                 //Console.WriteLine("invoking sadness");
-                return _callSendUnmarshalledColumnDataIntentMessage(_inprocRuntime, methodName, refName, dataIntents);
+                return _callSendUnmarshalledColumnDataIntentMessage!(_inprocRuntime, methodName, refName, dataIntents);
             }
 #endif
             _inprocRuntime.InvokeVoid(methodName, new object[] { refName, dataIntents });
@@ -145,6 +145,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public bool IsInproc { get; private set; }
-        public bool IsForcedJsonDataMarshalling { get { return _igBlazor.Settings.ForceJsonDataMarshalling; } }
+        public bool IsForcedJsonDataMarshalling { get { return _igBlazor!.Settings.ForceJsonDataMarshalling; } }
     }
 }

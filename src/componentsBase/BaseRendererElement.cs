@@ -251,7 +251,7 @@ namespace IgniteUI.Blazor.Controls
         {
             while (_queuedChanges.Count > 0)
             {
-                RefChange c = _queuedChanges.First.Value;
+                RefChange c = _queuedChanges!.First!.Value;
                 _queuedChanges.RemoveFirst();
                 OnRefChanged(c.propertyName, c.oldValue, c.newValue, c.isScript, c.isElement, c.refChanged);
             }

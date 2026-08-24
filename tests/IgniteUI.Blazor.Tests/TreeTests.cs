@@ -43,7 +43,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         .Event(c => c.SelectionChanged,
             arrange,
             argsJson: FromRender.Of((interop, cut) => $$$$$"""{"detail": {"retType": "object", "type": "", "value": {"newSelection": {"retType": "Array", "type": "", "value": [{"refType": "name", "id": "{{{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}}}"}]}}}}"""),
-            assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail.NewSelection[0]));
+            assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args!.Detail!.NewSelection![0]));
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();

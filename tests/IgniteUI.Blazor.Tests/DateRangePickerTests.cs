@@ -46,7 +46,7 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start.ToUniversalTime());
+                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args!.Detail!.Start.ToUniversalTime());
                 Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End.ToUniversalTime());
             })
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
@@ -67,7 +67,7 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start.ToUniversalTime());
+                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args!.Detail!.Start.ToUniversalTime());
                 Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End.ToUniversalTime());
             })
         .Prop(c => c.Open, true)

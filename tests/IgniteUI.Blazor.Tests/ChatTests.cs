@@ -25,7 +25,7 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"id": "m-1", "text": "hello", "sender": "user-1"}}}""",
             assert: args =>
             {
-                Assert.Equal("m-1", args.Detail.Id);
+                Assert.Equal("m-1", args!.Detail!.Id);
                 Assert.Equal("hello", args.Detail.Text);
                 Assert.Equal("user-1", args.Detail.Sender);
             })
@@ -33,7 +33,7 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"id": "a-1", "name": "photo.png", "url": "https://host/photo.png"}}}""",
             assert: args =>
             {
-                Assert.Equal("a-1", args.Detail.Id);
+                Assert.Equal("a-1", args!.Detail!.Id);
                 Assert.Equal("photo.png", args.Detail.Name);
                 Assert.Equal("https://host/photo.png", args.Detail.Url);
             })
@@ -43,8 +43,8 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
             {
                 // The reaction's message currently decoded by value
                 // (it is NOT restored by reference to an instance in Messages on the current stack).
-                Assert.Equal("like", args.Detail.Reaction);
-                Assert.Equal("m-1", args.Detail.Message.Id);
+                Assert.Equal("like", args!.Detail!.Reaction);
+                Assert.Equal("m-1", args!.Detail!.Message!.Id);
                 Assert.Equal("hello", args.Detail.Message.Text);
             })
         .Prop(c => c.Options,

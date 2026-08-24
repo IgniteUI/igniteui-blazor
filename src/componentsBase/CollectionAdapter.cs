@@ -1,4 +1,4 @@
-﻿using System.Collections.Specialized;
+using System.Collections.Specialized;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -125,7 +125,7 @@ namespace IgniteUI.Blazor.Controls
             }
 
             var mapWasEmpty = manualSet.Count == 0;
-            for (var i = 0; i < this._query.Count; i++)
+            for (var i = 0; i < this!._query!.Count; i++)
             {
                 item = this._query[i];
 
@@ -137,7 +137,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    var key = this.CollisionChecker(item);
+                    var key = this!.CollisionChecker!(item);
                     if (key == null)
                     {
                         this._manualItems.Insert(i, item);
@@ -169,7 +169,7 @@ namespace IgniteUI.Blazor.Controls
             Dictionary<T, bool> manualMap = new Dictionary<T, bool>();
 
             T item = default(T)!;
-            for (var i = 0; i < this._allList.Count; i++)
+            for (var i = 0; i < this!._allList!.Count; i++)
             {
                 item = this._allList[i];
                 targetMap[item] = true;
@@ -232,8 +232,8 @@ namespace IgniteUI.Blazor.Controls
                 if (!queryMap.ContainsKey(item) && !manualMap.ContainsKey(item))
                 {
                     this._allList.RemoveAt(i);
-                    this._target.RemoveAt(i);
-                    this._onItemRemoved(item);
+                    this!._target!.RemoveAt(i);
+                    this!._onItemRemoved!(item);
                 }
             }
 
@@ -266,8 +266,8 @@ namespace IgniteUI.Blazor.Controls
                     else
                     {
                         this._allList.Insert(ins, insItem);
-                        this._target.Insert(ins, this._toTarget(insItem));
-                        this._onItemAdded(insItem);
+                        this!._target!.Insert(ins, this!._toTarget!(insItem));
+                        this!._onItemAdded!(insItem);
                         ind++;
                         ins++;
                     }
@@ -275,8 +275,8 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     this._allList.Add(insItem);
-                    this._target.Add(this._toTarget(insItem));
-                    this._onItemAdded(insItem);
+                    this!._target!.Add(this!._toTarget!(insItem));
+                    this!._onItemAdded!(insItem);
                     ind++;
                     ins++;
                 }
