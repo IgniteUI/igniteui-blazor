@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbSelectItem : IDisposable
+    public partial class IgbSelectItem
     {
         [CascadingParameter(Name = "SelectParent")]
         protected BaseRendererControl SelectParent
@@ -10,13 +10,15 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
-        public void Dispose()
+        /// <inheritdoc />
+        public override async ValueTask DisposeAsync()
         {
             if (SelectParent != null)
             {
                 var sv = (IgbSelect)SelectParent;
                 sv.ContentItems.Remove(this);
             }
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
