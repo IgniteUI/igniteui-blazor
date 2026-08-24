@@ -50,8 +50,8 @@ One row per finding, per package.
 |---|---|---|---|---|---|
 | <!-- TODO --> | | | | <!-- Fixed / Mitigated / By design / Accepted --> | |
 
-**Disposition values**
-control, name it) · `Accepted` (residual risk, requires an approver in the table below).
+**Disposition values** — `Fixed` (code changed, link the PR) · `Mitigated` (compensating control, name it) · `By design` (documented consumer responsibility) ·
+`Accepted` (residual risk, requires an approver in the table below).
 
 ## Accepted risks
 
