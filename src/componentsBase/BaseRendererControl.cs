@@ -635,7 +635,7 @@ namespace IgniteUI.Blazor.Controls
             builder.CloseElement();
         }
 
-        internal Dictionary<string, object>[] DeserializeDictionaryArray(string batch)
+        internal Dictionary<string, object>[]? DeserializeDictionaryArray(string batch)
         {
             return JsonSerializer.Deserialize<Dictionary<string, object>[]>(batch, SerializerOptions);
         }
@@ -1023,7 +1023,7 @@ namespace IgniteUI.Blazor.Controls
             }
             //Console.WriteLine("got return");
             //Console.WriteLine(ret);
-            return ret;
+            return ret!;
 
         }
 
@@ -1572,7 +1572,7 @@ namespace IgniteUI.Blazor.Controls
             QueueUpdate();
         }
 
-        private async Task<object> SendMessageImmediate(RendererMessage m)
+        private async Task<object?> SendMessageImmediate(RendererMessage m)
         {
             if (disposedValue)
             {
@@ -1583,7 +1583,7 @@ namespace IgniteUI.Blazor.Controls
             return await SendJsonImmediate(m);
         }
 
-        private object SendMessageSyncImmediate(RendererMessage m)
+        private object? SendMessageSyncImmediate(RendererMessage m)
         {
             if (disposedValue)
             {
@@ -1687,7 +1687,7 @@ namespace IgniteUI.Blazor.Controls
             SendJsonSync(json, m.NativeElements);
         }
 
-        private async Task<object> SendJsonImmediate(RendererMessage m)
+        private async Task<object?> SendJsonImmediate(RendererMessage m)
         {
             if (IgBlazor == null || !IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
             {
@@ -1846,12 +1846,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object ReturnToPrimitive(object returnValue)
+        internal object? ReturnToPrimitive(object returnValue)
         {
             return ConvertReturnValue(returnValue, true);
         }
 
-        internal T[] DowncastArray<T>(object val)
+        internal T[]? DowncastArray<T>(object val)
         {
             if (val == null)
             {
@@ -2335,7 +2335,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string ComponentToJson(object val, int index)
+        internal string? ComponentToJson(object val, int index)
         {
             if (val is BaseRendererControl || val is BaseRendererElement)
             {
@@ -2588,7 +2588,7 @@ namespace IgniteUI.Blazor.Controls
             ObjectToParam(c, val);
         }
 
-        internal string ReturnToString(object val)
+        internal string? ReturnToString(object val)
         {
             if (val == null)
             {
@@ -2617,7 +2617,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected string Camelize(string value)
+        protected string? Camelize(string? value)
         {
             if (value == null || value.Length == 0)
             {
@@ -2626,7 +2626,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        protected string ToPascal(string value)
+        protected string? ToPascal(string? value)
         {
             if (value == null || value.Length == 0)
             {
@@ -2635,7 +2635,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToUpper() + value.Substring(1);
         }
 
-        internal string EnumToString<T>(T val) where T : struct
+        internal string? EnumToString<T>(T val) where T : struct
         {
             if (UseCamelEnumValues)
             {
@@ -2665,7 +2665,7 @@ namespace IgniteUI.Blazor.Controls
             return default(T);
         }
 
-        internal string ObjectArrayToParam(object[] arr)
+        internal string? ObjectArrayToParam(object[] arr)
         {
             if (arr == null)
             {
@@ -2706,7 +2706,7 @@ namespace IgniteUI.Blazor.Controls
             // }
         }
 
-        internal string StringArrayToString(string[] arr)
+        internal string? StringArrayToString(string[] arr)
         {
             // object jarr = new JSONArray();
             // try {
@@ -2727,7 +2727,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string IntArrayToString(int[] arr)
+        internal string? IntArrayToString(int[] arr)
         {
             // object jarr = new JSONArray();
             // try {
@@ -2748,7 +2748,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string DoubleArrayToString(double[] arr)
+        internal string? DoubleArrayToString(double[] arr)
         {
             // object jarr = new JSONArray();
             // try {
@@ -2769,7 +2769,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object[] ReturnToObjectArray(object val)
+        internal object[]? ReturnToObjectArray(object val)
         {
             if (val == null)
             {
@@ -2830,7 +2830,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string[] ReturnToStringArray(object val)
+        internal string[]? ReturnToStringArray(object val)
         {
             if (val == null)
             {
@@ -2859,7 +2859,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal double[] ReturnToDoubleArray(object val)
+        internal double[]? ReturnToDoubleArray(object val)
         {
             if (val == null)
             {
@@ -2883,7 +2883,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal int[] ReturnToIntArray(object val)
+        internal int[]? ReturnToIntArray(object val)
         {
             if (val == null)
             {
@@ -3174,7 +3174,7 @@ namespace IgniteUI.Blazor.Controls
             var ret = SendMessageImmediate(m);
         }
 
-        public async Task<object> SetResourceStringAsync(string grouping, string id, string value)
+        public async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
             if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
             {
@@ -3183,7 +3183,7 @@ namespace IgniteUI.Blazor.Controls
             return await JsRuntime!.InvokeAsync<object>("igSetResourceString", new object[] { "set", grouping, id, value });
         }
 
-        public async Task<object> SetResourceStringAsync(string grouping, string json)
+        public async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
             if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
             {

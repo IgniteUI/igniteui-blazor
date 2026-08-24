@@ -195,7 +195,7 @@ namespace IgniteUI.Blazor.Controls
         /// Gets the currently selected tab.
         /// </summary>
         /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
-        public async Task<string> GetSelectedAsync()
+        public async Task<string?> GetSelectedAsync()
         {
             var iv = await InvokeMethod("p:Selected", new object?[] { }, new string[] { });
             return ReturnToString(iv);
@@ -205,14 +205,14 @@ namespace IgniteUI.Blazor.Controls
         /// Gets the currently selected tab.
         /// </summary>
         /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
-        public string GetSelected()
+        public string? GetSelected()
         {
             var iv = InvokeMethodSync("p:Selected", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
         /// <inheritdoc />
-        public override object FindByName(string name)
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -260,7 +260,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set

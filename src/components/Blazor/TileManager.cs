@@ -177,7 +177,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Gets the tiles sorted by their position in the layout.
         /// </summary>
-        public async Task<IgbTile[]> GetTilesAsync()
+        public async Task<IgbTile[]?> GetTilesAsync()
         {
             var iv = await InvokeMethod("p:Tiles", new object?[] { }, new string[] { });
 
@@ -197,7 +197,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Gets the tiles sorted by their position in the layout.
         /// </summary>
-        public IgbTile[] GetTiles()
+        public IgbTile[]? GetTiles()
         {
             var iv = InvokeMethodSync("p:Tiles", new object?[] { }, new string[] { });
 
@@ -215,7 +215,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override object FindByName(string name)
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -244,7 +244,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the properties of the current tile collections as a JSON payload.
         /// </summary>
-        public async Task<String> SaveLayoutAsync()
+        public async Task<String?> SaveLayoutAsync()
         {
             var iv = await InvokeMethod("saveLayout", new object?[] { }, new string[] { });
             return ReturnToString(iv);
@@ -253,7 +253,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the properties of the current tile collections as a JSON payload.
         /// </summary>
-        public String SaveLayout()
+        public String? SaveLayout()
         {
             var iv = InvokeMethodSync("saveLayout", new object?[] { }, new string[] { });
             return ReturnToString(iv);
@@ -285,7 +285,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileFullscreenScript
+        public string? TileFullscreenScript
         {
 
             set
@@ -357,7 +357,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileMaximizeScript
+        public string? TileMaximizeScript
         {
 
             set
@@ -429,7 +429,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragStartScript
+        public string? TileDragStartScript
         {
 
             set
@@ -501,7 +501,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragEndScript
+        public string? TileDragEndScript
         {
 
             set
@@ -573,7 +573,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragCancelScript
+        public string? TileDragCancelScript
         {
 
             set
@@ -645,7 +645,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeStartScript
+        public string? TileResizeStartScript
         {
 
             set
@@ -717,7 +717,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeEndScript
+        public string? TileResizeEndScript
         {
 
             set
@@ -789,7 +789,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeCancelScript
+        public string? TileResizeCancelScript
         {
 
             set

@@ -89,7 +89,7 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current value of the input.
         /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
         /// </summary>
-        public async Task<string> GetCurrentValueAsync()
+        public async Task<string?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
@@ -99,7 +99,7 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current value of the input.
         /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
         /// </summary>
-        public string GetCurrentValue()
+        public string? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
@@ -236,7 +236,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set

@@ -69,7 +69,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseRendererControl GetControl(string key)
+        private BaseRendererControl? GetControl(string key)
         {
             if (_controlsMap.ContainsKey(key))
             {

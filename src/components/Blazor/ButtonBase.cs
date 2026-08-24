@@ -54,10 +54,10 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The type of the button, which determines its behavior and semantics.
         /// <list type="bullet">
-        ///   <item><description><see cref="ButtonBaseType.Button"/> – no default action.</description></item>
-        ///   <item><description><see cref="ButtonBaseType.Submit"/> – submits the associated form when
+        ///   <item><description><see cref="ButtonBaseType.Button"/> ï¿½ no default action.</description></item>
+        ///   <item><description><see cref="ButtonBaseType.Submit"/> ï¿½ submits the associated form when
         ///   clicked.</description></item>
-        ///   <item><description><see cref="ButtonBaseType.Reset"/> – resets the associated form fields to
+        ///   <item><description><see cref="ButtonBaseType.Reset"/> ï¿½ resets the associated form fields to
         ///   their initial values.</description></item>
         /// </list>
         /// Ignored when the button is rendered as a link (i.e. <see cref="Href"/> is set).
@@ -125,12 +125,12 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Where to open the linked document. Only effective when <see cref="Href"/> is set.
         /// <list type="bullet">
-        ///   <item><description><see cref="ButtonBaseTarget._self"/> – current browsing context
+        ///   <item><description><see cref="ButtonBaseTarget._self"/> ï¿½ current browsing context
         ///   (default browser behavior).</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._blank"/> – new tab or window.</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._parent"/> – parent browsing context; falls back to
+        ///   <item><description><see cref="ButtonBaseTarget._blank"/> ï¿½ new tab or window.</description></item>
+        ///   <item><description><see cref="ButtonBaseTarget._parent"/> ï¿½ parent browsing context; falls back to
         ///   <see cref="ButtonBaseTarget._self"/> if none.</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._top"/> – top-level browsing context; falls back to
+        ///   <item><description><see cref="ButtonBaseTarget._top"/> ï¿½ top-level browsing context; falls back to
         ///   <see cref="ButtonBaseTarget._self"/> if none.</description></item>
         /// </list>
         /// </summary>
@@ -305,7 +305,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string FocusScript
+        public string? FocusScript
         {
 
             set
@@ -377,7 +377,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string BlurScript
+        public string? BlurScript
         {
 
             set

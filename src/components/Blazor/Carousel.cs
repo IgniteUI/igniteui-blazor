@@ -465,7 +465,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SlideChangedScript
+        public string? SlideChangedScript
         {
 
             set
@@ -537,7 +537,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string PlayingScript
+        public string? PlayingScript
         {
 
             set
@@ -609,7 +609,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string PausedScript
+        public string? PausedScript
         {
 
             set

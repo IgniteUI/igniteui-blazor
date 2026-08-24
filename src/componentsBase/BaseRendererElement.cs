@@ -17,7 +17,7 @@ namespace IgniteUI.Blazor.Controls
         {
             get
             {
-                return _igBlazor;
+                return _igBlazor!;
             }
             set
             {
@@ -81,7 +81,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string ParentTypeName
+        protected virtual string? ParentTypeName
         {
             get
             {
@@ -559,7 +559,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected object CurrParent
+        protected object? CurrParent
         {
             get
             {
@@ -641,7 +641,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal String ComponentToJson(object val, int index)
+        internal String? ComponentToJson(object val, int index)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -680,7 +680,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string EnumToString<T>(T val) where T : struct
+        internal string? EnumToString<T>(T val) where T : struct
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -706,7 +706,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string ObjectArrayToParam(object[] arr)
+        internal string? ObjectArrayToParam(object[] arr)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -719,7 +719,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object[] ReturnToObjectArray(Object val)
+        internal object[]? ReturnToObjectArray(Object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -732,11 +732,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T[] ReturnToObjectArray<T>(Object val)
+        internal T[]? ReturnToObjectArray<T>(Object val)
         {
             return ReturnToObjectArray<T>(val, null);
         }
-        internal T[] ReturnToObjectArray<T>(Object val, string? typeGuess)
+        internal T[]? ReturnToObjectArray<T>(Object val, string? typeGuess)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -749,7 +749,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string[] ReturnToStringArray(Object val)
+        internal string[]? ReturnToStringArray(Object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -762,7 +762,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal int[] ReturnToIntArray(Object val)
+        internal int[]? ReturnToIntArray(Object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -775,7 +775,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal double[] ReturnToDoubleArray(Object val)
+        internal double[]? ReturnToDoubleArray(Object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -840,7 +840,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string ReturnToString(object val)
+        internal string? ReturnToString(object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -866,7 +866,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object ConvertReturnValue(object val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object? ConvertReturnValue(object val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -879,7 +879,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object ReturnToPrimitive(object val)
+        internal object? ReturnToPrimitive(object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -892,7 +892,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T[] DowncastArray<T>(object val)
+        internal T[]? DowncastArray<T>(object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -996,7 +996,7 @@ namespace IgniteUI.Blazor.Controls
             add();
         }
 
-        internal string StringToString(object val)
+        internal string? StringToString(object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -1009,7 +1009,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string StringArrayToString(string[] val)
+        internal string? StringArrayToString(string[] val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -1022,7 +1022,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string IntArrayToString(int[] val)
+        internal string? IntArrayToString(int[] val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -1035,7 +1035,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string DoubleArrayToString(double[] val)
+        internal string? DoubleArrayToString(double[] val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -1057,13 +1057,13 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        public virtual object FindByName(string name)
+        public virtual object? FindByName(string name)
         {
 
             return null;
         }
 
-        protected async Task<object> SetResourceStringAsync(string grouping, string id, string value)
+        protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
             if (CurrParent == null)
             {
@@ -1078,7 +1078,7 @@ namespace IgniteUI.Blazor.Controls
                 return await ((BaseRendererControl)CurrParent).SetResourceStringAsync(grouping, id, value);
             }
         }
-        protected async Task<object> SetResourceStringAsync(string grouping, string json)
+        protected async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
             if (CurrParent == null)
             {

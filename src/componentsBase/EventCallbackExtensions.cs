@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
             /// <summary> Use as guard against (unlikely) fields rename in old versions that won't resolve. </summary>
             internal static readonly bool Resolved = Delegate != null && Receiver != null;
 
-            private static FieldInfo Field(string name) =>
+            private static FieldInfo? Field(string name) =>
                 typeof(EventCallback<TValue>).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
         }
 #endif

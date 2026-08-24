@@ -217,7 +217,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSourceItem LookupById(Guid id)
+        public IJSDataSourceItem? LookupById(Guid id)
         {
             if (_uuidToItem.ContainsKey(id))
             {
@@ -226,11 +226,11 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public object LookupOriginal(Guid id)
+        public object? LookupOriginal(Guid id)
         {
             return ToOriginal(LookupById(id));
         }
-        public object LookupOriginal(string id)
+        public object? LookupOriginal(string id)
         {
             if (id.Contains("/"))
             {
@@ -269,7 +269,7 @@ namespace IgniteUI.Blazor.Controls
             return itm.Id;
         }
 
-        public IJSDataSourceItem FromOriginal(object item)
+        public IJSDataSourceItem? FromOriginal(object item)
         {
             if (_originalToItem.ContainsKey(item))
             {

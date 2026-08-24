@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace IgniteUI.Blazor.Controls
@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
 
         private Type? _componentType;
         [Parameter]
-        public Type ComponentType
+        public Type? ComponentType
         {
             get
             {

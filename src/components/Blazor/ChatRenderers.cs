@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -47,7 +47,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string AttachmentScript
+        public string? AttachmentScript
         {
             get { return _attachmentScript; }
 
@@ -106,7 +106,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string AttachmentContentScript
+        public string? AttachmentContentScript
         {
             get { return _attachmentContentScript; }
 
@@ -165,7 +165,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string AttachmentHeaderScript
+        public string? AttachmentHeaderScript
         {
             get { return _attachmentHeaderScript; }
 
@@ -224,7 +224,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputScript
+        public string? InputScript
         {
             get { return _inputScript; }
 
@@ -283,7 +283,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputActionsScript
+        public string? InputActionsScript
         {
             get { return _inputActionsScript; }
 
@@ -342,7 +342,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputActionsEndScript
+        public string? InputActionsEndScript
         {
             get { return _inputActionsEndScript; }
 
@@ -401,7 +401,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputActionsStartScript
+        public string? InputActionsStartScript
         {
             get { return _inputActionsStartScript; }
 
@@ -460,7 +460,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageScript
+        public string? MessageScript
         {
             get { return _messageScript; }
 
@@ -519,7 +519,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageActionsScript
+        public string? MessageActionsScript
         {
             get { return _messageActionsScript; }
 
@@ -578,7 +578,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageAttachmentsScript
+        public string? MessageAttachmentsScript
         {
             get { return _messageAttachmentsScript; }
 
@@ -637,7 +637,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageContentScript
+        public string? MessageContentScript
         {
             get { return _messageContentScript; }
 
@@ -696,7 +696,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageHeaderScript
+        public string? MessageHeaderScript
         {
             get { return _messageHeaderScript; }
 
@@ -755,7 +755,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SendButtonScript
+        public string? SendButtonScript
         {
             get { return _sendButtonScript; }
 
@@ -814,7 +814,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SuggestionPrefixScript
+        public string? SuggestionPrefixScript
         {
             get { return _suggestionPrefixScript; }
 

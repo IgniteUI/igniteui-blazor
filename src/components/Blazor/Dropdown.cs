@@ -152,7 +152,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the items of the dropdown.
         /// </summary>
-        public async Task<IgbDropdownItem[]> GetItemsAsync()
+        public async Task<IgbDropdownItem[]?> GetItemsAsync()
         {
             var iv = await InvokeMethod("p:Items", new object?[] { }, new string[] { });
 
@@ -172,7 +172,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the items of the dropdown.
         /// </summary>
-        public IgbDropdownItem[] GetItems()
+        public IgbDropdownItem[]? GetItems()
         {
             var iv = InvokeMethodSync("p:Items", new object?[] { }, new string[] { });
 
@@ -192,7 +192,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the group items of the dropdown.
         /// </summary>
-        public async Task<IgbDropdownGroup[]> GetGroupsAsync()
+        public async Task<IgbDropdownGroup[]?> GetGroupsAsync()
         {
             var iv = await InvokeMethod("p:Groups", new object?[] { }, new string[] { });
 
@@ -212,7 +212,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the group items of the dropdown.
         /// </summary>
-        public IgbDropdownGroup[] GetGroups()
+        public IgbDropdownGroup[]? GetGroups()
         {
             var iv = InvokeMethodSync("p:Groups", new object?[] { }, new string[] { });
 
@@ -270,7 +270,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override object FindByName(string name)
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -292,7 +292,7 @@ namespace IgniteUI.Blazor.Controls
         /// Navigates to the item at the specified index.
         /// </summary>
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
-        public async Task<IgbDropdownItem> NavigateToAsync(Object index)
+        public async Task<IgbDropdownItem?> NavigateToAsync(Object index)
         {
             var iv = await InvokeMethod("navigateTo", new object?[] { ObjectToParam(index) }, new string[] { "Json" });
 
@@ -313,7 +313,7 @@ namespace IgniteUI.Blazor.Controls
         /// Navigates to the item at the specified index.
         /// </summary>
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
-        public IgbDropdownItem NavigateTo(Object index)
+        public IgbDropdownItem? NavigateTo(Object index)
         {
             var iv = InvokeMethodSync("navigateTo", new object?[] { ObjectToParam(index) }, new string[] { "Json" });
 
@@ -333,7 +333,7 @@ namespace IgniteUI.Blazor.Controls
         /// Selects the item with the specified value.
         /// </summary>
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
-        public async Task<IgbDropdownItem> SelectAsync(Object value)
+        public async Task<IgbDropdownItem?> SelectAsync(Object value)
         {
             var iv = await InvokeMethod("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
 
@@ -354,7 +354,7 @@ namespace IgniteUI.Blazor.Controls
         /// Selects the item with the specified value.
         /// </summary>
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
-        public IgbDropdownItem Select(Object value)
+        public IgbDropdownItem? Select(Object value)
         {
             var iv = InvokeMethodSync("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
 
@@ -405,7 +405,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string OpeningScript
+        public string? OpeningScript
         {
 
             set
@@ -477,7 +477,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string OpenedScript
+        public string? OpenedScript
         {
 
             set
@@ -549,7 +549,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ClosingScript
+        public string? ClosingScript
         {
 
             set
@@ -621,7 +621,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ClosedScript
+        public string? ClosedScript
         {
 
             set
@@ -693,7 +693,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set

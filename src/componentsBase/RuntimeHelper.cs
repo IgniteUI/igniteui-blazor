@@ -105,7 +105,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public unsafe string SendUnmarshalledColumnMessage(string methodName, string refName, int index, UnmarshalledColumn?[]? columns)
+        public unsafe string? SendUnmarshalledColumnMessage(string methodName, string refName, int index, UnmarshalledColumn?[]? columns)
         {
 #if NET5_0
             if (_unmarshalledRuntime != null)
@@ -124,7 +124,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public string SendUnmarshalledColumnDataIntentsMessage(string methodName, string refName, string dataIntents)
+        public string? SendUnmarshalledColumnDataIntentsMessage(string methodName, string refName, string dataIntents)
         {
 #if NET5_0
             if (_unmarshalledRuntime != null)

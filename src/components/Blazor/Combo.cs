@@ -73,7 +73,7 @@ namespace IgniteUI.Blazor.Controls
 
         ///<summary>Provides a means of setting Data in the JavaScript environment.</summary>
         [Parameter]
-        public string DataScript
+        public string? DataScript
         {
             get { return _dataScript; }
 
@@ -449,7 +449,7 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current selection of the combo.
         /// </summary>
         /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
-        public async Task<object[]> GetSelectionAsync()
+        public async Task<object[]?> GetSelectionAsync()
         {
             var iv = await InvokeMethod("p:Selection", new object?[] { }, new string[] { });
             return ReturnToObjectArray(iv);
@@ -459,7 +459,7 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current selection of the combo.
         /// </summary>
         /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
-        public object[] GetSelection()
+        public object[]? GetSelection()
         {
             var iv = InvokeMethodSync("p:Selection", new object?[] { }, new string[] { });
             return ReturnToObjectArray(iv);
@@ -561,7 +561,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemTemplateScript
+        public string? ItemTemplateScript
         {
             get { return _itemTemplateScript; }
 
@@ -620,7 +620,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string GroupHeaderTemplateScript
+        public string? GroupHeaderTemplateScript
         {
             get { return _groupHeaderTemplateScript; }
 
@@ -814,7 +814,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -921,7 +921,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string FocusScript
+        public string? FocusScript
         {
 
             set
@@ -993,7 +993,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string BlurScript
+        public string? BlurScript
         {
 
             set
@@ -1065,7 +1065,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string OpeningScript
+        public string? OpeningScript
         {
 
             set
@@ -1137,7 +1137,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string OpenedScript
+        public string? OpenedScript
         {
 
             set
@@ -1209,7 +1209,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ClosingScript
+        public string? ClosingScript
         {
 
             set
@@ -1281,7 +1281,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ClosedScript
+        public string? ClosedScript
         {
 
             set

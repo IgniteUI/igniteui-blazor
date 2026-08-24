@@ -226,7 +226,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the items of the component.
         /// </summary>
-        public async Task<IgbSelectItem[]> GetItemsAsync()
+        public async Task<IgbSelectItem[]?> GetItemsAsync()
         {
             var iv = await InvokeMethod("p:Items", new object?[] { }, new string[] { });
 
@@ -246,7 +246,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the items of the component.
         /// </summary>
-        public IgbSelectItem[] GetItems()
+        public IgbSelectItem[]? GetItems()
         {
             var iv = InvokeMethodSync("p:Items", new object?[] { }, new string[] { });
 
@@ -266,7 +266,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the groups of the component.
         /// </summary>
-        public async Task<IgbSelectGroup[]> GetGroupsAsync()
+        public async Task<IgbSelectGroup[]?> GetGroupsAsync()
         {
             var iv = await InvokeMethod("p:Groups", new object?[] { }, new string[] { });
 
@@ -286,7 +286,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the groups of the component.
         /// </summary>
-        public IgbSelectGroup[] GetGroups()
+        public IgbSelectGroup[]? GetGroups()
         {
             var iv = InvokeMethodSync("p:Groups", new object?[] { }, new string[] { });
 
@@ -401,7 +401,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override object FindByName(string name)
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -564,7 +564,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -671,7 +671,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string FocusScript
+        public string? FocusScript
         {
 
             set
@@ -743,7 +743,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string BlurScript
+        public string? BlurScript
         {
 
             set
@@ -815,7 +815,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string OpeningScript
+        public string? OpeningScript
         {
 
             set
@@ -887,7 +887,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string OpenedScript
+        public string? OpenedScript
         {
 
             set
@@ -959,7 +959,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ClosingScript
+        public string? ClosingScript
         {
 
             set
@@ -1031,7 +1031,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ClosedScript
+        public string? ClosedScript
         {
 
             set

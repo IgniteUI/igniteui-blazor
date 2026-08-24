@@ -314,7 +314,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ResizeStartScript
+        public string? ResizeStartScript
         {
 
             set
@@ -386,7 +386,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ResizingScript
+        public string? ResizingScript
         {
 
             set
@@ -458,7 +458,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ResizeEndScript
+        public string? ResizeEndScript
         {
 
             set

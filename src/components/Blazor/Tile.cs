@@ -273,7 +273,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileFullscreenScript
+        public string? TileFullscreenScript
         {
 
             set
@@ -345,7 +345,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileMaximizeScript
+        public string? TileMaximizeScript
         {
 
             set
@@ -417,7 +417,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragStartScript
+        public string? TileDragStartScript
         {
 
             set
@@ -489,7 +489,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragEndScript
+        public string? TileDragEndScript
         {
 
             set
@@ -561,7 +561,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragCancelScript
+        public string? TileDragCancelScript
         {
 
             set
@@ -633,7 +633,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeStartScript
+        public string? TileResizeStartScript
         {
 
             set
@@ -705,7 +705,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeEndScript
+        public string? TileResizeEndScript
         {
 
             set
@@ -777,7 +777,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeCancelScript
+        public string? TileResizeCancelScript
         {
 
             set

@@ -38,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
 
         ///<summary>Provides a means of setting NewValue in the JavaScript environment.</summary>
         [Parameter]
-        public string NewValueScript
+        public string? NewValueScript
         {
             get { return _newValueScript; }
 
@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
 
         ///<summary>Provides a means of setting Items in the JavaScript environment.</summary>
         [Parameter]
-        public string ItemsScript
+        public string? ItemsScript
         {
             get { return _itemsScript; }
 

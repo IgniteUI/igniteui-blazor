@@ -212,7 +212,7 @@ namespace IgniteUI.Blazor.Controls
             //return "[" + string.Join(", \n", vals) + "]";
         }
 
-        public object FindByName(string name)
+        public object? FindByName(string name)
         {
             //TODO: hash map
             for (var i = 0; i < this.Count; i++)

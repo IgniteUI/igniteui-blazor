@@ -135,7 +135,7 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        internal static object CreateInstance(string typeName)
+        internal static object? CreateInstance(string typeName)
         {
             switch (typeName)
             {

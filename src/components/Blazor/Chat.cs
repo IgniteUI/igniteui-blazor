@@ -158,7 +158,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageCreatedScript
+        public string? MessageCreatedScript
         {
 
             set
@@ -230,7 +230,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageReactScript
+        public string? MessageReactScript
         {
 
             set
@@ -302,7 +302,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string AttachmentClickScript
+        public string? AttachmentClickScript
         {
 
             set
@@ -374,7 +374,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TypingChangeScript
+        public string? TypingChangeScript
         {
 
             set
@@ -446,7 +446,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputFocusScript
+        public string? InputFocusScript
         {
 
             set
@@ -518,7 +518,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputBlurScript
+        public string? InputBlurScript
         {
 
             set
@@ -590,7 +590,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputChangeScript
+        public string? InputChangeScript
         {
 
             set

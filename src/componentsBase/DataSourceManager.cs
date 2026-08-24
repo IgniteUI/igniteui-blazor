@@ -22,7 +22,7 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<object, string> _idLookup = new Dictionary<object, string>();
         private Dictionary<string, bool> _suspensionLookup = new Dictionary<string, bool>();
 
-        public object FindItem(Guid id)
+        public object? FindItem(Guid id)
         {
             foreach (var data in
                 _dataSources.Values)
@@ -34,7 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
             return null;
         }
-        public object FindItem(string id)
+        public object? FindItem(string id)
         {
             foreach (var data in _dataSources.Values)
             {
@@ -70,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
             return Guid.Empty;
         }
 
-        public string OnRefChanged(string path, object data)
+        public string? OnRefChanged(string path, object data)
         {
             string? id = null;
             if (_refs.ContainsKey(path))
@@ -293,7 +293,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSource GetDataSource(string id)
+        public IJSDataSource? GetDataSource(string id)
         {
             if (_dataSources.ContainsKey(id))
             {

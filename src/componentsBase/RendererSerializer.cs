@@ -275,7 +275,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": [" + String.Join(", ", strValues) + " ]");
         }
 
-        protected string Camelize(string value)
+        protected string? Camelize(string? value)
         {
             if (value == null || value.Length == 0)
             {

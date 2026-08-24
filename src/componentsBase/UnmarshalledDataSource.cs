@@ -405,7 +405,7 @@ namespace IgniteUI.Blazor.Controls
                         stringGetter = (o) =>
                         {
                             var val = nullableDateTimeGetter(o);
-                            return val == null ? null : val.Value.ToString("o");
+                            return val == null ? null! : val.Value.ToString("o");
                         };
                     }
                     else
@@ -414,7 +414,7 @@ namespace IgniteUI.Blazor.Controls
                         stringGetter = (o) =>
                         {
                             var val = nullableDateTimeGetter(o);
-                            return val == null ? null : val.Value.ToString("o");
+                            return val == null ? null! : val.Value.ToString("o");
                         };
                     }
                     break;
@@ -1860,7 +1860,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public static IJSDataSource CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        public static IJSDataSource? CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
         {
             if (data == null)
             {
@@ -1882,7 +1882,7 @@ namespace IgniteUI.Blazor.Controls
             }
             return null;
         }
-        public static IJSDataSource CreateWithSchema(Object data, string parentId, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        public static IJSDataSource? CreateWithSchema(Object data, string parentId, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
         {
             if (data == null)
             {
@@ -2027,7 +2027,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public object LookupOriginal(Guid id)
+        public object? LookupOriginal(Guid id)
         {
             if (_uuidToOriginal.ContainsKey(id))
             {
@@ -2035,7 +2035,7 @@ namespace IgniteUI.Blazor.Controls
             }
             return null;
         }
-        public object LookupOriginal(string id)
+        public object? LookupOriginal(string id)
         {
             if (id.Contains("/"))
             {
@@ -2073,7 +2073,7 @@ namespace IgniteUI.Blazor.Controls
             return _originalToUuid.ContainsKey(item);
         }
 
-        public static IJSDataSource Create(Object data, DataSourceManager manager, RuntimeHelper helper)
+        public static IJSDataSource? Create(Object data, DataSourceManager manager, RuntimeHelper helper)
         {
             if (data == null)
             {
@@ -2297,7 +2297,7 @@ namespace IgniteUI.Blazor.Controls
         //     }
         // }
 
-        public static JSDataSourceSchema ExtractSchema(object item)
+        public static JSDataSourceSchema? ExtractSchema(object item)
         {
             if (item == null)
             {
@@ -2364,7 +2364,7 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchema.Create(c);
         }
 
-        private static Type GetIListTypeArg(Type itemType)
+        private static Type? GetIListTypeArg(Type itemType)
         {
             foreach (var inter in itemType.GetInterfaces())
             {
@@ -2380,7 +2380,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private static Type GetIEnumerableTypeArg(Type itemType)
+        private static Type? GetIEnumerableTypeArg(Type itemType)
         {
             foreach (var inter in itemType.GetInterfaces())
             {
@@ -2455,7 +2455,7 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        public string GetDataIntentsAsJson()
+        public string? GetDataIntentsAsJson()
         {
             if (_schema != null)
             {
@@ -2492,7 +2492,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSourceItem NotifyInsertItem(object data, int index, Object item)
+        public IJSDataSourceItem? NotifyInsertItem(object data, int index, Object item)
         {
             EnsureSchema(item);
             if (_schema == null && item == null)
@@ -2509,7 +2509,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public IJSDataSourceItem NotifyRemoveItem(object data, int index, object oldItem)
+        public IJSDataSourceItem? NotifyRemoveItem(object data, int index, object oldItem)
         {
             EnsureSchema(oldItem);
             if (_schema == null)
@@ -2568,7 +2568,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSourceItem NotifySetItem(Object data, int index, Object oldItem, Object newItem)
+        public IJSDataSourceItem? NotifySetItem(Object data, int index, Object oldItem, Object newItem)
         {
             EnsureSchema(newItem);
             if (_schema == null)
@@ -2581,7 +2581,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public IJSDataSourceItem NotifyUpdateItem(object data, int index, object item)
+        public IJSDataSourceItem? NotifyUpdateItem(object data, int index, object item)
         {
             EnsureSchema(item);
             if (_schema == null)

@@ -288,7 +288,7 @@ namespace IgniteUI.Blazor.Controls
             for (int i = 0; i < names.Count; i++)
             {
                 var key = names[i];
-                s.PropertyGetters[i] = (o) => ((IDictionary)o)[key];
+                s.PropertyGetters[i] = (o) => ((IDictionary)o)[key]!;
             }
             for (int i = 0; i < names.Count; i++)
             {
@@ -358,7 +358,7 @@ namespace IgniteUI.Blazor.Controls
             return s;
         }
 
-        public object ResolveValue(String name, Object item, Func<object, object> propGetter, JsonDataSourceItem jsonItem, JSDataSourceSchemaType type, DataSourceManager manager)
+        public object? ResolveValue(String name, Object item, Func<object, object> propGetter, JsonDataSourceItem jsonItem, JSDataSourceSchemaType type, DataSourceManager manager)
         {
             if (item == null)
             {
@@ -413,7 +413,7 @@ namespace IgniteUI.Blazor.Controls
             return JsonDataSourceItem.Create(value, subSchema, manager, rootItem);
         }
 
-        public JSDataSourceSchema BuildSubObjectSchema(object subObject)
+        public JSDataSourceSchema? BuildSubObjectSchema(object subObject)
         {
             if (subObject == null)
             {
@@ -458,7 +458,7 @@ namespace IgniteUI.Blazor.Controls
             return schema;
         }
 
-        public object ResolveFieldValue(String name, Object item, Func<object, object> fieldGetter, JsonDataSourceItem rootItem, JSDataSourceSchemaType type, DataSourceManager manager)
+        public object? ResolveFieldValue(String name, Object item, Func<object, object> fieldGetter, JsonDataSourceItem rootItem, JSDataSourceSchemaType type, DataSourceManager manager)
         {
             try
             {
@@ -532,7 +532,7 @@ namespace IgniteUI.Blazor.Controls
             return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
-        public JSDataSourceSchema GetSubSchema(string propertyName)
+        public JSDataSourceSchema? GetSubSchema(string propertyName)
         {
             if (_subSchemas.ContainsKey(propertyName))
             {

@@ -119,7 +119,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override object FindByName(string name)
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -165,7 +165,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SelectionChangedScript
+        public string? SelectionChangedScript
         {
 
             set
@@ -237,7 +237,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemExpandingScript
+        public string? ItemExpandingScript
         {
 
             set
@@ -309,7 +309,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemExpandedScript
+        public string? ItemExpandedScript
         {
 
             set
@@ -381,7 +381,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemCollapsingScript
+        public string? ItemCollapsingScript
         {
 
             set
@@ -453,7 +453,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemCollapsedScript
+        public string? ItemCollapsedScript
         {
 
             set
@@ -525,7 +525,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ActiveItemScript
+        public string? ActiveItemScript
         {
 
             set

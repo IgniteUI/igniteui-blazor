@@ -61,7 +61,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns all of the stepper's steps.
         /// </summary>
-        public async Task<IgbStep[]> GetStepsAsync()
+        public async Task<IgbStep[]?> GetStepsAsync()
         {
             var iv = await InvokeMethod("p:Steps", new object?[] { }, new string[] { });
 
@@ -81,7 +81,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns all of the stepper's steps.
         /// </summary>
-        public IgbStep[] GetSteps()
+        public IgbStep[]? GetSteps()
         {
             var iv = InvokeMethodSync("p:Steps", new object?[] { }, new string[] { });
 
@@ -330,7 +330,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ActiveStepChangingScript
+        public string? ActiveStepChangingScript
         {
 
             set
@@ -402,7 +402,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ActiveStepChangedScript
+        public string? ActiveStepChangedScript
         {
 
             set

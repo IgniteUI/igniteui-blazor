@@ -1,4 +1,4 @@
-﻿namespace IgniteUI.Blazor.Controls
+namespace IgniteUI.Blazor.Controls
 {
     public class LocalJson
     {
@@ -7,13 +7,13 @@
             _json = json;
         }
 
-        public static LocalJson From(string json)
+        public static LocalJson? From(string json)
         {
             return new LocalJson(json);
         }
 
         private string? _json;
-        public string Json { get { return _json; } }
+        public string? Json { get { return _json; } }
 
         internal string ToRef()
         {

@@ -102,7 +102,7 @@ namespace IgniteUI.Blazor.Controls
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
-        public async Task<DateTime[]> GetCurrentValuesAsync()
+        public async Task<DateTime[]?> GetCurrentValuesAsync()
         {
             var iv = await InvokeMethod("p:Values", new object?[] { }, new string[] { });
             return ReturnToDateArray(iv);
@@ -113,7 +113,7 @@ namespace IgniteUI.Blazor.Controls
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
-        public DateTime[] GetCurrentValues()
+        public DateTime[]? GetCurrentValues()
         {
             var iv = InvokeMethodSync("p:Values", new object?[] { }, new string[] { });
             return ReturnToDateArray(iv);
@@ -352,7 +352,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set

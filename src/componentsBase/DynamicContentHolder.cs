@@ -239,7 +239,7 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _hasPopulatedContext = false;
 
-        public RenderFragment<T> Template
+        public RenderFragment<T>? Template
         {
             get
             {
@@ -250,7 +250,7 @@ namespace IgniteUI.Blazor.Controls
                 _template = value;
             }
         }
-        public T Context
+        public T? Context
         {
             get
             {
