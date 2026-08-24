@@ -217,7 +217,7 @@ namespace IgniteUI.Blazor.Controls
             }
             //string[] strValues = new string[values.Length];
             context.Writer.WriteStartArray(propertyName);
-            foreach (object val in items)
+            foreach (object? val in items)
             {
                 if (val is String)
                 {
@@ -562,7 +562,7 @@ namespace IgniteUI.Blazor.Controls
             _context.Writer.WriteStartArray(propertyName);
             for (int i = 0; i < vals.Count; i++)
             {
-                Enum val = (Enum)vals[i];
+                Enum val = (Enum)vals[i]!;
                 _context.Writer.WriteStringValue(Camelize(val.ToString()));
                 //strValues[i] = "\"" + val.ToString() + "\"";
             }

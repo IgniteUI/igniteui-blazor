@@ -36,8 +36,8 @@ namespace IgniteUI.Blazor.Controls
             }
 
             // Mirrors .NET 10's EventCallback<TValue>.Equals, need the internal fields for the checks:
-            MulticastDelegate leftDelegate = (MulticastDelegate)CallbackFields<TValue>.Delegate.GetValue(left);
-            MulticastDelegate rightDelegate = (MulticastDelegate)CallbackFields<TValue>.Delegate.GetValue(other);
+            MulticastDelegate? leftDelegate = (MulticastDelegate?)CallbackFields<TValue>.Delegate.GetValue(left);
+            MulticastDelegate? rightDelegate = (MulticastDelegate?)CallbackFields<TValue>.Delegate.GetValue(other);
 
             return ReferenceEquals(CallbackFields<TValue>.Receiver.GetValue(left), CallbackFields<TValue>.Receiver.GetValue(other))
                 && (leftDelegate?.Equals(rightDelegate) ?? (rightDelegate == null));

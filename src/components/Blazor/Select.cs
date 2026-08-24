@@ -314,7 +314,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbSelectItem);
             }
-            var retVal = (IgbSelectItem)ConvertReturnValue(iv);
+            var retVal = (IgbSelectItem)ConvertReturnValue(iv)!;
             if (retVal == null)
             {
                 return default(IgbSelectItem);
@@ -334,7 +334,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbSelectItem);
             }
-            var retVal = (IgbSelectItem)ConvertReturnValue(iv);
+            var retVal = (IgbSelectItem)ConvertReturnValue(iv)!;
             if (retVal == null)
             {
                 return default(IgbSelectItem);

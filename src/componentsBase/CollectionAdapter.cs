@@ -85,14 +85,14 @@ namespace IgniteUI.Blazor.Controls
             switch (args.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems[0]);
+                    this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems![0]!);
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     this.RemoveManualItemAt(args.OldStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     this.RemoveManualItemAt(args.OldStartingIndex);
-                    this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems[0]);
+                    this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems![0]!);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     this.ClearManualItems();
@@ -102,7 +102,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void ShiftContentToManual(IList<T> manualCollection, Action<T> onMoving)
         {
-            T item = default(T);
+            T item = default(T)!;
 
             var manualSet = new HashSet<string>();
             if (this.CollisionChecker != null)
@@ -168,7 +168,7 @@ namespace IgniteUI.Blazor.Controls
             Dictionary<T, bool> queryMap = new Dictionary<T, bool>();
             Dictionary<T, bool> manualMap = new Dictionary<T, bool>();
 
-            T item = default(T);
+            T item = default(T)!;
             for (var i = 0; i < this._allList.Count; i++)
             {
                 item = this._allList[i];
@@ -239,7 +239,7 @@ namespace IgniteUI.Blazor.Controls
 
             int ind = 0;
             int ins = 0;
-            T insItem = default(T);
+            T insItem = default(T)!;
             int maxLen = queryArray.Count + this._manualItems.Count;
             while (ind < maxLen)
             {

@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
         {
             // Params are case-insensitive & can't keep old name as deprecated,
             // so coerce value to avoid old code setting incorrect type errors:
-            parameters.TryGetValue("Readonly", out object result);
+            parameters.TryGetValue("Readonly", out object? result);
             if (result != null && result is string value)
             {
                 Logger.LogWarning("Readonly has been renamed, use ReadOnly instead");

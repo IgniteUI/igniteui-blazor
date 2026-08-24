@@ -240,7 +240,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem)ConvertReturnValue(iv)!;
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -260,7 +260,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem)ConvertReturnValue(iv)!;
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -300,7 +300,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem)ConvertReturnValue(iv)!;
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -321,7 +321,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem)ConvertReturnValue(iv)!;
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -341,7 +341,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem)ConvertReturnValue(iv)!;
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -362,7 +362,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem)ConvertReturnValue(iv)!;
             if (retVal == null)
             {
                 return default(IgbDropdownItem);

@@ -72,7 +72,7 @@
 
         public string OnRefChanged(string path, object data)
         {
-            string id = null;
+            string? id = null;
             if (_refs.ContainsKey(path))
             {
                 object obj = _refs[path];
@@ -226,7 +226,7 @@
             {
                 object data = _refsById[refName];
                 IJSDataSource dataSource = _dataSources[refName];
-                IJSDataSourceItem oldItemJson = dataSource.DataSourceType == JSDataSourceType.Json ? ((JsonDataSource)dataSource)[index] : null;
+                IJSDataSourceItem? oldItemJson = dataSource.DataSourceType == JSDataSourceType.Json ? ((JsonDataSource)dataSource)[index] : null;
                 IJSDataSourceItem newItemJson = dataSource.NotifySetItem(data, index, oldItem, newItem);
                 _refSink.OnRefNotifySetItem(dataSource, refName, index, oldItemJson, newItemJson);
             }

@@ -201,7 +201,7 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
-                        ((BaseRendererControl)CurrParent).OnElementNameChanged(element, oldName, newName);
+                        ((BaseRendererControl)CurrParent!).OnElementNameChanged(element, oldName, newName);
                     }
                 });
             }
@@ -396,8 +396,8 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    ((BaseRendererElement)_parent).ChildDirty(this);
-                    ((BaseRendererElement)_parent).UpdateTemplate(contentType, template, type);
+                    ((BaseRendererElement)_parent!).ChildDirty(this);
+                    ((BaseRendererElement)_parent!).UpdateTemplate(contentType, template, type);
                 }
             };
             if (_parent != null)

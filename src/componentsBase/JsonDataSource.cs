@@ -397,7 +397,7 @@ namespace IgniteUI.Blazor.Controls
                         var subSchema = schema.GetSubSchema(propertyName);
                         if (subSchema != null)
                         {
-                            var propValue = (JsonDataSourceItem)itemJson.GetValue(propertyName);
+                            var propValue = (JsonDataSourceItem)itemJson.GetValue(propertyName)!;
                             if (propValue.Source != null)
                             {
                                 if (!_subDataSources.ContainsKey(itemJson.Id))
@@ -539,7 +539,7 @@ namespace IgniteUI.Blazor.Controls
         public IJSDataSourceItem NotifyUpdateItem(object data, int index, object item)
         {
             EnsureSchema(item);
-            JsonDataSourceItem itemJson = null;
+            JsonDataSourceItem? itemJson = null;
             if (HasOriginal(item))
             {
                 itemJson = (JsonDataSourceItem)_originalToItem[item];
@@ -586,7 +586,7 @@ namespace IgniteUI.Blazor.Controls
                     for (int i = 0; i < _data.Count; i++)
                     {
                         item = (JsonDataSourceItem)_data[0];
-                        JsonDataSource ds = (JsonDataSource)item.Source;
+                        JsonDataSource ds = (JsonDataSource)item.Source!;
                         ds.GetDateCacheAsJson(writer);
                     }
                 }

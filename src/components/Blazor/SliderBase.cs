@@ -442,7 +442,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("TickLabelRotation"))
             { ser.AddEnumProp("tickLabelRotation", this._tickLabelRotation); }
             if (IsPropDirty("ValueFormatOptions"))
-            { ser.AddSerializableProp("valueFormatOptions", (JsonSerializable)this._valueFormatOptions); }
+            { ser.AddSerializableProp("valueFormatOptions", (JsonSerializable)this._valueFormatOptions!); }
 
         }
 

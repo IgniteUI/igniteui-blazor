@@ -45,10 +45,9 @@ namespace IgniteUI.Blazor.Controls
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
-            if (item is BaseRendererElement)
+            if (item is BaseRendererElement element)
             {
-                BaseRendererElement c = (BaseRendererElement)(object)item;
-                c.Parent = _parent;
+                element.Parent = _parent;
             }
             NotifyParent();
         }
@@ -58,10 +57,9 @@ namespace IgniteUI.Blazor.Controls
         {
             var item = this[index];
             base.RemoveItem(index);
-            if (item is BaseRendererElement)
+            if (item is BaseRendererElement element)
             {
-                BaseRendererElement c = (BaseRendererElement)(object)item;
-                c.Parent = null!;
+                element.Parent = null!;
             }
             NotifyParent();
         }
@@ -70,10 +68,9 @@ namespace IgniteUI.Blazor.Controls
         protected override void SetItem(int index, T item)
         {
             base.SetItem(index, item);
-            if (item is BaseRendererElement)
+            if (item is BaseRendererElement element)
             {
-                BaseRendererElement c = (BaseRendererElement)(object)item;
-                c.Parent = _parent;
+                element.Parent = _parent;
             }
             NotifyParent();
         }
@@ -136,10 +133,9 @@ namespace IgniteUI.Blazor.Controls
             for (var i = 0; i < Count; i++)
             {
                 var item = this[i];
-                if (item is BaseRendererElement)
+                if (item is BaseRendererElement element)
                 {
-                    BaseRendererElement c = (BaseRendererElement)(object)item;
-                    c.Parent = null!;
+                    element.Parent = null!;
                 }
             }
             base.ClearItems();
@@ -160,54 +156,55 @@ namespace IgniteUI.Blazor.Controls
             for (var i = 0; i < Count; i++)
             {
                 var val = this[i];
-                if (val is JsonSerializable)
+                if (val is null)
                 {
-                    ((JsonSerializable)val).Serialize(context);
+                    context.Writer.WriteNullValue();
+                }
+                else if (val is JsonSerializable serializable)
+                {
+                    serializable.Serialize(context);
+                }
+                else if (val is int intValue)
+                {
+                    context.Writer.WriteNumberValue(intValue);
+                }
+                else if (val is long longValue)
+                {
+                    context.Writer.WriteNumberValue(longValue);
+                }
+                else if (val is short shortValue)
+                {
+                    context.Writer.WriteNumberValue(shortValue);
+                }
+                else if (val is decimal decimalValue)
+                {
+                    context.Writer.WriteNumberValue(decimalValue);
+                }
+                else if (val is float floatValue)
+                {
+                    context.Writer.WriteNumberValue(floatValue);
+                }
+                else if (val is double doubleValue)
+                {
+                    context.Writer.WriteNumberValue(doubleValue);
+                }
+                else if (val is byte byteValue)
+                {
+                    context.Writer.WriteNumberValue(byteValue);
+                }
+                else if (val is string stringValue)
+                {
+                    context.Writer.WriteStringValue(stringValue);
                 }
                 else
                 {
-                    if (typeof(T) == typeof(int))
+                    if (_parent is BaseRendererElement parentElement)
                     {
-                        context.Writer.WriteNumberValue((int)(object)val);
+                        parentElement.ObjectToParam(context, val);
                     }
-                    else if (typeof(T) == typeof(long))
+                    if (_parent is BaseRendererControl parentControl)
                     {
-                        context.Writer.WriteNumberValue((long)(object)val);
-                    }
-                    else if (typeof(T) == typeof(short))
-                    {
-                        context.Writer.WriteNumberValue((short)(object)val);
-                    }
-                    else if (typeof(T) == typeof(decimal))
-                    {
-                        context.Writer.WriteNumberValue((decimal)(object)val);
-                    }
-                    else if (typeof(T) == typeof(float))
-                    {
-                        context.Writer.WriteNumberValue((float)(object)val);
-                    }
-                    else if (typeof(T) == typeof(double))
-                    {
-                        context.Writer.WriteNumberValue((double)(object)val);
-                    }
-                    else if (typeof(T) == typeof(byte))
-                    {
-                        context.Writer.WriteNumberValue((byte)(object)val);
-                    }
-                    else if (typeof(T) == typeof(string))
-                    {
-                        context.Writer.WriteStringValue((string)(object)val);
-                    }
-                    else
-                    {
-                        if (_parent is BaseRendererElement)
-                        {
-                            ((BaseRendererElement)_parent).ObjectToParam(context, val);
-                        }
-                        if (_parent is BaseRendererControl)
-                        {
-                            ((BaseRendererControl)_parent).ObjectToParam(context, val);
-                        }
+                        parentControl.ObjectToParam(context, val);
                     }
                 }
             }
@@ -221,25 +218,20 @@ namespace IgniteUI.Blazor.Controls
             for (var i = 0; i < this.Count; i++)
             {
                 var item = this[i];
-                if (item is BaseRendererElement)
+                if (item is BaseRendererElement ele)
                 {
-                    var ele = (BaseRendererElement)(object)item;
                     if (name == ele.Name)
                     {
                         return item;
                     }
                     var subEle = ele.FindByName(name);
-                    if (subEle is BaseRendererElement)
+                    if (subEle is BaseRendererElement childElement && name == childElement.Name)
                     {
-                        if (name == ((BaseRendererElement)subEle).Name)
-                        {
-                            return subEle;
-                        }
+                        return childElement;
                     }
                 }
-                else if (item is BaseRendererControl)
+                else if (item is BaseRendererControl element)
                 {
-                    BaseRendererControl element = (BaseRendererControl)(object)item;
                     if (name == element.ContainerId)
                     {
                         return element;
@@ -255,25 +247,20 @@ namespace IgniteUI.Blazor.Controls
             for (var i = 0; i < this.Count; i++)
             {
                 var item = this[i];
-                if (item is BaseRendererElement)
+                if (item is BaseRendererElement ele)
                 {
-                    var ele = (BaseRendererElement)(object)item;
                     if (name == ele.Name)
                     {
                         return true;
                     }
                     var subEle = ele.FindByName(name);
-                    if (subEle is BaseRendererElement)
+                    if (subEle is BaseRendererElement childElement && name == childElement.Name)
                     {
-                        if (name == ((BaseRendererElement)subEle).Name)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
-                else if (item is BaseRendererControl)
+                else if (item is BaseRendererControl element)
                 {
-                    BaseRendererControl element = (BaseRendererControl)(object)item;
                     if (name == element.ContainerId)
                     {
                         return true;

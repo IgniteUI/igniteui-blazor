@@ -151,7 +151,7 @@ namespace IgniteUI.Blazor.Controls
             if (_schema.IsDataSource)
             {
                 //Console.WriteLine("in read");
-                IJSDataSource source = JsonDataSource.CreateWithSchema(item, _schema, manager, _parentId);
+                IJSDataSource? source = JsonDataSource.CreateWithSchema(item, _schema, manager, _parentId);
                 _source = source;
                 return;
             }

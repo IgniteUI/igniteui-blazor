@@ -676,7 +676,7 @@ namespace IgniteUI.Blazor.Controls
                             var newValueValue = default(string);
 
                             {
-                                newValueValue = (string)(args.Detail);
+                                newValueValue = (string)args.Detail!;
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

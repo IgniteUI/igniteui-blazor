@@ -261,31 +261,31 @@ namespace IgniteUI.Blazor.Controls
             col.IsSubDataSource = newColumn.IsSubDataSource ? 1 : 0;
             newColumn.Column = col;
 
-            Func<object, Guid> idGetter = null;
-            Func<object, double> doubleGetter = null;
-            Func<object, float> singleGetter = null;
-            Func<object, bool> boolGetter = null;
-            Func<object, byte> byteGetter = null;
-            Func<object, decimal> decimalGetter = null;
-            Func<object, short> shortGetter = null;
-            Func<object, long> longGetter = null;
-            Func<object, string> stringGetter = null;
-            Func<object, DateTime> dateTimeGetter = null;
-            Func<object, object> objectGetter = null;
+            Func<object, Guid>? idGetter = null;
+            Func<object, double>? doubleGetter = null;
+            Func<object, float>? singleGetter = null;
+            Func<object, bool>? boolGetter = null;
+            Func<object, byte>? byteGetter = null;
+            Func<object, decimal>? decimalGetter = null;
+            Func<object, short>? shortGetter = null;
+            Func<object, long>? longGetter = null;
+            Func<object, string>? stringGetter = null;
+            Func<object, DateTime>? dateTimeGetter = null;
+            Func<object, object>? objectGetter = null;
 
-            Func<object, double> floatingPointGetter = null;
-            Func<object, int> integerGetter = null;
+            Func<object, double>? floatingPointGetter = null;
+            Func<object, int>? integerGetter = null;
 
-            Func<object, short?> nullableShortGetter = null;
-            Func<object, int?> nullableIntegerGetter = null;
-            Func<object, long?> nullableLongGetter = null;
-            Func<object, float?> nullableSingleGetter = null;
-            Func<object, double?> nullableDoubleGetter = null;
-            Func<object, decimal?> nullableDecimalGetter = null;
-            Func<object, bool?> nullableBoolGetter = null;
-            Func<object, byte?> nullableByteGetter = null;
-            Func<object, DateTime?> nullableDateTimeGetter = null;
-            Func<object, double?> nullableFloatingPointGetter = null;
+            Func<object, short?>? nullableShortGetter = null;
+            Func<object, int?>? nullableIntegerGetter = null;
+            Func<object, long?>? nullableLongGetter = null;
+            Func<object, float?>? nullableSingleGetter = null;
+            Func<object, double?>? nullableDoubleGetter = null;
+            Func<object, decimal?>? nullableDecimalGetter = null;
+            Func<object, bool?>? nullableBoolGetter = null;
+            Func<object, byte?>? nullableByteGetter = null;
+            Func<object, DateTime?>? nullableDateTimeGetter = null;
+            Func<object, double?>? nullableFloatingPointGetter = null;
 
             switch (newColumn.Type)
             {
@@ -420,7 +420,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
 
-            Action<int, UnmarshalledColumnData, int, object> insert = null;
+            Action<int, UnmarshalledColumnData, int, object>? insert = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
@@ -588,7 +588,7 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DateTimeValue:
                     insert = (size, column, index, item) =>
                     {
-                        string stringVal = null;
+                        string? stringVal = null;
                         Guid idVal = Guid.Empty;
                         if (item != null)
                         {
@@ -651,7 +651,7 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDateTimeValue:
                     insert = (size, column, index, item) =>
                     {
-                        string stringVal = null;
+                        string? stringVal = null;
                         if (item != null)
                         {
                             try
@@ -683,7 +683,7 @@ namespace IgniteUI.Blazor.Controls
                     insert = (size, column, index, item) =>
                     {
                         //Console.WriteLine("shouldn't be here");
-                        object objVal = null;
+                        object? objVal = null;
                         if (item != null)
                         {
                             objVal = objectGetter(item);
@@ -765,7 +765,7 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.SingleArrayValue:
                     insert = (size, column, index, item) =>
                     {
-                        object objVal = null;
+                        object? objVal = null;
                         if (item != null)
                         {
                             objVal = objectGetter(item);
@@ -891,7 +891,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
 
-            Action<int, UnmarshalledColumnData, int, object, object> update = null;
+            Action<int, UnmarshalledColumnData, int, object, object>? update = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
@@ -978,7 +978,7 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DateTimeValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
-                        string stringVal = null;
+                        string? stringVal = null;
                         Guid idVal = Guid.Empty;
                         if (column.IsIDColumn && oldItem != newItem)
                         {
@@ -1009,7 +1009,7 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDateTimeValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
-                        string stringVal = null;
+                        string? stringVal = null;
                         if (newItem != null)
                         {
                             stringVal = stringGetter(newItem);
@@ -1020,13 +1020,13 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.ObjectValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
-                        object objVal = null;
+                        object? objVal = null;
                         if (newItem != null)
                         {
                             objVal = objectGetter(newItem);
                         }
 
-                        object oldObjVal = null;
+                        object? oldObjVal = null;
                         if (oldItem != null)
                         {
                             oldObjVal = objectGetter(oldItem);
@@ -1089,13 +1089,13 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.SingleArrayValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
-                        object objVal = null;
+                        object? objVal = null;
                         if (newItem != null)
                         {
                             objVal = objectGetter(newItem);
                         }
 
-                        object oldObjVal = null;
+                        object? oldObjVal = null;
                         if (oldItem != null)
                         {
                             oldObjVal = objectGetter(oldItem);
@@ -1190,7 +1190,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
 
-            Action<int, UnmarshalledColumnData, int> remove = null;
+            Action<int, UnmarshalledColumnData, int>? remove = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
@@ -1386,7 +1386,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
 
-            Action<int, UnmarshalledColumnData> clear = null;
+            Action<int, UnmarshalledColumnData>? clear = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:

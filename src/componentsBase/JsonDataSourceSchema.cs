@@ -408,7 +408,7 @@ namespace IgniteUI.Blazor.Controls
                     NotifyModified();
                 }
             }
-            JSDataSourceSchema subSchema = _subSchemas[name];
+            JSDataSourceSchema? subSchema = _subSchemas[name];
 
             return JsonDataSourceItem.Create(value, subSchema, manager, rootItem);
         }
@@ -421,7 +421,7 @@ namespace IgniteUI.Blazor.Controls
             }
 
             var schema = JsonDataSourceItem.ExtractSchema(subObject);
-            JSDataSourceSchema itemSchema = null;
+            JSDataSourceSchema? itemSchema = null;
             if (subObject is IEnumerable)
             {
                 var collection = subObject as IEnumerable;
@@ -622,7 +622,7 @@ namespace IgniteUI.Blazor.Controls
             }
             if (typeof(IEnumerable).IsAssignableFrom(type))
             {
-                Type enumerableType = null;
+                Type? enumerableType = null;
                 if (type.IsArray)
                 {
                     enumerableType = type.GetElementType();
@@ -669,7 +669,7 @@ namespace IgniteUI.Blazor.Controls
         {
             _buildingProperties.Add(prop);
 
-            List<IDataIntentAttribute> dataIntents = null;
+            List<IDataIntentAttribute>? dataIntents = null;
             var attrs = prop.GetCustomAttributes();
             if (attrs != null)
             {
@@ -702,7 +702,7 @@ namespace IgniteUI.Blazor.Controls
             Type ret = curr.FieldType;
             JSDataSourceSchemaType type = ResolveSchemaType(ret);
 
-            List<IDataIntentAttribute> dataIntents = null;
+            List<IDataIntentAttribute>? dataIntents = null;
             var attrs = curr.GetCustomAttributes();
             if (attrs != null)
             {

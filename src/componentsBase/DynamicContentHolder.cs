@@ -189,8 +189,8 @@ namespace IgniteUI.Blazor.Controls
         public Task<object> GetInstanceAsync()
         {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-            object component = null;
-            List<TaskCompletionSource<object>> toSignal = null;
+            object? component = null;
+            List<TaskCompletionSource<object>>? toSignal = null;
 
             lock (_lock)
             {
