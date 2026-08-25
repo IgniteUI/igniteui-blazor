@@ -78,7 +78,6 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 - **Multi-target**: `net8.0`, `net9.0`, `net10.0`
 - **C# build**: `dotnet build` - produces the Razor class library
 - **TS build**: `npm run build` - webpack bundles the JS interop into static web assets
-- **Ingest**: `npm run ingest` (gulp) - pulls upstream web component definitions
 
 ## Coding Conventions
 
@@ -92,7 +91,6 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 - Prefer `var` when type is obvious; avoid `dynamic`
 - Use `[Parameter]` for component inputs exposed to consumers
 - Prefer `EventCallback<T>` over `Action<T>` for event parameters to integrate with the Blazor render pipeline
-- Use `partial` classes and `partial void` hooks (e.g., `OnCreatedIgbButton()`) for extensibility
 
 ### TypeScript
 

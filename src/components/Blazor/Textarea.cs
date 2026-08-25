@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// This element represents a multi-line plain-text editing control,
+    /// Represents a multi-line plain-text editing control,
     /// useful when you want to allow users to enter a sizeable amount of free-form text,
     /// for example a comment on a review or feedback form.
     /// </summary>
     public partial class IgbTextarea : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTextarea"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbTextareaModule.IsLoadRequested(IgBlazor))
@@ -19,11 +21,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -32,6 +36,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -40,6 +45,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -48,26 +54,20 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTextarea() : base()
-        {
-            OnCreatedIgbTextarea();
-
-        }
-
-        partial void OnCreatedIgbTextarea();
-
         private string _autocomplete;
 
-        partial void OnAutocompleteChanging(ref string newValue);
         /// <summary>
-        /// Specifies what if any permission the browser has to provide for automated assistance in filling out form field values,
-        /// as well as guidance to the browser as to the type of information expected in the field.
-        /// Refer to [this page](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) for additional information.
+        /// Specifies what permission, if any, the browser has to provide automated assistance in filling
+        /// out form field values, as well as guidance to the browser as to the type of information
+        /// expected in the field. Refer to
+        /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete">this page</see>
+        /// for additional information.
         /// </summary>
         [Parameter]
         public string Autocomplete
@@ -85,10 +85,10 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _autocapitalize;
 
-        partial void OnAutocapitalizeChanging(ref string newValue);
         /// <summary>
         /// Controls whether and how text input is automatically capitalized as it is entered/edited by the user.
-        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize).
+        /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize">
+        /// MDN documentation</see>.
         /// </summary>
         [Parameter]
         public string Autocapitalize
@@ -106,11 +106,11 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _inputMode;
 
-        partial void OnInputModeChanging(ref string newValue);
         /// <summary>
-        /// Hints at the type of data that might be entered by the user while editing the element or its contents.
+        /// Hints at the type of data that might be entered by the user while editing the control or its contents.
         /// This allows a browser to display an appropriate virtual keyboard.
-        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode)
+        /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode">
+        /// MDN documentation</see>.
         /// </summary>
         [Parameter]
         [WCAttributeName("inputmode")]
@@ -129,7 +129,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label for the control.
         /// </summary>
@@ -149,7 +148,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _maxLength = 0;
 
-        partial void OnMaxLengthChanging(ref double newValue);
         /// <summary>
         /// The maximum number of characters (UTF-16 code units) that the user can enter.
         /// If this value isn't specified, the user can enter an unlimited number of characters.
@@ -171,9 +169,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _minLength = 0;
 
-        partial void OnMinLengthChanging(ref double newValue);
         /// <summary>
-        /// The minimum number of characters (UTF-16 code units) required that the user should enter.
+        /// The minimum number of characters (UTF-16 code units) that the user is required to enter.
         /// </summary>
         [Parameter]
         [WCAttributeName("minlength")]
@@ -192,7 +189,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Whether the control will have outlined appearance.
         /// </summary>
@@ -212,9 +208,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholder;
 
-        partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
-        /// The placeholder attribute of the control.
+        /// The placeholder text of the control.
         /// </summary>
         [Parameter]
         public string Placeholder
@@ -232,7 +227,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -253,10 +247,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private TextareaResize _resize = TextareaResize.Vertical;
 
-        partial void OnResizeChanging(ref TextareaResize newValue);
         /// <summary>
         /// Controls whether the control can be resized.
-        /// When `auto` is set, the control will try to expand and fit its content.
+        /// When <see cref="TextareaResize.Auto"/> is set, the control will try to expand and fit its content.
         /// </summary>
         [Parameter]
         public TextareaResize Resize
@@ -272,9 +265,8 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _rows = 0;
+        private double _rows = 3;
 
-        partial void OnRowsChanging(ref double newValue);
         /// <summary>
         /// The number of visible text lines for the control. If it is specified, it must be a positive integer.
         /// If it is not specified, the default value is 3.
@@ -295,9 +287,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
-        /// The value of the component
+        /// The value of the component.
         /// </summary>
         [Parameter]
         public string Value
@@ -313,21 +304,28 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Returns the current value of the component.
+        /// </summary>
         public async Task<string> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
+
+        /// <summary>
+        /// Returns the current value of the component.
+        /// </summary>
         public string GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
-        private bool _spellcheck = false;
+        private bool _spellcheck = true;
 
-        partial void OnSpellcheckChanging(ref bool newValue);
         /// <summary>
-        /// Controls whether the element may be checked for spelling errors.
+        /// Controls whether the control may be checked for spelling errors.
         /// </summary>
         [Parameter]
         public bool Spellcheck
@@ -345,10 +343,11 @@ namespace IgniteUI.Blazor.Controls
         }
         private TextareaWrap _wrap = TextareaWrap.Soft;
 
-        partial void OnWrapChanging(ref TextareaWrap newValue);
         /// <summary>
         /// Indicates how the control should wrap the value for form submission.
-        /// Refer to [this page on MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#attributes)
+        /// Refer to
+        /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#attributes">
+        /// this page on MDN</see>
         /// for explanation of the available values.
         /// </summary>
         [Parameter]
@@ -367,10 +366,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _validateOnly = false;
 
-        partial void OnValidateOnlyChanging(ref bool newValue);
         /// <summary>
-        /// Enables validation rules to be evaluated without restricting user input. This applies to the `maxLength` property
-        /// when it is defined.
+        /// Enables validation rules to be evaluated without restricting user input. This applies to the
+        /// <see cref="MaxLength"/> property when it is defined.
         /// </summary>
         [Parameter]
         public bool ValidateOnly
@@ -388,9 +386,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
-        /// The disabled state of the component
+        /// The disabled state of the component.
         /// </summary>
         [Parameter]
         public bool Disabled
@@ -408,7 +405,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -428,9 +424,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
-        /// Control the validity of the control.
+        /// Sets the control into invalid state (visual state only).
         /// </summary>
         [Parameter]
         public bool Invalid
@@ -447,25 +442,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTextarea(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTextarea(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -481,31 +457,43 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("select", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Selects all text within the control.
+        /// </summary>
         public void Select()
         {
             InvokeMethodSync("select", new object[] { }, new string[] { });
         }
         /// <summary>
-        /// Checks for validity of the control and shows the browser message if it invalid.
+        /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
             var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and shows the browser message if it's invalid.
+        /// </summary>
         public bool ReportValidity()
         {
             var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Checks for validity of the control and emits the invalid event if it invalid.
+        /// Checks for validity of the control and emits the <c>invalid</c> event if it is invalid.
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
             var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and emits the <c>invalid</c> event if it is invalid.
+        /// </summary>
         public bool CheckValidity()
         {
             var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
@@ -513,18 +501,28 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Sets a custom validation message for the control.
-        /// As long as `message` is not empty, the control is considered invalid.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
             await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Sets a custom validation message for the control.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
+        /// </summary>
         public void SetCustomValidity(String message)
         {
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
         private EventCallback<string>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanged
         {
@@ -534,9 +532,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_valueChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -552,6 +550,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputRef = null;
         private string _inputScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Input"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputScript
         {
@@ -574,8 +580,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _input = null;
+
+        /// <summary>
+        /// Emitted when the control receives user input.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> Input
         {
@@ -585,16 +594,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_input))
                     {
                         _input = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -617,6 +622,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -639,8 +652,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when a change to the control value is committed by the user.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> Change
         {
@@ -650,21 +666,17 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {
                                 newValueValue = (string)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -717,6 +729,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _focusRef = null;
         private string _focusScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string FocusScript
         {
@@ -739,8 +759,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _focus = null;
+
+        /// <summary>
+        /// Emitted when the component gains focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Focus
         {
@@ -750,16 +773,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _focus, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value, (args) =>
-                        {
-                            OnHandlingFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -782,6 +801,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _blurRef = null;
         private string _blurScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string BlurScript
         {
@@ -804,8 +831,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _blur = null;
+
+        /// <summary>
+        /// Emitted when the component loses focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Blur
         {
@@ -815,16 +845,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _blur, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value, (args) =>
-                        {
-                            OnHandlingBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -845,15 +871,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(string oldValue, ref string newValue);
-
-        partial void SerializeCoreIgbTextarea(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTextarea(ser);
 
             if (IsPropDirty("Autocomplete"))
             { ser.AddStringProp("autocomplete", this._autocomplete); }

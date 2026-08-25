@@ -120,4 +120,17 @@ public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
     {
         Assert.True(typeof(IgbRangeSlider).IsSubclassOf(typeof(IgbSliderBase)));
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbRangeSlider</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void RangeSlider_DefaultValues_MatchWebComponent()
+    {
+        var slider = new IgbRangeSlider();
+
+        Assert.Equal(100, slider.Max);
+        Assert.Equal(1, slider.Step);
+    }
 }

@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChat : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChat"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbChatModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,22 +34,23 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="IgbChat"/>.
+        /// </summary>
         public IgbChat() : base()
         {
-            OnCreatedIgbChat();
-
+            // Ensure that Options setter is called to apply the default options and disable input attachments.
+            this.Options = new IgbChatOptions();
         }
-
-        partial void OnCreatedIgbChat();
 
         private IgbChatMessage[] _messages;
 
-        partial void OnMessagesChanging(ref IgbChatMessage[] newValue);
         /// <summary>
         /// The list of chat messages currently displayed.
         /// Use this property to set or update the message history.
@@ -66,7 +71,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatDraftMessage _draftMessage;
 
-        partial void OnDraftMessageChanging(ref IgbChatDraftMessage newValue);
         /// <summary>
         /// The chat message currently being composed but not yet sent.
         /// Includes the draft text and any attachments.
@@ -77,7 +81,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._draftMessage; }
             set
             {
-                OnDraftMessageChanging(ref value);
                 MarkPropDirty("DraftMessage");
                 if (this._draftMessage != null)
                 {
@@ -93,7 +96,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatOptions? _options;
 
-        partial void OnOptionsChanging(ref IgbChatOptions? newValue);
         /// <summary>
         /// Controls the chat behavior and appearance through a configuration object.
         /// Use this to toggle UI options, provide suggestions, templates, etc.
@@ -104,7 +106,9 @@ namespace IgniteUI.Blazor.Controls
             get { return this._options; }
             set
             {
-                OnOptionsChanging(ref value);
+                // Never store a null options object, and input attachments are not supported yet.
+                value ??= new IgbChatOptions();
+                value.DisableInputAttachments = true;
                 MarkPropDirty("Options");
                 if (this._options != null)
                 {
@@ -119,25 +123,6 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameChat(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChat(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -153,6 +138,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Scrolls the view to a specific message by id.
+        /// </summary>
         public void ScrollToMessage(String messageId)
         {
             InvokeMethodSync("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
@@ -160,6 +149,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _messageCreatedRef = null;
         private string _messageCreatedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="MessageCreated"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageCreatedScript
         {
@@ -182,8 +179,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingMessageCreated(IgbChatMessageEventArgs args);
         private EventCallback<IgbChatMessageEventArgs>? _messageCreated = null;
+
+        /// <summary>
+        /// Dispatched when a new chat message is created (sent).
+        /// </summary>
         [Parameter]
         public EventCallback<IgbChatMessageEventArgs> MessageCreated
         {
@@ -193,16 +193,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbChatMessageEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _messageCreated, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_messageCreated))
                     {
                         _messageCreated = value;
-                        this.SetHandler<IgbChatMessageEventArgs>(this.Name, "MessageCreated", value, (args) =>
-                        {
-                            OnHandlingMessageCreated(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageEventArgs>(this.Name, "MessageCreated", value);
                         this.OnRefChanged("MessageCreated", null, "event:::MessageCreated", true, false, (refName, oldValue, newValue) =>
                         {
                             this._messageCreatedRef = refName;
@@ -225,6 +221,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _messageReactRef = null;
         private string _messageReactScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="MessageReact"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageReactScript
         {
@@ -247,8 +251,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingMessageReact(IgbChatMessageReactionEventArgs args);
         private EventCallback<IgbChatMessageReactionEventArgs>? _messageReact = null;
+
+        /// <summary>
+        /// Dispatched when a message is reacted to.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbChatMessageReactionEventArgs> MessageReact
         {
@@ -258,16 +265,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbChatMessageReactionEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _messageReact, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_messageReact))
                     {
                         _messageReact = value;
-                        this.SetHandler<IgbChatMessageReactionEventArgs>(this.Name, "MessageReact", value, (args) =>
-                        {
-                            OnHandlingMessageReact(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageReactionEventArgs>(this.Name, "MessageReact", value);
                         this.OnRefChanged("MessageReact", null, "event:::MessageReact", true, false, (refName, oldValue, newValue) =>
                         {
                             this._messageReactRef = refName;
@@ -290,6 +293,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _attachmentClickRef = null;
         private string _attachmentClickScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="AttachmentClick"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string AttachmentClickScript
         {
@@ -312,8 +323,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingAttachmentClick(IgbChatMessageAttachmentEventArgs args);
         private EventCallback<IgbChatMessageAttachmentEventArgs>? _attachmentClick = null;
+
+        /// <summary>
+        /// Dispatched when a chat message attachment is clicked.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbChatMessageAttachmentEventArgs> AttachmentClick
         {
@@ -323,16 +337,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbChatMessageAttachmentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _attachmentClick, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_attachmentClick))
                     {
                         _attachmentClick = value;
-                        this.SetHandler<IgbChatMessageAttachmentEventArgs>(this.Name, "AttachmentClick", value, (args) =>
-                        {
-                            OnHandlingAttachmentClick(args);
-
-                        });
+                        this.SetHandler<IgbChatMessageAttachmentEventArgs>(this.Name, "AttachmentClick", value);
                         this.OnRefChanged("AttachmentClick", null, "event:::AttachmentClick", true, false, (refName, oldValue, newValue) =>
                         {
                             this._attachmentClickRef = refName;
@@ -355,6 +365,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _typingChangeRef = null;
         private string _typingChangeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TypingChange"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TypingChangeScript
         {
@@ -377,8 +395,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTypingChange(IgbComponentBoolValueChangedEventArgs args);
         private EventCallback<IgbComponentBoolValueChangedEventArgs>? _typingChange = null;
+
+        /// <summary>
+        /// Dispatched when the typing status changes (e.g. user starts or stops typing).
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentBoolValueChangedEventArgs> TypingChange
         {
@@ -388,16 +409,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentBoolValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _typingChange, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_typingChange))
                     {
                         _typingChange = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "TypingChange", value, (args) =>
-                        {
-                            OnHandlingTypingChange(args);
-
-                        });
+                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "TypingChange", value);
                         this.OnRefChanged("TypingChange", null, "event:::TypingChange", true, false, (refName, oldValue, newValue) =>
                         {
                             this._typingChangeRef = refName;
@@ -420,6 +437,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputFocusRef = null;
         private string _inputFocusScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="InputFocus"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputFocusScript
         {
@@ -442,8 +467,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputFocus(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _inputFocus = null;
+
+        /// <summary>
+        /// Dispatched when the chat input field gains focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> InputFocus
         {
@@ -453,16 +481,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _inputFocus, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_inputFocus))
                     {
                         _inputFocus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputFocus", value, (args) =>
-                        {
-                            OnHandlingInputFocus(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputFocus", value);
                         this.OnRefChanged("InputFocus", null, "event:::InputFocus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputFocusRef = refName;
@@ -485,6 +509,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputBlurRef = null;
         private string _inputBlurScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="InputBlur"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputBlurScript
         {
@@ -507,8 +539,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputBlur(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _inputBlur = null;
+
+        /// <summary>
+        /// Dispatched when the chat input field loses focus.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> InputBlur
         {
@@ -518,16 +553,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _inputBlur, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_inputBlur))
                     {
                         _inputBlur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputBlur", value, (args) =>
-                        {
-                            OnHandlingInputBlur(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "InputBlur", value);
                         this.OnRefChanged("InputBlur", null, "event:::InputBlur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputBlurRef = refName;
@@ -550,6 +581,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputChangeRef = null;
         private string _inputChangeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="InputChange"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputChangeScript
         {
@@ -572,8 +611,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _inputChange = null;
+
+        /// <summary>
+        /// Dispatched when the content of the chat input changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> InputChange
         {
@@ -583,16 +625,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _inputChange, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_inputChange))
                     {
                         _inputChange = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputChange", value, (args) =>
-                        {
-                            OnHandlingInputChange(args);
-
-                        });
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputChange", value);
                         this.OnRefChanged("InputChange", null, "event:::InputChange", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputChangeRef = refName;
@@ -613,13 +651,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbChat(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChat(ser);
 
             if (IsPropDirty("Messages"))
             { ser.AddSerializableArrayProp("messages", this._messages); }

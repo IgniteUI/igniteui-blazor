@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Used for defining gradient stops in the igc-circular-progress.
-    /// For each `igc-circular-gradient` defined as `gradient` slot of `igc-circular-progress` element would be created a SVG stop element.
-    /// The values passed as `color`, `offset` and `opacity` would be set as
-    /// `stop-color`, `offset` and `stop-opacity` of the SVG element without further validations.
+    /// Defines a gradient stop for an <see cref="IgbCircularProgress"/> component.
+    /// Nest one or more of these in the <c>gradient</c> slot of an <see cref="IgbCircularProgress"/>;
+    /// each one produces an SVG stop element.
+    /// <see cref="Color"/>, <see cref="Offset"/> and <see cref="Opacity"/> are applied as the
+    /// <c>stop-color</c>, <c>offset</c> and <c>stop-opacity</c> of that stop without further validation.
     /// </summary>
     public partial class IgbCircularGradient : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCircularGradient"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbCircularGradientModule.IsLoadRequested(IgBlazor))
@@ -20,11 +23,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -33,6 +38,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -41,6 +47,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -49,24 +56,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCircularGradient() : base()
-        {
-            OnCreatedIgbCircularGradient();
-
-        }
-
-        partial void OnCreatedIgbCircularGradient();
-
         private string _offset;
 
-        partial void OnOffsetChanging(ref string newValue);
         /// <summary>
-        /// Defines where the gradient stop is placed along the gradient vector
+        /// Defines where the gradient stop is placed along the gradient vector.
         /// </summary>
         [Parameter]
         public string Offset
@@ -84,9 +83,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _color;
 
-        partial void OnColorChanging(ref string newValue);
         /// <summary>
-        /// Defines the color of the gradient stop
+        /// Defines the color of the gradient stop.
         /// </summary>
         [Parameter]
         public string Color
@@ -102,11 +100,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _opacity = 0;
+        private double _opacity = 1;
 
-        partial void OnOpacityChanging(ref double newValue);
         /// <summary>
-        /// Defines the opacity of the gradient stop
+        /// Defines the opacity of the gradient stop.
         /// </summary>
         [Parameter]
         public double Opacity
@@ -123,25 +120,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCircularGradient(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCircularGradient(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -151,13 +129,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbCircularGradient(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCircularGradient(ser);
 
             if (IsPropDirty("Offset"))
             { ser.AddStringProp("offset", this._offset); }

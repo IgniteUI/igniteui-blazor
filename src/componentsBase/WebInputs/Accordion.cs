@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbAccordion
     {
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get
@@ -27,20 +28,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameAccordion(string name, ref object item)
-        {
-            foreach (var it in ContentItems)
-            {
-                if (it.Name == name || it.ContainerId == name)
-                {
-                    item = it;
-                    return;
-                }
-            }
-        }
     }
 
-    public partial class IgbExpansionPanel : IDisposable
+    public partial class IgbExpansionPanel
     {
         [CascadingParameter(Name = "AccordionParent")]
         protected BaseRendererControl AccordionParent
@@ -48,15 +38,18 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
-        public void Dispose()
+        /// <inheritdoc/>
+        public override async ValueTask DisposeAsync()
         {
             if (AccordionParent != null)
             {
                 var sv = (IgbAccordion)AccordionParent;
                 sv.ContentItems.Remove(this);
             }
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         protected override async Task OnInitializedAsync()
         {
             if (AccordionParent != null)

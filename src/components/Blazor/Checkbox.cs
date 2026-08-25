@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCheckbox : IgbCheckboxBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCheckbox"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbCheckboxModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,17 +52,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbCheckbox() : base()
-        {
-            OnCreatedIgbCheckbox();
-
-        }
-
-        partial void OnCreatedIgbCheckbox();
-
         private bool _indeterminate = false;
 
-        partial void OnIndeterminateChanging(ref bool newValue);
         /// <summary>
         /// Draws the checkbox in indeterminate state.
         /// </summary>
@@ -75,33 +72,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCheckbox(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCheckbox(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbCheckbox(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCheckbox(ser);
 
             if (IsPropDirty("Indeterminate"))
             { ser.AddBooleanProp("indeterminate", this._indeterminate); }

@@ -20,8 +20,9 @@ Three test projects under `tests/`, two suites:
 |---|---|
 | Property → rendered attribute (direct-render components) | unit: plain bUnit facts (`cut.Find(...).GetAttribute(...)`) |
 | Markup/child content rendering | unit: plain bUnit facts |
+| **Parent/child collection membership** — a child registering itself into its parent's collection and leaving again over the child's lifetime | unit: plain bUnit facts in the *parent's* suite, in a `#region Child collection lifecycle` — membership only; name resolution *off* that collection is interop behavior and stays in the contract |
 | Message-borne state serialization shapes | unit: `PropertySerializationTests` / `EnumSerializationTests` / `RenderingSerializationTests` |
-| **Interop wire behavior** — method identifiers, argument serialization + type tags, return decoding, event-handler registration/removal transmissions + JS→.NET event dispatch, interop-borne props/data | unit: the component's `ComponentContract` — full authoring guide: [`references/interop-contracts.md`](./references/interop-contracts.md) |
+| **Interop wire behavior** — method identifiers, argument serialization + type tags, return decoding, event-handler registration/removal transmissions + JS→.NET event dispatch, `@bind-` two-way round trips, interop-borne props/data | unit: the component's `ComponentContract` — full authoring guide: [`references/interop-contracts.md`](./references/interop-contracts.md) |
 | `<Member>Script` parameters (JS-side handlers/providers) | unit: automated sweep (`ScriptPropTests`, all components at once — no per-contract entries, no integration coverage exists) |
 | End-to-end prop/event/method behavior against the **real web component in a real browser** | integration: the TestBed sweep |
 | Visual output, client-side component logic | integration / e2e — never unit |
@@ -49,6 +50,7 @@ dotnet test tests/IgniteUI.Blazor.Tests -f net10.0 --nologo --filter "FullyQuali
 - Generally follow **one file per component: `<Name>Tests.cs` holds `<Name>Tests`.** A component's **child** components may share the parent's file (`SelectTests.cs` also holds `SelectItemTests`/`SelectGroupTests`/`SelectHeaderTests`; likewise Card, List, Dropdown, NavDrawer, Tabs, Stepper, TileManager, Tree, Rating, Slider) — that's the only permitted multi-class file. Cross-cutting suites (`BaseControlTests`, `*SerializationTests`, `ScriptPropTests`, `Interop*Tests`) are keyed to a class/behavior, not a component, and keep their own files.
 - New facts go into the existing `<Name>Tests` class; if the class carries a contract, plain bUnit facts sit alongside the contract runners in the same class.
 - Shared test helpers live in `ElementAssertionExtensions.cs`.
+- **Readable arrange/act/assert in the test beats sharing.** A little repetition across suites is fine; extract obvious repeated mechanics if needed, but ensure those are well documented and easy to grasp without breaking the flow of the test itself.
 - **Skips need a mechanism reason.** Bug-tracker or `componentsConfig.json` listings are not skip reasons. If a member's decode hits a gap in shared infrastructure the change doesn't own, cover it pinning current behavior and write the *correct* assertion commented out under a `// TODO:` explaining the gap — ready to uncomment when fixed. A gap in a component under construction is a bug to fix, not to pin — see the two authoring modes in the interop reference.
 - Components are `partial` — the generated `src/components/Blazor/<Name>.cs` is not the whole class; always check `src/componentsBase/WebInputs/<Name>.cs` for hand-written extensions before drawing conclusions.
 - Formatting: only `dotnet format whitespace --folder` is safe in this repo — a full `dotnet format` writes conflict markers into multi-targeted sources.
@@ -78,5 +80,6 @@ over the component's public surface —
 ## Adding coverage for a new component — checklist
 
 1. Unit suite: bUnit facts for rendered attributes/markup; if the component has an interop surface (it sends interop invocations or registers JS-originated event handlers — the reference explains how to identify these per stack), add a `ComponentContract` per [`references/interop-contracts.md`](./references/interop-contracts.md). For a brand-new component this works TDD-style: author the contract first from the intended API following the library's conventions; the contract doubles as the API design record (spec mode in the reference).
-2. Integration: the sweep picks the component up automatically; add  `componentsConfig.json` entries only for members the generic sweep genuinely cannot  model (cite why), and mirror each exclusion with unit contract coverage.
-3. Verify: unit full-suite on all TFMs, plus the component's integration fixture.
+2. If it is a parent that collects children, or a child that registers with a parent, exercise that membership **over the child's lifetime**, not just at first render: the children are the collection in order, a disposed child leaves it, all disposed empties it. Keep these facts to membership and asserting resolution that are covered by the interop contract.
+3. Integration: the sweep picks the component up automatically; add  `componentsConfig.json` entries only for members the generic sweep genuinely cannot  model (cite why), and mirror each exclusion with unit contract coverage.
+4. Verify: unit full-suite on all TFMs, plus the component's integration fixture.

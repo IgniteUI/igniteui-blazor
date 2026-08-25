@@ -1,9 +1,15 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class for the format specifiers that describe how component values are formatted.
+    /// See <see cref="IgbNumberFormatSpecifier"/> for the number formatting options.
+    /// </summary>
     public partial class IgbFormatSpecifier : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "FormatSpecifier"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbFormatSpecifierModule.IsLoadRequested(IgBlazor))
@@ -14,60 +20,35 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        public IgbFormatSpecifier() : base()
-        {
-            OnCreatedIgbFormatSpecifier();
-
-        }
-
-        partial void OnCreatedIgbFormatSpecifier();
-
-        partial void FindByNameFormatSpecifier(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameFormatSpecifier(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
+        /// <summary>
+        /// Gets the culture of the browser, expanded to a culture with a region when the browser
+        /// reports a bare language code.
+        /// </summary>
+        /// <returns>The resolved culture name.</returns>
         public async Task<String> GetLocalCultureAsync()
         {
             var iv = await InvokeMethod("getLocalCulture", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
+        /// <summary>
+        /// Gets the culture of the browser, expanded to a culture with a region when the browser
+        /// reports a bare language code.
+        /// </summary>
+        /// <returns>The resolved culture name.</returns>
         public String GetLocalCulture()
         {
             var iv = InvokeMethodSync("getLocalCulture", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
-        partial void SerializeCoreIgbFormatSpecifier(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbFormatSpecifier(ser);
-
-        }
-
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

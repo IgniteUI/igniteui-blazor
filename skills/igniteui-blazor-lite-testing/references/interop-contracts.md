@@ -2,7 +2,7 @@
 
 Goal: every component with an interop surface carries a declarative `ComponentContract<TComponent>` in its test suite, pinning how its public API maps onto the wire — method identifiers, argument serialization and type tags, return decoding, and event names + args deserialization. Contracts run through the `InteropHarness` seam (`tests/IgniteUI.Blazor.Tests/Interop/`), so the contract verifies a component regardless of the interop stack (swap per component via `InteropHarnessRegistry`).
 
-Scope note: contracts cover **methods, current-state getters, events, and props that travel over interop**. Simple property → attribute rendering (direct-render components) is already covered by the existing attribute tests and the integration suite — never duplicate it with `.Prop`.
+Scope note: contracts cover **methods, current-state getters, events, two-way binding pairs, and props that travel over interop**. Simple property → attribute rendering (direct-render components) is already covered by the existing attribute tests and the integration suite — never duplicate it with `.Prop`.
 
 Exemplars to imitate: `ButtonTests.cs` (simplest), `CarouselTests.cs` (void/bool methods, args, getters, number event), `ChipTests.cs` (bool-detail events, getter), `ChatTests.cs` (renderer-container component: `.Prop` config object, complex event args), `ComboTests.cs` (data sources, uuid refs), `TreeTests.cs` (child refs, hosted getter).
 
@@ -31,9 +31,33 @@ Read the component's source (all `partial` parts) and find every place it:
 
 1. **sends an outbound interop invocation** from a public API member → a `.Method` or `.Getter` spec;
 2. **registers a handler for a JS-originated event** (paired with an `EventCallback<TArgs>` parameter) → an `.Event` spec;
-3. **transmits state over interop** rather than rendering it as an attribute → a `.Prop` spec.
+3. **transmits state over interop** rather than rendering it as an attribute → a `.Prop` spec;
+4. **pairs a `[Parameter] X` with an `EventCallback<TValue> XChanged`** (what `@bind-X` needs) → a `.Bind` spec.
 
 The *concrete idioms* for all three depend on which interop stack the component currently sits on — the [cheat-sheet below](#current-stack-cheat-sheet-legacy-renderermessage-pipeline) lists them for the legacy `RendererMessage` pipeline. For a component on a different stack, find the equivalent call sites in its implementation (whatever sits between the public member and the JS runtime — a direct `IJSRuntime.InvokeAsync`, a channel service, etc.); the principles and the DSL below are unchanged.
+
+### Values that only exist after the render — one mechanism, everywhere
+
+Interop instance ids, data-item uuids and element handles are assigned when the component renders, which is *after* the contract itself is constructed. Wherever a spec states such a value, the parameter is a `FromRender<T>`: pass the value directly when it is fixed (the common case — nothing to think about), or `FromRender.Of((interop, cut) => …)` when it can only be settled once rendered. The DSL has exactly one such mechanism, so a new kind of late value needs no new API:
+
+```csharp
+returns: FromRender.Of((interop, cut) => InteropReturn.Ref(...))     // a getter's stubbed return
+args:    [FromRender.Of((interop, cut) => $"containerId:::{...}")]   // one late argument among fixed ones
+argsJson: FromRender.Of((interop, cut) => ...)                       // an event payload carrying a child ref
+wire:    FromRender.Of<object?>((interop, cut) => new RawJson(...))  // a prop whose value references data items
+```
+
+The render scope handed to the lambda is the cut for an arranged spec and the whole host render for a hosted one — the same scope the spec's own `assert:` receives. Pair it with `arrange:` (or `host:`/`target:`) so there is something rendered to reference.
+
+### Dates
+
+Decoding converts to local time (`ReturnToDate`, default `RoundTripDateConversion.Auto`), so a decoded date is `Kind=Local` with a shifted reading. Rules:
+
+- State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares against its local rendering and asserts the kind; an `Unspecified` expectation throws.
+- Never write `.ToLocalTime()` in a spec to make a comparison pass. If one seems needed, the assertion helper is missing a case — add it there. The one exception is an author-written `assert:` lambda, where you do the comparing: use `…Utc).ToLocalTime()` (see `DateRangePickerTests`' bind assert).
+- Outbound dates (`.Prop` values, method args) are not decoded and keep the kind the spec wrote, so their wire expectation is a plain literal — `DateTimeKind.Utc` serializes with `Z`.
+
+Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in an object), `DatePickerTests`/`DateTimeInputTests` (nullable, with a `// TODO:` for the cleared case crossing as `MinValue`).
 
 ### 1. Methods and getters
 
@@ -45,7 +69,7 @@ The *concrete idioms* for all three depend on which interop stack the component 
   | Return kind | Contract form |
   |---|---|
   | none | omit — void overload |
-  | scalar (bool/number/string/date) | just the value: `returns: true` / `5.0` / a UTC `DateTime` — the wire return kind is derived from the value's type, and the decoded .NET return must round-trip back to it (dates compared as instants) |
+  | scalar (bool/number/string/date) | just the value: `returns: true` / `5.0` / a UTC `DateTime` — the wire return kind is derived from the value's type, and the decoded .NET return must round-trip back to it (dates: see the rule above — stated as the UTC instant, asserted as its local rendering) |
   | single serialized object | arranged `Getter` overload with `InteropReturn.Object(...)` + value-level `assert:` — see `ChatTests.cs` `DraftMessage` |
   | array of component/data-item references | arranged `Getter` overload with `InteropReturn.Array` of refs, `Assert.Same` against arranged instances — see `TileManagerTests.cs` `Tiles`, `ComboTests.cs` `Value` |
   | single bound-object reference | arranged `Getter` overload with `InteropReturn.Ref(...)`, `Assert.Same` against the arranged child — see `SelectTests.cs`/`DropdownTests.cs` `SelectedItem` |
@@ -53,6 +77,7 @@ The *concrete idioms* for all three depend on which interop stack the component 
   (An explicit `InteropReturn` + separate `expect:` overload exists for wire returns that decode to a different value than sent — rare.)
 - **Value-returning methods must state their return** — enforced at compile time: a `Task<TResult>`-returning lambda on the void `.Method` overload is `[Obsolete(error: true)]` as a guard, so the contract states the `returns:` stub. The void overload needs no stub.
 - **Hosted arrange — child components that only exist inside a parent** - Currently available in the hosted `Getter` overload (e.g. a tree item's `GetPathAsync` needs real ancestors). Build the full render with `ContractHost.Of<THost>(ps => ps.AddChildContent(...))` (parent as the root, structure nested inside), pick the component under test with `target: h => h.FindComponents<TComponent>()[n]`, and note that `returns:`/`assert:` receive the whole host render — so `interop.ContainerIdOf(h, "<selector>")` reaches ancestors and siblings outside the cut's subtree. The read still travels on the target's own container. See `TreeItemTests` in `TreeTests.cs`.
+- **Render-sourced arguments — a value that only exists once rendered** (a sibling component instance, an `ElementReference` captured from markup): the spec's selectors run *after* its render, so read the value from a holder the `arrange:` render fills — `.Method(c => c.ShowAsync(anchor.Component), ...)` — rather than reaching for a new overload. The expected *wire* value comes the same way: `args: [FromRender.Of((interop, cut) => ...)]` is settled right before comparison, when child instance ids exist. `elements:` states the element handles the invocation must carry alongside its arguments; omitting it asserts the invocation carries none — so a component-typed target is positively pinned as crossing without an element handle. Both `arrange:` and `elements:` are available on the void and the value-returning twin overloads. See the `show`/`toggle` target overloads in `DropdownTests.cs`.
 - **Sync twins are declared inside the member's spec**: every `X()`/`XAsync()` pair uses the twin overloads — both selectors up front, async first: `.Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)` (same for `.Getter`, including the arranged/hosted forms). The runner re-invokes the sync twin against the same expectations (identifier, args, types, decoded return). Declaring the twin is the contract author's responsibility — when enumerating methods, treat an `X()`/`XAsync()` pair as one member and use the twin overload. Sync dispatch rides the in-process JS runtime (`IJSInProcessRuntime` — WASM/WebView-only in production; the Server-hosted integration TestBed can't run sync variants, so contracts are their only coverage).
 - **Skip and list**: a member whose decode hits an implementation gap (unregistered child type, missing marshal-by-value entry) is covered, not skipped — per the authoring modes above.
 
@@ -76,7 +101,26 @@ The contract entry is the member selector plus a sample value: the wire name is 
 - A property belongs in the contract **only when its value travels over interop** rather than as a rendered attribute. Determine which from the component's serialization path (stack-specific — see the cheat-sheet) or empirically: for an attribute prop, the runner fails with *"no property update transmission was observed"*. Attribute props are covered by the suite's attribute facts instead.
 - **Serialized config objects and arrays**: set an instance with 2–3 distinctive values and expect a `JsonSubset` — subset match, extra bookkeeping fields on the transmitted value are ignored; arrays compare element-wise (equal length, per-element subset). See `ChatTests.cs`, `CalendarTests.cs`.
 - **Data sources** (`Data`/`DataSource` props): covered by `.Prop(c => c.Data, ...)` too — the harness follows whatever indirection the stack uses to the actual transfer. Item property names cross with their .NET names (not camelized). See `ComboTests.cs`.
-- **Props referencing data items** (e.g. Combo's `Value`): use the arranged overload — arrange the `Data` the value points into and state the wire value as a factory, since tracked items cross as refs whose ids are only assigned on transfer: `.Prop(c => c.Value, [_item1], arrange: ps => ps.Add(c => c.Data, items), wire: (interop, cut) => new RawJson(...))`.
+- **Props referencing data items** (e.g. Combo's `Value`): add `arrange:` for the `Data` the value points into and state the wire value late, since tracked items cross as refs whose ids are only assigned on transfer: `.Prop(c => c.Value, [_item1], wire: FromRender.Of<object?>((interop, cut) => new RawJson(...)), arrange: ps => ps.Add(c => c.Data, items))`.
+
+### 4. Two-way binding pairs
+
+A `[Parameter] TValue X` plus `EventCallback<TValue> XChanged` is what `@bind-X` needs. `XChanged` is a filtered proxy of a **driving event** (`Change`, or `Select` on Chip): assigning it force-binds a no-op onto that event so it registers, and the callback then fires from inside that event's handler with the value projected out of its detail. A client change only ever arrives as a dispatch of the driving event.
+
+`.Bind` covers what `.Event` can't: it renders the pair with real two-way binding and asserts the **property adopted the value** — what `@bind-X` consumers depend on. (`.Event(c => c.XChanged, …, name: "Change")` does work for the callback half alone, since binding it registers the driving event; it just says nothing about the property.)
+
+```csharp
+.Bind(c => c.Selected, c => c.SelectedChanged, via: c => c.Select,
+      argsJson: """{"detail": true}""", expect: true)
+```
+
+One dispatch pins: the driving event's registration crossed, the callback member kept the callback, the binding received the decoded value, and the property adopted it. Clearing the parameter then has to stop the callback. Payload is the same shape and can be reused from the driving event's own `.Event` spec.
+
+- `expect:` is the value the dispatch must produce, often a projection of the detail — a checkbox detail is an object, the bound value is its `checked` field. The runner checks the property doesn't already hold it, so a spec can't pass without the change happening. For a type with no value equality add `assert:` and check field-wise.
+- `arrange:` when the dispatch needs more — Calendar's `Selection` for the `Values` branch, Combo's `Data`. Order the named arguments arrange → argsJson → expect, so a spec reads arrange/act/assert.
+- `initial:` only for a pair that must start somewhere other than the type default; no current spec needs it.
+- A pair with no event of its own (`IgbTab.Selected`, written by `IgbTabs`' `Change` handler) is not a `.Bind` spec: cover it in the parent's `.Event` spec, whose arrange binds each child's `XChanged` to a holder the assert then checks.
+- Nothing checks the value going back out: the client already holds it, and the property's own `.Prop` spec (or its rendered-attribute fact) pins how it serializes. `.Bind` is the inbound direction only.
 
 ## Current-stack cheat-sheet (legacy `RendererMessage` pipeline)
 
@@ -100,8 +144,11 @@ The contract entry is the member selector plus a sample value: the wire name is 
 | `ObjectToParam(x, typeof(SomeEnum))`, tag `"Json"` | `SomeEnum.Member` | the `[WCEnumName("...")]` value if the member has one, else camelCase of the member name (`Next` → `"next"`) |
 | `ObjectToParam(x)` with a plain string, tag `"Json"` | `"item-1"`     | `"item-1"`                           |
 | `ObjectToParam(x)` with a marshal-by-value object, tag `"Json"` | an options object | `new JsonSubset("""{"key": value, ...}""")` |
-| `x` DateTime, tag `"Date"`                 | a `DateTime`             | the same `DateTime` (compared as instant) |
+| `x` DateTime, tag `"Date"`                 | a `DateTime`             | the same `DateTime` — outbound, so it keeps the kind the spec wrote |
 | array helpers (`IntArrayToString`, ...), tag `"NumberArray"` etc. | array | `new RawJson("[1,2,3]")`            |
+| `ComponentToJson(x, i)`, tag `"Component"`  | an `Igb*` component      | `"containerId:::<that component's own container id>"` (a `FromRender` value) — no element handle |
+| `ComponentToJson(x, i)`, tag `"Component"`  | an `ElementReference`    | `"elementIndex:::<i>"`, plus the handle itself declared via `elements:` (it rides beside the arguments, not in them) |
+| `ComponentToJson(x, i)`, tag `"Component"`  | anything else            | nothing — the argument is dropped, so `arguments` arrives empty while `types` still lists the tag |
 
 **Return decodes** (the line after `InvokeMethod` → the semantic kinds in the recipe's table):
 
@@ -127,7 +174,8 @@ public class <Name>Tests : ComponentWithContractTestBase<Igb<Name>>
         .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: ...)
         .Event(c => c.SomeEvent, ...)
-        .Prop(c => c.SomeProp, ...);
+        .Prop(c => c.SomeProp, ...)
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change, argsJson: ..., initial: ..., expect: ...);
 
     // One runner fact per non-empty contract section (omit facts for empty sections
     [Fact]
@@ -138,6 +186,9 @@ public class <Name>Tests : ComponentWithContractTestBase<Igb<Name>>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     // ... other/existing facts ...
 }
@@ -157,11 +208,13 @@ Common failures:
 - Types/args mismatch → the assertion message shows the recorded wire values; judge which side is off per the authoring modes (in spec mode an unintended wire value is the implementation's bug — the red spec is doing its job).
 - A method call that never returns (test timeout) means its identifier reached JS without a stub match — check the name matches the stub you declared (getters: bare property name).
 - `no property update transmission was observed` → wrong wire name, an attribute-rendered prop, or a serialization exception upstream (nothing transmits at all).
+- `transmitted no "<Event>" event registration` (bind specs) → the pair's `EnsureXHandled()` isn't running, or `via:` names the wrong event; without it the client never reports changes.
+- `the <X>Changed binding was never invoked` → dispatch failures are swallowed by the control, so this one message covers three causes: wrong `via:`, a payload the args type doesn't decode, or a value that doesn't coerce to the bound type.
 
 Finish with a full-suite sanity run: same command without `--filter`.
 
 ## Definition of done (per component)
 
 - Contract on exactly one suite, all facts green, plus full suite green on all TFMs.
-- Every public method that goes out through interop — async **and** its sync twin (declared together via the twin overloads) — every registered JS-originated event, and every interop-borne prop is either covered, globally excluded, or named in the skip comment with a mechanism reason — nothing silently omitted. (`<Member>Script` params are covered by the `ScriptPropTests` sweep.)
+- Every public method that goes out through interop — async **and** its sync twin (declared together via the twin overloads) — every registered JS-originated event, every interop-borne prop, and every `@bind-` pair is either covered, globally excluded, or named in the skip comment with a mechanism reason — nothing silently omitted. (`<Member>Script` params are covered by the `ScriptPropTests` sweep.)
 - Implementation issues found along the way are handled per the authoring modes (`// TODO:` markers or fixes), never silently skipped.

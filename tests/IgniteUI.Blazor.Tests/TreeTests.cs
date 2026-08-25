@@ -22,27 +22,27 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
     protected override ComponentContract<IgbTree> InteropContract { get; } = new ComponentContract<IgbTree>()
         .Event(c => c.ItemExpanding,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.ItemExpanded,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.ItemCollapsing,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.ItemCollapsed,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.ActiveItem,
             arrange,
-            argsJson: (interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$"""{"detail": {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}"}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail))
         .Event(c => c.SelectionChanged,
             arrange,
-            argsJson: (interop, cut) => $$$$$"""{"detail": {"retType": "object", "type": "", "value": {"newSelection": {"retType": "Array", "type": "", "value": [{"refType": "name", "id": "{{{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}}}"}]}}}}""",
+            argsJson: FromRender.Of((interop, cut) => $$$$$"""{"detail": {"retType": "object", "type": "", "value": {"newSelection": {"retType": "Array", "type": "", "value": [{"refType": "name", "id": "{{{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}}}"}]}}}}"""),
             assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail.NewSelection[0]));
 
     [Fact]
@@ -155,6 +155,52 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
 
         Assert.Contains("Child", cut.Find("igc-tree-item").InnerHtml);
     }
+
+    #region Child collection lifecycle
+
+    /// <summary>Renders <paramref name="count"/> top-level <see cref="IgbTreeItem"/> children.</summary>
+    static Action<ComponentParameterCollectionBuilder<IgbTree>> TreeWith(int count) => ps =>
+        ps.AddChildContent(builder =>
+        {
+            for (var i = 0; i < count; i++)
+            {
+                builder.OpenComponent<IgbTreeItem>(i);
+                builder.CloseComponent();
+            }
+        });
+
+    [Fact]
+    public void Tree_ChildItems_RegisterOnInitialize()
+    {
+        var cut = Render<IgbTree>(TreeWith(2));
+
+        Assert.Equal(
+            cut.FindComponents<IgbTreeItem>().Select(i => i.Instance),
+            cut.Instance.ContentItems);
+    }
+
+    [Fact]
+    public void Tree_DisposedChildItem_LeavesTheCollection()
+    {
+        var cut = Render<IgbTree>(TreeWith(2));
+        var survivor = cut.FindComponents<IgbTreeItem>()[0].Instance;
+
+        cut.Render(TreeWith(1));
+
+        Assert.Same(survivor, Assert.Single(cut.Instance.ContentItems));
+    }
+
+    [Fact]
+    public void Tree_AllChildItemsDisposed_EmptiesTheCollection()
+    {
+        var cut = Render<IgbTree>(TreeWith(2));
+
+        cut.Render(ps => ps.AddChildContent(builder => { }));
+
+        Assert.Empty(cut.Instance.ContentItems);
+    }
+
+    #endregion
 }
 
 public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
@@ -179,7 +225,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
         .Method(c => c.CollapseAsync(), c => c.Collapse(), "collapse")
         .Getter(c => c.GetPathAsync(), c => c.GetPath(), "Path",
             arrange: ps => { },
-            returns: (interop, cut) => InteropReturn.Array("""[{"refType": "name", "id": "mainControl"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array("""[{"refType": "name", "id": "mainControl"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Single(result);
@@ -188,7 +234,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
         .Getter(c => c.GetPathAsync(), c => c.GetPath(), "Path",
             host: treeHost,
             target: h => h.FindComponents<IgbTreeItem>()[1], // Child 1.1
-            returns: (interop, h) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(h, "igc-tree-item")}}}"}, {"refType": "name", "id": "mainControl"}]"""),
+            returns: FromRender.Of((interop, h) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(h, "igc-tree-item")}}}"}, {"refType": "name", "id": "mainControl"}]""")),
             assert: (h, result) =>
             {
                 Assert.Equal(2, result.Length);

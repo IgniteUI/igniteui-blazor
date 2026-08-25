@@ -5,21 +5,25 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSelectItem : IgbBaseOptionLike
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSelectItem"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbSelectItemModule.IsLoadRequested(IgBlazor))
+            if (!IgbSelectModule.IsLoadRequested(IgBlazor))
             {
-                IgbSelectItemModule.Register(IgBlazor);
+                IgbSelectModule.Register(IgBlazor);
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -28,6 +32,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -36,50 +41,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
             {
                 return "igc-select-item";
             }
-        }
-
-        public IgbSelectItem() : base()
-        {
-            OnCreatedIgbSelectItem();
-
-        }
-
-        partial void OnCreatedIgbSelectItem();
-
-        partial void FindByNameSelectItem(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSelectItem(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbSelectItem(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbSelectItem(ser);
-
         }
 
     }

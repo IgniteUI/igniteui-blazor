@@ -8,21 +8,25 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbCardActions : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCardActions"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbCardActionsModule.IsLoadRequested(IgBlazor))
+            if (!IgbCardModule.IsLoadRequested(IgBlazor))
             {
-                IgbCardActionsModule.Register(IgBlazor);
+                IgbCardModule.Register(IgBlazor);
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,22 +53,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCardActions() : base()
-        {
-            OnCreatedIgbCardActions();
-
-        }
-
-        partial void OnCreatedIgbCardActions();
-
         private ContentOrientation _orientation = ContentOrientation.Horizontal;
 
-        partial void OnOrientationChanging(ref ContentOrientation newValue);
         /// <summary>
         /// The orientation of the actions layout.
         /// </summary>
@@ -81,25 +79,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameCardActions(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCardActions(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -109,13 +88,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbCardActions(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCardActions(ser);
 
             if (IsPropDirty("Orientation"))
             { ser.AddEnumProp("orientation", this._orientation); }

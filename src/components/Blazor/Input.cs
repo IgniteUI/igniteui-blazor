@@ -2,10 +2,16 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A highly customizable single-line text field for entering and editing data,
+    /// with support for prefix/suffix content, helper text, form integration, and built-in validation.
+    /// </summary>
     public partial class IgbInput : IgbInputBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebInput"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbInputModule.IsLoadRequested(IgBlazor))
@@ -14,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -27,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -35,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -43,17 +53,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbInput() : base()
-        {
-            OnCreatedIgbInput();
-
-        }
-
-        partial void OnCreatedIgbInput();
-
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -71,11 +72,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Returns the current value of the control.
+        /// </summary>
         public async Task<string> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
+
+        /// <summary>
+        /// Returns the current value of the control.
+        /// </summary>
         public string GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
@@ -83,7 +92,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private InputType _displayType = InputType.Text;
 
-        partial void OnDisplayTypeChanging(ref InputType newValue);
         /// <summary>
         /// The type attribute of the control.
         /// </summary>
@@ -104,7 +112,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
         /// </summary>
@@ -125,10 +132,10 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _inputMode;
 
-        partial void OnInputModeChanging(ref string newValue);
         /// <summary>
         /// The input mode attribute of the control.
-        /// See [relevant MDN article](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode)
+        /// See the relevant MDN article on
+        /// <see href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode">inputmode</see>.
         /// </summary>
         [Parameter]
         [WCAttributeName("inputmode")]
@@ -147,7 +154,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string? _pattern;
 
-        partial void OnPatternChanging(ref string? newValue);
         /// <summary>
         /// The pattern attribute of the control.
         /// </summary>
@@ -167,7 +173,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _minLength = 0;
 
-        partial void OnMinLengthChanging(ref double? newValue);
         /// <summary>
         /// The minimum string length required by the control.
         /// </summary>
@@ -188,7 +193,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _maxLength = 0;
 
-        partial void OnMaxLengthChanging(ref double? newValue);
         /// <summary>
         /// The maximum string length of the control.
         /// </summary>
@@ -209,7 +213,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _min = 0;
 
-        partial void OnMinChanging(ref double? newValue);
         /// <summary>
         /// The min attribute of the control.
         /// </summary>
@@ -229,7 +232,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _max = 0;
 
-        partial void OnMaxChanging(ref double? newValue);
         /// <summary>
         /// The max attribute of the control.
         /// </summary>
@@ -249,7 +251,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _step = 0;
 
-        partial void OnStepChanging(ref double? newValue);
         /// <summary>
         /// The step attribute of the control.
         /// </summary>
@@ -269,7 +270,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _autofocus = false;
 
-        partial void OnAutofocusChanging(ref bool newValue);
         /// <summary>
         /// The autofocus attribute of the control.
         /// </summary>
@@ -289,7 +289,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _autocomplete;
 
-        partial void OnAutocompleteChanging(ref string newValue);
         /// <summary>
         /// The autocomplete attribute of the control.
         /// </summary>
@@ -309,10 +308,10 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _validateOnly = false;
 
-        partial void OnValidateOnlyChanging(ref bool newValue);
         /// <summary>
-        /// Enables validation rules to be evaluated without restricting user input. This applies to the `maxLength` property for
-        /// string-type inputs or allows spin buttons to exceed the predefined `min/max` limits for number-type inputs.
+        /// Enables validation rules to be evaluated without restricting user input.
+        /// This applies to the <see cref="MaxLength"/> property for string-type inputs, or allows spin buttons
+        /// to exceed the predefined <see cref="Min"/> and <see cref="Max"/> limits for number-type inputs.
         /// </summary>
         [Parameter]
         public bool ValidateOnly
@@ -329,25 +328,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameInput(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameInput(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         /// <summary>
         /// Increments the numeric value of the input by one or more steps.
         /// </summary>
@@ -355,6 +335,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("stepUp", new object[] { n }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Increments the numeric value of the input by one or more steps.
+        /// </summary>
         public void StepUp(double n = -1)
         {
             InvokeMethodSync("stepUp", new object[] { n }, new string[] { "Number" });
@@ -366,12 +350,21 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("stepDown", new object[] { n }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Decrements the numeric value of the input by one or more steps.
+        /// </summary>
         public void StepDown(double n = -1)
         {
             InvokeMethodSync("stepDown", new object[] { n }, new string[] { "Number" });
         }
 
         private EventCallback<string>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanged
         {
@@ -381,9 +374,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_valueChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -399,6 +392,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -421,8 +422,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the control's value changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> Change
         {
@@ -432,21 +436,17 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {
                                 newValueValue = (string)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -497,15 +497,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(string oldValue, ref string newValue);
-
-        partial void SerializeCoreIgbInput(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbInput(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }

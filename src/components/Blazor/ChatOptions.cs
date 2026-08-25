@@ -2,21 +2,16 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Configuration options for customizing the behavior and appearance of <see cref="IgbChat"/>.
+    /// </summary>
     public partial class IgbChatOptions : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatOptions"; } }
-
-        public IgbChatOptions() : base()
-        {
-            OnCreatedIgbChatOptions();
-
-        }
-
-        partial void OnCreatedIgbChatOptions();
 
         private string _currentUserId;
 
-        partial void OnCurrentUserIdChanging(ref string newValue);
         /// <summary>
         /// The ID of the current user. Used to differentiate between incoming and outgoing messages.
         /// </summary>
@@ -36,9 +31,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableAutoScroll = false;
 
-        partial void OnDisableAutoScrollChanging(ref bool newValue);
         /// <summary>
-        /// If `true`, prevents the chat from automatically scrolling to the latest message.
+        /// If <see langword="true"/>, prevents the chat from automatically scrolling to the latest message.
         /// </summary>
         [Parameter]
         public bool DisableAutoScroll
@@ -56,10 +50,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableInputAttachments = false;
 
-        partial void OnDisableInputAttachmentsChanging(ref bool newValue);
         /// <summary>
-        /// If `true`, disables the ability to upload and send attachments.
-        /// Defaults to `false`.
+        /// If <see langword="true"/>, disables the ability to upload and send attachments.
+        /// Defaults to <see langword="false"/>.
         /// </summary>
         [Parameter]
         public bool DisableInputAttachments
@@ -77,7 +70,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _isTyping = false;
 
-        partial void OnIsTypingChanging(ref bool newValue);
         /// <summary>
         /// Indicates whether the other user is currently typing a message.
         /// </summary>
@@ -97,7 +89,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _headerText;
 
-        partial void OnHeaderTextChanging(ref string newValue);
         /// <summary>
         /// Optional header text to display at the top of the chat component.
         /// </summary>
@@ -117,7 +108,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _inputPlaceholder;
 
-        partial void OnInputPlaceholderChanging(ref string newValue);
         /// <summary>
         /// Optional placeholder text for the chat input area.
         /// Provides a hint to the user about what they can type (e.g. "Type a message...").
@@ -138,7 +128,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string[] _suggestions;
 
-        partial void OnSuggestionsChanging(ref string[] newValue);
         /// <summary>
         /// Suggested text snippets or quick replies that can be shown as user-selectable options.
         /// </summary>
@@ -158,12 +147,15 @@ namespace IgniteUI.Blazor.Controls
         }
         private ChatSuggestionsPosition _suggestionsPosition = ChatSuggestionsPosition.BelowInput;
 
-        partial void OnSuggestionsPositionChanging(ref ChatSuggestionsPosition newValue);
         /// <summary>
         /// Controls the position of the chat suggestions within the component layout.
-        /// - `"below-input"`: Renders suggestions below the chat input area.
-        /// - `"below-messages"`: Renders suggestions below the chat messages area.
-        /// Default is `"below-messages"`.
+        /// <list type="bullet">
+        ///   <item><description><see cref="ChatSuggestionsPosition.BelowInput"/>: Renders suggestions
+        ///   below the chat input area.</description></item>
+        ///   <item><description><see cref="ChatSuggestionsPosition.BelowMessages"/>: Renders suggestions
+        ///   below the chat messages area.</description></item>
+        /// </list>
+        /// Defaults to <see cref="ChatSuggestionsPosition.BelowMessages"/>.
         /// </summary>
         [Parameter]
         public ChatSuggestionsPosition SuggestionsPosition
@@ -181,10 +173,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _stopTypingDelay = 0;
 
-        partial void OnStopTypingDelayChanging(ref double newValue);
         /// <summary>
         /// Time in milliseconds to wait before dispatching a stop typing event.
-        /// Default is `3000`.
+        /// Default is <c>3000</c>.
         /// </summary>
         [Parameter]
         public double StopTypingDelay
@@ -202,7 +193,15 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _adoptRootStyles = false;
 
-        partial void OnAdoptRootStylesChanging(ref bool newValue);
+        /// <summary>
+        /// When <see langword="true"/>, lets content rendered by custom renderers inside the component's
+        /// Shadow DOM inherit the styles of the document root.
+        /// </summary>
+        /// <remarks>
+        /// Use this only as a last resort. It breaks Shadow DOM encapsulation and lets global styles leak
+        /// into the component, which can produce unpredictable visuals. Prefer the exposed CSS parts and
+        /// custom properties, a linked style sheet, or inline styles within the custom renderer template.
+        /// </remarks>
         [Parameter]
         public bool AdoptRootStyles
         {
@@ -219,7 +218,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbChatRenderers _renderers;
 
-        partial void OnRenderersChanging(ref IgbChatRenderers newValue);
         /// <summary>
         /// An object containing a collection of custom renderers for different parts of the chat UI.
         /// </summary>
@@ -229,7 +227,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._renderers; }
             set
             {
-                OnRenderersChanging(ref value);
                 MarkPropDirty("Renderers");
                 if (this._renderers != null)
                 {
@@ -244,25 +241,6 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        partial void FindByNameChatOptions(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChatOptions(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -272,13 +250,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbChatOptions(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatOptions(ser);
 
             if (IsPropDirty("CurrentUserId"))
             { ser.AddStringProp("currentUserId", this._currentUserId); }

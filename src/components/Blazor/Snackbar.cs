@@ -2,10 +2,21 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A snackbar component is used to provide feedback about an operation
+    /// by showing a brief message at the bottom of the screen.
+    /// The component integrates with the
+    /// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">Invoker Commands API</see>:
+    /// an Ignite UI button or a native <c>&lt;button&gt;</c> with <c>command="--show"</c> / <c>"--hide"</c> /
+    /// <c>"--toggle"</c> and <c>commandfor</c> pointing to this component will call the
+    /// corresponding method declaratively.
+    /// </summary>
     public partial class IgbSnackbar : IgbBaseAlertLike
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSnackbar"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbSnackbarModule.IsLoadRequested(IgBlazor))
@@ -14,11 +25,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -27,6 +40,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -35,6 +49,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -43,17 +58,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbSnackbar() : base()
-        {
-            OnCreatedIgbSnackbar();
-
-        }
-
-        partial void OnCreatedIgbSnackbar();
-
         private string _actionText;
 
-        partial void OnActionTextChanging(ref string newValue);
         /// <summary>
         /// The text of the action button.
         /// </summary>
@@ -72,28 +78,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameSnackbar(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSnackbar(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
         private string _actionRef = null;
         private string _actionScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Action"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ActionScript
         {
@@ -116,8 +110,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingAction(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _action = null;
+
+        /// <summary>
+        /// Emitted when the snackbar action button is clicked.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Action
         {
@@ -127,16 +124,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _action, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_action))
                     {
                         _action = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value, (args) =>
-                        {
-                            OnHandlingAction(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value);
                         this.OnRefChanged("Action", null, "event:::Action", true, false, (refName, oldValue, newValue) =>
                         {
                             this._actionRef = refName;
@@ -157,13 +150,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbSnackbar(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSnackbar(ser);
 
             if (IsPropDirty("ActionText"))
             { ser.AddStringProp("actionText", this._actionText); }

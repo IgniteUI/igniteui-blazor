@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The igc-divider allows the content author to easily create a horizontal/vertical rule as a break between content to better organize information on a page.
+    /// The divider allows the content author to easily create a horizontal or vertical rule as a break between
+    /// content, to better organize information on a page.
     /// </summary>
     public partial class IgbDivider : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDivider"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbDividerModule.IsLoadRequested(IgBlazor))
@@ -17,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,22 +53,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbDivider() : base()
-        {
-            OnCreatedIgbDivider();
-
-        }
-
-        partial void OnCreatedIgbDivider();
-
         private bool _vertical = false;
 
-        partial void OnVerticalChanging(ref bool newValue);
         /// <summary>
         /// Whether to render a vertical divider line.
         /// </summary>
@@ -81,7 +80,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _middle = false;
 
-        partial void OnMiddleChanging(ref bool newValue);
         /// <summary>
         /// When set and inset is provided, it will shrink the divider line from both sides.
         /// </summary>
@@ -101,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DividerType _lineType = DividerType.Solid;
 
-        partial void OnLineTypeChanging(ref DividerType newValue);
         /// <summary>
         /// Whether to render a solid or a dashed divider line.
         /// </summary>
@@ -121,25 +118,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDivider(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDivider(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -149,13 +127,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbDivider(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDivider(ser);
 
             if (IsPropDirty("Vertical"))
             { ser.AddBooleanProp("vertical", this._vertical); }

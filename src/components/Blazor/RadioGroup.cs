@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The igc-radio-group component unifies one or more igc-radio buttons.
+    /// Unifies one or more <see cref="IgbRadio"/> components into a single group.
     /// </summary>
     public partial class IgbRadioGroup : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebRadioGroup"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbRadioGroupModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,22 +52,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbRadioGroup() : base()
-        {
-            OnCreatedIgbRadioGroup();
+        private ContentOrientation _alignment = ContentOrientation.Vertical;
 
-        }
-
-        partial void OnCreatedIgbRadioGroup();
-
-        private ContentOrientation _alignment = ContentOrientation.Horizontal;
-
-        partial void OnAlignmentChanging(ref ContentOrientation newValue);
         /// <summary>
         /// Alignment of the radio controls inside this group.
         /// </summary>
@@ -81,9 +79,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
-        /// Gets/Sets the checked igc-radio element that matches `value`
+        /// The value of the group, reflecting the value of the currently checked <see cref="IgbRadio"/> button.
+        /// Setting it checks the <see cref="IgbRadio"/> button in the group with a matching value.
         /// </summary>
         [Parameter]
         public string Value
@@ -99,36 +97,27 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Gets the current value of the group.
+        /// </summary>
+        /// <returns>The value of the checked <see cref="IgbRadio"/>.</returns>
         public async Task<string> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
+
+        /// <summary>
+        /// Gets the current value of the group.
+        /// </summary>
+        /// <returns>The value of the checked <see cref="IgbRadio"/>.</returns>
         public string GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
-        partial void FindByNameRadioGroup(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRadioGroup(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -139,6 +128,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private EventCallback<string>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanged
         {
@@ -148,9 +142,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_valueChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -166,6 +160,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -188,8 +190,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbRadioChangeEventArgs args);
         private EventCallback<IgbRadioChangeEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when the checked state of a radio button in the group changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbRadioChangeEventArgs> Change
         {
@@ -199,21 +204,17 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbRadioChangeEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {
                                 newValueValue = (string)(args.Detail.Value);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -264,15 +265,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(string oldValue, ref string newValue);
-
-        partial void SerializeCoreIgbRadioGroup(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbRadioGroup(ser);
 
             if (IsPropDirty("Alignment"))
             { ser.AddEnumProp("alignment", this._alignment); }

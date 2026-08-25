@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbLinearProgress : IgbProgressBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebLinearProgress"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbLinearProgressModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,17 +53,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbLinearProgress() : base()
-        {
-            OnCreatedIgbLinearProgress();
-
-        }
-
-        partial void OnCreatedIgbLinearProgress();
-
         private bool _striped = false;
 
-        partial void OnStripedChanging(ref bool newValue);
         /// <summary>
         /// Sets the striped look of the control.
         /// </summary>
@@ -77,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private LinearProgressLabelAlign _labelAlign = LinearProgressLabelAlign.TopStart;
 
-        partial void OnLabelAlignChanging(ref LinearProgressLabelAlign newValue);
         /// <summary>
         /// The position for the default label of the control.
         /// </summary>
@@ -96,33 +92,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameLinearProgress(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameLinearProgress(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbLinearProgress(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbLinearProgress(ser);
 
             if (IsPropDirty("Striped"))
             { ser.AddBooleanProp("striped", this._striped); }

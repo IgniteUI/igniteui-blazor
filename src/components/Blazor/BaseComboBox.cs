@@ -2,31 +2,28 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class shared by <see cref="IgbCombo{T}"/> and <see cref="IgbComboBoxBaseLike"/>.
+    /// </summary>
     public partial class IgbBaseComboBox : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebBaseComboBox"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbBaseComboBox() : base()
-        {
-            OnCreatedIgbBaseComboBox();
-
-        }
-
-        partial void OnCreatedIgbBaseComboBox();
-
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Sets the open state of the component.
         /// </summary>
@@ -45,25 +42,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameBaseComboBox(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameBaseComboBox(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -75,11 +53,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Shows the component.
         /// </summary>
+        /// <returns><see langword="true"/> when the component was successfully opened,
+        /// or <see langword="false"/> if it was already open.</returns>
         public async Task<bool> ShowAsync()
         {
             var iv = await InvokeMethod("show", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Shows the component.
+        /// </summary>
+        /// <returns><see langword="true"/> when the component was successfully opened,
+        /// or <see langword="false"/> if it was already open.</returns>
         public bool Show()
         {
             var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
@@ -88,11 +74,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Hides the component.
         /// </summary>
+        /// <returns><see langword="true"/> when the component was successfully closed,
+        /// or <see langword="false"/> if it was already closed.</returns>
         public async Task<bool> HideAsync()
         {
             var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Hides the component.
+        /// </summary>
+        /// <returns><see langword="true"/> when the component was successfully closed,
+        /// or <see langword="false"/> if it was already closed.</returns>
         public bool Hide()
         {
             var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
@@ -101,24 +95,26 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Toggles the open state of the component.
         /// </summary>
+        /// <returns><see langword="true"/> when the open state was changed.</returns>
         public async Task<bool> ToggleAsync()
         {
             var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Toggles the open state of the component.
+        /// </summary>
+        /// <returns><see langword="true"/> when the open state was changed.</returns>
         public bool Toggle()
         {
             var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
-        partial void SerializeCoreIgbBaseComboBox(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbBaseComboBox(ser);
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }

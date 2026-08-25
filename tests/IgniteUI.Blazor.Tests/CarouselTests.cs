@@ -158,4 +158,16 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarouselIndicator>();
         cut.Find("igc-carousel-indicator").Should_Exist();
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbCarousel</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Carousel_DefaultValues_MatchWebComponent()
+    {
+        var carousel = new IgbCarousel();
+
+        Assert.Equal(10, carousel.MaximumIndicatorsCount);
+    }
 }

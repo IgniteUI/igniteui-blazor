@@ -2,25 +2,20 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Options for controlling navigation behavior when moving the active highlight.
+    /// </summary>
     public partial class IgbHighlightNavigation : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebHighlightNavigation"; } }
 
         private static bool _marshalByValue = true;
 
-        public IgbHighlightNavigation() : base()
-        {
-            OnCreatedIgbHighlightNavigation();
-
-        }
-
-        partial void OnCreatedIgbHighlightNavigation();
-
         private bool _preventScroll = false;
 
-        partial void OnPreventScrollChanging(ref bool newValue);
         /// <summary>
-        /// If true, prevents the component from scrolling the new active match into view.
+        /// When <see langword="true"/>, prevents the component from scrolling the new active match into view.
         /// </summary>
         [Parameter]
         public bool PreventScroll
@@ -37,25 +32,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameHighlightNavigation(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameHighlightNavigation(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -65,19 +41,16 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbHighlightNavigation(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbHighlightNavigation(ser);
 
             if (IsPropDirty("PreventScroll"))
             { ser.AddBooleanProp("preventScroll", this._preventScroll); }
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -87,6 +60,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);
