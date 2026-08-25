@@ -18,7 +18,7 @@ Ignite UI for Blazor components render as web components (`igc-chip`, `igc-grid`
 | Mechanism | Purpose | Priority |
 |---|---|---|
 | Design tokens `--ig-*` | Override colors, borders, shadows via CSS vars | **Primary** - use whenever a token exists |
-| `::part()` | Target a named shadow DOM part directly | **Secondary** - only when no token covers it; confirm part names via `get_doc` |
+| `::part()` | Target a named shadow DOM part directly | **Secondary** - only when no token covers it; confirm part names via `get_doc`, then use `get_example` for working code |
 | `::deep` | Pierce Blazor CSS isolation in `.razor.css` files | **File helper** - add it in `.razor.css`; never needed in global CSS |
 
 `::deep` and `::part()` solve different problems and are often combined: `::deep igc-chip::part(base) { ... }`.

@@ -79,7 +79,7 @@ For components with variants, query the exact variant whenever possible. For exa
 
 Use palette token references such as `var(--ig-primary-500)` and `var(--ig-primary-500-contrast)` after a palette has been established. Do not pass raw hex/RGB/HSL values to component theme tokens unless the value is intentionally outside the theme palette.
 
-For CSS parts, call the component's Blazor `get_doc` entry first. Do not say a component exposes CSS parts unless the Blazor doc confirms the exact part names.
+For CSS parts, call the component's Blazor `get_doc` entry first to confirm exact part names. Use `get_example` to get working CSS `::part()` code samples. Do not say a component exposes CSS parts unless the Blazor doc confirms the exact part names.
 
 ### Discovering Available Tokens
 
@@ -235,7 +235,7 @@ Base CSS and instructions on what the MCP tools return and what the reference fi
 
 > **AGENT INSTRUCTION - CSS parts**
 >
-> Some Ignite UI Blazor components expose CSS shadow parts via `::part()`. Use `get_doc` for the component to confirm whether parts are available and to get the exact part names. Use `get_component_design_tokens` to get token names; do not infer token names or part names from Angular, React, or Web Components examples.
+> Some Ignite UI Blazor components expose CSS shadow parts via `::part()`. Use `get_doc` for the component to confirm whether parts are available and to get the exact part names. Use `get_example` for working CSS `::part()` code samples. Use `get_component_design_tokens` to get token names; do not infer token names or part names from Angular, React, or Web Components examples.
 
 > **AGENT INSTRUCTION - Theming MCP server platform**
 >

@@ -210,7 +210,7 @@ Some Ignite UI Blazor components expose shadow DOM parts via `::part()`. Use the
 
 1. Call `get_component_design_tokens` to check whether the desired property has a token.
 2. If a token exists, set it via `igc-<tag> { --ig-<component>-<token>: value; }` - no `::part()` needed.
-3. If no token covers it, call `get_doc` to see the component's CSS parts list, then use `igc-<component-tag>::part(<part-name>)`.
+3. If no token covers it, call `get_doc` to see the component's CSS parts list, then use `get_example` for working `::part()` code samples and `igc-<component-tag>::part(<part-name>)` selectors.
 
 **File context:**
 
