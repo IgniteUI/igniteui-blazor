@@ -2212,7 +2212,7 @@ namespace IgniteUI.Blazor.Controls
                 //Console.WriteLine(val);
                 return ((IConvertible)val).ToDouble(CultureInfo.InvariantCulture);
             }
-            else if (val != null)
+            else
             {
                 //Console.WriteLine(val);
                 return Double.Parse(val.ToString()!);
@@ -2262,7 +2262,7 @@ namespace IgniteUI.Blazor.Controls
             }
             try
             {
-                var arr = JsonSerializer.Deserialize<object?[]>(val?.ToString()!, SerializerOptions);
+                var arr = JsonSerializer.Deserialize<object?[]>(val.ToString()!, SerializerOptions);
                 DateTime[] ret = new DateTime[arr!.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
