@@ -57,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
                         var meth = target.MakeGenericMethod(new Type[] {
                             typeof(string),
                             typeof(int),
-                            typeof(UnmarshalledColumn[]),
+                            typeof(UnmarshalledColumn?[]),
                             typeof(string)
                             });
 
@@ -65,7 +65,7 @@ namespace IgniteUI.Blazor.Controls
                         var methodNameParam = Expression.Parameter(typeof(string), "methodName");
                         var refNameParam = Expression.Parameter(typeof(string), "refName");
                         var indexParam = Expression.Parameter(typeof(int), "index");
-                        var columnsParam = Expression.Parameter(typeof(UnmarshalledColumn[]), "columns");
+                        var columnsParam = Expression.Parameter(typeof(UnmarshalledColumn?[]), "columns");
 
                         var wsRuntime = Expression.Convert(jsRuntimeParam, inprocRuntime.GetType());
                         var call = Expression.Call(wsRuntime, meth, methodNameParam, refNameParam,
