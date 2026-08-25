@@ -17,7 +17,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal string ToRef()
         {
-            return "localJson:::" + Json.Replace("\\", "\\\\").Replace("\"", "\\\"");
+            return "localJson:::" + Json!.Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
     }
 

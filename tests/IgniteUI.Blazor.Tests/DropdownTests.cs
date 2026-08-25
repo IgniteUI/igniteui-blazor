@@ -99,7 +99,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
-                Assert.Equal(2, result.Length);
+                Assert.Equal(2, result!.Length);
                 Assert.Same(cut.FindComponents<IgbDropdownItem>()[0].Instance, result[0]);
                 Assert.Same(cut.FindComponents<IgbDropdownItem>()[1].Instance, result[1]);
             })
@@ -108,7 +108,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-group:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-group:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
-                Assert.Equal(2, result.Length);
+                Assert.Equal(2, result!.Length);
                 // TODO: unlike IgbDropdownItem (registers via the "DropdownParent" CascadingParameter,
                 // resolved through IgbDropdown.ContentItems), IgbDropdownGroup carries no CascadingParameter
                 // and there's no FindByNameDropdownGroup impl., so the refs currently resolve to null elements;

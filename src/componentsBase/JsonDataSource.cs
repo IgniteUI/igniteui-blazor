@@ -271,7 +271,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return Guid.Empty;
             }
-            return itm.Id;
+            return itm!.Id;
         }
 
         public IJSDataSourceItem? FromOriginal(object item)

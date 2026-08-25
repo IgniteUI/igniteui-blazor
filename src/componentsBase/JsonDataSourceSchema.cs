@@ -591,7 +591,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JSDataSourceSchemaType.DateTimeValue;
             }
-            if (type.IsEnum)
+            if (type!.IsEnum)
             {
                 var underlyingType = Enum.GetUnderlyingType(type);
                 return ResolveSchemaType(underlyingType);

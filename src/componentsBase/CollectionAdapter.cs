@@ -197,7 +197,7 @@ namespace IgniteUI.Blazor.Controls
                         }
                     }
                 }
-                for (var i = this._query.Count - 1; i >= 0; i--)
+                for (var i = this._query!.Count - 1; i >= 0; i--)
                 {
                     item = queryArray[i];
                     if (item == null)

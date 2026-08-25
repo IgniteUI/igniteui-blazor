@@ -229,7 +229,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
             assert: (cut, result) =>
             {
                 Assert.Single(result!);
-                Assert.Same(cut.Instance, result[0]);
+                Assert.Same(cut.Instance, result![0]);
             })
         .Getter(c => c.GetPathAsync(), c => c.GetPath(), "Path",
             host: treeHost,
@@ -237,7 +237,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
             returns: FromRender.Of((interop, h) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(h, "igc-tree-item")}}}"}, {"refType": "name", "id": "mainControl"}]""")),
             assert: (h, result) =>
             {
-                Assert.Equal(2, result.Length);
+                Assert.Equal(2, result!.Length);
                 Assert.Same(h.FindComponents<IgbTreeItem>()[1].Instance, result[1]);
                 // TODO: the ancestor ref only resolves through FindByName on the item
                 // itself, which matches nothing but "mainControl" — the parent element

@@ -27,7 +27,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
-                Assert.Equal(2, result.Length);
+                Assert.Equal(2, result!.Length);
                 Assert.Same(cut.FindComponents<IgbTile>()[0].Instance, result[0]);
                 Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, result[1]);
             })

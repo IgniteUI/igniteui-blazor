@@ -135,7 +135,7 @@ namespace IgniteUI.Blazor.Controls
             if (control != null)
             {
                 var arr = control.DeserializeDictionaryArray(batch);
-                for (var i = 0; i < arr.Length; i++)
+                for (var i = 0; i < arr!.Length; i++)
                 {
                     var item = arr[i];
                     string? currContainer = item.ContainsKey("containerId") ? item["containerId"].ToString() : null;
@@ -149,7 +149,7 @@ namespace IgniteUI.Blazor.Controls
                     {
                         var currControl = GetControl(currContainer);
                         //Console.WriteLine("found target");
-                        currControl.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                        currControl!.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
                     }
                 }
                 control.RefreshDynamicContent();

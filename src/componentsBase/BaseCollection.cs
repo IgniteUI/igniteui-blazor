@@ -147,11 +147,11 @@ namespace IgniteUI.Blazor.Controls
             //var vals = new List<string>();
             if (propertyName != null)
             {
-                context.Writer.WriteStartArray(propertyName);
+                context!.Writer.WriteStartArray(propertyName);
             }
             else
             {
-                context.Writer.WriteStartArray();
+                context!.Writer.WriteStartArray();
             }
             for (var i = 0; i < Count; i++)
             {
