@@ -186,7 +186,12 @@ namespace IgniteUI.Blazor.Controls
                 //Console.WriteLine("found by id");
                 object data = _refsById[refName];
                 IJSDataSource? dataSource = _dataSources[refName];
-                IJSDataSourceItem? newItem = dataSource?.NotifyInsertItem(data, index, refItem);
+                if (dataSource == null)
+                {
+                    return;
+                }
+
+                IJSDataSourceItem? newItem = dataSource.NotifyInsertItem(data, index, refItem);
                 _refSink!.OnRefNotifyInsertItem(dataSource, refName, index, newItem);
             }
         }
@@ -205,7 +210,12 @@ namespace IgniteUI.Blazor.Controls
             {
                 Object data = _refsById[refName];
                 IJSDataSource? dataSource = _dataSources[refName];
-                IJSDataSourceItem? oldItemJson = dataSource?.NotifyRemoveItem(data, index, oldItem);
+                if (dataSource == null)
+                {
+                    return;
+                }
+
+                IJSDataSourceItem? oldItemJson = dataSource.NotifyRemoveItem(data, index, oldItem);
                 _refSink!.OnRefNotifyRemoveItem(dataSource, refName, index, oldItemJson);
             }
         }
@@ -220,7 +230,12 @@ namespace IgniteUI.Blazor.Controls
             {
                 Object data = _refsById[refName];
                 IJSDataSource? dataSource = _dataSources[refName];
-                dataSource?.NotifyClearItems(data);
+                if (dataSource == null)
+                {
+                    return;
+                }
+
+                dataSource.NotifyClearItems(data);
                 _refSink!.OnRefNotifyClearItems(dataSource, refName, dataSource);
             }
         }
@@ -234,8 +249,13 @@ namespace IgniteUI.Blazor.Controls
             {
                 object data = _refsById[refName];
                 IJSDataSource? dataSource = _dataSources[refName];
-                IJSDataSourceItem? oldItemJson = dataSource?.DataSourceType == JSDataSourceType.Json ? ((JsonDataSource)dataSource)[index] : null;
-                IJSDataSourceItem? newItemJson = dataSource?.NotifySetItem(data, index, oldItem, newItem);
+                if (dataSource == null)
+                {
+                    return;
+                }
+
+                IJSDataSourceItem? oldItemJson = dataSource.DataSourceType == JSDataSourceType.Json ? ((JsonDataSource)dataSource)[index] : null;
+                IJSDataSourceItem? newItemJson = dataSource.NotifySetItem(data, index, oldItem, newItem);
                 _refSink!.OnRefNotifySetItem(dataSource, refName, index, oldItemJson, newItemJson);
             }
         }
@@ -249,7 +269,12 @@ namespace IgniteUI.Blazor.Controls
             {
                 object data = _refsById[refName];
                 IJSDataSource? dataSource = _dataSources[refName];
-                IJSDataSourceItem? newItemJson = dataSource?.NotifyUpdateItem(data, index, refItem);
+                if (dataSource == null)
+                {
+                    return;
+                }
+
+                IJSDataSourceItem? newItemJson = dataSource.NotifyUpdateItem(data, index, refItem);
                 _refSink!.OnRefNotifyUpdateItem(dataSource, refName, index, newItemJson, syncDataOnly);
             }
         }

@@ -190,7 +190,7 @@ namespace IgniteUI.Blazor.Controls
             if (schema!.IsPrimitive)
             {
                 columns[columns.Length - 1] = AdjustColumnCapacity(parentPath, columns[columns.Length - 1], schema, "___primitiveValueCollection", null, null, false, schema.PrimitiveType, oldValue, newValue);
-                return columns;
+                return columns!;
             }
             if (String.IsNullOrEmpty(parentPath))
             {
@@ -226,7 +226,7 @@ namespace IgniteUI.Blazor.Controls
             }
 
             //Console.WriteLine("end adjusting capacity: " + (DateTime.Now - start).TotalMilliseconds);
-            return columns;
+            return columns!;
         }
 
         private UnmarshalledColumnData CreateColumn(string? parentPath, string propertyName, JSDataSourceSchema schema, JSDataSourceSchemaType type, Delegate? valueGetter, Func<object, object>? untypedGetter, bool isIDColumn)
@@ -1633,7 +1633,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private UnmarshalledColumnData? AdjustColumnCapacity(string? parentPath, UnmarshalledColumnData? column, JSDataSourceSchema schema, string? propertyName, Delegate? getter, Func<object, object>? untypedGetter, bool isIdColumn, JSDataSourceSchemaType type, int oldValue, int newValue)
+        private UnmarshalledColumnData AdjustColumnCapacity(string? parentPath, UnmarshalledColumnData? column, JSDataSourceSchema schema, string? propertyName, Delegate? getter, Func<object, object>? untypedGetter, bool isIdColumn, JSDataSourceSchemaType type, int oldValue, int newValue)
         {
 #pragma warning disable CS8604 // internal invariant: paired column arrays (NullValues) are allocated together
             if (column == null)
