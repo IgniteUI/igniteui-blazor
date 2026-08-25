@@ -2655,7 +2655,7 @@ namespace IgniteUI.Blazor.Controls
             }
             var str = val.ToString();
             T ret;
-            if (Enum.TryParse<T>(str, out ret))
+            if (Enum.TryParse<T>(str, true, out ret))
             {
                 return ret;
             }
