@@ -35,14 +35,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private DateTime _value = DateTime.MinValue;
+        private DateTime? _value = DateTime.MinValue;
 
         /// <summary>
         /// The current value of the calendar.
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Single"/>.
         /// </summary>
         [Parameter]
-        public DateTime Value
+        public DateTime? Value
         {
             get { return this._value; }
             set
@@ -279,18 +279,18 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private EventCallback<DateTime>? _valueChanged = null;
+        private EventCallback<DateTime?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime> ValueChanged
+        public EventCallback<DateTime?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime?>.Empty;
             }
             set
             {
@@ -394,11 +394,11 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            var newValueValue = default(DateTime);
+                            var newValueValue = default(DateTime?);
 
                             if (this.Selection == CalendarSelection.Single)
                             {
-                                newValueValue = (DateTime)(args.Detail);
+                                newValueValue = (DateTime?)(args.Detail);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -428,7 +428,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(Name, "Values");
                             }
 
-                            if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<DateTime?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 if (task.Exception != null)

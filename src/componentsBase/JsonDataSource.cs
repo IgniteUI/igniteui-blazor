@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
 
     internal interface IJSDataSource
     {
-        string GetDataIntentsAsJson();
+        string? GetDataIntentsAsJson();
         bool SuppressModifications { get; set; }
         JSDataSourceType DataSourceType { get; }
         bool IsSent { get; set; }

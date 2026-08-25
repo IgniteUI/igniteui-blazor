@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("name"))
-            { this.Name = ReturnToString(args["name"]); }
+            { this.Name = ReturnToString(args["name"]) ?? Guid.NewGuid().ToString(); }
             if (args.ContainsKey("collection"))
             { this.Collection = ReturnToString(args["collection"]); }
 

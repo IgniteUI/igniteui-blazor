@@ -36,10 +36,10 @@ namespace IgniteUI.Blazor.Controls
             }
 
             // Mirrors .NET 10's EventCallback<TValue>.Equals, need the internal fields for the checks:
-            MulticastDelegate? leftDelegate = (MulticastDelegate?)CallbackFields<TValue>.Delegate.GetValue(left);
-            MulticastDelegate? rightDelegate = (MulticastDelegate?)CallbackFields<TValue>.Delegate.GetValue(other);
+            MulticastDelegate? leftDelegate = (MulticastDelegate?)CallbackFields<TValue>.Delegate?.GetValue(left);
+            MulticastDelegate? rightDelegate = (MulticastDelegate?)CallbackFields<TValue>.Delegate?.GetValue(other);
 
-            return ReferenceEquals(CallbackFields<TValue>.Receiver.GetValue(left), CallbackFields<TValue>.Receiver.GetValue(other))
+            return ReferenceEquals(CallbackFields<TValue>.Receiver?.GetValue(left), CallbackFields<TValue>.Receiver?.GetValue(other))
                 && (leftDelegate?.Equals(rightDelegate) ?? (rightDelegate == null));
 #endif
         }
@@ -48,8 +48,8 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>Resolved once per closed callback type, rather than per component instance.</summary>
         private static class CallbackFields<TValue>
         {
-            internal static readonly FieldInfo Delegate = Field("Delegate");
-            internal static readonly FieldInfo Receiver = Field("Receiver");
+            internal static readonly FieldInfo? Delegate = Field("Delegate");
+            internal static readonly FieldInfo? Receiver = Field("Receiver");
 
             /// <summary> Use as guard against (unlikely) fields rename in old versions that won't resolve. </summary>
             internal static readonly bool Resolved = Delegate != null && Receiver != null;

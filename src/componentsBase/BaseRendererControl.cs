@@ -642,7 +642,7 @@ namespace IgniteUI.Blazor.Controls
 
         private Dictionary<string, DynamicContentInfo> _dynamicContentInfos = new Dictionary<string, DynamicContentInfo>();
 
-        private Dictionary<string, object> _contentTemplates = new Dictionary<string, object>();
+        private Dictionary<string, object?> _contentTemplates = new Dictionary<string, object?>();
         private Dictionary<string, Type> _contentTemplateTypes = new Dictionary<string, Type>();
         internal void UpdateTemplate(string templateId, object? template, Type type)
         {
@@ -1459,7 +1459,7 @@ namespace IgniteUI.Blazor.Controls
             SendMessage(m);
         }
 
-        void RefSink.OnRefNotifyInsertItem(IJSDataSource dataSource, string refName, int index, object refItem)
+        void RefSink.OnRefNotifyInsertItem(IJSDataSource dataSource, string refName, int index, object? refItem)
         {
             if (dataSource.DataSourceType == JSDataSourceType.Json)
             {
@@ -1483,7 +1483,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        void RefSink.OnRefNotifyRemoveItem(IJSDataSource dataSource, string refName, int index, object oldItem)
+        void RefSink.OnRefNotifyRemoveItem(IJSDataSource dataSource, string refName, int index, object? oldItem)
         {
             if (dataSource.DataSourceType == JSDataSourceType.Json)
             {
@@ -1505,7 +1505,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        void RefSink.OnRefNotifyClearItems(IJSDataSource dataSource, string refName, object refValue)
+        void RefSink.OnRefNotifyClearItems(IJSDataSource dataSource, string refName, object? refValue)
         {
             if (dataSource.DataSourceType == JSDataSourceType.Json)
             {
@@ -1526,7 +1526,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        void RefSink.OnRefNotifySetItem(IJSDataSource dataSource, string refName, int index, object oldItem, object newItem)
+        void RefSink.OnRefNotifySetItem(IJSDataSource dataSource, string refName, int index, object? oldItem, object? newItem)
         {
             if (dataSource.DataSourceType == JSDataSourceType.Json)
             {
@@ -1535,7 +1535,7 @@ namespace IgniteUI.Blazor.Controls
                 m.SetData("refName", "\"" + refName + "\"");
                 m.SetData("index", index.ToString());
                 m.SetData("oldItem", oldItem == null ? "null" : ((JsonDataSourceItem)oldItem).ToJson());
-                m.SetData("newItem", oldItem == null ? "null" : ((JsonDataSourceItem)newItem).ToJson());
+                m.SetData("newItem", oldItem == null ? "null" : ((JsonDataSourceItem?)newItem)?.ToJson());
                 if (!((JsonDataSource)dataSource).DateCacheReady)
                 {
                     m.SetData("dateCache", ((JsonDataSource)dataSource).GetDateCacheAsJson());
@@ -1549,7 +1549,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        void RefSink.OnRefNotifyUpdateItem(IJSDataSource dataSource, string refName, int index, object refItem, bool syncDataOnly)
+        void RefSink.OnRefNotifyUpdateItem(IJSDataSource dataSource, string refName, int index, object? refItem, bool syncDataOnly)
         {
             if (dataSource.DataSourceType == JSDataSourceType.Json)
             {
@@ -2061,7 +2061,7 @@ namespace IgniteUI.Blazor.Controls
                                         var v = ((JsonElement)obj["value"]);
                                         var str = v.ToString();
                                         //Console.WriteLine(str);
-                                        var ev = JsonSerializer.Deserialize<Dictionary<string, object>>(str, SerializerOptions);
+                                        var ev = JsonSerializer.Deserialize<Dictionary<string, object?>>(str, SerializerOptions);
                                         ((BaseRendererElement)o).FromEventJson(this, ev);
                                         returnValue = o;
                                     }
@@ -2965,7 +2965,7 @@ namespace IgniteUI.Blazor.Controls
                 T a = new T();
                 BaseRendererElement ele = (BaseRendererElement)a;
                 ele.Parent = this;
-                ele.FromEventJson(this, (Dictionary<string, object>)args);
+                ele.FromEventJson(this, (Dictionary<string, object?>)args);
                 //Console.WriteLine("invoking async");
                 if (onArgs != null)
                 {
@@ -2976,7 +2976,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     throw task.Exception;
                 }
-                ele.ToEventJson(this, (Dictionary<string, object>)args);
+                ele.ToEventJson(this, (Dictionary<string, object?>)args);
                 ele.Parent = (null);
             };
 
@@ -3024,14 +3024,14 @@ namespace IgniteUI.Blazor.Controls
                 T a = new T();
                 BaseRendererElement ele = (BaseRendererElement)a;
                 ele.Parent = this;
-                ele.FromEventJson(this, (Dictionary<string, object>)args);
+                ele.FromEventJson(this, (Dictionary<string, object?>)args);
                 //Console.WriteLine("invoking async");
                 if (onArgs != null)
                 {
                     onArgs(a);
                 }
                 handler(a);
-                ele.ToEventJson(this, (Dictionary<string, object>)args);
+                ele.ToEventJson(this, (Dictionary<string, object?>)args);
                 ele.Parent = (null);
             };
 
@@ -3431,7 +3431,7 @@ namespace IgniteUI.Blazor.Controls
     public interface IIgniteUIBlazor
     {
         IJSRuntime JsRuntime { get; }
-        IIgniteUIBlazorSettings Settings { get; }
+        IIgniteUIBlazorSettings? Settings { get; }
         WebCallback WebCallback { get; }
         void RequestLoad(string moduleName);
         bool IsLoadRequested(string moduleName);
@@ -3529,7 +3529,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else if (_remoteRuntimeProp != null)
                 {
-                    _isRuntimeValid = (bool)_remoteRuntimeProp.GetValue(JsRuntime);
+                    _isRuntimeValid = (bool)(_remoteRuntimeProp.GetValue(JsRuntime) ?? false);
                     _isRemoteRuntime = true;
                 }
                 else
@@ -3543,7 +3543,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (reevaluate && _isRemoteRuntime)
                 {
-                    _isRuntimeValid = (bool)_remoteRuntimeProp!.GetValue(JsRuntime);
+                    _isRuntimeValid = (bool)(_remoteRuntimeProp!.GetValue(JsRuntime) ?? false);
                 }
             }
             return _isRuntimeValid;

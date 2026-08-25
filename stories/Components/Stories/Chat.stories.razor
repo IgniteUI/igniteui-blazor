@@ -101,7 +101,7 @@
         var userMessage = args.Detail;
         if (!_basicMessages.Any(x => x.Id == userMessage!.Id))
         {
-            _basicMessages = [.. _basicMessages, userMessage];
+            _basicMessages = [.. _basicMessages, userMessage!];
         }
 
         _basicOptions.Suggestions = [];
@@ -118,7 +118,7 @@
         var userMessage = args.Detail;
         if (!_templateMessages.Any(x => x.Id == userMessage!.Id))
         {
-            _templateMessages = [.. _templateMessages, userMessage];
+            _templateMessages = [.. _templateMessages, userMessage!];
         }
 
         _templateOptions.Suggestions = [];

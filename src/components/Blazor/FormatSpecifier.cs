@@ -27,7 +27,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The resolved culture name.</returns>
         public async Task<String?> GetLocalCultureAsync()
         {
-            var iv = await InvokeMethod("getLocalCulture", new object?[] { }, new string[] { });
+            var iv = await InvokeMethod("getLocalCulture", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
         /// <summary>
@@ -37,7 +37,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The resolved culture name.</returns>
         public String? GetLocalCulture()
         {
-            var iv = InvokeMethodSync("getLocalCulture", new object?[] { }, new string[] { });
+            var iv = InvokeMethodSync("getLocalCulture", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
 

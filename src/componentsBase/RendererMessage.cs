@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
 {
     internal class RendererMessage
     {
-        private Dictionary<string, string> _data = new Dictionary<string, string>();
+        private Dictionary<string, string?> _data = new Dictionary<string, string?>();
         private String? _type = null;
         public string? Type
         {

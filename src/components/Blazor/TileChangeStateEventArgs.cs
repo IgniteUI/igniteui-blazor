@@ -59,12 +59,12 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
+            if (args?.ContainsKey("detail") == true)
             { this.Detail = (IgbTileChangeStateEventArgsDetail?)ConvertReturnValue(args["detail"], "TileChangeStateEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;

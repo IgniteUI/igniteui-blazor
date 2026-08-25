@@ -18,7 +18,7 @@ namespace IgniteUI.Blazor.Controls
         private RefSink? _refSink;
         private Dictionary<string, object> _refs = new Dictionary<string, object>();
         private Dictionary<string, object> _refsById = new Dictionary<string, object>();
-        private Dictionary<string, IJSDataSource> _dataSources = new Dictionary<string, IJSDataSource>();
+        private Dictionary<string, IJSDataSource?> _dataSources = new Dictionary<string, IJSDataSource?>();
         private Dictionary<object, string> _idLookup = new Dictionary<object, string>();
         private Dictionary<string, bool> _suspensionLookup = new Dictionary<string, bool>();
 
