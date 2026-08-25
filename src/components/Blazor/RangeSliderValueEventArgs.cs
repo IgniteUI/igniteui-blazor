@@ -62,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbRangeSliderValue)ConvertReturnValue(args["detail"], "RangeSliderValue", true); }
+            { this.Detail = (IgbRangeSliderValue?)ConvertReturnValue(args["detail"], "RangeSliderValue", true); }
 
             this.SuppressParentNotify = false;
         }

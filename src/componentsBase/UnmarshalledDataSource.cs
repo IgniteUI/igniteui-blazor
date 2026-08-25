@@ -291,34 +291,34 @@ namespace IgniteUI.Blazor.Controls
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
-                    doubleGetter = (Func<object, double>)valueGetter;
+                    doubleGetter = (Func<object, double>?)valueGetter;
                     floatingPointGetter = doubleGetter;
                     break;
                 case JSDataSourceSchemaType.SingleValue:
-                    singleGetter = (Func<object, float>)valueGetter!;
+                    singleGetter = (Func<object, float>?)valueGetter;
                     floatingPointGetter = (o) => (double)singleGetter!(o);
                     break;
                 case JSDataSourceSchemaType.BooleanValue:
-                    boolGetter = (Func<object, bool>)valueGetter!;
+                    boolGetter = (Func<object, bool>?)valueGetter;
                     integerGetter = (o) => boolGetter!(o) ? 1 : 0;
                     break;
                 case JSDataSourceSchemaType.ByteValue:
-                    byteGetter = (Func<object, byte>)valueGetter!;
+                    byteGetter = (Func<object, byte>?)valueGetter;
                     integerGetter = (o) => (int)byteGetter!(o);
                     break;
                 case JSDataSourceSchemaType.DecimalValue:
-                    decimalGetter = (Func<object, decimal>)valueGetter!;
+                    decimalGetter = (Func<object, decimal>?)valueGetter;
                     floatingPointGetter = (o) => (double)decimalGetter!(o);
                     break;
                 case JSDataSourceSchemaType.IntValue:
-                    integerGetter = (Func<object, int>)valueGetter!;
+                    integerGetter = (Func<object, int>?)valueGetter;
                     break;
                 case JSDataSourceSchemaType.ShortValue:
-                    shortGetter = (Func<object, short>)valueGetter!;
+                    shortGetter = (Func<object, short>?)valueGetter;
                     integerGetter = (o) => (int)shortGetter!(o);
                     break;
                 case JSDataSourceSchemaType.LongValue:
-                    longGetter = (Func<object, long>)valueGetter;
+                    longGetter = (Func<object, long>?)valueGetter;
                     break;
                 case JSDataSourceSchemaType.StringValue:
                     if (isIDColumn)
@@ -363,7 +363,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
 
                 case JSDataSourceSchemaType.NullableDoubleValue:
-                    nullableDoubleGetter = (Func<object, double?>)valueGetter;
+                    nullableDoubleGetter = (Func<object, double?>?)valueGetter;
                     nullableFloatingPointGetter = nullableDoubleGetter;
                     break;
                 case JSDataSourceSchemaType.NullableSingleValue:
@@ -396,7 +396,7 @@ namespace IgniteUI.Blazor.Controls
                     nullableIntegerGetter = (o) => (int?)nullableShortGetter!(o);
                     break;
                 case JSDataSourceSchemaType.NullableLongValue:
-                    nullableLongGetter = (Func<object, long?>)valueGetter;
+                    nullableLongGetter = (Func<object, long?>?)valueGetter;
                     break;
                 case JSDataSourceSchemaType.NullableCalendarValue:
                 case JSDataSourceSchemaType.NullableDateTimeValue:
@@ -720,7 +720,7 @@ namespace IgniteUI.Blazor.Controls
                                 var id = _idGetter!(item!);
                                 var parentId = _parentId != null ? _parentId + "/" + id.ToString() : id.ToString();
 
-                                var sub = (UnmarshalledDataSource)UnmarshalledDataSource.CreateWithSchema(objVal, parentId, column.SubSchema, _manager, _helper);
+                                var sub = (UnmarshalledDataSource?)UnmarshalledDataSource.CreateWithSchema(objVal, parentId, column.SubSchema, _manager, _helper);
                                 cols = sub?.GetColumns("");
 
                                 if (!_subDataSources.ContainsKey(id))
@@ -1110,7 +1110,7 @@ namespace IgniteUI.Blazor.Controls
                             UnmarshalledColumn?[]? cols = null;
                             if (objVal != null)
                             {
-                                var sub = (UnmarshalledDataSource)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
+                                var sub = (UnmarshalledDataSource?)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
                                 var subcols = sub!.GetColumns("");
 
                                 UnmarshalledColumn primcol = new UnmarshalledColumn();

@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbComboChangeEventArgsDetail)ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true); }
+            { this.Detail = (IgbComboChangeEventArgsDetail?)ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

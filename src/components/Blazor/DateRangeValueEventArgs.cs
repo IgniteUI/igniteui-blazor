@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbDateRangeValueDetail)ConvertReturnValue(args["detail"], "DateRangeValueDetail", true); }
+            { this.Detail = (IgbDateRangeValueDetail?)ConvertReturnValue(args["detail"], "DateRangeValueDetail", true); }
 
             this.SuppressParentNotify = false;
         }

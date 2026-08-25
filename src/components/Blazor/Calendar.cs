@@ -415,7 +415,7 @@ namespace IgniteUI.Blazor.Controls
 
                             if (this.Selection != CalendarSelection.Single)
                             {
-                                newValueValues = (DateTime[])(DowncastArray<DateTime>(args.Detail));
+                                newValueValues = (DateTime[]?)(DowncastArray<DateTime>(args.Detail));
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

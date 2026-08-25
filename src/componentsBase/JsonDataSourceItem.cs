@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
         private bool _isDataSource = true;
         private IJSDataSource? _source = null;
         private string? _parentId = null;
-        private Dictionary<string, object> _values = new Dictionary<string, object>();
+        private Dictionary<string, object?> _values = new Dictionary<string, object?>();
         private Dictionary<string, JSDataSourceSchemaType> _valueTypes = new Dictionary<string, JSDataSourceSchemaType>();
 
         public bool IsNull
@@ -165,7 +165,7 @@ namespace IgniteUI.Blazor.Controls
                 String name = schema.PropertyNames[i];
                 Func<object, object> propGetter = schema!.PropertyGetters![i];
                 JSDataSourceSchemaType type = schema!.PropertyTypes![i];
-                Object val = schema.ResolveValue(name, item, propGetter, this, type, manager);
+                Object? val = schema.ResolveValue(name, item, propGetter, this, type, manager);
 
                 _values[name] = val;
                 _valueTypes[name] = type;
@@ -175,7 +175,7 @@ namespace IgniteUI.Blazor.Controls
                 String name = schema.Fields[i].Name;
                 Func<object, object> fieldGetter = schema!.FieldGetters![i];
                 JSDataSourceSchemaType type = schema!.FieldTypes![i];
-                Object val = schema.ResolveFieldValue(name, item, fieldGetter, this, type, manager);
+                Object? val = schema.ResolveFieldValue(name, item, fieldGetter, this, type, manager);
 
                 _values[name] = val;
                 _valueTypes[name] = type;
@@ -319,7 +319,7 @@ namespace IgniteUI.Blazor.Controls
 
         private void ValueToJson(String key, System.Text.Json.JsonEncodedText prop, System.Text.Json.Utf8JsonWriter writer)
         {
-            Object value = _values[key];
+            Object? value = _values[key];
             if (value == null)
             {
                 if (prop.Equals(default))

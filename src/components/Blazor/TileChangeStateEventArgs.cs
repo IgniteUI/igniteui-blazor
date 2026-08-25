@@ -65,7 +65,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbTileChangeStateEventArgsDetail)ConvertReturnValue(args["detail"], "TileChangeStateEventArgsDetail", true); }
+            { this.Detail = (IgbTileChangeStateEventArgsDetail?)ConvertReturnValue(args["detail"], "TileChangeStateEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

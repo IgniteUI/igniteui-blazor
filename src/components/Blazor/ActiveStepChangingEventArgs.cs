@@ -65,7 +65,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbActiveStepChangingEventArgsDetail)ConvertReturnValue(args["detail"], "ActiveStepChangingEventArgsDetail", true); }
+            { this.Detail = (IgbActiveStepChangingEventArgsDetail?)ConvertReturnValue(args["detail"], "ActiveStepChangingEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

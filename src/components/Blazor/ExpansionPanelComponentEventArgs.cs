@@ -61,7 +61,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbExpansionPanel)ConvertReturnValue(args["detail"], "ExpansionPanel", true); }
+            { this.Detail = (IgbExpansionPanel?)ConvertReturnValue(args["detail"], "ExpansionPanel", true); }
 
             this.SuppressParentNotify = false;
         }

@@ -64,7 +64,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbCheckboxChangeEventArgsDetail)ConvertReturnValue(args["detail"], "CheckboxChangeEventArgsDetail", true); }
+            { this.Detail = (IgbCheckboxChangeEventArgsDetail?)ConvertReturnValue(args["detail"], "CheckboxChangeEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

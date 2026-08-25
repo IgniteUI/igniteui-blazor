@@ -362,13 +362,13 @@ namespace IgniteUI.Blazor.Controls
             return ret;
         }
 
-        protected virtual string TransformSimpleKey(string key)
+        protected virtual string TransformSimpleKey(string? key)
         {
             key = Camelize(key);
             return _sequenceInfo!.TransformKey(key);
         }
 
-        protected virtual bool IsTransformedEnumValue(string key)
+        protected virtual bool IsTransformedEnumValue(string? key)
         {
             key = Camelize(key);
             if (_sequenceInfo!.IsTransformedEnum(key))
@@ -378,7 +378,7 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        protected virtual object TransformPotentialEnumValue(string key, object value)
+        protected virtual object TransformPotentialEnumValue(string? key, object value)
         {
             key = Camelize(key);
             //Console.WriteLine("transforming enum value...." + (value.GetType().Name));

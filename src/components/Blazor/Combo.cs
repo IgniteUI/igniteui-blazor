@@ -859,7 +859,7 @@ namespace IgniteUI.Blazor.Controls
                             var newValueValue = default(T[]);
 
                             {
-                                newValueValue = (T[])(DowncastArray<T>(args!.Detail!.NewValue));
+                                newValueValue = (T[]?)(DowncastArray<T>(args!.Detail!.NewValue));
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

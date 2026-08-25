@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbTab)ConvertReturnValue(args["detail"], "Tab", true); }
+            { this.Detail = (IgbTab?)ConvertReturnValue(args["detail"], "Tab", true); }
 
             this.SuppressParentNotify = false;
         }

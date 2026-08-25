@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbSplitterResizeEventArgsDetail)ConvertReturnValue(args["detail"], "SplitterResizeEventArgsDetail", true); }
+            { this.Detail = (IgbSplitterResizeEventArgsDetail?)ConvertReturnValue(args["detail"], "SplitterResizeEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

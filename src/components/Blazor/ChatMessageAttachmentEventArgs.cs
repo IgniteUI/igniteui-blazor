@@ -64,7 +64,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("detail"))
-            { this.Detail = (IgbChatMessageAttachment)ConvertReturnValue(args["detail"], "ChatMessageAttachment", true); }
+            { this.Detail = (IgbChatMessageAttachment?)ConvertReturnValue(args["detail"], "ChatMessageAttachment", true); }
 
             this.SuppressParentNotify = false;
         }
