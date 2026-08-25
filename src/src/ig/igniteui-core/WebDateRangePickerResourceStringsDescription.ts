@@ -39,6 +39,38 @@ export class WebDateRangePickerResourceStringsDescription extends WebCalendarRes
 		this._cancelButton = value;
 		this.markDirty("CancelButton");
 	}
+	private _last7Days: string = null!;
+	get last7Days(): string {
+		return this._last7Days;
+	}
+	set last7Days(value: string) {
+		this._last7Days = value;
+		this.markDirty("Last7Days");
+	}
+	private _last30Days: string = null!;
+	get last30Days(): string {
+		return this._last30Days;
+	}
+	set last30Days(value: string) {
+		this._last30Days = value;
+		this.markDirty("Last30Days");
+	}
+	private _currentMonth: string = null!;
+	get currentMonth(): string {
+		return this._currentMonth;
+	}
+	set currentMonth(value: string) {
+		this._currentMonth = value;
+		this.markDirty("CurrentMonth");
+	}
+	private _yearToDate: string = null!;
+	get yearToDate(): string {
+		return this._yearToDate;
+	}
+	set yearToDate(value: string) {
+		this._yearToDate = value;
+		this.markDirty("YearToDate");
+	}
 }
 
 

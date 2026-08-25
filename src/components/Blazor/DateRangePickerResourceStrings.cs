@@ -77,6 +77,82 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        private string _last7Days;
+        /// <summary>
+        /// Text for the preset range button that selects the last 7 days.
+        /// </summary>
+        [Parameter]
+        public string Last7Days
+        {
+            get { return this._last7Days; }
+            set
+            {
+                if (this._last7Days != value || !IsPropDirty("Last7Days"))
+                {
+                    MarkPropDirty("Last7Days");
+                }
+                this._last7Days = value;
+
+            }
+        }
+
+        private string _last30Days;
+        /// <summary>
+        /// Text for the preset range button that selects the last 30 days.
+        /// </summary>
+        [Parameter]
+        public string Last30Days
+        {
+            get { return this._last30Days; }
+            set
+            {
+                if (this._last30Days != value || !IsPropDirty("Last30Days"))
+                {
+                    MarkPropDirty("Last30Days");
+                }
+                this._last30Days = value;
+
+            }
+        }
+
+        private string _currentMonth;
+        /// <summary>
+        /// Text for the preset range button that selects the current month.
+        /// </summary>
+        [Parameter]
+        public string CurrentMonth
+        {
+            get { return this._currentMonth; }
+            set
+            {
+                if (this._currentMonth != value || !IsPropDirty("CurrentMonth"))
+                {
+                    MarkPropDirty("CurrentMonth");
+                }
+                this._currentMonth = value;
+
+            }
+        }
+
+        private string _yearToDate;
+        /// <summary>
+        /// Text for the preset range button that selects from the start of the current year to today.
+        /// </summary>
+        [Parameter]
+        public string YearToDate
+        {
+            get { return this._yearToDate; }
+            set
+            {
+                if (this._yearToDate != value || !IsPropDirty("YearToDate"))
+                {
+                    MarkPropDirty("YearToDate");
+                }
+                this._yearToDate = value;
+
+            }
+        }
+
         partial void FindByNameDateRangePickerResourceStrings(string name, ref object item);
         public override object FindByName(string name)
         {
@@ -111,6 +187,14 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddStringProp("doneButton", this._doneButton); }
             if (IsPropDirty("CancelButton"))
             { ser.AddStringProp("cancelButton", this._cancelButton); }
+            if (IsPropDirty("Last7Days"))
+            { ser.AddStringProp("last7Days", this._last7Days); }
+            if (IsPropDirty("Last30Days"))
+            { ser.AddStringProp("last30Days", this._last30Days); }
+            if (IsPropDirty("CurrentMonth"))
+            { ser.AddStringProp("currentMonth", this._currentMonth); }
+            if (IsPropDirty("YearToDate"))
+            { ser.AddStringProp("yearToDate", this._yearToDate); }
         }
 
     }

@@ -28,6 +28,10 @@ export class WebDateRangePickerResourceStringsDescriptionMetadata extends Base {
 		metadata.item("Separator", "String");
 		metadata.item("DoneButton", "(wc:Done)String");
 		metadata.item("CancelButton", "(wc:Cancel)String");
+		metadata.item("Last7Days", "String");
+		metadata.item("Last30Days", "String");
+		metadata.item("CurrentMonth", "String");
+		metadata.item("YearToDate", "String");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebCalendarResourceStringsDescriptionMetadata.register(context);
