@@ -17,15 +17,15 @@ namespace IgniteUI.Blazor.Controls
         bool HasId(Guid id);
         bool HasId(string id);
         //IJSDataSourceItem LookupById(Guid id);
-        object LookupOriginal(Guid id);
-        object LookupOriginal(string id);
+        object? LookupOriginal(Guid id);
+        object? LookupOriginal(string id);
         bool HasOriginal(object item);
         Guid IdFromOriginal(object item);
-        IJSDataSourceItem NotifyInsertItem(object data, int index, Object item);
-        IJSDataSourceItem NotifyRemoveItem(object data, int index, object oldItem);
+        IJSDataSourceItem? NotifyInsertItem(object data, int index, Object item);
+        IJSDataSourceItem? NotifyRemoveItem(object data, int index, object oldItem);
         void NotifyClearItems(Object data);
-        IJSDataSourceItem NotifySetItem(Object data, int index, Object oldItem, Object newItem);
-        IJSDataSourceItem NotifyUpdateItem(object data, int index, object item);
+        IJSDataSourceItem? NotifySetItem(Object data, int index, Object oldItem, Object newItem);
+        IJSDataSourceItem? NotifyUpdateItem(object data, int index, object item);
         void InsertItemWithId(string id, int index, Object item);
     }
 

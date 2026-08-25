@@ -421,7 +421,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
 
-            Action<int, UnmarshalledColumnData, int, object>? insert = null;
+            Action<int, UnmarshalledColumnData, int, object?>? insert = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
@@ -1633,7 +1633,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private UnmarshalledColumnData AdjustColumnCapacity(string? parentPath, UnmarshalledColumnData? column, JSDataSourceSchema schema, string? propertyName, Delegate? getter, Func<object, object>? untypedGetter, bool isIdColumn, JSDataSourceSchemaType type, int oldValue, int newValue)
+        private UnmarshalledColumnData? AdjustColumnCapacity(string? parentPath, UnmarshalledColumnData? column, JSDataSourceSchema schema, string? propertyName, Delegate? getter, Func<object, object>? untypedGetter, bool isIdColumn, JSDataSourceSchemaType type, int oldValue, int newValue)
         {
 #pragma warning disable CS8604 // internal invariant: paired column arrays (NullValues) are allocated together
             if (column == null)
