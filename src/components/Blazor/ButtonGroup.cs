@@ -164,7 +164,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._selectScript)
                 {
                     this._selectScript = value;
-                    this.OnRefChanged("Select", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Select", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._selectRef = refName;
                         this.MarkPropDirty("SelectRef");
@@ -236,7 +236,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._deselectScript)
                 {
                     this._deselectScript = value;
-                    this.OnRefChanged("Deselect", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Deselect", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._deselectRef = refName;
                         this.MarkPropDirty("DeselectRef");

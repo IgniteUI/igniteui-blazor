@@ -322,7 +322,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._resizeStartScript)
                 {
                     this._resizeStartScript = value;
-                    this.OnRefChanged("ResizeStart", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ResizeStart", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._resizeStartRef = refName;
                         this.MarkPropDirty("ResizeStartRef");
@@ -394,7 +394,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._resizingScript)
                 {
                     this._resizingScript = value;
-                    this.OnRefChanged("Resizing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Resizing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._resizingRef = refName;
                         this.MarkPropDirty("ResizingRef");
@@ -466,7 +466,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._resizeEndScript)
                 {
                     this._resizeEndScript = value;
-                    this.OnRefChanged("ResizeEnd", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ResizeEnd", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._resizeEndRef = refName;
                         this.MarkPropDirty("ResizeEndRef");

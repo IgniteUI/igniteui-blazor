@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     MarkPropDirty("Data");
                     this._data = value;
-                    this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._dataRef = refName;
                         this.MarkPropDirty("DataRef");
@@ -84,7 +84,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._dataScript = value;
                     MarkPropDirty("Data");
-                    this.OnRefChanged("Data", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Data", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._dataRef = refName;
                         this.MarkPropDirty("DataRef");
@@ -541,7 +541,7 @@ namespace IgniteUI.Blazor.Controls
                     this._itemTemplate = value;
                     this._itemTemplateTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._itemTemplateTemplateId, this._itemTemplate, typeof(object));
-                    this.OnRefChanged("ItemTemplate", null, "template:::" + this._itemTemplateTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("ItemTemplate", null, "template:::" + this._itemTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemTemplateRef = refName;
                         this.MarkPropDirty("ItemTemplateRef");
@@ -572,7 +572,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._itemTemplateScript = value;
                     MarkPropDirty("ItemTemplate");
-                    this.OnRefChanged("ItemTemplate", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("ItemTemplate", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemTemplateRef = refName;
                         this.MarkPropDirty("ItemTemplateRef");
@@ -600,7 +600,7 @@ namespace IgniteUI.Blazor.Controls
                     this._groupHeaderTemplate = value;
                     this._groupHeaderTemplateTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate, typeof(object));
-                    this.OnRefChanged("GroupHeaderTemplate", null, "template:::" + this._groupHeaderTemplateTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("GroupHeaderTemplate", null, "template:::" + this._groupHeaderTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._groupHeaderTemplateRef = refName;
                         this.MarkPropDirty("GroupHeaderTemplateRef");
@@ -631,7 +631,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._groupHeaderTemplateScript = value;
                     MarkPropDirty("GroupHeaderTemplate");
-                    this.OnRefChanged("GroupHeaderTemplate", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("GroupHeaderTemplate", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._groupHeaderTemplateRef = refName;
                         this.MarkPropDirty("GroupHeaderTemplateRef");
@@ -822,7 +822,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -929,7 +929,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._focusScript)
                 {
                     this._focusScript = value;
-                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._focusRef = refName;
                         this.MarkPropDirty("FocusRef");
@@ -1001,7 +1001,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._blurScript)
                 {
                     this._blurScript = value;
-                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._blurRef = refName;
                         this.MarkPropDirty("BlurRef");
@@ -1073,7 +1073,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._openingScript)
                 {
                     this._openingScript = value;
-                    this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Opening", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._openingRef = refName;
                         this.MarkPropDirty("OpeningRef");
@@ -1145,7 +1145,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._openedScript)
                 {
                     this._openedScript = value;
-                    this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Opened", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._openedRef = refName;
                         this.MarkPropDirty("OpenedRef");
@@ -1217,7 +1217,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closingScript)
                 {
                     this._closingScript = value;
-                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closingRef = refName;
                         this.MarkPropDirty("ClosingRef");
@@ -1289,7 +1289,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closedScript)
                 {
                     this._closedScript = value;
-                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closedRef = refName;
                         this.MarkPropDirty("ClosedRef");

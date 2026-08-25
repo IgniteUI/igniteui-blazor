@@ -1921,7 +1921,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             if (SuppressModifications)
             {

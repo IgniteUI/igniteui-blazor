@@ -173,7 +173,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._selectionChangedScript)
                 {
                     this._selectionChangedScript = value;
-                    this.OnRefChanged("SelectionChanged", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("SelectionChanged", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._selectionChangedRef = refName;
                         this.MarkPropDirty("SelectionChangedRef");
@@ -245,7 +245,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._itemExpandingScript)
                 {
                     this._itemExpandingScript = value;
-                    this.OnRefChanged("ItemExpanding", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ItemExpanding", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._itemExpandingRef = refName;
                         this.MarkPropDirty("ItemExpandingRef");
@@ -317,7 +317,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._itemExpandedScript)
                 {
                     this._itemExpandedScript = value;
-                    this.OnRefChanged("ItemExpanded", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ItemExpanded", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._itemExpandedRef = refName;
                         this.MarkPropDirty("ItemExpandedRef");
@@ -389,7 +389,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._itemCollapsingScript)
                 {
                     this._itemCollapsingScript = value;
-                    this.OnRefChanged("ItemCollapsing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ItemCollapsing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._itemCollapsingRef = refName;
                         this.MarkPropDirty("ItemCollapsingRef");
@@ -461,7 +461,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._itemCollapsedScript)
                 {
                     this._itemCollapsedScript = value;
-                    this.OnRefChanged("ItemCollapsed", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ItemCollapsed", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._itemCollapsedRef = refName;
                         this.MarkPropDirty("ItemCollapsedRef");
@@ -533,7 +533,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._activeItemScript)
                 {
                     this._activeItemScript = value;
-                    this.OnRefChanged("ActiveItem", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ActiveItem", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._activeItemRef = refName;
                         this.MarkPropDirty("ActiveItemRef");

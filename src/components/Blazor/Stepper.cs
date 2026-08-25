@@ -338,7 +338,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._activeStepChangingScript)
                 {
                     this._activeStepChangingScript = value;
-                    this.OnRefChanged("ActiveStepChanging", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ActiveStepChanging", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._activeStepChangingRef = refName;
                         this.MarkPropDirty("ActiveStepChangingRef");
@@ -410,7 +410,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._activeStepChangedScript)
                 {
                     this._activeStepChangedScript = value;
-                    this.OnRefChanged("ActiveStepChanged", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ActiveStepChanged", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._activeStepChangedRef = refName;
                         this.MarkPropDirty("ActiveStepChangedRef");

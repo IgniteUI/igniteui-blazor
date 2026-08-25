@@ -97,7 +97,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._actionScript)
                 {
                     this._actionScript = value;
-                    this.OnRefChanged("Action", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Action", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._actionRef = refName;
                         this.MarkPropDirty("ActionRef");

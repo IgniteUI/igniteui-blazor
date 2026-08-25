@@ -166,7 +166,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._messageCreatedScript)
                 {
                     this._messageCreatedScript = value;
-                    this.OnRefChanged("MessageCreated", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("MessageCreated", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._messageCreatedRef = refName;
                         this.MarkPropDirty("MessageCreatedRef");
@@ -238,7 +238,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._messageReactScript)
                 {
                     this._messageReactScript = value;
-                    this.OnRefChanged("MessageReact", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("MessageReact", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._messageReactRef = refName;
                         this.MarkPropDirty("MessageReactRef");
@@ -310,7 +310,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._attachmentClickScript)
                 {
                     this._attachmentClickScript = value;
-                    this.OnRefChanged("AttachmentClick", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("AttachmentClick", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._attachmentClickRef = refName;
                         this.MarkPropDirty("AttachmentClickRef");
@@ -382,7 +382,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._typingChangeScript)
                 {
                     this._typingChangeScript = value;
-                    this.OnRefChanged("TypingChange", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TypingChange", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._typingChangeRef = refName;
                         this.MarkPropDirty("TypingChangeRef");
@@ -454,7 +454,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputFocusScript)
                 {
                     this._inputFocusScript = value;
-                    this.OnRefChanged("InputFocus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputFocus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputFocusRef = refName;
                         this.MarkPropDirty("InputFocusRef");
@@ -526,7 +526,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputBlurScript)
                 {
                     this._inputBlurScript = value;
-                    this.OnRefChanged("InputBlur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputBlur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputBlurRef = refName;
                         this.MarkPropDirty("InputBlurRef");
@@ -598,7 +598,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputChangeScript)
                 {
                     this._inputChangeScript = value;
-                    this.OnRefChanged("InputChange", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputChange", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputChangeRef = refName;
                         this.MarkPropDirty("InputChangeRef");

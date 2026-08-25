@@ -273,7 +273,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputOcurredScript)
                 {
                     this._inputOcurredScript = value;
-                    this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputOcurredRef = refName;
                         this.MarkPropDirty("InputOcurredRef");
@@ -348,7 +348,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._focusScript)
                 {
                     this._focusScript = value;
-                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._focusRef = refName;
                         this.MarkPropDirty("FocusRef");
@@ -420,7 +420,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._blurScript)
                 {
                     this._blurScript = value;
-                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._blurRef = refName;
                         this.MarkPropDirty("BlurRef");

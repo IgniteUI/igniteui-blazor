@@ -281,7 +281,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileFullscreenScript)
                 {
                     this._tileFullscreenScript = value;
-                    this.OnRefChanged("TileFullscreen", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileFullscreen", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileFullscreenRef = refName;
                         this.MarkPropDirty("TileFullscreenRef");
@@ -353,7 +353,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileMaximizeScript)
                 {
                     this._tileMaximizeScript = value;
-                    this.OnRefChanged("TileMaximize", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileMaximize", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileMaximizeRef = refName;
                         this.MarkPropDirty("TileMaximizeRef");
@@ -425,7 +425,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileDragStartScript)
                 {
                     this._tileDragStartScript = value;
-                    this.OnRefChanged("TileDragStart", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileDragStart", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileDragStartRef = refName;
                         this.MarkPropDirty("TileDragStartRef");
@@ -497,7 +497,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileDragEndScript)
                 {
                     this._tileDragEndScript = value;
-                    this.OnRefChanged("TileDragEnd", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileDragEnd", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileDragEndRef = refName;
                         this.MarkPropDirty("TileDragEndRef");
@@ -569,7 +569,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileDragCancelScript)
                 {
                     this._tileDragCancelScript = value;
-                    this.OnRefChanged("TileDragCancel", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileDragCancel", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileDragCancelRef = refName;
                         this.MarkPropDirty("TileDragCancelRef");
@@ -641,7 +641,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileResizeStartScript)
                 {
                     this._tileResizeStartScript = value;
-                    this.OnRefChanged("TileResizeStart", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileResizeStart", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileResizeStartRef = refName;
                         this.MarkPropDirty("TileResizeStartRef");
@@ -713,7 +713,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileResizeEndScript)
                 {
                     this._tileResizeEndScript = value;
-                    this.OnRefChanged("TileResizeEnd", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileResizeEnd", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileResizeEndRef = refName;
                         this.MarkPropDirty("TileResizeEndRef");
@@ -785,7 +785,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileResizeCancelScript)
                 {
                     this._tileResizeCancelScript = value;
-                    this.OnRefChanged("TileResizeCancel", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileResizeCancel", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileResizeCancelRef = refName;
                         this.MarkPropDirty("TileResizeCancelRef");

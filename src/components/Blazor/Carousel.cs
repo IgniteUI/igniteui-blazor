@@ -473,7 +473,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._slideChangedScript)
                 {
                     this._slideChangedScript = value;
-                    this.OnRefChanged("SlideChanged", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("SlideChanged", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._slideChangedRef = refName;
                         this.MarkPropDirty("SlideChangedRef");
@@ -545,7 +545,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._playingScript)
                 {
                     this._playingScript = value;
-                    this.OnRefChanged("Playing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Playing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._playingRef = refName;
                         this.MarkPropDirty("PlayingRef");
@@ -617,7 +617,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._pausedScript)
                 {
                     this._pausedScript = value;
-                    this.OnRefChanged("Paused", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Paused", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._pausedRef = refName;
                         this.MarkPropDirty("PausedRef");

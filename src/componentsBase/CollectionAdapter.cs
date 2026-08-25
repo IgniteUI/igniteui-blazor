@@ -80,7 +80,7 @@ namespace IgniteUI.Blazor.Controls
             _target = target;
         }
 
-        private void OnManualChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void OnManualChanged(object? sender, NotifyCollectionChangedEventArgs args)
         {
             switch (args.Action)
             {

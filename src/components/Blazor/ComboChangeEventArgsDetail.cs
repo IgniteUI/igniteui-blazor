@@ -25,7 +25,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     MarkPropDirty("NewValue");
                     this._newValue = value;
-                    this.OnRefChanged("NewValue", oldValue, value, false, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("NewValue", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._newValueRef = refName;
                         this.MarkPropDirty("NewValueRef");
@@ -49,7 +49,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._newValueScript = value;
                     MarkPropDirty("NewValue");
-                    this.OnRefChanged("NewValue", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("NewValue", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._newValueRef = refName;
                         this.MarkPropDirty("NewValueRef");
@@ -73,7 +73,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     MarkPropDirty("Items");
                     this._items = value;
-                    this.OnRefChanged("Items", oldValue, value, false, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Items", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemsRef = refName;
                         this.MarkPropDirty("ItemsRef");
@@ -97,7 +97,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._itemsScript = value;
                     MarkPropDirty("Items");
-                    this.OnRefChanged("Items", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Items", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemsRef = refName;
                         this.MarkPropDirty("ItemsRef");

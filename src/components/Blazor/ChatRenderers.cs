@@ -27,7 +27,7 @@ namespace IgniteUI.Blazor.Controls
                     this._attachment = value;
                     this._attachmentTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._attachmentTemplateId, this._attachment, typeof(IgbChatAttachmentRenderContext));
-                    this.OnRefChanged("Attachment", null, "template:::" + this._attachmentTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Attachment", null, "template:::" + this._attachmentTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentRef = refName;
                         this.MarkPropDirty("AttachmentRef");
@@ -58,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._attachmentScript = value;
                     MarkPropDirty("Attachment");
-                    this.OnRefChanged("Attachment", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Attachment", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentRef = refName;
                         this.MarkPropDirty("AttachmentRef");
@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
                     this._attachmentContent = value;
                     this._attachmentContentTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._attachmentContentTemplateId, this._attachmentContent, typeof(IgbChatAttachmentRenderContext));
-                    this.OnRefChanged("AttachmentContent", null, "template:::" + this._attachmentContentTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("AttachmentContent", null, "template:::" + this._attachmentContentTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentContentRef = refName;
                         this.MarkPropDirty("AttachmentContentRef");
@@ -117,7 +117,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._attachmentContentScript = value;
                     MarkPropDirty("AttachmentContent");
-                    this.OnRefChanged("AttachmentContent", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("AttachmentContent", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentContentRef = refName;
                         this.MarkPropDirty("AttachmentContentRef");
@@ -145,7 +145,7 @@ namespace IgniteUI.Blazor.Controls
                     this._attachmentHeader = value;
                     this._attachmentHeaderTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._attachmentHeaderTemplateId, this._attachmentHeader, typeof(IgbChatAttachmentRenderContext));
-                    this.OnRefChanged("AttachmentHeader", null, "template:::" + this._attachmentHeaderTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("AttachmentHeader", null, "template:::" + this._attachmentHeaderTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentHeaderRef = refName;
                         this.MarkPropDirty("AttachmentHeaderRef");
@@ -176,7 +176,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._attachmentHeaderScript = value;
                     MarkPropDirty("AttachmentHeader");
-                    this.OnRefChanged("AttachmentHeader", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("AttachmentHeader", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentHeaderRef = refName;
                         this.MarkPropDirty("AttachmentHeaderRef");
@@ -204,7 +204,7 @@ namespace IgniteUI.Blazor.Controls
                     this._input = value;
                     this._inputTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._inputTemplateId, this._input, typeof(IgbChatInputRenderContext));
-                    this.OnRefChanged("Input", null, "template:::" + this._inputTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Input", null, "template:::" + this._inputTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputRef = refName;
                         this.MarkPropDirty("InputRef");
@@ -235,7 +235,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._inputScript = value;
                     MarkPropDirty("Input");
-                    this.OnRefChanged("Input", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Input", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputRef = refName;
                         this.MarkPropDirty("InputRef");
@@ -263,7 +263,7 @@ namespace IgniteUI.Blazor.Controls
                     this._inputActions = value;
                     this._inputActionsTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._inputActionsTemplateId, this._inputActions, typeof(IgbChatRenderContext));
-                    this.OnRefChanged("InputActions", null, "template:::" + this._inputActionsTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("InputActions", null, "template:::" + this._inputActionsTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsRef = refName;
                         this.MarkPropDirty("InputActionsRef");
@@ -294,7 +294,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._inputActionsScript = value;
                     MarkPropDirty("InputActions");
-                    this.OnRefChanged("InputActions", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("InputActions", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsRef = refName;
                         this.MarkPropDirty("InputActionsRef");
@@ -322,7 +322,7 @@ namespace IgniteUI.Blazor.Controls
                     this._inputActionsEnd = value;
                     this._inputActionsEndTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._inputActionsEndTemplateId, this._inputActionsEnd, typeof(IgbChatRenderContext));
-                    this.OnRefChanged("InputActionsEnd", null, "template:::" + this._inputActionsEndTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("InputActionsEnd", null, "template:::" + this._inputActionsEndTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsEndRef = refName;
                         this.MarkPropDirty("InputActionsEndRef");
@@ -353,7 +353,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._inputActionsEndScript = value;
                     MarkPropDirty("InputActionsEnd");
-                    this.OnRefChanged("InputActionsEnd", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("InputActionsEnd", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsEndRef = refName;
                         this.MarkPropDirty("InputActionsEndRef");
@@ -381,7 +381,7 @@ namespace IgniteUI.Blazor.Controls
                     this._inputActionsStart = value;
                     this._inputActionsStartTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._inputActionsStartTemplateId, this._inputActionsStart, typeof(IgbChatRenderContext));
-                    this.OnRefChanged("InputActionsStart", null, "template:::" + this._inputActionsStartTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("InputActionsStart", null, "template:::" + this._inputActionsStartTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsStartRef = refName;
                         this.MarkPropDirty("InputActionsStartRef");
@@ -412,7 +412,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._inputActionsStartScript = value;
                     MarkPropDirty("InputActionsStart");
-                    this.OnRefChanged("InputActionsStart", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("InputActionsStart", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsStartRef = refName;
                         this.MarkPropDirty("InputActionsStartRef");
@@ -440,7 +440,7 @@ namespace IgniteUI.Blazor.Controls
                     this._message = value;
                     this._messageTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._messageTemplateId, this._message, typeof(IgbChatMessageRenderContext));
-                    this.OnRefChanged("Message", null, "template:::" + this._messageTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Message", null, "template:::" + this._messageTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageRef = refName;
                         this.MarkPropDirty("MessageRef");
@@ -471,7 +471,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._messageScript = value;
                     MarkPropDirty("Message");
-                    this.OnRefChanged("Message", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Message", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageRef = refName;
                         this.MarkPropDirty("MessageRef");
@@ -499,7 +499,7 @@ namespace IgniteUI.Blazor.Controls
                     this._messageActions = value;
                     this._messageActionsTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._messageActionsTemplateId, this._messageActions, typeof(IgbChatMessageRenderContext));
-                    this.OnRefChanged("MessageActions", null, "template:::" + this._messageActionsTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("MessageActions", null, "template:::" + this._messageActionsTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageActionsRef = refName;
                         this.MarkPropDirty("MessageActionsRef");
@@ -530,7 +530,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._messageActionsScript = value;
                     MarkPropDirty("MessageActions");
-                    this.OnRefChanged("MessageActions", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("MessageActions", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageActionsRef = refName;
                         this.MarkPropDirty("MessageActionsRef");
@@ -558,7 +558,7 @@ namespace IgniteUI.Blazor.Controls
                     this._messageAttachments = value;
                     this._messageAttachmentsTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._messageAttachmentsTemplateId, this._messageAttachments, typeof(IgbChatMessageRenderContext));
-                    this.OnRefChanged("MessageAttachments", null, "template:::" + this._messageAttachmentsTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("MessageAttachments", null, "template:::" + this._messageAttachmentsTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageAttachmentsRef = refName;
                         this.MarkPropDirty("MessageAttachmentsRef");
@@ -589,7 +589,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._messageAttachmentsScript = value;
                     MarkPropDirty("MessageAttachments");
-                    this.OnRefChanged("MessageAttachments", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("MessageAttachments", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageAttachmentsRef = refName;
                         this.MarkPropDirty("MessageAttachmentsRef");
@@ -617,7 +617,7 @@ namespace IgniteUI.Blazor.Controls
                     this._messageContent = value;
                     this._messageContentTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._messageContentTemplateId, this._messageContent, typeof(IgbChatMessageRenderContext));
-                    this.OnRefChanged("MessageContent", null, "template:::" + this._messageContentTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("MessageContent", null, "template:::" + this._messageContentTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageContentRef = refName;
                         this.MarkPropDirty("MessageContentRef");
@@ -648,7 +648,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._messageContentScript = value;
                     MarkPropDirty("MessageContent");
-                    this.OnRefChanged("MessageContent", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("MessageContent", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageContentRef = refName;
                         this.MarkPropDirty("MessageContentRef");
@@ -676,7 +676,7 @@ namespace IgniteUI.Blazor.Controls
                     this._messageHeader = value;
                     this._messageHeaderTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._messageHeaderTemplateId, this._messageHeader, typeof(IgbChatMessageRenderContext));
-                    this.OnRefChanged("MessageHeader", null, "template:::" + this._messageHeaderTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("MessageHeader", null, "template:::" + this._messageHeaderTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageHeaderRef = refName;
                         this.MarkPropDirty("MessageHeaderRef");
@@ -707,7 +707,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._messageHeaderScript = value;
                     MarkPropDirty("MessageHeader");
-                    this.OnRefChanged("MessageHeader", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("MessageHeader", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageHeaderRef = refName;
                         this.MarkPropDirty("MessageHeaderRef");
@@ -735,7 +735,7 @@ namespace IgniteUI.Blazor.Controls
                     this._sendButton = value;
                     this._sendButtonTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._sendButtonTemplateId, this._sendButton, typeof(IgbChatRenderContext));
-                    this.OnRefChanged("SendButton", null, "template:::" + this._sendButtonTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("SendButton", null, "template:::" + this._sendButtonTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._sendButtonRef = refName;
                         this.MarkPropDirty("SendButtonRef");
@@ -766,7 +766,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._sendButtonScript = value;
                     MarkPropDirty("SendButton");
-                    this.OnRefChanged("SendButton", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("SendButton", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._sendButtonRef = refName;
                         this.MarkPropDirty("SendButtonRef");
@@ -794,7 +794,7 @@ namespace IgniteUI.Blazor.Controls
                     this._suggestionPrefix = value;
                     this._suggestionPrefixTemplateId = Guid.NewGuid().ToString();
                     this.UpdateTemplate(this._suggestionPrefixTemplateId, this._suggestionPrefix, typeof(IgbChatRenderContext));
-                    this.OnRefChanged("SuggestionPrefix", null, "template:::" + this._suggestionPrefixTemplateId, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("SuggestionPrefix", null, "template:::" + this._suggestionPrefixTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._suggestionPrefixRef = refName;
                         this.MarkPropDirty("SuggestionPrefixRef");
@@ -825,7 +825,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._suggestionPrefixScript = value;
                     MarkPropDirty("SuggestionPrefix");
-                    this.OnRefChanged("SuggestionPrefix", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("SuggestionPrefix", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._suggestionPrefixRef = refName;
                         this.MarkPropDirty("SuggestionPrefixRef");
