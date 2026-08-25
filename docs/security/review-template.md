@@ -37,39 +37,21 @@ Tick what was actually performed; an unticked row is a stated limitation, not an
 - [ ] Scaffolded-app secure-defaults checklist executed against `dotnet new`
 - [ ] Consumer-facing security documentation reviewed for accuracy
 
-## Findings register — `IgniteUI.Blazor.Lite`
+## Findings register
 
-| ID | Summary | Sev | Disposition | Evidence / justification |
-|---|---|---|---|---|
-| TM-IX-01 | `WebCallback` public; client-supplied `containerId` addresses any control | High | <!-- Fixed / Mitigated / Accepted --> | |
-| TM-IX-02 | `OnInvokeReturn` accepts untyped `object` | Medium | | |
-| TM-IX-03 | `AdjustDynamicContentBatch` deserializes a client-supplied batch | Medium | | |
-| TM-IX-04 | `_controlsMap` registration is unvalidated; `Add` throws on duplicate keys | Medium | | |
-| TM-IX-05 | Untrusted event args reach consumer handlers | High | | |
-| TM-MEM-01 | `unsafe` + reflected `InvokeUnmarshalled` + raw WASM-heap pointers | High | | |
-| TM-MEM-02 | Silent loss of the unmarshalled fast path on runtime change | Low | | |
-| TM-SER-01 | Full object graph serialized to the client | High | | |
-| TM-SER-02 | Prerendered state embedded in initial HTML | Low | Accepted | Inherent to Blazor SSR; app-level cache headers |
-| TM-DOM-01 | Rendering path: text vs. markup (`unsafeHTML` usage) | TBD | | |
-| TM-DOM-02 | Consumer `RenderFragment` templates render consumer markup | Low | By design | Razor escapes by default; `MarkupString` is an explicit opt-in |
-| TM-SC-01 | Bundled third-party JS is not independently patchable | Medium | By design | Covered by the `SECURITY.md` SLAs |
-| TM-SC-02 | No CodeQL/SCA/`npm audit`/dependency-review gate | High | | |
-| TM-BLD-01 | Undefined `BUILD_CONFIGURATION` in release signing/validation paths | Medium | | |
-| TM-BLD-02 | Signature gate passes on an empty DLL result set | Medium | | |
-| TM-BLD-03 | `Nullable` disabled on the Lite project | Low | Accepted | Generated sources are unannotated |
+> Completed review records are kept in the maintainers' private security tracker while any
+> finding remains open. Do not describe an unfixed, exploitable weakness in a public copy
+> of this record — reference it by identifier only and disclose it after a fix ships,
+> following the process in [threat-model.md](threat-model.md#7-how-findings-are-handled).
 
-## Findings register — `IgniteUI.Blazor.Templates`
+One row per finding, per package.
 
-| ID | Summary | Sev | Disposition | Evidence / justification |
-|---|---|---|---|---|
-| TM-PKG-01 | `NoDefaultExcludes=true` + broad `Content Include` packs unintended files | High | | |
-| TM-PKG-02 | `test-templates.ps1` / `.sh` may land under `content/` | Medium | | |
-| TM-TPL-01 | Insecure defaults replicated into every scaffolded app | High | | |
-| TM-TPL-02 | Template-pinned package versions go stale | Medium | | |
-| TM-TPL-03 | `<Version>0.0.1</Version>` hard-coded rather than tag-driven | Low | | |
+| ID | Package | Area / boundary | Sev | Disposition | Evidence / justification |
+|---|---|---|---|---|---|
+| <!-- TODO --> | | | | <!-- Fixed / Mitigated / By design / Accepted --> | |
 
-**Disposition values** — `Fixed` (code changed, link the PR) · `Mitigated` (compensating
-control, name it) · `Accepted` (residual risk, requires an approver in the table below).
+**Disposition values** — `Fixed` (code changed, link the PR) · `Mitigated` (compensating control, name it) · `By design` (documented consumer responsibility) ·
+`Accepted` (residual risk, requires an approver in the table below).
 
 ## Accepted risks
 
