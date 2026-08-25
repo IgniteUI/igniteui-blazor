@@ -110,7 +110,7 @@
         await Task.Delay(700);
 
         _basicOptions.IsTyping = false;
-        _basicMessages = [.. _basicMessages, BuildAgentReply(userMessage!.Text)];
+        _basicMessages = [.. _basicMessages, BuildAgentReply(userMessage!.Text!)];
     }
 
     private async Task OnTemplateMessageCreated(IgbChatMessageEventArgs args)
@@ -127,7 +127,7 @@
         await Task.Delay(700);
 
         _templateOptions.IsTyping = false;
-        _templateMessages = [.. _templateMessages, BuildAgentReply(userMessage!.Text)];
+        _templateMessages = [.. _templateMessages, BuildAgentReply(userMessage!.Text!)];
     }
 
     private static IgbChatMessage BuildAgentReply(string prompt)

@@ -228,7 +228,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array("""[{"refType": "name", "id": "mainControl"}]""")),
             assert: (cut, result) =>
             {
-                Assert.Single(result);
+                Assert.Single(result!);
                 Assert.Same(cut.Instance, result[0]);
             })
         .Getter(c => c.GetPathAsync(), c => c.GetPath(), "Path",

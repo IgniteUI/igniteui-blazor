@@ -106,13 +106,13 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchema.Create(c);
         }
 
-        public static JsonDataSourceItem Create(object item, JSDataSourceSchema schema, DataSourceManager manager)
+        public static JsonDataSourceItem Create(object? item, JSDataSourceSchema? schema, DataSourceManager? manager)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem();
             newItem.Read(item, schema, manager);
             return newItem;
         }
-        public static JsonDataSourceItem Create(object? item, JSDataSourceSchema? schema, DataSourceManager manager, JsonDataSourceItem parentItem)
+        public static JsonDataSourceItem Create(object? item, JSDataSourceSchema? schema, DataSourceManager? manager, JsonDataSourceItem parentItem)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem();
             newItem._parentId = parentItem.ParentId != null ? parentItem.ParentId + "/" + parentItem.Id.ToString() : parentItem.Id.ToString();
@@ -127,14 +127,14 @@ namespace IgniteUI.Blazor.Controls
             return newItem;
         }
 
-        public static JsonDataSourceItem CreateWithId(object item, Guid id, JSDataSourceSchema schema, DataSourceManager manager)
+        public static JsonDataSourceItem CreateWithId(object? item, Guid id, JSDataSourceSchema? schema, DataSourceManager? manager)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem(id);
             newItem.Read(item, schema, manager);
             return newItem;
         }
 
-        public void Refresh(object item, JSDataSourceSchema schema, DataSourceManager manager)
+        public void Refresh(object? item, JSDataSourceSchema? schema, DataSourceManager? manager)
         {
             Read(item, schema, manager);
         }

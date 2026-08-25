@@ -431,7 +431,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<T[]> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv).Cast<T>().ToArray();
+            return (ReturnToObjectArray(iv) ?? Array.Empty<object>()).Cast<T>().ToArray();
         }
 
         /// <summary>
@@ -441,7 +441,7 @@ namespace IgniteUI.Blazor.Controls
         public T[] GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv).Cast<T>().ToArray();
+            return (ReturnToObjectArray(iv) ?? Array.Empty<object>()).Cast<T>().ToArray();
         }
         private string? _selectionRef;
 

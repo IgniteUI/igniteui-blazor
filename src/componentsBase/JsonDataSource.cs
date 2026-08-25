@@ -72,9 +72,14 @@ namespace IgniteUI.Blazor.Controls
 
         public bool DateCacheReady { get { return _dateCacheReady; } }
 
-        public static IJSDataSource? CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
+        public static IJSDataSource? CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager? manager, string? parentId)
         {
             if (data == null)
+            {
+                return null;
+            }
+
+            if (manager == null)
             {
                 return null;
             }
@@ -279,7 +284,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public Object? ToOriginal(IJSDataSourceItem item)
+        public Object? ToOriginal(IJSDataSourceItem? item)
         {
             if (item == null)
             {
@@ -412,7 +417,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void OnAddItem(IJSDataSourceItem itemJson, Object item)
+        private void OnAddItem(IJSDataSourceItem itemJson, Object? item)
         {
             _uuidToItem[itemJson.Id] = itemJson;
             if (item != null)

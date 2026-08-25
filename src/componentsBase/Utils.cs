@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     internal static class Utils
     {
-        internal static bool TryGetWCEnumName(Type enumType, string enumMemberName, out string? name)
+        internal static bool TryGetWCEnumName(Type enumType, string? enumMemberName, out string? name)
         {
             name = null;
 

@@ -49,12 +49,12 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(
                 $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 0)}}"}]""")),
-            assert: (cut, result) => Assert.Same(_valueItem1, Assert.Single(result)))
+            assert: (cut, result) => Assert.Same(_valueItem1, Assert.Single(result!)))
         .Getter(c => c.GetSelectionAsync(), c => c.GetSelection(), "Selection",
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(
                 $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 1)}}"}]""")),
-            assert: (cut, result) => Assert.Same(_valueItem2, Assert.Single(result)))
+            assert: (cut, result) => Assert.Same(_valueItem2, Assert.Single(result!)))
         // The payload carries uuid refs, which only exist once the data has transferred.
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
@@ -65,8 +65,8 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             argsJson: FromRender.Of((interop, cut) => ChangeDetail(UuidRef(interop, cut, 0), UuidRef(interop, cut, 0))),
             assert: (cut, args) =>
             {
-                Assert.Same(_valueItem1, Assert.Single(args!.Detail!.NewValue));
-                Assert.Same(_valueItem1, Assert.Single(args.Detail.Items));
+                Assert.Same(_valueItem1, Assert.Single(args!.Detail!.NewValue!));
+                Assert.Same(_valueItem1, Assert.Single(args.Detail.Items!));
                 Assert.Equal(ComboChangeType.Selection, args.Detail.ChangeType);
             })
         .Event(c => c.Change,
@@ -76,8 +76,8 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             argsJson: FromRender.Of((interop, cut) => ChangeDetail("", UuidRef(interop, cut, 0), "deselection")),
             assert: (cut, args) =>
             {
-                Assert.Empty(args!.Detail!.NewValue);
-                Assert.Same(_valueItem1, Assert.Single(args.Detail.Items));
+                Assert.Empty(args!.Detail!.NewValue!);
+                Assert.Same(_valueItem1, Assert.Single(args.Detail.Items!));
                 // TODO: wire detail carries kind as "type", but FromEventJson reads "changeType", so
                 // Detail.ChangeType never decodes and stays default (wrong for deselection events):
                 // Assert.Equal(ComboChangeType.Deselection, args.Detail.ChangeType);
@@ -306,11 +306,11 @@ public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>
             argsJson: FromRender.Of((interop, cut) => ComboTests.ChangeDetail("2", ComboTests.UuidRef(interop, cut, 1))),
             assert: (cut, args) =>
             {
-                Assert.Equal(2.0, Assert.Single(args!.Detail!.NewValue)); // numbers decode as double
-                Assert.Same(_item2, Assert.Single(args.Detail.Items));
+                Assert.Equal(2.0, Assert.Single(args!.Detail!.NewValue!)); // numbers decode as double
+                Assert.Same(_item2, Assert.Single(args.Detail.Items!));
                 // Two-way Value propagation through the generated wrapper works when T
                 // matches the key value type.
-                Assert.Equal(2.0, Assert.Single(cut.Instance.Value));
+                Assert.Equal(2.0, Assert.Single(cut.Instance.Value!));
             })
         // A value-type value array (double[] here) crosses as plain JSON numbers — the keys
         // themselves, no data-source refs, since a keyed combo's value is the key.

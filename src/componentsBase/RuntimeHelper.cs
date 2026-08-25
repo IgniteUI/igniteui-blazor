@@ -23,7 +23,7 @@ namespace IgniteUI.Blazor.Controls
             "Microsoft.AspNetCore.Components.WebAssembly")]
 #endif
         //[System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicMethods, typeof(WebAssemblyJSRuntime))]
-        public RuntimeHelper(IJSRuntime runtime, IIgniteUIBlazor igBlazor)
+        public RuntimeHelper(IJSRuntime? runtime, IIgniteUIBlazor igBlazor)
         {
             _igBlazor = igBlazor;
             //Console.WriteLine("initializing runtime helper");
@@ -115,11 +115,11 @@ namespace IgniteUI.Blazor.Controls
 #else
             if (_callSendUnmarshalledColumnMessage != null)
             {
-                return _callSendUnmarshalledColumnMessage(_inprocRuntime, methodName, refName, index, columns);
+                return _callSendUnmarshalledColumnMessage(_inprocRuntime!, methodName, refName, index, columns);
             }
 #endif
             var intptr = Unsafe.AsPointer(ref columns);
-            _inprocRuntime.InvokeVoid(methodName, new object[] { refName, index, (int)intptr });
+            _inprocRuntime!.InvokeVoid(methodName, new object[] { refName, index, (int)intptr });
 
             return null;
         }
@@ -136,10 +136,10 @@ namespace IgniteUI.Blazor.Controls
             if (_callSendUnmarshalledColumnMessage != null)
             {
                 //Console.WriteLine("invoking sadness");
-                return _callSendUnmarshalledColumnDataIntentMessage!(_inprocRuntime, methodName, refName, dataIntents);
+                return _callSendUnmarshalledColumnDataIntentMessage!(_inprocRuntime!, methodName, refName, dataIntents);
             }
 #endif
-            _inprocRuntime.InvokeVoid(methodName, new object[] { refName, dataIntents });
+            _inprocRuntime!.InvokeVoid(methodName, new object[] { refName, dataIntents });
 
             return null;
         }

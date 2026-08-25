@@ -17,7 +17,7 @@ namespace IgniteUI.Blazor.Controls
                 _type = value;
             }
         }
-        public void SetData(string key, string data)
+        public void SetData(string key, string? data)
         {
             _data[key] = data;
         }

@@ -358,7 +358,7 @@ namespace IgniteUI.Blazor.Controls
             return s;
         }
 
-        public object? ResolveValue(String name, Object item, Func<object, object> propGetter, JsonDataSourceItem jsonItem, JSDataSourceSchemaType type, DataSourceManager manager)
+        public object? ResolveValue(String name, Object item, Func<object, object> propGetter, JsonDataSourceItem jsonItem, JSDataSourceSchemaType type, DataSourceManager? manager)
         {
             if (item == null)
             {
@@ -380,7 +380,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private object GetSubObject(String name, Object value, JsonDataSourceItem rootItem, DataSourceManager manager)
+        private object GetSubObject(String name, Object value, JsonDataSourceItem rootItem, DataSourceManager? manager)
         {
             bool checkedArray = _checkedArray.ContainsKey(name);
             if (!checkedArray && value != null)
@@ -458,7 +458,7 @@ namespace IgniteUI.Blazor.Controls
             return schema;
         }
 
-        public object? ResolveFieldValue(String name, Object item, Func<object, object> fieldGetter, JsonDataSourceItem rootItem, JSDataSourceSchemaType type, DataSourceManager manager)
+        public object? ResolveFieldValue(String name, Object item, Func<object, object> fieldGetter, JsonDataSourceItem rootItem, JSDataSourceSchemaType type, DataSourceManager? manager)
         {
             try
             {
@@ -532,20 +532,24 @@ namespace IgniteUI.Blazor.Controls
             return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
-        public JSDataSourceSchema? GetSubSchema(string propertyName)
+        public JSDataSourceSchema? GetSubSchema(string? propertyName)
         {
-            if (_subSchemas.ContainsKey(propertyName))
+            if (propertyName == null || !_subSchemas.ContainsKey(propertyName))
             {
-                return _subSchemas[propertyName];
+                return null;
             }
-            return null;
+            return _subSchemas[propertyName];
         }
-        public void SetSubSchema(string propertyName, JSDataSourceSchema schema)
+        public void SetSubSchema(string? propertyName, JSDataSourceSchema? schema)
         {
+            if (propertyName == null)
+            {
+                return;
+            }
             _subSchemas[propertyName] = schema;
         }
 
-        public JSDataSourceSchemaType ResolveSchemaType(Type type)
+        public JSDataSourceSchemaType ResolveSchemaType(Type? type)
         {
             if (type == typeof(double))
             {
@@ -740,8 +744,9 @@ namespace IgniteUI.Blazor.Controls
         public JSDataSourceSchemaType[]? FieldTypes;
         public IDataIntentAttribute[]?[]? FieldDataIntents;
 
-        private System.Linq.Expressions.UnaryExpression GetConversion(Type type, System.Linq.Expressions.Expression expression)
+        private System.Linq.Expressions.UnaryExpression GetConversion(Type? type, System.Linq.Expressions.Expression expression)
         {
+            ArgumentNullException.ThrowIfNull(type);
             var isValueType = type.IsValueType;
             var isGenericType = type.IsGenericType;
             var isNullable = isGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
@@ -756,7 +761,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private Func<object, object> GetPropertyValueGetter(Type type, PropertyInfo propertyInfo)
+        private Func<object, object> GetPropertyValueGetter(Type? type, PropertyInfo propertyInfo)
         {
             //var propertyInfo = type.GetProperty(propertyName);
 
@@ -772,7 +777,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private Delegate GetTypedPropertyValueGetter(Type type, PropertyInfo propertyInfo)
+        private Delegate GetTypedPropertyValueGetter(Type? type, PropertyInfo propertyInfo)
         {
             //var propertyInfo = type.GetProperty(propertyName);
 
@@ -794,7 +799,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private Delegate GetTypedDictionaryValueGetter(Type dictType, Type valueType, PropertyInfo itemProp, string key)
+        private Delegate GetTypedDictionaryValueGetter(Type dictType, Type valueType, PropertyInfo? itemProp, string key)
         {
             //var propertyInfo = type.GetProperty(propertyName);
 
@@ -804,7 +809,7 @@ namespace IgniteUI.Blazor.Controls
                 System.Linq.Expressions.UnaryExpression conversion = this.GetConversion(dictType, param);
 
                 System.Linq.Expressions.Expression strIndex = System.Linq.Expressions.ConstantExpression.Constant(key);
-                System.Linq.Expressions.Expression prop = System.Linq.Expressions.Expression.Property(conversion, itemProp, strIndex);
+                System.Linq.Expressions.Expression prop = System.Linq.Expressions.Expression.Property(conversion, itemProp!, strIndex);
                 System.Linq.Expressions.UnaryExpression retConversion = this.GetConversion(valueType, prop);
                 if (valueType.IsEnum)
                 {
@@ -817,7 +822,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private Func<object, object> GetFieldValueGetter(Type type, FieldInfo fieldInfo)
+        private Func<object, object> GetFieldValueGetter(Type? type, FieldInfo fieldInfo)
         {
             //var propertyInfo = type.GetProperty(propertyName);
 
@@ -833,7 +838,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private Delegate GetTypedFieldValueGetter(Type type, FieldInfo fieldInfo)
+        private Delegate GetTypedFieldValueGetter(Type? type, FieldInfo fieldInfo)
         {
             //var propertyInfo = type.GetProperty(propertyName);
 

@@ -142,7 +142,7 @@ namespace IgniteUI.Blazor.Controls
             NotifyParent();
         }
 
-        public void Serialize(SerializationContext context, string? propertyName = null)
+        public void Serialize(SerializationContext? context, string? propertyName = null)
         {
             //var vals = new List<string>();
             if (propertyName != null)

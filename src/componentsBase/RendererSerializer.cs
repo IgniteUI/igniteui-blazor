@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
 
     internal partial class RendererSerializer
     {
-        public RendererSerializer(SerializationContext context, ComponentBase component, string name)
+        public RendererSerializer(SerializationContext? context, ComponentBase component, string name)
         {
             _name = name;
             _context = context;
@@ -48,7 +48,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": " + value.ToString(CultureInfo.InvariantCulture).ToLower());
         }
 
-        public void AddStringProp(string propertyName, string value)
+        public void AddStringProp(string propertyName, string? value)
         {
             if (_context!.Filter != null)
             {
@@ -119,7 +119,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void AddPrimitiveProp(string propertyName, object val)
+        public void AddPrimitiveProp(string propertyName, object? val)
         {
             if (_context!.Filter != null)
             {
@@ -182,7 +182,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void AddArrayProp<T>(string propertyName, IEnumerable<T> values)
+        public void AddArrayProp<T>(string propertyName, IEnumerable<T>? values)
         {
             var items = values == null ? null : values as IList<T> ?? values.ToList();
             bool containsSub = false;
@@ -284,7 +284,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        public void AddEnumProp(string propertyName, Enum value)
+        public void AddEnumProp(string propertyName, Enum? value)
         {
             if (_context!.Filter != null)
             {
@@ -292,6 +292,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     return;
                 }
+            }
+
+            if (value == null)
+            {
+                _context.Writer.WriteNull(propertyName);
+                return;
             }
 
             if (Utils.TryGetWCEnumName(value.GetType(), value.ToString(), out var wcName))
@@ -311,7 +317,7 @@ namespace IgniteUI.Blazor.Controls
         //     return TextUtils.join("", parts);
         // }
 
-        public void AddNumberProp(String propertyName, Object value)
+        public void AddNumberProp(String propertyName, Object? value)
         {
             if (_context!.Filter != null)
             {
@@ -374,7 +380,7 @@ namespace IgniteUI.Blazor.Controls
             _context.Writer.WriteEndObject();
         }
 
-        public void AddSerializableProp(String propertyName, JsonSerializable value)
+        public void AddSerializableProp(String propertyName, JsonSerializable? value)
         {
             var context = _context;
 
@@ -411,7 +417,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": " + value.Serialize());
         }
 
-        public void AddStringArrayProp(String propertyName, string[] values)
+        public void AddStringArrayProp(String propertyName, string[]? values)
         {
             if (_context!.Filter != null)
             {
@@ -453,7 +459,7 @@ namespace IgniteUI.Blazor.Controls
             // _properties.Add("\"" + propertyName + "\"" + ": [" + arrayParts + " ]");
         }
 
-        public void AddDateArrayProp(String propertyName, DateTime[] values)
+        public void AddDateArrayProp(String propertyName, DateTime[]? values)
         {
             if (_context!.Filter != null)
             {
@@ -499,7 +505,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private Regex _colorSplitRegex = new Regex("[\\s,]+(?![^(]*\\))");
-        public void AddStringArrayProp(String propertyName, string values)
+        public void AddStringArrayProp(String propertyName, string? values)
         {
             if (_context!.Filter != null)
             {
@@ -541,7 +547,7 @@ namespace IgniteUI.Blazor.Controls
             // _properties.Add("\"" + propertyName + "\"" + ": [" + arrayParts + " ]");
         }
 
-        public void AddEnumArrayProp(String propertyName, object values)
+        public void AddEnumArrayProp(String propertyName, object? values)
         {
             if (_context!.Filter != null)
             {
@@ -570,7 +576,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": [" + string.Join(", ", strValues) + " ]");
         }
 
-        public void AddIntArrayProp(String propertyName, int[] values)
+        public void AddIntArrayProp(String propertyName, int[]? values)
         {
             if (_context!.Filter != null)
             {
@@ -598,7 +604,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": [" + string.Join(", ", strValues) + " ]");
         }
 
-        public void AddDoubleArrayProp(string propertyName, double[] numbers)
+        public void AddDoubleArrayProp(string propertyName, double[]? numbers)
         {
             if (_context!.Filter != null)
             {
@@ -627,7 +633,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\": " + "[" + string.Join(", ", items) + "]");
         }
 
-        public void AddSerializableArrayProp<T>(string propertyName, T[] array) where T : JsonSerializable
+        public void AddSerializableArrayProp<T>(string propertyName, T[]? array) where T : JsonSerializable
         {
             if (array == null)
             {

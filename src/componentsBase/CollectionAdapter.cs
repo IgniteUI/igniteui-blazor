@@ -175,7 +175,7 @@ namespace IgniteUI.Blazor.Controls
                 targetMap[item] = true;
             }
 
-            var queryArray = new List<T>(this._query);
+            var queryArray = new List<T>(this._query ?? Enumerable.Empty<T>());
             this.actualContent = queryArray;
 
             if (this.CollisionChecker != null)

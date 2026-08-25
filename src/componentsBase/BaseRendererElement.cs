@@ -385,7 +385,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void UpdateTemplate(string contentType, object template, Type type)
+        internal void UpdateTemplate(string contentType, object? template, Type type)
         {
             Action templateUpdate = () =>
             {
@@ -452,8 +452,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void MarkPropDirty(String propertyName)
+        internal void MarkPropDirty(String? propertyName)
         {
+            if (propertyName == null)
+            {
+                return;
+            }
             _isDirty[propertyName] = true;
             _hasDirty = true;
             _serializeDirty = true;
@@ -523,7 +527,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext context, string? propertyName = null)
+        public void Serialize(SerializationContext? context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;
@@ -589,7 +593,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal int ReturnToInt(Object val)
+        internal int ReturnToInt(Object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -602,7 +606,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal double ReturnToDouble(Object val)
+        internal double ReturnToDouble(Object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -628,7 +632,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal DateTime ReturnToDate(Object val)
+        internal DateTime ReturnToDate(Object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -693,7 +697,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T StringToEnum<T>(Object val) where T : struct
+        internal T StringToEnum<T>(Object? val) where T : struct
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -706,7 +710,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string? ObjectArrayToParam(object[] arr)
+        internal string? ObjectArrayToParam(object[]? arr)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -719,7 +723,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object[]? ReturnToObjectArray(Object val)
+        internal object[]? ReturnToObjectArray(Object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -732,11 +736,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T[]? ReturnToObjectArray<T>(Object val)
+        internal T[]? ReturnToObjectArray<T>(Object? val)
         {
             return ReturnToObjectArray<T>(val, null);
         }
-        internal T[]? ReturnToObjectArray<T>(Object val, string? typeGuess)
+        internal T[]? ReturnToObjectArray<T>(Object? val, string? typeGuess)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -749,7 +753,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string[]? ReturnToStringArray(Object val)
+        internal string[]? ReturnToStringArray(Object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -775,7 +779,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal double[]? ReturnToDoubleArray(Object val)
+        internal double[]? ReturnToDoubleArray(Object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -788,7 +792,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string ObjectToParam(object val)
+        internal string ObjectToParam(object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -801,7 +805,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string ObjectToParam(object val, Type type)
+        internal string ObjectToParam(object? val, Type type)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -814,7 +818,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void ObjectToParam(SerializationContext c, string propertyName, object val)
+        internal void ObjectToParam(SerializationContext c, string propertyName, object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -827,7 +831,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void ObjectToParam(SerializationContext c, object val)
+        internal void ObjectToParam(SerializationContext? c, object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -840,7 +844,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string? ReturnToString(object val)
+        internal string? ReturnToString(object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -853,7 +857,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal bool ReturnToBoolean(object val)
+        internal bool ReturnToBoolean(object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -866,7 +870,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object? ConvertReturnValue(object val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object? ConvertReturnValue(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -879,7 +883,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object? ReturnToPrimitive(object val)
+        internal object? ReturnToPrimitive(object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -892,7 +896,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T[]? DowncastArray<T>(object val)
+        internal T[]? DowncastArray<T>(object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -996,7 +1000,7 @@ namespace IgniteUI.Blazor.Controls
             add();
         }
 
-        internal string? StringToString(object val)
+        internal string? StringToString(object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -1009,7 +1013,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string? StringArrayToString(string[] val)
+        internal string? StringArrayToString(string[]? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -1022,7 +1026,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string? IntArrayToString(int[] val)
+        internal string? IntArrayToString(int[]? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -1035,7 +1039,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string? DoubleArrayToString(double[] val)
+        internal string? DoubleArrayToString(double[]? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -1048,7 +1052,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        protected internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
 
         }

@@ -83,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
                 builder.OpenElement(8, "div");
                 builder.AddAttribute(9, "id", item.RefName);
                 builder.AddMarkupContent(10, "\r\n            ");
-                builder.OpenComponent(11, item.ControlType);
+                builder.OpenComponent(11, item.ControlType!);
                 builder.SetKey(item.RefName);
                 builder.AddComponentReferenceCapture(12, delegate (object __value)
                 {
@@ -136,17 +136,17 @@ namespace IgniteUI.Blazor.Controls
 
         public BaseRendererControl? Owner { get; internal set; }
 
-        protected virtual void OnComponentChanged(object oldValue, object component)
+        protected virtual void OnComponentChanged(object? oldValue, object? component)
         {
 
         }
 
-        public virtual void UpdateTemplate(object template)
+        public virtual void UpdateTemplate(object? template)
         {
 
         }
 
-        public virtual void UpdateContext(object context)
+        public virtual void UpdateContext(object? context)
         {
 
         }
@@ -161,7 +161,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override void OnComponentChanged(object oldValue, object component)
+        protected override void OnComponentChanged(object? oldValue, object? component)
         {
             //if (component != null)
             {
@@ -180,7 +180,7 @@ namespace IgniteUI.Blazor.Controls
 
             foreach (var item in toSignal)
             {
-                item.SetResult(Component);
+                item.SetResult(Component!);
             }
         }
 
@@ -208,7 +208,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 foreach (var item in toSignal!)
                 {
-                    item.SetResult(Component);
+                    item.SetResult(Component!);
                 }
             }
 
@@ -266,15 +266,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override void OnComponentChanged(object oldValue, object component)
+        protected override void OnComponentChanged(object? oldValue, object? component)
         {
             if (component is IgbTemplateContent<T>)
             {
-                OnContextChanged((T)Context, (T)Context);
+                OnContextChanged((T)Context!, (T)Context!);
             }
         }
 
-        private void OnContextChanged(T oldValue, T newValue)
+        private void OnContextChanged(T? oldValue, T? newValue)
         {
             if (Component is IgbTemplateContent<T>)
             {
@@ -290,15 +290,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override void UpdateTemplate(object template)
+        public override void UpdateTemplate(object? template)
         {
-            Template = (RenderFragment<T>)template;
+            Template = (RenderFragment<T>?)template;
         }
 
         /// <inheritdoc />
-        public override void UpdateContext(object context)
+        public override void UpdateContext(object? context)
         {
-            Context = (T)context;
+            Context = (T)context!;
         }
     }
 

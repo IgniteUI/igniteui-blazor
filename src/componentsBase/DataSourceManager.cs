@@ -70,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
             return Guid.Empty;
         }
 
-        public string? OnRefChanged(string path, object data)
+        public string? OnRefChanged(string path, object? data)
         {
             string? id = null;
             if (_refs.ContainsKey(path))
@@ -169,7 +169,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void NotifyInsertItem(string refName, int index, object refItem)
+        public void NotifyInsertItem(string refName, int index, object? refItem)
         {
             if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName])
             {
@@ -177,6 +177,10 @@ namespace IgniteUI.Blazor.Controls
             }
 
             //Console.WriteLine("notifying insert item");
+            if (refItem == null)
+            {
+                return;
+            }
             if (_refsById.ContainsKey(refName))
             {
                 //Console.WriteLine("found by id");
@@ -186,13 +190,17 @@ namespace IgniteUI.Blazor.Controls
                 _refSink!.OnRefNotifyInsertItem(dataSource, refName, index, newItem);
             }
         }
-        public void NotifyRemoveItem(String refName, int index, Object oldItem)
+        public void NotifyRemoveItem(String refName, int index, Object? oldItem)
         {
             if (_suspensionLookup.ContainsKey(refName) && _suspensionLookup[refName])
             {
                 return;
             }
 
+            if (oldItem == null)
+            {
+                return;
+            }
             if (_refsById.ContainsKey(refName))
             {
                 Object data = _refsById[refName];
@@ -255,8 +263,12 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        public string GetRefId(object dataSource)
+        public string GetRefId(object? dataSource)
         {
+            if (dataSource == null)
+            {
+                return string.Empty;
+            }
             if (_idLookup.ContainsKey(dataSource))
             {
                 return _idLookup[dataSource];

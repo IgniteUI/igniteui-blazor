@@ -43,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void OnRootComponentChanged(object oldComponent, object newComponent)
+        private void OnRootComponentChanged(object? oldComponent, object? newComponent)
         {
             if (ComponentChanged != null)
             {
