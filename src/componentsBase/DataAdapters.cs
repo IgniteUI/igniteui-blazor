@@ -7,17 +7,17 @@ namespace IgniteUI.Blazor.Controls
             _json = json;
         }
 
-        public static LocalJson? From(string json)
+        public static LocalJson From(string json)
         {
             return new LocalJson(json);
         }
 
-        private string? _json;
-        public string? Json { get { return _json; } }
+        private string _json;
+        public string Json { get { return _json; } }
 
         internal string ToRef()
         {
-            return "localJson:::" + Json!.Replace("\\", "\\\\").Replace("\"", "\\\"");
+            return "localJson:::" + Json.Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
     }
 
