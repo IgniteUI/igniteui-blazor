@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
+            if (args != null && args.ContainsKey("detail"))
             { this.Detail = (IgbChatMessage?)ConvertReturnValue(args["detail"], "ChatMessage", true); }
 
             this.SuppressParentNotify = false;

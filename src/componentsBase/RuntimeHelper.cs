@@ -145,6 +145,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public bool IsInproc { get; private set; }
-        public bool IsForcedJsonDataMarshalling { get { return _igBlazor!.Settings.ForceJsonDataMarshalling; } }
+        public bool IsForcedJsonDataMarshalling { get { return _igBlazor?.Settings?.ForceJsonDataMarshalling ?? false; } }
     }
 }

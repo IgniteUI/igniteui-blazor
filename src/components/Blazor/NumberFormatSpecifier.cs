@@ -488,43 +488,43 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("locale"))
+            if (args != null && args.ContainsKey("locale"))
             { this.Locale = ReturnToString(args["locale"]); }
-            if (args.ContainsKey("compactDisplay"))
+            if (args != null && args.ContainsKey("compactDisplay"))
             { this.CompactDisplay = ReturnToString(args["compactDisplay"]); }
-            if (args.ContainsKey("currency"))
+            if (args != null && args.ContainsKey("currency"))
             { this.Currency = ReturnToString(args["currency"]); }
-            if (args.ContainsKey("currencyDisplay"))
+            if (args != null && args.ContainsKey("currencyDisplay"))
             { this.CurrencyDisplay = ReturnToString(args["currencyDisplay"]); }
-            if (args.ContainsKey("currencySign"))
+            if (args != null && args.ContainsKey("currencySign"))
             { this.CurrencySign = ReturnToString(args["currencySign"]); }
-            if (args.ContainsKey("currencyCode"))
+            if (args != null && args.ContainsKey("currencyCode"))
             { this.CurrencyCode = ReturnToString(args["currencyCode"]); }
-            if (args.ContainsKey("localeMatcher"))
+            if (args != null && args.ContainsKey("localeMatcher"))
             { this.LocaleMatcher = ReturnToString(args["localeMatcher"]); }
-            if (args.ContainsKey("notation"))
+            if (args != null && args.ContainsKey("notation"))
             { this.Notation = ReturnToString(args["notation"]); }
-            if (args.ContainsKey("numberingSystem"))
+            if (args != null && args.ContainsKey("numberingSystem"))
             { this.NumberingSystem = ReturnToString(args["numberingSystem"]); }
-            if (args.ContainsKey("signDisplay"))
+            if (args != null && args.ContainsKey("signDisplay"))
             { this.SignDisplay = ReturnToString(args["signDisplay"]); }
-            if (args.ContainsKey("style"))
+            if (args != null && args.ContainsKey("style"))
             { this.Style = ReturnToString(args["style"]); }
-            if (args.ContainsKey("unit"))
+            if (args != null && args.ContainsKey("unit"))
             { this.Unit = ReturnToString(args["unit"]); }
-            if (args.ContainsKey("unitDisplay"))
+            if (args != null && args.ContainsKey("unitDisplay"))
             { this.UnitDisplay = ReturnToString(args["unitDisplay"]); }
-            if (args.ContainsKey("useGrouping"))
+            if (args != null && args.ContainsKey("useGrouping"))
             { this.UseGrouping = ReturnToBoolean(args["useGrouping"]); }
-            if (args.ContainsKey("minimumIntegerDigits"))
+            if (args != null && args.ContainsKey("minimumIntegerDigits"))
             { this.MinimumIntegerDigits = ReturnToInt(args["minimumIntegerDigits"]); }
-            if (args.ContainsKey("minimumFractionDigits"))
+            if (args != null && args.ContainsKey("minimumFractionDigits"))
             { this.MinimumFractionDigits = ReturnToInt(args["minimumFractionDigits"]); }
-            if (args.ContainsKey("maximumFractionDigits"))
+            if (args != null && args.ContainsKey("maximumFractionDigits"))
             { this.MaximumFractionDigits = ReturnToInt(args["maximumFractionDigits"]); }
-            if (args.ContainsKey("minimumSignificantDigits"))
+            if (args != null && args.ContainsKey("minimumSignificantDigits"))
             { this.MinimumSignificantDigits = ReturnToInt(args["minimumSignificantDigits"]); }
-            if (args.ContainsKey("maximumSignificantDigits"))
+            if (args != null && args.ContainsKey("maximumSignificantDigits"))
             { this.MaximumSignificantDigits = ReturnToInt(args["maximumSignificantDigits"]); }
 
             this.SuppressParentNotify = false;

@@ -58,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
+            if (args != null && args.ContainsKey("detail"))
             { this.Detail = (IgbTab?)ConvertReturnValue(args["detail"], "Tab", true); }
 
             this.SuppressParentNotify = false;

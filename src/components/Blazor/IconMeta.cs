@@ -59,9 +59,9 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("name"))
+            if (args != null && args.ContainsKey("name"))
             { this.Name = ReturnToString(args["name"]) ?? Guid.NewGuid().ToString(); }
-            if (args.ContainsKey("collection"))
+            if (args != null && args.ContainsKey("collection"))
             { this.Collection = ReturnToString(args["collection"]); }
 
             this.SuppressParentNotify = false;

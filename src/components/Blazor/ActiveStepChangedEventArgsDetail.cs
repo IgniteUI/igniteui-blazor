@@ -57,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("index"))
+            if (args != null && args.ContainsKey("index"))
             { this.Index = ReturnToDouble(args["index"]); }
 
             this.SuppressParentNotify = false;

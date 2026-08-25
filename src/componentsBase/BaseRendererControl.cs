@@ -977,9 +977,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (_serializerOptions == null)
                 {
-                    var def = IgBlazor.Settings.JsonSerializerOptions;
+                    var def = IgBlazor.Settings?.JsonSerializerOptions;
                     var options = new JsonSerializerOptions();
-                    options.MaxDepth = def.MaxDepth;
+                    options.MaxDepth = def != null ? def.MaxDepth : 0;
                     _serializerOptions = options;
                 }
                 return _serializerOptions;

@@ -83,9 +83,9 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("weekday"))
+            if (args != null && args.ContainsKey("weekday"))
             { this.Weekday = ReturnToString(args["weekday"]); }
-            if (args.ContainsKey("month"))
+            if (args != null && args.ContainsKey("month"))
             { this.Month = ReturnToString(args["month"]); }
 
             this.SuppressParentNotify = false;

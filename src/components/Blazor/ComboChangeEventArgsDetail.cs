@@ -165,11 +165,11 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("newValue"))
+            if (args != null && args.ContainsKey("newValue"))
             { this.NewValue = ReturnToObjectArray(args["newValue"]); }
-            if (args.ContainsKey("items"))
+            if (args != null && args.ContainsKey("items"))
             { this.Items = ReturnToObjectArray(args["items"]); }
-            if (args.ContainsKey("changeType"))
+            if (args != null && args.ContainsKey("changeType"))
             { this.ChangeType = StringToEnum<ComboChangeType>(args["changeType"]); }
 
             this.SuppressParentNotify = false;

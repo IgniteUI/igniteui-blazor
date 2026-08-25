@@ -139,15 +139,15 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("id"))
+            if (args != null && args.ContainsKey("id"))
             { this.Id = ReturnToString(args["id"]); }
-            if (args.ContainsKey("name"))
+            if (args != null && args.ContainsKey("name"))
             { this.Name = ReturnToString(args["name"]) ?? Guid.NewGuid().ToString(); }
-            if (args.ContainsKey("url"))
+            if (args != null && args.ContainsKey("url"))
             { this.Url = ReturnToString(args["url"]); }
-            if (args.ContainsKey("attachmentType"))
+            if (args != null && args.ContainsKey("attachmentType"))
             { this.AttachmentType = ReturnToString(args["attachmentType"]); }
-            if (args.ContainsKey("thumbnail"))
+            if (args != null && args.ContainsKey("thumbnail"))
             { this.Thumbnail = ReturnToString(args["thumbnail"]); }
 
             this.SuppressParentNotify = false;

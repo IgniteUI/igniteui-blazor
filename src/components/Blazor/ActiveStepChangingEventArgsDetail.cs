@@ -80,9 +80,9 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("oldIndex"))
+            if (args != null && args.ContainsKey("oldIndex"))
             { this.OldIndex = ReturnToDouble(args["oldIndex"]); }
-            if (args.ContainsKey("newIndex"))
+            if (args != null && args.ContainsKey("newIndex"))
             { this.NewIndex = ReturnToDouble(args["newIndex"]); }
 
             this.SuppressParentNotify = false;

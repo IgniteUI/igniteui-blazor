@@ -27,7 +27,7 @@ namespace IgniteUI.Blazor.Controls
             foreach (var data in
                 _dataSources.Values)
             {
-                if (data.HasId(id))
+                if (data != null && data.HasId(id))
                 {
                     return data.LookupOriginal(id);
                 }
@@ -38,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         {
             foreach (var data in _dataSources.Values)
             {
-                if (data.HasId(id))
+                if (data != null && data.HasId(id))
                 {
                     return data.LookupOriginal(id);
                 }

@@ -86,9 +86,9 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("text"))
+            if (args != null && args.ContainsKey("text"))
             { this.Text = ReturnToString(args["text"]); }
-            if (args.ContainsKey("attachments"))
+            if (args != null && args.ContainsKey("attachments"))
             { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]); }
 
             this.SuppressParentNotify = false;

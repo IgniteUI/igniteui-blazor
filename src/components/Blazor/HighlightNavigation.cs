@@ -66,7 +66,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("preventScroll"))
+            if (args != null && args.ContainsKey("preventScroll"))
             { this.PreventScroll = ReturnToBoolean(args["preventScroll"]); }
 
             this.SuppressParentNotify = false;

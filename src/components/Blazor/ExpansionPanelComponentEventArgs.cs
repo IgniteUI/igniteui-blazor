@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
+            if (args != null && args.ContainsKey("detail"))
             { this.Detail = (IgbExpansionPanel?)ConvertReturnValue(args["detail"], "ExpansionPanel", true); }
 
             this.SuppressParentNotify = false;

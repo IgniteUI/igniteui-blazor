@@ -58,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("newSelection"))
+            if (args != null && args.ContainsKey("newSelection"))
             { this.NewSelection = ReturnToObjectArray<IgbTreeItem>(args["newSelection"]); }
 
             this.SuppressParentNotify = false;
