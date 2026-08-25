@@ -133,10 +133,10 @@ namespace IgniteUI.Blazor.Controls
                 return _unmarshalledRuntime.InvokeUnmarshalled<string, string, string>(methodName, refName, dataIntents);
             }
 #else
-            if (_callSendUnmarshalledColumnMessage != null)
+            if (_callSendUnmarshalledColumnDataIntentMessage != null)
             {
                 //Console.WriteLine("invoking sadness");
-                return _callSendUnmarshalledColumnDataIntentMessage!(_inprocRuntime!, methodName, refName, dataIntents);
+                return _callSendUnmarshalledColumnDataIntentMessage(_inprocRuntime!, methodName, refName, dataIntents);
             }
 #endif
             _inprocRuntime!.InvokeVoid(methodName, new object[] { refName, dataIntents });

@@ -120,11 +120,11 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The variant of the button which determines its visual appearance.
         /// <list type="bullet">
-        ///   <item><description><see cref="IconButtonVariant.Contained"/> – filled background;
+        ///   <item><description><see cref="IconButtonVariant.Contained"/> â€“ filled background;
         ///     highest visual emphasis (default).</description></item>
-        ///   <item><description><see cref="IconButtonVariant.Outlined"/> – transparent background
+        ///   <item><description><see cref="IconButtonVariant.Outlined"/> â€“ transparent background
         ///     with a visible border.</description></item>
-        ///   <item><description><see cref="IconButtonVariant.Flat"/> – no background or border;
+        ///   <item><description><see cref="IconButtonVariant.Flat"/> â€“ no background or border;
         ///     lowest visual emphasis.</description></item>
         /// </list>
         /// </summary>
