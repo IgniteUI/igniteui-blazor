@@ -11,9 +11,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbRatingSymbolModule.IsLoadRequested(IgBlazor))
+            if (!IgbRatingModule.IsLoadRequested(IgBlazor))
             {
-                IgbRatingSymbolModule.Register(IgBlazor);
+                IgbRatingModule.Register(IgBlazor);
             }
         }
 

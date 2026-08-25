@@ -11,15 +11,6 @@ namespace IgniteUI.Blazor.Controls
         public override string Type { get { return "WebSliderBase"; } }
 
         /// <inheritdoc />
-        protected override void EnsureModulesLoaded()
-        {
-            if (!IgbSliderBaseModule.IsLoadRequested(IgBlazor))
-            {
-                IgbSliderBaseModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";

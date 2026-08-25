@@ -13,9 +13,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbNavDrawerItemModule.IsLoadRequested(IgBlazor))
+            if (!IgbNavDrawerModule.IsLoadRequested(IgBlazor))
             {
-                IgbNavDrawerItemModule.Register(IgBlazor);
+                IgbNavDrawerModule.Register(IgBlazor);
             }
         }
 

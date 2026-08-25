@@ -11,15 +11,6 @@ namespace IgniteUI.Blazor.Controls
         public override string Type { get { return "WebCheckboxBase"; } }
 
         /// <inheritdoc />
-        protected override void EnsureModulesLoaded()
-        {
-            if (!IgbCheckboxBaseModule.IsLoadRequested(IgBlazor))
-            {
-                IgbCheckboxBaseModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";

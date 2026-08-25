@@ -1,21 +1,25 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Provides the module for the <see cref="IgbTile"/> child component of <see cref="IgbTileManager"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbTileModule is no longer required, has no effect and can be safely removed.")]
     public partial class IgbTileModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebTileModule");
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebTileModule");
         }
 
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebTileModule");
+            return true;
         }
     }
 }

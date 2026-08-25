@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTreeItem : IDisposable
+    public partial class IgbTreeItem
     {
         [CascadingParameter(Name = "TreeParent")]
         protected BaseRendererControl? TreeParent
@@ -10,13 +10,15 @@ namespace IgniteUI.Blazor.Controls
             get; set;
         }
 
-        public void Dispose()
+        /// <inheritdoc />
+        public override async ValueTask DisposeAsync()
         {
             if (TreeParent != null)
             {
                 var sv = (IgbTree)TreeParent;
                 sv.ContentItems.Remove(this);
             }
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

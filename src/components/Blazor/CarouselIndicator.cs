@@ -11,9 +11,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbCarouselIndicatorModule.IsLoadRequested(IgBlazor))
+            if (!IgbCarouselModule.IsLoadRequested(IgBlazor))
             {
-                IgbCarouselIndicatorModule.Register(IgBlazor);
+                IgbCarouselModule.Register(IgBlazor);
             }
         }
 

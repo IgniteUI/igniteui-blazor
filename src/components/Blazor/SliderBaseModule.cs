@@ -1,21 +1,25 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Provides the module for <see cref="IgbSliderBase"/>. Registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbSliderBaseModule is no longer required, has no effect and can be safely removed.")]
     public partial class IgbSliderBaseModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebSliderBaseModule");
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebSliderBaseModule");
         }
 
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebSliderBaseModule");
+            return true;
         }
     }
 }
