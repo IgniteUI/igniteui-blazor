@@ -141,7 +141,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Items"))
             { ser.AddArrayProp("items", this._items); }
             if (IsPropDirty("ChangeType"))
-            { ser.AddEnumProp("type", this._changeType); }
+            { ser.AddEnumProp("changeType", this._changeType); }
 
         }
 
