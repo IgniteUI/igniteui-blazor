@@ -32,7 +32,7 @@ namespace IgniteUI.Blazor.Controls
 
         public bool IsObjectColumn { get; set; }
 
-        public UnmarshalledColumnData[]? SubColumns { get; set; }
+        public UnmarshalledColumnData?[]? SubColumns { get; set; }
         public JSDataSourceSchema? SubSchema { get; set; }
         public Action<int, UnmarshalledColumnData, int, object?>? Insert { get; internal set; }
         public Action<int, UnmarshalledColumnData, int, object, object>? Update { get; internal set; }
@@ -93,7 +93,7 @@ namespace IgniteUI.Blazor.Controls
         private string? _parentId;
         private DataSourceManager? _manager = null;
 
-        private UnmarshalledColumnData[]? _columns = null;
+        private UnmarshalledColumnData?[]? _columns = null;
 
         private Dictionary<Guid, Dictionary<string, UnmarshalledDataSource>> _subDataSources = new Dictionary<Guid, Dictionary<string, UnmarshalledDataSource>>();
 
@@ -141,7 +141,7 @@ namespace IgniteUI.Blazor.Controls
             };
         }
 
-        private UnmarshalledColumnData[]? AdjustCapacity(string? parentPath, UnmarshalledColumnData?[]? columns, JSDataSourceSchema? schema, int oldValue, int newValue)
+        private UnmarshalledColumnData?[]? AdjustCapacity(string? parentPath, UnmarshalledColumnData?[]? columns, JSDataSourceSchema? schema, int oldValue, int newValue)
         {
             //Console.WriteLine("adjusting capacity, oldValue: " + oldValue + ", newValue: " + newValue);
             DateTime start = DateTime.Now;
@@ -240,7 +240,7 @@ namespace IgniteUI.Blazor.Controls
             }
 
             //Console.WriteLine("end adjusting capacity: " + (DateTime.Now - start).TotalMilliseconds);
-            return columns!;
+            return columns;
         }
 
         private UnmarshalledColumnData CreateColumn(string? parentPath, string propertyName, JSDataSourceSchema schema, JSDataSourceSchemaType type, Delegate? valueGetter, Func<object, object>? untypedGetter, bool isIDColumn)
@@ -1555,9 +1555,9 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchemaType.ObjectValue;
         }
 
-        private void GetColumns(string refName, UnmarshalledColumnData[]? columns, List<UnmarshalledColumn?>? l)
+        private void GetColumns(string refName, UnmarshalledColumnData?[]? columns, List<UnmarshalledColumn?>? l)
         {
-            List<UnmarshalledColumnData[]> toDrill = new List<UnmarshalledColumnData[]>();
+            List<UnmarshalledColumnData?[]> toDrill = new List<UnmarshalledColumnData?[]>();
 
             if (columns == null)
             {
@@ -2235,7 +2235,7 @@ namespace IgniteUI.Blazor.Controls
             //_data.Add(itemJson);
         }
 
-        private void EnsureLeadingNullsInserted(JSDataSourceSchema? schema, UnmarshalledColumnData[]? columns)
+        private void EnsureLeadingNullsInserted(JSDataSourceSchema? schema, UnmarshalledColumnData?[]? columns)
         {
             if (schema == null || columns == null)
             {
@@ -2255,7 +2255,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void InsertItemAt(object? item, int index, JSDataSourceSchema? schema, UnmarshalledColumnData[]? columns)
+        private void InsertItemAt(object? item, int index, JSDataSourceSchema? schema, UnmarshalledColumnData?[]? columns)
         {
             EnsureLeadingNullsInserted(schema, columns);
             EnsureCapacity(_size + 1);
@@ -2278,7 +2278,7 @@ namespace IgniteUI.Blazor.Controls
             _size++;
         }
 
-        private void UpdateItemAt(object? oldItem, object? newItem, int index, JSDataSourceSchema schema, UnmarshalledColumnData[]? columns)
+        private void UpdateItemAt(object? oldItem, object? newItem, int index, JSDataSourceSchema schema, UnmarshalledColumnData?[]? columns)
         {
             EnsureLeadingNullsInserted(schema, columns);
             if (columns == null)
@@ -2293,7 +2293,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void RemoveItemAt(int index, JSDataSourceSchema schema, UnmarshalledColumnData[]? columns)
+        private void RemoveItemAt(int index, JSDataSourceSchema schema, UnmarshalledColumnData?[]? columns)
         {
             EnsureLeadingNullsInserted(schema, columns);
             if (columns == null)
@@ -2303,8 +2303,11 @@ namespace IgniteUI.Blazor.Controls
             for (var i = 0; i < columns.Length; i++)
             {
                 var column = columns[i];
-
-                column!.Remove!(_size, column, index);
+                var remove = column?.Remove;
+                if (column != null && remove != null)
+                {
+                    remove(_size, column, index);
+                }
             }
             _size--;
         }
@@ -2572,7 +2575,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     for (var i = 0; i < _columns.Length; i++)
                     {
-                        _columns![i]!.Clear!(_size, _columns[i]);
+                        var column = _columns[i];
+                        var clear = column?.Clear;
+                        if (column != null && clear != null)
+                        {
+                            clear(_size, column);
+                        }
                     }
                 }
             }
