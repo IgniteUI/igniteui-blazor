@@ -6,7 +6,10 @@ namespace IgniteUI.Blazor.Controls
 
     public class DynamicContentHolder : ComponentBase
     {
-        protected LinkedList<DynamicContentInfo>? DynamicContentInfo
+        public DynamicContentHolder() {
+            DynamicContentInfo = new LinkedList<DynamicContentInfo>();
+        }
+        protected LinkedList<DynamicContentInfo> DynamicContentInfo
         {
             get;
             set;
@@ -16,7 +19,6 @@ namespace IgniteUI.Blazor.Controls
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            DynamicContentInfo = new LinkedList<DynamicContentInfo>();
         }
 
         private bool _isDirty = false;
@@ -28,8 +30,9 @@ namespace IgniteUI.Blazor.Controls
 
         public void AddDynamicContent(DynamicContentInfo content)
         {
+            DynamicContentInfo ??= new LinkedList<DynamicContentInfo>();
             _contentInfos[content.RefName] = content;
-            _contentInfoNode[content.RefName] = DynamicContentInfo!.AddLast(content);
+            _contentInfoNode[content.RefName] = DynamicContentInfo.AddLast(content);
             _isDirty = true;
         }
 
@@ -39,7 +42,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 _contentInfos.Remove(content.RefName);
 
-                DynamicContentInfo!.Remove(_contentInfoNode[content.RefName]);
+                DynamicContentInfo.Remove(_contentInfoNode[content.RefName]);
                 _contentInfoNode.Remove(content.RefName);
 
                 _isDirty = true;
@@ -71,7 +74,7 @@ namespace IgniteUI.Blazor.Controls
             builder.AddAttribute(1, "class", "ig-dynamic-content-holder");
             builder.AddAttribute(2, "style", "display: none");
             builder.AddMarkupContent(3, "\r\n");
-            var current = DynamicContentInfo!.First;
+            var current = DynamicContentInfo.First;
             while (current != null)
             {
                 var item = current.Value;
@@ -83,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
                 builder.OpenElement(8, "div");
                 builder.AddAttribute(9, "id", item.RefName);
                 builder.AddMarkupContent(10, "\r\n            ");
-                builder.OpenComponent(11, item.ControlType!);
+                builder.OpenComponent(11, item.ControlType);
                 builder.SetKey(item.RefName);
                 builder.AddComponentReferenceCapture(12, delegate (object __value)
                 {
@@ -104,7 +107,7 @@ namespace IgniteUI.Blazor.Controls
 
     public abstract class DynamicContentInfo
     {
-        public Type? ControlType { get; set; }
+        public required Type ControlType { get; set; }
         public DynamicContentInfo()
         {
             RefName = Guid.NewGuid().ToString();
@@ -270,7 +273,7 @@ namespace IgniteUI.Blazor.Controls
         {
             if (component is IgbTemplateContent<T>)
             {
-                OnContextChanged((T)Context!, (T)Context!);
+                OnContextChanged((T?)Context, (T?)Context);
             }
         }
 
@@ -280,9 +283,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 var template = (IgbTemplateContent<T>)Component;
 
-                if (_hasPopulatedContext)
+                if (_hasPopulatedContext && Context != null)
                 {
-                    template.Context = Context!;
+                    template.Context = Context;
                 }
                 template.Template = Template;
                 template.Update();
@@ -298,7 +301,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override void UpdateContext(object? context)
         {
-            Context = (T)context!;
+            Context = (T?)context;
         }
     }
 
