@@ -6,7 +6,8 @@ namespace IgniteUI.Blazor.Controls
 
     public class DynamicContentHolder : ComponentBase
     {
-        public DynamicContentHolder() {
+        public DynamicContentHolder()
+        {
             DynamicContentInfo = new LinkedList<DynamicContentInfo>();
         }
         protected LinkedList<DynamicContentInfo> DynamicContentInfo
