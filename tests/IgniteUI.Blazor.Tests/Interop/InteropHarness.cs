@@ -193,6 +193,16 @@ public abstract class InteropHarness
     /// </summary>
     public abstract void ClearObserved();
 
+    /// <summary>
+    /// The positions of the item insertions transmitted for the instance's bound data, in the order
+    /// the client received them. Transmission is asynchronous and nothing observable says it has
+    /// finished, so <paramref name="expected"/> - what the caller is waiting for - is what the wait
+    /// is pinned to. Everything transmitted comes back, so both a shortfall and an overshoot are
+    /// returned to be asserted on rather than hidden. How an insertion is spelled on the wire is
+    /// implementation-specific; that every one arrives exactly once, in order, is not.
+    /// </summary>
+    public abstract IReadOnlyList<int> DataItemInsertions(string containerId, int expected);
+
     public IEnumerable<InteropMethodCall> CallsOf(string methodName, string? containerId = null) =>
         MethodCalls.Where(c => c.MethodName == methodName && (containerId is null || c.ContainerId == containerId));
 

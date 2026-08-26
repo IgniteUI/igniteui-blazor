@@ -252,8 +252,9 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         // can starve the queue-flush continuations well past their usual few milliseconds.
         for (var attempt = 0; attempt < 80; attempt++)
         {
-            // One snapshot+parse per attempt, scanned newest-first.
-            var messages = Messages().Where(m => m.ContainerId == containerId).Reverse().ToList();
+            // One snapshot+parse per attempt, newest-first, taken once the instance stops
+            // transmitting: mid-flush the newest update recorded is not yet the newest one sent.
+            var messages = SettledMessagesFor(containerId);
 
             string? dataRefId = null;
             foreach (var (_, message, _) in messages)
@@ -291,6 +292,84 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         }
         return null;
     }
+
+    /// <summary>
+    /// This instance's traffic, newest first, taken once it stops transmitting. A flush hands its
+    /// messages to JS one at a time, so a snapshot can land between two and show an update the next
+    /// one supersedes - how a script ref read back as the event registration sharing its ref name.
+    /// Only this instance's traffic can supersede it, so other components never hold it up.
+    /// </summary>
+    private List<(string ContainerId, JsonElement Message, IReadOnlyList<ElementReference> Elements)> SettledMessagesFor(string containerId)
+    {
+        // Bounded, so a component that never stops transmitting cannot hang the test; the caller
+        // has its own budget for concluding absence.
+        for (var attempt = 0; attempt < 40; attempt++)
+        {
+            // Barrier first, and it is what actually settles a flush already sending: it queues
+            // behind that flush's own dispatcher work item, so the flush has finished by the time
+            // this returns - however long it was preempted between two sends, which is the part no
+            // lull can promise. Going first also means the counts below read a record nothing is
+            // appending to. A flush still waiting on the thread-pool hop that posts it is visible
+            // to neither, so a caller that knows what it is waiting for should say so instead - see
+            // DataItemInsertions.
+            OnDispatcher(() => { });
+            var sends = SendCountFor(containerId);
+            Thread.Sleep(1);
+            if (SendCountFor(containerId) == sends)
+            {
+                break;
+            }
+        }
+        return Messages().Where(m => m.ContainerId == containerId).Reverse().ToList();
+    }
+
+    /// <summary>On this stack an insertion is a refNotifyInsertItem message carrying its index.</summary>
+    public override IReadOnlyList<int> DataItemInsertions(string containerId, int expected)
+    {
+        // Reaching the count asked for is what establishes that transmission happened at all: a
+        // lull cannot, because a flush still waiting for its thread-pool hop looks exactly like one
+        // with nothing left to send. Past that point the wait inverts - hold on until the count
+        // stops moving and the dispatcher is drained - so traffic that *overshoots*, a duplicated
+        // notification say, is returned to be asserted on rather than cut off at the expected count
+        // and silently passing. Bounded either way, and answering short is the point: a shortfall is
+        // the failure worth reporting, not something to hide behind a timeout. Reparsed only when
+        // the traffic moved, so stopping short costs one parse rather than one per attempt.
+        var counted = -1;
+        var steady = 0;
+        List<int> seen = [];
+        for (var attempt = 0; attempt < 400; attempt++)
+        {
+            var sends = SendCountFor(containerId);
+            if (sends != counted)
+            {
+                counted = sends;
+                seen = InsertionsFor(containerId);
+                steady = 0;
+            }
+            else if (seen.Count >= expected && ++steady >= 3)
+            {
+                // Whatever was already sending has landed by now, so a count still unmoved is done.
+                OnDispatcher(() => { });
+                if (SendCountFor(containerId) == counted)
+                {
+                    break;
+                }
+                steady = 0;
+            }
+            Thread.Sleep(1);
+        }
+        return seen;
+    }
+
+    private List<int> InsertionsFor(string containerId) =>
+        [.. Messages()
+            .Where(m => m.ContainerId == containerId
+                && m.Message.GetProperty("type").GetString() == "refNotifyInsertItem")
+            .Select(m => m.Message.GetProperty("index").GetInt32())];
+
+    private int SendCountFor(string containerId) =>
+        SnapshotInvocations().Count(i =>
+            i.Identifier == SendMessage && i.Arguments.Count > 0 && i.Arguments[0] as string == containerId);
 
     /// <summary>
     /// refChanged values embed their payload as prefixed strings
@@ -377,8 +456,10 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     }
 
     /// <summary>
-    /// Components flush queued messages from background continuations, so bUnit's
-    /// append-only invocation record can grow while we read it. Snapshot with retry.
+    /// Components flush queued messages from background continuations, so bUnit's append-only
+    /// invocation record can grow while we read it - and the longer the record, the longer each
+    /// attempt is exposed, so a component mid-flush can beat several in a row. Yielding is enough
+    /// once the flush ends; a real pause is what gets us there.
     /// </summary>
     private IReadOnlyList<JSRuntimeInvocation> SnapshotInvocations()
     {
@@ -388,9 +469,16 @@ public sealed class RendererMessageInteropHarness : InteropHarness
             {
                 return [.. _js.Invocations];
             }
-            catch (InvalidOperationException) when (attempt < 10)
+            catch (InvalidOperationException) when (attempt < 200)
             {
-                Thread.Yield();
+                if (attempt < 10)
+                {
+                    Thread.Yield();
+                }
+                else
+                {
+                    Thread.Sleep(1);
+                }
             }
         }
     }
