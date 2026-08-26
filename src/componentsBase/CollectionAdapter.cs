@@ -85,14 +85,20 @@ namespace IgniteUI.Blazor.Controls
             switch (args.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems![0]!);
+                    if (args.NewItems != null && args.NewItems.Count > 0)
+                    {
+                        this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems![0]!);
+                    }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     this.RemoveManualItemAt(args.OldStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     this.RemoveManualItemAt(args.OldStartingIndex);
-                    this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems![0]!);
+                    if (args.NewItems != null && args.NewItems.Count > 0)
+                    {
+                        this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems![0]!);
+                    }
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     this.ClearManualItems();
@@ -102,7 +108,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void ShiftContentToManual(IList<T> manualCollection, Action<T> onMoving)
         {
-            T item = default(T)!;
+            T? item = default(T);
 
             var manualSet = new HashSet<string>();
             if (this.CollisionChecker != null)
@@ -125,7 +131,12 @@ namespace IgniteUI.Blazor.Controls
             }
 
             var mapWasEmpty = manualSet.Count == 0;
-            for (var i = 0; i < this!._query!.Count; i++)
+            if (this._query == null)
+            {
+                // no collection to shift
+                return;
+            }
+            for (var i = 0; i < this._query.Count; i++)
             {
                 item = this._query[i];
 
@@ -137,7 +148,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    var key = this!.CollisionChecker!(item);
+                    var key = this.CollisionChecker!(item);
                     if (key == null)
                     {
                         this._manualItems.Insert(i, item);
@@ -168,8 +179,12 @@ namespace IgniteUI.Blazor.Controls
             Dictionary<T, bool> queryMap = new Dictionary<T, bool>();
             Dictionary<T, bool> manualMap = new Dictionary<T, bool>();
 
-            T item = default(T)!;
-            for (var i = 0; i < this!._allList!.Count; i++)
+            T? item = default(T);
+            if (this._allList == null)
+            {
+                return;
+            }
+            for (var i = 0; i < this._allList.Count; i++)
             {
                 item = this._allList[i];
                 targetMap[item] = true;
@@ -196,6 +211,11 @@ namespace IgniteUI.Blazor.Controls
                             }
                         }
                     }
+                }
+                if (this._query == null)
+                {
+                    // no collection to sync
+                    return;
                 }
                 for (var i = this._query!.Count - 1; i >= 0; i--)
                 {
@@ -232,14 +252,14 @@ namespace IgniteUI.Blazor.Controls
                 if (!queryMap.ContainsKey(item) && !manualMap.ContainsKey(item))
                 {
                     this._allList.RemoveAt(i);
-                    this!._target!.RemoveAt(i);
-                    this!._onItemRemoved!(item);
+                    this._target?.RemoveAt(i);
+                    this._onItemRemoved?.Invoke(item);
                 }
             }
 
             int ind = 0;
             int ins = 0;
-            T insItem = default(T)!;
+            T? insItem = default(T);
             int maxLen = queryArray.Count + this._manualItems.Count;
             while (ind < maxLen)
             {
@@ -266,8 +286,8 @@ namespace IgniteUI.Blazor.Controls
                     else
                     {
                         this._allList.Insert(ins, insItem);
-                        this!._target!.Insert(ins, this!._toTarget!(insItem));
-                        this!._onItemAdded!(insItem);
+                        this._target?.Insert(ins, this!._toTarget!(insItem));
+                        this._onItemAdded?.Invoke(insItem);
                         ind++;
                         ins++;
                     }
@@ -275,8 +295,12 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     this._allList.Add(insItem);
-                    this!._target!.Add(this!._toTarget!(insItem));
-                    this!._onItemAdded!(insItem);
+                    var convertedItem = this._toTarget?.Invoke(insItem);
+                    if (convertedItem != null)
+                    {
+                        this._target?.Add(convertedItem);
+                    }
+                    this._onItemAdded?.Invoke(insItem);
                     ind++;
                     ins++;
                 }
