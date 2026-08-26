@@ -145,12 +145,11 @@ namespace IgniteUI.Blazor.Controls
         {
             //Console.WriteLine("adjusting capacity, oldValue: " + oldValue + ", newValue: " + newValue);
             DateTime start = DateTime.Now;
-            if (columns == null && schema == null)
+            if (columns == null || schema == null)
             {
                 return null;
             }
-
-            if (schema!.IsDataSource)
+            if (schema.IsDataSource)
             {
                 if (columns == null)
                 {
@@ -163,6 +162,15 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
+                var propertyNames = schema.PropertyNames ?? Array.Empty<string>();
+                var fieldNames = schema.FieldNames ?? Array.Empty<string>();
+                var propertyGetters = schema.PropertyGetters ?? Array.Empty<Func<object, object>>();
+                var fieldGetters = schema.FieldGetters ?? Array.Empty<Func<object, object>>();
+                var typedPropertyGetters = schema.TypedPropertyGetters ?? Array.Empty<Delegate>();
+                var typedFieldGetters = schema.TypedFieldGetters ?? Array.Empty<Delegate>();
+                var propertyTypes = schema.PropertyTypes ?? Array.Empty<JSDataSourceSchemaType>();
+                var fieldTypes = schema.FieldTypes ?? Array.Empty<JSDataSourceSchemaType>();
+
                 if (columns == null)
                 {
                     var extraCols = 1;
@@ -170,24 +178,30 @@ namespace IgniteUI.Blazor.Controls
                     {
                         extraCols = 0;
                     }
-                    columns = new UnmarshalledColumnData[schema!.PropertyNames!.Length + schema!.FieldNames!.Length + extraCols];
+                    columns = new UnmarshalledColumnData[propertyNames.Length + fieldNames.Length + extraCols];
                     for (var k = 0; k < columns.Length; k++)
                     {
                         columns[k] = null;
                     }
                 }
-                int i = 0;
 
-                for (i = 0; i < schema!.PropertyNames!.Length; i++)
+                var propertyCount = Math.Min(propertyNames.Length, Math.Min(propertyGetters.Length, propertyTypes.Length));
+                var fieldCount = Math.Min(fieldNames.Length, Math.Min(fieldGetters.Length, fieldTypes.Length));
+
+                int i = 0;
+                for (; i < propertyCount; i++)
                 {
-                    columns[i] = AdjustColumnCapacity(parentPath, columns[i], schema, schema.PropertyNames[i], schema!.TypedPropertyGetters![i], schema!.PropertyGetters![i], false, schema!.PropertyTypes![i], oldValue, newValue);
+                    var typedPropertyGetter = i < typedPropertyGetters.Length ? typedPropertyGetters[i] : null;
+                    columns[i] = AdjustColumnCapacity(parentPath, columns[i], schema, propertyNames[i], typedPropertyGetter, propertyGetters[i], false, propertyTypes[i], oldValue, newValue);
                 }
-                for (int j = 0; j < _schema!.FieldNames!.Length; i++, j++)
+
+                for (int j = 0; j < fieldCount; i++, j++)
                 {
-                    columns[i] = AdjustColumnCapacity(parentPath, columns[i], schema, schema!.FieldNames![j], schema!.TypedFieldGetters![j], schema!.FieldGetters![j], false, schema!.FieldTypes![j], oldValue, newValue);
+                    var typedFieldGetter = j < typedFieldGetters.Length ? typedFieldGetters[j] : null;
+                    columns[i] = AdjustColumnCapacity(parentPath, columns[i], schema, fieldNames[j], typedFieldGetter, fieldGetters[j], false, fieldTypes[j], oldValue, newValue);
                 }
             }
-            if (schema!.IsPrimitive)
+            if (schema.IsPrimitive)
             {
                 columns[columns.Length - 1] = AdjustColumnCapacity(parentPath, columns[columns.Length - 1], schema, "___primitiveValueCollection", null, null, false, schema.PrimitiveType, oldValue, newValue);
                 return columns!;
@@ -698,7 +712,7 @@ namespace IgniteUI.Blazor.Controls
                                 schema.SetSubSchema(column.PropertyName, subSchema);
                                 column.SubSchema = subSchema;
                             }
-                            if (subSchema!.IsDataSource && !column.IsSubDataSource)
+                            if (subSchema != null && subSchema.IsDataSource && !column.IsSubDataSource)
                             {
                                 column.IsSubDataSource = true;
                                 var c = column.Column;
@@ -784,7 +798,7 @@ namespace IgniteUI.Blazor.Controls
                                 schema.SetSubSchema(column.PropertyName, subSchema);
                                 column.SubSchema = subSchema;
                             }
-                            if (subSchema!.IsDataSource && !column.IsSubDataSource)
+                            if (subSchema != null && subSchema.IsDataSource && !column.IsSubDataSource)
                             {
                                 column.IsSubDataSource = true;
                                 var c = column.Column;
@@ -1045,7 +1059,7 @@ namespace IgniteUI.Blazor.Controls
                                 schema.SetSubSchema(column.PropertyName, subSchema);
                                 column.SubSchema = subSchema;
                             }
-                            if (subSchema!.IsDataSource && !column.IsSubDataSource)
+                            if (subSchema != null && subSchema.IsDataSource && !column.IsSubDataSource)
                             {
                                 column.IsSubDataSource = true;
                                 var c = column.Column;

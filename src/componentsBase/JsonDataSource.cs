@@ -111,7 +111,7 @@ namespace IgniteUI.Blazor.Controls
 
         private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            if (SuppressModifications)
+            if (SuppressModifications || _manager == null)
             {
                 return;
             }
@@ -125,7 +125,7 @@ namespace IgniteUI.Blazor.Controls
                         for (var i = 0; i < e.NewItems.Count; i++)
                         {
                             var item = e.NewItems[i];
-                            var refName = _manager!.GetRefId(_originalData);
+                            var refName = _manager.GetRefId(_originalData);
                             if (refName == null)
                             {
                                 return;
@@ -142,7 +142,7 @@ namespace IgniteUI.Blazor.Controls
                         for (var i = 0; i < e.OldItems.Count; i++)
                         {
                             var item = e.OldItems[i];
-                            var refName = _manager!.GetRefId(_originalData);
+                            var refName = _manager.GetRefId(_originalData);
                             if (refName == null)
                             {
                                 return;
@@ -159,7 +159,7 @@ namespace IgniteUI.Blazor.Controls
                         for (var i = 0; i < e.OldItems.Count; i++)
                         {
                             var item = e.OldItems[i];
-                            var refName = _manager!.GetRefId(_originalData);
+                            var refName = _manager.GetRefId(_originalData);
                             if (refName == null)
                             {
                                 return;
@@ -172,7 +172,7 @@ namespace IgniteUI.Blazor.Controls
                         for (var i = 0; i < e.NewItems.Count; i++)
                         {
                             var item = e.NewItems[i];
-                            var refName = _manager!.GetRefId(_originalData);
+                            var refName = _manager.GetRefId(_originalData);
                             if (refName == null)
                             {
                                 return;
@@ -184,7 +184,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 case NotifyCollectionChangedAction.Reset:
                 {
-                    var refName = _manager!.GetRefId(_originalData);
+                    var refName = _manager.GetRefId(_originalData);
                     if (refName == null)
                     {
                         return;
@@ -267,11 +267,11 @@ namespace IgniteUI.Blazor.Controls
         public Guid IdFromOriginal(object item)
         {
             var itm = FromOriginal(item);
-            if (item == null)
+            if (itm == null)
             {
                 return Guid.Empty;
             }
-            return itm!.Id;
+            return itm.Id;
         }
 
         public IJSDataSourceItem? FromOriginal(object item)
@@ -391,19 +391,19 @@ namespace IgniteUI.Blazor.Controls
             OnAddItem(itemJson, item);
             _data.Add(itemJson);
 
-            if (schema != null)
+            if (schema != null && schema.PropertyNames != null && schema.PropertyTypes != null)
             {
-                for (int i = 0; i < schema!.PropertyNames!.Length; i++)
+                for (int i = 0; i < schema.PropertyNames.Length; i++)
                 {
                     var propertyName = schema.PropertyNames[i];
-                    var propertyType = schema!.PropertyTypes![i];
+                    var propertyType = schema.PropertyTypes[i];
                     if (propertyType == JSDataSourceSchemaType.ObjectValue)
                     {
                         var subSchema = schema.GetSubSchema(propertyName);
                         if (subSchema != null)
                         {
-                            var propValue = (JsonDataSourceItem)itemJson.GetValue(propertyName)!;
-                            if (propValue.Source != null)
+                            var propValue = (JsonDataSourceItem?)itemJson.GetValue(propertyName);
+                            if (propValue?.Source != null)
                             {
                                 if (!_subDataSources.ContainsKey(itemJson.Id))
                                 {
