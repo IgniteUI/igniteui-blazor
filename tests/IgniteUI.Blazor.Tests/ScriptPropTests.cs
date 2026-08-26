@@ -86,7 +86,7 @@ public class ScriptPropTests : BlazorComponentTestBase
 
             // Clear:
             interop.ClearObserved();
-            prop.SetValue(cut.Instance, null);
+            interop.OnDispatcher(() => prop.SetValue(cut.Instance, null));
             var cleared = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), wireName);
             if (cleared is null)
             {

@@ -29,8 +29,8 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     /// Default: forces the JSON data-source channel (as on Blazor Server), keeping data
     /// transfers observable as refChanged messages.
     /// </summary>
-    public RendererMessageInteropHarness(BunitJSInterop js)
-        : this(js, forceJsonDataMarshalling: true)
+    public RendererMessageInteropHarness(BunitJSInterop js, Func<Dispatcher> dispatcher)
+        : this(js, dispatcher, forceJsonDataMarshalling: true)
     {
     }
 
@@ -41,7 +41,8 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     /// DataSourceManager picks UnmarshalledDataSource and the column messages are
     /// recorded in <see cref="UnmarshalledColumnMessages"/> instead of crossing to JS.
     /// </summary>
-    public RendererMessageInteropHarness(BunitJSInterop js, bool forceJsonDataMarshalling)
+    public RendererMessageInteropHarness(BunitJSInterop js, Func<Dispatcher> dispatcher, bool forceJsonDataMarshalling)
+        : base(dispatcher)
     {
         _js = js;
         var runtime = forceJsonDataMarshalling
@@ -150,7 +151,8 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         _js.SetupVoid("igWaitForLoaded", _ => true).SetVoidResult();
     }
 
-    public override void MakeReady() => _service.WebCallback.OnReady();
+    // The JS-to-.NET entries below run on the dispatcher, where Blazor delivers the real ones.
+    public override void MakeReady() => OnDispatcher(_service.WebCallback.OnReady);
 
     public override string ContainerIdOf(IRenderedComponent<IComponent> cut) =>
         cut.Find("[data-ig-id]").GetAttribute("data-ig-id")
@@ -232,11 +234,11 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     public override void RaiseEvent(string containerId, string eventName, string argsJson = "{}", string targetName = "mainControl")
     {
         var payload = $$"""{"sender": {"refType": "name", "id": "{{targetName}}"}, "args": {{argsJson}}}""";
-        _service.WebCallback.OnRaiseEvent(containerId, targetName, eventName, payload);
+        OnDispatcher(() => _service.WebCallback.OnRaiseEvent(containerId, targetName, eventName, payload));
     }
 
     public override void CompleteDeferred(InteropMethodCall call, InteropReturn result) =>
-        _service.WebCallback.OnInvokeReturn(call.ContainerId, call.InvokeId, ToResultPayload(result));
+        OnDispatcher(() => _service.WebCallback.OnInvokeReturn(call.ContainerId, call.InvokeId, ToResultPayload(result)));
 
     public override JsonElement? FindPropertyUpdate(string containerId, string wireName)
     {

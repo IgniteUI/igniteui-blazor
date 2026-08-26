@@ -174,7 +174,9 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             ? $"no new current-state read was issued for \"{method.ReadsProperty}\""
             : $"\"{method.JsName}\" sent no new invocation";
 
-        var (call, result) = await InvokeExpectingNewCall(matching, () => method.Invoke(cut.Instance), noNewCall);
+        // On the dispatcher, as application code calling a component API is - see OnDispatcher.
+        var (call, result) = await InvokeExpectingNewCall(
+            matching, () => harness.OnDispatcher(() => method.Invoke(cut.Instance)), noNewCall);
         AssertObserved(harness, cut, scope, method, call, result);
 
         if (method.SyncInvoke is not null)
@@ -183,7 +185,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             // (the stub persists) to the same result.
             var (syncCall, syncResult) = await InvokeExpectingNewCall(
                 matching,
-                () => Task.FromResult(method.SyncInvoke(cut.Instance)),
+                () => Task.FromResult(harness.OnDispatcher(() => method.SyncInvoke(cut.Instance))),
                 "sync twin: " + noNewCall);
             AssertObserved(harness, cut, scope, method, syncCall, syncResult);
         }
