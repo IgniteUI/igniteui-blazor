@@ -101,7 +101,7 @@ namespace IgniteUI.Blazor.Controls
                 IncrementRef(id);
                 if (!_dataSources.ContainsKey(id))
                 {
-                    if (_helper?.IsInproc != null && !_helper.IsForcedJsonDataMarshalling)
+                    if (_helper?.IsInproc == true && !_helper.IsForcedJsonDataMarshalling)
                     {
                         //Console.WriteLine("unmarshalled datasource");
                         _dataSources[id] = UnmarshalledDataSource.Create(data, this, _helper);

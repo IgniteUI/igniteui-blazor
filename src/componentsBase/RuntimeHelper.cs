@@ -119,7 +119,7 @@ namespace IgniteUI.Blazor.Controls
             }
 #endif
             var intptr = Unsafe.AsPointer(ref columns);
-            _inprocRuntime!.InvokeVoid(methodName, new object[] { refName, index, (int)intptr });
+            _inprocRuntime?.InvokeVoid(methodName, new object[] { refName, index, (int)intptr });
 
             return null;
         }
