@@ -12,7 +12,7 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
         .Getter(c => c.GetCurrentDraftMessageAsync(), c => c.GetCurrentDraftMessage(), "DraftMessage",
             arrange: _ => { },
             returns: FromRender.Of((interop, cut) => InteropReturn.Object("", """{"text": "wip draft"}""")),
-            assert: (cut, result) => Assert.Equal("wip draft", result.Text))
+            assert: (cut, result) => Assert.Equal("wip draft", result!.Text))
         .Event(c => c.TypingChange,
             argsJson: """{"detail": true}""",
             assert: args => Assert.True(args.Detail))

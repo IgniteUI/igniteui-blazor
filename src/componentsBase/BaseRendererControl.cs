@@ -739,7 +739,7 @@ namespace IgniteUI.Blazor.Controls
             return _contentTemplateTypes[templateId];
         }
 
-        private Dictionary<Type, Func<DynamicContentInfo>> _dynamicContentBuilders = new Dictionary<Type, Func<DynamicContentInfo>>();
+        private Dictionary<Type, Func<DynamicContentInfo?>> _dynamicContentBuilders = new Dictionary<Type, Func<DynamicContentInfo?>>();
         private DynamicContentInfo? BuildDynamicContentInfo(string? contentType, string? templateId)
         {
             var templateContentType = TemplateContentType(templateId);
@@ -760,7 +760,7 @@ namespace IgniteUI.Blazor.Controls
                     else
                     {
                         //TODO: other types
-                        _dynamicContentBuilders[templateContentType] = () => null!;
+                        _dynamicContentBuilders[templateContentType] = () => null;
                     }
                 }
                 return _dynamicContentBuilders[templateContentType]();
@@ -807,11 +807,14 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("ensuring ready: " + this.GetType().Name);
             while (!this._ready)
             {
-                bool ready = await JsRuntime!.InvokeAsync<bool>("igCheckReady", new object[] { _containerId });
+                bool ready = JsRuntime != null ? await JsRuntime.InvokeAsync<bool>("igCheckReady", new object[] { _containerId }) : false;
                 //Console.WriteLine(ready + " -> " + this.GetType().Name);
                 if (ready)
                 {
-                    await JsRuntime.InvokeVoidAsync("igWaitForLoaded");
+                    if (JsRuntime != null)
+                    {
+                        await JsRuntime.InvokeVoidAsync("igWaitForLoaded");
+                    }
                     OnReady();
                     break;
                 }
@@ -961,12 +964,12 @@ namespace IgniteUI.Blazor.Controls
         private Object _semLock = new Object();
 
         static long _invokeId = 0;
-        protected async Task<object> InvokeMethod(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
+        protected async Task<object?> InvokeMethod(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(null, methodName, arguments, types, nativeElements);
         }
 
-        protected object InvokeMethodSync(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
+        protected object? InvokeMethodSync(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(null, methodName, arguments, types, nativeElements);
         }
@@ -987,7 +990,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object InvokeMethodHelperSync(string? target, string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements)
+        internal object? InvokeMethodHelperSync(string? target, string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (!_ready)
             {
@@ -1022,26 +1025,29 @@ namespace IgniteUI.Blazor.Controls
             if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
             {
                 var str = ((JsonElement)ret).GetString();
-                var retDict = JsonSerializer.Deserialize<Dictionary<string, object>>(str!, SerializerOptions);
-
-                if (retDict!.ContainsKey("retType") &&
-                    retDict["retType"] is JsonElement &&
-                    ((JsonElement)retDict["retType"]).GetString() == "promise")
+                if (str != null)
                 {
-                    throw new Exception($"Invocation of method \"{methodName}\" returned a promise. Please use the async version of the method to get the value.");
-                }
+                    var retDict = JsonSerializer.Deserialize<Dictionary<string, object>>(str, SerializerOptions);
 
-                ret = retDict;
+                    if (retDict != null && retDict.ContainsKey("retType") &&
+                        retDict["retType"] is JsonElement &&
+                        ((JsonElement)retDict["retType"]).GetString() == "promise")
+                    {
+                        throw new Exception($"Invocation of method \"{methodName}\" returned a promise. Please use the async version of the method to get the value.");
+                    }
+
+                    ret = retDict;
+                }
             }
             //Console.WriteLine("got return");
             //Console.WriteLine(ret);
-            return ret!;
+            return ret;
 
         }
 
-        Dictionary<long, TaskCompletionSource<object>> _methodTasks = new Dictionary<long, TaskCompletionSource<object>>();
+        Dictionary<long, TaskCompletionSource<object?>> _methodTasks = new Dictionary<long, TaskCompletionSource<object?>>();
 
-        internal async Task<object> InvokeMethodHelper(string? target, string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements)
+        internal async Task<object?> InvokeMethodHelper(string? target, string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (!_ready)
             {
@@ -1068,7 +1074,7 @@ namespace IgniteUI.Blazor.Controls
             m.NativeElements = nativeElements;
             var ret = await SendMessageImmediate(m);
 
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
             _methodTasks.Add(invokeId, tcs);
 
             if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
@@ -1089,7 +1095,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    tcs.SetResult(ret!);
+                    tcs.SetResult(ret);
                 }
             }
             var result = await tcs.Task;
@@ -1299,9 +1305,9 @@ namespace IgniteUI.Blazor.Controls
                         }
                     }
                 }
-                else
+                else if (_dataSourceManager != null)
                 {
-                    refId = _dataSourceManager!.OnRefChanged(propertyName, newValue);
+                    refId = _dataSourceManager.OnRefChanged(propertyName, newValue);
                 }
             }
             else if (newValue == null)
@@ -1314,7 +1320,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 var str = newValue.ToString();
 
-                if (str!.StartsWith("event:::") || str.StartsWith("nativeEvent:::") || str.StartsWith("json:::") || str.StartsWith("localJson:::") || str.StartsWith("template:::"))
+                if (str != null && (str.StartsWith("event:::") || str.StartsWith("nativeEvent:::") || str.StartsWith("json:::") || str.StartsWith("localJson:::") || str.StartsWith("template:::")))
                 {
                     OnRefChanged(refId, "\"" + newValue.ToString() + "\"");
                 }
@@ -1323,7 +1329,10 @@ namespace IgniteUI.Blazor.Controls
                     OnRefChanged(refId, "\"script:::" + newValue.ToString() + "\"");
                 }
             }
-            refChanged(refId!, oldValue, newValue);
+            if (refId != null)
+            {
+                refChanged(refId, oldValue, newValue);
+            }
         }
 
         internal string DateToString(DateTime val)
@@ -1337,7 +1346,10 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="dataSource">The datasource that is being changed.</param>
         public void SuspendNotifications(object dataSource)
         {
-            _dataSourceManager!.SuspendNotifications(dataSource);
+            if (_dataSourceManager != null)
+            {
+                _dataSourceManager.SuspendNotifications(dataSource);
+            }
         }
         /// <summary>
         /// Resumes data change notifications.
@@ -1346,12 +1358,15 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="notify">Whether to notify the component that the datasource items changed.</param>
         public void ResumeNotifications(object dataSource, bool notify = true)
         {
-            _dataSourceManager!.ResumeNotifications(dataSource, notify);
+            if (_dataSourceManager != null)
+            {
+                _dataSourceManager.ResumeNotifications(dataSource, notify);
+            }
         }
 
         public void NotifyInsertItem(object dataSource, int index, object refItem)
         {
-            if (!_dataSourceManager!.HasRefId(dataSource))
+            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
             {
                 return;
             }
@@ -1365,7 +1380,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void NotifyRemoveItem(object dataSource, int index, object oldItem)
         {
-            if (!_dataSourceManager!.HasRefId(dataSource))
+            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
             {
                 return;
             }
@@ -1379,7 +1394,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void NotifyClearItems(object dataSource)
         {
-            if (!_dataSourceManager!.HasRefId(dataSource))
+            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
             {
                 return;
             }
@@ -1393,7 +1408,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void NotifySetItem(object dataSource, int index, object oldItem, object newItem)
         {
-            if (!_dataSourceManager!.HasRefId(dataSource))
+            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
             {
                 return;
             }
@@ -1407,7 +1422,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void NotifyUpdateItem(object dataSource, int index, object refItem, bool syncDataOnly = false)
         {
-            if (!_dataSourceManager!.HasRefId(dataSource))
+            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
             {
                 return;
             }
@@ -1432,7 +1447,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     m.SetData("dataIntents", dataIntents);
                 }
-                if (ds!.DataSourceType == JSDataSourceType.Json)
+                if (ds != null && ds.DataSourceType == JSDataSourceType.Json)
                 {
                     if (!ds.IsSent)
                     {
@@ -1624,11 +1639,14 @@ namespace IgniteUI.Blazor.Controls
             }
 
             //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
-            while (_messageQueue.Count > 0)
+            while (_messageQueue != null && _messageQueue.Count > 0)
             {
-                RendererMessage m = _messageQueue!.First!.Value;
-                _messageQueue.RemoveFirst();
-                ProcessMessage(m);
+                RendererMessage? m = _messageQueue?.First?.Value;
+                _messageQueue?.RemoveFirst();
+                if (m != null)
+                {
+                    ProcessMessage(m);
+                }
             }
         }
 
@@ -1701,7 +1719,7 @@ namespace IgniteUI.Blazor.Controls
 
         private async Task<object?> SendJsonImmediate(RendererMessage m)
         {
-            if (IgBlazor == null || !IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+            if (IgBlazor == null || !IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
@@ -1722,21 +1740,25 @@ namespace IgniteUI.Blazor.Controls
 
             if (m.NativeElements != null)
             {
-                return await JsRuntime!.InvokeAsync<object>("igSendMessage",
+                return await JsRuntime.InvokeAsync<object>("igSendMessage",
                     new object[] { this._containerId, json,
                     GetObjectRef(), m.NativeElements });
             }
             else
             {
                 //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-                return await JsRuntime!.InvokeAsync<object>("igSendMessage",
+                return await JsRuntime.InvokeAsync<object>("igSendMessage",
                     new object[] { this._containerId, json,
                     GetObjectRef() });
             }
         }
 
-        private object SendJsonImmediateSync(RendererMessage m)
+        private object? SendJsonImmediateSync(RendererMessage m)
         {
+            if (this.JsInProcessRuntime == null)
+            {
+                return null;
+            }
             if (m.Type == _description)
             {
                 string ser = this.Serialize();
@@ -1750,13 +1772,13 @@ namespace IgniteUI.Blazor.Controls
             if (nativeElements != null)
             {
                 //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-                return this!.JsInProcessRuntime!.Invoke<object>("igSendMessage", new object[] { this._containerId, json,
+                return this.JsInProcessRuntime.Invoke<object>("igSendMessage", new object[] { this._containerId, json,
                 GetObjectRef(), nativeElements });
             }
             else
             {
                 //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-                return this!.JsInProcessRuntime!.Invoke<object>("igSendMessage", new object[] { this._containerId, json,
+                return this.JsInProcessRuntime.Invoke<object>("igSendMessage", new object[] { this._containerId, json,
                 GetObjectRef()});
             }
         }
@@ -1765,20 +1787,20 @@ namespace IgniteUI.Blazor.Controls
         {
             //json = "window.sendMessage(`" + this._containerId + "`, `" + json + "`)";
             //Console.WriteLine(json);
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return;
             }
 
             if (nativeElements != null)
             {
-                JsRuntime!.InvokeAsync<object>("igSendMessage",
+                JsRuntime.InvokeAsync<object>("igSendMessage",
                     new object[] { this._containerId, json,
                     GetObjectRef(), nativeElements });
             }
             else
             {
-                JsRuntime!.InvokeAsync<object>("igSendMessage",
+                JsRuntime.InvokeAsync<object>("igSendMessage",
                     new object[] { this._containerId, json,
                     GetObjectRef() });
             }
@@ -1841,17 +1863,20 @@ namespace IgniteUI.Blazor.Controls
         private void SendJsonSync(string json, ElementReference[]? nativeElements)
         {
             //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-
+            if (this.JsInProcessRuntime == null)
+            {
+                return;
+            }
             if (nativeElements != null)
             {
-                JsInProcessRuntime!.Invoke<object>("igSendMessage",
+                JsInProcessRuntime.Invoke<object>("igSendMessage",
                     new object[] {
                     this._containerId, json,
                     GetObjectRef(), nativeElements });
             }
             else
             {
-                JsInProcessRuntime!.Invoke<object>("igSendMessage",
+                JsInProcessRuntime.Invoke<object>("igSendMessage",
                     new object[] {
                     this._containerId, json,
                     GetObjectRef() });
@@ -1963,12 +1988,12 @@ namespace IgniteUI.Blazor.Controls
                             String id = ((JsonElement)obj["id"]).ToString();
                             if (id.Contains("/"))
                             {
-                                returnValue = _dataSourceManager!.FindItem(id);
+                                returnValue = _dataSourceManager?.FindItem(id);
                             }
                             else
                             {
                                 Guid uuid = Guid.Parse(id);
-                                returnValue = _dataSourceManager!.FindItem(uuid);
+                                returnValue = _dataSourceManager?.FindItem(uuid);
                             }
                         }
                         else
@@ -2136,20 +2161,20 @@ namespace IgniteUI.Blazor.Controls
             });
         }
 
-        internal T ReturnToObject<T>(object val)
+        internal T? ReturnToObject<T>(object val)
         {
             return ReturnToObject<T>(val, null);
         }
 
-        internal T ReturnToObject<T>(object? val, string? typeGuess)
+        internal T? ReturnToObject<T>(object? val, string? typeGuess)
         {
             if (val == null)
             {
-                return default(T)!;
+                return default(T?);
             }
             val = ConvertReturnValue(val, false, typeGuess);
 
-            return (T)val!;
+            return (T?)val;
         }
 
         public virtual object? FindByName(string name)
@@ -2183,11 +2208,11 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((IConvertible)val).ToInt32(CultureInfo.InvariantCulture);
             }
-            else if (val != null)
+            else
             {
-                return int.Parse(val.ToString()!);
+                var stringVal = val?.ToString();
+                return stringVal != null ? int.Parse(stringVal) : 0;
             }
-            return 0;
         }
 
         internal double ReturnToDouble(object? val)
@@ -2215,19 +2240,15 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 //Console.WriteLine(val);
-                return Double.Parse(val.ToString()!);
+                var stringVal = val.ToString();
+                return stringVal != null ? Double.Parse(stringVal) : double.NaN;
             }
-            return double.NaN;
         }
 
-        internal long ReturnToLong(object val)
+        internal long ReturnToLong(object? val)
         {
-            if (val == null)
-            {
-                return 0;
-            }
             //Console.WriteLine("converting return");
-            val = ConvertReturnValue(val)!;
+            val = ConvertReturnValue(val);
             if (val == null)
             {
                 return Int64.MinValue;
@@ -2244,17 +2265,14 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
+                var stringVal = val?.ToString();
                 //Console.WriteLine(val);
-                return (long)Double.Parse(val.ToString()!);
+                return stringVal != null ? (long)Double.Parse(stringVal) : Int64.MinValue;
             }
         }
 
         internal DateTime[]? ReturnToDateArray(object? val)
         {
-            if (val == null)
-            {
-                return null;
-            }
             val = ConvertReturnValue(val);
             if (val == null)
             {
@@ -2262,11 +2280,16 @@ namespace IgniteUI.Blazor.Controls
             }
             try
             {
-                var arr = JsonSerializer.Deserialize<object?[]>(val.ToString()!, SerializerOptions);
+                var stringVal = val?.ToString();
+                if (stringVal == null)
+                {
+                    return null;
+                }
+                var arr = JsonSerializer.Deserialize<object?[]>(stringVal, SerializerOptions);
                 DateTime[] ret = new DateTime[arr!.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Object ele = arr[i]!;
+                    Object? ele = arr[i];
                     ele = ReturnToDate(ele);
                     ret[i] = (DateTime)ele;
                 }
@@ -2299,11 +2322,11 @@ namespace IgniteUI.Blazor.Controls
                 switch (RoundTripDateConversion)
                 {
                     case RoundTripDateConversion.UTC:
-                        return DateTime.Parse(val.ToString()!, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                     case RoundTripDateConversion.Auto:
                     case RoundTripDateConversion.Local:
                     default:
-                        return DateTime.Parse(val.ToString()!, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).ToLocalTime();
+                        return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).ToLocalTime();
                 }
             }
             else if (val is IConvertible)
@@ -2314,25 +2337,31 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 //Console.WriteLine(val);
+                var dateString = val.ToString();
+                if (dateString == null)
+                {
+                    return DateTime.MinValue;
+                }
+
                 switch (RoundTripDateConversion)
                 {
                     case RoundTripDateConversion.UTC:
-                        return DateTime.Parse(val.ToString()!, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                     case RoundTripDateConversion.Auto:
                     case RoundTripDateConversion.Local:
                     default:
-                        return DateTime.Parse(val.ToString()!, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).ToLocalTime();
+                        return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).ToLocalTime();
                 }
             }
         }
 
         internal bool ReturnToBoolean(object? val)
         {
+            val = ConvertReturnValue(val);
             if (val == null)
             {
                 return false;
             }
-            val = ConvertReturnValue(val)!;
             if (val is bool)
             {
                 return (bool)val;
@@ -2343,7 +2372,8 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                return Boolean.Parse(val.ToString()!);
+                var stringVal = val?.ToString();
+                return stringVal != null ? Boolean.Parse(stringVal) : false;
             }
         }
 
@@ -2415,7 +2445,7 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             var w = context.Writer;
-            Guid id = _dataSourceManager!.FindItemId(val);
+            Guid id = _dataSourceManager?.FindItemId(val) ?? Guid.Empty;
 
             var typeName = "";
 
@@ -2506,7 +2536,7 @@ namespace IgniteUI.Blazor.Controls
 
                 if (val is BaseRendererControl)
                 {
-                    typeName = ((BaseRendererControl)val).Type!;
+                    typeName = ((BaseRendererControl)val).Type ?? "";
                 }
                 else if (val is BaseRendererElement)
                 {
@@ -2603,11 +2633,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal string? ReturnToString(object? val)
         {
-            if (val == null)
-            {
-                return null;
-            }
-            val = ConvertReturnValue(val)!;
+            val = ConvertReturnValue(val);
 
             if (val == null)
             {
@@ -2660,11 +2686,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal T StringToEnum<T>(Object? val) where T : struct
         {
-            if (val == null)
-            {
-                return default(T);
-            }
-            val = ConvertReturnValue(val)!;
+            val = ConvertReturnValue(val);
             if (val == null)
             {
                 return default(T);
@@ -2784,11 +2806,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal object[]? ReturnToObjectArray(object? val)
         {
-            if (val == null)
-            {
-                return null;
-            }
-            val = ConvertReturnValue(val)!;
+            val = ConvertReturnValue(val);
             if (val == null)
             {
                 return null;
@@ -2796,12 +2814,19 @@ namespace IgniteUI.Blazor.Controls
             try
             {
                 var arr = JsonSerializer.Deserialize<object[]>(val.ToString()!, SerializerOptions);
-                Object[] ret = new Object[arr!.Length];
+                if (arr == null)
+                {
+                    return null;
+                }
+                Object[] ret = new Object[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Object ele = arr[i];
-                    ele = ConvertReturnValue(ele)!;
-                    ret[i] = ele;
+                    Object? ele = arr[i];
+                    ele = ConvertReturnValue(ele);
+                    if (ele != null)
+                    {
+                        ret[i] = ele;
+                    }
                 }
                 return ret;
             }
@@ -2818,22 +2843,35 @@ namespace IgniteUI.Blazor.Controls
 
         internal T[]? ReturnToObjectArray<T>(object? val, string? typeGuess)
         {
+            val = ConvertReturnValue(val);
+
             if (val == null)
             {
                 return null;
             }
-            val = ConvertReturnValue(val)!;
             try
             {
-                var arr = JsonSerializer.Deserialize<Dictionary<string, object>[]>(val.ToString()!, SerializerOptions);
-                T[] ret = new T[arr!.Length];
+                var stringVal = val.ToString();
+                if (stringVal == null)
+                {
+                    return null;
+                }
+                var arr = JsonSerializer.Deserialize<Dictionary<string, object>[]>(stringVal, SerializerOptions);
+                if (arr == null)
+                {
+                    return null;
+                }
+                T[] ret = new T[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Object ele = arr[i];
+                    Object? ele = arr[i];
                     //Console.WriteLine("converting obj");
                     //Console.WriteLine(ele);
-                    ele = ConvertReturnValue(ele, false, typeGuess)!;
-                    ret[i] = (T)ele;
+                    ele = ConvertReturnValue(ele, false, typeGuess);
+                    if (ele != null)
+                    {
+                        ret[i] = (T)ele;
+                    }
                 }
                 return ret;
             }
@@ -2845,11 +2883,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal string[]? ReturnToStringArray(object? val)
         {
-            if (val == null)
-            {
-                return null;
-            }
-            val = ConvertReturnValue(val)!;
+            val = ConvertReturnValue(val);
             if (val == null)
             {
                 return null;
@@ -2857,12 +2891,20 @@ namespace IgniteUI.Blazor.Controls
             try
             {
                 var valStr = val.ToString();
-                var arr = JsonSerializer.Deserialize<string[]>(valStr!, SerializerOptions);
-                string[] ret = new string[arr!.Length];
+                if (valStr == null)
+                {
+                    return null;
+                }
+                var arr = JsonSerializer.Deserialize<string[]>(valStr, SerializerOptions);
+                if (arr == null)
+                {
+                    return null;
+                }
+                string[] ret = new string[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    string? ele = arr[i] != null ? arr[i].ToString() : null;
-                    ret[i] = ele!;
+                    string ele = arr[i].ToString();
+                    ret[i] = ele;
                 }
                 return ret;
             }
@@ -2874,15 +2916,24 @@ namespace IgniteUI.Blazor.Controls
 
         internal double[]? ReturnToDoubleArray(object? val)
         {
+            val = ConvertReturnValue(val);
             if (val == null)
             {
                 return null;
             }
-            val = ConvertReturnValue(val)!;
             try
             {
-                var arr = JsonSerializer.Deserialize<object[]>(val.ToString()!, SerializerOptions);
-                double[] ret = new double[arr!.Length];
+                var stringVal = val.ToString();
+                if (stringVal == null)
+                {
+                    return null;
+                }
+                var arr = JsonSerializer.Deserialize<object[]>(stringVal, SerializerOptions);
+                if (arr == null)
+                {
+                    return null;
+                }
+                double[] ret = new double[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
                     double ele = arr[i] != null ? Convert.ToDouble(arr[i]) : double.NaN;
@@ -2896,13 +2947,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal int[]? ReturnToIntArray(object val)
+        internal int[]? ReturnToIntArray(object? val)
         {
+            val = ConvertReturnValue(val);
             if (val == null)
             {
                 return null;
             }
-            val = ConvertReturnValue(val)!;
             try
             {
                 var arr = JsonSerializer.Deserialize<object[]>(val.ToString()!, SerializerOptions);
@@ -3077,12 +3128,21 @@ namespace IgniteUI.Blazor.Controls
                 try
                 {
                     var obj = JsonSerializer.Deserialize<Dictionary<string, object>>((string)args.ToString(), SerializerOptions);
+                    if (obj == null)
+                    {
+                        return;
+                    }
                     //Console.WriteLine(args.ToString());
 
-                    object sender = obj!["sender"];
+                    object sender = obj["sender"];
                     if (sender is JsonElement && ((JsonElement)sender).ValueKind == JsonValueKind.String)
                     {
-                        sender = JsonSerializer.Deserialize<Dictionary<string, object>>(((JsonElement)sender).GetString()!, SerializerOptions)!;
+                        var stringVal = ((JsonElement)sender).GetString();
+                        if (stringVal == null)
+                        {
+                            return;
+                        }
+                        sender = JsonSerializer.Deserialize<Dictionary<string, object>>(stringVal, SerializerOptions)!;
                     }
 
                     senderObj = ConvertReturnValue(sender);
@@ -3112,7 +3172,7 @@ namespace IgniteUI.Blazor.Controls
                             // Avoid double unwrapping primitive value types. This primarily only applies to events with primitive types for event args which
                             // there are not many of.
                             bool needsConversion = true;
-                            if (dict!.ContainsKey("retType"))
+                            if (dict != null && dict.ContainsKey("retType"))
                             {
                                 var retType = ((JsonElement)dict["retType"]).ToString();
                                 if ("string".Equals(retType) ||
@@ -3244,20 +3304,20 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
-            return await JsRuntime!.InvokeAsync<object>("igSetResourceString", new object[] { "set", grouping, id, value });
+            return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "set", grouping, id, value });
         }
 
         public async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
-            return await JsRuntime!.InvokeAsync<object>("igSetResourceString", new object[] { "register", grouping, "", json });
+            return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "register", grouping, "", json });
         }
 
         protected void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
@@ -3331,7 +3391,8 @@ namespace IgniteUI.Blazor.Controls
             if (type.IsArray)
             {
                 var src = (Array)value;
-                var dest = Array.CreateInstance(type.GetElementType()!, src.Length);
+                var elementType = type.GetElementType() ?? typeof(object);
+                var dest = Array.CreateInstance(elementType, src.Length);
                 Array.Copy(src, dest, src.Length);
                 property.SetValue(item, dest);
                 return;
@@ -3629,7 +3690,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return _transforms[attributeKey];
             }
-            return attributeKey!;
+            return attributeKey ?? "";
         }
 
         internal bool IsTransformedEnum(string? attributeKey)
@@ -3651,7 +3712,7 @@ namespace IgniteUI.Blazor.Controls
                     return d[fieldName.ToLower()];
                 }
             }
-            return fieldName!;
+            return fieldName ?? "";
         }
 
         internal void AddSequence(string? attributeKey, string? wcName = null, Dictionary<string, string>? wcEnumTransform = null)

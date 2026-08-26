@@ -327,17 +327,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected async Task<object> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
+        protected async Task<object?> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(MethodTarget, methodName, arguments, types, nativeElements);
         }
 
-        protected object InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
+        protected object? InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(MethodTarget, methodName, arguments, types, nativeElements);
         }
 
-        protected async Task<object> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
+        protected async Task<object?> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (CurrParent == null)
             {
@@ -353,7 +353,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected object InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
+        protected object? InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (CurrParent == null)
             {
@@ -575,22 +575,23 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T ReturnToObject<T>(Object val)
+        internal T? ReturnToObject<T>(Object val)
         {
             return ReturnToObject<T>(val, null);
         }
 
-        internal T ReturnToObject<T>(Object val, string? typeGuess)
+        internal T? ReturnToObject<T>(Object val, string? typeGuess)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
             {
                 return ((BaseRendererElement)CurrParent).ReturnToObject<T>(val, typeGuess);
             }
-            else
+            else if (CurrParent is BaseRendererControl)
             {
-                return ((BaseRendererControl)CurrParent!).ReturnToObject<T>(val, typeGuess);
+                return ((BaseRendererControl)CurrParent).ReturnToObject<T>(val, typeGuess);
             }
+            return default(T);
         }
 
         internal int ReturnToInt(Object? val)
