@@ -40,7 +40,7 @@ namespace IgniteUI.Blazor.Controls
         {
             get
             {
-                return _igBlazor!;
+                return _igBlazor ?? throw new InvalidOperationException("IgBlazor accessed before dependency injection completed.");
             }
             set
             {
