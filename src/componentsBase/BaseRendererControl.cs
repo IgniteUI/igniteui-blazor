@@ -1447,7 +1447,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     m.SetData("dataIntents", dataIntents);
                 }
-                if (ds != null && ds.DataSourceType == JSDataSourceType.Json)
+                if (ds?.DataSourceType == JSDataSourceType.Json)
                 {
                     if (!ds.IsSent)
                     {
@@ -1641,8 +1641,8 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
             while (_messageQueue != null && _messageQueue.Count > 0)
             {
-                RendererMessage? m = _messageQueue?.First?.Value;
-                _messageQueue?.RemoveFirst();
+                RendererMessage? m = _messageQueue.First?.Value;
+                _messageQueue.RemoveFirst();
                 if (m != null)
                 {
                     ProcessMessage(m);
@@ -2195,10 +2195,6 @@ namespace IgniteUI.Blazor.Controls
 
         internal int ReturnToInt(object? val)
         {
-            if (val == null)
-            {
-                return 0;
-            }
             val = ConvertReturnValue(val);
             if (val is String)
             {
@@ -2249,10 +2245,6 @@ namespace IgniteUI.Blazor.Controls
         {
             //Console.WriteLine("converting return");
             val = ConvertReturnValue(val);
-            if (val == null)
-            {
-                return Int64.MinValue;
-            }
             //Console.WriteLine(val);
             if (val is String)
             {
@@ -2274,10 +2266,6 @@ namespace IgniteUI.Blazor.Controls
         internal DateTime[]? ReturnToDateArray(object? val)
         {
             val = ConvertReturnValue(val);
-            if (val == null)
-            {
-                return null;
-            }
             try
             {
                 var stringVal = val?.ToString();
@@ -2358,10 +2346,6 @@ namespace IgniteUI.Blazor.Controls
         internal bool ReturnToBoolean(object? val)
         {
             val = ConvertReturnValue(val);
-            if (val == null)
-            {
-                return false;
-            }
             if (val is bool)
             {
                 return (bool)val;
