@@ -1442,12 +1442,12 @@ namespace IgniteUI.Blazor.Controls
             if (refValue is IJSDataSource)
             {
                 var ds = (IJSDataSource)refValue;
-                var dataIntents = ds == null ? null : ds.GetDataIntentsAsJson();
+                var dataIntents = ds.GetDataIntentsAsJson();
                 if (dataIntents != null)
                 {
                     m.SetData("dataIntents", dataIntents);
                 }
-                if (ds?.DataSourceType == JSDataSourceType.Json)
+                if (ds.DataSourceType == JSDataSourceType.Json)
                 {
                     if (!ds.IsSent)
                     {
