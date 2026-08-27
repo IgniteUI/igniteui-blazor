@@ -1,4 +1,4 @@
-using Bunit;
+﻿using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -60,7 +60,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
             argsJson: FromRender.Of((interop, cut) => $$$$"""{"detail": {"retType": "object", "type": "", "value": {"tile": {"refType": "name", "id": "{{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}}"}, "state": true}}}"""),
             assert: (cut, args) =>
             {
-                Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args!.Detail!.Tile);
+                Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail!.Tile);
                 Assert.True(args.Detail.State);
             })
         .Event(c => c.TileMaximize,
@@ -68,7 +68,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
             argsJson: FromRender.Of((interop, cut) => $$$$"""{"detail": {"retType": "object", "type": "", "value": {"tile": {"refType": "name", "id": "{{{{interop.ContainerIdOf(cut, "igc-tile:nth-of-type(2)")}}}}"}, "state": false}}}"""),
             assert: (cut, args) =>
             {
-                Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args!.Detail!.Tile);
+                Assert.Same(cut.FindComponents<IgbTile>()[1].Instance, args.Detail!.Tile);
                 Assert.False(args.Detail.State);
             });
 
@@ -276,14 +276,14 @@ public class TileTests : ComponentWithContractTestBase<IgbTile>
             """{"detail": {"retType": "object", "type": "", "value": {"tile": {"refType": "name", "id": "mainControl"}, "state": true}}}""",
             assert: (tile, args) =>
             {
-                Assert.Same(tile, args!.Detail!.Tile);
+                Assert.Same(tile, args.Detail!.Tile);
                 Assert.True(args.Detail.State);
             })
         .Event(c => c.TileMaximize,
             """{"detail": {"retType": "object", "type": "", "value": {"tile": {"refType": "name", "id": "mainControl"}, "state": false}}}""",
             assert: (tile, args) =>
             {
-                Assert.Same(tile, args!.Detail!.Tile);
+                Assert.Same(tile, args.Detail!.Tile);
                 Assert.False(args.Detail.State);
             });
 

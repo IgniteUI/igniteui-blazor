@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -380,7 +380,7 @@ namespace IgniteUI.Blazor.Controls
                             var newValueChecked = default(bool);
 
                             {
-                                newValueChecked = (bool)(args!.Detail!.Checked);
+                                newValueChecked = (bool)(args.Detail!.Checked);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

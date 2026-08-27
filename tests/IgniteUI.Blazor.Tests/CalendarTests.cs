@@ -1,4 +1,4 @@
-using Bunit;
+﻿using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 

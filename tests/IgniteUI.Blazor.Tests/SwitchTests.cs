@@ -1,4 +1,4 @@
-using Bunit;
+﻿using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -20,7 +20,7 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "switch-value"}}}""",
             assert: args =>
             {
-                Assert.True(args!.Detail!.Checked);
+                Assert.True(args.Detail!.Checked);
                 Assert.Equal("switch-value", args.Detail.Value);
             })
         .Bind(c => c.Checked, c => c.CheckedChanged, via: c => c.Change,

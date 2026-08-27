@@ -1,4 +1,4 @@
-using Bunit;
+﻿using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 using Microsoft.AspNetCore.Components;
@@ -65,7 +65,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             argsJson: FromRender.Of((interop, cut) => ChangeDetail(UuidRef(interop, cut, 0), UuidRef(interop, cut, 0))),
             assert: (cut, args) =>
             {
-                Assert.Same(_valueItem1, Assert.Single(args!.Detail!.NewValue!));
+                Assert.Same(_valueItem1, Assert.Single(args.Detail!.NewValue!));
                 Assert.Same(_valueItem1, Assert.Single(args.Detail.Items!));
                 Assert.Equal(ComboChangeType.Selection, args.Detail.ChangeType);
             })
@@ -76,7 +76,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             argsJson: FromRender.Of((interop, cut) => ChangeDetail("", UuidRef(interop, cut, 0), "deselection")),
             assert: (cut, args) =>
             {
-                Assert.Empty(args!.Detail!.NewValue!);
+                Assert.Empty(args.Detail!.NewValue!);
                 Assert.Same(_valueItem1, Assert.Single(args.Detail.Items!));
                 // TODO: wire detail carries kind as "type", but FromEventJson reads "changeType", so
                 // Detail.ChangeType never decodes and stays default (wrong for deselection events):
@@ -90,9 +90,9 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             assert: (cut, args) =>
             {
                 // Multi-selection: every element resolves back to its original data instance.
-                Assert.Equal([_valueItem1, _valueItem2], args!.Detail!.NewValue);
+                Assert.Equal([_valueItem1, _valueItem2], args.Detail!.NewValue);
                 Assert.Equal([_valueItem1, _valueItem2], args.Detail.Items);
-                Assert.Same(args!.Detail!.NewValue![0], args!.Detail!.Items![0]);
+                Assert.Same(args.Detail!.NewValue![0], args.Detail!.Items![0]);
             })
         .Event(c => c.Focus)
         .Event(c => c.Blur)
@@ -286,9 +286,9 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
 
 // TODO: Mismatched T=int inbound handling (T[])DowncastArray<T>(Detail.NewValue) for
 // two-way Value propagation: a mismatched T (e.g. the item type on a keyed combo)
-// throws InvalidCastException — swallowed by OnRaiseEvent, so delivery silently dies;
-// and numeric keys decode as JSON numbers → boxed double, so T=int fails the unbox
-// cast too — numeric keys need T=double (or object).
+// throws InvalidCastException â€” swallowed by OnRaiseEvent, so delivery silently dies;
+// and numeric keys decode as JSON numbers â†’ boxed double, so T=int fails the unbox
+// cast too â€” numeric keys need T=double (or object).
 public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>>
 {
 
@@ -306,13 +306,13 @@ public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>
             argsJson: FromRender.Of((interop, cut) => ComboTests.ChangeDetail("2", ComboTests.UuidRef(interop, cut, 1))),
             assert: (cut, args) =>
             {
-                Assert.Equal(2.0, Assert.Single(args!.Detail!.NewValue!)); // numbers decode as double
+                Assert.Equal(2.0, Assert.Single(args.Detail!.NewValue!)); // numbers decode as double
                 Assert.Same(_item2, Assert.Single(args.Detail.Items!));
                 // Two-way Value propagation through the generated wrapper works when T
                 // matches the key value type.
                 Assert.Equal(2.0, Assert.Single(cut.Instance.Value!));
             })
-        // A value-type value array (double[] here) crosses as plain JSON numbers — the keys
+        // A value-type value array (double[] here) crosses as plain JSON numbers â€” the keys
         // themselves, no data-source refs, since a keyed combo's value is the key.
         .Prop(c => c.Value,
             value: [1, 3],

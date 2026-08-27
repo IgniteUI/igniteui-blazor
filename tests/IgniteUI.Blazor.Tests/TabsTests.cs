@@ -1,4 +1,4 @@
-using Bunit;
+﻿using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 using Microsoft.AspNetCore.Components;
@@ -10,7 +10,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     /// <summary>What each arranged tab's <c>@bind-Selected</c> received, filled during the dispatch.</summary>
     static readonly bool?[] tabSelection = new bool?[2];
 
-    /// <summary>Two tabs, each binding SelectedChanged — IgbTab has no selection event of its own.</summary>
+    /// <summary>Two tabs, each binding SelectedChanged â€” IgbTab has no selection event of its own.</summary>
     static readonly Action<ComponentParameterCollectionBuilder<IgbTabs>> tabsArrange = ps =>
         {
             tabSelection[0] = null;
@@ -37,7 +37,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
                 Assert.Same(cut.Instance.ActualTabsCollection[1], args.Detail);
                 // The handler owns selection for every child: it writes each tab's Selected and
                 // pushes it through that tab's @bind-Selected, which is IgbTab's only route.
-                Assert.True(args!.Detail!.Selected);
+                Assert.True(args.Detail!.Selected);
                 Assert.False(cut.Instance.ActualTabsCollection[0].Selected);
                 Assert.False(tabSelection[0]);
                 Assert.True(tabSelection[1]);

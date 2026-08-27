@@ -1,4 +1,4 @@
-using Bunit;
+﻿using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -36,12 +36,12 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"oldIndex": 0, "newIndex": 1}}}""",
             assert: args =>
             {
-                Assert.Equal(0, args!.Detail!.OldIndex);
+                Assert.Equal(0, args.Detail!.OldIndex);
                 Assert.Equal(1, args.Detail.NewIndex);
             })
         .Event(c => c.ActiveStepChanged,
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"index": 1}}}""",
-            assert: args => Assert.Equal(1, args!.Detail!.Index));
+            assert: args => Assert.Equal(1, args.Detail!.Index));
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
