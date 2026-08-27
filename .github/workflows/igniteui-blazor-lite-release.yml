@@ -20,6 +20,9 @@ env:
   EXPECTED_CERT_SHA256_PATH: "eng/IG.authenticode-certificates.sha256"
   # Bound sbom-tool's external license lookup.
   SBOM_LICENSE_TIMEOUT_SECONDS: "180"
+  # A production-only component graph should be almost entirely license-resolvable. 0.1.2-alpha.0
+  # shipped an SBOM at 7.5% because it was generated from a dev install against a failing API.
+  SBOM_MIN_DECLARED_LICENSE_PERCENT: "50"
 
 jobs:
   # Holds the strong-name key, but no OIDC token, no Key Vault access and no publishing rights.
@@ -421,9 +424,10 @@ jobs:
       - name: Restore .NET dependencies
         run: dotnet restore ./src/IgniteUI.Blazor.Lite.csproj
 
-      # sbom-tool's component detector needs node_modules to see the JavaScript dependency graph too.
+      # Production-only: the SBOM describes what the package ships, and a full install would put
+      # webpack, typescript and tslint in it, letting consumers attribute build-tooling CVEs to us.
       - name: Restore JavaScript dependencies
-        run: npm ci --ignore-scripts
+        run: npm ci --omit=dev --ignore-scripts
 
       # Dedicated nested manifest keeps sbom-tool out of the root 'dotnet tool restore' used by the sign steps.
       - name: Restore sbom-tool (pinned)
