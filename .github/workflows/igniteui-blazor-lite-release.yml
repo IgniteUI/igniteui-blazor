@@ -20,11 +20,12 @@ env:
   EXPECTED_CERT_SHA256_PATH: "eng/IG.authenticode-certificates.sha256"
   # Bound sbom-tool's external license lookup.
   SBOM_LICENSE_TIMEOUT_SECONDS: "180"
-  # A production-only component graph should be almost entirely license-resolvable. 0.1.2-alpha.0
-  # shipped an SBOM at 7.5% because it was generated from a dev install against a failing API.
+  # Measured on a production-only graph: 61 components, 44 of them declaring a license (72.1%).
+  # The floor leaves room for the npm half, which declares nothing locally and depends on the
+  # external API. 0.1.2-alpha.0 shipped 7.5%.
   SBOM_MIN_DECLARED_LICENSE_PERCENT: "50"
-  # ~59 components ship today (45 NuGet, 14 npm). The ceiling catches a whole class of
-  # over-reporting at once; 0.1.2-alpha.0 shipped 589. Raise it only for real dependency growth.
+  # 61 components ship today (46 NuGet, 14 npm, 1 root). The ceiling catches a whole class of
+  # over-reporting at once; 0.1.2-alpha.1 reached 583. Raise it only for real dependency growth.
   SBOM_MAX_COMPONENTS: "150"
 
 jobs:
@@ -430,10 +431,19 @@ jobs:
       - name: Restore .NET dependencies
         run: dotnet restore ./src/IgniteUI.Blazor.Lite.csproj
 
-      # Production-only: the SBOM describes what the package ships, and a full install would put
-      # webpack, typescript and tslint in it, letting consumers attribute build-tooling CVEs to us.
+      # Production-only, then the lockfile goes. npm ci needs it, but sbom-tool's NpmWithRoots
+      # detector reads it directly, and an npm lockfile records the whole dev graph regardless of
+      # what is installed -- that is how 537 build-time components reached the 0.1.2-alpha.1 SBOM
+      # even though only 14 packages were on disk. Without it the node_modules walk is the only
+      # npm source, which is exactly the shipped set.
       - name: Restore JavaScript dependencies
-        run: npm ci --omit=dev --ignore-scripts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          npm ci --omit=dev --ignore-scripts
+          Remove-Item package-lock.json -Force
 
       # Dedicated nested manifest keeps sbom-tool out of the root 'dotnet tool restore' used by the sign steps.
       - name: Restore sbom-tool (pinned)
