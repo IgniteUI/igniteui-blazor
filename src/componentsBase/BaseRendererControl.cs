@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
@@ -30,6 +31,8 @@ namespace IgniteUI.Blazor.Controls
         Queued
     }
 
+    // PublicProperties: required by the BuildSequenceInfo parameter walk; rendered components already keep All via OpenComponent<T>.
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
     {
         private IIgniteUIBlazor _igBlazor;
@@ -427,26 +430,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     if (pType.IsEnum)
                     {
-
-                        foreach (var f in pType.GetFields())
-                        {
-                            if (f.IsPublic && !f.IsSpecialName)
-                            {
-                                foreach (var attr in f.GetCustomAttributes(true))
-                                {
-                                    if (attr.GetType().Name == "WCEnumNameAttribute")
-                                    {
-                                        if (wcEnumTransform == null)
-                                        {
-                                            wcEnumTransform = new Dictionary<string, string>();
-                                        }
-                                        var wc = (WCEnumNameAttribute)attr;
-                                        var wcEnumName = Camelize(wc.Name);
-                                        wcEnumTransform.Add(f.Name.ToLower(), wcEnumName);
-                                    }
-                                }
-                            }
-                        }
+                        wcEnumTransform = GetWCEnumTransform(pType);
                     }
                 }
 
@@ -457,6 +441,33 @@ namespace IgniteUI.Blazor.Controls
             }
 
             return info;
+        }
+
+        // enumType intentionally unannotated: PropertyInfo.PropertyType cannot satisfy annotations, so one here would only move the warning to the caller.
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "The trimmer preserves all fields of enum types that are kept, and enum parameter property types are kept with their declaring component.")]
+        private Dictionary<string, string> GetWCEnumTransform(Type enumType)
+        {
+            Dictionary<string, string> wcEnumTransform = null;
+            foreach (var f in enumType.GetFields())
+            {
+                if (f.IsPublic && !f.IsSpecialName)
+                {
+                    foreach (var attr in f.GetCustomAttributes(true))
+                    {
+                        if (attr.GetType().Name == "WCEnumNameAttribute")
+                        {
+                            if (wcEnumTransform == null)
+                            {
+                                wcEnumTransform = new Dictionary<string, string>();
+                            }
+                            var wc = (WCEnumNameAttribute)attr;
+                            var wcEnumName = Camelize(wc.Name);
+                            wcEnumTransform.Add(f.Name.ToLower(), wcEnumName);
+                        }
+                    }
+                }
+            }
+            return wcEnumTransform;
         }
 
         /// <inheritdoc />
@@ -1732,20 +1743,8 @@ namespace IgniteUI.Blazor.Controls
             }
 
             string json = m.ToJson();
-            ElementReference[] nativeElements = m.NativeElements;
 
-            if (nativeElements != null)
-            {
-                //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-                return this.JsInProcessRuntime.Invoke<object>("igSendMessage", new object[] { this._containerId, json,
-                GetObjectRef(), nativeElements });
-            }
-            else
-            {
-                //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-                return this.JsInProcessRuntime.Invoke<object>("igSendMessage", new object[] { this._containerId, json,
-                GetObjectRef()});
-            }
+            return SendJsonSync(json, m.NativeElements);
         }
 
         private void SendJson(string json, ElementReference[] nativeElements)
@@ -1825,20 +1824,21 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void SendJsonSync(string json, ElementReference[] nativeElements)
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Arguments are strings, DotNetObjectReference and ElementReference[]; the return value is consumed as a JsonElement and re-parsed only via the source-generated IgbJsonContext — no user types cross this boundary.")]
+        private object SendJsonSync(string json, ElementReference[] nativeElements)
         {
             //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
 
             if (nativeElements != null)
             {
-                JsInProcessRuntime.Invoke<object>("igSendMessage",
+                return JsInProcessRuntime.Invoke<object>("igSendMessage",
                     new object[] {
                     this._containerId, json,
                     GetObjectRef(), nativeElements });
             }
             else
             {
-                JsInProcessRuntime.Invoke<object>("igSendMessage",
+                return JsInProcessRuntime.Invoke<object>("igSendMessage",
                     new object[] {
                     this._containerId, json,
                     GetObjectRef() });
@@ -3475,6 +3475,7 @@ namespace IgniteUI.Blazor.Controls
         private bool _isRemoteRuntime = false;
         private System.Reflection.PropertyInfo _remoteRuntimeProp;
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Library module types carry [IgbModule<TSelf>], preserving Register whenever the type is kept; third-party module types must be preserved by the app — see docs/TRIMMING.md.")]
         public IgniteUIBlazor(IJSRuntime runtime, IIgniteUIBlazorSettings settings)
         {
             JsRuntime = runtime;
@@ -3543,6 +3544,7 @@ namespace IgniteUI.Blazor.Controls
             _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the optional RemoteJSRuntime.IsInitialized, which does not exist in supported trim targets (WASM, WebView); a string DynamicDependency is not an option — it fails with IL2035 where the Server assembly is absent.")]
         public bool IsRuntimeValid(bool reevaluate = false)
         {
             if (JsRuntime == null)
