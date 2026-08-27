@@ -217,7 +217,7 @@ namespace IgniteUI.Blazor.Controls
                     // no collection to sync
                     return;
                 }
-                for (var i = this._query!.Count - 1; i >= 0; i--)
+                for (var i = this._query.Count - 1; i >= 0; i--)
                 {
                     item = queryArray[i];
                     if (item == null)

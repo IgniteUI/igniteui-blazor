@@ -49,7 +49,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(
                 $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 0)}}"}]""")),
-            assert: (cut, result) => Assert.Same(_valueItem1, Assert.Single(result!)))
+            assert: (cut, result) => Assert.Same(_valueItem1, Assert.Single(result)))
         .Getter(c => c.GetSelectionAsync(), c => c.GetSelection(), "Selection",
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(

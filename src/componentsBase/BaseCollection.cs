@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
             base.RemoveItem(index);
             if (item is BaseRendererElement element)
             {
-                element.Parent = null!;
+                element.Parent = null;
             }
             NotifyParent();
         }
@@ -135,7 +135,7 @@ namespace IgniteUI.Blazor.Controls
                 var item = this[i];
                 if (item is BaseRendererElement element)
                 {
-                    element.Parent = null!;
+                    element.Parent = null;
                 }
             }
             base.ClearItems();

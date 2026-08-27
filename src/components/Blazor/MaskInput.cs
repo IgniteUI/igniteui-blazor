@@ -167,7 +167,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetSelectionRangeAsync(double start = -1, double end = -1, String? direction = null)
         {
-            await InvokeMethod("setSelectionRange", new object?[] { start, end, StringToString(direction)! }, new string[] { "Number", "Number", "String" });
+            await InvokeMethod("setSelectionRange", new object?[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetSelectionRange(double start = -1, double end = -1, String? direction = null)
         {
-            InvokeMethodSync("setSelectionRange", new object?[] { start, end, StringToString(direction)! }, new string[] { "Number", "Number", "String" });
+            InvokeMethodSync("setSelectionRange", new object?[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String? selectMode = null)
         {
-            await InvokeMethod("setRangeText", new object?[] { StringToString(replacement)!, start, end, StringToString(selectMode)! }, new string[] { "String", "Number", "Number", "String" });
+            await InvokeMethod("setRangeText", new object?[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetRangeText(String replacement, double start = -1, double end = -1, String? selectMode = null)
         {
-            InvokeMethodSync("setRangeText", new object?[] { StringToString(replacement)!, start, end, StringToString(selectMode)! }, new string[] { "String", "Number", "Number", "String" });
+            InvokeMethodSync("setRangeText", new object?[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
 
         private EventCallback<string>? _valueChanged = null;

@@ -720,9 +720,9 @@ namespace IgniteUI.Blazor.Controls
                         if (args != null)
                         {
                             var argsDic = JsonSerializer.Deserialize<Dictionary<string, object>>(args, SerializerOptions);
-                            context = ConvertReturnValue(argsDic!);
+                            context = ConvertReturnValue(argsDic);
                         }
-                        dynamicContent.UpdateContext(context!);
+                        dynamicContent.UpdateContext(context);
                     }
                     break;
                 }
@@ -2152,7 +2152,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (_methodTasks.ContainsKey(invokeId))
                 {
-                    _methodTasks[invokeId].SetResult(result!);
+                    _methodTasks[invokeId].SetResult(result);
                 }
                 else
                 {

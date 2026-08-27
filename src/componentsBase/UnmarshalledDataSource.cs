@@ -204,7 +204,7 @@ namespace IgniteUI.Blazor.Controls
             if (schema.IsPrimitive)
             {
                 columns[columns.Length - 1] = AdjustColumnCapacity(parentPath, columns[columns.Length - 1], schema, "___primitiveValueCollection", null, null, false, schema.PrimitiveType, oldValue, newValue);
-                return columns!;
+                return columns;
             }
             if (String.IsNullOrEmpty(parentPath))
             {
@@ -350,12 +350,12 @@ namespace IgniteUI.Blazor.Controls
                     if (typeof(Func<object, DateTime>).IsAssignableFrom(valueGetter!.GetType()))
                     {
                         dateTimeGetter = (Func<object, DateTime>)valueGetter;
-                        stringGetter = (o) => ((DateTime)dateTimeGetter!(o)).ToString("o");
+                        stringGetter = (o) => ((DateTime)dateTimeGetter(o)).ToString("o");
                     }
                     else
                     {
                         dateTimeGetter = (o) => (DateTime)untypedGetter!(o);
-                        stringGetter = (o) => ((DateTime)dateTimeGetter!(o)).ToString("o");
+                        stringGetter = (o) => ((DateTime)dateTimeGetter(o)).ToString("o");
                     }
                     break;
                 case JSDataSourceSchemaType.ObjectValue:
@@ -419,7 +419,7 @@ namespace IgniteUI.Blazor.Controls
                         nullableDateTimeGetter = (Func<object, DateTime?>)valueGetter;
                         stringGetter = (o) =>
                         {
-                            var val = nullableDateTimeGetter!(o);
+                            var val = nullableDateTimeGetter(o);
                             return val == null ? null! : val.Value.ToString("o");
                         };
                     }
@@ -1652,7 +1652,7 @@ namespace IgniteUI.Blazor.Controls
 #pragma warning disable CS8604 // internal invariant: paired column arrays (NullValues) are allocated together
             if (column == null)
             {
-                column = CreateColumn(parentPath, propertyName!, schema, type, getter, untypedGetter, isIdColumn);
+                column = CreateColumn(parentPath, propertyName, schema, type, getter, untypedGetter, isIdColumn);
             }
 
             if (column.Type == JSDataSourceSchemaType.ObjectValue || (
