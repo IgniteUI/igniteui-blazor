@@ -56,6 +56,13 @@ jobs:
       - name: Build .NET library
         run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=false
 
+      # Trimmed publish of the smoke app fails on any linker warning; publish runs per TFM
+      - name: Publish trimmed smoke app
+        run: |
+          dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net8.0
+          dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net9.0
+          dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net10.0
+
       - name: Build VS Templates
         run: dotnet pack templates/IgniteUI.Blazor.Templates/
 

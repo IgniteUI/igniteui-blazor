@@ -1,0 +1,63 @@
+@inject IIgniteUIBlazor IgBlazor
+
+<h1>IgniteUI.Blazor.Lite publish smoke</h1>
+
+@* Expected: True. Chat's preload survives trimming only through [IgbModule<IgbChatModule>]
+   (see Program.cs); the static IsLoadRequested call here roots that method, not Register. *@
+<section id="module-preload-section">
+    <p id="module-preload-result">ChatModule preloaded: @IgbChatModule.IsLoadRequested(IgBlazor)</p>
+</section>
+
+@* Enum serialization path: Variant/Shape flow through AddEnumProp/TryGetWCEnumName.
+   Under trimming these must render as camelCase strings, not numbers. *@
+<section id="button-section">
+    <IgbButton Variant="ButtonVariant.Outlined">Outlined button</IgbButton>
+</section>
+
+<section id="avatar-section">
+    <IgbAvatar Shape="AvatarShape.Circle" Initials="PS"></IgbAvatar>
+</section>
+
+@* WCEnumName attribute path: SingleRequired maps via [WCEnumName("single-required")], not
+   camelCase conversion — fails if enum field attributes are trimmed. *@
+<section id="buttongroup-section">
+    <IgbButtonGroup Selection="ButtonGroupSelection.SingleRequired">
+        <IgbToggleButton Value="smoke">Toggle</IgbToggleButton>
+    </IgbButtonGroup>
+</section>
+
+@* Data source path: reflects over SmokeDataItem, which is preserved via the
+   documented DynamicallyAccessedMembers pattern from docs/TRIMMING.md. *@
+<section id="combo-section">
+    <IgbCombo T="SmokeDataItem" Data="_items" ValueKey="Id" DisplayKey="Name" Label="Smoke combo"></IgbCombo>
+</section>
+
+@* Event payload path: Change materializes IgbDateRangeValue from the event detail. *@
+<section id="daterange-section">
+    <IgbDateRangePicker Change="OnRangeChanged"></IgbDateRangePicker>
+    <p id="range-result">@_rangeResult</p>
+</section>
+
+@code {
+    private string _rangeResult = "no range selected";
+
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)]
+    public class SmokeDataItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+    }
+
+    private readonly List<SmokeDataItem> _items = new()
+    {
+        new SmokeDataItem { Id = 1, Name = "Alpha" },
+        new SmokeDataItem { Id = 2, Name = "Beta" },
+        new SmokeDataItem { Id = 3, Name = "Gamma" },
+    };
+
+    private void OnRangeChanged(IgbDateRangeValueEventArgs args)
+    {
+        var value = args.Detail;
+        _rangeResult = value == null ? "no range selected" : $"{value.Start:d} - {value.End:d}";
+    }
+}
