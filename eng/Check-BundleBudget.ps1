@@ -1,16 +1,6 @@
-<#
-.SYNOPSIS
-    Measures the shipped static web assets and enforces the budgets in eng/bundle-budgets.json.
-
-.DESCRIPTION
-    Produces the performance evidence the release attaches (PERF-09, PERF-10) and fails the build
-    when an asset grows past its recorded budget. Bundle filenames are content-hashed, so budgets
-    are expressed as patterns and every produced file must match exactly one group: an asset nobody
-    budgeted for is a failure, not a silent addition.
-
-.PARAMETER ReportOnly
-    Measure and write the report without failing on a breach. Use when reseeding budgets locally.
-#>
+# Measures the shipped static web assets against eng/bundle-budgets.json and writes the release's
+# performance evidence. Bundle filenames are content-hashed, so budgets are patterns and every file
+# must match exactly one group -- an asset nobody budgeted for fails rather than passing silently.
 [CmdletBinding()]
 param(
     [string]$BudgetPath = "$PSScriptRoot/bundle-budgets.json",
@@ -19,6 +9,7 @@ param(
 
     [string]$OutputDirectory,
 
+    # Measure without failing. Use when reseeding budgets after an intentional increase.
     [switch]$ReportOnly
 )
 

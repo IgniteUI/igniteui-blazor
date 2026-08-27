@@ -1,14 +1,6 @@
-<#
-.SYNOPSIS
-    Asserts that a packed NuGet package carries the provenance metadata consumers rely on.
-
-.DESCRIPTION
-    The nuspec is generated at pack time from MSBuild properties, so a property that is unset,
-    misspelled, or silently dropped by a '--no-build' pack produces a package that restores fine
-    but cannot be traced back to source. IgniteUI.Blazor.Lite 0.1.1 shipped exactly that way: the
-    <repository> element carried a commit but no url. This script turns that class of omission into
-    a release failure instead of a post-release finding.
-#>
+# Asserts a packed NuGet package carries the provenance metadata consumers rely on.
+# The nuspec is generated from MSBuild properties at pack time, so an unset one yields a package that
+# restores fine but cannot be traced to source -- 0.1.1 shipped a commit with no repository url.
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]

@@ -18,14 +18,9 @@ env:
   REPOSITORY_URL: https://github.com/IgniteUI/igniteui-blazor
   # Public, deliberately pinned identity. The strong-name counterpart lives in eng/IG.publickey.hex.
   EXPECTED_CERT_SHA256_PATH: "eng/IG.authenticode-certificates.sha256"
-  # Bound sbom-tool's external license lookup.
-  SBOM_LICENSE_TIMEOUT_SECONDS: "180"
-  # Measured on a production-only graph: 61 components, 44 of them declaring a license (72.1%).
-  # The floor leaves room for the npm half, which declares nothing locally and depends on the
-  # external API. 0.1.2-alpha.0 shipped 7.5%.
+  # Only NuGet components declare a license locally, so the floor sits below the measured 73.3%.
   SBOM_MIN_DECLARED_LICENSE_PERCENT: "50"
-  # 61 components ship today (46 NuGet, 14 npm, 1 root). The ceiling catches a whole class of
-  # over-reporting at once; 0.1.2-alpha.1 reached 583. Raise it only for real dependency growth.
+  # 60 components ship today. Catches over-reporting the blocklist misses; alpha.1 hit 583.
   SBOM_MAX_COMPONENTS: "150"
 
 jobs:
@@ -425,17 +420,14 @@ jobs:
 
           Write-Host "Verified package digest $digest."
 
-      # Restores the library alone on purpose. A bare 'dotnet restore' would write a
-      # project.assets.json for the test, stories and template projects too, and the NuGet detector
-      # reads those, putting bunit/NUnit/Playwright into an SBOM that describes a shipped package.
+      # Restores the library alone on purpose: a bare 'dotnet restore' writes project.assets.json for
+      # the test, stories and template projects too, and the NuGet detector reads those.
       - name: Restore .NET dependencies
         run: dotnet restore ./src/IgniteUI.Blazor.Lite.csproj
 
-      # Production-only, then the lockfile goes. npm ci needs it, but sbom-tool's NpmWithRoots
-      # detector reads it directly, and an npm lockfile records the whole dev graph regardless of
-      # what is installed -- that is how 537 build-time components reached the 0.1.2-alpha.1 SBOM
-      # even though only 14 packages were on disk. Without it the node_modules walk is the only
-      # npm source, which is exactly the shipped set.
+      # Production-only, then the lockfile goes: sbom-tool's NpmWithRoots detector reads it directly
+      # and an npm lockfile records the whole dev graph regardless of what is installed. Without it
+      # the node_modules walk is the only npm source, which is exactly the shipped set.
       - name: Restore JavaScript dependencies
         shell: pwsh
         run: |
@@ -449,9 +441,9 @@ jobs:
       - name: Restore sbom-tool (pinned)
         run: dotnet tool restore --tool-manifest .config/sbom-tool/dotnet-tools.json
 
-      # -b is the signed package folder, so the shipped nupkg and its hash land in the SBOM's files
-      # section. -bc is the repository root because the npm graph lives there alongside the .NET
-      # project; -li/-pm resolve license and supplier metadata.
+      # -b is the signed package folder, so the shipped nupkg and its hash land in the files section.
+      # -bc is the repository root because the npm graph lives there alongside the .NET project.
+      # External license lookup (-li) is off: it cost ~4 min a run and resolved nothing.
       - name: Generate SBOMs
         working-directory: .config/sbom-tool
         shell: pwsh
@@ -479,8 +471,6 @@ jobs:
               -ps Infragistics `
               -nsb http://spdx.org/spdxdocs/IgniteUI.Blazor.Lite `
               -mi $format.Version `
-              -li true `
-              -lto $env:SBOM_LICENSE_TIMEOUT_SECONDS `
               -pm true `
               -V Information
           }
@@ -489,72 +479,54 @@ jobs:
         shell: pwsh
         run: |
           $name = "${env:PACKAGE_ID}.${env:VERSION}.nupkg"
-          $spdx22 = "${{ github.workspace }}\sbom\spdx-2.2\_manifest\spdx_2.2\manifest.spdx.json"
-          $spdx30 = "${{ github.workspace }}\sbom\spdx-3.0\_manifest\spdx_3.0\manifest.spdx.json"
+          $manifests = @('spdx-2.2\_manifest\spdx_2.2', 'spdx-3.0\_manifest\spdx_3.0') |
+            ForEach-Object { "${{ github.workspace }}\sbom\$_\manifest.spdx.json" }
 
-          foreach ($manifestPath in @($spdx22, $spdx30)) {
-            if (-not (Test-Path -LiteralPath $manifestPath) -or (Get-Item -LiteralPath $manifestPath).Length -eq 0) {
-              throw "SBOM manifest missing or empty: $manifestPath"
+          foreach ($path in $manifests) {
+            if (-not (Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).Length -eq 0) {
+              throw "SBOM manifest missing or empty: $path"
             }
           }
 
-          $spdx = Get-Content -LiteralPath $spdx22 -Raw | ConvertFrom-Json
+          $spdx = Get-Content -LiteralPath $manifests[0] -Raw | ConvertFrom-Json
           $packages = @($spdx.packages)
-          $problems = @()
+          $names = $packages.name
+          $ceiling = [int]$env:SBOM_MAX_COMPONENTS
+          $floor = [double]$env:SBOM_MIN_DECLARED_LICENSE_PERCENT
 
-          if (-not ($spdx.files | Where-Object { $_.fileName -like "*$name" })) {
-            $problems += "The SPDX 2.2 document does not reference $name."
-          }
+          # licenseDeclared comes from local package metadata; nothing is fetched over the network.
+          $declared = @($packages | Where-Object { $_.licenseDeclared -and $_.licenseDeclared -ne 'NOASSERTION' }).Count
+          $percent = [math]::Round(100 * $declared / [math]::Max($packages.Count, 1), 1)
 
           $buildOnly = @(
             'webpack', 'typescript', 'prettier', 'tslint', 'ts-loader', 'lint-staged', 'cross-env', 'html-webpack-plugin',
             'bunit', 'xunit', 'NUnit', 'Moq', 'coverlet.collector', 'Microsoft.NET.Test.Sdk',
             'Microsoft.Playwright.NUnit', 'Microsoft.AspNetCore.Mvc.Testing', 'BlazingStory'
           )
-          $leaked = @($packages | Where-Object { $buildOnly -contains $_.name } | ForEach-Object { $_.name } | Sort-Object -Unique)
-          if ($leaked.Count -gt 0) {
-            $problems += "Build-only packages are in the SBOM: $($leaked -join ', '). It must be generated from a production-only restore and install."
-          }
+          $leaked = @($buildOnly | Where-Object { $names -contains $_ })
+          $shipped = @('igniteui-webcomponents', 'lit-html', 'Microsoft.AspNetCore.Components.Web')
+          $missing = @($shipped | Where-Object { $names -notcontains $_ })
 
           # The blocklist only catches names someone thought of; the ceiling catches the rest.
-          $ceiling = [int]$env:SBOM_MAX_COMPONENTS
-          if ($packages.Count -gt $ceiling) {
-            $problems += "The SBOM lists $($packages.Count) components, over the $ceiling ceiling. Something is contributing dependencies the package does not ship."
-          }
-
-          $shipped = @('igniteui-webcomponents', 'lit-html', 'Microsoft.AspNetCore.Components.Web')
-          $missing = @($shipped | Where-Object { $packages.name -notcontains $_ })
-          if ($missing.Count -gt 0) {
-            $problems += "Shipped dependencies are absent from the SBOM: $($missing -join ', ')."
-          }
-
-          # licenseDeclared comes from local package metadata; licenseConcluded comes from the
-          # external license API, so only the former is gated. An API outage is reported, not fatal.
-          $declared = @($packages | Where-Object { $_.licenseDeclared -and $_.licenseDeclared -ne 'NOASSERTION' }).Count
-          $concluded = @($packages | Where-Object { $_.licenseConcluded -and $_.licenseConcluded -ne 'NOASSERTION' }).Count
-          $declaredPercent = if ($packages.Count -gt 0) { [math]::Round(100 * $declared / $packages.Count, 1) } else { 0 }
-          $floor = [double]$env:SBOM_MIN_DECLARED_LICENSE_PERCENT
-
-          if ($declaredPercent -lt $floor) {
-            $problems += "Only $declaredPercent% of $($packages.Count) components declare a license, below the $floor% floor."
-          }
+          $problems = @(
+            if (-not ($spdx.files.fileName -like "*$name")) { "does not reference $name" }
+            if ($leaked.Count) { "contains build-only packages ($($leaked -join ', ')); generate it from a production-only restore and install" }
+            if ($missing.Count) { "omits shipped dependencies ($($missing -join ', '))" }
+            if ($packages.Count -gt $ceiling) { "lists $($packages.Count) components, over the $ceiling ceiling" }
+            if ($percent -lt $floor) { "declares a license for only $percent% of $($packages.Count) components, under the $floor% floor" }
+          )
 
           @(
             "### SBOM",
             "- Components: $($packages.Count) (ceiling $ceiling), files: $($spdx.files.Count)",
-            "- Declared licenses: $declared ($declaredPercent%), floor $floor%",
-            "- Licenses resolved from the external API: $concluded"
+            "- Declared licenses: $declared ($percent%, floor $floor%)"
           ) | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
 
-          if ($concluded -eq 0) {
-            Write-Warning "The external license API resolved nothing. Check the sbom-tool warnings above for an outage."
+          if ($problems.Count) {
+            throw "SBOM validation failed. The SPDX 2.2 document:`n- $($problems -join "`n- ")"
           }
 
-          if ($problems.Count -gt 0) {
-            throw "SBOM validation failed:`n- $($problems -join "`n- ")"
-          }
-
-          Write-Host "SBOM covers $($packages.Count) packages and $($spdx.files.Count) files; $declaredPercent% declare a license."
+          Write-Host "SBOM covers $($packages.Count) components and $($spdx.files.Count) files; $percent% declare a license."
 
       - name: Reverify package before attestation
         id: verify-before-attestation
