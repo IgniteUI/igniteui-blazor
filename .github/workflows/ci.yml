@@ -50,6 +50,9 @@ jobs:
       - name: Build TypeScript/Webpack assets
         run: npm run build
 
+      - name: Copy component themes to wwwroot
+        run: npm run copythemes
+
       - name: Restore .NET dependencies
         run: dotnet restore
 
