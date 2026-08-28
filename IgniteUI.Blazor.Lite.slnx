@@ -16,6 +16,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/IgniteUI.Blazor.Lite.IntegrationTests/IgniteUI.Blazor.Lite.IntegrationTests.csproj" />
+    <Project Path="tests/IgniteUI.Blazor.Lite.TestBed.Client/IgniteUI.Blazor.Lite.TestBed.Client.csproj" />
     <Project Path="tests/IgniteUI.Blazor.Lite.TestBed/IgniteUI.Blazor.Lite.TestBed.csproj" />
     <Project Path="tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj" />
   </Folder>
