@@ -891,7 +891,7 @@ namespace IgniteUI.Blazor.Controls
             FieldTypes = _buildingFieldsTypes.ToArray();
             FieldDataIntents = _buildingFieldsDataIntents.ToArray();
             FieldGetters = new Func<object, object>[_buildingFields.Count];
-            TypedFieldGetters = new Func<object, object>[_buildingFields.Count];
+            TypedFieldGetters = new Delegate[_buildingFields.Count];
             for (int i = 0; i < _buildingFields.Count; i++)
             {
                 FieldNames[i] = _buildingFields[i].Name;
