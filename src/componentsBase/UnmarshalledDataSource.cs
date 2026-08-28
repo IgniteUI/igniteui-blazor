@@ -26,7 +26,7 @@ namespace IgniteUI.Blazor.Controls
         public string?[]? StringValues { get; set; }
         public bool[]? NullValues { get; set; }
         public Guid[]? IDValues { get; set; }
-        public UnmarshalledColumn?[]?[]? SubDataSourceValues;
+        public UnmarshalledColumn[]?[]? SubDataSourceValues;
 
         public UnmarshalledColumn Column { get; set; }
 
@@ -66,7 +66,7 @@ namespace IgniteUI.Blazor.Controls
         [FieldOffset(40)]
         public string[] StringValues;
         [FieldOffset(40)]
-        public UnmarshalledColumn?[][]? SubDataSourceValues;
+        public UnmarshalledColumn[]?[]? SubDataSourceValues;
         [FieldOffset(48)]
         public bool[] NullValues;
     }
@@ -145,9 +145,9 @@ namespace IgniteUI.Blazor.Controls
         {
             //Console.WriteLine("adjusting capacity, oldValue: " + oldValue + ", newValue: " + newValue);
             DateTime start = DateTime.Now;
-            if (columns == null || schema == null)
+            if (schema == null)
             {
-                return null;
+                return columns;
             }
             if (schema.IsDataSource)
             {
@@ -728,7 +728,7 @@ namespace IgniteUI.Blazor.Controls
 
                         if (column.IsSubDataSource)
                         {
-                            UnmarshalledColumn?[]? cols = null;
+                            UnmarshalledColumn[]? cols = null;
                             if (objVal != null)
                             {
                                 var id = _idGetter!(item!);
@@ -814,15 +814,15 @@ namespace IgniteUI.Blazor.Controls
 
                         if (column.IsSubDataSource)
                         {
-                            UnmarshalledColumn?[]? cols = null;
+                            UnmarshalledColumn[]? cols = null;
                             if (objVal != null)
                             {
                                 var sub = (UnmarshalledDataSource)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper)!;
                                 var subcols = sub!.GetColumns("");
 
                                 UnmarshalledColumn primcol = new UnmarshalledColumn();
-                                primcol.ActualCount = subcols![0].GetValueOrDefault().ActualCount;
-                                primcol.DataSourceID = subcols[0].GetValueOrDefault().DataSourceID;
+                                primcol.ActualCount = subcols[0].ActualCount;
+                                primcol.DataSourceID = subcols[0].DataSourceID;
                                 primcol.PropertyPath = "___primitiveVal";
                                 primcol.Type = GetArrayType(newColumn.Type);
                                 int i = 0;
@@ -876,7 +876,7 @@ namespace IgniteUI.Blazor.Controls
                                         break;
                                 }
 
-                                cols = new UnmarshalledColumn?[subcols.Length + 1];
+                                cols = new UnmarshalledColumn[subcols.Length + 1];
                                 for (i = 0; i < subcols.Length; i++)
                                 {
                                     cols[i] = subcols[i];
@@ -1073,7 +1073,7 @@ namespace IgniteUI.Blazor.Controls
 
                         if (column.IsSubDataSource)
                         {
-                            UnmarshalledColumn?[]? cols = null;
+                            UnmarshalledColumn[]? cols = null;
                             if (objVal != null)
                             {
                                 var sub = (UnmarshalledDataSource)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper)!;
@@ -1121,15 +1121,15 @@ namespace IgniteUI.Blazor.Controls
 
                         if (column.IsSubDataSource)
                         {
-                            UnmarshalledColumn?[]? cols = null;
+                            UnmarshalledColumn[]? cols = null;
                             if (objVal != null)
                             {
                                 var sub = (UnmarshalledDataSource?)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
                                 var subcols = sub!.GetColumns("");
 
                                 UnmarshalledColumn primcol = new UnmarshalledColumn();
-                                primcol.ActualCount = subcols![0].GetValueOrDefault().ActualCount;
-                                primcol.DataSourceID = subcols[0].GetValueOrDefault().DataSourceID;
+                                primcol.ActualCount = subcols[0].ActualCount;
+                                primcol.DataSourceID = subcols[0].DataSourceID;
                                 primcol.PropertyPath = "___primitiveVal";
                                 primcol.Type = GetArrayType(newColumn.Type);
                                 int i = 0;
@@ -1183,7 +1183,7 @@ namespace IgniteUI.Blazor.Controls
                                         break;
                                 }
 
-                                cols = new UnmarshalledColumn?[subcols.Length + 1];
+                                cols = new UnmarshalledColumn[subcols.Length + 1];
                                 for (i = 0; i < subcols.Length; i++)
                                 {
                                     cols[i] = subcols[i];
@@ -1555,7 +1555,7 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchemaType.ObjectValue;
         }
 
-        private void GetColumns(string refName, UnmarshalledColumnData?[]? columns, List<UnmarshalledColumn?>? l)
+        private void GetColumns(string refName, UnmarshalledColumnData?[]? columns, List<UnmarshalledColumn> l)
         {
             List<UnmarshalledColumnData?[]> toDrill = new List<UnmarshalledColumnData?[]>();
 
@@ -1582,7 +1582,7 @@ namespace IgniteUI.Blazor.Controls
                         col.DataSourceID = refName;
                         col.ActualCount = _size;
 
-                        l!.Add(col);
+                        l.Add(col);
                     }
                 }
             }
@@ -1592,9 +1592,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal UnmarshalledColumn?[]? GetColumns(string refName)
+        internal UnmarshalledColumn[] GetColumns(string refName)
         {
-            var l = new List<UnmarshalledColumn?>();
+            var l = new List<UnmarshalledColumn>();
             GetColumns(refName, _columns, l);
             return l.ToArray();
         }
@@ -1664,7 +1664,7 @@ namespace IgniteUI.Blazor.Controls
                     var existingColumn = column.SubDataSourceValues;
                     if (existingColumn == null || existingColumn.Length != newValue)
                     {
-                        var subColumn = new UnmarshalledColumn?[newValue][];
+                        var subColumn = new UnmarshalledColumn[newValue][];
                         if (existingColumn != null)
                         {
                             Array.Copy(existingColumn, subColumn, _size);
