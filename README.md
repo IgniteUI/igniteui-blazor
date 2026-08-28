@@ -203,7 +203,6 @@ dotnet nuget verify IgniteUI.Blazor.Lite.<version>.nupkg
 
 - [Accessibility conformance](docs/accessibility-conformance.md) — the WCAG 2.2 AA claim, its scope, how it is verified, and the known unfixed failures.
 - [Performance targets and measurements](docs/performance.md) — the enforced bundle size budgets and the runtime targets.
-- [Nullable migration plan](docs/nullable-migration-plan.md) — why the library ships without nullability annotations and the staged plan to change that.
 
 [Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Commercial]: https://www.infragistics.com/legal/license

@@ -371,6 +371,90 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
+  # Advisory by design. A finding is annotated and attached to the release as evidence,
+  # but never holds up the publish — the blocking gate for new vulnerable dependencies is
+  # the dependency-review job on pull requests, which stops them entering master.
+  dependency-scan:
+    name: Scan dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+
+      # Only what the package actually ships: the library project, and npm without devDependencies.
+      - name: Scan NuGet and npm dependencies
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p artifacts/dependency-scan
+
+          dotnet restore ./src/IgniteUI.Blazor.Lite.csproj > /dev/null
+          dotnet list ./src/IgniteUI.Blazor.Lite.csproj package --vulnerable --include-transitive \
+            > artifacts/dependency-scan/nuget-vulnerable.txt 2>&1 || true
+
+          # `npm audit` exits non-zero when it reports anything at or above the audit level.
+          npm audit --omit=dev > artifacts/dependency-scan/npm-audit.txt 2>&1 && npm_status=0 || npm_status=$?
+          npm audit --omit=dev --json > artifacts/dependency-scan/npm-audit.json 2>&1 || true
+
+          nuget_status=0
+          if grep -q 'has the following vulnerable packages' artifacts/dependency-scan/nuget-vulnerable.txt; then
+            nuget_status=1
+          fi
+
+          {
+            echo "### Dependency vulnerability scan"
+            echo
+            echo "Advisory only — findings are recorded but do not block this release."
+            echo
+            echo '<details><summary>dotnet list package --vulnerable --include-transitive</summary>'
+            echo
+            echo '```'
+            cat artifacts/dependency-scan/nuget-vulnerable.txt
+            echo '```'
+            echo
+            echo '</details>'
+            echo
+            echo '<details><summary>npm audit --omit=dev</summary>'
+            echo
+            echo '```'
+            cat artifacts/dependency-scan/npm-audit.txt
+            echo '```'
+            echo
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$nuget_status" -ne 0 ] || [ "$npm_status" -ne 0 ]; then
+            echo "::warning title=Vulnerable dependencies reported::${PACKAGE_ID} ${VERSION} was released with dependency advisories outstanding. See the run summary and the dependency-scan release asset."
+            echo "> ⚠️ **Vulnerable dependencies were reported for this release.** Review the scan output above and open a servicing issue if a fix is required." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "> ✅ No vulnerable shipped dependencies reported." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload dependency scan
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dependency-scan
+          path: artifacts/dependency-scan/*
+          retention-days: 30
+          if-no-files-found: error
+
   sbom:
     name: Generate SBOM and attest
     needs: pack
@@ -585,7 +669,7 @@ jobs:
   # The only job that can publish. It compiles nothing and never checks out the repository.
   publish:
     name: Publish to NuGet.org
-    needs: [pack, evidence, sbom]
+    needs: [pack, evidence, sbom, dependency-scan]
     runs-on: windows-latest
     timeout-minutes: 15
     environment: nuget-org-publish
@@ -635,7 +719,7 @@ jobs:
 
   attach-to-release:
     name: Attach release evidence
-    needs: [pack, evidence, sbom, publish]
+    needs: [pack, evidence, sbom, dependency-scan, publish]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -660,6 +744,12 @@ jobs:
           name: release-evidence
           path: evidence
 
+      - name: Download dependency scan
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dependency-scan
+          path: evidence/dependency-scan
+
       - name: Attach evidence to the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -669,12 +759,14 @@ jobs:
 
           (cd sbom/spdx-2.2/_manifest && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-2.2.zip" .)
           (cd sbom/spdx-3.0/_manifest && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-3.0.zip" .)
+          (cd evidence/dependency-scan && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.dependency-scan.zip" .)
 
           gh release upload "$TAG" --clobber -R "${{ github.repository }}" \
             "artifacts/${PACKAGE_ID}.${TAG}.nupkg" \
             "artifacts/${PACKAGE_ID}.${TAG}.nupkg.sha256" \
             "${PACKAGE_ID}.${TAG}.spdx-2.2.zip" \
             "${PACKAGE_ID}.${TAG}.spdx-3.0.zip" \
+            "${PACKAGE_ID}.${TAG}.dependency-scan.zip" \
             "sbom/attestations/provenance.sigstore.json" \
             "sbom/attestations/sbom.sigstore.json" \
             "evidence/performance-report.md" \

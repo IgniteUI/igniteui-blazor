@@ -29,7 +29,7 @@ Measured on 2026-08-27 from a production webpack build (`npm run build` followed
 | `served-assets` | 2997.0 | 3300 | 453.5 | 510 |
 | `package-static-web-assets` | 9116.8 | 10240 | n/a | n/a |
 
-Bundle filenames are content-hashed, so budgets are expressed as patterns rather than filenames. Every produced file must match exactly one group — an asset that matches none fails the check, so a new bundle cannot enter the package without someone budgeting for it.
+Bundle filenames are content-hashed, so budgets are expressed as patterns rather than filenames, and a file's group is whichever pattern matches it first. `eng/bundle-budgets.json` lists specific patterns before catch-alls for exactly this reason — for example `app.*.bundle.js` is listed ahead of the generic `*.bundle.js`, so an app bundle is budgeted as `app`, not folded into `lazy-chunks`. An asset that matches no pattern at all fails the check, so a new bundle cannot enter the package without someone budgeting for it.
 
 Two things worth knowing about these numbers:
 

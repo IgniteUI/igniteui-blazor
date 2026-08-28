@@ -10,6 +10,24 @@ permissions:
   contents: read
 
 jobs:
+  # Blocks a pull request that would introduce a High or Critical advisory, or a
+  # dependency under a license the package cannot ship. Pushes to master skip it —
+  # the action needs the two-commit range a pull request gives it.
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
+
   build:
     name: Build & Validate
     runs-on: ubuntu-latest

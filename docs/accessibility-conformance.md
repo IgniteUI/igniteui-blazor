@@ -27,17 +27,17 @@ Static server rendering is explicitly **out of scope for the conformance claim**
 
 ## Verification method
 
-Three layers, with different cadences:
+Three layers, once in place, with different cadences:
 
-1. **Automated scanning.** An axe-core scan runs over every component in the Playwright integration suite, asserting the `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, and `wcag22aa` rule sets. It gates pull requests and the release, and the resulting report is attached to the GitHub release as evidence.
-2. **Keyboard operation.** Covered by the same suite: tab order, roving tab stops, arrow-key navigation, activation, and focus restoration.
+1. **Automated scanning.** An axe-core scan will run over every component in the Playwright integration suite, asserting the `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, and `wcag22aa` rule sets. It will gate pull requests and the release, and the resulting report will be attached to the GitHub release as evidence.
+2. **Keyboard operation.** Will be covered by the same suite: tab order, roving tab stops, arrow-key navigation, activation, and focus restoration.
 3. **Screen reader smoke testing.** Manual, once per major release, against the matrix below.
 
-Automated scanning catches roughly the subset of WCAG that is machine-checkable. It is a regression net, not a conformance proof — the once-per-major manual assessment is what substantiates the AA claim.
+Automated scanning will catch roughly the subset of WCAG that is machine-checkable. It is a regression net, not a conformance proof — the once-per-major manual assessment is what substantiates the AA claim.
 
 ### Status of the automation
 
-**The axe-core scan and the keyboard suite described above are not yet in place.** They are being implemented on a separate branch against the existing Playwright integration suite in [`tests/IgniteUI.Blazor.Lite.IntegrationTests`](../tests/IgniteUI.Blazor.Lite.IntegrationTests). Until that lands, layers 1 and 2 are a documented commitment rather than an enforced gate, and no per-release scan artefact exists. This section is written in the present tense for the process that is being built; the gap is stated here rather than papered over.
+**The axe-core scan and the keyboard suite described above are not yet in place.** They are being implemented on a separate branch against the existing Playwright integration suite in [`tests/IgniteUI.Blazor.Lite.IntegrationTests`](../tests/IgniteUI.Blazor.Lite.IntegrationTests). Until that lands, layers 1 and 2 above are a documented commitment rather than an enforced gate, and no per-release scan artefact exists.
 
 ### Screen reader smoke matrix
 
