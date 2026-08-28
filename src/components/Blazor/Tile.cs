@@ -97,13 +97,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _colStart = 0;
+        private double _colStart = 0;
 
         /// <summary>
         /// The starting column for the tile.
         /// </summary>
         [Parameter]
-        public double? ColStart
+        public double ColStart
         {
             get { return this._colStart; }
             set
@@ -116,13 +116,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _rowStart = 0;
+        private double _rowStart = 0;
 
         /// <summary>
         /// The starting row for the tile.
         /// </summary>
         [Parameter]
-        public double? RowStart
+        public double RowStart
         {
             get { return this._rowStart; }
             set

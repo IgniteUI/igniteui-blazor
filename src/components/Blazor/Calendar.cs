@@ -75,7 +75,7 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
-        private DateTime[]? _values;
+        private DateTime[] _values = Array.Empty<DateTime>();
 
         /// <summary>
         /// The current values of the calendar.
@@ -83,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
         [Parameter]
-        public DateTime[]? Values
+        public DateTime[] Values
         {
             get { return this._values; }
             set
@@ -102,7 +102,7 @@ namespace IgniteUI.Blazor.Controls
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
-        public async Task<DateTime[]?> GetCurrentValuesAsync()
+        public async Task<DateTime[]> GetCurrentValuesAsync()
         {
             var iv = await InvokeMethod("p:Values", new object?[] { }, new string[] { });
             return ReturnToDateArray(iv);
@@ -113,7 +113,7 @@ namespace IgniteUI.Blazor.Controls
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
-        public DateTime[]? GetCurrentValues()
+        public DateTime[] GetCurrentValues()
         {
             var iv = InvokeMethodSync("p:Values", new object?[] { }, new string[] { });
             return ReturnToDateArray(iv);
@@ -254,13 +254,16 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbCalendarFormatOptions? _formatOptions;
+        private IgbCalendarFormatOptions _formatOptions = new IgbCalendarFormatOptions() {
+            Month = "long",
+            Weekday = "narrow",
+        };
 
         /// <summary>
         /// The options used to format the months and the weekdays in the calendar views.
         /// </summary>
         [Parameter]
-        public IgbCalendarFormatOptions? FormatOptions
+        public IgbCalendarFormatOptions FormatOptions
         {
             get { return this._formatOptions; }
             set
@@ -270,11 +273,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._formatOptions);
                 }
+                this._formatOptions = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._formatOptions = value;
             }
 
         }
@@ -415,7 +418,7 @@ namespace IgniteUI.Blazor.Controls
 
                             if (this.Selection != CalendarSelection.Single)
                             {
-                                newValueValues = (DateTime[]?)(DowncastArray<DateTime>(args.Detail));
+                                newValueValues = (DateTime[])(DowncastArray<DateTime>(args.Detail));
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

@@ -64,14 +64,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string? _value;
+        private string _value = string.Empty;
 
         /// <summary>
         /// The value of the input.
         /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
         /// </summary>
         [Parameter]
-        public string? Value
+        public string Value
         {
             get { return this._value; }
             set
@@ -89,7 +89,7 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current value of the input.
         /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
         /// </summary>
-        public async Task<string?> GetCurrentValueAsync()
+        public async Task<string> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
@@ -99,18 +99,18 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current value of the input.
         /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
         /// </summary>
-        public string? GetCurrentValue()
+        public string GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
-        private string? _mask;
+        private string _mask = "CCCCCCCCCC";
 
         /// <summary>
         /// The masked pattern of the component.
         /// </summary>
         [Parameter]
-        public string? Mask
+        public string Mask
         {
             get { return this._mask; }
             set
@@ -123,13 +123,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string? _prompt;
+        private string _prompt = "_";
 
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
         /// </summary>
         [Parameter]
-        public string? Prompt
+        public string Prompt
         {
             get { return this._prompt; }
             set

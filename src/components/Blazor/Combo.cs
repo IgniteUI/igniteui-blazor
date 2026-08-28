@@ -320,13 +320,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbFilteringOptions? _filteringOptions;
+        private IgbFilteringOptions _filteringOptions = new IgbFilteringOptions();
 
         /// <summary>
         /// An object that configures the filtering of the combo.
         /// </summary>
         [Parameter]
-        public IgbFilteringOptions? FilteringOptions
+        public IgbFilteringOptions FilteringOptions
         {
             get { return this._filteringOptions; }
             set
@@ -336,11 +336,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._filteringOptions);
                 }
+                this._filteringOptions = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._filteringOptions = value;
             }
 
         }
@@ -401,7 +401,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private T[]? _value;
+        private T[] _value = Array.Empty<T>();
 
         /// <summary>
         /// The value of the control, that is the currently selected items.
@@ -410,7 +410,7 @@ namespace IgniteUI.Blazor.Controls
         /// of <see cref="ValueKey"/>.
         /// </summary>
         [Parameter]
-        public T[]? Value
+        public T[] Value
         {
             get { return this._value; }
             set
@@ -859,7 +859,7 @@ namespace IgniteUI.Blazor.Controls
                             var newValueValue = default(T[]);
 
                             {
-                                newValueValue = (T[]?)(DowncastArray<T>(args.Detail!.NewValue));
+                                newValueValue = (T[])(DowncastArray<T>(args.Detail.NewValue));
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

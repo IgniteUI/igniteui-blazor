@@ -49,14 +49,14 @@ namespace IgniteUI.Blazor.Controls
             this.Options = new IgbChatOptions();
         }
 
-        private IgbChatMessage[]? _messages;
+        private IgbChatMessage[] _messages = Array.Empty<IgbChatMessage>();
 
         /// <summary>
         /// The list of chat messages currently displayed.
         /// Use this property to set or update the message history.
         /// </summary>
         [Parameter]
-        public IgbChatMessage[]? Messages
+        public IgbChatMessage[] Messages
         {
             get { return this._messages; }
             set
@@ -69,14 +69,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbChatDraftMessage? _draftMessage;
+        private IgbChatDraftMessage _draftMessage = new IgbChatDraftMessage();
 
         /// <summary>
         /// The chat message currently being composed but not yet sent.
         /// Includes the draft text and any attachments.
         /// </summary>
         [Parameter]
-        public IgbChatDraftMessage? DraftMessage
+        public IgbChatDraftMessage DraftMessage
         {
             get { return this._draftMessage; }
             set
@@ -86,11 +86,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._draftMessage);
                 }
+                this._draftMessage = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._draftMessage = value;
             }
 
         }

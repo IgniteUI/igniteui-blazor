@@ -737,7 +737,7 @@ namespace IgniteUI.Blazor.Controls
             return default(string);
         }
 
-        internal object[]? ReturnToObjectArray(Object? val)
+        internal object[] ReturnToObjectArray(Object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -748,7 +748,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseRendererControl)CurrParent).ReturnToObjectArray(val);
             }
-            return default;
+            return Array.Empty<object>();
         }
 
         internal T[]? ReturnToObjectArray<T>(Object? val)
@@ -921,7 +921,7 @@ namespace IgniteUI.Blazor.Controls
             return default(object) ?? new object();
         }
 
-        internal T[]? DowncastArray<T>(object? val)
+        internal T[]? DowncastArray<T>(object val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)

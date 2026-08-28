@@ -32,8 +32,8 @@ namespace IgniteUI.Blazor.Controls
                 if (value != null)
                 {
                     this.AttachChild(value);
-                }            }
-
+                }
+            }
         }
 
         internal override void SerializeCore(RendererSerializer ser)

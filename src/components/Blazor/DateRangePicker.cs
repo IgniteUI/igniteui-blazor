@@ -100,13 +100,13 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
-        private IgbCustomDateRange[]? _customRanges;
+        private IgbCustomDateRange[] _customRanges = Array.Empty<IgbCustomDateRange>();
 
         /// <summary>
         /// Renders chips with custom ranges based on the elements of the array.
         /// </summary>
         [Parameter]
-        public IgbCustomDateRange[]? CustomRanges
+        public IgbCustomDateRange[] CustomRanges
         {
             get { return this._customRanges; }
             set
@@ -488,13 +488,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[]? _disabledDates;
+        private IgbDateRangeDescriptor[] _disabledDates = Array.Empty<IgbDateRangeDescriptor>();
 
         /// <summary>
         /// Gets/sets disabled dates.
         /// </summary>
         [Parameter]
-        public IgbDateRangeDescriptor[]? DisabledDates
+        public IgbDateRangeDescriptor[] DisabledDates
         {
             get { return this._disabledDates; }
             set
@@ -641,13 +641,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[]? _specialDates;
+        private IgbDateRangeDescriptor[] _specialDates = Array.Empty<IgbDateRangeDescriptor>();
 
         /// <summary>
         /// Gets/sets special dates.
         /// </summary>
         [Parameter]
-        public IgbDateRangeDescriptor[]? SpecialDates
+        public IgbDateRangeDescriptor[] SpecialDates
         {
             get { return this._specialDates; }
             set

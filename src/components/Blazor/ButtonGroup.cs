@@ -116,13 +116,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[]? _selectedItems;
+        private string[] _selectedItems = Array.Empty<string>();
 
         /// <summary>
         /// Gets or sets the values of the currently selected buttons.
         /// </summary>
         [Parameter]
-        public string[]? SelectedItems
+        public string[] SelectedItems
         {
             get { return this._selectedItems; }
             set

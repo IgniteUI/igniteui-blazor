@@ -29,13 +29,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeValue? _dateRange;
+        private IgbDateRangeValue _dateRange = new IgbDateRangeValue();
 
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
         [Parameter]
-        public IgbDateRangeValue? DateRange
+        public IgbDateRangeValue DateRange
         {
             get { return this._dateRange; }
             set
@@ -45,11 +45,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._dateRange);
                 }
+                this._dateRange = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._dateRange = value;
             }
 
         }

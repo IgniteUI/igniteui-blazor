@@ -10,10 +10,10 @@ namespace IgniteUI.Blazor.Controls
         private static bool _marshalByValue = true;
 
         private string? _newValueRef;
-        private object[]? _newValue;
+        private object[] _newValue = Array.Empty<object>();
 
         [Parameter]
-        public object[]? NewValue
+        public object[] NewValue
         {
             get { return this._newValue; }
 
@@ -58,10 +58,10 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _itemsRef;
-        private object[]? _items;
+        private object[] _items = Array.Empty<object>() ;
 
         [Parameter]
-        public object[]? Items
+        public object[] Items
         {
             get { return this._items; }
 

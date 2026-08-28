@@ -1888,13 +1888,8 @@ namespace IgniteUI.Blazor.Controls
             return ConvertReturnValue(returnValue, true);
         }
 
-        internal T[]? DowncastArray<T>(object? val)
+        internal T[] DowncastArray<T>(object val)
         {
-            if (val == null)
-            {
-                return null;
-            }
-
             if (val is T[])
             {
                 return (T[])val;
@@ -2263,7 +2258,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal DateTime[]? ReturnToDateArray(object? val)
+        internal DateTime[] ReturnToDateArray(object? val)
         {
             val = ConvertReturnValue(val);
             try
@@ -2271,13 +2266,17 @@ namespace IgniteUI.Blazor.Controls
                 var stringVal = val?.ToString();
                 if (stringVal == null)
                 {
-                    return null;
+                    return Array.Empty<DateTime>();
                 }
-                var arr = JsonSerializer.Deserialize<object?[]>(stringVal, SerializerOptions);
-                DateTime[] ret = new DateTime[arr!.Length];
+                var arr = JsonSerializer.Deserialize<object[]>(stringVal, SerializerOptions);
+                if (arr == null)
+                {
+                    return Array.Empty<DateTime>();
+                }
+                DateTime[] ret = new DateTime[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
-                    Object? ele = arr[i];
+                    Object ele = arr[i];
                     ele = ReturnToDate(ele);
                     ret[i] = (DateTime)ele;
                 }
@@ -2285,7 +2284,7 @@ namespace IgniteUI.Blazor.Controls
             }
             catch (Exception e)
             {
-                return null;
+                return Array.Empty<DateTime>();
             }
         }
 
@@ -2783,19 +2782,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object[]? ReturnToObjectArray(object? val)
+        internal object[] ReturnToObjectArray(object? val)
         {
             val = ConvertReturnValue(val);
             if (val == null)
             {
-                return null;
+                return Array.Empty<object>();
             }
             try
             {
                 var arr = JsonSerializer.Deserialize<object[]>(val.ToString()!, SerializerOptions);
                 if (arr == null)
                 {
-                    return null;
+                    return Array.Empty<object>();
                 }
                 Object[] ret = new Object[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
@@ -2811,7 +2810,7 @@ namespace IgniteUI.Blazor.Controls
             }
             catch (Exception e)
             {
-                return null;
+                return Array.Empty<object>();
             }
         }
 
