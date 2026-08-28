@@ -904,7 +904,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseRendererControl)CurrParent).ConvertReturnValue(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
-            return default(object) ?? new object();
+            return new object();
         }
 
         internal object ReturnToPrimitive(object? val)
@@ -918,7 +918,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseRendererControl)CurrParent).ReturnToPrimitive(val);
             }
-            return default(object) ?? new object();
+            return new object();
         }
 
         internal T[]? DowncastArray<T>(object val)
