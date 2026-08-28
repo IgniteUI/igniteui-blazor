@@ -14,13 +14,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTileChangeStateEventArgsDetail? _detail;
+        private IgbTileChangeStateEventArgsDetail _detail = new IgbTileChangeStateEventArgsDetail();
 
         /// <summary>
         /// The affected tile and the state it is changing to.
         /// </summary>
         [Parameter]
-        public IgbTileChangeStateEventArgsDetail? Detail
+        public IgbTileChangeStateEventArgsDetail Detail
         {
             get { return this._detail; }
             set
@@ -30,11 +30,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -65,7 +65,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args?.ContainsKey("detail") == true)
-            { this.Detail = (IgbTileChangeStateEventArgsDetail?)ConvertReturnValue(args["detail"], "TileChangeStateEventArgsDetail", true); }
+            { this.Detail = (IgbTileChangeStateEventArgsDetail)ConvertReturnValue(args["detail"], "TileChangeStateEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

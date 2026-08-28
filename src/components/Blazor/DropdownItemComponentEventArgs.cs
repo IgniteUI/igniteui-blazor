@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbDropdownItem? _detail;
+        private IgbDropdownItem _detail = new IgbDropdownItem();
 
         /// <summary>
         /// The dropdown item that became selected.
         /// </summary>
         [Parameter]
-        public IgbDropdownItem? Detail
+        public IgbDropdownItem Detail
         {
             get { return this._detail; }
             set
@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbDropdownItem?)ConvertReturnValue(args["detail"], "DropdownItem", true); }
+            { this.Detail = (IgbDropdownItem)ConvertReturnValue(args["detail"], "DropdownItem", true); }
 
             this.SuppressParentNotify = false;
         }

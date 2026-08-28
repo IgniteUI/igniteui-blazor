@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTab? _detail;
+        private IgbTab _detail = new IgbTab();
 
         /// <summary>
         /// The tab that became selected.
         /// </summary>
         [Parameter]
-        public IgbTab? Detail
+        public IgbTab Detail
         {
             get { return this._detail; }
             set
@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbTab?)ConvertReturnValue(args["detail"], "Tab", true); }
+            { this.Detail = (IgbTab)ConvertReturnValue(args["detail"], "Tab", true); }
 
             this.SuppressParentNotify = false;
         }

@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbChatMessageAttachment? _detail;
+        private IgbChatMessageAttachment _detail = new IgbChatMessageAttachment();
 
         /// <summary>
         /// The chat message attachment the event was raised for.
         /// </summary>
         [Parameter]
-        public IgbChatMessageAttachment? Detail
+        public IgbChatMessageAttachment Detail
         {
             get { return this._detail; }
             set
@@ -29,11 +29,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -64,7 +64,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbChatMessageAttachment?)ConvertReturnValue(args["detail"], "ChatMessageAttachment", true); }
+            { this.Detail = (IgbChatMessageAttachment)ConvertReturnValue(args["detail"], "ChatMessageAttachment", true); }
 
             this.SuppressParentNotify = false;
         }

@@ -442,7 +442,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_activeStepChanged))
                     {
                         _activeStepChanged = value;
-                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value);
+                        this.SetHandlerSimple<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value, val => ReturnToObject<IgbActiveStepChangedEventArgs>(val)!);
                         this.OnRefChanged("ActiveStepChanged", null, "event:::ActiveStepChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangedRef = refName;
@@ -453,7 +453,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _activeStepChanged = null;
-                    this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", null);
+                    this.SetHandlerSimple<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", null, val => ReturnToObject<IgbActiveStepChangedEventArgs>(val)!);
                     this.OnRefChanged("ActiveStepChanged", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._activeStepChangedRef = null;

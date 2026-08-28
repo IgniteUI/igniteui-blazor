@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbDateRangeValueDetail? _detail;
+        private IgbDateRangeValueDetail _detail = new IgbDateRangeValueDetail();
 
         /// <summary>
         /// The date range carried by the event.
         /// </summary>
         [Parameter]
-        public IgbDateRangeValueDetail? Detail
+        public IgbDateRangeValueDetail Detail
         {
             get { return this._detail; }
             set
@@ -28,11 +28,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbDateRangeValueDetail?)ConvertReturnValue(args["detail"], "DateRangeValueDetail", true); }
+            { this.Detail = (IgbDateRangeValueDetail)ConvertReturnValue(args["detail"], "DateRangeValueDetail", true); }
 
             this.SuppressParentNotify = false;
         }

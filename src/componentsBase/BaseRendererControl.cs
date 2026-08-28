@@ -1883,7 +1883,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal object? ReturnToPrimitive(object? returnValue)
+        internal object ReturnToPrimitive(object? returnValue)
         {
             return ConvertReturnValue(returnValue, true);
         }
@@ -1915,7 +1915,7 @@ namespace IgniteUI.Blazor.Controls
             return (T[])val;
         }
 
-        internal object? ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             try
             {
@@ -2071,7 +2071,7 @@ namespace IgniteUI.Blazor.Controls
                                 if (obj["value"] == null ||
                                     ((JsonElement)obj["value"]).ValueKind == JsonValueKind.Null)
                                 {
-                                    return null;
+                                    return returnValue ?? new object();
                                 }
 
                                 object? o = null;
@@ -2105,7 +2105,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     if (acceptsNullIfMarshalDoesNotExist)
                                     {
-                                        return null;
+                                        return returnValue ?? new object();
                                     }
                                     var ret = obj["value"].ToString();
                                     returnValue = JsonSerializer.Deserialize<Dictionary<string, object>>(ret!, SerializerOptions);
@@ -2124,7 +2124,7 @@ namespace IgniteUI.Blazor.Controls
                 Console.WriteLine(e.ToString());
             }
 
-            return returnValue;
+            return returnValue ?? new object();
         }
 
         public void OnInvokeReturn(long invokeId, Object returnValue)
@@ -2615,15 +2615,10 @@ namespace IgniteUI.Blazor.Controls
             ObjectToParam(c, val);
         }
 
-        internal string? ReturnToString(object? val)
+        internal string ReturnToString(object? val)
         {
             val = ConvertReturnValue(val);
-
-            if (val == null)
-            {
-                return null;
-            }
-            return val.ToString();
+            return val?.ToString() ?? String.Empty;
         }
 
         internal string? StringToString(object? val)

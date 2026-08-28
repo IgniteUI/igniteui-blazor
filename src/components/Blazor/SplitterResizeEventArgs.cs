@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbSplitterResizeEventArgsDetail? _detail;
+        private IgbSplitterResizeEventArgsDetail _detail = new IgbSplitterResizeEventArgsDetail();
 
         /// <summary>
         /// The current sizes of the panes adjacent to the resized splitter bar.
         /// </summary>
         [Parameter]
-        public IgbSplitterResizeEventArgsDetail? Detail
+        public IgbSplitterResizeEventArgsDetail Detail
         {
             get { return this._detail; }
             set
@@ -28,11 +28,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbSplitterResizeEventArgsDetail?)ConvertReturnValue(args["detail"], "SplitterResizeEventArgsDetail", true); }
+            { this.Detail = (IgbSplitterResizeEventArgsDetail)ConvertReturnValue(args["detail"], "SplitterResizeEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

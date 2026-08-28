@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbChatMessageReaction? _detail;
+        private IgbChatMessageReaction _detail = new IgbChatMessageReaction();
 
         /// <summary>
         /// The reaction the event was raised for, together with the chat message it is associated with.
         /// </summary>
         [Parameter]
-        public IgbChatMessageReaction? Detail
+        public IgbChatMessageReaction Detail
         {
             get { return this._detail; }
             set
@@ -29,11 +29,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -64,7 +64,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbChatMessageReaction?)ConvertReturnValue(args["detail"], "ChatMessageReaction", true); }
+            { this.Detail = (IgbChatMessageReaction)ConvertReturnValue(args["detail"], "ChatMessageReaction", true); }
 
             this.SuppressParentNotify = false;
         }

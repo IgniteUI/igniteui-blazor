@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbCheckboxChangeEventArgsDetail? _detail;
+        private IgbCheckboxChangeEventArgsDetail _detail = new IgbCheckboxChangeEventArgsDetail();
 
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the control.
         /// </summary>
         [Parameter]
-        public IgbCheckboxChangeEventArgsDetail? Detail
+        public IgbCheckboxChangeEventArgsDetail Detail
         {
             get { return this._detail; }
             set
@@ -29,11 +29,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -64,7 +64,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbCheckboxChangeEventArgsDetail?)ConvertReturnValue(args["detail"], "CheckboxChangeEventArgsDetail", true); }
+            { this.Detail = (IgbCheckboxChangeEventArgsDetail)ConvertReturnValue(args["detail"], "CheckboxChangeEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

@@ -11,13 +11,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebComponentDataValueChangedEventArgs"; } }
 
-        private object? _detail;
+        private object _detail = new object();
 
         /// <summary>
         /// The value carried by the event.
         /// </summary>
         [Parameter]
-        public object? Detail
+        public object Detail
         {
             get { return this._detail; }
             set

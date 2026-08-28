@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbComboChangeEventArgsDetail? _detail;
+        private IgbComboChangeEventArgsDetail _detail = new IgbComboChangeEventArgsDetail();
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
         /// </summary>
         [Parameter]
-        public IgbComboChangeEventArgsDetail? Detail
+        public IgbComboChangeEventArgsDetail Detail
         {
             get { return this._detail; }
             set
@@ -28,12 +28,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
-                }
-                this._detail = value;
-            }
+                }            }
 
         }
 
@@ -63,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbComboChangeEventArgsDetail?)ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true); }
+            { this.Detail = (IgbComboChangeEventArgsDetail)ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

@@ -13,27 +13,28 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbActiveStepChangedEventArgsDetail? _detail;
+        private IgbActiveStepChangedEventArgsDetail _detail = new IgbActiveStepChangedEventArgsDetail();
 
         /// <summary>
         /// The payload of the event, carrying the index of the step that became active.
         /// </summary>
         [Parameter]
-        public IgbActiveStepChangedEventArgsDetail? Detail
+        public IgbActiveStepChangedEventArgsDetail Detail
         {
             get { return this._detail; }
             set
             {
                 MarkPropDirty("Detail");
+
                 if (this._detail != null)
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -64,7 +65,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbActiveStepChangedEventArgsDetail?)ConvertReturnValue(args["detail"], "ActiveStepChangedEventArgsDetail", true); }
+            { this.Detail = (IgbActiveStepChangedEventArgsDetail)ConvertReturnValue(args["detail"], "ActiveStepChangedEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;
         }

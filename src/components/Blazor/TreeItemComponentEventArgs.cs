@@ -14,13 +14,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTreeItem? _detail;
+        private IgbTreeItem _detail = new IgbTreeItem();
 
         /// <summary>
         /// The tree item the event applies to.
         /// </summary>
         [Parameter]
-        public IgbTreeItem? Detail
+        public IgbTreeItem Detail
         {
             get { return this._detail; }
             set
@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbTreeItem?)ConvertReturnValue(args["detail"], "TreeItem", true); }
+            { this.Detail = (IgbTreeItem)ConvertReturnValue(args["detail"], "TreeItem", true); }
 
             this.SuppressParentNotify = false;
         }

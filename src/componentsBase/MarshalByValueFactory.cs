@@ -154,7 +154,10 @@ namespace IgniteUI.Blazor.Controls
                     break;
                 case "ActiveStepChangedEventArgs":
                 case "WebActiveStepChangedEventArgs":
-                    return new IgbActiveStepChangedEventArgs();
+                    return new IgbActiveStepChangedEventArgs
+                    {
+                        Detail = new IgbActiveStepChangedEventArgsDetail()
+                    };
                     break;
                 case "ActiveStepChangedEventArgsDetail":
                 case "WebActiveStepChangedEventArgsDetail":

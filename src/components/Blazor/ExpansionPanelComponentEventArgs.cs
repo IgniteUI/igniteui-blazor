@@ -15,13 +15,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbExpansionPanel? _detail;
+        private IgbExpansionPanel _detail = new IgbExpansionPanel();
 
         /// <summary>
         /// The expansion panel the event was raised for.
         /// </summary>
         [Parameter]
-        public IgbExpansionPanel? Detail
+        public IgbExpansionPanel Detail
         {
             get { return this._detail; }
             set
@@ -61,7 +61,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbExpansionPanel?)ConvertReturnValue(args["detail"], "ExpansionPanel", true); }
+            { this.Detail = (IgbExpansionPanel)ConvertReturnValue(args["detail"], "ExpansionPanel", true); }
 
             this.SuppressParentNotify = false;
         }

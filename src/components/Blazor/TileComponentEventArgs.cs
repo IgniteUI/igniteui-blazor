@@ -14,13 +14,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTile? _detail;
+        private IgbTile _detail = new IgbTile();
 
         /// <summary>
         /// The tile the operation applies to.
         /// </summary>
         [Parameter]
-        public IgbTile? Detail
+        public IgbTile Detail
         {
             get { return this._detail; }
             set
@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbTile?)ConvertReturnValue(args["detail"], "Tile", true); }
+            { this.Detail = (IgbTile)ConvertReturnValue(args["detail"], "Tile", true); }
 
             this.SuppressParentNotify = false;
         }
