@@ -58,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _itemsRef;
-        private object[] _items = Array.Empty<object>() ;
+        private object[] _items = Array.Empty<object>();
 
         [Parameter]
         public object[] Items

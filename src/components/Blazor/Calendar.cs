@@ -254,7 +254,8 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbCalendarFormatOptions _formatOptions = new IgbCalendarFormatOptions() {
+        private IgbCalendarFormatOptions _formatOptions = new IgbCalendarFormatOptions()
+        {
             Month = "long",
             Weekday = "narrow",
         };
