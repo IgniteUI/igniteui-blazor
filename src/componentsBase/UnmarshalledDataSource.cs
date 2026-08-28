@@ -299,7 +299,7 @@ namespace IgniteUI.Blazor.Controls
             Func<object, decimal?>? nullableDecimalGetter = null;
             Func<object, bool?>? nullableBoolGetter = null;
             Func<object, byte?>? nullableByteGetter = null;
-            Func<object, DateTime?>? nullableDateTimeGetter = null;
+            Func<object, DateTime>? nullableDateTimeGetter = null;
             Func<object, double?>? nullableFloatingPointGetter = null;
 
             switch (newColumn.Type)
@@ -414,22 +414,22 @@ namespace IgniteUI.Blazor.Controls
                     break;
                 case JSDataSourceSchemaType.NullableCalendarValue:
                 case JSDataSourceSchemaType.NullableDateTimeValue:
-                    if (typeof(Func<object, DateTime?>).IsAssignableFrom(valueGetter!.GetType()))
+                    if (typeof(Func<object, DateTime>).IsAssignableFrom(valueGetter!.GetType()))
                     {
-                        nullableDateTimeGetter = (Func<object, DateTime?>)valueGetter;
+                        nullableDateTimeGetter = (Func<object, DateTime>)valueGetter;
                         stringGetter = (o) =>
                         {
                             var val = nullableDateTimeGetter(o);
-                            return val == null ? null! : val.Value.ToString("o");
+                            return val.ToString("o");
                         };
                     }
                     else
                     {
-                        nullableDateTimeGetter = (o) => (DateTime?)untypedGetter!(o);
+                        nullableDateTimeGetter = (o) => (DateTime)untypedGetter!(o);
                         stringGetter = (o) =>
                         {
                             var val = nullableDateTimeGetter(o);
-                            return val == null ? null! : val.Value.ToString("o");
+                            return val.ToString("o");
                         };
                     }
                     break;

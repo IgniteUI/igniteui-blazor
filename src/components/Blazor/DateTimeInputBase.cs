@@ -107,13 +107,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _min = DateTime.MinValue;
+        private DateTime _min = DateTime.MinValue;
 
         /// <summary>
         /// The minimum value required for the input to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Min
+        public DateTime Min
         {
             get { return this._min; }
             set
@@ -126,13 +126,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _max = DateTime.MinValue;
+        private DateTime _max = DateTime.MinValue;
 
         /// <summary>
         /// The maximum value required for the input to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Max
+        public DateTime Max
         {
             get { return this._max; }
             set

@@ -279,18 +279,18 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private EventCallback<DateTime?>? _valueChanged = null;
+        private EventCallback<DateTime>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime?> ValueChanged
+        public EventCallback<DateTime> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime>.Empty;
             }
             set
             {
@@ -428,7 +428,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(Name, "Values");
                             }
 
-                            if (!EventCallback<DateTime?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 if (task.Exception != null)

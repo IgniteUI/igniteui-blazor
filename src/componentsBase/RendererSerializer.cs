@@ -349,7 +349,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": " + Convert.ToString(value, CultureInfo.InvariantCulture));
         }
 
-        public void AddDateTimeProp(String propertyName, DateTime? value)
+        public void AddDateTimeProp(String propertyName, DateTime value)
         {
             if (_context!.Filter != null)
             {
@@ -358,7 +358,7 @@ namespace IgniteUI.Blazor.Controls
                     return;
                 }
             }
-            _context.Writer.WriteString(propertyName, value != null ? value.Value.ToString("o") : null);
+            _context.Writer.WriteString(propertyName, value.ToString("o"));
             //_properties.Add("\"" + propertyName + "\"" + ": \"" + value.ToString("o") + "\"");
         }
 

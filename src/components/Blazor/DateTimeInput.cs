@@ -35,13 +35,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private DateTime? _value = DateTime.MinValue;
+        private DateTime _value = DateTime.MinValue;
 
         /// <summary>
         /// The value of the input.
         /// </summary>
         [Parameter]
-        public DateTime? Value
+        public DateTime Value
         {
             get { return this._value; }
             set
@@ -58,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the input.
         /// </summary>
-        public async Task<DateTime?> GetCurrentValueAsync()
+        public async Task<DateTime> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
@@ -67,7 +67,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the input.
         /// </summary>
-        public DateTime? GetCurrentValue()
+        public DateTime GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
@@ -120,18 +120,18 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("clear", new object?[] { }, new string[] { });
         }
 
-        private EventCallback<DateTime?>? _valueChanged = null;
+        private EventCallback<DateTime>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime?> ValueChanged
+        public EventCallback<DateTime> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime>.Empty;
             }
             set
             {
@@ -276,10 +276,10 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            var newValueValue = default(DateTime?);
+                            var newValueValue = default(DateTime);
 
                             {
-                                newValueValue = (DateTime?)(args.Detail);
+                                newValueValue = (DateTime)(args.Detail);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -292,7 +292,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(Name, "Value");
                             }
 
-                            if (!EventCallback<DateTime?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 if (task.Exception != null)
