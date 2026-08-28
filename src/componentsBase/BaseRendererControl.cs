@@ -2026,7 +2026,7 @@ namespace IgniteUI.Blazor.Controls
                         }
                         else if ("undefined".Equals(retType))
                         {
-                            returnValue = null;
+                            return null!;
                         }
                         else if ("Array".Equals(retType))
                         {
@@ -2066,7 +2066,7 @@ namespace IgniteUI.Blazor.Controls
                                 if (obj["value"] == null ||
                                     ((JsonElement)obj["value"]).ValueKind == JsonValueKind.Null)
                                 {
-                                    return returnValue ?? new object();
+                                    return null!;
                                 }
 
                                 object? o = null;
@@ -2100,7 +2100,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     if (acceptsNullIfMarshalDoesNotExist)
                                     {
-                                        return returnValue ?? new object();
+                                        return null!;
                                     }
                                     var ret = obj["value"].ToString();
                                     returnValue = JsonSerializer.Deserialize<Dictionary<string, object>>(ret!, SerializerOptions);
@@ -2119,7 +2119,7 @@ namespace IgniteUI.Blazor.Controls
                 Console.WriteLine(e.ToString());
             }
 
-            return returnValue ?? new object();
+            return returnValue!;
         }
 
         public void OnInvokeReturn(long invokeId, Object returnValue)
