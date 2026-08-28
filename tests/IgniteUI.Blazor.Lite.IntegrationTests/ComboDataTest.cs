@@ -155,6 +155,7 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         private async Task OpenScenarioAsync(string scenario, int expectedCount)
         {
             await Page.GotoAsync("http://localhost:5249/combo-data?scenario=" + scenario);
+            await Page.WaitForFunctionAsync("() => !!window.clientPageRef");
             // Prerender is off on the page, so the combo holding data means the WASM
             // runtime is live and the transfer completed.
             await WaitForItemCountAsync(expectedCount);
