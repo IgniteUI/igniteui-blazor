@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -314,7 +314,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbSelectItem);
             }
-            var retVal = (IgbSelectItem)ConvertReturnValue(iv)!;
+            var retVal = (IgbSelectItem)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbSelectItem);
@@ -334,7 +334,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbSelectItem);
             }
-            var retVal = (IgbSelectItem)ConvertReturnValue(iv)!;
+            var retVal = (IgbSelectItem)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbSelectItem);
@@ -609,7 +609,7 @@ namespace IgniteUI.Blazor.Controls
                             var newValueValue = default(string?);
 
                             {
-                                newValueValue = (string?)(args.Detail!.Value);
+                                newValueValue = (string?)(args.Detail.Value);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

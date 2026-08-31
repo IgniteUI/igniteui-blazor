@@ -29,7 +29,7 @@ namespace IgniteUI.Blazor.Controls
                     if (_subSchemas["___self"] != null)
                     {
                         //Console.WriteLine("has item schema");
-                        return _subSchemas!["___self"]!.HasDataIntents();
+                        return _subSchemas["___self"]!.HasDataIntents();
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace IgniteUI.Blazor.Controls
                     {
                         //Console.WriteLine("has item schema");
                         uw.WriteBoolean("subProps", true);
-                        _subSchemas!["___self"]!.WriteDataIntentsAsJson("subIntents", uw);
+                        _subSchemas["___self"]!.WriteDataIntentsAsJson("subIntents", uw);
                     }
                 }
             }
@@ -121,7 +121,7 @@ namespace IgniteUI.Blazor.Controls
 
                     if (_subSchemas.ContainsKey(currProp))
                     {
-                        if (_subSchemas![currProp]!.HasDataIntents())
+                        if (_subSchemas[currProp]!.HasDataIntents())
                         {
                             var sub = _subSchemas[currProp];
                             if (sub!.IsDataSource)
@@ -158,7 +158,7 @@ namespace IgniteUI.Blazor.Controls
 
                     if (_subSchemas.ContainsKey(currProp))
                     {
-                        if (_subSchemas![currProp]!.HasDataIntents())
+                        if (_subSchemas[currProp]!.HasDataIntents())
                         {
                             var sub = _subSchemas[currProp];
                             if (sub!.IsDataSource)
@@ -446,12 +446,12 @@ namespace IgniteUI.Blazor.Controls
 
             if (itemSchema != null)
             {
-                for (int i = 0; i < itemSchema!.PropertyTypes!.Length; i++)
+                for (int i = 0; i < itemSchema.PropertyTypes!.Length; i++)
                 {
                     if (itemSchema.PropertyTypes[i] == JSDataSourceSchemaType.ObjectValue)
                     {
-                        var obj = itemSchema!.PropertyGetters![i](subObject);
-                        itemSchema.SetSubSchema(itemSchema!.PropertyNames![i], BuildSubObjectSchema(obj));
+                        var obj = itemSchema.PropertyGetters![i](subObject);
+                        itemSchema.SetSubSchema(itemSchema.PropertyNames![i], BuildSubObjectSchema(obj));
                     }
                 }
             }

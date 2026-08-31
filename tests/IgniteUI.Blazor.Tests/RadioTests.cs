@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -20,7 +20,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "option1"}}}""",
             assert: args =>
             {
-                Assert.True(args.Detail!.Checked);
+                Assert.True(args.Detail.Checked);
                 Assert.Equal("option1", args.Detail.Value);
             })
         // The bound value uses checked:
@@ -127,7 +127,7 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "selected-option"}}}""",
             assert: args =>
             {
-                Assert.True(args.Detail!.Checked);
+                Assert.True(args.Detail.Checked);
                 Assert.Equal("selected-option", args.Detail.Value);
             })
         // The group binds the selected option's value:

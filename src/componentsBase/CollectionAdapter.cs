@@ -87,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
                 case NotifyCollectionChangedAction.Add:
                     if (args.NewItems != null && args.NewItems.Count > 0)
                     {
-                        this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems![0]!);
+                        this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems[0]!);
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -97,7 +97,7 @@ namespace IgniteUI.Blazor.Controls
                     this.RemoveManualItemAt(args.OldStartingIndex);
                     if (args.NewItems != null && args.NewItems.Count > 0)
                     {
-                        this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems![0]!);
+                        this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems[0]!);
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
@@ -286,7 +286,7 @@ namespace IgniteUI.Blazor.Controls
                     else
                     {
                         this._allList.Insert(ins, insItem);
-                        this._target?.Insert(ins, this!._toTarget!(insItem));
+                        this._target?.Insert(ins, this._toTarget!(insItem));
                         this._onItemAdded?.Invoke(insItem);
                         ind++;
                         ins++;

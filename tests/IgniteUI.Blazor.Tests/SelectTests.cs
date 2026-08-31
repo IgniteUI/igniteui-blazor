@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -74,7 +74,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             assert: (cut, args) =>
             {
                 Assert.Same(cut.FindComponents<IgbSelectItem>()[1].Instance, args.Detail);
-                Assert.Equal("ca", args.Detail!.Value); // Change propagates Detail.Value into Select.Value
+                Assert.Equal("ca", args.Detail.Value); // Change propagates Detail.Value into Select.Value
             })
         // The detail is the selected item; the binding receives that item's Value.
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,

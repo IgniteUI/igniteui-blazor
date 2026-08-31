@@ -1661,7 +1661,7 @@ namespace IgniteUI.Blazor.Controls
 
             while (_messageQueue.Count > 0)
             {
-                RendererMessage m = _messageQueue!.First!.Value;
+                RendererMessage m = _messageQueue.First!.Value;
                 _messageQueue.RemoveFirst();
                 ProcessMessageSync(m);
             }
@@ -3171,7 +3171,7 @@ namespace IgniteUI.Blazor.Controls
                         }
                     }
                     //Console.WriteLine("calling handler");
-                    _handlers[name + "/" + propertyName](senderObj!, val!);
+                    _handlers[name + "/" + propertyName](senderObj, val!);
                 }
                 catch (Exception e)
                 {

@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -14,7 +14,7 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array("""["2026-01-02T03:04:05.000Z", "2026-03-16T12:30:00.000Z"]""")),
             assert: (cut, result) =>
             {
-                Assert.Equal(2, result!.Length);
+                Assert.Equal(2, result.Length);
                 Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), result[0].ToUniversalTime());
                 Assert.Equal(new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc), result[1].ToUniversalTime());
             })
