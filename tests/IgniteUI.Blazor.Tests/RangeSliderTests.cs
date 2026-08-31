@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Tests;
 
 public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
 {
-    // TODO: ValueFormatOptions/ValueFormat (config objects on a direct-render component â€”
+    // TODO: ValueFormatOptions/ValueFormat (config objects on a direct-render component —
     // they never cross as interop messages; BUG 35189 ).
     protected override ComponentContract<IgbRangeSlider> InteropContract { get; } = new ComponentContract<IgbRangeSlider>()
         .Event(c => c.Input,

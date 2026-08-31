@@ -285,8 +285,18 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
+                        var convertedItem = this._toTarget?.Invoke(insItem);
+                        if (this._target != null && convertedItem == null)
+                        {
+                            ind++;
+                            continue;
+                        }
+
                         this._allList.Insert(ins, insItem);
-                        this._target?.Insert(ins, this._toTarget!(insItem));
+                        if (this._target != null)
+                        {
+                            this._target.Insert(ins, convertedItem!);
+                        }
                         this._onItemAdded?.Invoke(insItem);
                         ind++;
                         ins++;
@@ -294,11 +304,17 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    this._allList.Add(insItem);
                     var convertedItem = this._toTarget?.Invoke(insItem);
-                    if (convertedItem != null)
+                    if (this._target != null && convertedItem == null)
                     {
-                        this._target?.Add(convertedItem);
+                        ind++;
+                        continue;
+                    }
+
+                    this._allList.Add(insItem);
+                    if (this._target != null)
+                    {
+                        this._target.Add(convertedItem!);
                     }
                     this._onItemAdded?.Invoke(insItem);
                     ind++;

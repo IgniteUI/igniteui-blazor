@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 using Microsoft.AspNetCore.Components;
@@ -9,7 +9,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
 {
     /// <summary>
     /// Holds what the anchor arrangements below capture. An anchor only exists once its
-    /// render has run, so the specs read it back from here â€” the runner renders a spec's
+    /// render has run, so the specs read it back from here — the runner renders a spec's
     /// arrangement before invoking it, and gives each arranged spec its own render.
     /// </summary>
     sealed class Anchor
@@ -22,7 +22,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
 
     /// <summary>
     /// Arranges an IgbButton as the anchor for the show/toggle target overloads. A real
-    /// anchor is an element outside the dropdown (that's the point of passing one â€” an
+    /// anchor is an element outside the dropdown (that's the point of passing one — an
     /// anchor inside it would go in the <c>target</c> slot instead); the interop boundary
     /// only sees the reference, so where the button renders is immaterial here.
     /// </summary>
@@ -34,7 +34,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             builder.CloseComponent();
         });
 
-    /// <summary>Arranges a plain element as the anchor, capturing its reference â€” the <c>@ref</c> form of a target</summary>
+    /// <summary>Arranges a plain element as the anchor, capturing its reference — the <c>@ref</c> form of a target</summary>
     static readonly Action<ComponentParameterCollectionBuilder<IgbDropdown>> elementAnchorArrange =
         ps => ps.AddChildContent(builder =>
         {
@@ -43,7 +43,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             builder.CloseElement();
         });
 
-    /// <summary>The wire form of the arranged component anchor â€” its interop instance id, assigned on render</summary>
+    /// <summary>The wire form of the arranged component anchor — its interop instance id, assigned on render</summary>
     static readonly FromRender<string> componentAnchorArg =
         FromRender.Of((interop, cut) => $"containerId:::{interop.ContainerIdOf(cut, "igc-button")}");
 

@@ -113,13 +113,16 @@ namespace IgniteUI.Blazor.Controls
                 return _unmarshalledRuntime.InvokeUnmarshalled<string, int, UnmarshalledColumn[]?, string>(methodName, refName, index, columns);
             }
 #else
-            if (_callSendUnmarshalledColumnMessage != null)
+            if (_callSendUnmarshalledColumnMessage != null && _inprocRuntime != null)
             {
-                return _callSendUnmarshalledColumnMessage(_inprocRuntime!, methodName, refName, index, columns);
+                return _callSendUnmarshalledColumnMessage(_inprocRuntime, methodName, refName, index, columns);
             }
 #endif
             var intptr = Unsafe.AsPointer(ref columns);
-            _inprocRuntime?.InvokeVoid(methodName, new object[] { refName, index, (int)intptr });
+            if (_inprocRuntime != null)
+            {
+                _inprocRuntime.InvokeVoid(methodName, new object[] { refName, index, (int)intptr });
+            }
 
             return null;
         }
@@ -133,13 +136,16 @@ namespace IgniteUI.Blazor.Controls
                 return _unmarshalledRuntime.InvokeUnmarshalled<string, string, string>(methodName, refName, dataIntents);
             }
 #else
-            if (_callSendUnmarshalledColumnDataIntentMessage != null)
+            if (_callSendUnmarshalledColumnDataIntentMessage != null && _inprocRuntime != null)
             {
                 //Console.WriteLine("invoking sadness");
-                return _callSendUnmarshalledColumnDataIntentMessage(_inprocRuntime!, methodName, refName, dataIntents);
+                return _callSendUnmarshalledColumnDataIntentMessage(_inprocRuntime, methodName, refName, dataIntents);
             }
 #endif
-            _inprocRuntime!.InvokeVoid(methodName, new object[] { refName, dataIntents });
+            if (_inprocRuntime != null)
+            {
+                _inprocRuntime.InvokeVoid(methodName, new object[] { refName, dataIntents });
+            }
 
             return null;
         }

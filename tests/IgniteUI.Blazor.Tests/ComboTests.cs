@@ -286,9 +286,9 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
 
 // TODO: Mismatched T=int inbound handling (T[])DowncastArray<T>(Detail.NewValue) for
 // two-way Value propagation: a mismatched T (e.g. the item type on a keyed combo)
-// throws InvalidCastException â€” swallowed by OnRaiseEvent, so delivery silently dies;
-// and numeric keys decode as JSON numbers â†’ boxed double, so T=int fails the unbox
-// cast too â€” numeric keys need T=double (or object).
+// throws InvalidCastException — swallowed by OnRaiseEvent, so delivery silently dies;
+// and numeric keys decode as JSON numbers → boxed double, so T=int fails the unbox
+// cast too — numeric keys need T=double (or object).
 public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>>
 {
 
@@ -312,7 +312,7 @@ public class ComboValueKeyTests : ComponentWithContractTestBase<IgbCombo<double>
                 // matches the key value type.
                 Assert.Equal(2.0, Assert.Single(cut.Instance.Value));
             })
-        // A value-type value array (double[] here) crosses as plain JSON numbers â€” the keys
+        // A value-type value array (double[] here) crosses as plain JSON numbers — the keys
         // themselves, no data-source refs, since a keyed combo's value is the key.
         .Prop(c => c.Value,
             value: [1, 3],
