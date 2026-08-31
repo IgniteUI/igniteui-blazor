@@ -28,12 +28,19 @@ Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Bo
 @code {
     private void OnCellEdit(IgbGridEditEventArgs args)
     {
-        if (args.Column.Field == "Salary" && Convert.ToDecimal(args.NewValue) < 0)
-            args.Cancel = true;   // reject before commit
+        if (args.Detail.Column.Field == "Salary" && Convert.ToDecimal(args.Detail.NewValue) < 0)
+        {
+#pragma warning disable BL0005
+            args.Detail.Valid = false;   // reject before commit
+#pragma warning restore BL0005
+        }
     }
 
     private async Task OnCellEditDone(IgbGridEditDoneEventArgs args)
-        => await EmployeeService.UpdateFieldAsync(args.RowData, args.Column.Field, args.NewValue);
+        => await EmployeeService.UpdateFieldAsync(
+            args.Detail.RowData,
+            args.Detail.Column.Field,
+            args.Detail.NewValue);
 }
 ```
 
@@ -42,7 +49,7 @@ Double-click, or Enter on a focused cell, enters edit mode. The editor follows t
 | Event | Args | Fires |
 |---|---|---|
 | `CellEditEnter` | `IgbGridEditEventArgs` | entering edit mode |
-| `CellEdit` | `IgbGridEditEventArgs` | before commit — set `args.Cancel = true` to reject |
+| `CellEdit` | `IgbGridEditEventArgs` | before commit — set `args.Detail.Valid = false` to reject |
 | `CellEditDone` | `IgbGridEditDoneEventArgs` | after commit — persist here |
 | `CellEditExit` | `IgbGridEditDoneEventArgs` | leaving edit mode |
 
@@ -63,12 +70,16 @@ Double-click, or Enter on a focused cell, enters edit mode. The editor follows t
 @code {
     private void OnRowEdit(IgbGridEditEventArgs args)
     {
-        if (args.NewValue is ProjectTask task && task.EndDate < task.StartDate)
-            args.Cancel = true;   // cross-field validation
+    if (args.Detail.RowData is ProjectTask task && task.EndDate < task.StartDate)
+    {
+#pragma warning disable BL0005
+        args.Detail.Valid = false;   // cross-field validation
+#pragma warning restore BL0005
+    }
     }
 
     private Task OnRowEditDone(IgbGridEditDoneEventArgs args)
-        => ProjectTaskService.UpdateAsync(args.RowData);
+    => ProjectTaskService.UpdateAsync(args.Detail.RowData);
 }
 ```
 
@@ -95,7 +106,7 @@ Editing any cell opens a row overlay with Done and Cancel; the whole row is edit
 
 ## Validation
 
-Validate in `CellEdit` / `RowEdit` and set `args.Cancel = true` to block the commit. In row editing, the row cannot be confirmed while a validation error stands. Show the message with `ErrorTemplate` on the column:
+Validate in `CellEdit` / `RowEdit` and set `args.Detail.Valid = false` to block the commit. Because `Valid` is generated as a component parameter, suppress `BL0005` only around that assignment, as shown above; do not disable it project-wide. In row editing, the row cannot be confirmed while a validation error stands. Show the message with `ErrorTemplate` on the column:
 
 ```razor
 <IgbColumn Field="Age" Editable="true" DataType="GridColumnDataType.Number">
