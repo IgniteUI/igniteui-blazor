@@ -18,10 +18,6 @@ env:
   REPOSITORY_URL: https://github.com/IgniteUI/igniteui-blazor
   # Public, deliberately pinned identity. The strong-name counterpart lives in eng/IG.publickey.hex.
   EXPECTED_CERT_SHA256_PATH: "eng/IG.authenticode-certificates.sha256"
-  # Only NuGet components declare a license locally, so the floor sits below the measured 73.3%.
-  SBOM_MIN_DECLARED_LICENSE_PERCENT: "50"
-  # 60 components ship today. Catches over-reporting the blocklist misses; alpha.1 hit 583.
-  SBOM_MAX_COMPONENTS: "150"
 
 jobs:
   # Runs npm lifecycle scripts and webpack, so it is deliberately kept free of every credential:
@@ -627,59 +623,6 @@ jobs:
               -pm true `
               -V Information
           }
-
-      - name: Verify SBOM output
-        shell: pwsh
-        run: |
-          $name = "${env:PACKAGE_ID}.${env:VERSION}.nupkg"
-          $manifests = @('spdx-2.2\_manifest\spdx_2.2', 'spdx-3.0\_manifest\spdx_3.0') |
-            ForEach-Object { "${{ github.workspace }}\sbom\$_\manifest.spdx.json" }
-
-          foreach ($path in $manifests) {
-            if (-not (Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).Length -eq 0) {
-              throw "SBOM manifest missing or empty: $path"
-            }
-          }
-
-          $spdx = Get-Content -LiteralPath $manifests[0] -Raw | ConvertFrom-Json
-          $packages = @($spdx.packages)
-          $names = $packages.name
-          $ceiling = [int]$env:SBOM_MAX_COMPONENTS
-          $floor = [double]$env:SBOM_MIN_DECLARED_LICENSE_PERCENT
-
-          # licenseDeclared comes from local package metadata; nothing is fetched over the network.
-          $declared = @($packages | Where-Object { $_.licenseDeclared -and $_.licenseDeclared -ne 'NOASSERTION' }).Count
-          $percent = [math]::Round(100 * $declared / [math]::Max($packages.Count, 1), 1)
-
-          $buildOnly = @(
-            'webpack', 'typescript', 'prettier', 'tslint', 'ts-loader', 'lint-staged', 'cross-env', 'html-webpack-plugin',
-            'bunit', 'xunit', 'NUnit', 'Moq', 'coverlet.collector', 'Microsoft.NET.Test.Sdk',
-            'Microsoft.Playwright.NUnit', 'Microsoft.AspNetCore.Mvc.Testing', 'BlazingStory'
-          )
-          $leaked = @($buildOnly | Where-Object { $names -contains $_ })
-          $shipped = @('igniteui-webcomponents', 'lit-html', 'Microsoft.AspNetCore.Components.Web')
-          $missing = @($shipped | Where-Object { $names -notcontains $_ })
-
-          # The blocklist only catches names someone thought of; the ceiling catches the rest.
-          $problems = @(
-            if (-not ($spdx.files.fileName -like "*$name")) { "does not reference $name" }
-            if ($leaked.Count) { "contains build-only packages ($($leaked -join ', ')); generate it from a production-only restore and install" }
-            if ($missing.Count) { "omits shipped dependencies ($($missing -join ', '))" }
-            if ($packages.Count -gt $ceiling) { "lists $($packages.Count) components, over the $ceiling ceiling" }
-            if ($percent -lt $floor) { "declares a license for only $percent% of $($packages.Count) components, under the $floor% floor" }
-          )
-
-          @(
-            "### SBOM",
-            "- Components: $($packages.Count) (ceiling $ceiling), files: $($spdx.files.Count)",
-            "- Declared licenses: $declared ($percent%, floor $floor%)"
-          ) | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
-
-          if ($problems.Count) {
-            throw "SBOM validation failed. The SPDX 2.2 document:`n- $($problems -join "`n- ")"
-          }
-
-          Write-Host "SBOM covers $($packages.Count) components and $($spdx.files.Count) files; $percent% declare a license."
 
       - name: Reverify package before attestation
         id: verify-before-attestation

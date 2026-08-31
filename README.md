@@ -192,7 +192,7 @@ After the above steps, open the solution in Visual Studio or run the stories pro
 dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 ```
 
-## Supply chain, accessibility and performance
+## Supply chain
 
 Every release publishes an SPDX 2.2 and SPDX 3.0 SBOM, a Sigstore build-provenance attestation, and an SBOM attestation, all bound to the SHA-256 digest of the signed package that was pushed to NuGet.org. They are attached to the corresponding [GitHub release](https://github.com/IgniteUI/igniteui-blazor/releases) alongside the package and its checksum. To verify a package you downloaded:
 
@@ -200,9 +200,6 @@ Every release publishes an SPDX 2.2 and SPDX 3.0 SBOM, a Sigstore build-provenan
 gh attestation verify IgniteUI.Blazor.Lite.<version>.nupkg -R IgniteUI/igniteui-blazor
 dotnet nuget verify IgniteUI.Blazor.Lite.<version>.nupkg
 ```
-
-- [Accessibility conformance](docs/accessibility-conformance.md) — the WCAG 2.2 AA claim, its scope, how it is verified, and the known unfixed failures.
-- [Performance targets and measurements](docs/performance.md) — the enforced bundle size budgets and the runtime targets.
 
 [Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Commercial]: https://www.infragistics.com/legal/license
