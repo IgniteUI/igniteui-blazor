@@ -240,7 +240,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
                 Assert.Equal(2, result!.Length);
                 Assert.Same(h.FindComponents<IgbTreeItem>()[1].Instance, result[1]);
                 // TODO: the ancestor ref only resolves through FindByName on the item
-                // itself, which matches nothing but "mainControl" â€” the parent element
+                // itself, which matches nothing but "mainControl" — the parent element
                 // currently decodes to null (observed: path = [self, null])
                 // Assert.Same(h.FindComponents<IgbTreeItem>()[0].Instance, result[0]);
             });

@@ -79,19 +79,19 @@ namespace IgniteUI.Blazor.Controls
         /// Sets the position of the drawer.
         /// <list type="bullet">
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.Start"/> � anchored to the inline-start edge (default).
+        ///   <see cref="NavDrawerPosition.Start"/> — anchored to the inline-start edge (default).
         ///   </description></item>
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.End"/> � anchored to the inline-end edge.
+        ///   <see cref="NavDrawerPosition.End"/> — anchored to the inline-end edge.
         ///   </description></item>
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.Top"/> � anchored to the block-start edge.
+        ///   <see cref="NavDrawerPosition.Top"/> — anchored to the block-start edge.
         ///   </description></item>
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.Bottom"/> � anchored to the block-end edge.
+        ///   <see cref="NavDrawerPosition.Bottom"/> — anchored to the block-end edge.
         ///   </description></item>
         ///   <item><description>
-        ///   <see cref="NavDrawerPosition.Relative"/> � rendered inline within the page flow; no modal backdrop.
+        ///   <see cref="NavDrawerPosition.Relative"/> — rendered inline within the page flow; no modal backdrop.
         ///   </description></item>
         /// </list>
         /// </summary>

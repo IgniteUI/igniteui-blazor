@@ -1641,12 +1641,9 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
             while (_messageQueue != null && _messageQueue.Count > 0)
             {
-                RendererMessage? m = _messageQueue.First?.Value;
+                RendererMessage m = _messageQueue.First!.Value;
                 _messageQueue.RemoveFirst();
-                if (m != null)
-                {
-                    ProcessMessage(m);
-                }
+                ProcessMessage(m);
             }
         }
 
@@ -2201,7 +2198,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                var stringVal = val?.ToString();
+                var stringVal = val.ToString();
                 return stringVal != null ? int.Parse(stringVal) : 0;
             }
         }
@@ -2252,7 +2249,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                var stringVal = val?.ToString();
+                var stringVal = val.ToString();
                 //Console.WriteLine(val);
                 return stringVal != null ? (long)Double.Parse(stringVal) : Int64.MinValue;
             }
@@ -2263,7 +2260,7 @@ namespace IgniteUI.Blazor.Controls
             val = ConvertReturnValue(val);
             try
             {
-                var stringVal = val?.ToString();
+                var stringVal = val.ToString();
                 if (stringVal == null)
                 {
                     return Array.Empty<DateTime>();
@@ -2355,7 +2352,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                var stringVal = val?.ToString();
+                var stringVal = val.ToString();
                 return stringVal != null ? Boolean.Parse(stringVal) : false;
             }
         }
