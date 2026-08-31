@@ -17,13 +17,18 @@ jobs:
     name: Dependency Review
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      # comment-summary-in-pr needs this. A fork PR gets a read-only token regardless, so there
+      # the comment is skipped with a warning and the finding is left to the job summary.
+      pull-requests: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
 
       - name: Review dependency changes
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: high
           comment-summary-in-pr: on-failure
