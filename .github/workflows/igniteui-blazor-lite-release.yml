@@ -64,8 +64,7 @@ jobs:
           if-no-files-found: error
 
   # Holds the strong-name key, but no OIDC token, no Key Vault access and no publishing rights.
-  # It installs no npm packages and runs no bundler, so JavaScript dependency code is never
-  # resident on the runner the private key is written to.
+  # It installs no npm packages and runs no bundler, so JavaScript dependency code is never present on the runner the private key is written to.
   build:
     name: Build library
     needs: build-assets
@@ -438,21 +437,55 @@ jobs:
       - name: Scan NuGet and npm dependencies
         shell: bash
         run: |
-          set -uo pipefail
+          set -euo pipefail
           mkdir -p artifacts/dependency-scan
 
           dotnet restore ./src/IgniteUI.Blazor.Lite.csproj > /dev/null
-          dotnet list ./src/IgniteUI.Blazor.Lite.csproj package --vulnerable --include-transitive \
-            > artifacts/dependency-scan/nuget-vulnerable.txt 2>&1 || true
-
-          # `npm audit` exits non-zero when it reports anything at or above the audit level.
-          npm audit --omit=dev > artifacts/dependency-scan/npm-audit.txt 2>&1 && npm_status=0 || npm_status=$?
-          npm audit --omit=dev --json > artifacts/dependency-scan/npm-audit.json 2>&1 || true
-
           nuget_status=0
-          if grep -q 'has the following vulnerable packages' artifacts/dependency-scan/nuget-vulnerable.txt; then
-            nuget_status=1
+          dotnet list ./src/IgniteUI.Blazor.Lite.csproj package --vulnerable --include-transitive \
+            --format json --output-version 1 \
+            > artifacts/dependency-scan/nuget-vulnerable.json \
+            2> artifacts/dependency-scan/nuget-vulnerable.stderr.txt || nuget_status=$?
+          if [ "$nuget_status" -ne 0 ]; then
+            cat artifacts/dependency-scan/nuget-vulnerable.stderr.txt >&2
+            echo "::error title=NuGet vulnerability scan failed::dotnet list package exited with status $nuget_status."
+            exit "$nuget_status"
           fi
+          if ! jq -e '
+            .version == 1 and
+            (.parameters | type == "string") and
+            (.sources | type == "array") and
+            (.projects | type == "array" and length > 0) and
+            all(.projects[]; (.path | type == "string" and length > 0))
+          ' artifacts/dependency-scan/nuget-vulnerable.json > /dev/null; then
+            echo "::error title=NuGet vulnerability scan failed::dotnet list package did not produce a valid version 1 JSON report."
+            exit 1
+          fi
+          nuget_vulnerabilities=$(jq '[.. | objects | .vulnerabilities? | arrays | length] | add // 0' artifacts/dependency-scan/nuget-vulnerable.json)
+          jq . artifacts/dependency-scan/nuget-vulnerable.json > artifacts/dependency-scan/nuget-vulnerable.txt
+
+          npm_status=0
+          npm audit --omit=dev --audit-level=info --json \
+            > artifacts/dependency-scan/npm-audit.json \
+            2> artifacts/dependency-scan/npm-audit.stderr.txt || npm_status=$?
+          if ! jq -e '
+            (.auditReportVersion | type == "number") and
+            (.vulnerabilities | type == "object") and
+            (.metadata.vulnerabilities.total | type == "number") and
+            (has("error") | not)
+          ' artifacts/dependency-scan/npm-audit.json > /dev/null; then
+            cat artifacts/dependency-scan/npm-audit.stderr.txt >&2
+            echo "::error title=npm vulnerability scan failed::npm audit did not produce a valid JSON report."
+            exit 1
+          fi
+          npm_vulnerabilities=$(jq '.metadata.vulnerabilities.total' artifacts/dependency-scan/npm-audit.json)
+          if ! { [ "$npm_status" -eq 0 ] && [ "$npm_vulnerabilities" -eq 0 ]; } &&
+             ! { [ "$npm_status" -eq 1 ] && [ "$npm_vulnerabilities" -gt 0 ]; }; then
+            cat artifacts/dependency-scan/npm-audit.stderr.txt >&2
+            echo "::error title=npm vulnerability scan failed::npm audit exited with status $npm_status and reported $npm_vulnerabilities vulnerabilities."
+            exit 1
+          fi
+          jq . artifacts/dependency-scan/npm-audit.json > artifacts/dependency-scan/npm-audit.txt
 
           {
             echo "### Dependency vulnerability scan"
@@ -476,7 +509,7 @@ jobs:
             echo '</details>'
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [ "$nuget_status" -ne 0 ] || [ "$npm_status" -ne 0 ]; then
+          if [ "$nuget_vulnerabilities" -gt 0 ] || [ "$npm_vulnerabilities" -gt 0 ]; then
             echo "::warning title=Vulnerable dependencies reported::${PACKAGE_ID} ${VERSION} was released with dependency advisories outstanding. See the run summary and the dependency-scan release asset."
             echo "> ⚠️ **Vulnerable dependencies were reported for this release.** Review the scan output above and open a servicing issue if a fix is required." >> "$GITHUB_STEP_SUMMARY"
           else
