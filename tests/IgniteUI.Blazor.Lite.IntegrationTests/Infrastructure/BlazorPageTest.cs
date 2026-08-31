@@ -7,6 +7,8 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
     public class BlazorPageTest<TProgram> : BrowserTest
         where TProgram : class
     {
+        private static int hostDescribed;
+
         private BlazorApplicationFactory<TProgram>? host;
 
         public IBrowserContext Context { get; private set; } = null!;
@@ -36,6 +38,12 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
             options.BaseURL = Host.ServerAddress;
             options.IgnoreHTTPSErrors = true;
 
+            // All the hosts are configured the same, so this is worth reporting once per run.
+            if (Interlocked.Exchange(ref hostDescribed, 1) == 0)
+            {
+                TestContext.Out.WriteLine($"[host] {Host.Describe()}");
+            }
+
             Context = await NewContext(options).ConfigureAwait(false);
             Page = await Context.NewPageAsync().ConfigureAwait(false);
         }
@@ -43,17 +51,17 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
         [TearDown]
         public async Task HostTearDown()
         {
+            // The client side of the SignalR connection has to be gone before the server
+            // shuts down. BrowserTest closes the contexts too, but only after this TearDown
+            // and only when the test passed; CloseAsync is idempotent, so that stays a no-op.
+            if (Context != null)
+            {
+                await Context.CloseAsync().ConfigureAwait(false);
+            }
+
             if (host is { } currentHost)
             {
                 host = null;
-
-                // Navigate to about:blank to ensure any SignalR
-                // connections are dropped.
-                //await Page.GotoAsync("about:blank");
-                if (Context != null)
-                {
-                    await Context.DisposeAsync().ConfigureAwait(false);
-                }
                 await currentHost.DisposeAsync().ConfigureAwait(false);
             }
         }

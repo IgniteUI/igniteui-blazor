@@ -4,20 +4,12 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbChatRenderers : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatRenderers"; } }
-
-        public IgbChatRenderers() : base()
-        {
-            OnCreatedIgbChatRenderers();
-
-        }
-
-        partial void OnCreatedIgbChatRenderers();
 
         private string _attachmentRef;
         private RenderFragment<IgbChatAttachmentRenderContext> _attachment;
 
-        partial void OnAttachmentChanging(ref RenderFragment<IgbChatAttachmentRenderContext> newValue);
         /// <summary>
         /// Custom renderer for a single chat message attachment.
         /// </summary>
@@ -29,7 +21,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._attachment;
-                OnAttachmentChanging(ref value);
                 if (oldValue != value || !IsPropDirty("Attachment"))
                 {
                     MarkPropDirty("Attachment");
@@ -48,7 +39,13 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentTemplateId;
         private string _attachmentScript;
 
-        ///<summary>Provides a means of setting Attachment in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders a single chat message attachment.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string AttachmentScript
         {
@@ -72,7 +69,6 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentContentRef;
         private RenderFragment<IgbChatAttachmentRenderContext> _attachmentContent;
 
-        partial void OnAttachmentContentChanging(ref RenderFragment<IgbChatAttachmentRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the content of an attachment.
         /// </summary>
@@ -84,7 +80,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._attachmentContent;
-                OnAttachmentContentChanging(ref value);
                 if (oldValue != value || !IsPropDirty("AttachmentContent"))
                 {
                     MarkPropDirty("AttachmentContent");
@@ -103,7 +98,13 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentContentTemplateId;
         private string _attachmentContentScript;
 
-        ///<summary>Provides a means of setting AttachmentContent in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the content of an attachment.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string AttachmentContentScript
         {
@@ -127,7 +128,6 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentHeaderRef;
         private RenderFragment<IgbChatAttachmentRenderContext> _attachmentHeader;
 
-        partial void OnAttachmentHeaderChanging(ref RenderFragment<IgbChatAttachmentRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the header of an attachment.
         /// </summary>
@@ -139,7 +139,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._attachmentHeader;
-                OnAttachmentHeaderChanging(ref value);
                 if (oldValue != value || !IsPropDirty("AttachmentHeader"))
                 {
                     MarkPropDirty("AttachmentHeader");
@@ -158,7 +157,13 @@ namespace IgniteUI.Blazor.Controls
         private string _attachmentHeaderTemplateId;
         private string _attachmentHeaderScript;
 
-        ///<summary>Provides a means of setting AttachmentHeader in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the header of an attachment.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string AttachmentHeaderScript
         {
@@ -182,7 +187,6 @@ namespace IgniteUI.Blazor.Controls
         private string _inputRef;
         private RenderFragment<IgbChatInputRenderContext> _input;
 
-        partial void OnInputChanging(ref RenderFragment<IgbChatInputRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the main chat input field.
         /// </summary>
@@ -194,7 +198,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._input;
-                OnInputChanging(ref value);
                 if (oldValue != value || !IsPropDirty("Input"))
                 {
                     MarkPropDirty("Input");
@@ -213,7 +216,13 @@ namespace IgniteUI.Blazor.Controls
         private string _inputTemplateId;
         private string _inputScript;
 
-        ///<summary>Provides a means of setting Input in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the main chat input field.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputScript
         {
@@ -237,7 +246,6 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsRef;
         private RenderFragment<IgbChatRenderContext> _inputActions;
 
-        partial void OnInputActionsChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the actions container within the input area.
         /// </summary>
@@ -249,7 +257,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._inputActions;
-                OnInputActionsChanging(ref value);
                 if (oldValue != value || !IsPropDirty("InputActions"))
                 {
                     MarkPropDirty("InputActions");
@@ -268,7 +275,13 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsTemplateId;
         private string _inputActionsScript;
 
-        ///<summary>Provides a means of setting InputActions in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the actions container within the input area.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputActionsScript
         {
@@ -292,7 +305,6 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsEndRef;
         private RenderFragment<IgbChatRenderContext> _inputActionsEnd;
 
-        partial void OnInputActionsEndChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the actions at the end of the input area.
         /// </summary>
@@ -304,7 +316,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._inputActionsEnd;
-                OnInputActionsEndChanging(ref value);
                 if (oldValue != value || !IsPropDirty("InputActionsEnd"))
                 {
                     MarkPropDirty("InputActionsEnd");
@@ -323,7 +334,13 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsEndTemplateId;
         private string _inputActionsEndScript;
 
-        ///<summary>Provides a means of setting InputActionsEnd in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the actions at the end of the input area.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputActionsEndScript
         {
@@ -347,7 +364,6 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsStartRef;
         private RenderFragment<IgbChatRenderContext> _inputActionsStart;
 
-        partial void OnInputActionsStartChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the actions at the start of the input area.
         /// </summary>
@@ -359,7 +375,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._inputActionsStart;
-                OnInputActionsStartChanging(ref value);
                 if (oldValue != value || !IsPropDirty("InputActionsStart"))
                 {
                     MarkPropDirty("InputActionsStart");
@@ -378,7 +393,13 @@ namespace IgniteUI.Blazor.Controls
         private string _inputActionsStartTemplateId;
         private string _inputActionsStartScript;
 
-        ///<summary>Provides a means of setting InputActionsStart in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the actions at the start of the input area.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputActionsStartScript
         {
@@ -402,7 +423,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageRef;
         private RenderFragment<IgbChatMessageRenderContext> _message;
 
-        partial void OnMessageChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for an entire chat message bubble.
         /// </summary>
@@ -414,7 +434,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._message;
-                OnMessageChanging(ref value);
                 if (oldValue != value || !IsPropDirty("Message"))
                 {
                     MarkPropDirty("Message");
@@ -433,7 +452,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageTemplateId;
         private string _messageScript;
 
-        ///<summary>Provides a means of setting Message in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders an entire chat message bubble.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageScript
         {
@@ -457,9 +482,8 @@ namespace IgniteUI.Blazor.Controls
         private string _messageActionsRef;
         private RenderFragment<IgbChatMessageRenderContext> _messageActions;
 
-        partial void OnMessageActionsChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
-        /// Custom renderer for message-specific actions (e.g., reply or delete buttons).
+        /// Custom renderer for message-specific actions (e.g. reply or delete buttons).
         /// </summary>
         [Parameter]
         public RenderFragment<IgbChatMessageRenderContext> MessageActions
@@ -469,7 +493,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._messageActions;
-                OnMessageActionsChanging(ref value);
                 if (oldValue != value || !IsPropDirty("MessageActions"))
                 {
                     MarkPropDirty("MessageActions");
@@ -488,7 +511,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageActionsTemplateId;
         private string _messageActionsScript;
 
-        ///<summary>Provides a means of setting MessageActions in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders message-specific actions (e.g. reply or delete buttons).
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageActionsScript
         {
@@ -512,7 +541,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageAttachmentsRef;
         private RenderFragment<IgbChatMessageRenderContext> _messageAttachments;
 
-        partial void OnMessageAttachmentsChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the attachments associated with a message.
         /// </summary>
@@ -524,7 +552,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._messageAttachments;
-                OnMessageAttachmentsChanging(ref value);
                 if (oldValue != value || !IsPropDirty("MessageAttachments"))
                 {
                     MarkPropDirty("MessageAttachments");
@@ -543,7 +570,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageAttachmentsTemplateId;
         private string _messageAttachmentsScript;
 
-        ///<summary>Provides a means of setting MessageAttachments in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the attachments associated with a message.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageAttachmentsScript
         {
@@ -567,7 +600,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageContentRef;
         private RenderFragment<IgbChatMessageRenderContext> _messageContent;
 
-        partial void OnMessageContentChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the main text and content of a message.
         /// </summary>
@@ -579,7 +611,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._messageContent;
-                OnMessageContentChanging(ref value);
                 if (oldValue != value || !IsPropDirty("MessageContent"))
                 {
                     MarkPropDirty("MessageContent");
@@ -598,7 +629,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageContentTemplateId;
         private string _messageContentScript;
 
-        ///<summary>Provides a means of setting MessageContent in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the main text and content of a message.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageContentScript
         {
@@ -622,7 +659,6 @@ namespace IgniteUI.Blazor.Controls
         private string _messageHeaderRef;
         private RenderFragment<IgbChatMessageRenderContext> _messageHeader;
 
-        partial void OnMessageHeaderChanging(ref RenderFragment<IgbChatMessageRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the header of a message, including sender and timestamp.
         /// </summary>
@@ -634,7 +670,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._messageHeader;
-                OnMessageHeaderChanging(ref value);
                 if (oldValue != value || !IsPropDirty("MessageHeader"))
                 {
                     MarkPropDirty("MessageHeader");
@@ -653,7 +688,13 @@ namespace IgniteUI.Blazor.Controls
         private string _messageHeaderTemplateId;
         private string _messageHeaderScript;
 
-        ///<summary>Provides a means of setting MessageHeader in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the header of a message, including sender and timestamp.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string MessageHeaderScript
         {
@@ -677,7 +718,6 @@ namespace IgniteUI.Blazor.Controls
         private string _sendButtonRef;
         private RenderFragment<IgbChatRenderContext> _sendButton;
 
-        partial void OnSendButtonChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the message send button.
         /// </summary>
@@ -689,7 +729,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._sendButton;
-                OnSendButtonChanging(ref value);
                 if (oldValue != value || !IsPropDirty("SendButton"))
                 {
                     MarkPropDirty("SendButton");
@@ -708,7 +747,13 @@ namespace IgniteUI.Blazor.Controls
         private string _sendButtonTemplateId;
         private string _sendButtonScript;
 
-        ///<summary>Provides a means of setting SendButton in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the message send button.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string SendButtonScript
         {
@@ -732,7 +777,6 @@ namespace IgniteUI.Blazor.Controls
         private string _suggestionPrefixRef;
         private RenderFragment<IgbChatRenderContext> _suggestionPrefix;
 
-        partial void OnSuggestionPrefixChanging(ref RenderFragment<IgbChatRenderContext> newValue);
         /// <summary>
         /// Custom renderer for the prefix text shown before suggestions.
         /// </summary>
@@ -744,7 +788,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 var oldValue = this._suggestionPrefix;
-                OnSuggestionPrefixChanging(ref value);
                 if (oldValue != value || !IsPropDirty("SuggestionPrefix"))
                 {
                     MarkPropDirty("SuggestionPrefix");
@@ -763,7 +806,13 @@ namespace IgniteUI.Blazor.Controls
         private string _suggestionPrefixTemplateId;
         private string _suggestionPrefixScript;
 
-        ///<summary>Provides a means of setting SuggestionPrefix in the JavaScript environment.</summary>
+        /// <summary>
+        /// Name of a client-side function that renders the prefix text shown before suggestions.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string SuggestionPrefixScript
         {
@@ -785,33 +834,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameChatRenderers(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChatRenderers(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbChatRenderers(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatRenderers(ser);
 
             if (IsPropDirty("AttachmentRef"))
             { ser.AddStringProp("attachmentRef", this._attachmentRef); }

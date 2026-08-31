@@ -109,4 +109,19 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
 
         Assert.Contains("Custom tooltip content", cut.Find("igc-tooltip").InnerHtml);
     }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbTooltip</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Tooltip_DefaultValues_MatchWebComponent()
+    {
+        var tooltip = new IgbTooltip();
+
+        Assert.Equal(PopoverPlacement.Bottom, tooltip.Placement);
+        Assert.Equal(6, tooltip.Offset);
+        Assert.Equal(200, tooltip.ShowDelay);
+        Assert.Equal(300, tooltip.HideDelay);
+    }
 }

@@ -2,12 +2,14 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A ripple can be applied to an element to represent
-    /// interactive surface.
+    /// an interactive surface.
     /// </summary>
     public partial class IgbRipple : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebRipple"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbRippleModule.IsLoadRequested(IgBlazor))
@@ -16,11 +18,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -29,6 +33,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -37,6 +42,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -45,38 +51,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbRipple() : base()
-        {
-            OnCreatedIgbRipple();
-
-        }
-
-        partial void OnCreatedIgbRipple();
-
-        partial void FindByNameRipple(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameRipple(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -84,16 +64,6 @@ namespace IgniteUI.Blazor.Controls
         public void SetNativeElement(Object element)
         {
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
-        partial void SerializeCoreIgbRipple(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbRipple(ser);
-
         }
 
     }

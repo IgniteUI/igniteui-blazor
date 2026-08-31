@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The `igc-carousel` presents a set of `igc-carousel-slide`s by sequentially displaying a subset of one or more slides.
+    /// Presents a set of <see cref="IgbCarouselSlide"/> components by sequentially displaying
+    /// a subset of one or more slides.
     /// </summary>
     public partial class IgbCarousel : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCarousel"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbCarouselModule.IsLoadRequested(IgBlazor))
@@ -17,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,22 +53,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCarousel() : base()
-        {
-            OnCreatedIgbCarousel();
-
-        }
-
-        partial void OnCreatedIgbCarousel();
-
         private bool _disableLoop = false;
 
-        partial void OnDisableLoopChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should skip rotating to the first slide after it reaches the last.
         /// </summary>
@@ -81,9 +80,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disablePauseOnInteraction = false;
 
-        partial void OnDisablePauseOnInteractionChanging(ref bool newValue);
         /// <summary>
-        /// Whether the carousel should ignore use interactions and not pause on them.
+        /// Whether the carousel should ignore user interactions and not pause on them.
         /// </summary>
         [Parameter]
         public bool DisablePauseOnInteraction
@@ -101,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideNavigation = false;
 
-        partial void OnHideNavigationChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel should skip rendering of the default navigation buttons.
         /// </summary>
@@ -121,9 +118,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideIndicators = false;
 
-        partial void OnHideIndicatorsChanging(ref bool newValue);
         /// <summary>
-        /// Whether the carousel should render the indicator controls (dots).
+        /// Whether the carousel should skip rendering of the indicator controls (dots).
         /// </summary>
         [Parameter]
         public bool HideIndicators
@@ -141,7 +137,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _vertical = false;
 
-        partial void OnVerticalChanging(ref bool newValue);
         /// <summary>
         /// Whether the carousel has vertical alignment.
         /// </summary>
@@ -161,7 +156,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private CarouselIndicatorsOrientation _indicatorsOrientation = CarouselIndicatorsOrientation.End;
 
-        partial void OnIndicatorsOrientationChanging(ref CarouselIndicatorsOrientation newValue);
         /// <summary>
         /// Sets the orientation of the indicator controls (dots).
         /// </summary>
@@ -181,10 +175,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _indicatorsLabelFormat;
 
-        partial void OnIndicatorsLabelFormatChanging(ref string newValue);
         /// <summary>
         /// The format used to set the aria-label on the carousel indicators.
-        /// Instances of '{0}' will be replaced with the index of the corresponding slide.
+        /// Instances of <c>{0}</c> will be replaced with the index of the corresponding slide.
         /// </summary>
         [Parameter]
         public string IndicatorsLabelFormat
@@ -202,12 +195,11 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _slidesLabelFormat;
 
-        partial void OnSlidesLabelFormatChanging(ref string newValue);
         /// <summary>
         /// The format used to set the aria-label on the carousel slides and the text displayed
-        /// when the number of indicators is greater than tha maximum indicator count.
-        /// Instances of '{0}' will be replaced with the index of the corresponding slide.
-        /// Instances of '{1}' will be replaced with the total amount of slides.
+        /// when the number of indicators is greater than the maximum indicator count.
+        /// Instances of <c>{0}</c> will be replaced with the index of the corresponding slide.
+        /// Instances of <c>{1}</c> will be replaced with the total amount of slides.
         /// </summary>
         [Parameter]
         public string SlidesLabelFormat
@@ -225,7 +217,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double _interval = 0;
 
-        partial void OnIntervalChanging(ref double newValue);
         /// <summary>
         /// The duration in milliseconds between changing the active slide.
         /// </summary>
@@ -243,11 +234,10 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _maximumIndicatorsCount = 0;
+        private double _maximumIndicatorsCount = 10;
 
-        partial void OnMaximumIndicatorsCountChanging(ref double newValue);
         /// <summary>
-        /// Controls the maximum indicator controls (dots) that can be shown. Default value is `10`.
+        /// The maximum number of indicator controls (dots) that can be shown. Defaults to <c>10</c>.
         /// </summary>
         [Parameter]
         public double MaximumIndicatorsCount
@@ -265,7 +255,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private HorizontalTransitionAnimation _animationType = HorizontalTransitionAnimation.Slide;
 
-        partial void OnAnimationTypeChanging(ref HorizontalTransitionAnimation newValue);
         /// <summary>
         /// The animation type.
         /// </summary>
@@ -283,66 +272,79 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Gets the total number of slides.
+        /// </summary>
         public async Task<double> GetTotalAsync()
         {
             var iv = await InvokeMethod("p:Total", new object[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
+
+        /// <summary>
+        /// Gets the total number of slides.
+        /// </summary>
         public double GetTotal()
         {
             var iv = InvokeMethodSync("p:Total", new object[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
+
+        /// <summary>
+        /// Gets the index of the current active slide.
+        /// </summary>
         public async Task<double> GetCurrentAsync()
         {
             var iv = await InvokeMethod("p:Current", new object[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
+
+        /// <summary>
+        /// Gets the index of the current active slide.
+        /// </summary>
         public double GetCurrent()
         {
             var iv = InvokeMethodSync("p:Current", new object[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
+
+        /// <summary>
+        /// Gets whether the carousel is in playing state.
+        /// </summary>
         public async Task<bool> GetIsPlayingAsync()
         {
             var iv = await InvokeMethod("p:IsPlaying", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Gets whether the carousel is in playing state.
+        /// </summary>
         public bool GetIsPlaying()
         {
             var iv = InvokeMethodSync("p:IsPlaying", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Gets whether the carousel is in paused state.
+        /// </summary>
         public async Task<bool> GetIsPausedAsync()
         {
             var iv = await InvokeMethod("p:IsPaused", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Gets whether the carousel is in paused state.
+        /// </summary>
         public bool GetIsPaused()
         {
             var iv = InvokeMethodSync("p:IsPaused", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
-        partial void FindByNameCarousel(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCarousel(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -358,52 +360,94 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("play", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Resumes playing of the carousel slides.
+        /// </summary>
         public void Play()
         {
             InvokeMethodSync("play", new object[] { }, new string[] { });
         }
         /// <summary>
-        /// Pauses the carousel rotation of slides.
+        /// Pauses the rotation of the carousel slides.
         /// </summary>
         public async Task PauseAsync()
         {
             await InvokeMethod("pause", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Pauses the rotation of the carousel slides.
+        /// </summary>
         public void Pause()
         {
             InvokeMethodSync("pause", new object[] { }, new string[] { });
         }
         /// <summary>
-        /// Switches to the next slide, runs any animations, and returns if the operation was successful.
+        /// Switches to the next slide, running any animations.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the operation was successful; otherwise <see langword="false"/>.
+        /// </returns>
         public async Task<bool> NextAsync()
         {
             var iv = await InvokeMethod("next", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Switches to the next slide, running any animations.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the operation was successful; otherwise <see langword="false"/>.
+        /// </returns>
         public bool Next()
         {
             var iv = InvokeMethodSync("next", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Switches to the previous slide, runs any animations, and returns if the operation was successful.
+        /// Switches to the previous slide, running any animations.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the operation was successful; otherwise <see langword="false"/>.
+        /// </returns>
         public async Task<bool> PrevAsync()
         {
             var iv = await InvokeMethod("prev", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Switches to the previous slide, running any animations.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the operation was successful; otherwise <see langword="false"/>.
+        /// </returns>
         public bool Prev()
         {
             var iv = InvokeMethodSync("prev", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Switches to the slide at the specified index, running any animations.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the operation was successful; otherwise <see langword="false"/>.
+        /// </returns>
         public async Task<bool> SelectAsync(double index, CarouselAnimationDirection? animationDirection = null)
         {
             var iv = await InvokeMethod("select", new object[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Switches to the slide at the specified index, running any animations.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the operation was successful; otherwise <see langword="false"/>.
+        /// </returns>
         public bool Select(double index, CarouselAnimationDirection? animationDirection = null)
         {
             var iv = InvokeMethodSync("select", new object[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
@@ -412,6 +456,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _slideChangedRef = null;
         private string _slideChangedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="SlideChanged"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string SlideChangedScript
         {
@@ -434,8 +486,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingSlideChanged(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _slideChanged = null;
+
+        /// <summary>
+        /// Emitted when the current active slide is changed either by user interaction or automatic transitioning.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbNumberEventArgs> SlideChanged
         {
@@ -445,16 +500,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbNumberEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _slideChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_slideChanged))
                     {
                         _slideChanged = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value, (args) =>
-                        {
-                            OnHandlingSlideChanged(args);
-
-                        });
+                        this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value);
                         this.OnRefChanged("SlideChanged", null, "event:::SlideChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._slideChangedRef = refName;
@@ -477,6 +528,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _playingRef = null;
         private string _playingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Playing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string PlayingScript
         {
@@ -499,8 +558,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingPlaying(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _playing = null;
+
+        /// <summary>
+        /// Emitted when the carousel enters playing state by a user interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Playing
         {
@@ -510,16 +572,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _playing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_playing))
                     {
                         _playing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value, (args) =>
-                        {
-                            OnHandlingPlaying(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value);
                         this.OnRefChanged("Playing", null, "event:::Playing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._playingRef = refName;
@@ -542,6 +600,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _pausedRef = null;
         private string _pausedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Paused"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string PausedScript
         {
@@ -564,8 +630,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingPaused(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _paused = null;
+
+        /// <summary>
+        /// Emitted when the carousel enters paused state by a user interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Paused
         {
@@ -575,16 +644,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _paused, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_paused))
                     {
                         _paused = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value, (args) =>
-                        {
-                            OnHandlingPaused(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value);
                         this.OnRefChanged("Paused", null, "event:::Paused", true, false, (refName, oldValue, newValue) =>
                         {
                             this._pausedRef = refName;
@@ -605,13 +670,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbCarousel(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbCarousel(ser);
 
             if (IsPropDirty("DisableLoop"))
             { ser.AddBooleanProp("disableLoop", this._disableLoop); }

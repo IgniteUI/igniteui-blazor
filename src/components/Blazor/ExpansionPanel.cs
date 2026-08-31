@@ -9,8 +9,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbExpansionPanel : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebExpansionPanel"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbExpansionPanelModule.IsLoadRequested(IgBlazor))
@@ -19,11 +21,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -32,6 +36,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -40,6 +45,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -48,22 +54,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbExpansionPanel() : base()
-        {
-            OnCreatedIgbExpansionPanel();
-
-        }
-
-        partial void OnCreatedIgbExpansionPanel();
-
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Indicates whether the contents of the control should be visible.
         /// </summary>
@@ -83,9 +81,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
-        /// Get/Set whether the expansion panel is disabled. Disabled panels are ignored for user interactions.
+        /// Whether the expansion panel is disabled.
+        /// Disabled panels are ignored for user interactions.
         /// </summary>
         [Parameter]
         public bool Disabled
@@ -103,7 +101,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private ExpansionPanelIndicatorPosition _indicatorPosition = ExpansionPanelIndicatorPosition.Start;
 
-        partial void OnIndicatorPositionChanging(ref ExpansionPanelIndicatorPosition newValue);
         /// <summary>
         /// The indicator position of the expansion panel.
         /// </summary>
@@ -122,25 +119,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameExpansionPanel(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameExpansionPanel(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -152,11 +130,17 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Toggles the panel open/close state.
         /// </summary>
+        /// <returns><see langword="true"/> when the open state changed.</returns>
         public async Task<bool> ToggleAsync()
         {
             var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Toggles the panel open/close state.
+        /// </summary>
+        /// <returns><see langword="true"/> when the open state was successfully changed.</returns>
         public bool Toggle()
         {
             var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
@@ -165,11 +149,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Hides the panel content.
         /// </summary>
+        /// <returns><see langword="true"/> when the panel was successfully closed, or <see langword="false"/>
+        /// if already closed.</returns>
         public async Task<bool> HideAsync()
         {
             var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Hides the panel content.
+        /// </summary>
+        /// <returns><see langword="true"/> when the panel was successfully closed, or <see langword="false"/>
+        /// if already closed.</returns>
         public bool Hide()
         {
             var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
@@ -178,11 +170,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Shows the panel content.
         /// </summary>
+        /// <returns><see langword="true"/> when the panel was successfully opened, or <see langword="false"/>
+        /// if already open.</returns>
         public async Task<bool> ShowAsync()
         {
             var iv = await InvokeMethod("show", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Shows the panel content.
+        /// </summary>
+        /// <returns><see langword="true"/> when the panel was successfully opened, or <see langword="false"/>
+        /// if already open.</returns>
         public bool Show()
         {
             var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
@@ -191,6 +191,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openingRef = null;
         private string _openingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpeningScript
         {
@@ -213,8 +221,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpening(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _opening = null;
+
+        /// <summary>
+        /// Emitted before opening the expansion panel.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbExpansionPanelComponentEventArgs> Opening
         {
@@ -224,16 +235,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _opening, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", value, (args) =>
-                        {
-                            OnHandlingOpening(args);
-
-                        });
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -256,6 +263,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _openedRef = null;
         private string _openedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string OpenedScript
         {
@@ -278,8 +293,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingOpened(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _opened = null;
+
+        /// <summary>
+        /// Emitted after the expansion panel is opened.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbExpansionPanelComponentEventArgs> Opened
         {
@@ -289,16 +307,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _opened, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", value, (args) =>
-                        {
-                            OnHandlingOpened(args);
-
-                        });
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -321,6 +335,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closingRef = null;
         private string _closingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosingScript
         {
@@ -343,8 +365,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _closing = null;
+
+        /// <summary>
+        /// Emitted before closing the expansion panel.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbExpansionPanelComponentEventArgs> Closing
         {
@@ -354,16 +379,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -386,6 +407,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closedRef = null;
         private string _closedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosedScript
         {
@@ -408,8 +437,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbExpansionPanelComponentEventArgs args);
         private EventCallback<IgbExpansionPanelComponentEventArgs>? _closed = null;
+
+        /// <summary>
+        /// Emitted after the expansion panel is closed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbExpansionPanelComponentEventArgs> Closed
         {
@@ -419,16 +451,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbExpansionPanelComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -449,13 +477,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbExpansionPanel(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbExpansionPanel(ser);
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }

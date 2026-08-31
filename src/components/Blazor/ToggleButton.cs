@@ -3,26 +3,32 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The `igc-toggle-button` wraps a native button element and exposes additional `value` and `selected` properties.
-    /// It is used in the context of an `igc-button-group` to facilitate the creation of group/toolbar like UX behaviors.
+    /// The <see cref="IgbToggleButton"/> wraps a native button element and exposes additional
+    /// <see cref="Value"/> and <see cref="Selected"/> properties.
+    /// It is used in the context of an <see cref="IgbButtonGroup"/> to facilitate the creation of
+    /// group/toolbar like UX behaviors.
     /// </summary>
     public partial class IgbToggleButton : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebToggleButton"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbToggleButtonModule.IsLoadRequested(IgBlazor))
+            if (!IgbButtonGroupModule.IsLoadRequested(IgBlazor))
             {
-                IgbToggleButtonModule.Register(IgBlazor);
+                IgbButtonGroupModule.Register(IgBlazor);
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +37,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +46,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,24 +55,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbToggleButton() : base()
-        {
-            OnCreatedIgbToggleButton();
-
-        }
-
-        partial void OnCreatedIgbToggleButton();
-
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
-        /// The value attribute of the control.
+        /// The value of the control.
         /// </summary>
         [Parameter]
         public string Value
@@ -82,7 +82,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _selected = false;
 
-        partial void OnSelectedChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the button is selected.
         /// </summary>
@@ -102,7 +101,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the button is disabled.
         /// </summary>
@@ -121,25 +119,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameToggleButton(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameToggleButton(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -158,6 +137,9 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
+        /// <summary>
+        /// Sets focus on the button.
+        /// </summary>
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
@@ -173,30 +155,33 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("blur", new object[] { }, new string[] { });
         }
 
+        /// <summary>
+        /// Removes focus from the button.
+        /// </summary>
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
             InvokeMethodSync("blur", new object[] { }, new string[] { });
         }
         /// <summary>
-        /// Simulates a mouse click on the element.
+        /// Simulates a mouse click on the button.
         /// </summary>
         public async Task ClickAsync()
         {
             await InvokeMethod("click", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Simulates a mouse click on the button.
+        /// </summary>
         public void Click()
         {
             InvokeMethodSync("click", new object[] { }, new string[] { });
         }
 
-        partial void SerializeCoreIgbToggleButton(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbToggleButton(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }

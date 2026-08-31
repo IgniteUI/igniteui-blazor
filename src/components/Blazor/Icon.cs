@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbIcon : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebIcon"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbIconModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,22 +52,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbIcon() : base()
-        {
-            OnCreatedIgbIcon();
-
-        }
-
-        partial void OnCreatedIgbIcon();
-
         private string _iconName;
 
-        partial void OnIconNameChanging(ref string newValue);
         /// <summary>
         /// The name of the icon glyph to draw.
         /// </summary>
@@ -82,7 +80,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _collection;
 
-        partial void OnCollectionChanging(ref string newValue);
         /// <summary>
         /// The name of the registered collection for look up of icons.
         /// </summary>
@@ -102,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _mirrored = false;
 
-        partial void OnMirroredChanging(ref bool newValue);
         /// <summary>
         /// Whether to flip the icon horizontally. Useful for RTL (right-to-left) layouts.
         /// </summary>
@@ -121,25 +117,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameIcon(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameIcon(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -148,38 +125,76 @@ namespace IgniteUI.Blazor.Controls
         {
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconAsync(String name, String url, String collection = null)
         {
             await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIcon(String name, String url, String collection = null)
         {
             InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconFromTextAsync(String name, String iconText, String collection = null)
         {
             await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIconFromText(String name, String iconText, String collection = null)
         {
             InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Sets an icon reference/alias that points to another icon.
+        /// </summary>
+        /// <param name="name">The alias name.</param>
+        /// <param name="collection">The collection for the alias.</param>
+        /// <param name="icon">The target icon metadata (name and collection).</param>
         public async Task SetIconRefAsync(String name, String collection, IgbIconMeta icon)
         {
             await InvokeMethod("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
         }
+
+        /// <summary>
+        /// Sets an icon reference/alias that points to another icon.
+        /// </summary>
+        /// <param name="name">The alias name.</param>
+        /// <param name="collection">The collection for the alias.</param>
+        /// <param name="icon">The target icon metadata (name and collection).</param>
         public void SetIconRef(String name, String collection, IgbIconMeta icon)
         {
             InvokeMethodSync("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
         }
 
-        partial void SerializeCoreIgbIcon(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbIcon(ser);
 
             if (IsPropDirty("IconName"))
             { ser.AddStringProp("iconName", this._iconName); }

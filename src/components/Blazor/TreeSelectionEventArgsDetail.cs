@@ -2,23 +2,22 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The payload carried by <see cref="IgbTree.SelectionChanged"/>, holding the selection
+    /// the tree is about to apply.
+    /// </summary>
     public partial class IgbTreeSelectionEventArgsDetail : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTreeSelectionEventArgsDetail"; } }
 
         private static bool _marshalByValue = true;
 
-        public IgbTreeSelectionEventArgsDetail() : base()
-        {
-            OnCreatedIgbTreeSelectionEventArgsDetail();
-
-        }
-
-        partial void OnCreatedIgbTreeSelectionEventArgsDetail();
-
         private IgbTreeItem[] _newSelection;
 
-        partial void OnNewSelectionChanging(ref IgbTreeItem[] newValue);
+        /// <summary>
+        /// The tree items that will make up the new selection.
+        /// </summary>
         [Parameter]
         public IgbTreeItem[] NewSelection
         {
@@ -34,39 +33,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTreeSelectionEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTreeSelectionEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbTreeSelectionEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTreeSelectionEventArgsDetail(ser);
 
             if (IsPropDirty("NewSelection"))
             { ser.AddSerializableArrayProp("newSelection", this._newSelection); }
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -76,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

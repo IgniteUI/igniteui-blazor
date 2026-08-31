@@ -4,12 +4,14 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A masked input is an input field where a developer can control user input and format the visible value,
-    /// based on configurable rules
+    /// based on configurable rules.
     /// </summary>
     public partial class IgbMaskInput : IgbInputBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebMaskInput"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbMaskInputModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,21 +35,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbMaskInput() : base()
-        {
-            OnCreatedIgbMaskInput();
-
-        }
-
-        partial void OnCreatedIgbMaskInput();
-
         private MaskInputValueMode _valueMode = MaskInputValueMode.Raw;
 
-        partial void OnValueModeChanging(ref MaskInputValueMode newValue);
         /// <summary>
-        /// Dictates the behavior when retrieving the value of the control:
-        /// - `raw`: Returns clean input (e.g. "5551234567")
-        /// - `withFormatting`: Returns with mask formatting (e.g. "(555) 123-4567")
+        /// Dictates the behavior when retrieving the value of the control.
+        /// <list type="bullet">
+        ///   <item><description>
+        ///   <see cref="MaskInputValueMode.Raw"/> returns the clean input, for example <c>5551234567</c>.
+        ///   </description></item>
+        ///   <item><description>
+        ///   <see cref="MaskInputValueMode.WithFormatting"/> returns the value with the mask formatting
+        ///   applied, for example <c>(555) 123-4567</c>.
+        ///   </description></item>
+        /// </list>
         /// Empty values always return an empty string, regardless of the value mode.
         /// </summary>
         [Parameter]
@@ -64,10 +66,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _value;
 
-        partial void OnValueChanging(ref string newValue);
         /// <summary>
         /// The value of the input.
-        /// Regardless of the currently set `value-mode`, an empty value will return an empty string.
+        /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
         /// </summary>
         [Parameter]
         public string Value
@@ -83,11 +84,21 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Returns the current value of the input.
+        /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
+        /// </summary>
         public async Task<string> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToString(iv);
         }
+
+        /// <summary>
+        /// Returns the current value of the input.
+        /// Regardless of the current <see cref="ValueMode"/>, an empty value returns an empty string.
+        /// </summary>
         public string GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
@@ -95,7 +106,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _mask;
 
-        partial void OnMaskChanging(ref string newValue);
         /// <summary>
         /// The masked pattern of the component.
         /// </summary>
@@ -115,7 +125,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _prompt;
 
-        partial void OnPromptChanging(ref string newValue);
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
         /// </summary>
@@ -135,10 +144,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
-        /// @default false
         /// </summary>
         [Parameter]
         public bool ReadOnly
@@ -155,43 +162,44 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameMaskInput(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameMaskInput(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
+        /// <summary>
+        /// Sets the text selection range of the control.
+        /// </summary>
         public async Task SetSelectionRangeAsync(double start = -1, double end = -1, String direction = null)
         {
             await InvokeMethod("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
+
+        /// <summary>
+        /// Sets the text selection range of the control.
+        /// </summary>
         public void SetSelectionRange(double start = -1, double end = -1, String direction = null)
         {
             InvokeMethodSync("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
+
+        /// <summary>
+        /// Replaces the selected text in the control and re-applies the mask.
+        /// </summary>
         public async Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String selectMode = null)
         {
             await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
+
+        /// <summary>
+        /// Replaces the selected text in the control and re-applies the mask.
+        /// </summary>
         public void SetRangeText(String replacement, double start = -1, double end = -1, String selectMode = null)
         {
             InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
 
         private EventCallback<string>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the <see cref="Value"/> property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanged
         {
@@ -201,9 +209,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_valueChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -219,6 +227,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -241,8 +257,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbComponentValueChangedEventArgs args);
         private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when an alteration of the control's value is committed by the user.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbComponentValueChangedEventArgs> Change
         {
@@ -252,21 +271,17 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(string);
 
                             {
                                 newValueValue = (string)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -317,15 +332,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(string oldValue, ref string newValue);
-
-        partial void SerializeCoreIgbMaskInput(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbMaskInput(ser);
 
             if (IsPropDirty("ValueMode"))
             { ser.AddEnumProp("valueMode", this._valueMode); }

@@ -2,10 +2,24 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A modal dialog component built on the native <c>&lt;dialog&gt;</c> element.
+    /// The dialog traps focus while open and blocks interaction with the rest
+    /// of the page (modal semantics). It supports animated open/close
+    /// transitions, an optional backdrop overlay, and multiple content areas
+    /// through named slots.
+    /// The component integrates with the
+    /// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">Invoker Commands API</see>:
+    /// an <see cref="IgbButton"/> or a native <c>&lt;button&gt;</c> with <c>command="--show"</c> / <c>"--hide"</c> /
+    /// <c>"--toggle"</c> and <c>commandfor</c> pointing to this element will call the corresponding
+    /// method declaratively.
+    /// </summary>
     public partial class IgbDialog : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDialog"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbDialogModule.IsLoadRequested(IgBlazor))
@@ -14,11 +28,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -27,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -35,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -43,25 +61,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbDialog() : base()
-        {
-            OnCreatedIgbDialog();
-
-        }
-
-        partial void OnCreatedIgbDialog();
-
         private bool _keepOpenOnEscape = false;
 
-        partial void OnKeepOpenOnEscapeChanging(ref bool newValue);
         /// <summary>
-        /// When set, pressing the `Escape` key will not close the dialog.
-        /// By default the browser closes a modal dialog on `Escape`. Enable this
+        /// When set, pressing the <c>Escape</c> key will not close the dialog.
+        /// By default the browser closes a modal dialog on <c>Escape</c>. Enable this
         /// option when the dialog guards unsaved work and should require an explicit
         /// user action to dismiss.
         /// </summary>
@@ -81,7 +91,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _closeOnOutsideClick = false;
 
-        partial void OnCloseOnOutsideClickChanging(ref bool newValue);
         /// <summary>
         /// When set, clicking on the backdrop area outside the dialog surface
         /// will close it (emitting close events).
@@ -103,10 +112,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _hideDefaultAction = false;
 
-        partial void OnHideDefaultActionChanging(ref bool newValue);
         /// <summary>
         /// When set, the built-in "OK" close button in the footer is not rendered.
-        /// Has no effect when content is projected into the `footer` slot, since
+        /// Has no effect when content is projected into the <c>footer</c> slot, since
         /// the slot content replaces the default button entirely.
         /// </summary>
         [Parameter]
@@ -125,13 +133,12 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the dialog is open.
         /// Setting this property programmatically will open or close the dialog
         /// without animation and without emitting close events.
-        /// Prefer the `show()`, `hide()`, and `toggle()` methods for animated
-        /// transitions.
+        /// Prefer the <see cref="Show"/>, <see cref="Hide"/>, and <see cref="Toggle"/> methods for
+        /// animated transitions.
         /// </summary>
         [Parameter]
         public bool Open
@@ -149,10 +156,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _title;
 
-        partial void OnTitleChanging(ref string newValue);
         /// <summary>
         /// The title displayed in the dialog header.
-        /// Overridden by any content projected into the `title` slot.
+        /// Overridden by any content projected into the <c>title</c> slot.
         /// </summary>
         [Parameter]
         public string Title
@@ -170,7 +176,12 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _returnValue;
 
-        partial void OnReturnValueChanging(ref string newValue);
+        /// <summary>
+        /// The return value of the dialog.
+        /// Automatically set to the <c>value</c> of the submitter element when a
+        /// <c>&lt;form method="dialog"&gt;</c> inside the dialog is submitted. Can also
+        /// be set programmatically before calling <see cref="Hide"/>.
+        /// </summary>
         [Parameter]
         public string ReturnValue
         {
@@ -186,25 +197,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDialog(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDialog(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -215,14 +207,20 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Opens the dialog with an animated fade-in transition.
-        /// Returns `true` when the dialog was successfully opened, or `false` if
-        /// it was already open.
         /// </summary>
+        /// <returns><see langword="true"/> when the dialog was successfully opened,
+        /// or <see langword="false"/> if it was already open.</returns>
         public async Task<bool> ShowAsync()
         {
             var iv = await InvokeMethod("show", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Opens the dialog with an animated fade-in transition.
+        /// </summary>
+        /// <returns><see langword="true"/> when the dialog was successfully opened,
+        /// or <see langword="false"/> if it was already open.</returns>
         public bool Show()
         {
             var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
@@ -230,14 +228,20 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Closes the dialog with an animated fade-out transition.
-        /// Returns `true` when the dialog was successfully closed, or `false` if
-        /// it was already closed.
         /// </summary>
+        /// <returns><see langword="true"/> when the dialog was successfully closed,
+        /// or <see langword="false"/> if it was already closed.</returns>
         public async Task<bool> HideAsync()
         {
             var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Closes the dialog with an animated fade-out transition.
+        /// </summary>
+        /// <returns><see langword="true"/> when the dialog was successfully closed,
+        /// or <see langword="false"/> if it was already closed.</returns>
         public bool Hide()
         {
             var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
@@ -245,14 +249,20 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Toggles the dialog open or closed depending on its current state.
-        /// Equivalent to calling `show()` when closed and `hide()` when open.
-        /// Returns `true` when the transition completed successfully.
+        /// Equivalent to calling <see cref="Show"/> when closed and <see cref="Hide"/> when open.
         /// </summary>
+        /// <returns><see langword="true"/> when the transition completed successfully.</returns>
         public async Task<bool> ToggleAsync()
         {
             var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Toggles the dialog open or closed depending on its current state.
+        /// Equivalent to calling <see cref="Show"/> when closed and <see cref="Hide"/> when open.
+        /// </summary>
+        /// <returns><see langword="true"/> when the transition completed successfully.</returns>
         public bool Toggle()
         {
             var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
@@ -261,6 +271,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closingRef = null;
         private string _closingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosingScript
         {
@@ -283,8 +301,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
+
+        /// <summary>
+        /// Emitted just before the dialog closes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closing
         {
@@ -294,16 +315,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -326,6 +343,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closedRef = null;
         private string _closedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosedScript
         {
@@ -348,8 +373,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
+
+        /// <summary>
+        /// Emitted after the dialog has fully closed and its exit animation has completed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closed
         {
@@ -359,16 +387,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -389,13 +413,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbDialog(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDialog(ser);
 
             if (IsPropDirty("KeepOpenOnEscape"))
             { ser.AddBooleanProp("keepOpenOnEscape", this._keepOpenOnEscape); }

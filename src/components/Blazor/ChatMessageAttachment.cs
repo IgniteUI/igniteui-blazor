@@ -2,23 +2,18 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Represents an attachment associated with a chat message.
+    /// </summary>
     public partial class IgbChatMessageAttachment : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatMessageAttachment"; } }
 
         private static bool _marshalByValue = true;
 
-        public IgbChatMessageAttachment() : base()
-        {
-            OnCreatedIgbChatMessageAttachment();
-
-        }
-
-        partial void OnCreatedIgbChatMessageAttachment();
-
         private string _id;
 
-        partial void OnIdChanging(ref string newValue);
         /// <summary>
         /// A unique identifier for the attachment.
         /// </summary>
@@ -38,7 +33,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _url;
 
-        partial void OnUrlChanging(ref string newValue);
         /// <summary>
         /// The URL from which the attachment can be downloaded or viewed.
         /// Typically used for attachments stored on a server or CDN.
@@ -59,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _attachmentType;
 
-        partial void OnAttachmentTypeChanging(ref string newValue);
         /// <summary>
         /// The MIME type or a custom type identifier for the attachment (e.g. "image/png", "pdf", "audio").
         /// </summary>
@@ -80,7 +73,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _thumbnail;
 
-        partial void OnThumbnailChanging(ref string newValue);
         /// <summary>
         /// Optional URL to a thumbnail preview of the attachment (e.g. for images or videos).
         /// </summary>
@@ -99,25 +91,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameChatMessageAttachment(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameChatMessageAttachment(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -127,13 +100,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbChatMessageAttachment(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbChatMessageAttachment(ser);
 
             if (IsPropDirty("Id"))
             { ser.AddStringProp("id", this._id); }
@@ -146,6 +115,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -163,6 +133,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

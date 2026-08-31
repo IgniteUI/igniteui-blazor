@@ -5,12 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTabs : BaseRendererControl
     {
 
-        partial void OnCreatedIgbTabs()
-        {
-            EnsureChangeHandled();
-        }
-
-        partial void OnHandlingChange(IgbTabComponentEventArgs args)
+        private void SyncSelectedTab(IgbTabComponentEventArgs args)
         {
             var selectedTab = args.Detail;
             // add check in case something triggers event without args.
@@ -31,7 +26,7 @@ namespace IgniteUI.Blazor.Controls
 
                 }
 
-                if (!EventCallback<string>.Empty.Equals(item.SelectedChanged))
+                if (!EventCallback<bool>.Empty.Equals(item.SelectedChanged))
                 {
                     var task = item.SelectedChanged.InvokeAsync(item.Selected);
                     if (task.Exception != null)

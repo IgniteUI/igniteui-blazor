@@ -28,6 +28,9 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         .Event(c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+            expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
         .Event(c => c.Input,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
@@ -90,6 +93,9 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
     public void DatePicker_TypeMetadata()
@@ -161,5 +167,17 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         var date = new DateTime(2024, 6, 15);
         picker.Value = date;
         Assert.Equal(date, picker.Value);
+    }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbDatePicker</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void DatePicker_DefaultValues_MatchWebComponent()
+    {
+        var picker = new IgbDatePicker();
+
+        Assert.Equal(1, picker.VisibleMonths);
     }
 }

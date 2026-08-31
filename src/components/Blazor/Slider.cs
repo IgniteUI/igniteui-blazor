@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSlider : IgbSliderBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSlider"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbSliderModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,17 +52,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbSlider() : base()
-        {
-            OnCreatedIgbSlider();
-
-        }
-
-        partial void OnCreatedIgbSlider();
-
         private double _value = 0;
 
-        partial void OnValueChanging(ref double newValue);
         /// <summary>
         /// The current value of the component.
         /// </summary>
@@ -74,11 +71,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Gets the current value of the component.
+        /// </summary>
         public async Task<double> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
+
+        /// <summary>
+        /// Gets the current value of the component.
+        /// </summary>
         public double GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
@@ -86,9 +91,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
-        /// Control the validity of the control.
+        /// Sets the control into invalid state (visual state only).
         /// </summary>
         [Parameter]
         public bool Invalid
@@ -105,72 +109,73 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameSlider(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSlider(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         /// <summary>
-        /// Increments the value of the slider by `stepIncrement * step`, where `stepIncrement` defaults to 1.
-        /// stepIncrement Optional step increment. If no parameter is passed, it defaults to 1.
+        /// Increments the value of the slider by <c>stepIncrement * step</c>, where
+        /// <paramref name="stepIncrement"/> defaults to 1.
         /// </summary>
         /// <param name="stepIncrement">Optional step increment. If no parameter is passed, it defaults to 1.</param>
         public async Task StepUpAsync(double stepIncrement = 1)
         {
             await InvokeMethod("stepUp", new object[] { stepIncrement }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Increments the value of the slider by <c>stepIncrement * step</c>, where
+        /// <paramref name="stepIncrement"/> defaults to 1.
+        /// </summary>
+        /// <param name="stepIncrement">Optional step increment. If no parameter is passed, it defaults to 1.</param>
         public void StepUp(double stepIncrement = 1)
         {
             InvokeMethodSync("stepUp", new object[] { stepIncrement }, new string[] { "Number" });
         }
         /// <summary>
-        /// Decrements the value of the slider by `stepDecrement * step`, where `stepDecrement` defaults to 1.
-        /// stepDecrement Optional step decrement. If no parameter is passed, it defaults to 1.
+        /// Decrements the value of the slider by <c>stepDecrement * step</c>, where
+        /// <paramref name="stepDecrement"/> defaults to 1.
         /// </summary>
         /// <param name="stepDecrement">Optional step decrement. If no parameter is passed, it defaults to 1.</param>
         public async Task StepDownAsync(double stepDecrement = 1)
         {
             await InvokeMethod("stepDown", new object[] { stepDecrement }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Decrements the value of the slider by <c>stepDecrement * step</c>, where
+        /// <paramref name="stepDecrement"/> defaults to 1.
+        /// </summary>
+        /// <param name="stepDecrement">Optional step decrement. If no parameter is passed, it defaults to 1.</param>
         public void StepDown(double stepDecrement = 1)
         {
             InvokeMethodSync("stepDown", new object[] { stepDecrement }, new string[] { "Number" });
         }
         /// <summary>
-        /// Checks for validity of the control and shows the browser message if it invalid.
+        /// Checks the validity of the control and shows the browser message if it is invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
             var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks the validity of the control and shows the browser message if it is invalid.
+        /// </summary>
         public bool ReportValidity()
         {
             var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Checks for validity of the control and emits the invalid event if it invalid.
+        /// Checks the validity of the control and emits the invalid event if it is invalid.
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
             var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks the validity of the control and emits the invalid event if it is invalid.
+        /// </summary>
         public bool CheckValidity()
         {
             var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
@@ -178,18 +183,28 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Sets a custom validation message for the control.
-        /// As long as `message` is not empty, the control is considered invalid.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
             await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Sets a custom validation message for the control.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
+        /// </summary>
         public void SetCustomValidity(String message)
         {
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
         private EventCallback<double>? _valueChanged = null;
+
+        /// <summary>
+        /// Emitted when the Value property changes.
+        /// Enables two-way binding through <c>@bind-Value</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<double> ValueChanged
         {
@@ -199,9 +214,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<double>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _valueChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_valueChanged))
                     {
                         this.EnsureChangeHandled();
 
@@ -217,6 +232,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _inputRef = null;
         private string _inputScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Input"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string InputScript
         {
@@ -239,8 +262,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInput(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _input = null;
+
+        /// <summary>
+        /// Emitted when a value is changed via thumb drag or keyboard interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbNumberEventArgs> Input
         {
@@ -250,16 +276,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbNumberEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _input, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_input))
                     {
                         _input = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Input", value, (args) =>
-                        {
-                            OnHandlingInput(args);
-
-                        });
+                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -282,6 +304,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _changeRef = null;
         private string _changeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ChangeScript
         {
@@ -304,8 +334,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingChange(IgbNumberEventArgs args);
         private EventCallback<IgbNumberEventArgs>? _change = null;
+
+        /// <summary>
+        /// Emitted when a value change is committed on a thumb drag end or keyboard interaction.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbNumberEventArgs> Change
         {
@@ -315,21 +348,17 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbNumberEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            OnHandlingChange(args);
-
                             var newValueValue = default(double);
 
                             {
                                 newValueValue = (double)(args.Detail);
-                                ;
-                                OnEventUpdatingValue(this._value, ref newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -380,15 +409,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnEventUpdatingValue(double oldValue, ref double newValue);
-
-        partial void SerializeCoreIgbSlider(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbSlider(ser);
 
             if (IsPropDirty("Value"))
             { ser.AddNumberProp("value", this._value); }

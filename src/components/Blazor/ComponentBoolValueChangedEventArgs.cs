@@ -2,23 +2,22 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Event arguments for component events that carry a Boolean payload.
+    /// The meaning of <see cref="Detail"/> depends on the event that raises it.
+    /// </summary>
     public partial class IgbComponentBoolValueChangedEventArgs : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebComponentBoolValueChangedEventArgs"; } }
 
         private static bool _marshalByValue = true;
 
-        public IgbComponentBoolValueChangedEventArgs() : base()
-        {
-            OnCreatedIgbComponentBoolValueChangedEventArgs();
-
-        }
-
-        partial void OnCreatedIgbComponentBoolValueChangedEventArgs();
-
         private bool _detail = false;
 
-        partial void OnDetailChanging(ref bool newValue);
+        /// <summary>
+        /// The Boolean value carried by the event.
+        /// </summary>
         [Parameter]
         public bool Detail
         {
@@ -34,39 +33,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameComponentBoolValueChangedEventArgs(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameComponentBoolValueChangedEventArgs(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbComponentBoolValueChangedEventArgs(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbComponentBoolValueChangedEventArgs(ser);
 
             if (IsPropDirty("Detail"))
             { ser.AddBooleanProp("detail", this._detail); }
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -76,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

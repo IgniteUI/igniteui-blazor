@@ -2,9 +2,14 @@
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTab : BaseRendererControl, IDisposable
+    public partial class IgbTab : BaseRendererControl
     {
         private EventCallback<bool>? _selectedChanged = null;
+
+        /// <summary>
+        /// Emitted when the Selected property changes.
+        /// Enables two-way binding through <c>@bind-Selected</c>.
+        /// </summary>
         [Parameter]
         public EventCallback<bool> SelectedChanged
         {
@@ -14,9 +19,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _selectedChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_selectedChanged))
                     {
                         _selectedChanged = value;
                     }

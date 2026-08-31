@@ -6,14 +6,16 @@ namespace IgniteUI.Blazor.Controls
     /// A button that displays a single icon, designed for compact, icon-only
     /// interactions such as toolbar actions, floating action buttons, or inline
     /// controls.
-    /// The icon is sourced from the icon registry via the `name` and `collection`
-    /// attributes. Like the normal button, it can render as an anchor element when
-    /// `href` is set and is fully form-associated.
+    /// The icon is sourced from the icon registry via the <see cref="IconName"/> and
+    /// <see cref="Collection"/> properties. Like <see cref="IgbButton"/>, it can render as an anchor
+    /// element when <see cref="IgbButtonBase.Href"/> is set and is fully form-associated.
     /// </summary>
     public partial class IgbIconButton : IgbButtonBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebIconButton"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbIconButtonModule.IsLoadRequested(IgBlazor))
@@ -22,11 +24,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -35,6 +39,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -43,6 +48,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -51,17 +57,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbIconButton() : base()
-        {
-            OnCreatedIgbIconButton();
-
-        }
-
-        partial void OnCreatedIgbIconButton();
-
         private string _iconName;
 
-        partial void OnIconNameChanging(ref string newValue);
         /// <summary>
         /// The name of the icon to display.
         /// </summary>
@@ -82,7 +79,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _collection;
 
-        partial void OnCollectionChanging(ref string newValue);
         /// <summary>
         /// The collection the icon belongs to.
         /// </summary>
@@ -102,7 +98,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _mirrored = false;
 
-        partial void OnMirroredChanging(ref bool newValue);
         /// <summary>
         /// Determines whether the icon should be mirrored in right-to-left contexts.
         /// </summary>
@@ -122,12 +117,16 @@ namespace IgniteUI.Blazor.Controls
         }
         private IconButtonVariant _variant = IconButtonVariant.Contained;
 
-        partial void OnVariantChanging(ref IconButtonVariant newValue);
         /// <summary>
         /// The variant of the button which determines its visual appearance.
-        /// - `contained` – filled background; highest visual emphasis (default).
-        /// - `outlined` – transparent background with a visible border.
-        /// - `flat` – no background or border; lowest visual emphasis.
+        /// <list type="bullet">
+        ///   <item><description><see cref="IconButtonVariant.Contained"/> – filled background;
+        ///     highest visual emphasis (default).</description></item>
+        ///   <item><description><see cref="IconButtonVariant.Outlined"/> – transparent background
+        ///     with a visible border.</description></item>
+        ///   <item><description><see cref="IconButtonVariant.Flat"/> – no background or border;
+        ///     lowest visual emphasis.</description></item>
+        /// </list>
         /// </summary>
         [Parameter]
         public IconButtonVariant Variant
@@ -144,49 +143,53 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameIconButton(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameIconButton(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconAsync(String name, String url, String collection = null)
         {
             await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIcon(String name, String url, String collection = null)
         {
             InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public async Task RegisterIconFromTextAsync(String name, String iconText, String collection = null)
         {
             await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
         public void RegisterIconFromText(String name, String iconText, String collection = null)
         {
             InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
-        partial void SerializeCoreIgbIconButton(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbIconButton(ser);
 
             if (IsPropDirty("IconName"))
             { ser.AddStringProp("iconName", this._iconName); }

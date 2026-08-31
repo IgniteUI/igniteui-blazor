@@ -2,15 +2,21 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Base class for <see cref="IgbDateTimeInput"/>.
+    /// </summary>
     public partial class IgbDateTimeInputBase : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebDateTimeInputBase"; } }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -19,22 +25,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
 
-        public IgbDateTimeInputBase() : base()
-        {
-            OnCreatedIgbDateTimeInputBase();
-
-        }
-
-        partial void OnCreatedIgbDateTimeInputBase();
-
         private bool _outlined = false;
 
-        partial void OnOutlinedChanging(ref bool newValue);
         /// <summary>
         /// Whether the control will have outlined appearance.
         /// </summary>
@@ -54,9 +52,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _placeholder;
 
-        partial void OnPlaceholderChanging(ref string newValue);
         /// <summary>
-        /// The placeholder attribute of the control.
+        /// The placeholder text of the control.
         /// </summary>
         [Parameter]
         public string Placeholder
@@ -74,7 +71,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _label;
 
-        partial void OnLabelChanging(ref string newValue);
         /// <summary>
         /// The label for the control.
         /// </summary>
@@ -94,7 +90,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _inputFormat;
 
-        partial void OnInputFormatChanging(ref string newValue);
+        /// <summary>
+        /// The date format to apply on the input.
+        /// </summary>
         [Parameter]
         public string InputFormat
         {
@@ -111,7 +109,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime? _min = DateTime.MinValue;
 
-        partial void OnMinChanging(ref DateTime? newValue);
         /// <summary>
         /// The minimum value required for the input to remain valid.
         /// </summary>
@@ -131,7 +128,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private DateTime? _max = DateTime.MinValue;
 
-        partial void OnMaxChanging(ref DateTime? newValue);
         /// <summary>
         /// The maximum value required for the input to remain valid.
         /// </summary>
@@ -151,7 +147,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _displayFormat;
 
-        partial void OnDisplayFormatChanging(ref string newValue);
         /// <summary>
         /// Format to display the value in when not editing.
         /// Defaults to the locale format if not set.
@@ -172,10 +167,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbDatePartDeltas _spinDelta;
 
-        partial void OnSpinDeltaChanging(ref IgbDatePartDeltas newValue);
         /// <summary>
         /// Delta values used to increment or decrement each date part on step actions.
-        /// All values default to `1`.
+        /// All values default to <c>1</c>.
         /// </summary>
         [Parameter]
         public IgbDatePartDeltas SpinDelta
@@ -183,7 +177,6 @@ namespace IgniteUI.Blazor.Controls
             get { return this._spinDelta; }
             set
             {
-                OnSpinDeltaChanging(ref value);
                 MarkPropDirty("SpinDelta");
                 if (this._spinDelta != null)
                 {
@@ -197,9 +190,8 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-        private bool _spinLoop = false;
+        private bool _spinLoop = true;
 
-        partial void OnSpinLoopChanging(ref bool newValue);
         /// <summary>
         /// Sets whether to loop over the currently spun segment.
         /// </summary>
@@ -219,7 +211,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _locale;
 
-        partial void OnLocaleChanging(ref string newValue);
         /// <summary>
         /// Gets/Sets the locale used for formatting the display value.
         /// </summary>
@@ -239,10 +230,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _readOnly = false;
 
-        partial void OnReadOnlyChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a readonly field.
-        /// @default false
         /// </summary>
         [Parameter]
         public bool ReadOnly
@@ -260,7 +249,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _mask;
 
-        partial void OnMaskChanging(ref string newValue);
         /// <summary>
         /// The mask pattern of the component.
         /// </summary>
@@ -280,10 +268,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private string _prompt;
 
-        partial void OnPromptChanging(ref string newValue);
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
-        /// @default '_'
+        /// Defaults to <c>_</c>.
         /// </summary>
         [Parameter]
         public string Prompt
@@ -301,9 +288,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disabled = false;
 
-        partial void OnDisabledChanging(ref bool newValue);
         /// <summary>
-        /// The disabled state of the component
+        /// The disabled state of the component.
         /// </summary>
         [Parameter]
         public bool Disabled
@@ -321,7 +307,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _required = false;
 
-        partial void OnRequiredChanging(ref bool newValue);
         /// <summary>
         /// Makes the control a required field in a form context.
         /// </summary>
@@ -341,9 +326,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _invalid = false;
 
-        partial void OnInvalidChanging(ref bool newValue);
         /// <summary>
-        /// Control the validity of the control.
+        /// Sets the control into invalid state (visual state only).
         /// </summary>
         [Parameter]
         public bool Invalid
@@ -360,25 +344,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDateTimeInputBase(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateTimeInputBase(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -394,6 +359,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("select", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Selects all the text inside the input.
+        /// </summary>
         public void Select()
         {
             InvokeMethodSync("select", new object[] { }, new string[] { });
@@ -408,6 +377,9 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
+        /// <summary>
+        /// Sets focus on the control.
+        /// </summary>
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
@@ -423,18 +395,25 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("blur", new object[] { }, new string[] { });
         }
 
+        /// <summary>
+        /// Removes focus from the control.
+        /// </summary>
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
             InvokeMethodSync("blur", new object[] { }, new string[] { });
         }
         /// <summary>
-        /// Clears the input element of user input.
+        /// Clears the component of any user input.
         /// </summary>
         public async Task ClearAsync()
         {
             await InvokeMethod("clear", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Clears the component of any user input.
+        /// </summary>
         public void Clear()
         {
             InvokeMethodSync("clear", new object[] { }, new string[] { });
@@ -459,43 +438,67 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("hasTimeParts", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Sets the text selection range of the control.
+        /// </summary>
         public async Task SetSelectionRangeAsync(double start = -1, double end = -1, String direction = null)
         {
             await InvokeMethod("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
+
+        /// <summary>
+        /// Sets the text selection range of the control.
+        /// </summary>
         public void SetSelectionRange(double start = -1, double end = -1, String direction = null)
         {
             InvokeMethodSync("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
+
+        /// <summary>
+        /// Replaces the selected text in the control and re-applies the mask.
+        /// </summary>
         public async Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String selectMode = null)
         {
             await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
+
+        /// <summary>
+        /// Replaces the selected text in the control and re-applies the mask.
+        /// </summary>
         public void SetRangeText(String replacement, double start = -1, double end = -1, String selectMode = null)
         {
             InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
         /// <summary>
-        /// Checks for validity of the control and shows the browser message if it invalid.
+        /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
             var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and shows the browser message if it's invalid.
+        /// </summary>
         public bool ReportValidity()
         {
             var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
-        /// Checks for validity of the control and emits the invalid event if it invalid.
+        /// Checks for validity of the control and emits the invalid event if it's invalid.
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
             var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Checks for validity of the control and emits the invalid event if it's invalid.
+        /// </summary>
         public bool CheckValidity()
         {
             var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
@@ -503,24 +506,25 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Sets a custom validation message for the control.
-        /// As long as `message` is not empty, the control is considered invalid.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
             await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
+
+        /// <summary>
+        /// Sets a custom validation message for the control.
+        /// As long as <paramref name="message"/> is not empty, the control is considered invalid.
+        /// </summary>
         public void SetCustomValidity(String message)
         {
             InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
         }
 
-        partial void SerializeCoreIgbDateTimeInputBase(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbDateTimeInputBase(ser);
 
             if (IsPropDirty("Outlined"))
             { ser.AddBooleanProp("outlined", this._outlined); }

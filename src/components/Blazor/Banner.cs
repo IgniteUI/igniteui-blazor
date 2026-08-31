@@ -2,10 +2,18 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// A non-modal notification banner that displays important, concise messages
+    /// requiring user acknowledgement.
+    /// The banner slides into view with an animated grow transition and renders
+    /// inline, pushing the surrounding page content rather than overlaying it.
+    /// </summary>
     public partial class IgbBanner : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebBanner"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbBannerModule.IsLoadRequested(IgBlazor))
@@ -14,11 +22,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -27,6 +37,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -35,6 +46,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -43,28 +55,20 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbBanner() : base()
-        {
-            OnCreatedIgbBanner();
-
-        }
-
-        partial void OnCreatedIgbBanner();
-
         private bool _open = false;
 
-        partial void OnOpenChanging(ref bool newValue);
         /// <summary>
         /// Whether the banner is open.
         /// Setting this property programmatically will immediately show or hide the
         /// banner without animation and without emitting close events.
-        /// Prefer the `show()`, `hide()`, and `toggle()` methods for animated
-        /// transitions.
+        /// Prefer the <see cref="Show"/>, <see cref="Hide"/>, and <see cref="Toggle"/> methods for
+        /// animated transitions.
         /// </summary>
         [Parameter]
         public bool Open
@@ -81,25 +85,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameBanner(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameBanner(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -110,14 +95,20 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Opens the banner with an animated grow-in transition.
-        /// Returns `true` when the banner was successfully opened, or `false` if
-        /// it was already open.
         /// </summary>
+        /// <returns><see langword="true"/> when the banner was successfully opened,
+        /// or <see langword="false"/> if it was already open.</returns>
         public async Task<bool> ShowAsync()
         {
             var iv = await InvokeMethod("show", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Opens the banner with an animated grow-in transition.
+        /// </summary>
+        /// <returns><see langword="true"/> when the banner was successfully opened,
+        /// or <see langword="false"/> if it was already open.</returns>
         public bool Show()
         {
             var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
@@ -125,14 +116,20 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Closes the banner with an animated grow-out transition.
-        /// Returns `true` when the banner was successfully closed, or `false` if
-        /// it was already closed.
         /// </summary>
+        /// <returns><see langword="true"/> when the banner was successfully closed,
+        /// or <see langword="false"/> if it was already closed.</returns>
         public async Task<bool> HideAsync()
         {
             var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Closes the banner with an animated grow-out transition.
+        /// </summary>
+        /// <returns><see langword="true"/> when the banner was successfully closed,
+        /// or <see langword="false"/> if it was already closed.</returns>
         public bool Hide()
         {
             var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
@@ -140,14 +137,20 @@ namespace IgniteUI.Blazor.Controls
         }
         /// <summary>
         /// Toggles the banner open or closed depending on its current state.
-        /// Equivalent to calling `show()` when closed and `hide()` when open.
-        /// Returns `true` when the transition completed successfully.
+        /// Equivalent to calling <see cref="Show"/> when closed and <see cref="Hide"/> when open.
         /// </summary>
+        /// <returns><see langword="true"/> when the transition completed successfully.</returns>
         public async Task<bool> ToggleAsync()
         {
             var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Toggles the banner open or closed depending on its current state.
+        /// Equivalent to calling <see cref="Show"/> when closed and <see cref="Hide"/> when open.
+        /// </summary>
+        /// <returns><see langword="true"/> when the transition completed successfully.</returns>
         public bool Toggle()
         {
             var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
@@ -156,6 +159,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closingRef = null;
         private string _closingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosingScript
         {
@@ -178,8 +189,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosing(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closing = null;
+
+        /// <summary>
+        /// Emitted just before the banner closes in response to the default action button being clicked.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closing
         {
@@ -189,16 +203,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value, (args) =>
-                        {
-                            OnHandlingClosing(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -221,6 +231,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _closedRef = null;
         private string _closedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ClosedScript
         {
@@ -243,8 +261,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingClosed(IgbVoidEventArgs args);
         private EventCallback<IgbVoidEventArgs>? _closed = null;
+
+        /// <summary>
+        /// Emitted after the banner has fully closed and its exit animation has completed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbVoidEventArgs> Closed
         {
@@ -254,16 +275,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _closed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value, (args) =>
-                        {
-                            OnHandlingClosed(args);
-
-                        });
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -284,13 +301,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbBanner(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbBanner(ser);
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }

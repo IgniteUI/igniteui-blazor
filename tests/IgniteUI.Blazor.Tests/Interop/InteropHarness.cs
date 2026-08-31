@@ -8,7 +8,9 @@ namespace IgniteUI.Blazor.Tests.Interop;
 
 /// <summary>
 /// A component API method invocation observed on the interop layer,
-/// normalized away from the concrete wire format.
+/// normalized away from the concrete wire format. <c>Elements</c> are the DOM element
+/// handles that ride with the call rather than inside <c>Arguments</c> — an element-typed
+/// argument crosses as a placeholder referencing its position among them.
 /// </summary>
 public sealed record InteropMethodCall(
     string ContainerId,
@@ -16,6 +18,7 @@ public sealed record InteropMethodCall(
     long InvokeId,
     IReadOnlyList<JsonElement> Arguments,
     IReadOnlyList<string> Types,
+    IReadOnlyList<ElementReference> Elements,
     JsonElement RawMessage);
 
 /// <summary>
@@ -154,6 +157,13 @@ public abstract class InteropHarness
     /// was transmitted.
     /// </summary>
     public abstract JsonElement? FindPropertyUpdate(string containerId, string wireName);
+
+    /// <summary>
+    /// Forgets the traffic observed so far, so <see cref="MethodCalls"/>, <see cref="StateSyncs"/> and
+    /// <see cref="FindPropertyUpdate"/> report only what crosses from here on instead of at any point.
+    /// For tests with phases - bind, then unbind, etc - ensures the next phase's observations are correct.
+    /// </summary>
+    public abstract void ClearObserved();
 
     public IEnumerable<InteropMethodCall> CallsOf(string methodName, string? containerId = null) =>
         MethodCalls.Where(c => c.MethodName == methodName && (containerId is null || c.ContainerId == containerId));

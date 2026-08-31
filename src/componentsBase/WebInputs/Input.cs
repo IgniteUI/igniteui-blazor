@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// 
+    /// Base class for <see cref="IgbInput" /> and <see cref="IgbMaskInput" />.
     /// </summary>
     public partial class IgbInputBase : BaseRendererControl
     {
@@ -20,7 +20,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingInputOcurred(IgbComponentValueChangedEventArgs args)
+        private void RaiseValueChanging(IgbComponentValueChangedEventArgs args)
         {
             if (!EventCallback<string>.Empty.Equals(ValueChanging))
             {
@@ -29,6 +29,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private EventCallback<string>? _valueChanging = null;
+
+        /// <summary>
+        /// Emitted as the user types, carrying the current text of the input.
+        /// Raised alongside <see cref="InputOcurred"/>, whose payload it unwraps.
+        /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanging
         {
@@ -38,9 +43,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<string>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!value.Equals(_valueChanging))
+                    if (!value.EqualsCompat(_valueChanging))
                     {
                         this.EnsureInputOcurredHandled();
 
@@ -54,6 +59,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         public override Task SetParametersAsync(ParameterView parameters)
         {
             // Params are case-insensitive & can't keep old name as deprecated,
@@ -73,6 +79,7 @@ namespace IgniteUI.Blazor.Controls
 
     public partial class IgbInput
     {
+        /// <inheritdoc />
         public override Task SetParametersAsync(ParameterView parameters)
         {
             // Params are case-insensitive & can't keep old name as deprecated,

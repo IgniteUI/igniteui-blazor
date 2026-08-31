@@ -5,8 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSwitch : IgbCheckboxBase
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSwitch"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbSwitchModule.IsLoadRequested(IgBlazor))
@@ -15,11 +17,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -28,6 +32,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -36,50 +41,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
             {
                 return "igc-switch";
             }
-        }
-
-        public IgbSwitch() : base()
-        {
-            OnCreatedIgbSwitch();
-
-        }
-
-        partial void OnCreatedIgbSwitch();
-
-        partial void FindByNameSwitch(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameSwitch(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbSwitch(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbSwitch(ser);
-
         }
 
     }

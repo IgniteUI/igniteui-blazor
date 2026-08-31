@@ -52,6 +52,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// <code>Methods_FollowContract() => <see cref="VerifyMethodContract"/></code>
     /// <code>Props_FollowContract() => <see cref="VerifyPropContract"/></code>
     /// <code>Events_FollowContract() => <see cref="VerifyEventContract"/></code>
+    /// <code>Binds_FollowContract() => <see cref="VerifyBindContract"/></code>
     /// Each method, property, and event in the contract is exercised in isolation, with a fresh component instance (or a shared instance for methods that don't require an arrangement).
     /// The harness is primed to a ready state before each test, and any stubbed return values are set up before invoking the method or reading the property.
     /// The test asserts that the expected interop calls are made with the correct arguments and types, and that the return values are as expected.
@@ -73,6 +74,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
         RequireSectionFact(contract.Methods.Count > 0, "Methods_FollowContract", nameof(VerifyMethodContract));
         RequireSectionFact(contract.Props.Count > 0, "Props_FollowContract", nameof(VerifyPropContract));
         RequireSectionFact(contract.Events.Count > 0, "Events_FollowContract", nameof(VerifyEventContract));
+        RequireSectionFact(contract.Binds.Count > 0, "Binds_FollowContract", nameof(VerifyBindContract));
     }
 
     private void RequireSectionFact(bool hasSpecs, string factName, string runnerName)
@@ -128,14 +130,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     scope = cut;
                 }
 
-                if (method.ReadsProperty is not null)
-                {
-                    await RunGetterSpec(harness, cut, scope, method);
-                }
-                else
-                {
-                    await RunMethodSpec(harness, cut, scope, method);
-                }
+                await RunSpec(harness, cut, scope, method);
             }
             catch (Exception ex) when (ex is not ContractViolationException)
             {
@@ -147,37 +142,68 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
         }
     }
 
-    /// <summary>Stub → invoke → assert the recorded call's identifier, args, and type tags, then the decoded return.</summary>
-    private static async Task RunMethodSpec(
+    /// <summary>
+    /// Stub → invoke → assert, for both kinds of spec. A current-state read differs from an
+    /// API call in only two ways — who names the wire identifier (the harness, from the
+    /// property name, vs. the spec) and that it carries no arguments — so the invocation,
+    /// sync-twin and return-decoding dance is written once, here.
+    /// </summary>
+    private static async Task RunSpec(
         InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedComponent<IComponent> scope, MethodContractSpec<TComponent> method)
     {
-        // Stub immediately before invoking so specs may reuse a method name
+        var isRead = method.ReadsProperty is not null;
+
+        // Stub immediately before invoking so specs may reuse a member
         // with different stubbed results.
-        var stub = method.StubFactory?.Invoke(harness, scope) ?? method.Stub;
-        if (stub is not null)
+        var stub = method.Stub?.Get(harness, scope);
+        if (isRead)
+        {
+            harness.SetupPropertyRead(method.ReadsProperty!, stub!);
+        }
+        else if (stub is not null)
         {
             harness.SetupMethodResult(method.JsName!, stub);
         }
 
         var containerId = harness.ContainerIdOf(cut);
-        var (call, result) = await InvokeExpectingNewCall(
-            () => harness.CallsOf(method.JsName!, containerId),
-            () => method.Invoke(cut.Instance),
-            $"\"{method.JsName}\" sent no new invocation");
-        AssertCallShape(method, call, result);
-        method.AssertReturnWithCut?.Invoke(scope, result);
+        // How a read is identified on the wire stays harness-owned; a call's identifier is the spec's.
+        Func<IEnumerable<InteropMethodCall>> matching = isRead
+            ? () => harness.PropertyReads(containerId, method.ReadsProperty!)
+            : () => harness.CallsOf(method.JsName!, containerId);
+        var noNewCall = isRead
+            ? $"no new current-state read was issued for \"{method.ReadsProperty}\""
+            : $"\"{method.JsName}\" sent no new invocation";
+
+        var (call, result) = await InvokeExpectingNewCall(matching, () => method.Invoke(cut.Instance), noNewCall);
+        AssertObserved(harness, cut, scope, method, call, result);
 
         if (method.SyncInvoke is not null)
         {
-            // The sync twin must produce the same invocation and decode the same reply
+            // The sync twin must produce its own invocation and decode the same reply
             // (the stub persists) to the same result.
             var (syncCall, syncResult) = await InvokeExpectingNewCall(
-                () => harness.CallsOf(method.JsName!, containerId),
+                matching,
                 () => Task.FromResult(method.SyncInvoke(cut.Instance)),
-                $"sync twin \"{method.JsName}\" sent no new invocation");
-            AssertCallShape(method, syncCall, syncResult);
-            method.AssertReturnWithCut?.Invoke(scope, syncResult);
+                "sync twin: " + noNewCall);
+            AssertObserved(harness, cut, scope, method, syncCall, syncResult);
         }
+    }
+
+    /// <summary>Asserts everything the spec pins about one observed invocation: its wire shape (calls only) and its decoded return.</summary>
+    private static void AssertObserved(
+        InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedComponent<IComponent> scope,
+        MethodContractSpec<TComponent> method, InteropMethodCall call, object? result)
+    {
+        // A read carries no arguments, type tags or element handles — there is no wire shape to pin.
+        if (method.ReadsProperty is null)
+        {
+            AssertCallShape(harness, cut, method, call);
+        }
+        if (method.HasExpectedReturn)
+        {
+            AssertReturn(method.ExpectedReturn, result);
+        }
+        method.AssertReturnWithCut?.Invoke(scope, result);
     }
 
     /// <summary>
@@ -200,53 +226,39 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
         return (after[^1], result);
     }
 
-    /// <summary>Asserts a recorded invocation matches the spec's expected args and type tags.</summary>
-    private static void AssertCallShape(MethodContractSpec<TComponent> method, InteropMethodCall call, object? result)
+    /// <summary>Asserts a recorded invocation matches the spec's expected args, type tags, and element handles.</summary>
+    private static void AssertCallShape(
+        InteropHarness harness, IRenderedComponent<TComponent> cut, MethodContractSpec<TComponent> method, InteropMethodCall call)
     {
         Assert.Equal(method.ExpectedTypes, call.Types);
         Assert.Equal(method.ExpectedArgs.Length, call.Arguments.Count);
         for (var i = 0; i < method.ExpectedArgs.Length; i++)
         {
-            AssertWireValue(method.ExpectedArgs[i], call.Arguments[i]);
+            AssertWireValue(Resolve(method.ExpectedArgs[i], harness, cut), call.Arguments[i]);
         }
-
-        if (method.HasExpectedReturn)
-        {
-            AssertReturn(method.ExpectedReturn, result);
-        }
+        AssertElements(method.ExpectedElements?.Invoke() ?? [], call.Elements);
     }
 
-    /// <summary>Stub the property's JS-side value → invoke → assert a current-state read was issued and the return decoded.</summary>
-    private static async Task RunGetterSpec(
-        InteropHarness harness, IRenderedComponent<TComponent> cut, IRenderedComponent<IComponent> scope, MethodContractSpec<TComponent> method)
+    /// <summary>Settles a late expectation (see <see cref="FromRender{T}"/>) against the render; every other value is already final.</summary>
+    private static object? Resolve(object? expected, InteropHarness harness, IRenderedComponent<IComponent> scope) =>
+        expected is IFromRender late ? late.Resolve(harness, scope) : expected;
+
+    /// <summary>
+    /// Asserts the element handles riding with the invocation, by id — a handle's id is
+    /// what makes it resolvable on the client, so a spec expecting one without an id means
+    /// its arrangement never captured a real element (which would pass vacuously).
+    /// </summary>
+    private static void AssertElements(IReadOnlyList<ElementReference> expected, IReadOnlyList<ElementReference> actual)
     {
-        var stub = method.StubFactory?.Invoke(harness, scope) ?? method.Stub;
-        harness.SetupPropertyRead(method.ReadsProperty!, stub!);
-
-        var containerId = harness.ContainerIdOf(cut);
-        var (_, result) = await InvokeExpectingNewCall(
-            () => harness.PropertyReads(containerId, method.ReadsProperty!),
-            () => method.Invoke(cut.Instance),
-            "no new current-state read was issued for the property");
-        if (method.HasExpectedReturn)
+        Assert.Equal(expected.Count, actual.Count);
+        for (var i = 0; i < expected.Count; i++)
         {
-            AssertReturn(method.ExpectedReturn, result);
-        }
-        method.AssertReturnWithCut?.Invoke(scope, result);
-
-        if (method.SyncInvoke is not null)
-        {
-            // The sync twin must issue its own read (the read's wire identifier stays
-            // harness-owned) and decode the persisting stub to the same result.
-            var (_, syncResult) = await InvokeExpectingNewCall(
-                () => harness.PropertyReads(containerId, method.ReadsProperty!),
-                () => Task.FromResult(method.SyncInvoke(cut.Instance)),
-                $"sync twin issued no new current-state read for \"{method.ReadsProperty}\"");
-            if (method.HasExpectedReturn)
+            if (string.IsNullOrEmpty(expected[i].Id))
             {
-                AssertReturn(method.ExpectedReturn, syncResult);
+                throw new XunitException(
+                    "the spec expects an element handle with no id — check its arrangement captured a rendered element");
             }
-            method.AssertReturnWithCut?.Invoke(scope, syncResult);
+            Assert.Equal(expected[i].Id, actual[i].Id);
         }
     }
 
@@ -284,10 +296,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                         "no property update transmission was observed — check the wire name, " +
                         "and whether this prop crosses as a rendered attribute instead (not a .Prop case)");
                 }
-                var expected = prop.ExpectedValueFactory is not null
-                    ? prop.ExpectedValueFactory(harness, cut)
-                    : prop.ExpectedValue;
-                AssertWireValue(expected, actual.Value);
+                AssertWireValue(prop.ExpectedValue.Get(harness, cut), actual.Value);
             }
             catch (Exception ex) when (ex is not ContractViolationException)
             {
@@ -295,6 +304,142 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             }
         }
     }
+
+    /// <summary>
+    /// Runner for the contract's <c>.Bind</c> specs — expose it on the suite as
+    /// <c>[Fact] public void Binds_FollowContract() => VerifyBindContract();</c>.
+    /// Renders a fresh instance per spec bound exactly as <c>@bind-X</c> would, then dispatches
+    /// the paired event and verifies the round trip <b>inbound</b> side: binding alone transmitted that
+    /// paired event's registration (the client's cue to report changes) and the member kept the callback;
+    /// the dispatch pushed the decoded value to the binding; and the component's own property adopted it.
+    /// </summary>
+    /// <exception cref="ContractViolationException">
+    /// Any spec failure, naming the violated pair and carrying the declaring contract
+    /// line as the top stack frame.
+    /// </exception>
+    protected void VerifyBindContract()
+    {
+        var harness = InteropFor<TComponent>();
+        // Dispatch needs no readiness, but arranged data (items referenced by uuid) only
+        // transfers once ready — same reasoning as the event runner.
+        harness.PrimeReady();
+
+        foreach (var bind in InteropContract.Binds)
+        {
+            try
+            {
+                object? received = null;
+                var delivered = false;
+                void Sink(object? value)
+                {
+                    // Record only: OnRaiseEvent swallows exceptions, so anything thrown in here
+                    // would vanish and read as "never invoked".
+                    received = value;
+                    delivered = true;
+                }
+
+                var cut = Render<TComponent>(ps =>
+                {
+                    bind.Arrange?.Invoke(ps);
+                    bind.BindPair(ps, Sink);
+                });
+
+                // A setter whose emptiness guard is wrong can drop the callback, leaving the
+                // binding silently dead however well the rest of the wiring behaves.
+                Assert.True(
+                    bind.ChangedIsBound(cut.Instance),
+                    $"{bind.PropertyName}Changed did not keep the bound callback — check its setter's empty-callback guard");
+
+                // Read where the property actually starts: if that is already the expected value,
+                // everything below would pass without the dispatch changing anything.
+                if (Equals(bind.ReadProperty(cut.Instance), bind.Expected))
+                {
+                    throw new XunitException(
+                        $"{bind.PropertyName} already holds the expected value before the dispatch — expect a " +
+                        "different one, or state an initial: the change moves away from");
+                }
+
+                // Binding only the callback must still subscribe the client, by forcing the
+                // paired event's registration onto the wire.
+                var containerId = harness.ContainerIdOf(cut);
+                var registration = harness.FindPropertyUpdate(containerId, WireMemberName(bind.DrivingEvent))
+                    ?? throw new XunitException(
+                        $"binding transmitted no \"{bind.DrivingEvent}\" event registration — without it the " +
+                        "client never reports changes, so the binding can never fire");
+                Assert.Equal(bind.DrivingEvent, registration.GetString());
+
+                harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
+
+                if (!delivered)
+                {
+                    throw new XunitException(
+                        $"the {bind.PropertyName}Changed binding was never invoked — dispatch failures are " +
+                        "swallowed by the control, so check the driving event, the args JSON shape, and that " +
+                        "the payload decodes to the bound type");
+                }
+                // What the binding was handed is the decode's result.
+                if (bind.AssertValue is null)
+                {
+                    AssertReturn(bind.Expected, received);
+                }
+                else
+                {
+                    bind.AssertValue(received);
+                }
+
+                // And the property is written from that same decoded value, so the two must agree.
+                var adopted = bind.ReadProperty(cut.Instance);
+                try
+                {
+                    Assert.Equal(received, adopted);
+                }
+                catch (XunitException mismatch)
+                {
+                    throw new XunitException(
+                        $"{bind.PropertyName} did not adopt the value pushed to the binding — {mismatch.Message}");
+                }
+
+                // Unbinding stops the callback. Either callback carrying no handler must clear it,
+                // so both are verified.
+                // Unlike an event member, a bind member's empty branch only nulls its own field,
+                // so the driving event stays subscribed and the property keeps adopting client changes.
+                // TODO: Evaluate design, since EnsureXHandled forced that registration and never withdraws it.
+                VerifyUnbind(useEmpty: false);
+                Rebind();
+                VerifyUnbind(useEmpty: true);
+
+                void VerifyUnbind(bool useEmpty)
+                {
+                    var assigned = useEmpty ? "EventCallback<T>.Empty" : "default";
+
+                    cut.Render(ps => bind.BindPair(ps, null, useEmpty));
+                    Assert.False(
+                        bind.ChangedIsBound(cut.Instance),
+                        $"{bind.PropertyName}Changed still reports a bound callback after being cleared with {assigned}");
+
+                    delivered = false;
+                    harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
+                    Assert.False(delivered, $"{bind.PropertyName}Changed fired after being unbound with {assigned}");
+                }
+
+                void Rebind()
+                {
+                    cut.Render(ps => bind.BindPair(ps, Sink));
+                    Assert.True(
+                        bind.ChangedIsBound(cut.Instance),
+                        $"{bind.PropertyName}Changed did not take the callback again after being cleared");
+                }
+            }
+            catch (Exception ex) when (ex is not ContractViolationException)
+            {
+                throw Violation($"binding \"{bind.PropertyName}\"", bind.Source, ex);
+            }
+        }
+    }
+
+    /// <summary>The wire spelling of a member name — camelCase, as the serializer and <c>OnPropertyPropagatedOut</c> emit it.</summary>
+    private static string WireMemberName(string memberName) =>
+        char.ToLowerInvariant(memberName[0]) + memberName[1..];
 
     /// <summary>
     /// Runner for the contract's <c>.Event</c> specs — expose it on the suite as
@@ -324,10 +469,11 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             {
                 object? received = null;
                 object bound = null!;
+                void Sink(object args) => received = args;
                 var cut = Render<TComponent>(ps =>
                 {
                     evt.Arrange?.Invoke(ps);
-                    bound = evt.Bind(ps, args => received = args);
+                    bound = evt.Bind(ps, Sink);
                 });
                 var containerId = harness.ContainerIdOf(cut);
 
@@ -337,12 +483,12 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 // identity; dispatch alone can't catch a registration that never
                 // reached the wire.
                 Assert.Equal(bound, evt.Get(cut.Instance));
-                var wireName = char.ToLowerInvariant(evt.EventName[0]) + evt.EventName[1..];
+                var wireName = WireMemberName(evt.EventName);
                 var registration = harness.FindPropertyUpdate(containerId, wireName)
                     ?? throw new XunitException("no event-handler registration transmission was observed");
                 Assert.Equal(evt.EventName, registration.GetString());
 
-                var argsJson = evt.ArgsJsonFactory?.Invoke(harness, cut) ?? evt.ArgsJson;
+                var argsJson = evt.ArgsJson.Get(harness, cut);
                 harness.RaiseEvent(containerId, evt.EventName, argsJson);
 
                 if (received is null)
@@ -357,21 +503,61 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 evt.AssertWithComponent?.Invoke(cut.Instance, received);
                 evt.AssertWithCut?.Invoke(cut, received);
 
-                // TODO: removing a bound callback crashes today, on either path. Razor-bound
-                // values arrive wrapped by EventCallback.Factory.Create, so a "default"
-                // carries a Receiver with a null Delegate — that fails the setter's Empty
-                // check, takes the *bound* branch, and NREs in
-                // BaseRendererControl.CompareEventCallbacks on leftDelegate.Equals(...);
-                // a raw Empty (what bUnit/programmatic SetParameters passes) does reach the
-                // unset branch and NREs in OnRefChanged on newValue.ToString(). Once fixed,
-                // validate the removal round-trip; pin the actual cleared wire shape then:
-                // cut.SetParametersAndRender(ps => bound = evt.Bind(ps, null));
-                // Assert.Equal(bound, evt.Get(cut.Instance)); // member resets to the empty callback
-                // var cleared = harness.FindPropertyUpdate(containerId, wireName);
-                // Assert.Equal(JsonValueKind.Null, cleared!.Value.ValueKind);
-                // received = null;
-                // harness.RaiseEvent(containerId, evt.EventName, argsJson);
-                // Assert.Null(received); // deregistered handlers must not be invoked
+                // Re-binding an equivalent callback must not read as a new subscription — Blazor hands over a
+                // fresh delegate for the same handler every render. Read through the member (a setter assigns
+                // and registers in one branch) since probing the wire for an absent message costs a 2s retry.
+                // Only bites on net8.0/net9.0, whose EventCallback.Equals compares the delegate by reference.
+                cut.Render(ps => evt.Bind(ps, Sink));
+                Assert.Equal(bound, evt.Get(cut.Instance));
+
+                // Unbinding is the other half of the registration contract: clearing the parameter
+                // must reset the member, tell the client to unsubscribe, and stop delivery. Either
+                // callback carrying no handler must clear it, so both are verified.
+                VerifyUnbind(useEmpty: false);
+                Rebind();
+                VerifyUnbind(useEmpty: true);
+
+                void VerifyUnbind(bool useEmpty)
+                {
+                    var assigned = useEmpty ? "EventCallback<T>.Empty" : "default";
+
+                    // Forget the previous phase's traffic, so what follows is the client state
+                    harness.ClearObserved();
+                    cut.Render(ps => evt.Bind(ps, null, useEmpty));
+
+                    // Asserted through the member rather than against the assigned value: clearing with
+                    // default reads back as Empty, since the getter substitutes it for a null field.
+                    Assert.False(
+                        evt.IsBound(cut.Instance),
+                        $"clearing \"{evt.EventName}\" with {assigned} left the member holding a live callback");
+
+                    // TODO: active @bind-X may still need the sub; fix will make this check conditional.
+                    var cleared = harness.FindPropertyUpdate(containerId, wireName);
+                    if (cleared is null || cleared.Value.ValueKind != JsonValueKind.Null)
+                    {
+                        throw new XunitException(
+                            $"clearing \"{evt.EventName}\" with {assigned} left it registered as " +
+                            $"{cleared?.ToString() ?? "nothing"} — the client would keep reporting an " +
+                            "event nobody handles");
+                    }
+
+                    received = null;
+                    harness.RaiseEvent(containerId, evt.EventName, argsJson);
+                    Assert.Null(received);
+                }
+
+                void Rebind()
+                {
+                    harness.ClearObserved();
+                    cut.Render(ps => evt.Bind(ps, Sink));
+                    var rebound = harness.FindPropertyUpdate(containerId, wireName);
+                    if (rebound is null || rebound.Value.GetString() != evt.EventName)
+                    {
+                        throw new XunitException(
+                            $"re-binding \"{evt.EventName}\" transmitted {rebound?.ToString() ?? "no registration"} — " +
+                            "the client would never resubscribe");
+                    }
+                }
             }
             catch (Exception ex) when (ex is not ContractViolationException)
             {
@@ -471,12 +657,45 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// <summary>Compares a decoded .NET return against the spec's expected value.</summary>
     private static void AssertReturn(object? expected, object? actual)
     {
-        // Date returns are decoded to local time; compare instants instead of kinds.
-        if (expected is DateTime expectedDate && actual is DateTime actualDate)
+        switch (expected)
         {
-            Assert.Equal(expectedDate.ToUniversalTime(), actualDate.ToUniversalTime());
-            return;
+            case DateTime expectedInstant:
+                AssertDecodedDate(expectedInstant, actual);
+                break;
+            case IEnumerable<DateTime> expectedInstants:
+                // Dates in a collection follow the same rule; xUnit's own equality would compare
+                // them by reading alone, which is neither the instant nor the conversion.
+                var expectedList = expectedInstants.ToList();
+                var actualList = Assert.IsAssignableFrom<IEnumerable<DateTime>>(actual).ToList();
+                Assert.Equal(expectedList.Count, actualList.Count);
+                for (var i = 0; i < expectedList.Count; i++)
+                {
+                    AssertDecodedDate(expectedList[i], actualList[i]);
+                }
+                break;
+            default:
+                Assert.Equal(expected, actual);
+                break;
         }
-        Assert.Equal(expected, actual);
+    }
+
+    /// <summary>
+    /// One decoded date: stated by the spec as the UTC instant that crossed the wire, and required
+    /// to arrive as the local rendering of it — reading *and* <see cref="DateTimeKind"/>. Asserting
+    /// the kind is what pins the conversion in every timezone, including the one where local and
+    /// UTC coincide and a plain instant comparison could not tell the two apart.
+    /// </summary>
+    private static void AssertDecodedDate(DateTime expectedInstant, object? actual)
+    {
+        if (expectedInstant.Kind == DateTimeKind.Unspecified)
+        {
+            throw new XunitException(
+                $"expected date {expectedInstant:o} has Kind=Unspecified — state the instant explicitly " +
+                "(DateTimeKind.Utc), since ToLocalTime and ToUniversalTime read an unspecified kind in " +
+                "opposite directions and would shift it silently");
+        }
+        var actualDate = Assert.IsType<DateTime>(actual);
+        Assert.Equal(expectedInstant.ToLocalTime(), actualDate);
+        Assert.Equal(DateTimeKind.Local, actualDate.Kind);
     }
 }

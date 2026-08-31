@@ -3,26 +3,30 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The tile component is used within the `igc-tile-manager` as a container
+    /// The tile component is used within the <see cref="IgbTileManager"/> as a container
     /// for displaying various types of information.
     /// </summary>
     public partial class IgbTile : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTile"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbTileModule.IsLoadRequested(IgBlazor))
+            if (!IgbTileManagerModule.IsLoadRequested(IgBlazor))
             {
-                IgbTileModule.Register(IgBlazor);
+                IgbTileManagerModule.Register(IgBlazor);
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,22 +53,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbTile() : base()
-        {
-            OnCreatedIgbTile();
+        private double _colSpan = 1;
 
-        }
-
-        partial void OnCreatedIgbTile();
-
-        private double _colSpan = 0;
-
-        partial void OnColSpanChanging(ref double newValue);
         /// <summary>
         /// The number of columns the tile will span.
         /// </summary>
@@ -80,9 +78,8 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _rowSpan = 0;
+        private double _rowSpan = 1;
 
-        partial void OnRowSpanChanging(ref double newValue);
         /// <summary>
         /// The number of rows the tile will span.
         /// </summary>
@@ -102,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _colStart = 0;
 
-        partial void OnColStartChanging(ref double? newValue);
         /// <summary>
         /// The starting column for the tile.
         /// </summary>
@@ -122,7 +118,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private double? _rowStart = 0;
 
-        partial void OnRowStartChanging(ref double? newValue);
         /// <summary>
         /// The starting row for the tile.
         /// </summary>
@@ -140,11 +135,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+
+        /// <summary>
+        /// Indicates whether the tile occupies the whole screen.
+        /// </summary>
         public async Task<bool> GetFullscreenAsync()
         {
             var iv = await InvokeMethod("p:Fullscreen", new object[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
+
+        /// <summary>
+        /// Indicates whether the tile occupies the whole screen.
+        /// </summary>
         public bool GetFullscreen()
         {
             var iv = InvokeMethodSync("p:Fullscreen", new object[] { }, new string[] { });
@@ -152,7 +155,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _maximized = false;
 
-        partial void OnMaximizedChanging(ref bool newValue);
         /// <summary>
         /// Indicates whether the tile occupies all available space within the layout.
         /// </summary>
@@ -172,10 +174,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableResize = false;
 
-        partial void OnDisableResizeChanging(ref bool newValue);
         /// <summary>
         /// Indicates whether to disable tile resize behavior regardless
-        /// ot its tile manager parent settings.
+        /// of its tile manager parent settings.
         /// </summary>
         [Parameter]
         public bool DisableResize
@@ -193,9 +194,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableFullscreen = false;
 
-        partial void OnDisableFullscreenChanging(ref bool newValue);
         /// <summary>
-        /// Whether to disable the rendering of the tile `fullscreen-action` slot and its
+        /// Whether to disable the rendering of the tile <c>fullscreen-action</c> slot and its
         /// default fullscreen action button.
         /// </summary>
         [Parameter]
@@ -214,9 +214,8 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _disableMaximize = false;
 
-        partial void OnDisableMaximizeChanging(ref bool newValue);
         /// <summary>
-        /// Whether to disable the rendering of the tile `maximize-action` slot and its
+        /// Whether to disable the rendering of the tile <c>maximize-action</c> slot and its
         /// default maximize action button.
         /// </summary>
         [Parameter]
@@ -233,12 +232,11 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _position = 0;
+        private double _position = -1;
 
-        partial void OnPositionChanging(ref double newValue);
         /// <summary>
         /// Gets/sets the tile's visual position in the layout.
-        /// Corresponds to the CSS `order` property.
+        /// Corresponds to the CSS <c>order</c> property.
         /// </summary>
         [Parameter]
         public double Position
@@ -255,25 +253,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTile(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTile(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -285,6 +264,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _tileFullscreenRef = null;
         private string _tileFullscreenScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TileFullscreen"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TileFullscreenScript
         {
@@ -307,8 +294,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileFullscreen(IgbTileChangeStateEventArgs args);
         private EventCallback<IgbTileChangeStateEventArgs>? _tileFullscreen = null;
+
+        /// <summary>
+        /// Fired when the tile's fullscreen state changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTileChangeStateEventArgs> TileFullscreen
         {
@@ -318,16 +308,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTileChangeStateEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _tileFullscreen, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_tileFullscreen))
                     {
                         _tileFullscreen = value;
-                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileFullscreen", value, (args) =>
-                        {
-                            OnHandlingTileFullscreen(args);
-
-                        });
+                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileFullscreen", value);
                         this.OnRefChanged("TileFullscreen", null, "event:::TileFullscreen", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileFullscreenRef = refName;
@@ -350,6 +336,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _tileMaximizeRef = null;
         private string _tileMaximizeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TileMaximize"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TileMaximizeScript
         {
@@ -372,8 +366,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileMaximize(IgbTileChangeStateEventArgs args);
         private EventCallback<IgbTileChangeStateEventArgs>? _tileMaximize = null;
+
+        /// <summary>
+        /// Fired when the tile's maximize state changes.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTileChangeStateEventArgs> TileMaximize
         {
@@ -383,16 +380,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTileChangeStateEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _tileMaximize, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_tileMaximize))
                     {
                         _tileMaximize = value;
-                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileMaximize", value, (args) =>
-                        {
-                            OnHandlingTileMaximize(args);
-
-                        });
+                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileMaximize", value);
                         this.OnRefChanged("TileMaximize", null, "event:::TileMaximize", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileMaximizeRef = refName;
@@ -415,6 +408,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _tileDragStartRef = null;
         private string _tileDragStartScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TileDragStart"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TileDragStartScript
         {
@@ -437,8 +438,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileDragStart(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileDragStart = null;
+
+        /// <summary>
+        /// Fired when a drag operation on a tile is about to begin.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTileComponentEventArgs> TileDragStart
         {
@@ -448,16 +452,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTileComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _tileDragStart, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_tileDragStart))
                     {
                         _tileDragStart = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragStart", value, (args) =>
-                        {
-                            OnHandlingTileDragStart(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragStart", value);
                         this.OnRefChanged("TileDragStart", null, "event:::TileDragStart", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragStartRef = refName;
@@ -480,6 +480,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _tileDragEndRef = null;
         private string _tileDragEndScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TileDragEnd"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TileDragEndScript
         {
@@ -502,8 +510,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileDragEnd(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileDragEnd = null;
+
+        /// <summary>
+        /// Fired when a drag operation with a tile is successfully completed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTileComponentEventArgs> TileDragEnd
         {
@@ -513,16 +524,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTileComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _tileDragEnd, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_tileDragEnd))
                     {
                         _tileDragEnd = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragEnd", value, (args) =>
-                        {
-                            OnHandlingTileDragEnd(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragEnd", value);
                         this.OnRefChanged("TileDragEnd", null, "event:::TileDragEnd", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragEndRef = refName;
@@ -545,6 +552,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _tileDragCancelRef = null;
         private string _tileDragCancelScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TileDragCancel"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TileDragCancelScript
         {
@@ -567,8 +582,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileDragCancel(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileDragCancel = null;
+
+        /// <summary>
+        /// Fired when a tile drag operation is canceled by the user.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTileComponentEventArgs> TileDragCancel
         {
@@ -578,16 +596,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTileComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _tileDragCancel, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_tileDragCancel))
                     {
                         _tileDragCancel = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragCancel", value, (args) =>
-                        {
-                            OnHandlingTileDragCancel(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragCancel", value);
                         this.OnRefChanged("TileDragCancel", null, "event:::TileDragCancel", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragCancelRef = refName;
@@ -610,6 +624,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _tileResizeStartRef = null;
         private string _tileResizeStartScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TileResizeStart"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TileResizeStartScript
         {
@@ -632,8 +654,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileResizeStart(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileResizeStart = null;
+
+        /// <summary>
+        /// Fired when a resize operation on a tile is about to begin.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTileComponentEventArgs> TileResizeStart
         {
@@ -643,16 +668,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTileComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _tileResizeStart, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_tileResizeStart))
                     {
                         _tileResizeStart = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeStart", value, (args) =>
-                        {
-                            OnHandlingTileResizeStart(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeStart", value);
                         this.OnRefChanged("TileResizeStart", null, "event:::TileResizeStart", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeStartRef = refName;
@@ -675,6 +696,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _tileResizeEndRef = null;
         private string _tileResizeEndScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TileResizeEnd"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TileResizeEndScript
         {
@@ -697,8 +726,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileResizeEnd(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileResizeEnd = null;
+
+        /// <summary>
+        /// Fired when a resize operation on a tile is successfully completed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTileComponentEventArgs> TileResizeEnd
         {
@@ -708,16 +740,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTileComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _tileResizeEnd, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_tileResizeEnd))
                     {
                         _tileResizeEnd = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeEnd", value, (args) =>
-                        {
-                            OnHandlingTileResizeEnd(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeEnd", value);
                         this.OnRefChanged("TileResizeEnd", null, "event:::TileResizeEnd", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeEndRef = refName;
@@ -740,6 +768,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _tileResizeCancelRef = null;
         private string _tileResizeCancelScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="TileResizeCancel"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string TileResizeCancelScript
         {
@@ -762,8 +798,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingTileResizeCancel(IgbTileComponentEventArgs args);
         private EventCallback<IgbTileComponentEventArgs>? _tileResizeCancel = null;
+
+        /// <summary>
+        /// Fired when a resize operation on a tile is canceled by the user.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbTileComponentEventArgs> TileResizeCancel
         {
@@ -773,16 +812,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTileComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _tileResizeCancel, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_tileResizeCancel))
                     {
                         _tileResizeCancel = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeCancel", value, (args) =>
-                        {
-                            OnHandlingTileResizeCancel(args);
-
-                        });
+                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeCancel", value);
                         this.OnRefChanged("TileResizeCancel", null, "event:::TileResizeCancel", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeCancelRef = refName;
@@ -803,13 +838,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbTile(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTile(ser);
 
             if (IsPropDirty("ColSpan"))
             { ser.AddNumberProp("colSpan", this._colSpan); }

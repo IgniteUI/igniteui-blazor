@@ -2,25 +2,29 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A container component for the card's main text content.
-    /// This component should be used within an igc-card element to display the primary content.
+    /// Nest inside an <see cref="IgbCard"/> to display the primary content.
     /// </summary>
     public partial class IgbCardContent : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebCardContent"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbCardContentModule.IsLoadRequested(IgBlazor))
+            if (!IgbCardModule.IsLoadRequested(IgBlazor))
             {
-                IgbCardContentModule.Register(IgBlazor);
+                IgbCardModule.Register(IgBlazor);
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -29,6 +33,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -37,6 +42,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -45,38 +51,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbCardContent() : base()
-        {
-            OnCreatedIgbCardContent();
-
-        }
-
-        partial void OnCreatedIgbCardContent();
-
-        partial void FindByNameCardContent(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameCardContent(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -84,16 +64,6 @@ namespace IgniteUI.Blazor.Controls
         public void SetNativeElement(Object element)
         {
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
-        partial void SerializeCoreIgbCardContent(RendererSerializer ser);
-
-        internal override void SerializeCore(RendererSerializer ser)
-        {
-            base.SerializeCore(ser);
-
-            SerializeCoreIgbCardContent(ser);
-
         }
 
     }

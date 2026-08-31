@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbStepper : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebStepper"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbStepperModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,19 +52,15 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public IgbStepper() : base()
-        {
-            OnCreatedIgbStepper();
-
-        }
-
-        partial void OnCreatedIgbStepper();
-
+        /// <summary>
+        /// Returns all of the stepper's steps.
+        /// </summary>
         public async Task<IgbStep[]> GetStepsAsync()
         {
             var iv = await InvokeMethod("p:Steps", new object[] { }, new string[] { });
@@ -75,6 +77,10 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
+
+        /// <summary>
+        /// Returns all of the stepper's steps.
+        /// </summary>
         public IgbStep[] GetSteps()
         {
             var iv = InvokeMethodSync("p:Steps", new object[] { }, new string[] { });
@@ -93,7 +99,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StepperOrientation _orientation = StepperOrientation.Horizontal;
 
-        partial void OnOrientationChanging(ref StepperOrientation newValue);
         /// <summary>
         /// The orientation of the stepper.
         /// </summary>
@@ -113,7 +118,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StepperStepType _stepType = StepperStepType.Full;
 
-        partial void OnStepTypeChanging(ref StepperStepType newValue);
         /// <summary>
         /// The visual type of the steps.
         /// </summary>
@@ -133,7 +137,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _linear = false;
 
-        partial void OnLinearChanging(ref bool newValue);
         /// <summary>
         /// Whether the stepper is linear.
         /// </summary>
@@ -153,7 +156,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _contentTop = false;
 
-        partial void OnContentTopChanging(ref bool newValue);
         /// <summary>
         /// Whether the content is displayed above the steps.
         /// </summary>
@@ -173,7 +175,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StepperVerticalAnimation _verticalAnimation = StepperVerticalAnimation.Grow;
 
-        partial void OnVerticalAnimationChanging(ref StepperVerticalAnimation newValue);
         /// <summary>
         /// The animation type when in vertical mode.
         /// </summary>
@@ -193,7 +194,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private HorizontalTransitionAnimation _horizontalAnimation = HorizontalTransitionAnimation.Slide;
 
-        partial void OnHorizontalAnimationChanging(ref HorizontalTransitionAnimation newValue);
         /// <summary>
         /// The animation type when in horizontal mode.
         /// </summary>
@@ -211,9 +211,8 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _animationDuration = 0;
+        private double _animationDuration = 320;
 
-        partial void OnAnimationDurationChanging(ref double newValue);
         /// <summary>
         /// The animation duration in either vertical or horizontal mode in milliseconds.
         /// </summary>
@@ -233,7 +232,6 @@ namespace IgniteUI.Blazor.Controls
         }
         private StepperTitlePosition _titlePosition = StepperTitlePosition.Auto;
 
-        partial void OnTitlePositionChanging(ref StepperTitlePosition newValue);
         /// <summary>
         /// The position of the steps title.
         /// </summary>
@@ -252,25 +250,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameStepper(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameStepper(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -286,6 +265,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("navigateTo", new object[] { index }, new string[] { "Number" });
         }
+
+        /// <summary>
+        /// Activates the step at a given index.
+        /// </summary>
         public void NavigateTo(double index)
         {
             InvokeMethodSync("navigateTo", new object[] { index }, new string[] { "Number" });
@@ -297,6 +280,10 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("next", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Activates the next enabled step.
+        /// </summary>
         public void Next()
         {
             InvokeMethodSync("next", new object[] { }, new string[] { });
@@ -308,17 +295,25 @@ namespace IgniteUI.Blazor.Controls
         {
             await InvokeMethod("prev", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Activates the previous enabled step.
+        /// </summary>
         public void Prev()
         {
             InvokeMethodSync("prev", new object[] { }, new string[] { });
         }
         /// <summary>
-        /// Resets the stepper to its initial state i.e. activates the first step.
+        /// Resets the stepper to its initial state, i.e. activates the first step.
         /// </summary>
         public async Task ResetAsync()
         {
             await InvokeMethod("reset", new object[] { }, new string[] { });
         }
+
+        /// <summary>
+        /// Resets the stepper to its initial state, i.e. activates the first step.
+        /// </summary>
         public void Reset()
         {
             InvokeMethodSync("reset", new object[] { }, new string[] { });
@@ -326,6 +321,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _activeStepChangingRef = null;
         private string _activeStepChangingScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ActiveStepChanging"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ActiveStepChangingScript
         {
@@ -348,8 +351,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingActiveStepChanging(IgbActiveStepChangingEventArgs args);
         private EventCallback<IgbActiveStepChangingEventArgs>? _activeStepChanging = null;
+
+        /// <summary>
+        /// Emitted when the active step is about to change.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbActiveStepChangingEventArgs> ActiveStepChanging
         {
@@ -359,16 +365,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbActiveStepChangingEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _activeStepChanging, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_activeStepChanging))
                     {
                         _activeStepChanging = value;
-                        this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", value, (args) =>
-                        {
-                            OnHandlingActiveStepChanging(args);
-
-                        });
+                        this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", value);
                         this.OnRefChanged("ActiveStepChanging", null, "event:::ActiveStepChanging", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangingRef = refName;
@@ -391,6 +393,14 @@ namespace IgniteUI.Blazor.Controls
 
         private string _activeStepChangedRef = null;
         private string _activeStepChangedScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="ActiveStepChanged"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like
+        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// </remarks>
         [Parameter]
         public string ActiveStepChangedScript
         {
@@ -413,8 +423,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void OnHandlingActiveStepChanged(IgbActiveStepChangedEventArgs args);
         private EventCallback<IgbActiveStepChangedEventArgs>? _activeStepChanged = null;
+
+        /// <summary>
+        /// Emitted after the active step has changed.
+        /// </summary>
         [Parameter]
         public EventCallback<IgbActiveStepChangedEventArgs> ActiveStepChanged
         {
@@ -424,16 +437,12 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbActiveStepChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _activeStepChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_activeStepChanged))
                     {
                         _activeStepChanged = value;
-                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value, (args) =>
-                        {
-                            OnHandlingActiveStepChanged(args);
-
-                        });
+                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value);
                         this.OnRefChanged("ActiveStepChanged", null, "event:::ActiveStepChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangedRef = refName;
@@ -454,13 +463,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void SerializeCoreIgbStepper(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbStepper(ser);
 
             if (IsPropDirty("Orientation"))
             { ser.AddEnumProp("orientation", this._orientation); }

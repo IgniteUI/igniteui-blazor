@@ -2,23 +2,21 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// The payload carried by the tile state events, identifying the tile and the state it is changing to.
+    /// </summary>
     public partial class IgbTileChangeStateEventArgsDetail : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTileChangeStateEventArgsDetail"; } }
 
         private static bool _marshalByValue = true;
 
-        public IgbTileChangeStateEventArgsDetail() : base()
-        {
-            OnCreatedIgbTileChangeStateEventArgsDetail();
-
-        }
-
-        partial void OnCreatedIgbTileChangeStateEventArgsDetail();
-
         private IgbTile _tile;
 
-        partial void OnTileChanging(ref IgbTile newValue);
+        /// <summary>
+        /// The tile whose state is changing.
+        /// </summary>
         [Parameter]
         public IgbTile Tile
         {
@@ -35,7 +33,10 @@ namespace IgniteUI.Blazor.Controls
         }
         private bool _state = false;
 
-        partial void OnStateChanging(ref bool newValue);
+        /// <summary>
+        /// The state the tile is changing to; <see langword="true"/> when it is being maximized or
+        /// put in fullscreen, and <see langword="false"/> when it is being restored.
+        /// </summary>
         [Parameter]
         public bool State
         {
@@ -51,25 +52,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameTileChangeStateEventArgsDetail(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameTileChangeStateEventArgsDetail(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
         public async Task SetNativeElementAsync(Object element)
         {
             await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
@@ -79,13 +61,9 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
-        partial void SerializeCoreIgbTileChangeStateEventArgsDetail(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
-
-            SerializeCoreIgbTileChangeStateEventArgsDetail(ser);
 
             if (IsPropDirty("Tile"))
             { ser.AddSerializableProp("tile", this._tile); }
@@ -94,6 +72,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.ToEventJson(control, args);
@@ -105,6 +84,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
         protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
         {
             base.FromEventJson(control, args);

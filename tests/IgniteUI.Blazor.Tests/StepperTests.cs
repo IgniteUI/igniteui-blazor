@@ -25,7 +25,7 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
         .Method(c => c.ResetAsync(), c => c.Reset(), "reset")
         .Getter(c => c.GetStepsAsync(), c => c.GetSteps(), "Steps",
             arrange,
-            returns: (interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(2)")}}}"}]"""),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
                 Assert.Equal(2, result.Length);
@@ -103,5 +103,17 @@ public class StepTests : BlazorComponentTestBase
             parameters.AddChildContent("Step Content"));
 
         Assert.Contains("Step Content", cut.Markup);
+    }
+
+    /// <summary>
+    /// The wrapper must report the same initial values as <c>IgbStepper</c>'s web component,
+    /// so reading a property that was never assigned does not lie about the rendered state.
+    /// </summary>
+    [Fact]
+    public void Stepper_DefaultValues_MatchWebComponent()
+    {
+        var stepper = new IgbStepper();
+
+        Assert.Equal(320, stepper.AnimationDuration);
     }
 }
