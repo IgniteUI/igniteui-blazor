@@ -192,6 +192,10 @@ After the above steps, open the solution in Visual Studio or run the stories pro
 dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 ```
 
+## Accessibility
+
+- [Accessibility conformance](docs/accessibility-conformance.md) — the WCAG 2.2 AA claim, its scope, how it is verified, and the known unfixed failures.
+
 [Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Commercial]: https://www.infragistics.com/legal/license
 [MIT]: https://github.com/IgniteUI/igniteui-blazor/blob/master/LICENSE
