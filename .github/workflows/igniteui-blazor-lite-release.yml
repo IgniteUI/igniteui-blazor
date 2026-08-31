@@ -24,9 +24,51 @@ env:
   SBOM_MAX_COMPONENTS: "150"
 
 jobs:
+  # Runs npm lifecycle scripts and webpack, so it is deliberately kept free of every credential:
+  # no strong-name key, no Key Vault access, no publishing rights. Its only output is src/wwwroot.
+  build-assets:
+    name: Build web assets
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false # never use caching in release builds
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build TypeScript/Webpack assets
+        run: npm run build
+
+      - name: Copy component themes to wwwroot
+        run: npm run copythemes
+
+      - name: Upload web assets
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: web-assets
+          path: src/wwwroot
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
   # Holds the strong-name key, but no OIDC token, no Key Vault access and no publishing rights.
+  # It installs no npm packages and runs no bundler, so JavaScript dependency code is never
+  # resident on the runner the private key is written to.
   build:
-    name: Build
+    name: Build library
+    needs: build-assets
     runs-on: windows-latest
     timeout-minutes: 30
     permissions:
@@ -43,20 +85,14 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      # The Razor SDK reads wwwroot when it builds the static web asset manifest, so the assets
+      # have to be in place before restore rather than merged in at pack time.
+      - name: Download web assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          package-manager-cache: false # never use caching in release builds
-
-      - name: Install npm dependencies
-        run: npm ci
-
-      - name: Build TypeScript/Webpack assets
-        run: npm run build
-
-      - name: Copy component themes to wwwroot
-        run: npm run copythemes
+          name: web-assets
+          path: src/wwwroot
+          digest-mismatch: error
 
       - name: Restore .NET dependencies
         run: dotnet restore ./src/IgniteUI.Blazor.Lite.csproj
@@ -714,8 +750,50 @@ jobs:
         with:
           user: ${{ secrets.INFRAGISTICS_NUGET_ORG_USER }}
 
+      # Refuses to publish over an existing version instead of using --skip-duplicate: a full rerun produces newly signed bytes, so skipping
+      # the duplicate would attach this run's SBOM, attestations and checksum to a release whose published package is a different build.
       - name: Publish to NuGet.org
-        run: dotnet nuget push "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg" --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json"
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # Pinned: a failed push is inspected through $LASTEXITCODE below rather than terminating the step.
+          $PSNativeCommandUseErrorActionPreference = $false
+
+          $package = "${{ github.workspace }}\artifacts\${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          $id = ($env:PACKAGE_ID).ToLowerInvariant()
+          $version = ($env:VERSION).ToLowerInvariant()
+          $feedUrl = "https://api.nuget.org/v3-flatcontainer/$id/$version/$id.$version.nupkg"
+
+          # The flat container lags a push by seconds to minutes, so the retries stop a duplicate
+          # rejection from being reported as a package that never reached the feed.
+          function Test-Published([int[]]$RetryDelaysSeconds = @()) {
+            foreach ($delay in @(0) + $RetryDelaysSeconds) {
+              if ($delay -gt 0) { Start-Sleep -Seconds $delay }
+              if ((Invoke-WebRequest -Uri $feedUrl -Method Head -SkipHttpErrorCheck).StatusCode -eq 200) { return $true }
+            }
+            return $false
+          }
+
+          $recovery = "NuGet.org will not accept this version again. If a previous run published it but failed before attaching evidence, attach that run's retained nupkg-signed, sbom, release-evidence and dependency-scan artifacts to the release manually."
+
+          if (Test-Published) {
+            throw "$($env:PACKAGE_ID) $($env:VERSION) is already on NuGet.org, so this run must not attach its evidence to the release: the published package may be a different build. $recovery"
+          }
+
+          dotnet nuget push $package --api-key $env:NUGET_API_KEY --source "https://api.nuget.org/v3/index.json"
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Published $($env:PACKAGE_ID) $($env:VERSION)."
+            exit 0
+          }
+
+          Write-Host "::warning title=Push reported a failure::Checking whether the package reached NuGet.org anyway."
+          if (Test-Published -RetryDelaysSeconds @(5, 15, 30)) {
+            throw "dotnet nuget push reported a failure but $($env:PACKAGE_ID) $($env:VERSION) is on NuGet.org. $recovery"
+          }
+
+          throw "dotnet nuget push failed and $($env:PACKAGE_ID) $($env:VERSION) is not on NuGet.org."
 
   attach-to-release:
     name: Attach release evidence
