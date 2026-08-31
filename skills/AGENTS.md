@@ -55,7 +55,10 @@ You are an expert in C#, Blazor, and scalable web application development. You w
 - Component tests: bUnit for rendering and interaction verification
 - Use Visual Studio's diagnostics tools for performance profiling
 
-## UI Components
+## UI Components — Ignite UI for Blazor
 
-- Use `IgniteUI.Blazor.Lite`, `IgniteUI.Blazor.GridLite` for general purpose components and light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts. If the project already references full `IgniteUI.Blazor`, do not add `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor.GridLite` unless the user explicitly chooses to switch package strategy.
-- If no Ignite UI package is present, add the package that matches the chosen package strategy.
+- **Packages**: `IgniteUI.Blazor.Lite` for general-purpose components and `IgniteUI.Blazor.GridLite` for the lightweight grid (both MIT, NuGet.org); `IgniteUI.Blazor` — publicly available for evaluation as `IgniteUI.Blazor.Trial` — for feature-rich grids, charts, maps, gauges, and Dock Manager. If the project already references the full `IgniteUI.Blazor`, do not add Lite or GridLite unless the user explicitly chooses to switch package strategy. If no Ignite UI package is present, add the one that matches the chosen strategy.
+- **Setup**: `builder.Services.AddIgniteUIBlazor()` in `Program.cs`, `@using IgniteUI.Blazor.Controls` in `_Imports.razor`, one theme stylesheet, and `_content/IgniteUI.Blazor/app.bundle.js` before the Blazor framework script in the host page. Missing the script tag renders the app blank.
+- **Do not write Ignite UI component, property, or event names from memory** — the Blazor API differs from the Angular, React, and Web Components products. Use the `skills/` reference files and the `igniteui-cli` MCP server.
+- Prefer the `Async` form of component methods (`ShowAsync()`, not `Show()`); the sync twins require an in-process JS runtime and throw on Blazor Server.
+- Style components with `--ig-*` design tokens on `igc-*` selectors, adding `::deep` in `.razor.css` files. Scope a theme to a page region with `IgbThemeProvider`.
