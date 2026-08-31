@@ -1,4 +1,5 @@
 ---
+license: MIT
 name: igniteui-blazor-theming
 description: "Theming and visual customization for Ignite UI for Blazor: choosing and switching the built-in Bootstrap, Material, Fluent and Indigo themes in light or dark, scoping a theme to part of the page with IgbThemeProvider, generating palettes and component design tokens with the igniteui-theming MCP server, overriding CSS custom properties, using CSS shadow parts, dark mode, and global roundness/spacing/size tokens. Use when changing the look and feel of Ignite UI Blazor components, applying a color scheme, or writing component CSS. For component configuration use igniteui-blazor-components; for grid data features use igniteui-blazor-grids."
 user-invocable: true
@@ -62,7 +63,7 @@ create_palette(platform: "blazor", output: "css",
                surface: "#ffffff", variant: "light")
 ```
 
-- Use `create_palette` with `output: "css"`. **Do not use `create_theme` for Blazor** — it always emits Sass, which needs a compilation step no standard Blazor project has, and passing `platform: "blazor"` does not change that.
+- Use `create_palette` with `output: "css"`.
 - The parameter names are `primary` / `secondary` / `surface` (the `primaryColor`-style names belong to `create_theme`).
 - Use `create_custom_palette` only when the design needs explicit control over individual shades.
 - Palette CSS belongs in `:root` in a stylesheet loaded **after** the built-in theme.
@@ -111,10 +112,16 @@ All take `platform: "blazor"`, `output: "css"`, and their output goes in `:root`
 
 Reference resources: `theming://platforms/blazor`, `theming://presets/palettes`, `theming://guidance/colors/usage`, `theming://guidance/colors/roles`, `theming://guidance/colors/rules`.
 
-To enable the server, add to `.vscode/mcp.json` (VS Code, key `servers`) or `.cursor/mcp.json` / `claude_desktop_config.json` (key `mcpServers`):
+To enable the server, add to `.vscode/mcp.json` (VS Code, key `servers`):
 
 ```json
 { "servers": { "igniteui-theming": { "command": "npx", "args": ["-y", "igniteui-theming", "igniteui-theming-mcp"] } } }
+```
+
+Or `.cursor/mcp.json` / `claude_desktop_config.json` (key `mcpServers`):
+
+```json
+{ "mcpServers": { "igniteui-theming": { "command": "npx", "args": ["-y", "igniteui-theming", "igniteui-theming-mcp"] } } }
 ```
 
 Reload the editor afterwards. JetBrains: **Settings → Tools → AI Assistant → MCP Servers**, command `npx`, arguments `igniteui-theming igniteui-theming-mcp`.

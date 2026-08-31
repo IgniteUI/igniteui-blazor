@@ -34,7 +34,7 @@ It is a **child component of the grid**, and `PrimaryKey` must be set for select
             await gridState.ApplyStateFromStringAsync(json, Array.Empty<string>());
     }
 
-    private async void OnGridRendered() => await RestoreState();
+    private async Task OnGridRendered() => await RestoreState();
 }
 ```
 
@@ -56,9 +56,15 @@ Both methods take an array of feature names. Empty means every feature:
 To exclude features from tracking altogether, set `Options`:
 
 ```razor
+<IgbGridState @ref="gridState" Options="@stateOptions" />
+
 @code {
-    protected override void OnInitialized()
-        => gridState.Options = new IgbGridStateOptions { CellSelection = false, Sorting = false };
+    private IgbGridState gridState = default!;
+    private readonly IgbGridStateOptions stateOptions = new()
+    {
+        CellSelection = false,
+        Sorting = false
+    };
 }
 ```
 

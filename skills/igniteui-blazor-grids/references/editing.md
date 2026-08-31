@@ -49,7 +49,7 @@ Double-click, or Enter on a focused cell, enters edit mode. The editor follows t
 ## Row editing
 
 ```razor
-<IgbGrid Data="employees" PrimaryKey="Id" RowEditable="true" AutoGenerate="false"
+<IgbGrid Data="@projectTasks" PrimaryKey="Id" RowEditable="true" AutoGenerate="false"
          RowEdit="OnRowEdit" RowEditDone="OnRowEditDone">
     <IgbColumn Field="Id" Header="ID" Editable="false" />
     <IgbColumn Field="Name" Header="Name" Editable="true" />
@@ -63,12 +63,12 @@ Double-click, or Enter on a focused cell, enters edit mode. The editor follows t
 @code {
     private void OnRowEdit(IgbGridEditEventArgs args)
     {
-        if (args.NewValue is ProjectTask t && t.EndDate < t.StartDate)
+        if (args.NewValue is ProjectTask task && task.EndDate < task.StartDate)
             args.Cancel = true;   // cross-field validation
     }
 
     private Task OnRowEditDone(IgbGridEditDoneEventArgs args)
-        => EmployeeService.UpdateAsync(args.RowData);
+        => ProjectTaskService.UpdateAsync(args.RowData);
 }
 ```
 

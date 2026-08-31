@@ -1,4 +1,5 @@
 ---
+license: MIT
 name: igniteui-blazor-generate-from-image-design
 description: "Implement a Blazor view from a design image, screenshot, mockup, or wireframe using Ignite UI for Blazor components — analyze the image, map regions to components, generate a matching theme, build the view with mock data, and refine until it matches. Triggers when a design image is provided along with a request to implement this design, build this UI, convert this mockup, or create a page from this image in an Ignite UI Blazor project."
 user-invocable: true

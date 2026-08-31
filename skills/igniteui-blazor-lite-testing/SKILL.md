@@ -1,4 +1,5 @@
 ---
+license: MIT
 name: igniteui-blazor-lite-testing
 description: "Testing in the IgniteUI Blazor (Lite) repository itself: the bUnit unit suite (tests/IgniteUI.Blazor.Tests — base classes, attribute/serialization specs, declarative interop wire contracts) and the Playwright integration suite (tests/IgniteUI.Blazor.Lite.IntegrationTests + TestBed — reflection-driven live-browser sweep, componentsConfig.json). Use when adding or changing tests in this repo, covering a new component, pinning interop behavior, or deciding which suite a check belongs in. Not for consumer-facing component usage — use igniteui-blazor-components for that."
 user-invocable: true

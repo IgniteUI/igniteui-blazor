@@ -20,7 +20,9 @@ dotnet add package IgniteUI.Blazor
 
 Never reference `IgniteUI.Blazor` and `IgniteUI.Blazor.Lite` together — same namespace, duplicate types.
 
-## 2. `Program.cs`
+## 2. `IgniteUI.Blazor[.Lite/Trial]` Service Registration
+
+Usually in `Program.cs`:
 
 ```csharp
 builder.Services.AddIgniteUIBlazor();   // all modules available
@@ -77,7 +79,7 @@ Theme files under `_content/IgniteUI.Blazor/themes/` are `{light|dark}/{bootstra
 <link rel="stylesheet" href="@Assets["_content/IgniteUI.Blazor/themes/light/bootstrap.css"]" />
 ```
 
-`IgniteUI.Blazor.GridLite` ships its own stylesheet from its own asset root:
+`IgniteUI.Blazor.GridLite` ships its own stylesheet from its own asset root, but should be used only if you are using the GridLite component exclusively. If you are using other Ignite UI components, do not link (or suggest) the GridLite stylesheet — use the main theme stylesheet above instead.
 
 ```html
 <link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />

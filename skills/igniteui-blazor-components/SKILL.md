@@ -1,4 +1,5 @@
 ---
+license: MIT
 name: igniteui-blazor-components
 description: "Ignite UI for Blazor non-grid components: project setup and module registration; form controls (input, textarea, combo, select, date/time pickers, calendar, checkbox, radio, switch, slider, rating, mask input); layout and navigation (tabs, stepper, accordion, expansion panel, nav drawer, navbar, tree, splitter, divider); data display (list, card, carousel, avatar, badge, chip, icon, progress, dropdown, tooltip, chat); overlays (dialog, snackbar, toast, banner); Dock Manager and Tile Manager; and visualizations (charts, gauges, maps, sparklines). Use for any Ignite UI Blazor component that is not a data grid. For data grids use igniteui-blazor-grids; for theming and CSS use igniteui-blazor-theming."
 user-invocable: true
@@ -51,10 +52,16 @@ All four use the `IgniteUI.Blazor.Controls` namespace and serve static assets fr
 
 ## MCP server (optional)
 
-`igniteui-cli` provides `list_components`, `get_doc`, `search_docs`, `search_api`, `get_api_reference`, all taking `framework: "blazor"`. To enable it, add to `.vscode/mcp.json` (VS Code, key `servers`) or `.cursor/mcp.json` / `claude_desktop_config.json` (key `mcpServers`):
+`igniteui-cli` provides `list_components`, `get_doc`, `search_docs`, `search_api`, `get_api_reference`, all taking `framework: "blazor"`. To enable it, add to `.vscode/mcp.json` (VS Code, key `servers`):
 
 ```json
 { "servers": { "igniteui-cli": { "command": "npx", "args": ["-y", "igniteui-cli", "mcp"] } } }
+```
+
+Or `.cursor/mcp.json` / `claude_desktop_config.json` (key `mcpServers`):
+
+```json
+{ "mcpServers": { "igniteui-cli": { "command": "npx", "args": ["-y", "igniteui-cli", "mcp"] } } }
 ```
 
 Reload the editor afterwards. JetBrains: **Settings → Tools → AI Assistant → MCP Servers**, command `npx`, arguments `igniteui-cli mcp`.
