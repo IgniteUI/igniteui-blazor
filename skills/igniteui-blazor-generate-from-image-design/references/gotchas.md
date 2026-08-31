@@ -1,180 +1,132 @@
-# Ignite UI Blazor Gotchas & Pitfalls
+# Gotchas — Mistakes That Compile But Look Wrong
 
-## Table of Contents
-- [CSS Isolation & Scoping](#css-isolation--scoping)
-- [Chart Properties](#chart-properties)
-- [Component Properties](#component-properties)
-- [Theming Pitfalls](#theming-pitfalls)
-- [Map Component](#map-component)
-- [Dark Theme Specifics](#dark-theme-specifics)
-- [Blazor-specific Gotchas](#blazor-specific-gotchas)
+Check every entry against your component list before writing code. Chart, CSS, and Razor entries apply broadly, not only to the components they name.
 
----
+## Razor & Blazor
 
-## CSS Isolation & Scoping
+### RZ9986 — dynamic `class` on an Ignite UI component
 
-Ignite UI for Blazor components render as web components (`igc-chip`, `igc-grid`, etc.). Use three CSS mechanisms depending on what you need and where the CSS lives:
+Mixing literal text with `@(...)` in one attribute on a component fails the build with *"Component attributes do not support complex content"*. Make the whole value a single C# expression.
 
-| Mechanism | Purpose | Priority |
-|---|---|---|
-| Design tokens `--ig-*` | Override colors, borders, shadows via CSS vars | **Primary** - use whenever a token exists |
-| `::part()` | Target a named shadow DOM part directly | **Secondary** - only when no token covers it; confirm part names via `get_doc` |
-| `::deep` | Pierce Blazor CSS isolation in `.razor.css` files | **File helper** - add it in `.razor.css`; never needed in global CSS |
+```razor
+@* ❌ RZ9986 *@
+<IgbChip class="chip @(item == _selected ? "chip-active" : "")" />
 
-`::deep` and `::part()` solve different problems and are often combined: `::deep igc-chip::part(base) { ... }`.
+@* ✅ *@
+<IgbChip class="@ChipClass(item)" />
 
-**`::deep` applies only to `igc-*` selectors - never to plain HTML or CSS class selectors.**
+@code { string ChipClass(Item i) => i == _selected ? "chip chip-active" : "chip"; }
+```
 
-`::deep` is not a general-purpose CSS scope piercer. It only works when Blazor's scope attribute is present on a parent element above the targeted element in the DOM. This means:
+### CS1012 — single quotes in an inline lambda
 
-- **DO** use `::deep` for `igc-*` element selectors and `igc-*::part()` combinations in `.razor.css` files.
-- **DO NOT** use `::deep` for plain HTML class selectors. These are already scoped by Blazor's CSS isolation and work without `::deep`.
-- **DO NOT** use `::deep` to target the root element of a component - Blazor places the scope attribute on the root element itself, so there is no scoped parent above it to make `::deep` work. Style the root element with a plain class selector.
+`@onclick="() => Navigate('/dashboard')"` fails: the single quotes are parsed as a C# `char` literal. Use a named handler.
 
-**Global CSS (`app.css`)** - write selectors directly:
+```razor
+@* ❌ *@ <IgbNavDrawerItem @onclick="() => Navigate('/dashboard')">
+@* ✅ *@ <IgbNavDrawerItem @onclick="NavigateToDashboard">
+
+@code { void NavigateToDashboard() => NavigationManager.NavigateTo("/dashboard"); }
+```
+
+### BL0005 — setting parameters through `@ref`
+
+Assigning component parameters from `OnAfterRenderAsync` (`chart.Brushes = "…"`) raises *"Component parameter should not be set outside of its component"*. Pass them as inline markup attributes instead.
+
+### Async vs sync methods
+
+Every component method has an `XAsync()` form and a sync twin `X()`. **Use `Async`.** The sync twin requires `IJSInProcessRuntime` and throws `InvalidOperationException` on Blazor Server; it only works in WebAssembly and MAUI WebView.
+
+### Other basics
+
+- Parameters are PascalCase (`ChartType`, `DataSource`) — never Angular's `[chartType]`.
+- Templates are Blazor render fragments with a cast `context`, not `<ng-template>`. On a grid column the cell template is `BodyTemplate`:
+  ```razor
+  <IgbColumn Field="Name" Header="Name">
+      <BodyTemplate>
+          @{ var cell = (IgbCellTemplateContext)context; }
+          <strong>@cell.Cell.Value</strong>
+      </BodyTemplate>
+  </IgbColumn>
+  ```
+- `@bind-Value` / `@bind-Checked` — verify the bindable parameter exists rather than inventing one.
+- Mock data is C# `record` or `class`, not a TypeScript interface.
+- `AddIgniteUIBlazor()` must be called in `Program.cs`. Listing `typeof(Igb…Module)` values pre-loads those modules; in `IgniteUI.Blazor.Lite` components also self-register on first render.
+
+## CSS scoping
+
+Full rules are in the theming skill's [`common-patterns.md`](../../igniteui-blazor-theming/references/common-patterns.md). The short version:
+
+| Mechanism | When |
+|---|---|
+| `--ig-*` design tokens | **primary** — whenever a token exists for the property |
+| `::part(name)` | only when no token covers it, and only after confirming the part name |
+| `::deep` | only in `.razor.css`, only on `igc-*` selectors |
+
 ```css
+/* app.css — global, no ::deep */
 igc-chip { --ig-chip-background: var(--ig-primary-500); }
 igc-dialog::part(footer) { border-top: 1px solid var(--ig-gray-200); }
-```
 
-**`.razor.css` isolation file** - prefix `igc-*` selectors with `::deep`; write plain HTML class selectors without it:
-```css
+/* MyView.razor.css — ::deep on igc-*, never on your own class selectors */
 ::deep igc-chip { --ig-chip-background: var(--ig-primary-500); }
-::deep igc-dialog::part(footer) { border-top: 1px solid var(--ig-gray-200); }
-
-.class-selector { display: grid; grid-template-columns: 260px 1fr; }
+.dashboard-shell { display: grid; grid-template-columns: 260px 1fr; }
 ```
 
-`create_component_theme(platform: "blazor", output: "css")` generates global CSS selectors - use as-is in `app.css`, or add `::deep` when placing in a `.razor.css` file. Never add `::deep` to `:root {}` blocks or plain HTML class rules.
+`::deep` does **not** work on the component's own root element — Blazor puts the scope attribute there, so there is no scoped parent above it. Never add `::deep` to a `:root {}` block. `create_component_theme` emits global CSS; use it verbatim in `app.css`. Blazor projects have no Sass step.
 
-Blazor projects do **not** use Sass/SCSS.
+## Charts
 
----
+### They ignore the CSS theme entirely
 
-## Chart Properties
-
-### Markers shown by default
-Category charts show markers at every data point by default. If the screenshot does not show markers, set `MarkerTypes` using the documented pattern for the installed version. When setting it from code, add the enum value after the chart reference is ready:
-```razor
-<IgbCategoryChart @ref="chart" ... />
-
-@code {
-    private IgbCategoryChart chart = default!;
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            chart.MarkerTypes.Add(MarkerType.None);
-        }
-    }
-}
-```
-
-### Charts do NOT inherit CSS theme colors
-Charts, maps, gauges, and sparklines ignore the global CSS custom property theme. Set their visual properties explicitly via component parameters:
-```razor
-<IgbCategoryChart
-    Brushes="#4FC3F7 #81C784 #FFB74D"
-    Outlines="#4FC3F7 #81C784 #FFB74D"
-    MarkerBrushes="#4FC3F7 #81C784 #FFB74D"
-    MarkerOutlines="#4FC3F7 #81C784 #FFB74D"
-    XAxisLabelTextColor="#666666"
-    YAxisLabelTextColor="#666666" />
-```
-
-After a palette exists, prefer referencing palette tokens via `var(--ig-primary-500)` where the component supports CSS custom properties, or resolve the actual color value from the palette for DV component parameters.
-
-### `Brushes`, `Outlines`, `MarkerBrushes`, `MarkerOutlines` are brush-list strings
-These are **string** parameters, not arrays. Pass colors as a single string separated by spaces.
-```razor
-Brushes="#FF6B6B #4ECDC4 #45B7D1"
-```
-
-### `AreaFillOpacity` exists on `IgbCategoryChart`
-It does **NOT** exist on `IgbSparkline`. For sparkline fill, use the `Brush` parameter.
-
-### `IgbSparkline` has no SplineArea type - use `IgbCategoryChart` for smooth area sparklines
-`IgbSparkline` supports only `Line`, `Area`, `Column`, and `WinLoss` display types. `Area` renders as angular polygon fills, not smooth curves. If the design shows smooth mountain-shaped area sparklines, use a small `IgbCategoryChart` with `ChartType="CategoryChartType.SplineArea"`:
+Charts, maps, gauges, and sparklines do not read `--ig-*` custom properties. Set colors through parameters, using resolved values rather than `var()` references:
 
 ```razor
-<!-- ❌ Angular fill - no smooth curves available on IgbSparkline -->
-<IgbSparkline DisplayType="SparklineDisplayType.Area" Brush="#5B57E8" ... />
-
-<!-- ✅ Smooth spline area sparkline -->
-<IgbCategoryChart @ref="splineChart"
-                  ChartType="@CategoryChartType.SplineArea"
-                  Brushes="#5B57E8"
-                  Outlines="#5B57E8"
-                  AreaFillOpacity="0.35"
-                  XAxisLabelTextColor="transparent"
-                  YAxisLabelTextColor="transparent"
-                  Height="70px"
-                  Width="100%"
-                  DataSource="@SparkData" />
+<IgbCategoryChart Brushes="#4FC3F7 #81C784" Outlines="#4FC3F7 #81C784"
+                  MarkerBrushes="#4FC3F7 #81C784"
+                  XAxisLabelTextColor="#666666" YAxisMajorStroke="#EEEEEE" />
 ```
 
+`Brushes`, `Outlines`, `MarkerBrushes`, `MarkerOutlines` are **space-separated strings**, not arrays.
 
-### `IncludedProperties` and `ExcludedProperties` are string arrays
-Pass them as bound parameters:
-```razor
-<IgbCategoryChart IncludedProperties='@(new string[] { "Month", "Revenue" })' ... />
-```
+### Curve type is the most visible fidelity mistake
 
-### `InnerExtent` is a chart-level property - never a series-level property
+Match `ChartType` to the shape in the image: smooth flowing → `Spline` / `SplineArea`; angular → `Line` / `Area`; stepped → `StepLine` / `StepArea`. Do not default to `Line` when the image shows curves.
 
-`InnerExtent` controls the hole size at the center of a donut/pie chart. It is a property of the **chart** component (`IgbDoughnutChart`, `IgbPieChart`, `IgbDataPieChart`), not of any series child. Placing it on `IgbRingSeries` causes a runtime crash:
+### Markers appear at every point by default
 
-```
-System.InvalidOperationException: IgbRingSeries does not have a property matching 'InnerExtent'
-```
+If the image has no dots on the line, add `MarkerType.None` to `MarkerTypes` once the chart reference is ready.
 
-Correct usage:
-```razor
-<!-- ✅ InnerExtent on the chart -->
-<IgbDoughnutChart InnerExtent="0.45" Width="220px" Height="220px">
-    <IgbRingSeries ValueMemberPath="Value" LabelMemberPath="Label" ... />
-</IgbDoughnutChart>
-
-<!-- ❌ Runtime crash -->
-<IgbRingSeries InnerExtent="0.45" ... />
-```
-
-### Set `Brushes`, `Outlines`, and visual parameters inline - not via `@ref` in `OnAfterRenderAsync`
-
-Setting visual parameters via `@ref` property assignment in `OnAfterRenderAsync` triggers Blazor warning **BL0005** (*Component parameter should not be set outside of its component*). Always pass them as **inline Razor markup attributes** instead.
+### `IncludedProperties` / `ExcludedProperties` are `string[]`
 
 ```razor
-<!-- ✅ Inline markup - no BL0005 -->
-<IgbRingSeries Brushes="#CF6E7A #6C74DC #D4A84B" Outlines="#13131F #13131F #13131F" ... />
-
-<!-- ❌ BL0005 warning -->
-jobSeries.Brushes = "#CF6E7A #6C74DC #D4A84B";
+<IgbCategoryChart IncludedProperties='@(new string[] { "Month", "Revenue" })' />
 ```
 
-### Smooth area/line charts
-Match `ChartType` to the curve shape in the screenshot:
-- Smooth flowing curves → `Spline` (lines) or `SplineArea` (filled)
-- Angular/jagged lines → `Line` or `Area`
-- Step-shaped → `StepLine` or `StepArea`
+A plain string is a type mismatch. `XAxisLabel` formats labels — it does not select a data field.
 
-Do not default to `Line` or `Area` when the screenshot shows smooth curves. The difference is immediately visible and is the most common chart fidelity mistake.
+### `InnerExtent` is a chart property, never a series property
 
-### Circular ring with centered percentage - choosing the right component
-- **Thick static ring with a centred label and no needle** → `IgbDoughnutChart` + `IgbRingSeries`. Place `InnerExtent` on the chart, not the series. Overlay the label with `position: absolute` inside a `position: relative` wrapper.
-- **Thin animated spinner / loading progress** → `IgbCircularProgress`. Not a data visualisation.
-- **Needle pointer on a scale arc** → `IgbRadialGauge`.
+```razor
+@* ✅ *@ <IgbDoughnutChart InnerExtent="0.45"><IgbRingSeries … /></IgbDoughnutChart>
+@* ❌ runtime crash: IgbRingSeries does not have a property matching 'InnerExtent' *@
+<IgbRingSeries InnerExtent="0.45" />
+```
 
-`IgbRadialGauge` and `IgbCircularProgress` will never produce a clean static ring. Use `IgbDoughnutChart` whenever the design shows a coloured arc ring with a centred value and no needle.
+### Choosing the right circular component
+
+- Thick static ring, centered label, no needle → `IgbDoughnutChart` + `IgbRingSeries`, label absolutely positioned over it.
+- Thin animated spinner → `IgbCircularProgress` (not a visualization).
+- Needle on a scale arc → `IgbRadialGauge`.
+
+Neither gauge nor progress will produce a clean static ring.
 
 ```razor
 <div class="gauge-wrapper">
     <IgbDoughnutChart InnerExtent="0.62" Height="160px" Width="160px" AllowSliceExplosion="false">
-        <IgbRingSeries ValueMemberPath="Value" LabelMemberPath="Category"
-                       LabelsPosition="@LabelsPosition.None"
-                       DataSource="@GaugeData"
-                       Brushes="#5B57E8 #e8e8f5"
-                       Outlines="transparent transparent"
+        <IgbRingSeries DataSource="@GaugeData" ValueMemberPath="Value" LabelMemberPath="Category"
+                       LabelsPosition="LabelsPosition.None"
+                       Brushes="#5B57E8 #E8E8F5" Outlines="transparent transparent"
                        RadiusFactor="0.95" />
     </IgbDoughnutChart>
     <div class="gauge-label">75%</div>
@@ -186,357 +138,117 @@ Do not default to `Line` or `Area` when the screenshot shows smooth curves. The 
 .gauge-label   { position: absolute; font-size: 1.9rem; font-weight: 700; }
 ```
 
-### Charts inside CSS Grid can collapse
-Charts may render with zero height inside a CSS Grid container. Set `min-height: 0` on the grid cell and `Height="100%"` on the chart component so the chart fills its container without requiring a fixed pixel value:
+### `IgbSparkline` has no smooth area
+
+It supports only `Line`, `Area`, `Column`, `WinLoss`, and `Area` fills with angular polygons. For a smooth mountain-shaped micro-chart use a small `IgbCategoryChart` with `ChartType="CategoryChartType.SplineArea"` and `AreaFillOpacity` — `AreaFillOpacity` does not exist on `IgbSparkline`.
+
+### Charts collapse to zero height inside CSS Grid
+
 ```css
-.chart-container {
-  min-height: 0; /* Prevents the CSS Grid track from collapsing */
-}
+.chart-container { min-height: 0; }   /* stops the grid track collapsing */
 ```
 ```razor
-<IgbCategoryChart Height="100%" Width="100%" ... />
+<IgbCategoryChart Height="100%" Width="100%" />
 ```
 
----
+Charts never auto-size — always set `Width` and `Height`.
 
-## Component Properties
+### Map series are declared, not added from code
 
-### IgbAvatar: use `Shape` parameter
-Use the `Shape` parameter with `AvatarShape.Circle`, `AvatarShape.Rounded`, or `AvatarShape.Square`. There is no `RoundShape` property:
-```razor
-<IgbAvatar Shape="AvatarShape.Circle" Initials="JD" />
-```
-
-### Icons in web component slots: use IgbIcon, not font-icon spans
-
-Always use `IgbIcon` in slots (`prefix`, `suffix`, `start`, `end`, `icon`). `<span class="material-icons">` is `display: inline` - `vertical-align` is ignored by the slot's flex container, so the icon drifts to the top. `IgbIcon` is `display: inline-flex; align-items: center` and self-centers automatically.
-
-```razor
-<!-- ❌ icon drifts to top -->
-<IgbInput><span slot="prefix" class="material-icons">search</span></IgbInput>
-
-<!-- ✅ self-centering -->
-<IgbInput><IgbIcon @ref="_icon" slot="prefix" IconName="search" Collection="material" /></IgbInput>
-```
-Register the icon in `OnAfterRenderAsync(firstRender)` after `EnsureReady()`.
-
-### IgbList: slot-based structure
-Use named `slot` attributes on child elements inside `IgbListItem` for positioning:
-```razor
-<IgbListItem>
-    <IgbAvatar slot="start" Shape="AvatarShape.Circle" Initials="AB" />
-    <span slot="title">Item Title</span>
-    <span slot="subtitle">Secondary text</span>
-    <IgbIcon slot="end" Collection="material" IconName="chevron_right" />
-</IgbListItem>
-```
-
-### IgbNavDrawer:
-The component's `::part(base)` is always `position: fixed; transform: translateX(-Npx)` - the host contributes `width: 0` to the layout. `Open="true"` makes it visible but still floating over content. `slot="mini"` adds a collapsed icon-only state. There is no `pin`/`pinned` Blazor parameter.
-
-To make the drawer occupy real layout space (pinned sidebar), override the parts in **global CSS**: set explicit width on the host, `position: relative; transform: none` on `::part(base)`, hide `::part(overlay)`, and strip `inert` from `::part(base)` via JS in `OnAfterRenderAsync`. See `layout.md` for the full pattern.
-
-### IgbTileManager: drag and resize modes
-Set `DragMode` and `ResizeMode` for interactive dashboards:
-```razor
-<IgbTileManager DragMode="TileManagerDragMode.TileHeader" ResizeMode="TileManagerResizeMode.Always">
-    <IgbTile ColSpan="2" RowSpan="1">...</IgbTile>
-</IgbTileManager>
-```
-
-Valid drag modes include `TileHeader`, `Tile`, and `None`. Valid resize modes include `Always`, `Hover`, and `None`.
-
-### IgbGrid: virtual rendering
-The grid requires a container with a defined height. Without it, the grid will not virtualize and may render all rows:
-```css
-::deep igc-grid {
-  height: 500px;
-}
-```
-
----
-
-## Theming Pitfalls
-
-### DV components do NOT inherit CSS theme colors
-Charts, maps, gauges, and sparklines ignore the global CSS custom property theme entirely. Set their visual properties explicitly via component parameters. After a palette exists, use the resolved color values (not `var()` references) for DV component parameters:
-```razor
-<IgbCategoryChart
-    Brushes="@primaryColor"
-    Outlines="@primaryColor"
-    XAxisLabelTextColor="@grayColor"
-    YAxisMajorStroke="@grayLightColor" />
-```
-
-### Component-scoped theme overrides
-For core UI component theming, use `create_component_theme` with `platform: "blazor"` and `output: "css"`. The MCP generates global CSS selectors (`igc-*`). Place the output in:
-
-- **Global `app.css`** - use as-is (no `::deep`).
-- **`.razor.css` isolation file** - add `::deep` to each selector:
-
-```css
-/* Dashboard.razor.css - add ::deep for isolation file */
-::deep igc-grid {
-  --ig-grid-header-background: var(--ig-primary-100);
-  --ig-grid-content-background: var(--ig-surface-500);
-}
-```
-
-Use `::part()` on an `igc-*` selector only when the property you need is not covered by any design token (verify via `get_component_design_tokens` first). In isolation files, combine `::deep` with `::part()`:
-
-```css
-/* MyView.razor.css */
-::deep igc-dialog::part(footer) {
-  border-top: 1px solid var(--ig-gray-200);
-}
-```
-
-### Nav drawer sizing
-Size the drawer with layout CSS around the drawer or with CSS parts/tokens verified from the current docs.
-```css
-.shell {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-}
-```
-
-### Dark theme overrides for grids
-In dark themes, grid headers and rows may need explicit background overrides to match the design's surface hierarchy:
-```css
-::deep igc-grid {
-  --ig-grid-header-background: var(--ig-surface-500);
-  --ig-grid-content-background: var(--ig-surface-500);
-  --ig-grid-row-hover-background: var(--ig-gray-100);
-}
-```
-
-### No hardcoded colors after palette generation
-Once a palette has been defined (via CSS custom property overrides or MCP `create_palette` / `create_theme`), core UI component colors should come from generated palette tokens - do not hardcode hex/RGB/HSL values. DV component parameters are the exception: charts, maps, gauges, and sparklines often need resolved color strings because they do not consume CSS variables consistently.
-
-**WRONG** (hardcoded hex - breaks theme switching, ignores the palette):
-```css
-/* app.css - global */
-igc-avatar {
-  --ig-avatar-background: #e91e63;
-}
-```
-
-**RIGHT** (palette token - stays in sync with the theme):
-```css
-/* app.css - global */
-igc-avatar {
-  --ig-avatar-background: var(--ig-primary-500);
-  --ig-avatar-color: var(--ig-primary-500-contrast);
-}
-
-/* MyView.razor.css - isolation file: same tokens, add ::deep */
-::deep igc-avatar {
-  --ig-avatar-background: var(--ig-primary-500);
-  --ig-avatar-color: var(--ig-primary-500-contrast);
-}
-```
-
-### Read luminance warnings from theme generation
-If `create_theme` returns a luminance warning for a generated surface, do not ignore it. If the design needs multiple surface depths, use `create_custom_palette` or define semantic CSS variables such as `--surface-1` and `--surface-2` in the global CSS file instead of relying on a single generated surface color.
-
----
-
-## Map Component
-
-### Adding markers programmatically
-Map series are added as child components in Razor markup, not programmatically:
 ```razor
 <IgbGeographicMap Height="500px" Width="100%">
-    <IgbGeographicSymbolSeries
-        DataSource="Locations"
-        LatitudeMemberPath="Lat"
-        LongitudeMemberPath="Lon"
-        MarkerType="MarkerType.Circle"
-        MarkerBrush="#FF5722" />
+    <IgbGeographicSymbolSeries DataSource="Locations"
+                               LatitudeMemberPath="Lat" LongitudeMemberPath="Lon"
+                               MarkerType="MarkerType.Circle" MarkerBrush="#FF5722" />
 </IgbGeographicMap>
 ```
 
-### Dark map styling
-OpenStreetMap tiles are light by default. For dark themes, apply a CSS filter to the map container. Adjust the values to match the map tone in the design image:
+OpenStreetMap tiles are light. For a dark design, filter the container: `filter: grayscale(0.8) brightness(0.6);` — tune to match the image.
+
+## Components
+
+### `IgbNavDrawer` — use `Position="Relative"` for a pinned sidebar
+
+With `Start`/`End`/`Top`/`Bottom` the panel is `position: fixed`, floats over the content behind a dimming overlay, and the host contributes `width: 0` to the layout. There is no `Pin` parameter — but **`NavDrawerPosition.Relative` is the built-in pinned mode**: the panel becomes in-flow, the overlay is hidden, and closing slides it out by a negative margin.
+
+```razor
+<div class="app-shell">
+    <IgbNavDrawer Open="true" Position="NavDrawerPosition.Relative">…</IgbNavDrawer>
+    <main>@Body</main>
+</div>
+```
 ```css
-.map-container {
-  /* tune grayscale (0-1) and brightness (0-1) to match the design */
-  filter: grayscale(0.8) brightness(0.6);
-}
+igc-nav-drawer { --menu-full-width: 260px; --menu-mini-width: 60px; }
+.app-shell { display: flex; height: 100vh; }
 ```
 
----
+Width comes from `--menu-full-width` — no `::part()` override needed. Content in `slot="mini"` shows while the drawer is closed, giving an icon rail. Do not call `ShowAsync()` from `OnAfterRenderAsync`; the component is not ready. Drive it with `Open`.
 
-## Dark Theme Specifics
+### Icons in slots must be `IgbIcon`
 
-### Use the dark theme CSS variant
-Switch the theme `<link>` from light to dark:
+A font-icon `<span>` is `display: inline`, so `vertical-align` is ignored by the slot's flex container and the glyph drifts to the top. `IgbIcon` is `inline-flex; align-items: center` and self-centers.
+
+```razor
+@* ❌ *@ <IgbInput><span slot="prefix" class="material-icons">search</span></IgbInput>
+@* ✅ *@ <IgbInput><IgbIcon @ref="_icon" slot="prefix" IconName="search" Collection="material" /></IgbInput>
+```
+
+The parameter is `IconName`; `Name` is the framework's element identity on every component. Register the icon in `OnAfterRenderAsync(firstRender)` after `await EnsureReady()`, or nothing renders.
+
+### `Name` never groups or names a form field
+
+`<IgbRadioGroup Name="plan">` does not group radios — being children of the group does, and the selection is the group's `@bind-Value`.
+
+### `IgbAvatar` uses `Shape`
+
+`AvatarShape.Circle | Rounded | Square`. There is no `RoundShape`.
+
+### `IgbCombo`'s generic parameter is `T`
+
+`<IgbCombo T="Person" …>`, not `TValue`.
+
+### `IgbCard` has no default width
+
+Always set one.
+
+### `IgbTileManager` drag and resize modes
+
+`DragMode`: `None | TileHeader | Tile`. `ResizeMode`: `None | Hover | Always`.
+
+### Grids need a height
+
+Without one the grid renders every row and virtualization is off. Also remember the **grid-specific stylesheet** alongside the base theme for any full-featured grid.
+
+## Dark themes
+
+Switch both stylesheets together:
+
 ```html
-<!-- Light -->
-<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
-<!-- Dark -->
 <link href="_content/IgniteUI.Blazor/themes/dark/bootstrap.css" rel="stylesheet" />
+<link href="_content/IgniteUI.Blazor/themes/grid/dark/bootstrap.css" rel="stylesheet" />
+<!-- IgbGridLite instead: _content/IgniteUI.Blazor.GridLite/css/themes/dark/bootstrap.css -->
 ```
 
-> **If the view includes any full-featured grid**, switch the grid-specific stylesheet variant too:
-> ```html
-> <!-- Light -->
-> <link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />
-> <!-- Dark -->
-> <link href="_content/IgniteUI.Blazor/themes/grid/dark/bootstrap.css" rel="stylesheet" />
-> ```
->
-> **If the view uses `IgbGridLite`**, switch its single stylesheet instead:
-> ```html
-> <!-- Light -->
-> <link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
-> <!-- Dark -->
-> <link href="_content/IgniteUI.Blazor.GridLite/css/themes/dark/bootstrap.css" rel="stylesheet" />
-> ```
+For a runtime toggle, prefer `IgbThemeProvider` (`Theme`, `Variant`) over swapping `<link href>` via JS interop — no interop and it can scope to a region.
 
-### CSS custom properties for dark panels
-When the design has multiple dark surface depths (e.g., sidebar darker than content area), define semantic tokens:
+**Multiple surface depths.** A single generated surface will not cover a sidebar darker than the content area. Define semantic variables and use them in layout CSS:
+
 ```css
 :root {
-  --surface-1: var(--ig-gray-900); /* deepest (sidebar, drawer) */
-  --surface-2: var(--ig-gray-800); /* content area */
-  --surface-3: var(--ig-gray-700); /* elevated cards/panels */
+    --surface-1: var(--ig-gray-900);   /* sidebar */
+    --surface-2: var(--ig-gray-800);   /* content */
+    --surface-3: var(--ig-gray-700);   /* elevated cards */
 }
 ```
 
-Apply these in layout CSS rather than hardcoding hex values.
+Grid headers and rows often need explicit backgrounds to match the design's hierarchy in dark mode:
 
-### Programmatic dark/light toggle
-Swap the CSS `<link>` element via JS interop:
-```html
-<script>
-  window.themeSwitcher = {
-    setTheme(href) {
-      document.getElementById('theme-css').href = href;
-    }
-  };
-</script>
-```
-
-```csharp
-await JS.InvokeVoidAsync(
-    "themeSwitcher.setTheme",
-    "_content/IgniteUI.Blazor/themes/dark/bootstrap.css");
-```
-
-Or toggle a CSS class with variable overrides (see `igniteui-blazor-theming` skill for full patterns).
-
----
-
-## Blazor-specific Gotchas
-
-### RZ9986 - Dynamic CSS class on Ignite UI components
-
-Blazor raises **RZ9986: Component attributes do not support complex content** when a CSS class string is built inline on an Ignite UI component:
-
-```razor
-@* WRONG - RZ9986 build failure *@
-<IgbChip class="chip @(item == _selected ? "chip-active" : "")" />
-```
-
-Move the class logic into a C# helper method that returns the complete string:
-
-```razor
-@* RIGHT - no RZ9986 *@
-<IgbChip class="@ChipClass(item)" />
-
-@code {
-    private string ChipClass(Item item) =>
-        item == _selected ? "chip chip-active" : "chip";
+```css
+igc-grid {
+    --ig-grid-header-background: var(--ig-surface-500);
+    --ig-grid-content-background: var(--ig-surface-500);
+    --ig-grid-row-hover-background: var(--ig-gray-100);
 }
 ```
 
-This applies to **any** `Igb*` component. The `RZ9986` issue is caused by **complex attribute content** on components (for example, mixing literal text with `@(...)` blocks in the same attribute). To avoid it, make the entire `class` value a single C# expression - either by using a helper method as shown above or by returning the full class string from one inline expression.
-
-### Always register modules in `Program.cs`
-Every `Igb*` component needs its `IgbXxxModule` registered via `AddIgniteUIBlazor()`. If a component silently fails to render, the most common cause is a missing module registration:
-```csharp
-builder.Services.AddIgniteUIBlazor(
-    typeof(IgbCategoryChartModule),
-    typeof(IgbListModule),
-    typeof(IgbNavbarModule)
-);
-```
-
-### Two-way binding uses `@bind-` prefix where the component exposes bindable values
-Blazor uses `@bind-Value`, `@bind-Checked`, etc. Verify the exact bindable parameter from the component docs before inventing one:
-```razor
-<IgbInput @bind-Value="searchText" />
-<IgbSwitch @bind-Checked="isDarkMode" />
-```
-
-### Event handler pattern
-Use the event pattern shown in the Blazor docs for that component. Native click handling on Ignite UI buttons commonly uses Blazor's `@onclick`; component events use their PascalCase event names:
-```razor
-<IgbButton @onclick="HandleClick">Save</IgbButton>
-<IgbGrid RowSelectionChanging="OnRowSelection" />
-
-@code {
-    private void HandleClick() { /* ... */ }
-    private void OnRowSelection(IgbRowSelectionEventArgs args) { /* ... */ }
-}
-```
-
-### Template context with `<Template>`
-Ignite UI Blazor uses `<Template>` child elements with the `context` parameter - not Angular's `<ng-template>`:
-```razor
-<IgbGrid Data="Data">
-    <IgbColumn Field="Name" Header="Name">
-        <Template>
-            <div>
-                <strong>@context.Cell.Value</strong>
-            </div>
-        </Template>
-    </IgbColumn>
-</IgbGrid>
-```
-
-### `@ref` for programmatic access
-Use `@ref` with a matching field of the component type:
-```razor
-<IgbDialog @ref="dialog">
-    <p>Dialog content</p>
-</IgbDialog>
-
-@code {
-    private IgbDialog dialog = default!;
-
-    private async Task ShowDialog()
-    {
-        await dialog.ShowAsync();
-    }
-}
-```
-
-### C# data models - use records or classes
-Use C# `record` or `class` types for mock data - not TypeScript interfaces:
-```csharp
-record SalesRecord(string Month, double Revenue, double Profit);
-record Contact(string Name, string Email, string Initials);
-```
-
-### Avoid inline styles - use CSS isolation
-Keep layout, spacing, typography, and surface styling in `.razor.css` files rather than using `style=""` inline attributes. This makes theming consistent and maintainable.
-
-### Parameter naming: PascalCase
-Blazor component parameters use PascalCase (`ChartType`, `DataSource`, `MarkerTypes`) - not Angular's camelCase bindings (`[chartType]`, `[dataSource]`, `[markerTypes]`).
-
-### Single quotes in Razor attribute expressions cause CS1012
-In Razor, `@onclick="() => Navigate('/dashboard')"` fails because the single quotes inside the double-quoted attribute are parsed as C# `char` literals, producing error CS1012. Use a named method or a variable instead:
-```razor
-@* WRONG - single quotes parsed as char literal *@
-<IgbNavDrawerItem @onclick="() => Navigate('/dashboard')">
-
-@* RIGHT - use a method reference or extract the path *@
-<IgbNavDrawerItem @onclick="NavigateToDashboard">
-
-@code {
-    private void NavigateToDashboard() => NavigationManager.NavigateTo("/dashboard");
-}
-```
-This applies to any inline lambda where a string literal containing `/` or special chars appears inside a double-quoted Razor attribute. Prefer named handler methods over inline lambdas with string arguments.
+**No hardcoded hex after the palette exists.** Core component colors come from palette tokens (`var(--ig-primary-500)`, `var(--ig-primary-500-contrast)`) so theme switching keeps working. Chart, map, gauge and sparkline parameters are the exception — they need resolved color values.
