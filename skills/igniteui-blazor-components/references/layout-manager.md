@@ -1,49 +1,56 @@
-# Layout Manager Components - Dock Manager & Tile Manager
+# Layout Managers — Tile Manager & Dock Manager
 
-> **Part of the [`igniteui-blazor-components`](../SKILL.md) skill hub.**
-> For project setup and module registration - see [`setup.md`](./setup.md).
+| Component | Package | Use for |
+|---|---|---|
+| `IgbTileManager` | `IgniteUI.Blazor.Lite` or full | Resizable, draggable widget dashboard on a CSS grid |
+| `IgbDockManager` | `IgniteUI.Blazor` / `.Trial` only | IDE-style dockable, floating, pinnable panes |
 
-## Contents
+## Tile Manager
 
-- [Dock Manager](#dock-manager)
-  - [Basic Setup](#basic-setup)
-  - [Layout Serialization](#layout-serialization)
-- [Tile Manager](#tile-manager)
-- [Key Rules](#key-rules)
+```razor
+<IgbTileManager @ref="TilesRef" ColumnCount="4" Gap="8px"
+                MinColumnWidth="220px" MinRowHeight="140px"
+                ResizeMode="TileManagerResizeMode.Always"
+                DragMode="TileManagerDragMode.TileHeader">
+    <IgbTile ColSpan="2" RowSpan="1">
+        <span slot="title">Revenue</span>
+        <!-- tile content -->
+    </IgbTile>
+    <IgbTile ColSpan="1" RowSpan="2" DisableResize="true">
+        <span slot="title">KPIs</span>
+    </IgbTile>
+</IgbTileManager>
 
----
+@code {
+    IgbTileManager TilesRef { get; set; } = default!;
 
-## Overview
-This reference gives high-level guidance on when to use each layout manager component, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
+    Task<string> Save() => TilesRef.SaveLayoutAsync();
+    Task Restore(string json) => TilesRef.LoadLayoutAsync(json);
+}
+```
+
+`IgbTileManager`: `ColumnCount`, `Gap`, `MinColumnWidth`, `MinRowHeight`, `ResizeMode` (`None | Hover | Always`), `DragMode` (`None | TileHeader | Tile`), `SaveLayoutAsync()` / `LoadLayoutAsync(json)`, plus `TileDragStart` / `TileDragEnd` / `TileMaximize` / `TileFullscreen` events.
+
+`IgbTile`: `ColSpan`, `RowSpan`, `ColStart`, `RowStart`, `Position`, `Maximized`, `DisableResize`, `DisableMaximize`, `DisableFullscreen`, `GetFullscreenAsync()`, and a `title` slot.
+
+The saved layout stores tile geometry and state only — tile **content** always stays in the Razor markup.
 
 ## Dock Manager
 
-Dock Manager provides an IDE-like dockable pane layout. Users can drag panes to dock, float, pin/unpin, and close them at runtime.
-
-```csharp
-// In Program.cs or Startup.cs
-builder.Services.AddIgniteUIBlazor(typeof(IgbDockManagerModule));
-```
-
-### Basic Setup
-
-Dock Manager uses a C# layout object graph to define pane structure. Pane content is projected via named slots.
+Requires `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` and `IgbDockManagerModule`. Pane structure is a C# object graph on the `Layout` parameter; pane bodies are projected through named slots matched by `ContentId`.
 
 ```razor
 <IgbDockManager @ref="DockRef" Layout="DockLayout" style="height: 600px;">
-    <!-- Content slots - the slot name matches IgbContentPane.ContentId -->
     <div slot="panel1">Panel 1 Content</div>
     <div slot="panel2">Panel 2 Content</div>
     <div slot="panel3">Panel 3 Content</div>
 </IgbDockManager>
 
 @code {
-    IgbDockManager DockRef { get; set; }
+    IgbDockManager DockRef { get; set; } = default!;
 
-    // IgbDockManagerLayout has two top-level properties:
-    //   RootPane (IgbSplitPane) - the main docked layout
-    //   FloatingPanes (IgbSplitPaneCollection) - initially floating panes
-    IgbDockManagerLayout DockLayout { get; set; } = new IgbDockManagerLayout
+    // IgbDockManagerLayout: RootPane (IgbSplitPane) + FloatingPanes (IgbSplitPaneCollection)
+    IgbDockManagerLayout DockLayout { get; set; } = new()
     {
         RootPane = new IgbSplitPane
         {
@@ -56,73 +63,17 @@ Dock Manager uses a C# layout object graph to define pane structure. Pane conten
                     PaneType = DockManagerPaneType.TabGroupPane,
                     Panes = new()
                     {
-                        new IgbContentPane
-                        {
-                            PaneType = DockManagerPaneType.ContentPane,
-                            ContentId = "panel1",
-                            Header = "Panel 1"
-                        },
-                        new IgbContentPane
-                        {
-                            PaneType = DockManagerPaneType.ContentPane,
-                            ContentId = "panel2",
-                            Header = "Panel 2"
-                        }
+                        new IgbContentPane { PaneType = DockManagerPaneType.ContentPane, ContentId = "panel1", Header = "Panel 1" },
+                        new IgbContentPane { PaneType = DockManagerPaneType.ContentPane, ContentId = "panel2", Header = "Panel 2" }
                     }
                 },
-                new IgbContentPane
-                {
-                    PaneType = DockManagerPaneType.ContentPane,
-                    ContentId = "panel3",
-                    Header = "Panel 3",
-                    Size = 250
-                }
+                new IgbContentPane { PaneType = DockManagerPaneType.ContentPane, ContentId = "panel3", Header = "Panel 3", Size = 250 }
             }
         }
     };
 }
 ```
 
-### Layout Serialization
-
-Persisting a Dock Manager layout is version-sensitive. The current `dock-manager` MCP overview documents the layout object graph, pane content slots, styling, and keyboard behavior; it does not show a verified Blazor serialization sample in this reference. Before generating persistence code, inspect the current installed API and use only the documented event signatures and methods for that version.
-
-> **AGENT INSTRUCTION - Layout serialization:** The serialized JSON contains only pane structure and positions. It does **not** serialize the slot content. The slot content markup must remain static in the Razor template; only pane arrangement changes at runtime.
-
----
-
-## Tile Manager
-
-Tile Manager provides a resizable, draggable tile/widget dashboard layout.
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbTileManagerModule));
-```
-
-```razor
-<IgbTileManager ColumnCount="4" Gap="8px" ResizeMode="@TileManagerResizeMode.Always" DragMode="@TileManagerDragMode.TileHeader">
-    <IgbTile ColSpan="2" RowSpan="1">
-        <span slot="title">Revenue Chart</span>
-        <!-- tile content -->
-    </IgbTile>
-    <IgbTile ColSpan="1" RowSpan="2">
-        <span slot="title">KPIs</span>
-        <!-- tile content -->
-    </IgbTile>
-    <IgbTile ColSpan="1">
-        <span slot="title">Recent Orders</span>
-        <!-- tile content -->
-    </IgbTile>
-</IgbTileManager>
-```
-
----
-
-## Key Rules
-
-1. **`IgbContentPane.ContentId` must exactly match the `slot` attribute of the projected HTML element.** A mismatch causes the pane to render empty.
-2. **Dock Manager must have an explicit height** (via CSS or inline style). Without a height it renders as 0px.
-3. **Layout serialization only persists structure, not content.** Slot content is always defined in Razor markup.
-4. **`IgbTileManager` uses CSS Grid internally.** Set `ColumnCount` to control the number of columns.
-5. **Do not invent Dock Manager serialization APIs.** Use `dock-manager` and the installed API before writing persistence code.
-6. **Tile Manager serialization uses `SaveLayout()` / `LoadLayout(string)`.** The saved payload stores tile layout properties, not tile content.
+- `IgbContentPane.ContentId` must match the projected element's `slot` exactly, or the pane renders empty.
+- The Dock Manager needs an explicit height; without one it collapses to 0px.
+- Layout persistence is version-sensitive. Check the installed API before writing serialization code — only pane structure and positions round-trip, never the slot content.
