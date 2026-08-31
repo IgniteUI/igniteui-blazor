@@ -74,7 +74,7 @@ The generic parameter is **`T`**, not `TValue` — set it to the data item type.
 ```razor
 <IgbDatePicker @bind-Value="SelectedDate" Label="Start date" Min="@MinDate" Max="@MaxDate" />
 
-<IgbCalendar @bind-Value="SelectedDate" Selection="CalendarSelection.Single"
+<IgbCalendar @bind-Value="CalendarValue" Selection="CalendarSelection.Single"
              VisibleMonths="2" ShowWeekNumbers="true" WeekStart="WeekDays.Monday" />
 
 <IgbDateTimeInput @bind-Value="SelectedDateTime" InputFormat="MM/dd/yyyy HH:mm" SpinLoop="true" />
