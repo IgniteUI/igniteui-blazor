@@ -107,10 +107,10 @@ foreach ($group in $budget.groups) {
     }
     $groupResults += $result
 
-    if ($result.RawKiB -gt $group.maxRawKiB) {
+    if ($raw -gt ($group.maxRawKiB * 1KB)) {
         $problems += "Group '$($group.id)' is $($result.RawKiB) KiB raw, over its $($group.maxRawKiB) KiB budget."
     }
-    if ($null -ne $group.maxGzipKiB -and $result.GzipKiB -gt $group.maxGzipKiB) {
+    if ($null -ne $group.maxGzipKiB -and $gzip -gt ($group.maxGzipKiB * 1KB)) {
         $problems += "Group '$($group.id)' is $($result.GzipKiB) KiB gzipped, over its $($group.maxGzipKiB) KiB budget."
     }
 }
@@ -135,10 +135,10 @@ foreach ($total in $budget.totals) {
     }
     $totalResults += $result
 
-    if ($result.RawKiB -gt $total.maxRawKiB) {
+    if ($raw -gt ($total.maxRawKiB * 1KB)) {
         $problems += "Total '$($total.id)' is $($result.RawKiB) KiB raw, over its $($total.maxRawKiB) KiB budget."
     }
-    if ($null -ne $total.maxGzipKiB -and $result.GzipKiB -gt $total.maxGzipKiB) {
+    if ($null -ne $total.maxGzipKiB -and $gzip -gt ($total.maxGzipKiB * 1KB)) {
         $problems += "Total '$($total.id)' is $($result.GzipKiB) KiB gzipped, over its $($total.maxGzipKiB) KiB budget."
     }
 }
