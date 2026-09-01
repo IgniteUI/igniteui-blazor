@@ -16,7 +16,7 @@ namespace IgniteUI.Blazor.Controls
 
     public interface JsonSerializable
     {
-        void Serialize(SerializationContext? writer, string? propertyName = null);
+        void Serialize(SerializationContext writer, string? propertyName = null);
     }
 
 }

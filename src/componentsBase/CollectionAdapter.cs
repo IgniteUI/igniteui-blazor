@@ -85,21 +85,24 @@ namespace IgniteUI.Blazor.Controls
             switch (args.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    if (args.NewItems != null && args.NewItems.Count > 0)
+                    if (args.NewItems is { Count: > 0 } && args.NewItems[0] is T addedItem)
                     {
-                        this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems[0]!);
+                        this.InsertManualItem(args.NewStartingIndex, addedItem);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     this.RemoveManualItemAt(args.OldStartingIndex);
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     this.RemoveManualItemAt(args.OldStartingIndex);
-                    if (args.NewItems != null && args.NewItems.Count > 0)
+                    if (args.NewItems is { Count: > 0 } && args.NewItems[0] is T replacedItem)
                     {
-                        this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems[0]!);
+                        this.InsertManualItem(args.NewStartingIndex, replacedItem);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     this.ClearManualItems();
                     break;
@@ -121,10 +124,7 @@ namespace IgniteUI.Blazor.Controls
                         var key = this.CollisionChecker(item);
                         if (key != null)
                         {
-                            if (!manualSet.Contains(key))
-                            {
-                                manualSet.Add(key);
-                            }
+                            manualSet.Add(key);
                         }
                     }
                 }
@@ -148,7 +148,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    var key = this.CollisionChecker!(item);
+                    var key = this.CollisionChecker?.Invoke(item);
                     if (key == null)
                     {
                         this._manualItems.Insert(i, item);
@@ -293,9 +293,9 @@ namespace IgniteUI.Blazor.Controls
                         }
 
                         this._allList.Insert(ins, insItem);
-                        if (this._target != null)
+                        if (this._target != null && convertedItem != null)
                         {
-                            this._target.Insert(ins, convertedItem!);
+                            this._target.Insert(ins, convertedItem);
                         }
                         this._onItemAdded?.Invoke(insItem);
                         ind++;
@@ -312,9 +312,9 @@ namespace IgniteUI.Blazor.Controls
                     }
 
                     this._allList.Add(insItem);
-                    if (this._target != null)
+                    if (this._target != null && convertedItem != null)
                     {
-                        this._target.Add(convertedItem!);
+                        this._target.Add(convertedItem);
                     }
                     this._onItemAdded?.Invoke(insItem);
                     ind++;

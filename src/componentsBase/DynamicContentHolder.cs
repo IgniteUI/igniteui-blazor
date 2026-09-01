@@ -184,7 +184,10 @@ namespace IgniteUI.Blazor.Controls
 
             foreach (var item in toSignal)
             {
-                item.SetResult(Component!);
+                if (Component != null)
+                {
+                    item.SetResult(Component);
+                }
             }
         }
 
@@ -208,11 +211,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            if (component != null)
+            if (component != null && toSignal != null)
             {
-                foreach (var item in toSignal!)
+                foreach (var item in toSignal)
                 {
-                    item.SetResult(Component!);
+                    if (Component != null)
+                    {
+                        item.SetResult(Component);
+                    }
                 }
             }
 

@@ -165,7 +165,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private bool _ready = false;
-        private Dictionary<string, Action<object, object>> _handlers = new Dictionary<string, Action<object, object>>();
+        private Dictionary<string, Action<object?, object?>> _handlers = new Dictionary<string, Action<object?, object?>>();
         private bool _updateQueued = false;
 
         /// <summary>
@@ -193,6 +193,7 @@ namespace IgniteUI.Blazor.Controls
             //WebCallback.Instance.Register(this);
             //this._objRef = DotNetObjectReference.Create(IgBlazor.WebCallback);
             //_webCallbackHelper.WebCallback = WebCallback.Instance;
+            _sequenceInfo = BuildSequenceInfo(3);
         }
 
         protected virtual string ResolveDisplay()
@@ -200,11 +201,11 @@ namespace IgniteUI.Blazor.Controls
             return "block";
         }
 
-        protected string? ToSpinal(string? value)
+        protected string ToSpinal(string? value)
         {
             if (value == null)
             {
-                return null;
+                return String.Empty;
             }
 
             List<char> output = new List<char>();
@@ -293,8 +294,12 @@ namespace IgniteUI.Blazor.Controls
 
             var ser = Serialize();
             var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(ser);
+            if (data == null)
+            {
+                return new Dictionary<string, object>();
+            }
             Dictionary<string, object> ret = new Dictionary<string, object>();
-            foreach (var key in data!.Keys)
+            foreach (var key in data.Keys)
             {
                 var currKey = key;
                 var currValue = data[key];
@@ -366,13 +371,13 @@ namespace IgniteUI.Blazor.Controls
         protected virtual string TransformSimpleKey(string? key)
         {
             key = Camelize(key);
-            return _sequenceInfo!.TransformKey(key);
+            return _sequenceInfo.TransformKey(key);
         }
 
         protected virtual bool IsTransformedEnumValue(string? key)
         {
             key = Camelize(key);
-            if (_sequenceInfo!.IsTransformedEnum(key))
+            if (_sequenceInfo.IsTransformedEnum(key))
             {
                 return true;
             }
@@ -383,7 +388,7 @@ namespace IgniteUI.Blazor.Controls
         {
             key = Camelize(key);
             //Console.WriteLine("transforming enum value...." + (value.GetType().Name));
-            if (_sequenceInfo!.IsTransformedEnum(key))
+            if (_sequenceInfo.IsTransformedEnum(key))
             {
                 //Console.WriteLine("transforming enum value....");
 
@@ -393,7 +398,7 @@ namespace IgniteUI.Blazor.Controls
             return value;
         }
 
-        private SequenceInfo? _sequenceInfo = null;
+        private SequenceInfo _sequenceInfo;
 
         protected virtual SequenceInfo BuildSequenceInfo(int startSequence)
         {
@@ -444,7 +449,7 @@ namespace IgniteUI.Blazor.Controls
                                         }
                                         var wc = (WCEnumNameAttribute)attr;
                                         var wcEnumName = Camelize(wc.Name);
-                                        wcEnumTransform.Add(f.Name.ToLower(), wcEnumName!);
+                                        wcEnumTransform.Add(f.Name.ToLower(), wcEnumName);
                                     }
                                 }
                             }
@@ -479,7 +484,7 @@ namespace IgniteUI.Blazor.Controls
                 builder.AddAttribute(2, "data-ig-id", _containerId);
 
                 EnsureSequenceInfo();
-                foreach (var key in _sequenceInfo!.AttributeKeys)
+                foreach (var key in _sequenceInfo.AttributeKeys)
                 {
                     if (attributes.ContainsKey(key))
                     {
@@ -501,7 +506,7 @@ namespace IgniteUI.Blazor.Controls
                             attributeVal = TransformPotentialEnumValue(key, attributeVal);
                         }
                         //Console.WriteLine("adding attribute: " + tKey + ", " + attributes[key]);
-                        builder.AddAttribute(sequence, ToSpinal(ToPascal(tKey))!, attributeVal);
+                        builder.AddAttribute(sequence, ToSpinal(ToPascal(tKey)), attributeVal);
                     }
                 }
 
@@ -689,7 +694,7 @@ namespace IgniteUI.Blazor.Controls
                         dynamicContent.UpdateTemplate(template);
                     }
 
-                    Holder!.AddDynamicContent(dynamicContent);
+                    Holder?.AddDynamicContent(dynamicContent);
                     break;
                 }
                 case "Remove":
@@ -702,7 +707,7 @@ namespace IgniteUI.Blazor.Controls
                     {
                         DynamicContentInfo dynamicContent = _dynamicContentInfos[contentId];
                         _dynamicContentInfos.Remove(contentId);
-                        Holder!.RemoveDynamicContent(dynamicContent);
+                        Holder?.RemoveDynamicContent(dynamicContent);
                     }
                     break;
                 }
@@ -929,7 +934,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext? context, string? propertyName = null)
+        public void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;
@@ -1079,11 +1084,11 @@ namespace IgniteUI.Blazor.Controls
 
             if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
             {
-                var str = ((JsonElement)ret).GetString();
-                var retDict = JsonSerializer.Deserialize<Dictionary<string, object>>(str!, SerializerOptions);
+                var str = ((JsonElement)ret).GetString() ?? "";
+                var retDict = JsonSerializer.Deserialize<Dictionary<string, object>>(str, SerializerOptions);
                 ret = retDict;
 
-                if (retDict!.ContainsKey("retType") &&
+                if (retDict != null && retDict.ContainsKey("retType") &&
                     retDict["retType"] is JsonElement &&
                     ((JsonElement)retDict["retType"]).GetString() == "promise")
                 {
@@ -1639,9 +1644,9 @@ namespace IgniteUI.Blazor.Controls
             }
 
             //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
-            while (_messageQueue != null && _messageQueue.Count > 0)
+            while (_messageQueue != null && _messageQueue.First != null && _messageQueue.Count > 0)
             {
-                RendererMessage m = _messageQueue.First!.Value;
+                RendererMessage m = _messageQueue.First.Value;
                 _messageQueue.RemoveFirst();
                 ProcessMessage(m);
             }
@@ -1656,9 +1661,9 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            while (_messageQueue.Count > 0)
+            while (_messageQueue.Count > 0 && _messageQueue.First != null)
             {
-                RendererMessage m = _messageQueue.First!.Value;
+                RendererMessage m = _messageQueue.First.Value;
                 _messageQueue.RemoveFirst();
                 ProcessMessageSync(m);
             }
@@ -2099,8 +2104,8 @@ namespace IgniteUI.Blazor.Controls
                                     {
                                         return null!;
                                     }
-                                    var ret = obj["value"].ToString();
-                                    returnValue = JsonSerializer.Deserialize<Dictionary<string, object>>(ret!, SerializerOptions);
+                                    var ret = obj["value"].ToString() ?? "";
+                                    returnValue = JsonSerializer.Deserialize<Dictionary<string, object>>(ret, SerializerOptions);
                                 }
                             }
                             else
@@ -2133,11 +2138,14 @@ namespace IgniteUI.Blazor.Controls
             //    }
             //}
 
-            object? result = returnValue;
+            object result = returnValue;
             if (returnValue is JsonElement && ((JsonElement)returnValue).ValueKind == JsonValueKind.String)
             {
                 var str = ((JsonElement)returnValue).GetString();
-                result = JsonSerializer.Deserialize<Dictionary<string, object>>(str!, SerializerOptions);
+                if (str != null)
+                {
+                    result = JsonSerializer.Deserialize<Dictionary<string, object>>(str, SerializerOptions) ?? returnValue;
+                }
 
             }
             InvokeAsync(() =>
@@ -2148,7 +2156,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    _methodReturns.Add(invokeId, result!);
+                    _methodReturns.Add(invokeId, result);
                 }
             });
         }
@@ -2508,7 +2516,7 @@ namespace IgniteUI.Blazor.Controls
                 w.WriteNull(propertyName);
                 return;
             }
-            Guid id = _dataSourceManager!.FindItemId(val);
+            Guid id = _dataSourceManager?.FindItemId(val) ?? Guid.Empty;
 
             string typeName = "";
             if (val is JsonSerializable)
@@ -2631,11 +2639,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected string? Camelize(string? value)
+        protected string Camelize(string? value)
         {
             if (value == null || value.Length == 0)
             {
-                return value;
+                return value ?? string.Empty;
             }
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
@@ -2788,7 +2796,7 @@ namespace IgniteUI.Blazor.Controls
             }
             try
             {
-                var arr = JsonSerializer.Deserialize<object[]>(val.ToString()!, SerializerOptions);
+                var arr = JsonSerializer.Deserialize<object[]>(val.ToString() ?? "", SerializerOptions);
                 if (arr == null)
                 {
                     return Array.Empty<object>();
@@ -2931,8 +2939,12 @@ namespace IgniteUI.Blazor.Controls
             }
             try
             {
-                var arr = JsonSerializer.Deserialize<object[]>(val.ToString()!, SerializerOptions);
-                int[] ret = new int[arr!.Length];
+                var arr = JsonSerializer.Deserialize<object[]>(val.ToString() ?? "[]", SerializerOptions);
+                if (arr == null)
+                {
+                    return null;
+                }
+                int[] ret = new int[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
                 {
                     int ele = arr[i] != null ? Convert.ToInt32(arr[i]) : int.MinValue;
@@ -2987,12 +2999,20 @@ namespace IgniteUI.Blazor.Controls
                 _handlers.Remove(name + "/" + propertyName);
                 return;
             }
-            Action<object, object> inner = (sender, args) =>
+            Action<object?, object?> inner = (sender, args) =>
             {
+                // Native void events (e.g. focus/blur) legitimately deliver null args,
+                // so only bail out when a non-null payload is not the expected dictionary.
+                if (args is not null and not Dictionary<string, object?>)
+                {
+                    return;
+                }
+                var eventArgs = args as Dictionary<string, object?>;
+
                 T a = new T();
                 BaseRendererElement ele = (BaseRendererElement)a;
                 ele.Parent = this;
-                ele.FromEventJson(this, (Dictionary<string, object?>)args);
+                ele.FromEventJson(this, eventArgs);
                 //Console.WriteLine("invoking async");
                 if (onArgs != null)
                 {
@@ -3003,7 +3023,10 @@ namespace IgniteUI.Blazor.Controls
                 {
                     throw task.Exception;
                 }
-                ele.ToEventJson(this, (Dictionary<string, object?>)args);
+                if (eventArgs != null)
+                {
+                    ele.ToEventJson(this, eventArgs);
+                }
                 ele.Parent = (null);
             };
 
@@ -3019,9 +3042,9 @@ namespace IgniteUI.Blazor.Controls
                 _handlers.Remove(name + "/" + propertyName);
                 return;
             }
-            Action<object, object> inner = (sender, args) =>
+            Action<object?, object?> inner = (sender, args) =>
             {
-                T a = getReturn(args);
+                T a = getReturn(args!);
                 //Console.WriteLine("invoking async");
                 if (onArgs != null)
                 {
@@ -3046,19 +3069,30 @@ namespace IgniteUI.Blazor.Controls
                 _handlers.Remove(name + "/" + propertyName);
                 return;
             }
-            Action<object, object> inner = (sender, args) =>
+            Action<object?, object?> inner = (sender, args) =>
             {
+                // Native void events (e.g. focus/blur) legitimately deliver null args,
+                // so only bail out when a non-null payload is not the expected dictionary.
+                if (args is not null and not Dictionary<string, object?>)
+                {
+                    return;
+                }
+                var eventArgs = args as Dictionary<string, object?>;
+
                 T a = new T();
                 BaseRendererElement ele = (BaseRendererElement)a;
                 ele.Parent = this;
-                ele.FromEventJson(this, (Dictionary<string, object?>)args);
+                ele.FromEventJson(this, eventArgs);
                 //Console.WriteLine("invoking async");
                 if (onArgs != null)
                 {
                     onArgs(a);
                 }
                 handler(a);
-                ele.ToEventJson(this, (Dictionary<string, object?>)args);
+                if (eventArgs != null)
+                {
+                    ele.ToEventJson(this, eventArgs);
+                }
                 ele.Parent = (null);
             };
 
@@ -3074,9 +3108,9 @@ namespace IgniteUI.Blazor.Controls
                 _handlers.Remove(name + "/" + propertyName);
                 return;
             }
-            Action<object, object> inner = (sender, args) =>
+            Action<object?, object?> inner = (sender, args) =>
             {
-                T a = getReturn(args);
+                T a = getReturn(args!);
 
                 //Console.WriteLine("invoking async");
                 if (onArgs != null)
@@ -3109,7 +3143,7 @@ namespace IgniteUI.Blazor.Controls
                     }
                     //Console.WriteLine(args.ToString());
 
-                    object sender = obj["sender"];
+                    object? sender = obj["sender"];
                     if (sender is JsonElement && ((JsonElement)sender).ValueKind == JsonValueKind.String)
                     {
                         var stringVal = ((JsonElement)sender).GetString();
@@ -3117,7 +3151,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             return;
                         }
-                        sender = JsonSerializer.Deserialize<Dictionary<string, object>>(stringVal, SerializerOptions)!;
+                        sender = JsonSerializer.Deserialize<Dictionary<string, object>>(stringVal, SerializerOptions);
                     }
 
                     senderObj = ConvertReturnValue(sender);
@@ -3168,7 +3202,7 @@ namespace IgniteUI.Blazor.Controls
                         }
                     }
                     //Console.WriteLine("calling handler");
-                    _handlers[name + "/" + propertyName](senderObj, val!);
+                    _handlers[name + "/" + propertyName](senderObj, val);
                 }
                 catch (Exception e)
                 {
@@ -3624,7 +3658,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (reevaluate && _isRemoteRuntime)
                 {
-                    _isRuntimeValid = (bool)(_remoteRuntimeProp!.GetValue(JsRuntime) ?? false);
+                    _isRuntimeValid = (bool)(_remoteRuntimeProp?.GetValue(JsRuntime) ?? false);
                 }
             }
             return _isRuntimeValid;

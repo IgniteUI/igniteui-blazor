@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbInputBase : BaseRendererControl
     {
         [Inject]
-        internal ILogger<IgbInputBase> Logger { get; set; } = default!;
+        internal ILogger<IgbInputBase>? Logger { get; set; }
 
         private void EnsureInputOcurredHandled()
         {
@@ -67,7 +67,7 @@ namespace IgniteUI.Blazor.Controls
             parameters.TryGetValue("Readonly", out object? result);
             if (result != null && result is string value)
             {
-                Logger.LogWarning("Readonly has been renamed, use ReadOnly instead");
+                Logger?.LogWarning("Readonly has been renamed, use ReadOnly instead");
                 var updatedParams = parameters.ToDictionary().ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 bool.TryParse(value, out var coerced);
                 updatedParams["Readonly"] = coerced;
@@ -95,7 +95,7 @@ namespace IgniteUI.Blazor.Controls
             parameters.TryGetValue(oldName, out object? result);
             if (result != null && result is string value)
             {
-                Logger.LogWarning($"{oldName} has been renamed, use {newName} instead");
+                Logger?.LogWarning($"{oldName} has been renamed, use {newName} instead");
                 var updatedParams = parameters.ToDictionary().ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 if (double.TryParse(value, out var coerced))
                 {

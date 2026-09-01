@@ -38,13 +38,13 @@ namespace IgniteUI.Blazor.Controls
                 IsInproc = true;
                 //Console.WriteLine("is inproc");
             }
-            if (IsInproc)
+            if (IsInproc && inprocRuntime != null)
             {
 #if NET5_0
                 _unmarshalledRuntime = _inprocRuntime as IJSUnmarshalledRuntime;
 #else
                 //Console.WriteLine("inproc type: " + _inprocRuntime.GetType().Name);
-                var unmarshalled = inprocRuntime!.GetType().GetMethods().Where(m => m.Name == "InvokeUnmarshalled").ToList();
+                var unmarshalled = inprocRuntime.GetType().GetMethods().Where(m => m.Name == "InvokeUnmarshalled").ToList();
 
                 var name = inprocRuntime.GetType().Assembly.GetName();
                 if (unmarshalled.Count > 0)

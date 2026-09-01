@@ -591,8 +591,8 @@ namespace IgniteUI.Blazor.Controls
                     for (int i = 0; i < _data.Count; i++)
                     {
                         item = (JsonDataSourceItem)_data[0];
-                        JsonDataSource ds = (JsonDataSource)item.Source!;
-                        ds.GetDateCacheAsJson(writer);
+                        JsonDataSource? ds = item.Source as JsonDataSource;
+                        ds?.GetDateCacheAsJson(writer);
                     }
                 }
                 else

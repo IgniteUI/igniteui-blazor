@@ -142,16 +142,16 @@ namespace IgniteUI.Blazor.Controls
             NotifyParent();
         }
 
-        public void Serialize(SerializationContext? context, string? propertyName = null)
+        public void Serialize(SerializationContext context, string? propertyName = null)
         {
             //var vals = new List<string>();
             if (propertyName != null)
             {
-                context!.Writer.WriteStartArray(propertyName);
+                context.Writer.WriteStartArray(propertyName);
             }
             else
             {
-                context!.Writer.WriteStartArray();
+                context.Writer.WriteStartArray();
             }
             for (var i = 0; i < Count; i++)
             {

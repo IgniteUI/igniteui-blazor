@@ -224,10 +224,10 @@ namespace IgniteUI.Blazor.Controls
 
         private class RefChange
         {
-            public String propertyName = null!;
+            public String propertyName = string.Empty;
             public Object? oldValue;
             public Object? newValue;
-            public Action<string, object?, object?> refChanged = null!;
+            public Action<string, object?, object?>? refChanged = null;
             public bool isScript;
             public bool isElement;
         }
@@ -253,7 +253,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 RefChange? c = _queuedChanges.First?.Value;
                 _queuedChanges.RemoveFirst();
-                if (c != null)
+                if (c != null && c.refChanged != null)
                 {
                     OnRefChanged(c.propertyName, c.oldValue, c.newValue, c.isScript, c.isElement, c.refChanged);
                 }
@@ -530,7 +530,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext? context, string? propertyName = null)
+        public void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;

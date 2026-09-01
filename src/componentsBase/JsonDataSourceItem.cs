@@ -302,17 +302,17 @@ namespace IgniteUI.Blazor.Controls
 
             var propertyNames = _schema.PropertyNames;
             var jsonPropertyNames = _schema.JsonPropertyNames;
-            var len = propertyNames!.Length;
+            var len = propertyNames.Length;
             for (var i = 0; i < len; i++)
             {
-                ValueToJson(propertyNames[i], jsonPropertyNames![i], writer);
+                ValueToJson(propertyNames[i], jsonPropertyNames[i], writer);
             }
             var fieldNames = _schema.FieldNames;
             var jsonFieldNames = _schema.JsonFieldNames;
-            len = fieldNames!.Length;
+            len = fieldNames.Length;
             for (var i = 0; i < len; i++)
             {
-                ValueToJson(fieldNames[i], jsonFieldNames![i], writer);
+                ValueToJson(fieldNames[i], jsonFieldNames[i], writer);
             }
 
             writer.WriteString("___id", _parentId != null ? _parentId + "/" + _id.ToString() : _id.ToString());
@@ -335,12 +335,15 @@ namespace IgniteUI.Blazor.Controls
 
             writer.WriteStartObject(propertyName);
 
-            var propertyNames = _schema!.PropertyNames;
-            var jsonPropertyNames = _schema.JsonPropertyNames;
-            var len = propertyNames!.Length;
+            var propertyNames = _schema?.PropertyNames;
+            var jsonPropertyNames = _schema?.JsonPropertyNames;
+            var len = propertyNames?.Length ?? 0;
             for (var i = 0; i < len; i++)
             {
-                ValueToJson(propertyNames[i], jsonPropertyNames![i], writer);
+                if (propertyNames?[i] != null && jsonPropertyNames?[i] != null)
+                {
+                    ValueToJson(propertyNames[i], jsonPropertyNames[i], writer);
+                }
             }
 
             writer.WriteString("___id", _id);

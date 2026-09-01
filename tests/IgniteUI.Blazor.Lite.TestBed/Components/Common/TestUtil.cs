@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using IgniteUI.Blazor.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
