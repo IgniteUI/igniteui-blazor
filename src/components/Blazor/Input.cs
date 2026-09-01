@@ -171,14 +171,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _minLength = 0;
+        private double? _minLength = 0;
 
         /// <summary>
         /// The minimum string length required by the control.
         /// </summary>
         [Parameter]
         [WCAttributeName("minlength")]
-        public double MinLength
+        public double? MinLength
         {
             get { return this._minLength; }
             set
@@ -191,14 +191,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _maxLength = 0;
+        private double? _maxLength = 0;
 
         /// <summary>
         /// The maximum string length of the control.
         /// </summary>
         [Parameter]
         [WCAttributeName("maxlength")]
-        public double MaxLength
+        public double? MaxLength
         {
             get { return this._maxLength; }
             set
@@ -211,13 +211,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _min = 0;
+        private double? _min = 0;
 
         /// <summary>
         /// The min attribute of the control.
         /// </summary>
         [Parameter]
-        public double Min
+        public double? Min
         {
             get { return this._min; }
             set
@@ -230,13 +230,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _max = 0;
+        private double? _max = null;
 
         /// <summary>
         /// The max attribute of the control.
         /// </summary>
         [Parameter]
-        public double Max
+        public double? Max
         {
             get { return this._max; }
             set
@@ -249,13 +249,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _step = 0;
+        private double? _step = 0;
 
         /// <summary>
         /// The step attribute of the control.
         /// </summary>
         [Parameter]
-        public double Step
+        public double? Step
         {
             get { return this._step; }
             set
