@@ -408,19 +408,17 @@ namespace IgniteUI.Blazor.Controls
                 string wcName = null;
                 foreach (var attr in prop.GetCustomAttributes(true))
                 {
-                    if (attr.GetType().Name == "ParameterAttribute")
+                    if (attr is ParameterAttribute)
                     {
                         isParam = true;
                     }
-                    if (attr.GetType().Name == "WCWidgetMemberNameAttribute")
+                    if (attr is WCWidgetMemberNameAttribute memberName)
                     {
-                        var wc = (WCWidgetMemberNameAttribute)attr;
-                        wcName = Camelize(wc.Name);
+                        wcName = Camelize(memberName.Name);
                     }
-                    if (attr.GetType().Name == "WCAttributeNameAttribute")
+                    if (attr is WCAttributeNameAttribute attributeName)
                     {
-                        var wc = (WCAttributeNameAttribute)attr;
-                        wcName = wc.Name;
+                        wcName = attributeName.Name;
                     }
                 }
 
@@ -454,15 +452,13 @@ namespace IgniteUI.Blazor.Controls
                 {
                     foreach (var attr in f.GetCustomAttributes(true))
                     {
-                        if (attr.GetType().Name == "WCEnumNameAttribute")
+                        if (attr is WCEnumNameAttribute enumName)
                         {
                             if (wcEnumTransform == null)
                             {
                                 wcEnumTransform = new Dictionary<string, string>();
                             }
-                            var wc = (WCEnumNameAttribute)attr;
-                            var wcEnumName = Camelize(wc.Name);
-                            wcEnumTransform.Add(f.Name.ToLower(), wcEnumName);
+                            wcEnumTransform.Add(f.Name.ToLower(), Camelize(enumName.Name));
                         }
                     }
                 }
