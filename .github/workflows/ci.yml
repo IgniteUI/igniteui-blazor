@@ -10,9 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  # Blocks a pull request that would introduce a High or Critical advisory, or a
-  # dependency under a license the package cannot ship. Pushes to master skip it —
-  # the action needs the two-commit range a pull request gives it.
+  # Blocks a pull request that would introduce a High or Critical advisory. Pushes
+  # to master skip it — the action needs the two-commit range a pull request gives it.
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
