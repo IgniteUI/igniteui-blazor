@@ -733,6 +733,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private Dictionary<Type, Func<DynamicContentInfo>> _dynamicContentBuilders = new Dictionary<Type, Func<DynamicContentInfo>>();
+        [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "DynamicContentInfo<T> is class-constrained and templateContentType only ever holds reference types (typeof literals via the internal UpdateTemplate relay), so the instantiation uses AOT shared generics. The net9+ analyzer proves this via the class constraint; this suppression covers the net8 analyzer only.")]
         private DynamicContentInfo BuildDynamicContentInfo(string contentType, string templateId)
         {
             var templateContentType = TemplateContentType(templateId);
@@ -747,7 +748,7 @@ namespace IgniteUI.Blazor.Controls
                         System.Linq.Expressions.NewExpression newExp = System.Linq.Expressions.Expression.New(createType);
                         System.Linq.Expressions.UnaryExpression conversion = System.Linq.Expressions.Expression.Convert(newExp, nonGen);
 
-                        var getNew = (Func<DynamicContentInfo>)System.Linq.Expressions.Expression.Lambda(conversion).Compile();
+                        var getNew = System.Linq.Expressions.Expression.Lambda<Func<DynamicContentInfo>>(conversion).Compile();
                         _dynamicContentBuilders[templateContentType] = getNew;
                     }
                     else
@@ -3293,6 +3294,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
         }
+        [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "Creates the property's own array PropertyType, which is present in metadata whenever the property exists.")]
         protected void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
         {
             System.Type type = Nullable.GetUnderlyingType(property.PropertyType);

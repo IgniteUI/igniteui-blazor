@@ -39,7 +39,21 @@ The only caveat is **third-party module types**: a custom class with a `Register
 
 ## Native AOT
 
-Not supported yet. The data-source layer compiles expression-tree getters (`RequiresDynamicCode`), which is a planned follow-up; trimming and wasm AOT compilation of the interpreter-hosted kind are unaffected.
+The library's code is AOT-clean: it builds warning-free under the [AOT analyzer](https://learn.microsoft.com/dotnet/core/deploying/native-aot/) (`EnableAotAnalyzer`, errors via `.editorconfig`), verified under real ILC by the AotSmoke gate. The public `IsAotCompatible` flag is deliberately **not** set yet — Blazor itself is not AOT-compatible (`Microsoft.AspNetCore.Components` ships `IsTrimmable` only; [dotnet/aspnetcore#51598](https://github.com/dotnet/aspnetcore/issues/51598) tracks it), so the claim would outrun the platform; flip it when that lands. What this means per deployment model:
+
+- **Blazor WebAssembly** — unaffected either way: both the default interpreter and `RunAOTCompilation=true` publishes use Mono AOT with the interpreter retained, so no NativeAOT semantics apply.
+- **NativeAOT (ILC)** — the library's expression-tree getters run in `System.Linq.Expressions`' interpreted form (a documented NativeAOT limitation: slower, not broken), and all generic instantiations the library creates at runtime are statically visible or reference-type-shared. Note ILC deployment of *Blazor apps* is not a supported platform scenario today (ASP.NET Core NativeAOT excludes Blazor; MAUI BlazorWebView under `PublishAot` is undocumented upstream and unverified) — the analyzer-clean code positions the library for those consumers as they materialize.
+- The trimming guidance above (preserving data item types) applies identically under AOT.
+
+## Maintaining AOT compatibility (contributors)
+
+AOT diagnostics (IL3xxx) build as errors like trim ones (`dotnet_analyzer_diagnostic.category-AOT.severity = error`). Follow [intrinsic RequiresDynamicCode APIs](https://learn.microsoft.com/dotnet/core/deploying/native-aot/intrinsic-requiresdynamiccode-apis) and these repo rules:
+
+1. **Avoid dynamic code outright** where a static shape exists.
+2. **Expression trees: the delegate type must be statically known** — use `Expression.Lambda<TDelegate>(...)` or `Expression.Lambda(Type delegateType, ...)` with a `typeof` literal (see the closed delegate-type map in `JsonDataSourceSchema`). Never `Expression.GetFuncType` or the non-generic `Lambda(body, params)` overloads — those are the `RequiresDynamicCode` sites; `Compile()` itself is AOT-safe (interprets).
+3. **`MakeGenericType`/`MakeGenericMethod` only over closed sets** that are statically visible or class-constrained (the net9+ analyzer proves the `where T : class` pattern; net8 needs a narrow suppression).
+4. **Suppression policy**: `[UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = ...)]` on the smallest member — the ID is what ILC matches; the justification states the runtime invariant. Same no-`#pragma` rule as trimming.
+5. **Verify under real ILC**: `tests/IgniteUI.Blazor.Lite.AotSmoke` (see its README) — CI publishes and runs it; locally `dotnet run -p:SimulateNoDynamicCode=true` covers the interpreter paths without the native toolchain.
 
 ## Maintaining trim compatibility (contributors)
 

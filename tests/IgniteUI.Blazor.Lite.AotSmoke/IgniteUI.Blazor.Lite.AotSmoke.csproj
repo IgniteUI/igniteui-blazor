@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Publishes the library under real NativeAOT (ILC) and runs the RequiresDynamicCode-adjacent
+       paths — the runtime gate for behavior the AOT analyzer cannot verify. See README.md. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PublishAot>true</PublishAot>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\IgniteUI.Blazor.Lite.csproj" />
+    <!-- Root the whole library so ILC analyzes all of it, not just what Main reaches. -->
+    <TrimmerRootAssembly Include="IgniteUI.Blazor.Lite" />
+  </ItemGroup>
+
+  <!-- dotnet run -p:SimulateNoDynamicCode=true — forces the interpreter paths ILC uses at runtime,
+       without needing the native toolchain (see README.md). -->
+  <ItemGroup Condition="'$(SimulateNoDynamicCode)' == 'true'">
+    <RuntimeHostConfigurationOption Include="System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported" Value="false" Trim="true" />
+  </ItemGroup>
+
+</Project>
