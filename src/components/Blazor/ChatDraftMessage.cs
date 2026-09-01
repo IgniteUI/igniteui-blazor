@@ -9,13 +9,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string? _text;
+        private string _text = string.Empty;
 
         /// <summary>
         /// The textual content of the draft message.
         /// </summary>
         [Parameter]
-        public string? Text
+        public string Text
         {
             get { return this._text; }
             set

@@ -12,7 +12,7 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
         .Getter(c => c.GetCurrentDraftMessageAsync(), c => c.GetCurrentDraftMessage(), "DraftMessage",
             arrange: _ => { },
             returns: FromRender.Of((interop, cut) => InteropReturn.Object("", """{"text": "wip draft"}""")),
-            assert: (cut, result) => Assert.Equal("wip draft", result!.Text))
+            assert: (cut, result) => Assert.Equal("wip draft", result.Text))
         .Event(c => c.TypingChange,
             argsJson: """{"detail": true}""",
             assert: args => Assert.True(args.Detail))
@@ -44,7 +44,7 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
                 // The reaction's message currently decoded by value
                 // (it is NOT restored by reference to an instance in Messages on the current stack).
                 Assert.Equal("like", args.Detail.Reaction);
-                Assert.Equal("m-1", args.Detail.Message!.Id);
+                Assert.Equal("m-1", args.Detail.Message.Id);
                 Assert.Equal("hello", args.Detail.Message.Text);
             })
         .Prop(c => c.Options,

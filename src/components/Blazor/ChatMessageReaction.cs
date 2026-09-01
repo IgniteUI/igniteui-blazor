@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbChatMessage? _message;
+        private IgbChatMessage _message = new IgbChatMessage();
 
         /// <summary>
         /// The chat message that the reaction is associated with.
         /// </summary>
         [Parameter]
-        public IgbChatMessage? Message
+        public IgbChatMessage Message
         {
             get { return this._message; }
             set
@@ -28,21 +28,21 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._message);
                 }
+                this._message = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._message = value;
             }
 
         }
-        private string? _reaction;
+        private string _reaction = string.Empty;
 
         /// <summary>
         /// The string representation of the reaction, such as an emoji or a string;
         /// </summary>
         [Parameter]
-        public string? Reaction
+        public string Reaction
         {
             get { return this._reaction; }
             set
@@ -95,7 +95,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("message"))
-            { this.Message = (IgbChatMessage?)ConvertReturnValue(args["message"], "ChatMessage", true); }
+            { this.Message = (IgbChatMessage)ConvertReturnValue(args["message"], "ChatMessage", true); }
             if (args != null && args.ContainsKey("reaction"))
             { this.Reaction = ReturnToString(args["reaction"]); }
 
