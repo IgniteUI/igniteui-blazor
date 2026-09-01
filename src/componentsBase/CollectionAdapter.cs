@@ -11,9 +11,9 @@ namespace IgniteUI.Blazor.Controls
 
         private IList<T>? _allList;
         private IList<J>? _target;
-        private IList<T>? _query;
-        private Func<T, J>? _toTarget;
-        private Action<T>? _onItemAdded;
+        private readonly IList<T>? _query;
+        private readonly Func<T, J>? _toTarget;
+        private readonly Action<T>? _onItemAdded;
         private Action<T>? _onItemRemoved;
 
         private bool _hasShiftedOnceAlready;

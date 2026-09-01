@@ -249,7 +249,7 @@ namespace IgniteUI.Blazor.Controls
 
         private void FlushRefs()
         {
-            while (_queuedChanges != null && _queuedChanges.Count > 0)
+            while (_queuedChanges.Count > 0)
             {
                 RefChange? c = _queuedChanges.First?.Value;
                 _queuedChanges.RemoveFirst();

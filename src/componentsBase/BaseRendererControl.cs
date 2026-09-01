@@ -1644,9 +1644,9 @@ namespace IgniteUI.Blazor.Controls
             }
 
             //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
-            while (_messageQueue != null && _messageQueue.First != null && _messageQueue.Count > 0)
+            while (_messageQueue.Count > 0)
             {
-                RendererMessage m = _messageQueue.First.Value;
+                RendererMessage m = _messageQueue.First!.Value;
                 _messageQueue.RemoveFirst();
                 ProcessMessage(m);
             }
@@ -1661,9 +1661,9 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            while (_messageQueue.Count > 0 && _messageQueue.First != null)
+            while (_messageQueue.Count > 0)
             {
-                RendererMessage m = _messageQueue.First.Value;
+                RendererMessage m = _messageQueue.First!.Value;
                 _messageQueue.RemoveFirst();
                 ProcessMessageSync(m);
             }

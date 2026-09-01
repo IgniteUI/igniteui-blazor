@@ -175,29 +175,26 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            List<TaskCompletionSource<object>> toSignal;
+            List<TaskCompletionSource<object?>> toSignal;
             lock (_lock)
             {
-                toSignal = new List<TaskCompletionSource<object>>(waiting);
+                toSignal = new List<TaskCompletionSource<object?>>(waiting);
                 waiting.Clear();
             }
 
             foreach (var item in toSignal)
             {
-                if (Component != null)
-                {
-                    item.SetResult(Component);
-                }
+                item.SetResult(Component);
             }
         }
 
-        private object _lock = new object();
-        private List<TaskCompletionSource<object>> waiting = new List<TaskCompletionSource<object>>();
-        public Task<object> GetInstanceAsync()
+        private readonly object _lock = new object();
+        private readonly List<TaskCompletionSource<object?>> waiting = new List<TaskCompletionSource<object?>>();
+        public Task<object?> GetInstanceAsync()
         {
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
             object? component = null;
-            List<TaskCompletionSource<object>>? toSignal = null;
+            List<TaskCompletionSource<object?>>? toSignal = null;
 
             lock (_lock)
             {
@@ -206,7 +203,7 @@ namespace IgniteUI.Blazor.Controls
 
                 if (component != null)
                 {
-                    toSignal = new List<TaskCompletionSource<object>>(waiting);
+                    toSignal = new List<TaskCompletionSource<object?>>(waiting);
                     waiting.Clear();
                 }
             }
@@ -215,10 +212,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 foreach (var item in toSignal)
                 {
-                    if (Component != null)
-                    {
-                        item.SetResult(Component);
-                    }
+                    item.SetResult(Component);
                 }
             }
 
