@@ -11,14 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebDateRangePickerResourceStrings"; } }
 
-        public IgbDateRangePickerResourceStrings() : base()
-        {
-            OnCreatedIgbDateRangePickerResourceStrings();
-
-        }
-
-        partial void OnCreatedIgbDateRangePickerResourceStrings();
-
         private string _separator;
         /// <summary>
         /// The text shown between the start and end inputs when the date range picker is configured with separate inputs.
@@ -154,33 +146,10 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        partial void FindByNameDateRangePickerResourceStrings(string name, ref object item);
-        public override object FindByName(string name)
-        {
-
-            var baseResult = base.FindByName(name);
-            if (baseResult != null)
-            {
-                return baseResult;
-            }
-
-            object item = null;
-            FindByNameDateRangePickerResourceStrings(name, ref item);
-            if (item != null)
-            {
-                return item;
-            }
-
-            return null;
-        }
-
-        partial void SerializeCoreIgbDateRangePickerResourceStrings(RendererSerializer ser);
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
 
-            SerializeCoreIgbDateRangePickerResourceStrings(ser);
 
             if (IsPropDirty("Separator"))
             { ser.AddStringProp("separator", this._separator); }
