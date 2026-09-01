@@ -36,7 +36,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-item:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
-                Assert.Equal(2, result!.Length);
+                Assert.Equal(2, result.Length);
                 Assert.Same(cut.FindComponents<IgbSelectItem>()[0].Instance, result[0]);
                 Assert.Same(cut.FindComponents<IgbSelectItem>()[1].Instance, result[1]);
             })
@@ -45,7 +45,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-select-group:nth-of-type(1)")}}}"}]""")),
             assert: (cut, result) =>
             {
-                Assert.Single(result!);
+                Assert.Single(result);
                 // TODO: IgbSelectGroup never registers with Select's FindByName (no cascading-value
                 // partial the way SelectItem has one), so the ref currently resolves to a null
                 // Assert.Same(cut.FindComponents<IgbSelectGroup>()[0].Instance, result[0]);

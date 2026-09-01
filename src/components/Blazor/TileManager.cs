@@ -177,18 +177,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Gets the tiles sorted by their position in the layout.
         /// </summary>
-        public async Task<IgbTile[]?> GetTilesAsync()
+        public async Task<IgbTile[]> GetTilesAsync()
         {
             var iv = await InvokeMethod("p:Tiles", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbTile[]);
-            }
             var retVal = ReturnToObjectArray<IgbTile>(iv);
             if (retVal == null)
             {
-                return default(IgbTile[]);
+                return Array.Empty<IgbTile>();
             }
             return retVal;
 
@@ -197,18 +192,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Gets the tiles sorted by their position in the layout.
         /// </summary>
-        public IgbTile[]? GetTiles()
+        public IgbTile[] GetTiles()
         {
             var iv = InvokeMethodSync("p:Tiles", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbTile[]);
-            }
             var retVal = ReturnToObjectArray<IgbTile>(iv);
             if (retVal == null)
             {
-                return default(IgbTile[]);
+                return Array.Empty<IgbTile>();
             }
             return retVal;
 

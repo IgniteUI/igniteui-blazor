@@ -54,7 +54,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(
                 $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 1)}}"}]""")),
-            assert: (cut, result) => Assert.Same(_valueItem2, Assert.Single(result!)))
+            assert: (cut, result) => Assert.Same(_valueItem2, Assert.Single(result)))
         // The payload carries uuid refs, which only exist once the data has transferred.
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),

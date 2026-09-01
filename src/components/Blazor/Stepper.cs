@@ -61,18 +61,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns all of the stepper's steps.
         /// </summary>
-        public async Task<IgbStep[]?> GetStepsAsync()
+        public async Task<IgbStep[]> GetStepsAsync()
         {
             var iv = await InvokeMethod("p:Steps", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbStep[]);
-            }
             var retVal = ReturnToObjectArray<IgbStep>(iv);
             if (retVal == null)
             {
-                return default(IgbStep[]);
+                return Array.Empty<IgbStep>();
             }
             return retVal;
 
@@ -81,18 +76,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns all of the stepper's steps.
         /// </summary>
-        public IgbStep[]? GetSteps()
+        public IgbStep[] GetSteps()
         {
             var iv = InvokeMethodSync("p:Steps", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbStep[]);
-            }
             var retVal = ReturnToObjectArray<IgbStep>(iv);
             if (retVal == null)
             {
-                return default(IgbStep[]);
+                return Array.Empty<IgbStep>();
             }
             return retVal;
 

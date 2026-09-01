@@ -28,7 +28,7 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-step:nth-of-type(2)")}}}"}]""")),
             assert: (cut, result) =>
             {
-                Assert.Equal(2, result!.Length);
+                Assert.Equal(2, result.Length);
                 // TODO: IgbStep has no CascadingParameter registration and no FindByNameStepper impl
                 // so the refs currently resolve to null elements
             })

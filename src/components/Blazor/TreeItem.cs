@@ -233,18 +233,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the full path to the tree item, starting from the top-most ancestor.
         /// </summary>
-        public async Task<IgbTreeItem[]?> GetPathAsync()
+        public async Task<IgbTreeItem[]> GetPathAsync()
         {
             var iv = await InvokeMethod("p:Path", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbTreeItem[]);
-            }
             var retVal = ReturnToObjectArray<IgbTreeItem>(iv);
             if (retVal == null)
             {
-                return default(IgbTreeItem[]);
+                return Array.Empty<IgbTreeItem>();
             }
             return retVal;
 
@@ -253,18 +248,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the full path to the tree item, starting from the top-most ancestor.
         /// </summary>
-        public IgbTreeItem[]? GetPath()
+        public IgbTreeItem[] GetPath()
         {
             var iv = InvokeMethodSync("p:Path", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbTreeItem[]);
-            }
             var retVal = ReturnToObjectArray<IgbTreeItem>(iv);
             if (retVal == null)
             {
-                return default(IgbTreeItem[]);
+                return Array.Empty<IgbTreeItem>();
             }
             return retVal;
 

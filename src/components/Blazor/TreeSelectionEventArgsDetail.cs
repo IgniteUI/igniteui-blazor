@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTreeItem[]? _newSelection;
+        private IgbTreeItem[] _newSelection = Array.Empty<IgbTreeItem>();
 
         /// <summary>
         /// The tree items that will make up the new selection.
         /// </summary>
         [Parameter]
-        public IgbTreeItem[]? NewSelection
+        public IgbTreeItem[] NewSelection
         {
             get { return this._newSelection; }
             set
@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("newSelection"))
-            { this.NewSelection = ReturnToObjectArray<IgbTreeItem>(args["newSelection"]); }
+            { this.NewSelection = ReturnToObjectArray<IgbTreeItem>(args["newSelection"]) ?? Array.Empty<IgbTreeItem>(); }
 
             this.SuppressParentNotify = false;
         }

@@ -226,18 +226,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the items of the component.
         /// </summary>
-        public async Task<IgbSelectItem[]?> GetItemsAsync()
+        public async Task<IgbSelectItem[]> GetItemsAsync()
         {
             var iv = await InvokeMethod("p:Items", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbSelectItem[]);
-            }
             var retVal = ReturnToObjectArray<IgbSelectItem>(iv);
             if (retVal == null)
             {
-                return default(IgbSelectItem[]);
+                return Array.Empty<IgbSelectItem>();
             }
             return retVal;
 
@@ -246,18 +241,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the items of the component.
         /// </summary>
-        public IgbSelectItem[]? GetItems()
+        public IgbSelectItem[] GetItems()
         {
             var iv = InvokeMethodSync("p:Items", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbSelectItem[]);
-            }
             var retVal = ReturnToObjectArray<IgbSelectItem>(iv);
             if (retVal == null)
             {
-                return default(IgbSelectItem[]);
+                return Array.Empty<IgbSelectItem>();
             }
             return retVal;
 
@@ -266,18 +256,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the groups of the component.
         /// </summary>
-        public async Task<IgbSelectGroup[]?> GetGroupsAsync()
+        public async Task<IgbSelectGroup[]> GetGroupsAsync()
         {
             var iv = await InvokeMethod("p:Groups", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbSelectGroup[]);
-            }
             var retVal = ReturnToObjectArray<IgbSelectGroup>(iv);
             if (retVal == null)
             {
-                return default(IgbSelectGroup[]);
+                return Array.Empty<IgbSelectGroup>();
             }
             return retVal;
 
@@ -286,18 +271,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the groups of the component.
         /// </summary>
-        public IgbSelectGroup[]? GetGroups()
+        public IgbSelectGroup[] GetGroups()
         {
             var iv = InvokeMethodSync("p:Groups", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbSelectGroup[]);
-            }
             var retVal = ReturnToObjectArray<IgbSelectGroup>(iv);
             if (retVal == null)
             {
-                return default(IgbSelectGroup[]);
+                return Array.Empty<IgbSelectGroup>();
             }
             return retVal;
 

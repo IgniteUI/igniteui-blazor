@@ -43,7 +43,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         .Event(c => c.SelectionChanged,
             arrange,
             argsJson: FromRender.Of((interop, cut) => $$$$$"""{"detail": {"retType": "object", "type": "", "value": {"newSelection": {"retType": "Array", "type": "", "value": [{"refType": "name", "id": "{{{{{interop.ContainerIdOf(cut, "igc-tree-item:nth-of-type(2)")}}}}}"}]}}}}"""),
-            assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail.NewSelection![0]));
+            assert: (cut, args) => Assert.Same(cut.Instance.ContentItems[1], args.Detail.NewSelection[0]));
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
@@ -228,8 +228,8 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
             returns: FromRender.Of((interop, cut) => InteropReturn.Array("""[{"refType": "name", "id": "mainControl"}]""")),
             assert: (cut, result) =>
             {
-                Assert.Single(result!);
-                Assert.Same(cut.Instance, result![0]);
+                Assert.Single(result);
+                Assert.Same(cut.Instance, result[0]);
             })
         .Getter(c => c.GetPathAsync(), c => c.GetPath(), "Path",
             host: treeHost,
@@ -237,7 +237,7 @@ public class TreeItemTests : ComponentWithContractTestBase<IgbTreeItem>
             returns: FromRender.Of((interop, h) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(h, "igc-tree-item")}}}"}, {"refType": "name", "id": "mainControl"}]""")),
             assert: (h, result) =>
             {
-                Assert.Equal(2, result!.Length);
+                Assert.Equal(2, result.Length);
                 Assert.Same(h.FindComponents<IgbTreeItem>()[1].Instance, result[1]);
                 // TODO: the ancestor ref only resolves through FindByName on the item
                 // itself, which matches nothing but "mainControl" — the parent element

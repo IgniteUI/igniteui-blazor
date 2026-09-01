@@ -449,7 +449,7 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current selection of the combo.
         /// </summary>
         /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
-        public async Task<object[]?> GetSelectionAsync()
+        public async Task<object[]> GetSelectionAsync()
         {
             var iv = await InvokeMethod("p:Selection", new object?[] { }, new string[] { });
             return ReturnToObjectArray(iv);
@@ -459,7 +459,7 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current selection of the combo.
         /// </summary>
         /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
-        public object[]? GetSelection()
+        public object[] GetSelection()
         {
             var iv = InvokeMethodSync("p:Selection", new object?[] { }, new string[] { });
             return ReturnToObjectArray(iv);
