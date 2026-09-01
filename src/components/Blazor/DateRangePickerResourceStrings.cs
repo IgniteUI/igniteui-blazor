@@ -150,7 +150,6 @@ namespace IgniteUI.Blazor.Controls
         {
             base.SerializeCore(ser);
 
-
             if (IsPropDirty("Separator"))
             { ser.AddStringProp("separator", this._separator); }
             if (IsPropDirty("DoneButton"))
