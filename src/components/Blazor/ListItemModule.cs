@@ -1,21 +1,25 @@
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Provides the module for the <see cref="IgbListItem"/> child component of <see cref="IgbList"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbListItemModule is no longer required, has no effect and can be safely removed.")]
     public partial class IgbListItemModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebListItemModule");
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebListItemModule");
         }
 
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebListItemModule");
+            return true;
         }
     }
 }

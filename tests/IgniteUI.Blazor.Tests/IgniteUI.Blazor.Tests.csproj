@@ -24,4 +24,9 @@
     <ProjectReference Include="..\..\src\IgniteUI.Blazor.Lite.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Shared with the WASM e2e page so both suites exercise the same data shapes. -->
+    <Compile Include="..\IgniteUI.Blazor.Lite.TestBed.Client\ComboDataScenarios.cs" Link="ComboDataScenarios.cs" />
+  </ItemGroup>
+
 </Project>
