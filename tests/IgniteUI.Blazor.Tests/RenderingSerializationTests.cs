@@ -211,7 +211,8 @@ public class RenderingSerializationTests : BlazorComponentTestBase
             .Add(x => x.Removable, true)
             .Add(x => x.Selectable, true)
             .Add(x => x.Selected, true)
-            .Add(x => x.Variant, StyleVariant.Success));
+            .Add(x => x.Variant, StyleVariant.Success)
+            .Add(x => x.Outlined, true));
 
         var el = cut.Find("igc-chip");
         Assert.NotNull(el.GetAttribute("disabled"));
@@ -219,6 +220,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
         Assert.NotNull(el.GetAttribute("selectable"));
         Assert.NotNull(el.GetAttribute("selected"));
         Assert.Equal("success", el.GetAttribute("variant"));
+        Assert.NotNull(el.GetAttribute("outlined"));
     }
 
     [Fact]
@@ -682,5 +684,87 @@ public class RenderingSerializationTests : BlazorComponentTestBase
         Assert.Equal("300", el.GetAttribute("hide-delay"));
         Assert.Equal("Hi", el.GetAttribute("message"));
         Assert.NotNull(el.GetAttribute("sticky"));
+    }
+
+    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+    public void ColorPicker_RendersAllAttributes()
+    {
+        var cut = Render<IgbColorPicker>(p => p
+            .Add(x => x.Value, "#ff0000")
+            .Add(x => x.Label, "Background")
+            .Add(x => x.Format, ColorFormat.Rgb)
+            .Add(x => x.HideFormats, true)
+            .Add(x => x.ShowAlpha, true)
+            .Add(x => x.Mode, ColorPickerMode.Input)
+            .Add(x => x.Disabled, true)
+            .Add(x => x.Required, true)
+            .Add(x => x.Invalid, true)
+            .Add(x => x.Open, true));
+
+        var el = cut.Find("igc-color-picker");
+        Assert.Equal("#ff0000", el.GetAttribute("value"));
+        Assert.Equal("Background", el.GetAttribute("label"));
+        Assert.Equal("rgb", el.GetAttribute("format"));
+        Assert.NotNull(el.GetAttribute("hide-formats"));
+        Assert.NotNull(el.GetAttribute("show-alpha"));
+        Assert.Equal("input", el.GetAttribute("mode"));
+        Assert.NotNull(el.GetAttribute("disabled"));
+        Assert.NotNull(el.GetAttribute("required"));
+        Assert.NotNull(el.GetAttribute("invalid"));
+        Assert.NotNull(el.GetAttribute("open"));
+    }
+
+    [Fact]
+    public void QrCode_RendersAllAttributes()
+    {
+        var cut = Render<IgbQrCode>(p => p
+            .Add(x => x.Value, "https://www.infragistics.com")
+            .Add(x => x.Version, 7)
+            .Add(x => x.ErrorLevel, QrErrorCorrectionLevel.Quartile)
+            .Add(x => x.Size, 256)
+            .Add(x => x.Margin, 2)
+            .Add(x => x.LogoSrc, "logo.png")
+            .Add(x => x.LogoSize, 0.6)
+            .Add(x => x.LogoMargin, 8)
+            .Add(x => x.DotStyle, QrDotStyle.Circle)
+            .Add(x => x.SquareStyle, QrCornerSquareStyle.Rounded));
+
+        var el = cut.Find("igc-qr-code");
+        Assert.Equal("https://www.infragistics.com", el.GetAttribute("value"));
+        Assert.Equal("7", el.GetAttribute("version"));
+        Assert.Equal("Q", el.GetAttribute("error-level"));
+        Assert.Equal("256", el.GetAttribute("size"));
+        Assert.Equal("2", el.GetAttribute("margin"));
+        Assert.Equal("logo.png", el.GetAttribute("logo-src"));
+        Assert.Equal("0.6", el.GetAttribute("logo-size"));
+        Assert.Equal("8", el.GetAttribute("logo-margin"));
+        Assert.Equal("circle", el.GetAttribute("dot-style"));
+        Assert.Equal("rounded", el.GetAttribute("square-style"));
+    }
+
+    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+    public void VirtualScroll_RendersAllAttributes()
+    {
+        var cut = Render<IgbVirtualScroll>(p => p
+            .Add(x => x.Orientation, ContentOrientation.Horizontal)
+            .Add(x => x.OverScan, 5)
+            .Add(x => x.EstimatedItemSize, 32));
+
+        var el = cut.Find("igc-virtual-scroll");
+        Assert.Equal("horizontal", el.GetAttribute("orientation"));
+        Assert.Equal("5", el.GetAttribute("over-scan"));
+        Assert.Equal("32", el.GetAttribute("estimated-item-size"));
+    }
+
+    [Fact]
+    public void Splitter_CollapsedPanes_RenderAttributes()
+    {
+        var cut = Render<IgbSplitter>(p => p
+            .Add(x => x.StartCollapsed, true)
+            .Add(x => x.EndCollapsed, true));
+
+        var el = cut.Find("igc-splitter");
+        Assert.NotNull(el.GetAttribute("start-collapsed"));
+        Assert.NotNull(el.GetAttribute("end-collapsed"));
     }
 }

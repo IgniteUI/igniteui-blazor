@@ -17,6 +17,7 @@
 - [Linear Progress](#linear-progress)
 - [Dropdown](#dropdown)
 - [Tooltip](#tooltip)
+- [QR Code](#qr-code)
 - [Ripple](#ripple)
 - [Key Rules](#key-rules)
 
@@ -195,6 +196,9 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbChipModule));
     Blazor
 </IgbChip>
 
+<!-- Outlined style variant -->
+<IgbChip Outlined="true" Variant="StyleVariant.Primary">Outlined</IgbChip>
+
 @code {
     void OnChipRemoved(IgbComponentBoolValueChangedEventArgs e) { /* handle removal */ }
 }
@@ -266,6 +270,34 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTooltipModule));
     This is a tooltip
 </IgbTooltip>
 ```
+
+---
+
+## QR Code
+
+Renders a scannable QR code as an SVG from the `Value` string (URL, text, or other data).
+
+```csharp
+builder.Services.AddIgniteUIBlazor(typeof(IgbQrCodeModule));
+```
+
+```razor
+<!-- Basic -->
+<IgbQrCode Value="https://www.infragistics.com" Size="192" />
+
+<!-- Styled, with a centered logo -->
+<IgbQrCode Value="https://www.infragistics.com"
+           Size="256"
+           ErrorLevel="QrErrorCorrectionLevel.Quartile"
+           DotStyle="QrDotStyle.Rounded"
+           SquareStyle="QrCornerSquareStyle.Rounded"
+           LogoSrc="images/logo.svg"
+           LogoSize="0.6" />
+```
+
+- `Version` (1-40) and `ErrorLevel` (`Low`/`Medium`/`Quartile`/`High`) are selected automatically when not set; a logo raises the error level automatically unless one is set explicitly.
+- `Size` is the rendered pixel size; `Margin` is the quiet zone in modules.
+- Theme via CSS custom properties: `--ig-qr-code-background`, `--ig-qr-code-dark-color`, `--ig-qr-code-corner-square-color`, `--ig-qr-code-corner-dot-color`.
 
 ---
 

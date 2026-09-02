@@ -18,6 +18,7 @@
 - [Switch](#switch)
 - [Slider / Range Slider](#slider--range-slider)
 - [Rating](#rating)
+- [Color Picker](#color-picker)
 - [Form & Binding Notes](#form--binding-notes)
 - [Key Rules](#key-rules)
 
@@ -257,6 +258,38 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbRatingModule));
     double StarRating { get; set; } = 3;
 }
 ```
+
+---
+
+## Color Picker
+
+Color input with an HSV canvas, hue/alpha sliders, editable color string (hex, rgb(a), hsl(a), named colors), pre-defined swatches, and the native EyeDropper API where the browser provides one.
+
+```csharp
+builder.Services.AddIgniteUIBlazor(typeof(IgbColorPickerModule));
+```
+
+```razor
+<!-- Trigger-button anchor (default mode) -->
+<IgbColorPicker Label="Background" @bind-Value="Color" />
+
+<!-- Editable text field anchor with a swatch prefix, alpha slider and swatches -->
+<IgbColorPicker Label="Accent"
+                Mode="ColorPickerMode.Input"
+                Format="ColorFormat.Rgb"
+                ShowAlpha="true"
+                Swatches="Palette"
+                @bind-Value="Color" />
+
+@code {
+    string Color { get; set; } = "#875fc4";
+    static readonly string[] Palette = ["#e91e63", "#3f51b5", "#009688"];
+}
+```
+
+- `Value` holds a CSS color string; an empty or invalid string clears it. `Format` (`Hex`/`Rgb`/`Hsl`) only changes the notation, not the color.
+- `Input` fires on every color change; `Change` fires when a color is committed and drives `@bind-Value`.
+- Supports `Required`/`Disabled`/`Invalid` plus `CheckValidity`/`ReportValidity`/`SetCustomValidity` like other form controls.
 
 ---
 

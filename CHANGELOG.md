@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.3.0 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.0) with highlights noted below:
+
+### Added
+
+#### New Components
+
+- `IgbColorPicker` - A color input component. Users pick a color with the HSV saturation/value canvas, the hue slider and the optional alpha slider, or type a color string (hex, rgb(a), hsl(a) or a named CSS color). Supports two-way binding via `@bind-Value`, pre-defined `Swatches`, a trigger-button or editable-input anchor (`Mode`), and the native EyeDropper API where the browser provides one.
+- `IgbQrCode` - Renders a scannable QR code as an SVG from the `Value` property. Supports an explicit `Version` (1-40) and `ErrorLevel`, `Size` and `Margin` (quiet zone), `DotStyle`/`SquareStyle` shapes, an optional centered logo (`LogoSrc`, `LogoSize`, `LogoMargin`), and theming via CSS custom properties. [#2308](https://github.com/IgniteUI/igniteui-webcomponents/pull/2308)
+- `IgbVirtualScroll` - Renders large or unbounded lists efficiently by rendering only the items in the viewport plus a configurable `OverScan`. Supports vertical and horizontal `Orientation`, `EstimatedItemSize` with automatic item measurement, `ScrollToIndex` with configurable alignment and behavior, a `DataRequest` event for infinite scroll and remote data, and a `StateChange` event reporting the rendered window. Item content is rendered through a client-side template registered with `igRegisterScript` and assigned via `ItemTemplateScript`. [#2222](https://github.com/IgniteUI/igniteui-webcomponents/pull/2222)
+
+#### Chip
+- New `Outlined` property. When set, the chip shows an outlined style. [#2307](https://github.com/IgniteUI/igniteui-webcomponents/pull/2307)
+
+#### Splitter
+- New `StartCollapsed` and `EndCollapsed` properties. Use them to read and to set the collapsed state of each pane.
+- New `LayoutChanged` event. Emitted after a user-driven resize or expansion change, with a full snapshot of the current layout (`StartSize`, `EndSize`, `StartCollapsed`, `EndCollapsed`).
+
+#### Tabs
+- New `GetSelectedTab` / `GetSelectedTabAsync` methods. They return the selected `IgbTab`, or `null` when no tab is selected.
+- `Select()` now also matches the `Label` of a tab, in addition to its IDREF.
+
+#### Icon
+- `RegisterIcon` and `RegisterIconFromText` now accept an `IgbRegisterIconOptions` argument, in addition to the plain collection string. `StripMeta = true` removes the `<title>` and `<desc>` elements from the stored SVG, preventing the native browser tooltip on hover; the title text stays available as the `aria-label` of the host icon element. [#1822](https://github.com/IgniteUI/igniteui-webcomponents/issues/1822)
+
+#### Mask Input, Date Time Input, Date Range Picker
+- The masked editors now support the standard undo and redo shortcuts: `Ctrl + Z` / `Cmd + Z` to undo, and `Ctrl + Y`, `Ctrl + Shift + Z` / `Cmd + Shift + Z` to redo.
+
+### Changed
+
+- **Date Time Input, Date Picker, Date Range Picker:** the components no longer change `Value` while the user types. `Value` now holds only a committed value and changes together with the `Change` event, which the components still emit on blur. The value being typed is available in the detail of the `Input` event. Thus the components can be used in templates that bind `Value` externally, such as grid edit templates. [#1346](https://github.com/IgniteUI/igniteui-webcomponents/issues/1346)
+- **Dropdown:** the component no longer emits `Change` when the item that is already selected is selected again. The list still closes, as before.
+- **Button Group:** a disabled group no longer sets `Disabled` on its buttons - the buttons inherit the state. A button that is disabled on its own stays disabled when the group is enabled again.
+- **Tooltip:** a tooltip that closes from a hide trigger now waits exactly `HideDelay` (an undocumented extra 180 ms stage was removed); in sticky mode the default close button hides the tooltip immediately; and `focusin` / `focusout` are now part of the default show/hide triggers, so a tooltip opens when its anchor gets keyboard focus.
+- **Tabs:** the scroll buttons now scroll to the nearest tab that is not fully visible, instead of a fixed step of 180px.
+
+### Fixed
+
+For the complete list of fixes arriving with the updated web components, see the [igniteui-webcomponents 7.3.0 release notes](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.0) - highlights include per-element selection tracking in Button Group, correct `WeekStart` on the Calendar's initial render, form-associated components keeping their validation messages after a failed form submission, Highlight painting matches in recent Firefox versions, Select keyboard-navigation and type-ahead fixes, significantly faster large Tree operations, and Tooltip show/hide race fixes.
+
 ## 0.1.0 - 2026-07-14
 
 This release updates the Ignite UI for Blazor to the latest [igniteui-webcomponents@7.2.4 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.2.4) and matching related changes from `IgniteUI.Blazor` [25.2.77 (March 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25277-march-2026), [25.2.102 (May 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#252102-may-2026) and [26.1.51 (June 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#26151-june-2026) with highlights noted below:

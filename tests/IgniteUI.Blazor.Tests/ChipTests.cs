@@ -71,6 +71,16 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
     }
 
     [Fact]
+    public void Chip_Outlined_RendersAttribute()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Outlined, true));
+
+        var element = cut.Find("igc-chip");
+        Assert.NotNull(element.GetAttribute("outlined"));
+    }
+
+    [Fact]
     public void Chip_Selected_RendersAttribute()
     {
         var cut = Render<IgbChip>(parameters =>

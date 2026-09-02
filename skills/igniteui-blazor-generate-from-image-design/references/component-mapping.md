@@ -104,6 +104,8 @@ Decision rules:
 | Icon-only button | `IgbIconButton` | `IconName`, `Collection`, `Variant` (`IconButtonVariant.Flat` / `Outlined` / `Contained`) |
 | Contextual dropdown / action menu | `IgbDropdown` | `IgbDropdownItem`, `IgbDropdownHeader`, `Placement`, `Change` event; trigger via `slot="target"` or `@ref` |
 | Informational tooltip on hover | `IgbTooltip` | `Anchor` (target element ID), `Placement`, `ShowDelay`, `HideDelay` |
+| QR code | `IgbQrCode` | `Value` (encoded string), `Size`, `ErrorLevel`, `DotStyle`, `LogoSrc` |
+| Long scrolling list of uniform rows | `IgbVirtualScroll` | `Data`, `ItemTemplateScript` (client-side template), `EstimatedItemSize`, `DataRequest` for infinite scroll |
 | Click / touch ripple effect | `IgbRipple` | Nested inside any container; customize color via `--color` CSS property |
 | Master-detail grid with nested child grids | `IgbHierarchicalGrid` | `IgbRowIsland` children; each row can expand to a full child grid |
 | Read-only simple list grid | `IgbGridLite` | OSS (`IgniteUI.Blazor.GridLite` package); no editing, no complex features |
@@ -136,6 +138,7 @@ Decision rules:
 | Switch / toggle | `IgbSwitch` | `@bind-Checked` |
 | Slider | `IgbSlider` / `IgbRangeSlider` | `@bind-Value`, `Min`, `Max`, `Step` |
 | Rating | `IgbRating` | `@bind-Value`, `Max` |
+| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string), `Mode` (`Default` trigger button / `Input` text field), `Format`, `ShowAlpha`, `Swatches` |
 | Stepper / wizard | `IgbStepper` | `IgbStep` children, `Orientation` |
 | Date / time inline input | `IgbDateTimeInput` | `@bind-Value`, `InputFormat`, `DisplayFormat`, `SpinLoop`, `Min`, `Max` |
 | Masked text input (phone, postal, etc.) | `IgbMaskInput` | `Mask` pattern (`0`=digit, `L`=letter, `A`=alphanumeric), `Prompt`, `ValueMode` |

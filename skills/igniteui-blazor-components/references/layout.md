@@ -11,6 +11,8 @@
 - [Navbar](#navbar)
 - [Navigation Drawer](#navigation-drawer)
 - [Tree](#tree)
+- [Splitter](#splitter)
+- [Virtual Scroll](#virtual-scroll)
 - [Key Rules](#key-rules)
 
 ---
@@ -252,6 +254,84 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule), typeof(IgbTreeItemModu
     </IgbTreeItem>
 </IgbTree>
 ```
+
+---
+
+## Splitter
+
+Resizable split-pane layout dividing the view into *start* and *end* panels separated by a draggable bar.
+
+```csharp
+builder.Services.AddIgniteUIBlazor(typeof(IgbSplitterModule));
+```
+
+```razor
+<IgbSplitter Orientation="SplitterOrientation.Horizontal"
+             StartSize="30%"
+             StartMinSize="100px"
+             StartCollapsed="StartCollapsed"
+             LayoutChanged="OnLayoutChanged"
+             style="height: 400px;">
+    <div slot="start">Start panel</div>
+    <div slot="end">End panel</div>
+</IgbSplitter>
+
+@code {
+    bool StartCollapsed { get; set; }
+
+    void OnLayoutChanged(IgbSplitterLayoutChangedEventArgs e)
+    {
+        // e.Detail: StartSize, EndSize, StartCollapsed, EndCollapsed
+        StartCollapsed = e.Detail.StartCollapsed;
+    }
+}
+```
+
+- `StartCollapsed` / `EndCollapsed` read and set the collapsed state of each pane; `ToggleAsync(PanePosition.Start)` toggles programmatically.
+- `LayoutChanged` fires after a user-driven resize or expansion change with a full layout snapshot; `ResizeStart`/`Resizing`/`ResizeEnd` report pixel sizes during a drag.
+- Pane sizes (`StartSize`, `EndSize`, min/max constraints) accept CSS lengths (`200px`, `30%`).
+
+---
+
+## Virtual Scroll
+
+Renders large or unbounded lists efficiently - only the items in the viewport plus a configurable `OverScan` are rendered.
+
+```csharp
+builder.Services.AddIgniteUIBlazor(typeof(IgbVirtualScrollModule));
+```
+
+```razor
+<IgbVirtualScroll Data="Items"
+                  EstimatedItemSize="40"
+                  ItemTemplateScript="MyItemTemplate"
+                  DataRequest="OnDataRequest"
+                  style="height: 400px;" />
+
+@code {
+    Item[] Items { get; set; } = LoadFirstPage();
+
+    void OnDataRequest(IgbVirtualScrollDataRequestEventArgs e)
+    {
+        // Infinite scroll: append at least e.Detail.Count items starting
+        // at e.Detail.StartIndex, assigning a NEW collection reference.
+        Items = [.. Items, .. LoadMore((int)e.Detail.StartIndex, (int)e.Detail.Count)];
+    }
+}
+```
+
+The item template is a client-side function registered before the component renders (e.g. from a JS module loaded in `OnAfterRenderAsync`); it receives the item context (`value`, `index`, `count`) and returns a template built with `window.igTemplating.html`:
+
+```js
+window.igRegisterScript('MyItemTemplate', (ctx) => {
+    const html = window.igTemplating.html;
+    return html`<div style="padding: 8px;">${ctx.value.Name}</div>`;
+}, false);
+```
+
+- `Data` is compared by reference - assign a new collection instead of mutating in place.
+- `ScrollToIndexAsync(index)` scrolls to an item (optionally with `IgbScrollIntoViewOptions` for alignment/behavior); `StateChange` reports the rendered window (`StartIndex`, `EndIndex`, `ViewportSize`, `TotalSize`).
+- Supports `Orientation` (`Vertical`/`Horizontal`) and RTL layouts; item sizes are measured automatically after first render.
 
 ---
 

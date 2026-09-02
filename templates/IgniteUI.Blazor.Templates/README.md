@@ -67,12 +67,12 @@ This drops `ButtonsDemo.razor` into the current directory. In Visual Studio they
 | Category | Short names |
 |----------|-------------|
 | Buttons & Actions | `igb-button`, `igb-button-group`, `igb-chip`, `igb-icon-button`, `igb-toggle-button` |
-| Inputs | `igb-input`, `igb-mask-input`, `igb-checkbox`, `igb-switch`, `igb-radio-group`, `igb-rating`, `igb-slider`, `igb-range-slider` |
+| Inputs | `igb-input`, `igb-mask-input`, `igb-checkbox`, `igb-switch`, `igb-radio-group`, `igb-rating`, `igb-slider`, `igb-range-slider`, `igb-color-picker` |
 | Selection | `igb-select`, `igb-combo`, `igb-dropdown` |
 | Date & Time | `igb-calendar`, `igb-date-picker`, `igb-date-range-picker`, `igb-date-time-input` |
-| Layout | `igb-card`, `igb-accordion`, `igb-expansion-panel`, `igb-tabs`, `igb-stepper`, `igb-carousel`, `igb-tile-manager` |
+| Layout | `igb-card`, `igb-accordion`, `igb-expansion-panel`, `igb-tabs`, `igb-stepper`, `igb-carousel`, `igb-tile-manager`, `igb-virtual-scroll` |
 | Navigation | `igb-navbar`, `igb-nav-drawer` |
-| Data Display | `igb-list`, `igb-tree`, `igb-avatar`, `igb-badge`, `igb-icon`, `igbgrid` |
+| Data Display | `igb-list`, `igb-tree`, `igb-avatar`, `igb-badge`, `igb-icon`, `igb-qr-code`, `igbgrid` |
 | Feedback | `igb-banner`, `igb-dialog`, `igb-snackbar`, `igb-toast`, `igb-tooltip`, `igb-circular-progress`, `igb-linear-progress` |
 | Charts | `apexchart` |
 

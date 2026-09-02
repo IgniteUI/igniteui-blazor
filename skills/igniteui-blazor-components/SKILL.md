@@ -60,9 +60,9 @@ Base your code and explanation exclusively on what you read. If the reference fi
 | Task | Reference file to read |
 |---|---|
 | NuGet install, `Program.cs` registration, `_Imports.razor`, CSS/script references, project types (Server, WASM, Web App, MAUI) | [`references/setup.md`](./references/setup.md) |
-| Input, Combo Box, Select, Date Picker, Date Range Picker, Calendar, Date Time Input, Mask Input, Checkbox, Radio / Radio Group, Switch, Slider / Range Slider, Rating, form/value binding | [`references/form-controls.md`](./references/form-controls.md) |
-| Tabs, Stepper, Accordion, Expansion Panel, Navigation Drawer, Navbar, Tree | [`references/layout.md`](./references/layout.md) |
-| List, Card, Carousel, Avatar, Badge, Chip, Icon, Icon Button, Button, Button Group, Circular Progress, Linear Progress, Dropdown, Tooltip, Ripple | [`references/data-display.md`](./references/data-display.md) |
+| Input, Combo Box, Select, Date Picker, Date Range Picker, Calendar, Date Time Input, Mask Input, Checkbox, Radio / Radio Group, Switch, Slider / Range Slider, Rating, Color Picker, form/value binding | [`references/form-controls.md`](./references/form-controls.md) |
+| Tabs, Stepper, Accordion, Expansion Panel, Navigation Drawer, Navbar, Tree, Splitter, Virtual Scroll | [`references/layout.md`](./references/layout.md) |
+| List, Card, Carousel, Avatar, Badge, Chip, Icon, Icon Button, Button, Button Group, Circular Progress, Linear Progress, Dropdown, Tooltip, QR Code, Ripple | [`references/data-display.md`](./references/data-display.md) |
 | Dialog, Snackbar, Toast, Banner | [`references/feedback.md`](./references/feedback.md) |
 | Dock Manager (panes, tabs, floating, serialization), Tile Manager | [`references/layout-manager.md`](./references/layout-manager.md) |
 | Category Chart, Data Chart, Financial / Stock Chart, Pie Chart, Donut Chart, Sparkline, Treemap, Geographic Map, Gauges, Dashboard Tile, visualization features (animations, tooltips, markers, highlighting, zooming, legends, maps, ranges) | [`references/charts.md`](./references/charts.md) |
