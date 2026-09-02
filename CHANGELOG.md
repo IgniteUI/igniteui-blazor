@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Every release now publishes an SPDX 2.2 and SPDX 3.0 SBOM covering the NuGet and npm dependencies the package actually ships, plus Sigstore build-provenance and SBOM attestations bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
+- Bundle size budgets in `eng/bundle-budgets.json`, enforced during the release. An asset that grows past its budget, or a new asset nobody budgeted for, fails the release.
+- Dependency vulnerability scanning. Pull requests are gated by a dependency review that fails on a new High or Critical advisory; every release additionally scans the dependencies it actually ships and attaches the report to the GitHub release.
+
+### Changed
+
+- **Breaking:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Projects with binding redirects or an explicit fully-qualified assembly reference to `IgniteUI.Blazor.Lite` need updating.
+- The release workflow is split into isolated build, signing, packaging, evidence, SBOM, publish, and release-attachment jobs with least-privilege permissions and digest-verified handoffs between them. The strong-name key, the Key Vault credential, and the publish credential are no longer available to the same job.
+- Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
+
+### Fixed
+
+- The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
+- `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
+
 ## 0.1.0 - 2026-07-14
 
 This release updates the Ignite UI for Blazor to the latest [igniteui-webcomponents@7.2.4 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.2.4) and matching related changes from `IgniteUI.Blazor` [25.2.77 (March 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25277-march-2026), [25.2.102 (May 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#252102-may-2026) and [26.1.51 (June 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#26151-june-2026) with highlights noted below:

@@ -16,6 +16,13 @@
     <StaticWebAssetBasePath>_content/IgniteUI.Blazor</StaticWebAssetBasePath>
   </PropertyGroup>
 
+  <!-- Lets a local pack reproduce the repository url and commit the release workflow pins
+       explicitly, so the nuspec is never the only thing that differs between the two. -->
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
   </PropertyGroup>
@@ -25,6 +32,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IgniteUI.Blazor$(PackageIdSuffix)</PackageId>
     <Version>1.0.0</Version>
+    <Authors>Infragistics</Authors>
     <PackageTags>Infragistics;IgniteUI;Blazor</PackageTags>
     <Copyright>Infragistics</Copyright>
     <PackageProjectUrl>https://www.infragistics.com/products/ignite-ui-blazor</PackageProjectUrl>

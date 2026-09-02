@@ -138,6 +138,9 @@ src/wwwroot/
 bin
 obj
 
+# Release evidence produced by eng/Check-BundleBudget.ps1 and the release workflow
+artifacts/
+
 .vs
 .tfignore
 *.csproj.user

@@ -10,18 +10,40 @@ permissions:
   contents: read
 
 jobs:
+  # Blocks a pull request that would introduce a High or Critical advisory. Pushes
+  # to master skip it — the action needs the two-commit range a pull request gives it.
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      # comment-summary-in-pr needs this. A fork PR gets a read-only token regardless, so there
+      # the comment is skipped with a warning and the finding is left to the job summary.
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
+
   build:
     name: Build & Validate
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # The SDK is pinned via global.json (10.0.x builds all TFMs);
       # older runtimes are needed to run tests targeting net8.0/net9.0.
       - name: Setup .NET
-        uses: actions/setup-dotnet@v6.0.0
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: |
             8.0.x
@@ -36,7 +58,7 @@ jobs:
         run: dotnet format whitespace . --folder --exclude templates node_modules --verify-no-changes
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
           cache: npm
@@ -100,7 +122,7 @@ jobs:
         run: cat CoverageReport/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-report
           path: CoverageReport

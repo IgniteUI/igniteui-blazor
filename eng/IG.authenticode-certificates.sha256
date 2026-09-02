@@ -1,0 +1,3 @@
+# Approved Authenticode signing certificates, one SHA-256 fingerprint per line.
+# Fingerprints are computed over the certificate's DER-encoded RawData.
+7F0D4484D1D3C797FDC85801CACE18DB5249D61AFFB17DA5C1644D8BEA24630D

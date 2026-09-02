@@ -1,0 +1,86 @@
+{
+  "root": "src/wwwroot",
+  "baseline": {
+    "measuredOn": "2026-08-27",
+    "toolchain": "node 22 / webpack 5 production build (npm run build + npm run copythemes)",
+    "note": "Budgets are the measured size plus roughly 10-15% headroom. Raise one only with a recorded reason in docs/performance.md; a bundle that grows past its budget is a product decision, not a build detail."
+  },
+  "groups": [
+    {
+      "id": "loader",
+      "description": "Blazor JS initializer and the bootstrap shim that pulls in the entry bundle.",
+      "include": ["app.bootstrap.js", "app.bundle.js", "IgniteUI.Blazor.Lite.lib.module.js"],
+      "maxRawKiB": 8,
+      "maxGzipKiB": 4
+    },
+    {
+      "id": "app",
+      "description": "Interop entry bundle. Loaded on every page that uses a component.",
+      "include": ["app.*.bundle.js"],
+      "maxRawKiB": 460,
+      "maxGzipKiB": 118
+    },
+    {
+      "id": "web-components-core",
+      "description": "igniteui-webcomponents-core chunk.",
+      "include": ["igniteui-webcomponents-core.*.bundle.js"],
+      "maxRawKiB": 310,
+      "maxGzipKiB": 40
+    },
+    {
+      "id": "web-components",
+      "description": "igniteui-webcomponents chunk. The single largest shipped asset.",
+      "include": ["igniteui-webcomponents.*.bundle.js"],
+      "maxRawKiB": 2100,
+      "maxGzipKiB": 285
+    },
+    {
+      "id": "lazy-chunks",
+      "description": "Split chunks fetched on demand.",
+      "include": ["*.bundle.js"],
+      "maxRawKiB": 120,
+      "maxGzipKiB": 40
+    },
+    {
+      "id": "license-notices",
+      "description": "Third-party license banners emitted alongside the bundles.",
+      "include": ["*.LICENSE.txt"],
+      "maxRawKiB": 8
+    },
+    {
+      "id": "source-maps",
+      "description": "Shipped for debuggability. Never requested unless devtools are open, so no gzip budget.",
+      "include": ["*.js.map"],
+      "maxRawKiB": 6900
+    },
+    {
+      "id": "themes",
+      "description": "Prebuilt component themes copied from igniteui-webcomponents. Consumers reference one.",
+      "include": ["themes/*"],
+      "maxRawKiB": 345,
+      "maxGzipKiB": 36
+    }
+  ],
+  "totals": [
+    {
+      "id": "served-javascript",
+      "description": "Everything the browser can execute.",
+      "groups": ["loader", "app", "web-components-core", "web-components", "lazy-chunks"],
+      "maxRawKiB": 2950,
+      "maxGzipKiB": 470
+    },
+    {
+      "id": "served-assets",
+      "description": "Worst case over the wire for a page using a themed component.",
+      "groups": ["loader", "app", "web-components-core", "web-components", "lazy-chunks", "themes"],
+      "maxRawKiB": 3300,
+      "maxGzipKiB": 510
+    },
+    {
+      "id": "package-static-web-assets",
+      "description": "Everything shipped under _content/IgniteUI.Blazor, including source maps.",
+      "groups": ["*"],
+      "maxRawKiB": 10240
+    }
+  ]
+}

@@ -1,12 +1,12 @@
 ![Ignite UI for Blazor](https://raw.githubusercontent.com/IgniteUI/igniteui-blazor/master/images/general/Ignite-UI-for-Blazor.png)
 
-# Ignite UI for Blazor - from Infragistics 
+# Ignite UI for Blazor - from Infragistics
 
 [![CI](https://github.com/IgniteUI/igniteui-blazor/actions/workflows/ci.yml/badge.svg)](https://github.com/IgniteUI/igniteui-blazor/actions/workflows/ci.yml)
 [![NuGet version](https://badge.fury.io/nu/IgniteUI.Blazor.Lite.svg)](https://www.nuget.org/packages/IgniteUI.Blazor.Lite)
 [![Discord](https://img.shields.io/discord/836634487483269200?logo=discord&logoColor=ffffff)](https://discord.com/channels/836634487483269200/836636796229386241)
 
-[Ignite UI for Blazor] is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach. 
+[Ignite UI for Blazor] is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach.
 All components are based on the [Indigo.Design Design System](https://www.infragistics.com/products/appbuilder/ui-toolkit) and are backed by ready-to-use UI kits for Figma.
 
 ## Browser Support
@@ -101,7 +101,7 @@ Provide a complete windowing experience, splitting complex layouts into smaller,
 ### [Ignite UI for Blazor WebAssembly](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-getting-started-blazor-client)
 
 
-In order to use the Ignite UI Blazor in your application you should install 
+In order to use the Ignite UI Blazor in your application you should install
 [NuGet packages](https://www.nuget.org/packages?q=IgniteUI.Blazor).
 
 There are three ways to install Ignite UI for Blazor using NuGet:
@@ -196,6 +196,15 @@ After the above steps, open the solution in Visual Studio or run the stories pro
 dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 ```
 
+## Supply chain
+
+Every release publishes an SPDX 2.2 and SPDX 3.0 SBOM, a Sigstore build-provenance attestation, and an SBOM attestation, all bound to the SHA-256 digest of the signed package that was pushed to NuGet.org. They are attached to the corresponding [GitHub release](https://github.com/IgniteUI/igniteui-blazor/releases) alongside the package and its checksum. To verify a package you downloaded:
+
+```bash
+gh attestation verify IgniteUI.Blazor.Lite.<version>.nupkg -R IgniteUI/igniteui-blazor
+dotnet nuget verify IgniteUI.Blazor.Lite.<version>.nupkg
+```
+
 [Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Commercial]: https://www.infragistics.com/legal/license
 [MIT]: https://github.com/IgniteUI/igniteui-blazor/blob/master/LICENSE
@@ -212,7 +221,7 @@ dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 [Data Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/data-grid
 [Tree Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree-grid/overview
 [Hierarchical Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/hierarchical-grid/overview
-[Grid Lite]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grid-lite/overview 
+[Grid Lite]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grid-lite/overview
 [Switch Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/switch
 [Ripple Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/ripple
 [Radio Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio
@@ -259,7 +268,7 @@ dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 [blazor Charts & Graphs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/chart-overview
 [Bubble charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/bubble-chart
 [Financial/Stock charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/stock-chart
-[Donut charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/donut-chart 
+[Donut charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/donut-chart
 [Spreadsheet Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/spreadsheet-overview
 [Dock Manager Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Toolbar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/toolbar
@@ -299,7 +308,7 @@ dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 [Geographic Polygon Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polygon-series
 [Geographic Polyline Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polyline-series
 [Dashboard Tile Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/dashboard-tile
-[Ignite UI for Blazor]: https://www.infragistics.com/products/ignite-ui-blazor 
+[Ignite UI for Blazor]: https://www.infragistics.com/products/ignite-ui-blazor
 [Chat Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/interactivity/chat
 [Tile Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tile-manager
 [Tooltip]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/tooltip
