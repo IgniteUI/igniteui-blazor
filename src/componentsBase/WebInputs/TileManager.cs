@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseCollection<IgbTile> _contentItems = null;
+        private BaseCollection<IgbTile>? _contentItems = null;
 
         internal BaseCollection<IgbTile> ContentItems
         {

@@ -149,7 +149,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// Sets an accessible label for the drawer.
@@ -159,7 +159,7 @@ namespace IgniteUI.Blazor.Controls
         /// distinct label so screen-reader users can differentiate between them.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -175,11 +175,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Opens the drawer.
@@ -190,7 +190,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> ShowAsync()
         {
-            var iv = await InvokeMethod("show", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -203,7 +203,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Show()
         {
-            var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -215,7 +215,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> HideAsync()
         {
-            var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -228,7 +228,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Hide()
         {
-            var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -237,7 +237,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> ToggleAsync()
         {
-            var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -247,12 +247,12 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool Toggle()
         {
-            var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
-        private string _closingRef = null;
-        private string _closingScript = null;
+        private string? _closingRef = null;
+        private string? _closingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
@@ -262,7 +262,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ClosingScript
+        public string? ClosingScript
         {
 
             set
@@ -270,7 +270,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closingScript)
                 {
                     this._closingScript = value;
-                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closingRef = refName;
                         this.MarkPropDirty("ClosingRef");
@@ -323,8 +323,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _closedRef = null;
-        private string _closedScript = null;
+        private string? _closedRef = null;
+        private string? _closedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
@@ -334,7 +334,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ClosedScript
+        public string? ClosedScript
         {
 
             set
@@ -342,7 +342,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closedScript)
                 {
                     this._closedScript = value;
-                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closedRef = refName;
                         this.MarkPropDirty("ClosedRef");

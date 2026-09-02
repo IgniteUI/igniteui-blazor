@@ -35,13 +35,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private DateTime? _value = DateTime.MinValue;
+        private DateTime _value = DateTime.MinValue;
 
         /// <summary>
         /// The value of the input.
         /// </summary>
         [Parameter]
-        public DateTime? Value
+        public DateTime Value
         {
             get { return this._value; }
             set
@@ -58,18 +58,18 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the input.
         /// </summary>
-        public async Task<DateTime?> GetCurrentValueAsync()
+        public async Task<DateTime> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
 
         /// <summary>
         /// Returns the current value of the input.
         /// </summary>
-        public DateTime? GetCurrentValue()
+        public DateTime GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
 
@@ -78,7 +78,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepUpAsync(DatePart? datePart = null, double delta = -1)
         {
-            await InvokeMethod("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            await InvokeMethod("stepUp", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepUp(DatePart? datePart = null, double delta = -1)
         {
-            InvokeMethodSync("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            InvokeMethodSync("stepUp", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepDownAsync(DatePart? datePart = null, double delta = -1)
         {
-            await InvokeMethod("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            await InvokeMethod("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -102,14 +102,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepDown(DatePart? datePart = null, double delta = -1)
         {
-            InvokeMethodSync("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            InvokeMethodSync("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
         /// <summary>
         /// Clears the component of any user input.
         /// </summary>
         public async Task ClearAsync()
         {
-            await InvokeMethod("clear", new object[] { }, new string[] { });
+            await InvokeMethod("clear", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -117,21 +117,21 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Clear()
         {
-            InvokeMethodSync("clear", new object[] { }, new string[] { });
+            InvokeMethodSync("clear", new object?[] { }, new string[] { });
         }
 
-        private EventCallback<DateTime?>? _valueChanged = null;
+        private EventCallback<DateTime>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime?> ValueChanged
+        public EventCallback<DateTime> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime>.Empty;
             }
             set
             {
@@ -151,8 +151,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputOcurredRef = null;
-        private string _inputOcurredScript = null;
+        private string? _inputOcurredRef = null;
+        private string? _inputOcurredScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputOcurred"/> event in the browser instead.
@@ -162,7 +162,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputOcurredScript
+        public string? InputOcurredScript
         {
 
             set
@@ -170,7 +170,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputOcurredScript)
                 {
                     this._inputOcurredScript = value;
-                    this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputOcurredRef = refName;
                         this.MarkPropDirty("InputOcurredRef");
@@ -223,8 +223,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
@@ -234,7 +234,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -242,7 +242,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -276,10 +276,10 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Change", value, (args) =>
                         {
-                            var newValueValue = default(DateTime?);
+                            var newValueValue = default(DateTime);
 
                             {
-                                newValueValue = (DateTime?)(args.Detail);
+                                newValueValue = (DateTime)(args.Detail);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -292,7 +292,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(Name, "Value");
                             }
 
-                            if (!EventCallback<DateTime?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 if (task.Exception != null)
@@ -330,8 +330,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _focusRef = null;
-        private string _focusScript = null;
+        private string? _focusRef = null;
+        private string? _focusScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
@@ -341,7 +341,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string FocusScript
+        public string? FocusScript
         {
 
             set
@@ -349,7 +349,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._focusScript)
                 {
                     this._focusScript = value;
-                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._focusRef = refName;
                         this.MarkPropDirty("FocusRef");
@@ -402,8 +402,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _blurRef = null;
-        private string _blurScript = null;
+        private string? _blurRef = null;
+        private string? _blurScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
@@ -413,7 +413,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string BlurScript
+        public string? BlurScript
         {
 
             set
@@ -421,7 +421,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._blurScript)
                 {
                     this._blurScript = value;
-                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._blurRef = refName;
                         this.MarkPropDirty("BlurRef");

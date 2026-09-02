@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebRangeSliderValueEventArgs"; } }
 
-        private IgbRangeSliderValue _detail;
+        private IgbRangeSliderValue _detail = new IgbRangeSliderValue();
 
         /// <summary>
         /// The lower and upper thumb values of the range slider.
@@ -27,11 +27,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -46,7 +46,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -56,12 +56,12 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
+            if (args != null && args.ContainsKey("detail"))
             { this.Detail = (IgbRangeSliderValue)ConvertReturnValue(args["detail"], "RangeSliderValue", true); }
 
             this.SuppressParentNotify = false;

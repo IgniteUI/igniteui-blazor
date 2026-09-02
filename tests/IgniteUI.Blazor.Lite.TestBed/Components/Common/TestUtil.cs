@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using IgniteUI.Blazor.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -84,9 +84,9 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                         return false;
                     }
 
-                    DateTime[] serverDateArray = (DateTime[])serverDateRangeArray[i].DateRange;
+                    DateTime[] serverDateArray = (DateTime[])serverDateRangeArray[i].DateRange!;
                     string[] serverStringArray = serverDateArray.Select(x => x.ToShortDateString()).ToArray();
-                    var clientRangeArray = ((JArray)clientDateArray[i].DateRange).ToObject<DateTime[]>();
+                    var clientRangeArray = ((JArray)clientDateArray[i].DateRange!).ToObject<DateTime[]>();
                     if (clientRangeArray == null)
                     {
                         return false;

@@ -9,9 +9,9 @@ namespace IgniteUI.Blazor.Controls
         private Guid _id;
         private bool _isNull = false;
         private bool _isDataSource = true;
-        private IJSDataSource _source = null;
-        private string _parentId = null;
-        private Dictionary<string, object> _values = new Dictionary<string, object>();
+        private IJSDataSource? _source = null;
+        private string? _parentId = null;
+        private Dictionary<string, object?> _values = new Dictionary<string, object?>();
         private Dictionary<string, JSDataSourceSchemaType> _valueTypes = new Dictionary<string, JSDataSourceSchemaType>();
 
         public bool IsNull
@@ -39,12 +39,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSource Source
+        public IJSDataSource? Source
         {
             get { return _source; }
         }
 
-        public string ParentId
+        public string? ParentId
         {
             get
             {
@@ -52,7 +52,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public object GetValue(string key)
+        public object? GetValue(string key)
         {
             if (_values.ContainsKey(key))
                 return _values[key];
@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public static JSDataSourceSchema ExtractSchema(object item)
+        public static JSDataSourceSchema? ExtractSchema(object? item)
         {
             if (item == null)
             {
@@ -106,20 +106,20 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchema.Create(c);
         }
 
-        public static JsonDataSourceItem Create(object item, JSDataSourceSchema schema, DataSourceManager manager)
+        public static JsonDataSourceItem Create(object? item, JSDataSourceSchema? schema, DataSourceManager? manager)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem();
             newItem.Read(item, schema, manager);
             return newItem;
         }
-        public static JsonDataSourceItem Create(object item, JSDataSourceSchema schema, DataSourceManager manager, JsonDataSourceItem parentItem)
+        public static JsonDataSourceItem Create(object? item, JSDataSourceSchema? schema, DataSourceManager? manager, JsonDataSourceItem parentItem)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem();
             newItem._parentId = parentItem.ParentId != null ? parentItem.ParentId + "/" + parentItem.Id.ToString() : parentItem.Id.ToString();
             newItem.Read(item, schema, manager);
             return newItem;
         }
-        public static JsonDataSourceItem Create(object item, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
+        public static JsonDataSourceItem Create(object? item, JSDataSourceSchema? schema, DataSourceManager? manager, string? parentId)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem();
             newItem._parentId = parentId;
@@ -127,20 +127,20 @@ namespace IgniteUI.Blazor.Controls
             return newItem;
         }
 
-        public static JsonDataSourceItem CreateWithId(object item, Guid id, JSDataSourceSchema schema, DataSourceManager manager)
+        public static JsonDataSourceItem CreateWithId(object? item, Guid id, JSDataSourceSchema? schema, DataSourceManager? manager)
         {
             JsonDataSourceItem newItem = new JsonDataSourceItem(id);
             newItem.Read(item, schema, manager);
             return newItem;
         }
 
-        public void Refresh(object item, JSDataSourceSchema schema, DataSourceManager manager)
+        public void Refresh(object? item, JSDataSourceSchema? schema, DataSourceManager? manager)
         {
             Read(item, schema, manager);
         }
 
-        private JSDataSourceSchema _schema = null;
-        private void Read(Object item, JSDataSourceSchema schema, DataSourceManager manager)
+        private JSDataSourceSchema? _schema = null;
+        private void Read(Object? item, JSDataSourceSchema? schema, DataSourceManager? manager)
         {
             if (schema == null || item == null)
             {
@@ -151,7 +151,7 @@ namespace IgniteUI.Blazor.Controls
             if (_schema.IsDataSource)
             {
                 //Console.WriteLine("in read");
-                IJSDataSource source = JsonDataSource.CreateWithSchema(item, _schema, manager, _parentId);
+                IJSDataSource? source = JsonDataSource.CreateWithSchema(item, _schema, manager, _parentId);
                 _source = source;
                 return;
             }
@@ -160,25 +160,40 @@ namespace IgniteUI.Blazor.Controls
                 _values["value"] = item;
                 _valueTypes["value"] = schema.PrimitiveType;
             }
-            for (int i = 0; i < schema.PropertyNames.Length; i++)
+            var propertyNames = schema.PropertyNames;
+            var propertyGetters = schema.PropertyGetters;
+            var propertyTypes = schema.PropertyTypes;
+            if (propertyNames != null && propertyGetters != null && propertyTypes != null)
             {
-                String name = schema.PropertyNames[i];
-                Func<object, object> propGetter = schema.PropertyGetters[i];
-                JSDataSourceSchemaType type = schema.PropertyTypes[i];
-                Object val = schema.ResolveValue(name, item, propGetter, this, type, manager);
+                var propertyLength = Math.Min(propertyNames.Length, Math.Min(propertyGetters.Length, propertyTypes.Length));
+                for (var i = 0; i < propertyLength; i++)
+                {
+                    string name = propertyNames[i];
+                    Func<object, object> propGetter = propertyGetters[i];
+                    JSDataSourceSchemaType type = propertyTypes[i];
+                    object? val = schema.ResolveValue(name, item, propGetter, this, type, manager);
 
-                _values[name] = val;
-                _valueTypes[name] = type;
+                    _values[name] = val;
+                    _valueTypes[name] = type;
+                }
             }
-            for (int i = 0; i < schema.Fields.Length; i++)
-            {
-                String name = schema.Fields[i].Name;
-                Func<object, object> fieldGetter = schema.FieldGetters[i];
-                JSDataSourceSchemaType type = schema.FieldTypes[i];
-                Object val = schema.ResolveFieldValue(name, item, fieldGetter, this, type, manager);
 
-                _values[name] = val;
-                _valueTypes[name] = type;
+            var fields = schema.Fields;
+            var fieldGetters = schema.FieldGetters;
+            var fieldTypes = schema.FieldTypes;
+            if (fields != null && fieldGetters != null && fieldTypes != null)
+            {
+                var fieldLength = Math.Min(fields.Length, Math.Min(fieldGetters.Length, fieldTypes.Length));
+                for (var i = 0; i < fieldLength; i++)
+                {
+                    string name = fields[i].Name;
+                    Func<object, object> fieldGetter = fieldGetters[i];
+                    JSDataSourceSchemaType type = fieldTypes[i];
+                    object? val = schema.ResolveFieldValue(name, item, fieldGetter, this, type, manager);
+
+                    _values[name] = val;
+                    _valueTypes[name] = type;
+                }
             }
         }
 
@@ -198,14 +213,14 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        public void GetDateCacheAsJson(System.Text.Json.Utf8JsonWriter writer, string parentKey = null)
+        public void GetDateCacheAsJson(System.Text.Json.Utf8JsonWriter writer, string? parentKey = null)
         {
             if (_isNull)
             {
                 return;
             }
 
-            if (_schema.IsDataSource)
+            if (_schema?.IsDataSource == true)
             {
                 var itemSchema = _schema.GetSubSchema("Items");
                 GetDateCacheAsJson(itemSchema, writer, parentKey + "[]");
@@ -215,7 +230,7 @@ namespace IgniteUI.Blazor.Controls
                 GetDateCacheAsJson(_schema, writer, parentKey);
             }
         }
-        public void GetDateCacheAsJson(JSDataSourceSchema schema, System.Text.Json.Utf8JsonWriter writer, string parentKey = null)
+        public void GetDateCacheAsJson(JSDataSourceSchema? schema, System.Text.Json.Utf8JsonWriter writer, string? parentKey = null)
         {
             if (schema == null)
             {
@@ -223,25 +238,37 @@ namespace IgniteUI.Blazor.Controls
             }
 
             parentKey = parentKey != null ? parentKey + "." : "";
-            for (int i = 0; i < schema.PropertyTypes.Length; i++)
+
+            var propertyTypes = schema.PropertyTypes;
+            var propertyNames = schema.PropertyNames;
+            if (propertyTypes == null || propertyNames == null)
             {
-                if (schema.PropertyTypes[i] == JSDataSourceSchemaType.DateTimeValue ||
-                    schema.PropertyTypes[i] == JSDataSourceSchemaType.NullableDateTimeValue)
+                return;
+            }
+
+            var propertyLength = Math.Min(propertyTypes.Length, propertyNames.Length);
+            for (var i = 0; i < propertyLength; i++)
+            {
+                var propertyType = propertyTypes[i];
+                var propertyName = propertyNames[i];
+
+                if (propertyType == JSDataSourceSchemaType.DateTimeValue ||
+                    propertyType == JSDataSourceSchemaType.NullableDateTimeValue)
                 {
-                    writer.WriteStringValue(parentKey + schema.PropertyNames[i]);
+                    writer.WriteStringValue(parentKey + propertyName);
                 }
-                if (schema.PropertyTypes[i] == JSDataSourceSchemaType.ObjectValue)
+                if (propertyType == JSDataSourceSchemaType.ObjectValue)
                 {
-                    var subSchema = schema.GetSubSchema(schema.PropertyNames[i]);
+                    var subSchema = schema.GetSubSchema(propertyName);
                     if (subSchema != null)
                     {
                         if (subSchema.IsDataSource)
                         {
-                            GetDateCacheAsJson(subSchema.GetSubSchema("Items"), writer, parentKey + schema.PropertyNames[i] + "[]");
+                            GetDateCacheAsJson(subSchema.GetSubSchema("Items"), writer, parentKey + propertyName + "[]");
                         }
                         else
                         {
-                            GetDateCacheAsJson(subSchema, writer, parentKey + schema.PropertyNames[i]);
+                            GetDateCacheAsJson(subSchema, writer, parentKey + propertyName);
                             //((JsonDataSourceItem)_values[schema.PropertyNames[i]]).GetDateCacheAsJson(writer, parentKey + schema.PropertyNames[i]);
                         }
                     }
@@ -259,6 +286,10 @@ namespace IgniteUI.Blazor.Controls
             if (_source != null)
             {
                 ((JsonDataSource)_source).ToJson(writer);
+                return;
+            }
+            if (_schema == null)
+            {
                 return;
             }
             if (_schema.IsPrimitive)
@@ -304,12 +335,15 @@ namespace IgniteUI.Blazor.Controls
 
             writer.WriteStartObject(propertyName);
 
-            var propertyNames = _schema.PropertyNames;
-            var jsonPropertyNames = _schema.JsonPropertyNames;
-            var len = propertyNames.Length;
+            var propertyNames = _schema?.PropertyNames;
+            var jsonPropertyNames = _schema?.JsonPropertyNames;
+            var len = propertyNames?.Length ?? 0;
             for (var i = 0; i < len; i++)
             {
-                ValueToJson(propertyNames[i], jsonPropertyNames[i], writer);
+                if (propertyNames?[i] != null && jsonPropertyNames?[i] != null)
+                {
+                    ValueToJson(propertyNames[i], jsonPropertyNames[i], writer);
+                }
             }
 
             writer.WriteString("___id", _id);
@@ -319,7 +353,7 @@ namespace IgniteUI.Blazor.Controls
 
         private void ValueToJson(String key, System.Text.Json.JsonEncodedText prop, System.Text.Json.Utf8JsonWriter writer)
         {
-            Object value = _values[key];
+            Object? value = _values[key];
             if (value == null)
             {
                 if (prop.Equals(default))

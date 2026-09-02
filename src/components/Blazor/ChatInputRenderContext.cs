@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatInputRenderContext"; } }
 
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The current value of the input field.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set

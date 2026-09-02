@@ -38,8 +38,8 @@ namespace IgniteUI.Blazor.Controls
             return new RemoteJson(uri);
         }
 
-        private string _uri;
-        public string Uri { get { return _uri; } }
+        private string? _uri;
+        public string? Uri { get { return _uri; } }
 
         internal string ToRef()
         {

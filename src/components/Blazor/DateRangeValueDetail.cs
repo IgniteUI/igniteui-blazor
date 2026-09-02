@@ -73,7 +73,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -85,14 +85,14 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("start"))
+            if (args != null && args.ContainsKey("start"))
             { this.Start = ReturnToDate(args["start"]); }
-            if (args.ContainsKey("end"))
+            if (args != null && args.ContainsKey("end"))
             { this.End = ReturnToDate(args["end"]); }
 
             this.SuppressParentNotify = false;

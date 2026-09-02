@@ -31,13 +31,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the radio button.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set
@@ -72,7 +72,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -84,14 +84,14 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("checked"))
+            if (args != null && args.ContainsKey("checked"))
             { this.Checked = ReturnToBoolean(args["checked"]); }
-            if (args.ContainsKey("value"))
+            if (args != null && args.ContainsKey("value"))
             { this.Value = ReturnToString(args["value"]); }
 
             this.SuppressParentNotify = false;

@@ -49,7 +49,7 @@ namespace IgniteUI.Blazor.Controls
             this.Options = new IgbChatOptions();
         }
 
-        private IgbChatMessage[] _messages;
+        private IgbChatMessage[] _messages = Array.Empty<IgbChatMessage>();
 
         /// <summary>
         /// The list of chat messages currently displayed.
@@ -69,7 +69,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbChatDraftMessage _draftMessage;
+        private IgbChatDraftMessage _draftMessage = new IgbChatDraftMessage();
 
         /// <summary>
         /// The chat message currently being composed but not yet sent.
@@ -86,11 +86,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._draftMessage);
                 }
+                this._draftMessage = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._draftMessage = value;
             }
 
         }
@@ -125,18 +125,18 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Scrolls the view to a specific message by id.
         /// </summary>
         public async Task ScrollToMessageAsync(String messageId)
         {
-            await InvokeMethod("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
+            await InvokeMethod("scrollToMessage", new object?[] { StringToString(messageId) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -144,11 +144,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void ScrollToMessage(String messageId)
         {
-            InvokeMethodSync("scrollToMessage", new object[] { StringToString(messageId) }, new string[] { "String" });
+            InvokeMethodSync("scrollToMessage", new object?[] { StringToString(messageId) }, new string[] { "String" });
         }
 
-        private string _messageCreatedRef = null;
-        private string _messageCreatedScript = null;
+        private string? _messageCreatedRef = null;
+        private string? _messageCreatedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="MessageCreated"/> event in the browser instead.
@@ -158,7 +158,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageCreatedScript
+        public string? MessageCreatedScript
         {
 
             set
@@ -166,7 +166,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._messageCreatedScript)
                 {
                     this._messageCreatedScript = value;
-                    this.OnRefChanged("MessageCreated", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("MessageCreated", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._messageCreatedRef = refName;
                         this.MarkPropDirty("MessageCreatedRef");
@@ -219,8 +219,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _messageReactRef = null;
-        private string _messageReactScript = null;
+        private string? _messageReactRef = null;
+        private string? _messageReactScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="MessageReact"/> event in the browser instead.
@@ -230,7 +230,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string MessageReactScript
+        public string? MessageReactScript
         {
 
             set
@@ -238,7 +238,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._messageReactScript)
                 {
                     this._messageReactScript = value;
-                    this.OnRefChanged("MessageReact", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("MessageReact", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._messageReactRef = refName;
                         this.MarkPropDirty("MessageReactRef");
@@ -291,8 +291,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _attachmentClickRef = null;
-        private string _attachmentClickScript = null;
+        private string? _attachmentClickRef = null;
+        private string? _attachmentClickScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="AttachmentClick"/> event in the browser instead.
@@ -302,7 +302,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string AttachmentClickScript
+        public string? AttachmentClickScript
         {
 
             set
@@ -310,7 +310,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._attachmentClickScript)
                 {
                     this._attachmentClickScript = value;
-                    this.OnRefChanged("AttachmentClick", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("AttachmentClick", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._attachmentClickRef = refName;
                         this.MarkPropDirty("AttachmentClickRef");
@@ -363,8 +363,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _typingChangeRef = null;
-        private string _typingChangeScript = null;
+        private string? _typingChangeRef = null;
+        private string? _typingChangeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TypingChange"/> event in the browser instead.
@@ -374,7 +374,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TypingChangeScript
+        public string? TypingChangeScript
         {
 
             set
@@ -382,7 +382,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._typingChangeScript)
                 {
                     this._typingChangeScript = value;
-                    this.OnRefChanged("TypingChange", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TypingChange", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._typingChangeRef = refName;
                         this.MarkPropDirty("TypingChangeRef");
@@ -435,8 +435,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputFocusRef = null;
-        private string _inputFocusScript = null;
+        private string? _inputFocusRef = null;
+        private string? _inputFocusScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputFocus"/> event in the browser instead.
@@ -446,7 +446,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputFocusScript
+        public string? InputFocusScript
         {
 
             set
@@ -454,7 +454,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputFocusScript)
                 {
                     this._inputFocusScript = value;
-                    this.OnRefChanged("InputFocus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputFocus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputFocusRef = refName;
                         this.MarkPropDirty("InputFocusRef");
@@ -507,8 +507,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputBlurRef = null;
-        private string _inputBlurScript = null;
+        private string? _inputBlurRef = null;
+        private string? _inputBlurScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputBlur"/> event in the browser instead.
@@ -518,7 +518,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputBlurScript
+        public string? InputBlurScript
         {
 
             set
@@ -526,7 +526,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputBlurScript)
                 {
                     this._inputBlurScript = value;
-                    this.OnRefChanged("InputBlur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputBlur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputBlurRef = refName;
                         this.MarkPropDirty("InputBlurRef");
@@ -579,8 +579,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputChangeRef = null;
-        private string _inputChangeScript = null;
+        private string? _inputChangeRef = null;
+        private string? _inputChangeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputChange"/> event in the browser instead.
@@ -590,7 +590,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputChangeScript
+        public string? InputChangeScript
         {
 
             set
@@ -598,7 +598,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputChangeScript)
                 {
                     this._inputChangeScript = value;
-                    this.OnRefChanged("InputChange", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputChange", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputChangeRef = refName;
                         this.MarkPropDirty("InputChangeRef");

@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbComboChangeEventArgsDetail _detail;
+        private IgbComboChangeEventArgsDetail _detail = new IgbComboChangeEventArgsDetail();
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
@@ -28,13 +28,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
-
         }
 
         internal override void SerializeCore(RendererSerializer ser)
@@ -47,7 +46,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -57,12 +56,12 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
+            if (args != null && args.ContainsKey("detail"))
             { this.Detail = (IgbComboChangeEventArgsDetail)ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true); }
 
             this.SuppressParentNotify = false;

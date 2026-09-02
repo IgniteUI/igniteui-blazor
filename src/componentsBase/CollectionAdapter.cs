@@ -6,19 +6,19 @@ namespace IgniteUI.Blazor.Controls
         where T : class
         where J : class
     {
-        private IList<T> _queryItems;
+        private IList<T>? _queryItems;
         private IList<T> _manualItems = new List<T>();
 
-        private IList<T> _allList;
-        private IList<J> _target;
-        private IList<T> _query;
-        private Func<T, J> _toTarget;
-        private Action<T> _onItemAdded;
-        private Action<T> _onItemRemoved;
+        private IList<T>? _allList;
+        private IList<J>? _target;
+        private IList<T>? _query;
+        private Func<T, J>? _toTarget;
+        private Action<T>? _onItemAdded;
+        private Action<T>? _onItemRemoved;
 
         private bool _hasShiftedOnceAlready;
 
-        public CollectionAdapter(IList<T> query, IList<J> target, IList<T> allList, Func<T, J> toTarget, Action<T> onItemAdded, Action<T> onItemRemoved, Func<T, string> collisionChecker = null)
+        public CollectionAdapter(IList<T> query, IList<J> target, IList<T> allList, Func<T, J> toTarget, Action<T> onItemAdded, Action<T> onItemRemoved, Func<T, string>? collisionChecker = null)
         {
             if (collisionChecker != null)
             {
@@ -40,9 +40,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private Func<T, string> _collisionChecker = null;
+        private Func<T, string>? _collisionChecker = null;
 
-        public Func<T, string> CollisionChecker
+        public Func<T, string>? CollisionChecker
         {
             get
             {
@@ -80,20 +80,29 @@ namespace IgniteUI.Blazor.Controls
             _target = target;
         }
 
-        private void OnManualChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private void OnManualChanged(object? sender, NotifyCollectionChangedEventArgs args)
         {
             switch (args.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems[0]);
+                    if (args.NewItems is { Count: > 0 } && args.NewItems[0] is T addedItem)
+                    {
+                        this.InsertManualItem(args.NewStartingIndex, addedItem);
+                    }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     this.RemoveManualItemAt(args.OldStartingIndex);
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     this.RemoveManualItemAt(args.OldStartingIndex);
-                    this.InsertManualItem(args.NewStartingIndex, (T)args.NewItems[0]);
+                    if (args.NewItems is { Count: > 0 } && args.NewItems[0] is T replacedItem)
+                    {
+                        this.InsertManualItem(args.NewStartingIndex, replacedItem);
+                    }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     this.ClearManualItems();
                     break;
@@ -102,7 +111,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void ShiftContentToManual(IList<T> manualCollection, Action<T> onMoving)
         {
-            T item = default(T);
+            T? item = default(T);
 
             var manualSet = new HashSet<string>();
             if (this.CollisionChecker != null)
@@ -115,16 +124,18 @@ namespace IgniteUI.Blazor.Controls
                         var key = this.CollisionChecker(item);
                         if (key != null)
                         {
-                            if (!manualSet.Contains(key))
-                            {
-                                manualSet.Add(key);
-                            }
+                            manualSet.Add(key);
                         }
                     }
                 }
             }
 
             var mapWasEmpty = manualSet.Count == 0;
+            if (this._query == null)
+            {
+                // no collection to shift
+                return;
+            }
             for (var i = 0; i < this._query.Count; i++)
             {
                 item = this._query[i];
@@ -137,7 +148,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    var key = this.CollisionChecker(item);
+                    var key = this.CollisionChecker?.Invoke(item);
                     if (key == null)
                     {
                         this._manualItems.Insert(i, item);
@@ -168,14 +179,18 @@ namespace IgniteUI.Blazor.Controls
             Dictionary<T, bool> queryMap = new Dictionary<T, bool>();
             Dictionary<T, bool> manualMap = new Dictionary<T, bool>();
 
-            T item = default(T);
+            T? item = default(T);
+            if (this._allList == null)
+            {
+                return;
+            }
             for (var i = 0; i < this._allList.Count; i++)
             {
                 item = this._allList[i];
                 targetMap[item] = true;
             }
 
-            var queryArray = new List<T>(this._query);
+            var queryArray = new List<T>(this._query ?? Enumerable.Empty<T>());
             this.actualContent = queryArray;
 
             if (this.CollisionChecker != null)
@@ -196,6 +211,11 @@ namespace IgniteUI.Blazor.Controls
                             }
                         }
                     }
+                }
+                if (this._query == null)
+                {
+                    // no collection to sync
+                    return;
                 }
                 for (var i = this._query.Count - 1; i >= 0; i--)
                 {
@@ -232,14 +252,14 @@ namespace IgniteUI.Blazor.Controls
                 if (!queryMap.ContainsKey(item) && !manualMap.ContainsKey(item))
                 {
                     this._allList.RemoveAt(i);
-                    this._target.RemoveAt(i);
-                    this._onItemRemoved(item);
+                    this._target?.RemoveAt(i);
+                    this._onItemRemoved?.Invoke(item);
                 }
             }
 
             int ind = 0;
             int ins = 0;
-            T insItem = default(T);
+            T? insItem = default(T);
             int maxLen = queryArray.Count + this._manualItems.Count;
             while (ind < maxLen)
             {
@@ -265,18 +285,38 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
+                        var convertedItem = this._toTarget?.Invoke(insItem);
+                        if (this._target != null && convertedItem == null)
+                        {
+                            ind++;
+                            continue;
+                        }
+
                         this._allList.Insert(ins, insItem);
-                        this._target.Insert(ins, this._toTarget(insItem));
-                        this._onItemAdded(insItem);
+                        if (this._target != null && convertedItem != null)
+                        {
+                            this._target.Insert(ins, convertedItem);
+                        }
+                        this._onItemAdded?.Invoke(insItem);
                         ind++;
                         ins++;
                     }
                 }
                 else
                 {
+                    var convertedItem = this._toTarget?.Invoke(insItem);
+                    if (this._target != null && convertedItem == null)
+                    {
+                        ind++;
+                        continue;
+                    }
+
                     this._allList.Add(insItem);
-                    this._target.Add(this._toTarget(insItem));
-                    this._onItemAdded(insItem);
+                    if (this._target != null && convertedItem != null)
+                    {
+                        this._target.Add(convertedItem);
+                    }
+                    this._onItemAdded?.Invoke(insItem);
                     ind++;
                     ins++;
                 }

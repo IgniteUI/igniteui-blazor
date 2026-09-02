@@ -54,10 +54,10 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The type of the button, which determines its behavior and semantics.
         /// <list type="bullet">
-        ///   <item><description><see cref="ButtonBaseType.Button"/> – no default action.</description></item>
-        ///   <item><description><see cref="ButtonBaseType.Submit"/> – submits the associated form when
+        ///   <item><description><see cref="ButtonBaseType.Button"/> — no default action.</description></item>
+        ///   <item><description><see cref="ButtonBaseType.Submit"/> — submits the associated form when
         ///   clicked.</description></item>
-        ///   <item><description><see cref="ButtonBaseType.Reset"/> – resets the associated form fields to
+        ///   <item><description><see cref="ButtonBaseType.Reset"/> — resets the associated form fields to
         ///   their initial values.</description></item>
         /// </list>
         /// Ignored when the button is rendered as a link (i.e. <see cref="Href"/> is set).
@@ -77,7 +77,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _href;
+        private string? _href;
 
         /// <summary>
         /// The URL the button points to. When set, the component renders as an
@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
         /// for full anchor semantics.
         /// </summary>
         [Parameter]
-        public string Href
+        public string? Href
         {
             get { return this._href; }
             set
@@ -99,7 +99,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _download;
+        private string? _download;
 
         /// <summary>
         /// Prompts the browser to download the linked resource rather than navigating
@@ -107,7 +107,7 @@ namespace IgniteUI.Blazor.Controls
         /// Only effective when <see cref="Href"/> is set.
         /// </summary>
         [Parameter]
-        public string Download
+        public string? Download
         {
             get { return this._download; }
             set
@@ -125,12 +125,12 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Where to open the linked document. Only effective when <see cref="Href"/> is set.
         /// <list type="bullet">
-        ///   <item><description><see cref="ButtonBaseTarget._self"/> – current browsing context
+        ///   <item><description><see cref="ButtonBaseTarget._self"/> — current browsing context
         ///   (default browser behavior).</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._blank"/> – new tab or window.</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._parent"/> – parent browsing context; falls back to
+        ///   <item><description><see cref="ButtonBaseTarget._blank"/> — new tab or window.</description></item>
+        ///   <item><description><see cref="ButtonBaseTarget._parent"/> — parent browsing context; falls back to
         ///   <see cref="ButtonBaseTarget._self"/> if none.</description></item>
-        ///   <item><description><see cref="ButtonBaseTarget._top"/> – top-level browsing context; falls back to
+        ///   <item><description><see cref="ButtonBaseTarget._top"/> — top-level browsing context; falls back to
         ///   <see cref="ButtonBaseTarget._self"/> if none.</description></item>
         /// </list>
         /// </summary>
@@ -148,7 +148,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _rel;
+        private string? _rel;
 
         /// <summary>
         /// The relationship between the current document and the linked URL.
@@ -158,7 +158,7 @@ namespace IgniteUI.Blazor.Controls
         /// strongly recommended for security.
         /// </summary>
         [Parameter]
-        public string Rel
+        public string? Rel
         {
             get { return this._rel; }
             set
@@ -190,7 +190,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _command;
+        private string? _command;
 
         /// <summary>
         /// The command to invoke on the target element specified by <see cref="Commandfor"/>.
@@ -199,7 +199,7 @@ namespace IgniteUI.Blazor.Controls
         /// Custom commands must start with two dashes (e.g. <c>--my-command</c>).
         /// </summary>
         [Parameter]
-        public string Command
+        public string? Command
         {
             get { return this._command; }
             set
@@ -241,7 +241,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public async Task FocusComponentAsync(IgbFocusOptions options)
         {
-            await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            await InvokeMethod("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
-            InvokeMethodSync("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            InvokeMethodSync("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
         /// <summary>
         /// Removes focus from the button.
@@ -259,7 +259,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public async Task BlurComponentAsync()
         {
-            await InvokeMethod("blur", new object[] { }, new string[] { });
+            await InvokeMethod("blur", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -268,22 +268,22 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
-            InvokeMethodSync("blur", new object[] { }, new string[] { });
+            InvokeMethodSync("blur", new object?[] { }, new string[] { });
         }
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Simulates a mouse click on the button, triggering its click handler and any associated form action.
         /// </summary>
         public async Task ClickAsync()
         {
-            await InvokeMethod("click", new object[] { }, new string[] { });
+            await InvokeMethod("click", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -291,11 +291,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Click()
         {
-            InvokeMethodSync("click", new object[] { }, new string[] { });
+            InvokeMethodSync("click", new object?[] { }, new string[] { });
         }
 
-        private string _focusRef = null;
-        private string _focusScript = null;
+        private string? _focusRef = null;
+        private string? _focusScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
@@ -305,7 +305,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string FocusScript
+        public string? FocusScript
         {
 
             set
@@ -313,7 +313,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._focusScript)
                 {
                     this._focusScript = value;
-                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._focusRef = refName;
                         this.MarkPropDirty("FocusRef");
@@ -366,8 +366,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _blurRef = null;
-        private string _blurScript = null;
+        private string? _blurRef = null;
+        private string? _blurScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
@@ -377,7 +377,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string BlurScript
+        public string? BlurScript
         {
 
             set
@@ -385,7 +385,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._blurScript)
                 {
                     this._blurScript = value;
-                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._blurRef = refName;
                         this.MarkPropDirty("BlurRef");

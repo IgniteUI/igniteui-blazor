@@ -106,14 +106,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The current value of the item.
         /// If not specified, the text content of the item is used.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set
@@ -129,11 +129,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

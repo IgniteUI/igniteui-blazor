@@ -62,13 +62,13 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _offset;
+        private string? _offset;
 
         /// <summary>
         /// Defines where the gradient stop is placed along the gradient vector.
         /// </summary>
         [Parameter]
-        public string Offset
+        public string? Offset
         {
             get { return this._offset; }
             set
@@ -81,13 +81,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _color;
+        private string? _color;
 
         /// <summary>
         /// Defines the color of the gradient stop.
         /// </summary>
         [Parameter]
-        public string Color
+        public string? Color
         {
             get { return this._color; }
             set
@@ -122,11 +122,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public class MarshalByValueFactory
     {
-        internal static bool MustMarshalByValue(string typeName)
+        internal static bool MustMarshalByValue(string? typeName)
         {
             switch (typeName)
             {
@@ -135,7 +135,7 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        internal static object CreateInstance(string typeName)
+        internal static object? CreateInstance(string typeName)
         {
             switch (typeName)
             {
@@ -154,7 +154,10 @@ namespace IgniteUI.Blazor.Controls
                     break;
                 case "ActiveStepChangedEventArgs":
                 case "WebActiveStepChangedEventArgs":
-                    return new IgbActiveStepChangedEventArgs();
+                    return new IgbActiveStepChangedEventArgs
+                    {
+                        Detail = new IgbActiveStepChangedEventArgsDetail()
+                    };
                     break;
                 case "ActiveStepChangedEventArgsDetail":
                 case "WebActiveStepChangedEventArgsDetail":

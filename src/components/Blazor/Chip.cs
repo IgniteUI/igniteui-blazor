@@ -140,7 +140,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> GetCurrentSelectedAsync()
         {
-            var iv = await InvokeMethod("p:Selected", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Selected", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -149,7 +149,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool GetCurrentSelected()
         {
-            var iv = InvokeMethodSync("p:Selected", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Selected", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         private StyleVariant _variant = StyleVariant.Primary;
@@ -174,11 +174,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         private EventCallback<bool>? _selectedChanged = null;
@@ -212,8 +212,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _removeRef = null;
-        private string _removeScript = null;
+        private string? _removeRef = null;
+        private string? _removeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Remove"/> event in the browser instead.
@@ -223,7 +223,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string RemoveScript
+        public string? RemoveScript
         {
 
             set
@@ -231,7 +231,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._removeScript)
                 {
                     this._removeScript = value;
-                    this.OnRefChanged("Remove", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Remove", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._removeRef = refName;
                         this.MarkPropDirty("RemoveRef");
@@ -284,8 +284,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _selectRef = null;
-        private string _selectScript = null;
+        private string? _selectRef = null;
+        private string? _selectScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
@@ -295,7 +295,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SelectScript
+        public string? SelectScript
         {
 
             set
@@ -303,7 +303,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._selectScript)
                 {
                     this._selectScript = value;
-                    this.OnRefChanged("Select", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Select", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._selectRef = refName;
                         this.MarkPropDirty("SelectRef");

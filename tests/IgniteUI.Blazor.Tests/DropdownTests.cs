@@ -91,9 +91,9 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             elements: () => [anchor.Element])
         .Method(c => c.ClearSelectionAsync(), c => c.ClearSelection(), "clearSelection")
         .Method(c => c.SelectAsync("item-1"), c => c.Select("item-1"), "select",
-            InteropReturn.Undefined, expect: null!, args: ["item-1"], types: ["Json"])
+            InteropReturn.Undefined, expect: null, args: ["item-1"], types: ["Json"])
         .Method(c => c.NavigateToAsync(2), c => c.NavigateTo(2), "navigateTo",
-            InteropReturn.Undefined, expect: null!, args: [2.0], types: ["Json"])
+            InteropReturn.Undefined, expect: null, args: [2.0], types: ["Json"])
         .Getter(c => c.GetItemsAsync(), c => c.GetItems(), "Items",
             itemsArrange,
             returns: FromRender.Of((interop, cut) => InteropReturn.Array($$$"""[{"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(1)")}}}"}, {"refType": "name", "id": "{{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(2)")}}}"}]""")),
@@ -115,7 +115,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
                 // Assert.Same(cut.FindComponents<IgbDropdownGroup>()[0].Instance, result[0]);
                 // Assert.Same(cut.FindComponents<IgbDropdownGroup>()[1].Instance, result[1]);
             })
-        .Getter(c => c.GetSelectedItemAsync(), c => c.GetSelectedItem(), "SelectedItem", InteropReturn.Undefined, expect: null!)
+        .Getter(c => c.GetSelectedItemAsync(), c => c.GetSelectedItem(), "SelectedItem", InteropReturn.Undefined, expect: null)
         .Getter(c => c.GetSelectedItemAsync(), c => c.GetSelectedItem(), "SelectedItem",
             itemsArrange,
             returns: FromRender.Of((interop, cut) => InteropReturn.Ref($$"""{"refType": "name", "id": "{{interop.ContainerIdOf(cut, "igc-dropdown-item:nth-of-type(1)")}}"}""")),

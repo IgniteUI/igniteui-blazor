@@ -4,6 +4,7 @@
     <Copyright>Infragistics</Copyright>
     <Deterministic>true</Deterministic>
     <Nullable>enable</Nullable>
+    <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Run the .editorconfig IDExxxx style rules as analyzers during build
          so formatting violations surface as warnings locally and in CI. -->

@@ -8,14 +8,16 @@ namespace IgniteUI.Blazor.Controls
     {
         public IgbChatDraftMessage GetCurrentDraftMessage()
         {
-            var iv = InvokeMethodSync("p:DraftMessage", new object[] { }, new string[] { });
-            return ReturnToObject<IgbChatDraftMessage>(iv, "ChatDraftMessage");
+            var iv = InvokeMethodSync("p:DraftMessage", new object?[] { }, new string[] { });
+            var result = ReturnToObject<IgbChatDraftMessage>(iv, "ChatDraftMessage");
+            return result ?? new IgbChatDraftMessage();
         }
 
         public async Task<IgbChatDraftMessage> GetCurrentDraftMessageAsync()
         {
-            var iv = await InvokeMethod("p:DraftMessage", new object[] { }, new string[] { });
-            return ReturnToObject<IgbChatDraftMessage>(iv, "ChatDraftMessage");
+            var iv = await InvokeMethod("p:DraftMessage", new object?[] { }, new string[] { });
+            var result = ReturnToObject<IgbChatDraftMessage>(iv, "ChatDraftMessage");
+            return result ?? new IgbChatDraftMessage();
         }
     }
 }

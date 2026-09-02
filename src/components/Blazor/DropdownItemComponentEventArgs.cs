@@ -13,7 +13,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbDropdownItem _detail;
+        private IgbDropdownItem _detail = new IgbDropdownItem();
 
         /// <summary>
         /// The dropdown item that became selected.
@@ -43,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -53,12 +53,12 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
+            if (args != null && args.ContainsKey("detail"))
             { this.Detail = (IgbDropdownItem)ConvertReturnValue(args["detail"], "DropdownItem", true); }
 
             this.SuppressParentNotify = false;

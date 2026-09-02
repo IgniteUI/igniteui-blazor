@@ -20,8 +20,14 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     // JsonDataSourceItem.ToJson's "___id" marker), assigned once item is added to DS.
     internal static string DataItemId(InteropHarness interop, IRenderedComponent<IComponent> cut, int index)
     {
-        var items = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), "data")!.Value.EnumerateArray().ToArray();
-        return items[index].GetProperty("___id").GetString()!;
+        var dataUpdate = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), "data");
+        if (dataUpdate is not { } data)
+        {
+            return string.Empty;
+        }
+
+        var items = data.EnumerateArray().ToArray();
+        return items[index].GetProperty("___id").GetString() ?? string.Empty;
     }
 
     internal static string UuidRef(InteropHarness interop, IRenderedComponent<IComponent> cut, int index) =>

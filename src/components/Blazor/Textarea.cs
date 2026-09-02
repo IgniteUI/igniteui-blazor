@@ -60,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _autocomplete;
+        private string? _autocomplete;
 
         /// <summary>
         /// Specifies what permission, if any, the browser has to provide automated assistance in filling
@@ -70,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
         /// for additional information.
         /// </summary>
         [Parameter]
-        public string Autocomplete
+        public string? Autocomplete
         {
             get { return this._autocomplete; }
             set
@@ -83,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _autocapitalize;
+        private string? _autocapitalize;
 
         /// <summary>
         /// Controls whether and how text input is automatically capitalized as it is entered/edited by the user.
@@ -91,7 +91,7 @@ namespace IgniteUI.Blazor.Controls
         /// MDN documentation</see>.
         /// </summary>
         [Parameter]
-        public string Autocapitalize
+        public string? Autocapitalize
         {
             get { return this._autocapitalize; }
             set
@@ -104,7 +104,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputMode;
+        private string? _inputMode;
 
         /// <summary>
         /// Hints at the type of data that might be entered by the user while editing the control or its contents.
@@ -114,7 +114,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         [Parameter]
         [WCAttributeName("inputmode")]
-        public string InputMode
+        public string? InputMode
         {
             get { return this._inputMode; }
             set
@@ -127,13 +127,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label for the control.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -206,13 +206,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholder;
+        private string? _placeholder;
 
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
         [Parameter]
-        public string Placeholder
+        public string? Placeholder
         {
             get { return this._placeholder; }
             set
@@ -285,13 +285,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the component.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set
@@ -308,18 +308,18 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the component.
         /// </summary>
-        public async Task<string> GetCurrentValueAsync()
+        public async Task<string?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
         /// <summary>
         /// Returns the current value of the component.
         /// </summary>
-        public string GetCurrentValue()
+        public string? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
         private bool _spellcheck = true;
@@ -444,18 +444,18 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task SetNativeElementAsync(Object element)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         public void SetNativeElement(Object element)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
         }
         /// <summary>
         /// Selects all text within the control.
         /// </summary>
         public async Task SelectAsync()
         {
-            await InvokeMethod("select", new object[] { }, new string[] { });
+            await InvokeMethod("select", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -463,14 +463,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Select()
         {
-            InvokeMethodSync("select", new object[] { }, new string[] { });
+            InvokeMethodSync("select", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
-            var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -479,7 +479,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool ReportValidity()
         {
-            var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -487,7 +487,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
-            var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -496,7 +496,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool CheckValidity()
         {
-            var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -505,7 +505,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
-            await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            await InvokeMethod("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetCustomValidity(String message)
         {
-            InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         private EventCallback<string>? _valueChanged = null;
@@ -548,8 +548,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputRef = null;
-        private string _inputScript = null;
+        private string? _inputRef = null;
+        private string? _inputScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Input"/> event in the browser instead.
@@ -559,7 +559,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string InputScript
+        public string? InputScript
         {
 
             set
@@ -567,7 +567,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputScript)
                 {
                     this._inputScript = value;
-                    this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Input", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputRef = refName;
                         this.MarkPropDirty("InputRef");
@@ -620,8 +620,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
@@ -631,7 +631,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -639,7 +639,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -676,7 +676,7 @@ namespace IgniteUI.Blazor.Controls
                             var newValueValue = default(string);
 
                             {
-                                newValueValue = (string)(args.Detail);
+                                newValueValue = (string)(args.Detail ?? string.Empty);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -727,8 +727,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _focusRef = null;
-        private string _focusScript = null;
+        private string? _focusRef = null;
+        private string? _focusScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
@@ -738,7 +738,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string FocusScript
+        public string? FocusScript
         {
 
             set
@@ -746,7 +746,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._focusScript)
                 {
                     this._focusScript = value;
-                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._focusRef = refName;
                         this.MarkPropDirty("FocusRef");
@@ -799,8 +799,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _blurRef = null;
-        private string _blurScript = null;
+        private string? _blurRef = null;
+        private string? _blurScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
@@ -810,7 +810,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string BlurScript
+        public string? BlurScript
         {
 
             set
@@ -818,7 +818,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._blurScript)
                 {
                     this._blurScript = value;
-                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._blurRef = refName;
                         this.MarkPropDirty("BlurRef");

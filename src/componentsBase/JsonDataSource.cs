@@ -10,22 +10,22 @@ namespace IgniteUI.Blazor.Controls
 
     internal interface IJSDataSource
     {
-        string GetDataIntentsAsJson();
+        string? GetDataIntentsAsJson();
         bool SuppressModifications { get; set; }
         JSDataSourceType DataSourceType { get; }
         bool IsSent { get; set; }
         bool HasId(Guid id);
         bool HasId(string id);
         //IJSDataSourceItem LookupById(Guid id);
-        object LookupOriginal(Guid id);
-        object LookupOriginal(string id);
+        object? LookupOriginal(Guid id);
+        object? LookupOriginal(string id);
         bool HasOriginal(object item);
         Guid IdFromOriginal(object item);
-        IJSDataSourceItem NotifyInsertItem(object data, int index, Object item);
-        IJSDataSourceItem NotifyRemoveItem(object data, int index, object oldItem);
+        IJSDataSourceItem? NotifyInsertItem(object data, int index, Object item);
+        IJSDataSourceItem? NotifyRemoveItem(object data, int index, object oldItem);
         void NotifyClearItems(Object data);
-        IJSDataSourceItem NotifySetItem(Object data, int index, Object oldItem, Object newItem);
-        IJSDataSourceItem NotifyUpdateItem(object data, int index, object item);
+        IJSDataSourceItem? NotifySetItem(Object data, int index, Object oldItem, Object newItem);
+        IJSDataSourceItem? NotifyUpdateItem(object data, int index, object item);
         void InsertItemWithId(string id, int index, Object item);
     }
 
@@ -48,9 +48,9 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public bool IsSent { get; set; }
-        private object _originalData;
+        private object? _originalData;
 
-        public string GetDataIntentsAsJson()
+        public string? GetDataIntentsAsJson()
         {
             if (_schema != null)
             {
@@ -63,18 +63,23 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<Guid, IJSDataSourceItem> _uuidToItem = new Dictionary<Guid, IJSDataSourceItem>();
         private Dictionary<IJSDataSourceItem, object> _itemToOriginal = new Dictionary<IJSDataSourceItem, object>();
         private Dictionary<object, IJSDataSourceItem> _originalToItem = new Dictionary<object, IJSDataSourceItem>();
-        private JSDataSourceSchema _parentSchema = null;
-        private DataSourceManager _manager = null;
-        private string _parentId = null;
+        private JSDataSourceSchema? _parentSchema = null;
+        private DataSourceManager? _manager = null;
+        private string? _parentId = null;
         private bool _dateCacheReady = false;
 
         private Dictionary<Guid, Dictionary<string, JsonDataSource>> _subDataSources = new Dictionary<Guid, Dictionary<string, JsonDataSource>>();
 
         public bool DateCacheReady { get { return _dateCacheReady; } }
 
-        public static IJSDataSource CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
+        public static IJSDataSource? CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager? manager, string? parentId)
         {
             if (data == null)
+            {
+                return null;
+            }
+
+            if (manager == null)
             {
                 return null;
             }
@@ -104,9 +109,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            if (SuppressModifications)
+            if (SuppressModifications || _manager == null)
             {
                 return;
             }
@@ -217,7 +222,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSourceItem LookupById(Guid id)
+        public IJSDataSourceItem? LookupById(Guid id)
         {
             if (_uuidToItem.ContainsKey(id))
             {
@@ -226,11 +231,11 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public object LookupOriginal(Guid id)
+        public object? LookupOriginal(Guid id)
         {
             return ToOriginal(LookupById(id));
         }
-        public object LookupOriginal(string id)
+        public object? LookupOriginal(string id)
         {
             if (id.Contains("/"))
             {
@@ -262,14 +267,14 @@ namespace IgniteUI.Blazor.Controls
         public Guid IdFromOriginal(object item)
         {
             var itm = FromOriginal(item);
-            if (item == null)
+            if (itm == null)
             {
                 return Guid.Empty;
             }
             return itm.Id;
         }
 
-        public IJSDataSourceItem FromOriginal(object item)
+        public IJSDataSourceItem? FromOriginal(object item)
         {
             if (_originalToItem.ContainsKey(item))
             {
@@ -279,7 +284,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public Object ToOriginal(IJSDataSourceItem item)
+        public Object? ToOriginal(IJSDataSourceItem? item)
         {
             if (item == null)
             {
@@ -294,7 +299,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public static IJSDataSource Create(Object data, DataSourceManager manager)
+        public static IJSDataSource? Create(Object data, DataSourceManager manager)
         {
             if (data == null)
             {
@@ -316,7 +321,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private static IJSDataSource CreateFromIEnumerable(IEnumerable data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
+        private static IJSDataSource CreateFromIEnumerable(IEnumerable data, JSDataSourceSchema? schema, DataSourceManager manager, string? parentId)
         {
             JsonDataSource newData = new JsonDataSource();
             newData._manager = manager;
@@ -330,7 +335,7 @@ namespace IgniteUI.Blazor.Controls
             return newData;
         }
 
-        private static IJSDataSource CreateFromIList(IList data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
+        private static IJSDataSource CreateFromIList(IList data, JSDataSourceSchema? schema, DataSourceManager manager, string? parentId)
         {
             //Console.WriteLine("test json");
             //DateTime testTime = DateTime.Now;
@@ -353,7 +358,7 @@ namespace IgniteUI.Blazor.Controls
             return newData;
         }
 
-        private static IJSDataSource CreateFromArray(object[] data, JSDataSourceSchema schema, DataSourceManager manager, string parentId)
+        private static IJSDataSource CreateFromArray(object[] data, JSDataSourceSchema? schema, DataSourceManager manager, string? parentId)
         {
             JsonDataSource newData = new JsonDataSource();
             newData._parentSchema = schema;
@@ -367,9 +372,9 @@ namespace IgniteUI.Blazor.Controls
             return newData;
         }
 
-        private JSDataSourceSchema _schema = null;
+        private JSDataSourceSchema? _schema = null;
 
-        private void Add(object item)
+        private void Add(object? item)
         {
             if (_schema == null)
             {
@@ -386,7 +391,7 @@ namespace IgniteUI.Blazor.Controls
             OnAddItem(itemJson, item);
             _data.Add(itemJson);
 
-            if (schema != null)
+            if (schema != null && schema.PropertyNames != null && schema.PropertyTypes != null)
             {
                 for (int i = 0; i < schema.PropertyNames.Length; i++)
                 {
@@ -397,8 +402,8 @@ namespace IgniteUI.Blazor.Controls
                         var subSchema = schema.GetSubSchema(propertyName);
                         if (subSchema != null)
                         {
-                            var propValue = (JsonDataSourceItem)itemJson.GetValue(propertyName);
-                            if (propValue.Source != null)
+                            var propValue = (JsonDataSourceItem?)itemJson.GetValue(propertyName);
+                            if (propValue?.Source != null)
                             {
                                 if (!_subDataSources.ContainsKey(itemJson.Id))
                                 {
@@ -412,7 +417,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void OnAddItem(IJSDataSourceItem itemJson, Object item)
+        private void OnAddItem(IJSDataSourceItem itemJson, Object? item)
         {
             _uuidToItem[itemJson.Id] = itemJson;
             if (item != null)
@@ -422,7 +427,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void EnsureSchema(object item)
+        private void EnsureSchema(object? item)
         {
             if (item != null && _schema == null)
             {
@@ -463,7 +468,7 @@ namespace IgniteUI.Blazor.Controls
             return itemJson;
         }
 
-        private void OnRemove(IJSDataSourceItem itemJson, object item)
+        private void OnRemove(IJSDataSourceItem itemJson, object? item)
         {
             if (_uuidToItem.ContainsKey(itemJson.Id))
             {
@@ -539,7 +544,7 @@ namespace IgniteUI.Blazor.Controls
         public IJSDataSourceItem NotifyUpdateItem(object data, int index, object item)
         {
             EnsureSchema(item);
-            JsonDataSourceItem itemJson = null;
+            JsonDataSourceItem? itemJson = null;
             if (HasOriginal(item))
             {
                 itemJson = (JsonDataSourceItem)_originalToItem[item];
@@ -586,8 +591,8 @@ namespace IgniteUI.Blazor.Controls
                     for (int i = 0; i < _data.Count; i++)
                     {
                         item = (JsonDataSourceItem)_data[0];
-                        JsonDataSource ds = (JsonDataSource)item.Source;
-                        ds.GetDateCacheAsJson(writer);
+                        JsonDataSource? ds = item.Source as JsonDataSource;
+                        ds?.GetDateCacheAsJson(writer);
                     }
                 }
                 else

@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Breaking Changes
+
+#### Public API nullability
+
+> [!NOTE]
+> As part of this release the public API was annotated for nullable reference types. Beyond the members listed below, many reference-type parameters, properties, and return values had their nullability contract tightened (`T?` → `T`). Consumers building with nullable reference types enabled may see new nullable warnings — or errors, if warnings are treated as errors — and may need to update their code accordingly.
+
+The following public members changed from nullable to non-nullable. Value-type changes (e.g. `DateTime?` → `DateTime`, `double?` → `double`) are binary-breaking.
+
+| Type | Member | Before | After |
+|------|--------|--------|-------|
+| `IgbDatePicker` | `Value` | `DateTime?` | `DateTime` |
+| `IgbDatePicker` | `Min` | `DateTime?` | `DateTime` |
+| `IgbDatePicker` | `Max` | `DateTime?` | `DateTime` |
+| `IgbDatePicker` | `GetCurrentValue()` | `DateTime?` | `DateTime` |
+| `IgbDatePicker` | `GetCurrentValueAsync()` | `Task<DateTime?>` | `Task<DateTime>` |
+| `IgbDatePicker` | `ValueChanged` | `EventCallback<DateTime?>` | `EventCallback<DateTime>` |
+| `IgbDateTimeInput` | `Value` | `DateTime?` | `DateTime` |
+| `IgbDateTimeInput` | `GetCurrentValue()` | `DateTime?` | `DateTime` |
+| `IgbDateTimeInput` | `GetCurrentValueAsync()` | `Task<DateTime?>` | `Task<DateTime>` |
+| `IgbDateTimeInput` | `ValueChanged` | `EventCallback<DateTime?>` | `EventCallback<DateTime>` |
+| `IgbDateTimeInput` | `Min` | `DateTime?` | `DateTime` |
+| `IgbDateTimeInput` | `Max` | `DateTime?` | `DateTime` |
+| `IgbDateRangePicker` | `Min` | `DateTime?` | `DateTime` |
+| `IgbDateRangePicker` | `Max` | `DateTime?` | `DateTime` |
+| `IgbTile` | `ColStart` | `double?` | `double` |
+| `IgbTile` | `RowStart` | `double?` | `double` |
+| `IgbCalendar` | `SpecialDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+| `IgbCalendar` | `DisabledDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+
 ## 0.1.0 - 2026-07-14
 
 This release updates the Ignite UI for Blazor to the latest [igniteui-webcomponents@7.2.4 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.2.4) and matching related changes from `IgniteUI.Blazor` [25.2.77 (March 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25277-march-2026), [25.2.102 (May 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#252102-may-2026) and [26.1.51 (June 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#26151-june-2026) with highlights noted below:

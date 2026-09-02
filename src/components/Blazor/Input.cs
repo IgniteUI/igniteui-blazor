@@ -53,13 +53,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the control.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set
@@ -76,18 +76,18 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the control.
         /// </summary>
-        public async Task<string> GetCurrentValueAsync()
+        public async Task<string?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
         /// <summary>
         /// Returns the current value of the control.
         /// </summary>
-        public string GetCurrentValue()
+        public string? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
         private InputType _displayType = InputType.Text;
@@ -130,7 +130,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputMode;
+        private string _inputMode = string.Empty;
 
         /// <summary>
         /// The input mode attribute of the control.
@@ -230,7 +230,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _max = 0;
+        private double? _max = null;
 
         /// <summary>
         /// The max attribute of the control.
@@ -287,7 +287,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _autocomplete;
+        private string _autocomplete = string.Empty;
 
         /// <summary>
         /// The autocomplete attribute of the control.
@@ -333,7 +333,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepUpAsync(double n = -1)
         {
-            await InvokeMethod("stepUp", new object[] { n }, new string[] { "Number" });
+            await InvokeMethod("stepUp", new object?[] { n }, new string[] { "Number" });
         }
 
         /// <summary>
@@ -341,14 +341,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepUp(double n = -1)
         {
-            InvokeMethodSync("stepUp", new object[] { n }, new string[] { "Number" });
+            InvokeMethodSync("stepUp", new object?[] { n }, new string[] { "Number" });
         }
         /// <summary>
         /// Decrements the numeric value of the input by one or more steps.
         /// </summary>
         public async Task StepDownAsync(double n = -1)
         {
-            await InvokeMethod("stepDown", new object[] { n }, new string[] { "Number" });
+            await InvokeMethod("stepDown", new object?[] { n }, new string[] { "Number" });
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepDown(double n = -1)
         {
-            InvokeMethodSync("stepDown", new object[] { n }, new string[] { "Number" });
+            InvokeMethodSync("stepDown", new object?[] { n }, new string[] { "Number" });
         }
 
         private EventCallback<string>? _valueChanged = null;
@@ -390,8 +390,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
@@ -401,7 +401,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -409,7 +409,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -446,7 +446,7 @@ namespace IgniteUI.Blazor.Controls
                             var newValueValue = default(string);
 
                             {
-                                newValueValue = (string)(args.Detail);
+                                newValueValue = (string)(args.Detail ?? string.Empty);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

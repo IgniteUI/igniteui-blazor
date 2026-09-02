@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessageRenderContext"; } }
 
-        private IgbChatMessage _message;
+        private IgbChatMessage? _message;
 
         /// <summary>
         /// The specific chat message being rendered.
         /// </summary>
         [Parameter]
-        public IgbChatMessage Message
+        public IgbChatMessage? Message
         {
             get { return this._message; }
             set
