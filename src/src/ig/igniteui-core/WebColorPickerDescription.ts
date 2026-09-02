@@ -1,5 +1,5 @@
 import { WebBaseComboBoxDescription } from "./WebBaseComboBoxDescription";
-import { Base, Type, markType } from "./type";
+import { Type, markType } from "./type";
 
 /**
  * @hidden
