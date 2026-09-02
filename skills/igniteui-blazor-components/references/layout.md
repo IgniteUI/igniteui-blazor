@@ -1,100 +1,64 @@
 # Layout & Navigation Components
 
-> **Part of the [`igniteui-blazor-components`](../SKILL.md) skill hub.**
-> For project setup and module registration - see [`setup.md`](./setup.md).
+Module for every component below is `Igb<Name>Module`. `IgbExpansionPanel` ships inside `IgbAccordionModule`; `IgbNavDrawerHeaderItem` and `IgbTreeItem` have their own modules.
 
-## Contents
-
-- [Tabs](#tabs)
-- [Stepper](#stepper)
-- [Accordion & Expansion Panel](#accordion--expansion-panel)
-- [Navbar](#navbar)
-- [Navigation Drawer](#navigation-drawer)
-- [Tree](#tree)
-- [Splitter](#splitter)
-- [Virtual Scroll](#virtual-scroll)
-- [Key Rules](#key-rules)
-
----
-
-## Overview
-This reference gives high-level guidance on layout and navigation components, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
+**Async vs sync methods.** Every method exists as `XAsync()` and a sync twin `X()`. Use the `Async` form: the sync twin needs `IJSInProcessRuntime` and throws `InvalidOperationException` on Blazor Server. It only works in WebAssembly and MAUI WebView.
 
 ## Tabs
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbTabsModule));
-```
-
 ```razor
-<IgbTabs>
-    <IgbTab Label="Tab 1">
-      <span>Content for tab 1</span>
+<IgbTabs @ref="TabsRef" Alignment="TabsAlignment.Start" Change="OnTabChange">
+    <IgbTab Label="Overview">
+        <span>Content for the first tab</span>
     </IgbTab>
-    <IgbTab Label="Tab 2">
-      <span>Content for tab 2</span>
+    <IgbTab Label="Details" Selected="true">
+        <span>Content for the second tab</span>
     </IgbTab>
     <IgbTab>
-      <div slot="label">Tab 3</div>
-      <span>Content for tab 3</span>
+        <IgbIcon slot="label" IconName="home" Collection="material" />
+        <span>Content for the third tab</span>
     </IgbTab>
 </IgbTabs>
-```
-Tab text can be set either as simple string using the `Label` property or by assigning children to the `label` slot. Any remaining children in the default slot are rendered as the tab content.
 
-For icon tabs, use the `label` slot inside `IgbTab`:
-
-```razor
-<IgbTab>
-    <IgbIcon slot="label" IconName="home" Collection="material" />
-    Home
-</IgbTab>
+@code {
+    IgbTabs TabsRef { get; set; } = default!;
+    void OnTabChange(IgbTabComponentEventArgs e) { }
+}
 ```
 
----
+Tab headers come from the `Label` string or from children in the `label` slot; everything left in the default slot is the panel body. There is **no** `IgbTabPanel` component. `IgbTab` has `Label`, `Selected`, `Disabled`. `IgbTabs` has `Alignment`, `Activation`, `SelectAsync(id)`, `GetSelectedAsync()`.
 
 ## Stepper
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbStepperModule));
-```
-
 ```razor
-<IgbStepper Linear="true" Orientation="StepperOrientation.Horizontal" @ref="StepperRef">
+<IgbStepper @ref="StepperRef" Linear="true" Orientation="StepperOrientation.Horizontal">
     <IgbStep>
         <span slot="title">Personal Info</span>
-        <!-- step content -->
         <IgbInput Label="Name" />
     </IgbStep>
-    <IgbStep>
+    <IgbStep Optional="true">
         <span slot="title">Address</span>
-        <!-- step content -->
     </IgbStep>
     <IgbStep>
         <span slot="title">Confirm</span>
-        <!-- step content -->
     </IgbStep>
 </IgbStepper>
 
 @code {
-    IgbStepper StepperRef { get; set; }
-
-    void GoNext() => StepperRef.Next();
-    void GoPrev() => StepperRef.Prev();
+    IgbStepper StepperRef { get; set; } = default!;
+    Task GoNext() => StepperRef.NextAsync();
+    Task GoPrev() => StepperRef.PrevAsync();
 }
 ```
 
----
+`IgbStepper`: `Linear`, `Orientation`, `StepType`, `TitlePosition`, `ContentTop`, `NextAsync()`, `PrevAsync()`, `NavigateToAsync(index)`, `ResetAsync()`, `ActiveStepChanging` / `ActiveStepChanged`.
+`IgbStep`: `Active`, `Complete`, `Optional`, `Invalid`, `Disabled`, plus `title`, `subtitle`, `indicator` slots.
+
+`Linear="true"` blocks skipping ahead — omit it when free navigation is intended.
 
 ## Accordion & Expansion Panel
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbAccordionModule));
-// IgbExpansionPanel is included in IgbAccordionModule
-```
-
 ```razor
-<!-- Accordion (wraps multiple expansion panels) -->
 <IgbAccordion SingleExpand="true">
     <IgbExpansionPanel>
         <span slot="title">Section 1</span>
@@ -107,144 +71,89 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbAccordionModule));
     </IgbExpansionPanel>
 </IgbAccordion>
 
-<!-- Standalone expansion panel -->
-<IgbExpansionPanel @ref="PanelRef">
-    <span slot="title">Details</span>
-    <p>Expanded content here.</p>
-</IgbExpansionPanel>
-
 @code {
-    IgbExpansionPanel PanelRef { get; set; }
-    void Toggle() => PanelRef.Toggle();
+    IgbExpansionPanel PanelRef { get; set; } = default!;
+    Task Toggle() => PanelRef.ToggleAsync();   // Task<bool>
 }
 ```
 
----
+`IgbAccordion`: `SingleExpand` (closing others on open — the usual case), `ShowAllAsync()`, `HideAllAsync()`, and `Opening` / `Opened` / `Closing` / `Closed` carrying `IgbExpansionPanelComponentEventArgs`.
+`IgbExpansionPanel`: `Open`, `Disabled`, `IndicatorPosition`, `ShowAsync()` / `HideAsync()` / `ToggleAsync()` (all `Task<bool>`). It works standalone as well as inside an accordion.
 
 ## Navbar
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbNavbarModule));
-```
-
 ```razor
 <IgbNavbar>
-    <IgbIconButton slot="start" IconName="menu" Collection="material" @onclick="() => DrawerRef.Toggle()" />
+    <IgbIconButton slot="start" IconName="menu" Collection="material" @onclick="ToggleDrawer" />
     <h3>My Application</h3>
     <IgbIconButton slot="end" IconName="search" Collection="material" />
-    <IgbIconButton slot="end" IconName="more_vert" Collection="material" />
 </IgbNavbar>
 ```
 
-> **AGENT INSTRUCTION:** Register icons used by `IgbNavbar` and `IgbIconButton` before relying on them in samples. Call `await iconRef.EnsureReady()` before `RegisterIconAsync()` or `RegisterIconFromTextAsync()`.
-
----
+Purely slot-driven: `start`, default (title), `end`. Icons must be registered before they display — see [`data-display.md`](./data-display.md).
 
 ## Navigation Drawer
 
-```csharp
-builder.Services.AddIgniteUIBlazor(
-    typeof(IgbNavDrawerModule),
-    typeof(IgbNavDrawerHeaderItemModule)
-);
-```
-
 ```razor
-<IgbNavDrawer @ref="DrawerRef" Open="true">
+<IgbNavDrawer @ref="DrawerRef" Open="true" Position="NavDrawerPosition.Start">
     <IgbNavDrawerHeaderItem>My App</IgbNavDrawerHeaderItem>
 
     <IgbNavDrawerItem @ref="HomeItem" @onclick="() => Activate(HomeItem)">
         <IgbIcon slot="icon" IconName="home" Collection="material" />
         <span slot="content">Home</span>
     </IgbNavDrawerItem>
-
     <IgbNavDrawerItem @ref="SearchItem" @onclick="() => Activate(SearchItem)">
         <IgbIcon slot="icon" IconName="search" Collection="material" />
         <span slot="content">Search</span>
     </IgbNavDrawerItem>
-</IgbNavDrawer>
 
-<IgbIconButton IconName="menu" Collection="material" @onclick="() => DrawerRef.Toggle()" />
-
-@code {
-    IgbNavDrawer DrawerRef { get; set; }
-    IgbNavDrawerItem HomeItem { get; set; }
-    IgbNavDrawerItem SearchItem { get; set; }
-
-    List<IgbNavDrawerItem> AllItems => new() { HomeItem, SearchItem };
-
-    void Activate(IgbNavDrawerItem item)
-    {
-        item.Active = true;
-        foreach (var i in AllItems.Where(x => x != item))
-            i.Active = false;
-    }
-}
-```
-
-Navbar integration:
-
-```razor
-<IgbNavbar>
-    <IgbIconButton slot="start" IconName="menu" Collection="material" @onclick="() => DrawerRef.Show()" />
-    <span>Home</span>
-</IgbNavbar>
-
-<IgbNavDrawer @ref="DrawerRef" Open="true" Position="NavDrawerPosition.Start">
-    <IgbNavDrawerHeaderItem>Navigation</IgbNavDrawerHeaderItem>
-
-    <IgbNavDrawerItem @ref="HomeItem" @onclick="() => Activate(HomeItem)">
-        <IgbIcon slot="icon" IconName="home" Collection="material" />
-        <span slot="content">Home</span>
-    </IgbNavDrawerItem>
-
-    <IgbNavDrawerItem @ref="SearchItem" @onclick="() => Activate(SearchItem)">
-        <IgbIcon slot="icon" IconName="search" Collection="material" />
-        <span slot="content">Search</span>
-    </IgbNavDrawerItem>
-</IgbNavDrawer>
-```
-
-Mini variant:
-
-```razor
-<IgbNavDrawer @ref="DrawerRef" Open="true">
-    <IgbNavDrawerHeaderItem>Navigation</IgbNavDrawerHeaderItem>
-
-    <IgbNavDrawerItem>
-        <IgbIcon slot="icon" IconName="home" Collection="material" />
-        <span slot="content">Home</span>
-    </IgbNavDrawerItem>
-
+    @* optional icon-only collapsed state *@
     <div slot="mini">
         <IgbNavDrawerItem>
             <IgbIcon slot="icon" IconName="home" Collection="material" />
         </IgbNavDrawerItem>
     </div>
 </IgbNavDrawer>
+
+@code {
+    IgbNavDrawer DrawerRef { get; set; } = default!;
+    IgbNavDrawerItem HomeItem { get; set; } = default!;
+    IgbNavDrawerItem SearchItem { get; set; } = default!;
+
+    Task ToggleDrawer() => DrawerRef.ToggleAsync();
+
+    void Activate(IgbNavDrawerItem item)
+    {
+        HomeItem.Active = SearchItem.Active = false;
+        item.Active = true;   // no automatic selection tracking
+    }
+}
 ```
 
-> **AGENT INSTRUCTION - IgbNavDrawer shadow DOM mechanics:**
->
-> Regardless of `Open` state or `style` on the host, `::part(base)` is always rendered as `position: fixed; transform: translateX(-Npx)`. When the component considers itself closed it also sets `inert` on `::part(base)`. The host element itself contributes `width: 0` to the layout because the fixed part takes no space.
->
-> This means:
-> - `Open="true"` alone makes the panel visible but it still floats over content as an overlay.
-> - `slot="mini"` content switches the component to a collapsible expand/collapse mode with an icon-only collapsed state.
-> - To make the drawer occupy real space in the layout (pinned sidebar), the shadow DOM parts must be overridden in **global CSS** (not `.razor.css`): give the host an explicit width, override `::part(base)` to `position: relative; transform: none`, hide `::part(overlay)`, and remove the `inert` attribute via JS in `OnAfterRenderAsync`. Do **not** call `DrawerRef.Show()` in `OnAfterRenderAsync` - it throws "component not ready"; CSS handles visibility instead.
+`IgbNavDrawer`: `Open`, `Position`, `KeepOpenOnEscape`, `ShowAsync()` / `HideAsync()` / `ToggleAsync()`, `Closing` / `Closed`. `IgbNavDrawerItem`: `Active`, `Disabled`, `icon` and `content` slots.
 
-> **AGENT INSTRUCTION:** Icons used inside `IgbNavDrawerItem` must be registered via `IgbIcon.RegisterIconFromTextAsync()` or `RegisterIconAsync()` in `OnAfterRenderAsync(bool firstRender)` before they display. Call `await iconRef.EnsureReady()` first.
+**Overlay vs pinned sidebar.** `Position` is `Start | End | Top | Bottom | Relative`. With the first four the drawer is `position: fixed` and floats over the page with a dimming overlay. **`NavDrawerPosition.Relative` makes it a pinned, in-flow sidebar**: the panel becomes `position: relative`, the overlay is hidden, and closing it slides the panel out by a negative margin instead of leaving a gap. Use that instead of overriding `::part(base)` by hand.
 
----
+```razor
+<div class="app-shell">
+    <IgbNavDrawer Open="true" Position="NavDrawerPosition.Relative">...</IgbNavDrawer>
+    <main>@Body</main>
+</div>
+```
+
+```css
+/* global CSS or .razor.css — plain custom properties, no ::part needed */
+igc-nav-drawer { --menu-full-width: 260px; --menu-mini-width: 60px; }
+.app-shell { display: flex; height: 100vh; }
+```
+
+Width comes from the `--menu-full-width` custom property (default `15rem`); the collapsed icon rail uses `--menu-mini-width`. Content in `slot="mini"` renders whenever the drawer is closed, giving an expand/collapse rail. Do not call `ShowAsync()` from `OnAfterRenderAsync` — the component is not ready yet; drive visibility with `Open`.
 
 ## Tree
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule), typeof(IgbTreeItemModule));
-```
-
 ```razor
-<IgbTree Selection="TreeSelection.Multiple">
+<IgbTree Selection="TreeSelection.Multiple" SingleBranchExpand="true"
+         SelectionChanged="OnSelectionChanged">
     <IgbTreeItem Expanded="true" Label="Documents">
         <IgbTreeItem Label="Report.docx" />
         <IgbTreeItem Label="Notes.txt" />
@@ -253,57 +162,33 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbTreeModule), typeof(IgbTreeItemModu
         <IgbTreeItem Label="archive.zip" />
     </IgbTreeItem>
 </IgbTree>
-```
-
----
-
-## Splitter
-
-Resizable split-pane layout dividing the view into *start* and *end* panels separated by a draggable bar.
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbSplitterModule));
-```
-
-```razor
-<IgbSplitter Orientation="SplitterOrientation.Horizontal"
-             StartSize="30%"
-             StartMinSize="100px"
-             StartCollapsed="StartCollapsed"
-             LayoutChanged="OnLayoutChanged"
-             style="height: 400px;">
-    <div slot="start">Start panel</div>
-    <div slot="end">End panel</div>
-</IgbSplitter>
 
 @code {
-    bool StartCollapsed { get; set; }
-
-    void OnLayoutChanged(IgbSplitterLayoutChangedEventArgs e)
-    {
-        // e.Detail: StartSize, EndSize, StartCollapsed, EndCollapsed
-        StartCollapsed = e.Detail.StartCollapsed;
-    }
+    void OnSelectionChanged(IgbTreeSelectionEventArgs e) { }
 }
 ```
 
-- `StartCollapsed` / `EndCollapsed` read and set the collapsed state of each pane; `ToggleAsync(PanePosition.Start)` toggles programmatically.
-- `LayoutChanged` fires after a user-driven resize or expansion change with a full layout snapshot; `ResizeStart`/`Resizing`/`ResizeEnd` report pixel sizes during a drag.
-- Pane sizes (`StartSize`, `EndSize`, min/max constraints) accept CSS lengths (`200px`, `30%`).
+`IgbTree`: `Selection` (`None | Multiple | Cascade`), `SingleBranchExpand`, `ToggleNodeOnClick`, `SelectionChanged`, `ItemExpanding` / `ItemExpanded` / `ItemCollapsing` / `ItemCollapsed`.
+`IgbTreeItem`: `Label`, `Value`, `Expanded`, `Selected`, `Active`, `Disabled`, `Loading`, `Level`, `Parent`, `ExpandAsync()` / `CollapseAsync()` / `ToggleAsync()`.
 
----
+## Splitter & Divider
+
+```razor
+<IgbSplitter Orientation="SplitterOrientation.Horizontal" StartSize="280px" StartMinSize="180px">
+    <div slot="start">Sidebar</div>
+    <div slot="end">Content</div>
+</IgbSplitter>
+
+<IgbDivider LineType="DividerType.Solid" Middle="true" />
+```
+
+`IgbSplitter`: `Orientation`, `StartSize` / `EndSize`, `StartMinSize` / `StartMaxSize` / `EndMinSize` / `EndMaxSize` (all CSS lengths — `280px`, `30%`), `StartCollapsed` / `EndCollapsed`, `DisableResize`, `DisableCollapse`, `HideDragHandle`, `HideCollapseButtons`, `ToggleAsync(PanePosition)`. `LayoutChanged` fires after a user resize or collapse with a full snapshot (`StartSize`, `EndSize`, `StartCollapsed`, `EndCollapsed`); `ResizeStart` / `Resizing` / `ResizeEnd` report pixel sizes during a drag.
+`IgbDivider`: `Vertical`, `Middle`, `LineType`.
 
 ## Virtual Scroll
 
-Renders large or unbounded lists efficiently - only the items in the viewport plus a configurable `OverScan` are rendered.
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbVirtualScrollModule));
-```
-
 ```razor
-<IgbVirtualScroll Data="Items"
-                  EstimatedItemSize="40"
+<IgbVirtualScroll Data="Items" EstimatedItemSize="40"
                   ItemTemplateScript="MyItemTemplate"
                   DataRequest="OnDataRequest"
                   style="height: 400px;" />
@@ -313,14 +198,14 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbVirtualScrollModule));
 
     void OnDataRequest(IgbVirtualScrollDataRequestEventArgs e)
     {
-        // Infinite scroll: append at least e.Detail.Count items starting
-        // at e.Detail.StartIndex, assigning a NEW collection reference.
+        // Infinite scroll: append at least e.Detail.Count items from e.Detail.StartIndex,
+        // assigning a NEW collection reference.
         Items = [.. Items, .. LoadMore((int)e.Detail.StartIndex, (int)e.Detail.Count)];
     }
 }
 ```
 
-The item template is a client-side function registered before the component renders (e.g. from a JS module loaded in `OnAfterRenderAsync`); it receives the item context (`value`, `index`, `count`) and returns a template built with `window.igTemplating.html`:
+Renders only the items in the viewport plus `OverScan`, so an unbounded list stays cheap. The item template is a **client-side** function registered before the component renders — typically from a JS module loaded in `OnAfterRenderAsync` — which receives the item context (`value`, `index`, `count`) and returns a template built with `window.igTemplating.html`:
 
 ```js
 window.igRegisterScript('MyItemTemplate', (ctx) => {
@@ -329,15 +214,4 @@ window.igRegisterScript('MyItemTemplate', (ctx) => {
 }, false);
 ```
 
-- `Data` is compared by reference - assign a new collection instead of mutating in place.
-- `ScrollToIndexAsync(index)` scrolls to an item (optionally with `IgbScrollIntoViewOptions` for alignment/behavior); `StateChange` reports the rendered window (`StartIndex`, `EndIndex`, `ViewportSize`, `TotalSize`).
-- Supports `Orientation` (`Vertical`/`Horizontal`) and RTL layouts; item sizes are measured automatically after first render.
-
----
-
-## Key Rules
-
-1. **Stepper with `Linear="true"` prevents users from skipping steps.** Do not set `Linear` if free navigation is intended.
-2. **Activate/deactivate `IgbNavDrawerItem` programmatically** by setting `item.Active` - there is no automatic selection tracking.
-3. **Register icons via `RegisterIconFromTextAsync` in `OnAfterRenderAsync(bool firstRender)`**, and always call `await component.EnsureReady()` first.
-4. **`IgbAccordion` with `SingleExpand="true"` closes other panels when one is opened.** This is the most common use case for accordions.
+`Data` is compared by reference — assign a new collection instead of mutating in place, or the rendered window will not update. `ScrollToIndexAsync(index)` scrolls to an item, optionally with `IgbScrollIntoViewOptions` for alignment and behavior. `StateChange` reports the rendered window (`StartIndex`, `EndIndex`, `ViewportSize`, `TotalSize`) and `DataRequest` asks for items not yet loaded. `Orientation` is `ContentOrientation.Vertical | Horizontal`, RTL is supported, and item sizes are measured after first render — `EstimatedItemSize` only seeds the initial scrollbar.

@@ -1,294 +1,103 @@
-# Ignite UI Blazor Component Mapping Reference
+# Visual Pattern → Ignite UI Blazor Component
 
-## Table of Contents
-- [Dashboard & Layout Components](#dashboard--layout-components)
-- [Chart Components](#chart-components)
-- [Data Display Components](#data-display-components)
-- [Form & Input Components](#form--input-components)
-- [Calendar & Scheduling Components](#calendar--scheduling-components)
-- [Feedback & Overlay Components](#feedback--overlay-components)
-- [Map Components](#map-components)
-- [Gauge Components](#gauge-components)
-- [Package Requirements](#package-requirements)
-- [Import & Registration Patterns](#import--registration-patterns)
+A selection reference, not an API reference. Confirm exact parameters with `get_doc` or the [`igniteui-blazor-components`](../../igniteui-blazor-components/SKILL.md) reference files before writing markup.
 
----
+## Structure & navigation
 
-## Dashboard & Layout Components
-
-| UI Pattern | Ignite UI Blazor Component | Key Properties |
+| What the image shows | Component | Notes |
 |---|---|---|
-| Top navigation bar | `IgbNavbar` | `slot="start"` for leading actions, default content for title/brand text, `slot="end"` for trailing actions |
-| Side navigation | `IgbNavDrawer` | `Open`, `Position`, `IgbNavDrawerItem`, `IgbNavDrawerHeaderItem`, `mini` slot for icon-only collapsed content |
-| Content cards/panels | `IgbCard` | `IgbCardHeader`, `IgbCardContent`, `IgbCardMedia`, `IgbCardActions` |
-| Tabbed content | `IgbTabs` | `IgbTab`, `IgbTabPanel`, `Panel` on tab matching panel `Id`; use `Change`/`Select` for controlled selection |
-| Accordion sections | `IgbAccordion` | `IgbExpansionPanel` children |
-| Tile dashboard | `IgbTileManager` | `ColumnCount`, `Gap`, `MinColumnWidth`, `MinRowHeight`, `DragMode`, `ResizeMode` |
-| IDE-like dockable pane layout | `IgbDockManager` | `IgbDockManagerLayout`, pane types: `IgbSplitPane`, `IgbTabGroupPane`, `IgbContentPane`; supports floating, pinning, serialization |
-| Repeated rows with icon/text/action | `IgbList` + `IgbListItem` | `slot="start"`, `slot="title"`, `slot="subtitle"`, `slot="end"` |
-| Spreadsheet-like editable or sortable table | `IgbGrid` | Full-featured data grid |
-| Hierarchical or tree-structured table | `IgbTreeGrid` | `PrimaryKey`, `ForeignKey`, `ChildDataKey` |
-| Content blocks / summary cards | `IgbCard` | Use `IgbCardHeader`, `IgbCardContent`, `IgbCardActions` slots with custom projected content. Use plain `<div>` containers for flat or highly custom tiles |
-| Any text input field | `IgbInput` | Use when the input anatomy matches the screenshot, including search fields and inline editors |
-| Dropdown or select | `IgbSelect` | Use when the screenshot clearly shows select/dropdown behavior |
-| Form fields with labels and inputs | `IgbInput`, `IgbSelect`, `IgbCombo` | Text, select, combo, and date inputs |
-| Multi-step form / wizard | `IgbStepper` | Use when a sequence of steps is visually present |
-| Filter chips / tag inputs | `IgbChip` | Use when chip anatomy matches status badges, filter tags, or removable labels |
-| Calendar or date picker as a primary view element | `IgbCalendar`, `IgbDatePicker` | Use when scheduling or date selection is the core UI |
-| Top icon/action bar | `IgbNavbar` with projected icon buttons | Use when a navbar structure matches the screenshot; use plain icon buttons or custom containers when that is a closer fit |
+| Top horizontal bar with brand, actions | `IgbNavbar` | slots `start` / default / `end`; use a plain `<header>` if the slot structure fights the design |
+| Sidebar / side navigation | `IgbNavDrawer` + `IgbNavDrawerItem` | **`Position="NavDrawerPosition.Relative"` for a pinned in-flow sidebar**; `slot="mini"` for an icon-only collapsed rail; plain `<aside>` for a fully static custom sidebar |
+| Tab strip switching content | `IgbTabs` + `IgbTab` | header via `Label` or the `label` slot; there is no `IgbTabPanel` |
+| Collapsible sections | `IgbExpansionPanel`, or `IgbAccordion` when only one opens at a time | |
+| Step-by-step wizard | `IgbStepper` + `IgbStep` | `Orientation`, `Linear` |
+| Resizable two-pane split | `IgbSplitter` | `slot="start"` / `slot="end"`, `StartSize`, min/max sizes |
+| Section separator line | `IgbDivider` | `Vertical`, `Middle`, `LineType` |
+| Very long / endless scrolling list of uniform rows | `IgbVirtualScroll` | `Data`, `EstimatedItemSize`, `ItemTemplateScript` (client-side template), `DataRequest` for infinite scroll |
+| Draggable/resizable widget dashboard | `IgbTileManager` + `IgbTile` | `ColumnCount`, `Gap`, `ColSpan`/`RowSpan`, `DragMode`, `ResizeMode` |
+| Static card grid | `IgbCard` inside CSS Grid | use `IgbTileManager` only when tiles actually drag or resize |
+| IDE-style dockable/floating panes | `IgbDockManager` | licensed package only; needs an explicit height |
 
-Decision rules:
+## Content & data display
 
-- Use `IgbNavbar` for a top horizontal bar when its slot structure and behavior match the screenshot. Use custom projected content and CSS flex overrides to achieve multi-zone layouts inside it. Use a plain `<header>` element when that is a closer structural fit.
-- Use `IgbNavDrawer` for a sidebar or side-navigation panel when drawer structure and behavior match the screenshot. Configure `Open`, `Position`, and the `mini` slot according to whether the design shows expanded, temporary, or icon-only navigation. Use a plain `<aside>` when a static custom sidebar matches the screenshot better.
-- Use `IgbTabs` for a horizontal tab strip when the screenshot clearly shows tabbed state switching.
-
-Component decision matrix (by visual pattern, domain-neutral):
-
-| Visual Pattern | Recommended Component | Notes |
+| What the image shows | Component | Notes |
 |---|---|---|
-| Sidebar with icon rows | `IgbNavDrawer` | `IgbNavDrawerItem` children; use `mini` slot for collapsed icon-only rows |
-| Top bar with brand/search/actions | `IgbNavbar` | Project icon buttons into action slots |
-| Card grid / tile layout | `IgbTileManager` or `IgbCard` in CSS Grid | `IgbTileManager` for drag/resize; plain CSS Grid + `IgbCard` for static layouts |
-| KPI summary row | Plain HTML in CSS Grid | Bind Ignite UI primitives (icons, badges, progress) inside semantic containers |
-| Collapsible section | `IgbExpansionPanel` or `IgbAccordion` | `IgbAccordion` when design shows only-one-open behavior |
-| Tab strip | `IgbTabs` | Use `IgbTab` + `IgbTabPanel` pairs |
-| Step-by-step wizard | `IgbStepper` | Horizontal or vertical orientation based on layout |
-| Data table | `IgbGrid` / `IgbTreeGrid` | Use only when content is truly tabular |
-| IDE pane layout | `IgbDockManager` | Use when the design shows multi-pane, draggable/floating dock areas |
+| Repeated rows: icon/avatar + text + trailing action | `IgbList` + `IgbListItem` | slots `start`, `title`, `subtitle`, `end` |
+| Content / summary card | `IgbCard` | `IgbCardMedia`, `IgbCardHeader`, `IgbCardContent`, `IgbCardActions`; no default width |
+| KPI / stat tile row | plain HTML in CSS Grid | compose Ignite UI primitives (icon, badge, progress) inside your own containers |
+| Avatar | `IgbAvatar` | `Shape` (`Circle`/`Rounded`/`Square`), `Initials`, `Src` |
+| Status badge / count | `IgbBadge` | `Variant` (`StyleVariant`), `Shape`, `Dot`, `Outlined` |
+| Filter tag, removable pill | `IgbChip` | `Removable`, `Selectable`, `Variant` |
+| Icon | `IgbIcon` | `IconName` + `Collection`; register before first render |
+| Progress bar / ring | `IgbLinearProgress` / `IgbCircularProgress` | `Value`, `Max`, `Indeterminate` — not for data viz |
+| Tree view | `IgbTree` + `IgbTreeItem` | `Label`, `Expanded`, `Selection` |
+| Carousel / slideshow | `IgbCarousel` + `IgbCarouselSlide` | `Interval`, `AnimationType` |
+| Highlighted search matches in text | `IgbHighlight` | `SearchText`, `CaseSensitive` |
+| Chat / conversation surface | `IgbChat` | configured through `IgbChatOptions` |
+| QR code | `IgbQrCode` | `Value` (encoded payload), `Size`, `ErrorLevel`, `DotStyle`, `LogoSrc` |
 
----
+Use `IgbList` when its row anatomy and keyboard behavior fit; native `<ul>/<li>` when they do not.
 
-## Chart Components
+## Tables
 
-| UI Pattern | Ignite UI Blazor Component | Key Properties |
-|---|---|---|
-| Area chart | `IgbCategoryChart` | `ChartType="CategoryChartType.Area"`, `MarkerTypes`, `DataSource` |
-| Line chart | `IgbCategoryChart` | `ChartType="CategoryChartType.Line"`, `MarkerTypes`, `DataSource` |
-| Column chart | `IgbCategoryChart` | `ChartType="CategoryChartType.Column"`, `DataSource` |
-| Sparkline (mini chart) | `IgbSparkline` | `DisplayType`, `ValueMemberPath`, `DataSource` |
-| Pie chart | `IgbPieChart` | `ValueMemberPath`, `LabelMemberPath`, `DataSource` |
-| Donut chart | `IgbDoughnutChart` + `IgbRingSeries` | `ValueMemberPath`, `LabelMemberPath`, `DataSource` |
-| Financial chart | `IgbFinancialChart` | `ChartType`, OHLC member paths, `DataSource` |
-| Complex multi-series | `IgbDataChart` | Multiple `IgbSeries` + `IgbAxis` children |
-| Hierarchical part-to-whole (weighted tree) | `IgbTreemap` | `DataSource`, `LabelMemberPath`, `ValueMemberPath` |
-| Auto-generated dashboard widget from data | `IgbDashboardTile` | Verify supported chart modes and binding shape with `get_doc` before use |
-
-Decision rules:
-
-- Financial or OHLC screenshot: prefer `IgbFinancialChart`
-- Simple or moderate trend panel: prefer `IgbCategoryChart`; move to `IgbDataChart` when you need lower-level per-series control
-- Highly custom sparkline or microchart: use `IgbSparkline` or a custom fallback if the built-in anatomy is not a close visual match
-- Part-to-whole: prefer `IgbPieChart` for a solid pie chart or `IgbDoughnutChart` with `IgbRingSeries` for a donut chart
-
----
-
-## Data Display Components
-
-| UI Pattern | Ignite UI Blazor Component | Key Properties |
-|---|---|---|
-| Item list | `IgbList` + `IgbListItem` | `slot="start"` (avatar/icon), `slot="title"`, `slot="subtitle"`, `slot="end"` |
-| User avatar | `IgbAvatar` | `Shape` (`AvatarShape.Circle`, `AvatarShape.Rounded`, `AvatarShape.Square`), `Initials`, `Src`, `Alt` |
-| Status badge | `IgbBadge` | Content for visible text/count, `Variant`, `Shape`, `Dot`, `Outlined` |
-| Icons | `IgbIcon` | `Collection`, `IconName`; register custom icons before use |
-| Progress bar | `IgbLinearProgress` | `Value`, `Max` |
-| Circular progress | `IgbCircularProgress` | `Value`, `Max` |
-| Flat data grid | `IgbGrid` | Full-featured data grid with sorting, filtering, editing |
-| Hierarchical/tree data grid | `IgbTreeGrid` | `PrimaryKey`, `ForeignKey`, `ChildDataKey` |
-| Filter/tag chips | `IgbChip` | `Removable`, `Selectable` |
-| Tree view | `IgbTree` + `IgbTreeItem` | `Label`, `Expanded`, `Selection` mode |
-| Content card | `IgbCard` | `IgbCardHeader`, `IgbCardMedia`, `IgbCardContent`, `IgbCardActions` |
-| Carousel | `IgbCarousel` | Slide-based navigation |
-| Action button | `IgbButton` | `Variant` (`ButtonVariant.Contained` / `Outlined` / `Flat` / `Fab`), `Disabled`, `DisplayType`, `Href` |
-| Toggle button group | `IgbButtonGroup` + `IgbToggleButton` | `Selection` (`ButtonGroupSelection.Single` / `Multiple`), `Alignment` |
-| Icon-only button | `IgbIconButton` | `IconName`, `Collection`, `Variant` (`IconButtonVariant.Flat` / `Outlined` / `Contained`) |
-| Contextual dropdown / action menu | `IgbDropdown` | `IgbDropdownItem`, `IgbDropdownHeader`, `Placement`, `Change` event; trigger via `slot="target"` or `@ref` |
-| Informational tooltip on hover | `IgbTooltip` | `Anchor` (target element ID), `Placement`, `ShowDelay`, `HideDelay` |
-| QR code | `IgbQrCode` | `Value` (encoded string), `Size`, `ErrorLevel`, `DotStyle`, `LogoSrc` |
-| Long scrolling list of uniform rows | `IgbVirtualScroll` | `Data`, `ItemTemplateScript` (client-side template), `EstimatedItemSize`, `DataRequest` for infinite scroll |
-| Click / touch ripple effect | `IgbRipple` | Nested inside any container; customize color via `--color` CSS property |
-| Master-detail grid with nested child grids | `IgbHierarchicalGrid` | `IgbRowIsland` children; each row can expand to a full child grid |
-| Read-only simple list grid | `IgbGridLite` | OSS (`IgniteUI.Blazor.GridLite` package); no editing, no complex features |
-
-Decision rules:
-
-- Use `IgbList` for repeated-row content lists when its row structure and interaction model match the screenshot. The component adds accessible keyboard navigation, item structure, and theming when those benefits fit the design. Use native `<ul>/<li>` or custom containers when they are a closer visual fit.
-- Choose `IgbGrid` only when the image is truly tabular (flat rows and columns, spreadsheet-style).
-- Choose `IgbTreeGrid` when rows have parent-child or hierarchical structure within a single grid surface.
-- Choose `IgbHierarchicalGrid` when rows expand to reveal a complete nested child grid (master-detail).
-- Choose `IgbGridLite` for read-only display-only grids where editing and advanced features are not needed.
-- Use `IgbChip` when chip anatomy matches the screenshot's status badges, tags, or label pills. Use custom badge or pill markup when a simpler or more exact visual match is needed.
-- Use `IgbButton` / `IgbButtonGroup` for primary call-to-action areas. Use `IgbIconButton` when only an icon is shown with no text label.
-- Use `IgbDropdown` for contextual action menus that open on a trigger. Prefer `IgbSelect` when the dropdown is a form field for selecting a value.
-- Use `IgbTooltip` for brief informational text that appears on hover. Use `IgbSnackbar` or `IgbBanner` (see Feedback section) for persistent or actionable notifications.
-
----
-
-## Form & Input Components
-
-| UI Pattern | Ignite UI Blazor Component | Key Properties |
-|---|---|---|
-| Text input / search field | `IgbInput` | `Type`, `Label`, `Placeholder`, `@bind-Value` |
-| Select / dropdown | `IgbSelect` | `IgbSelectItem` children, `@bind-Value` |
-| Multi-select combo | `IgbCombo` | `Data`, `DisplayKey`, `ValueKey`, `T`, `@bind-Value` |
-| Date picker | `IgbDatePicker` | `@bind-Value`, `DisplayFormat` |
-| Calendar | `IgbCalendar` | `Selection`, `@bind-Value` |
-| Checkbox | `IgbCheckbox` | `@bind-Checked` |
-| Radio button | `IgbRadio` / `IgbRadioGroup` | `@bind-Value` on group |
-| Switch / toggle | `IgbSwitch` | `@bind-Checked` |
-| Slider | `IgbSlider` / `IgbRangeSlider` | `@bind-Value`, `Min`, `Max`, `Step` |
-| Rating | `IgbRating` | `@bind-Value`, `Max` |
-| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string), `Mode` (`Default` trigger button / `Input` text field), `Format`, `ShowAlpha`, `Swatches` |
-| Stepper / wizard | `IgbStepper` | `IgbStep` children, `Orientation` |
-| Date / time inline input | `IgbDateTimeInput` | `@bind-Value`, `InputFormat`, `DisplayFormat`, `SpinLoop`, `Min`, `Max` |
-| Masked text input (phone, postal, etc.) | `IgbMaskInput` | `Mask` pattern (`0`=digit, `L`=letter, `A`=alphanumeric), `Prompt`, `ValueMode` |
-
----
-
-## Calendar & Scheduling Components
-
-| UI Pattern | Ignite UI Blazor Component | Key Properties |
-|---|---|---|
-| Calendar view | `IgbCalendar` | `Selection`, `@bind-Value` |
-| Date picker in form | `IgbDatePicker` | `@bind-Value`, `DisplayFormat` |
-| Date range selection | `IgbDateRangePicker` | `@bind-Value` |
-
----
-
-## Feedback & Overlay Components
-
-| UI Pattern | Ignite UI Blazor Component | Key Properties |
-|---|---|---|
-| Modal confirmation / form dialog | `IgbDialog` | `Title`, `Open`, `KeepOpenOnEscape`, `CloseOnOutsideClick`, `slot="footer"` for action buttons; `ShowAsync()`, `HideAsync()` |
-| Brief notification with optional action | `IgbSnackbar` | `DisplayTime` (ms; 0 = keep open), `KeepOpen`, `ActionText`, `ShowAsync()`, `HideAsync()` |
-| Auto-dismissing status notification | `IgbToast` | `DisplayTime` (ms), `KeepOpen`, `ShowAsync()`, `HideAsync()` |
-| Persistent inline alert / status message | `IgbBanner` | `slot="illustration"` (icon/image), `slot="actions"` (buttons); inline, non-modal; `ShowAsync()`, `HideAsync()`, `ToggleAsync()` |
-
-Decision rules:
-
-- Use `IgbDialog` for blocking, confirmable actions (e.g., delete confirmation, form in overlay). It is a modal overlay that pauses interaction with the rest of the page.
-- Use `IgbSnackbar` when a brief message with an optional action button is needed (e.g., "Undo"). It auto-dismisses after `DisplayTime`.
-- Use `IgbToast` for simple auto-dismissing status messages with no action button. Prefer `IgbSnackbar` when an action is required.
-- Use `IgbBanner` for persistent, low-urgency messages that push page content down (e.g., offline indicator, cookie consent). Unlike `IgbDialog`, it is inline and non-modal.
-
----
-
-## Map Components
-
-| UI Pattern | Ignite UI Blazor Component | Key Properties |
-|---|---|---|
-| World / region map | `IgbGeographicMap` | `Zoomable`, `BackgroundContent` |
-| Map markers (points) | `IgbGeographicSymbolSeries` | `LatitudeMemberPath`, `LongitudeMemberPath`, `MarkerType`, `MarkerBrush` |
-| Bubble overlay | `IgbGeographicProportionalSymbolSeries` | Sized markers based on data value |
-| Shape regions (polygons) | `IgbGeographicShapeSeries` | Polygon rendering |
-| Polyline paths | `IgbGeographicPolylineSeries` | Route/path rendering |
-
----
-
-## Gauge Components
-
-| UI Pattern | Ignite UI Blazor Component | Key Properties |
-|---|---|---|
-| Linear gauge | `IgbLinearGauge` | `Value`, `MinimumValue`, `MaximumValue`, `NeedleBrush` |
-| Radial gauge | `IgbRadialGauge` | `Value`, `MinimumValue`, `MaximumValue` |
-| Bullet graph | `IgbBulletGraph` | `Value`, `TargetValue`, `MinimumValue`, `MaximumValue` |
-
----
-
-## Package Requirements
-
-Ignite UI Blazor package selection depends on the component family. Use `IgniteUI.Blazor.Lite` for general purpose components and `IgniteUI.Blazor.GridLite` the light-weight grid, and `IgniteUI.Blazor` (trial version available publicly as `IgniteUI.Blazor.Trial`) for specialized feature-rich grids and charts.
-
-| NuGet Package | Description |
+| What the image shows | Component |
 |---|---|
-| `IgniteUI.Blazor.Lite` | Open-source / MIT core UI components such as layout, navigation, forms, lists, cards, feedback, and common inputs |
-| `IgniteUI.Blazor.GridLite` | Open-source / MIT `IgbGridLite` package for lightweight data grid scenarios |
-| `IgniteUI.Blazor.Trial` | Full component suite with trial watermark - same capabilities as `IgniteUI.Blazor`, publicly available on NuGet.org for evaluation |
-| `IgniteUI.Blazor` | Licensed full component suite including premium grids, charts, maps, gauges, Dock Manager, and core UI components |
+| Flat spreadsheet-style rows and columns | `IgbGrid` |
+| Read-only table, no editing or selection | `IgbGridLite` (OSS, own package) |
+| Rows expanding to child rows in the same schema | `IgbTreeGrid` |
+| Rows expanding to a complete nested child grid | `IgbHierarchicalGrid` + `IgbRowIsland` |
+| Pivot table with draggable dimensions | `IgbPivotGrid` |
 
-| Capability | Package Required |
+Only pick a grid when the content is genuinely tabular. A list of records with rich per-row layout is a list, not a grid.
+
+## Forms & input
+
+| What the image shows | Component | Notes |
+|---|---|---|
+| Text field, search box, inline editor | `IgbInput` | `Label`, `Placeholder`, `Outlined`, `@bind-Value` |
+| Multi-line text | `IgbTextarea` | `Rows`, `Resize` |
+| Dropdown selecting a value | `IgbSelect` + `IgbSelectItem` | |
+| Searchable / multi-select picker | `IgbCombo` | generic parameter is `T`; `Data`, `DisplayKey`, `ValueKey` |
+| Contextual action menu | `IgbDropdown` | trigger in `slot="target"` — not for form values |
+| Date picker | `IgbDatePicker` (`DateTime?`) | |
+| Date range | `IgbDateRangePicker` | |
+| Always-visible calendar | `IgbCalendar` (`DateTime`, non-nullable) | `Selection`, `VisibleMonths` |
+| Masked entry (phone, postal) | `IgbMaskInput` | `Mask`: `0` digit, `L` letter, `A` alphanumeric |
+| Checkbox / switch | `IgbCheckbox` / `IgbSwitch` | `@bind-Checked` |
+| Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group |
+| Slider / range slider | `IgbSlider` / `IgbRangeSlider` | range uses `Lower` / `Upper` |
+| Star rating | `IgbRating` | |
+| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |
+| Primary action button | `IgbButton` | `Variant`: `Contained`/`Outlined`/`Flat`/`Fab` |
+| Segmented / toggle control | `IgbButtonGroup` + `IgbToggleButton` | |
+| Icon-only button | `IgbIconButton` | |
+| Hover hint | `IgbTooltip` | `Anchor` is the target element's **id string** |
+
+## Charts, maps, gauges
+
+Licensed or trial package only.
+
+| What the image shows | Component | Key parameters |
+|---|---|---|
+| Line / area / column trend | `IgbCategoryChart` | `ChartType`, `DataSource`, `Brushes`; match `Spline`/`SplineArea` to smooth curves |
+| Multiple series types, custom axes, horizontal bars | `IgbDataChart` | series + axis children matched by `Name` |
+| Candlestick / OHLC | `IgbFinancialChart` | needs Open/High/Low/Close fields |
+| Pie | `IgbPieChart` | `ValueMemberPath`, `LabelMemberPath` |
+| Donut, or a colored ring with a centered value | `IgbDoughnutChart` + `IgbRingSeries` | `InnerExtent` on the **chart** |
+| Inline micro-chart | `IgbSparkline` | `DisplayType`; no smooth curves — use a small `IgbCategoryChart` for those |
+| Weighted hierarchy blocks | `IgbTreemap` | |
+| Map with markers / regions / routes | `IgbGeographicMap` + a geographic series | series are child components |
+| Needle on a scale | `IgbRadialGauge` / `IgbLinearGauge` | |
+| Value vs target bar | `IgbBulletGraph` | |
+| Auto-generated dashboard visual | `IgbDashboardTile` | verify binding shape first |
+
+Read [`gotchas.md`](./gotchas.md) before writing any chart markup — the chart section there covers the mistakes that produce a compiling but visibly wrong result.
+
+## Overlays & feedback
+
+| What the image shows | Component |
 |---|---|
-| Core UI components (list, avatar, navbar, drawer, card, badge, progress, icon, etc.) | `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` |
-| Charts / sparklines | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
-| Maps | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
-| Gauges / bullet graphs | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
-| Full data grids (`IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`) | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
-| Grid Lite (`IgbGridLite`) | `IgniteUI.Blazor.GridLite` or `IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` |
-| Tile Manager | `IgniteUI.Blazor.Lite` or `IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` |
-| Dock Manager | `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` only |
-
----
-
-## Import & Registration Patterns
-
-### 1. NuGet package reference (`.csproj`)
-
-```xml
-<!-- Licensed full suite -->
-<PackageReference Include="IgniteUI.Blazor" Version="<resolved-version>" />
-
-<!-- Trial full suite (watermarked, public NuGet.org) -->
-<PackageReference Include="IgniteUI.Blazor.Trial" Version="<resolved-version>" />
-
-<!-- OSS core UI components -->
-<PackageReference Include="IgniteUI.Blazor.Lite" Version="<resolved-version>" />
-
-<!-- OSS Grid Lite -->
-<PackageReference Include="IgniteUI.Blazor.GridLite" Version="<resolved-version>" />
-```
-
-Choose the package that matches the component requirements above. Do not add all three by default.
-
-### 2. Service registration (`Program.cs`)
-
-Every `Igb*` component requires its corresponding `IgbXxxModule` to be registered:
-
-```csharp
-using IgniteUI.Blazor.Controls;
-
-builder.Services.AddIgniteUIBlazor(
-    typeof(IgbNavbarModule),
-    typeof(IgbNavDrawerModule),
-    typeof(IgbListModule),
-    typeof(IgbCardModule),
-    typeof(IgbAvatarModule),
-    typeof(IgbBadgeModule),
-    typeof(IgbCategoryChartModule),
-    typeof(IgbGridModule)
-    // ... add every IgbXxxModule your page uses
-);
-```
-
-> **If you forget to register a module, the component will silently fail to render.** Always double-check that every `Igb*` component used in Razor has its module registered in `Program.cs`.
-
-### 3. Using directive (`_Imports.razor`)
-
-```razor
-@using IgniteUI.Blazor.Controls
-```
-
-### 4. CSS theme (`wwwroot/index.html` or `App.razor`)
-
-```html
-<link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
-```
-
-> **If the generated view includes any full-featured grid** (`IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`), also add the grid-specific stylesheet immediately after:
-> ```html
-> <link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />
-> ```
->
-> **If the generated view includes `IgbGridLite`**, replace both links above with the single Grid Lite stylesheet (from the `IgniteUI.Blazor.GridLite` package):
-> ```html
-> <link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
-> ```
-
-### 5. JS interop script (`wwwroot/index.html` or `App.razor`)
-
-```html
-<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
-```
-
----
-
-Treat this file as a component selection reference, not as authoritative API guidance for a specific version. Confirm exact parameters and behavior from `get_doc` results and the current workspace's reference files (`igniteui-blazor-components` skill).
+| Modal confirmation or form overlay | `IgbDialog` — buttons in `slot="footer"` |
+| Brief floating message with an action | `IgbSnackbar` — `ActionText` + `Action` |
+| Brief floating message, no action | `IgbToast` |
+| Persistent inline notice that pushes content down | `IgbBanner` — `slot="actions"` |

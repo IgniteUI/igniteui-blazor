@@ -1,137 +1,66 @@
-# Data Display Components
+# Data Display & Action Components
 
-> **Part of the [`igniteui-blazor-components`](../SKILL.md) skill hub.**
-> For project setup and module registration - see [`setup.md`](./setup.md).
-
-## Contents
-
-- [Button & Button Group](#button--button-group)
-- [Icon & Icon Button](#icon--icon-button)
-- [Card](#card)
-- [Carousel](#carousel)
-- [List](#list)
-- [Avatar](#avatar)
-- [Badge](#badge)
-- [Chip](#chip)
-- [Circular Progress](#circular-progress)
-- [Linear Progress](#linear-progress)
-- [Dropdown](#dropdown)
-- [Tooltip](#tooltip)
-- [QR Code](#qr-code)
-- [Ripple](#ripple)
-- [Key Rules](#key-rules)
-
----
-
-## Overview
-This reference gives high-level guidance on data display and action components, their key features, and common API members. For detailed documentation, call `get_doc` from `igniteui-cli`; use `search_api` and `get_api_reference` for Blazor API details.
+Module for every component below is `Igb<Name>Module`. `IgbButton` and `IgbIconButton` are separate modules; `IgbList`, `IgbListItem` and `IgbListHeader` each have their own; card sub-parts each have their own.
 
 ## Button & Button Group
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbButtonModule), typeof(IgbButtonGroupModule));
-```
-
 ```razor
-<!-- Button variants -->
-<IgbButton Variant="@ButtonVariant.Contained" @onclick="Save">Save</IgbButton>
-<IgbButton Variant="@ButtonVariant.Outlined" @onclick="Cancel">Cancel</IgbButton>
-<IgbButton Variant="@ButtonVariant.Flat">Flat</IgbButton>
+<IgbButton Variant="ButtonVariant.Contained" @onclick="Save">Save</IgbButton>
+<IgbButton Variant="ButtonVariant.Outlined" Disabled="true">Cancel</IgbButton>
+<IgbButton Variant="ButtonVariant.Flat" Href="/docs" Target="ButtonBaseTarget.Blank">Docs</IgbButton>
 
-<!-- Button Group (toggle buttons) -->
-<IgbButtonGroup Selection="@ButtonGroupSelection.Single">
+<IgbButtonGroup Selection="ButtonGroupSelection.Single" Alignment="ContentOrientation.Horizontal">
     <IgbToggleButton Value="left">Left</IgbToggleButton>
     <IgbToggleButton Value="center" Selected="true">Center</IgbToggleButton>
     <IgbToggleButton Value="right">Right</IgbToggleButton>
 </IgbButtonGroup>
 ```
 
----
+`ButtonVariant`: `Contained | Outlined | Flat | Fab`. Setting `Href` renders an anchor and enables `Target`, `Rel`, `Download`. Click handling uses Blazor's `@onclick`. `IgbButtonGroup` raises `Select` / `Deselect` (`IgbComponentValueChangedEventArgs`).
 
 ## Icon & Icon Button
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbIconModule), typeof(IgbIconButtonModule));
-```
-
 ```razor
 <IgbIcon @ref="MyIcon" IconName="home" Collection="material" />
-<IgbIconButton @ref="MenuBtn" IconName="menu" Collection="material" Variant="@IconButtonVariant.Flat" />
+<IgbIconButton IconName="menu" Collection="material" Variant="IconButtonVariant.Flat" Mirrored="false" />
 
 @code {
-    IgbIcon MyIcon { get; set; }
-    IgbIconButton MenuBtn { get; set; }
+    IgbIcon MyIcon { get; set; } = default!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && MyIcon != null)
+        if (firstRender && MyIcon is not null)
         {
             await MyIcon.EnsureReady();
-            string svg = "<svg>...</svg>";
-            await MyIcon.RegisterIconFromTextAsync("home", svg, "material");
+            await MyIcon.RegisterIconFromTextAsync("home", "<svg>...</svg>", "material");
+            // or: await MyIcon.RegisterIconAsync("home", "/icons/home.svg", "material");
         }
     }
 }
 ```
 
-> **AGENT INSTRUCTION - Icon Registration:** Icons are registered by name+collection. Registration must happen in `OnAfterRenderAsync(bool firstRender)` after calling `EnsureReady()`. Re-use the same collection name across the app for consistency.
-
----
+The parameter is **`IconName`**, not `Name` (`Name` is the framework element identity on every component). Icons are keyed by name + collection and must be registered before they render — always in `OnAfterRenderAsync(firstRender)` after `await EnsureReady()`. Reuse one collection name across the app.
 
 ## Card
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbCardModule));
-```
-
 ```razor
 <IgbCard style="width: 350px;">
-    <IgbCardMedia>
-        <img src="photo.jpg" alt="Card image" />
-    </IgbCardMedia>
+    <IgbCardMedia><img src="photo.jpg" alt="Card image" /></IgbCardMedia>
     <IgbCardHeader>
         <h3 slot="title">Jane Doe</h3>
         <span slot="subtitle">Photographer</span>
     </IgbCardHeader>
-    <IgbCardContent>
-        <p>A short description of Jane Doe.</p>
-    </IgbCardContent>
+    <IgbCardContent><p>A short description.</p></IgbCardContent>
     <IgbCardActions>
-        <IgbButton slot="start" Variant="@ButtonVariant.Flat">Like</IgbButton>
-        <IgbButton slot="start" Variant="@ButtonVariant.Flat">Share</IgbButton>
-        <IgbButton slot="end" Variant="@ButtonVariant.Contained">Buy Now</IgbButton>
+        <IgbButton slot="start" Variant="ButtonVariant.Flat">Like</IgbButton>
+        <IgbButton slot="end" Variant="ButtonVariant.Contained">Buy Now</IgbButton>
     </IgbCardActions>
 </IgbCard>
 ```
 
----
-
-## Carousel
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbCarouselModule));
-```
-
-```razor
-<IgbCarousel>
-    <IgbCarouselSlide Active="true">
-        <img src="slide-1.jpg" alt="Slide 1" />
-    </IgbCarouselSlide>
-    <IgbCarouselSlide>
-        <img src="slide-2.jpg" alt="Slide 2" />
-    </IgbCarouselSlide>
-</IgbCarousel>
-```
-
-Use Carousel for image/content slides, banners, onboarding panels, or media galleries. Check the `carousel` MCP doc for current slide APIs, navigation controls, indicators, autoplay, animation, and CSS parts.
-
----
+`IgbCard` has no default width — always give it one.
 
 ## List
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbListModule), typeof(IgbListItemModule), typeof(IgbListHeaderModule));
-```
 
 ```razor
 <IgbList>
@@ -139,7 +68,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbListModule), typeof(IgbListItemModu
     @foreach (var contact in Contacts)
     {
         <IgbListItem>
-            <IgbAvatar slot="start" Shape="@AvatarShape.Circle">@contact.Initials</IgbAvatar>
+            <IgbAvatar slot="start" Shape="AvatarShape.Circle" Initials="@contact.Initials" />
             <span slot="title">@contact.Name</span>
             <span slot="subtitle">@contact.Phone</span>
             <IgbIconButton slot="end" IconName="delete" Collection="material" />
@@ -148,182 +77,102 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbListModule), typeof(IgbListItemModu
 </IgbList>
 ```
 
----
+`IgbListItem` slots: `start`, `title`, `subtitle`, `end`.
 
-## Avatar
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbAvatarModule));
-```
+## Avatar, Badge, Chip
 
 ```razor
-<!-- Image avatar -->
-<IgbAvatar Src="avatar.png" Alt="User photo" Shape="@AvatarShape.Circle" />
+<IgbAvatar Src="avatar.png" Alt="User photo" Shape="AvatarShape.Circle" />
+<IgbAvatar Shape="AvatarShape.Circle" Initials="AB" />
+<IgbAvatar Shape="AvatarShape.Square"><IgbIcon IconName="person" Collection="material" /></IgbAvatar>
 
-<!-- Initials avatar -->
-<IgbAvatar Shape="@AvatarShape.Circle">AB</IgbAvatar>
+<IgbBadge Variant="StyleVariant.Primary">5</IgbBadge>
+<IgbBadge Variant="StyleVariant.Danger" Shape="BadgeShape.Square" Dot="true" />
 
-<!-- Icon avatar -->
-<IgbAvatar Shape="@AvatarShape.Square">
-    <IgbIcon IconName="person" Collection="material" />
-</IgbAvatar>
-```
-
----
-
-## Badge
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbBadgeModule));
-```
-
-```razor
-<IgbBadge Variant="@StyleVariant.Primary">5</IgbBadge>
-<IgbBadge Variant="@StyleVariant.Danger" Shape="@BadgeShape.Square" />
-```
-
----
-
-## Chip
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbChipModule));
-```
-
-```razor
-<IgbChip Selectable="true" Removable="true" Remove="OnChipRemoved">
+<IgbChip Selectable="true" Removable="true" Variant="StyleVariant.Info" Remove="OnChipRemoved">
     <IgbIcon slot="start" IconName="star" Collection="material" />
     Blazor
 </IgbChip>
-
-<!-- Outlined style variant -->
 <IgbChip Outlined="true" Variant="StyleVariant.Primary">Outlined</IgbChip>
 
 @code {
-    void OnChipRemoved(IgbComponentBoolValueChangedEventArgs e) { /* handle removal */ }
+    void OnChipRemoved(IgbComponentBoolValueChangedEventArgs e) { }
 }
 ```
 
----
+`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`. `IgbChip` also has `Outlined`, `Selected` / `SelectedChanged` and a `Select` event.
 
-## Circular Progress
+## Progress
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbCircularProgressModule));
-```
+`IgbCircularProgress` and `IgbLinearProgress` share `Value`, `Max`, `Variant` (`StyleVariant`), `Indeterminate`, `HideLabel`, `LabelFormat`, `AnimationDuration`.
 
 ```razor
-<!-- Determinate -->
-<IgbCircularProgress Value="65" Max="100">
-    <span slot="default">65%</span>
-</IgbCircularProgress>
-
-<!-- Indeterminate (spinner) -->
+<IgbCircularProgress Value="65" Max="100"><span slot="default">65%</span></IgbCircularProgress>
 <IgbCircularProgress Indeterminate="true" />
+<IgbLinearProgress Value="42" Max="100" Striped="true" LabelAlign="LinearProgressLabelAlign.End" />
 ```
 
----
-
-## Linear Progress
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbLinearProgressModule));
-```
-
-```razor
-<IgbLinearProgress Value="42" Max="100" Striped="true" />
-<IgbLinearProgress Indeterminate="true" />
-```
-
----
+Use these for progress, not for data visualization — a static colored ring with a centered value is a donut chart.
 
 ## Dropdown
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbDropdownModule));
-```
-
 ```razor
-<div>
-    <IgbDropdown>
-        <IgbButton slot="target">Options</IgbButton>
-        <IgbDropdownHeader>Actions</IgbDropdownHeader>
-        <IgbDropdownItem Value="edit">Edit</IgbDropdownItem>
-        <IgbDropdownItem Value="delete">Delete</IgbDropdownItem>
-        <IgbDropdownItem Value="disabled" Disabled="true">Archive</IgbDropdownItem>
-    </IgbDropdown>
-</div>
-
+<IgbDropdown Placement="PopoverPlacement.BottomStart" SameWidth="false">
+    <IgbButton slot="target">Options</IgbButton>
+    <IgbDropdownHeader>Actions</IgbDropdownHeader>
+    <IgbDropdownItem Value="edit">Edit</IgbDropdownItem>
+    <IgbDropdownItem Value="delete">Delete</IgbDropdownItem>
+    <IgbDropdownItem Value="archive" Disabled="true">Archive</IgbDropdownItem>
+</IgbDropdown>
 ```
 
----
+The trigger goes in `slot="target"`. `IgbDropdownGroup` groups items; `Placement`, `Flip`, `Distance`, `ScrollStrategy`, `SameWidth` control positioning; `ShowAsync()` / `HideAsync()` / `ToggleAsync()` drive it from code. For a form field that selects a value, use `IgbSelect` instead.
 
 ## Tooltip
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbTooltipModule));
-```
-
 ```razor
 <IgbButton id="hover-button">Hover me</IgbButton>
-<IgbTooltip Anchor="hover-button" Placement="@PopoverPlacement.Top">
+<IgbTooltip Anchor="hover-button" Placement="PopoverPlacement.Top" ShowDelay="200" WithArrow="true">
     This is a tooltip
 </IgbTooltip>
 ```
 
----
+`Anchor` is the **id string** of the target element. `Message` sets plain text without child content; `ShowTriggers` / `HideTriggers` override the default hover/focus behavior; `Sticky` keeps it open until dismissed.
 
 ## QR Code
 
-Renders a scannable QR code as an SVG from the `Value` string (URL, text, or other data).
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbQrCodeModule));
-```
-
 ```razor
-<!-- Basic -->
 <IgbQrCode Value="https://www.infragistics.com" Size="192" />
 
-<!-- Styled, with a centered logo -->
-<IgbQrCode Value="https://www.infragistics.com"
-           Size="256"
+<IgbQrCode Value="https://www.infragistics.com" Size="256"
            ErrorLevel="QrErrorCorrectionLevel.Quartile"
-           DotStyle="QrDotStyle.Rounded"
-           SquareStyle="QrCornerSquareStyle.Rounded"
-           LogoSrc="images/logo.svg"
-           LogoSize="0.6" />
+           DotStyle="QrDotStyle.Rounded" SquareStyle="QrCornerSquareStyle.Rounded"
+           LogoSrc="images/logo.svg" LogoSize="0.6" />
 ```
 
-- `Version` (1-40) and `ErrorLevel` (`Low`/`Medium`/`Quartile`/`High`) are selected automatically when not set; a logo raises the error level automatically unless one is set explicitly.
-- `Size` is the rendered pixel size; `Margin` is the quiet zone in modules.
-- Theme via CSS custom properties: `--ig-qr-code-background`, `--ig-qr-code-dark-color`, `--ig-qr-code-corner-square-color`, `--ig-qr-code-corner-dot-color`.
+Renders the `Value` string (URL, text, any payload) as a scannable SVG. `Version` (1-40) and `ErrorLevel` (`Low | Medium | Quartile | High`) are chosen automatically when unset, and a logo raises the error level on its own unless one is set explicitly. `Size` is the rendered pixel size and `Margin` the quiet zone in modules; `LogoSrc`, `LogoSize` and `LogoMargin` place a centered logo. Color it with the `--ig-qr-code-background`, `--ig-qr-code-dark-color`, `--ig-qr-code-corner-square-color` and `--ig-qr-code-corner-dot-color` custom properties.
 
----
-
-## Ripple
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbRippleModule));
-```
-
-Attach to any element with the `igcRipple` attribute or nest `IgbRipple` inside a container:
+## Ripple, Highlight, Chat
 
 ```razor
-<div style="position: relative; padding: 16px; cursor: pointer;">
-    Click me
-    <IgbRipple />
-</div>
+<div style="position: relative; padding: 16px;">Click me<IgbRipple /></div>
+
+<IgbHighlight SearchText="@query" CaseSensitive="false">@text</IgbHighlight>
+
+<IgbChat Options="ChatOptions" DraftMessage="Draft" MessageCreated="OnMessageCreated" />
 ```
 
-CSS part: `base`. Customize color via `--color` CSS custom property.
+- `IgbRipple` needs a `position: relative` parent; customize with the `--color` custom property.
+- `IgbHighlight` marks occurrences of `SearchText` inside its content.
+- `IgbChat` is a full chat surface configured through `IgbChatOptions` (messages, suggestions, renderers) with `MessageCreated`, `MessageReact`, `AttachmentClick`, `TypingChange`, `InputFocus`, `InputBlur`. Read its doc before building against it — the options object is large.
 
----
+## Carousel
 
-## Key Rules
+```razor
+<IgbCarousel Interval="5000" DisableLoop="false" HideIndicators="false" Vertical="false">
+    <IgbCarouselSlide Active="true"><img src="slide-1.jpg" alt="Slide 1" /></IgbCarouselSlide>
+    <IgbCarouselSlide><img src="slide-2.jpg" alt="Slide 2" /></IgbCarouselSlide>
+</IgbCarousel>
+```
 
-1. **Register each module explicitly.** `IgbButtonModule` and `IgbIconButtonModule` are separate modules.
-2. **Icons must be registered before they display.** Use `EnsureReady()` + `RegisterIconFromTextAsync()` in `OnAfterRenderAsync(bool firstRender)`.
-3. **`IgbCard` does not set a default width.** Always set a width via inline style or CSS class.
-4. **Prefer the Dropdown `target` slot for the trigger.** For an external trigger, follow the current `dropdown` MCP doc and call `Show()`, `Hide()`, or `Toggle()` on the dropdown reference.
-5. **`IgbTooltip.Anchor` uses the target element ID string in the documented Blazor pattern.** Give the target an `id` and pass that same value to `Anchor`.
+`Interval` enables autoplay, `AnimationType` picks the transition, `HideNavigation` / `HideIndicators` strip the chrome, `IndicatorsOrientation` and `MaximumIndicatorsCount` tune the indicator strip.
