@@ -367,6 +367,30 @@ public sealed class RendererMessageInteropHarness : InteropHarness
                 && m.Message.GetProperty("type").GetString() == "refNotifyInsertItem")
             .Select(m => m.Message.GetProperty("index").GetInt32())];
 
+    public override string DescribeTraffic(string containerId)
+    {
+        var messages = SettledMessagesFor(containerId);
+        if (messages.Count == 0)
+        {
+            return "the instance sent nothing at all";
+        }
+        // Oldest first reads better in a failure, and a cap keeps a data-heavy instance from
+        // burying the message it is attached to.
+        var kinds = messages.AsEnumerable().Reverse().Take(12).Select(m => m.Message.GetProperty("type").GetString() switch
+        {
+            "refChanged" => "refChanged " + Named(m.Message, "refName"),
+            "invokeMethod" => "invokeMethod " + Named(m.Message, "methodName"),
+            var type => type ?? "?",
+        });
+        var listed = string.Join(", ", kinds);
+        return messages.Count > 12
+            ? $"it sent {messages.Count} messages: {listed}, ..."
+            : $"it sent {messages.Count} messages: {listed}";
+    }
+
+    private static string Named(JsonElement message, string property) =>
+        message.TryGetProperty(property, out var name) ? name.GetString() ?? "?" : "?";
+
     private int SendCountFor(string containerId) =>
         SnapshotInvocations().Count(i =>
             i.Identifier == SendMessage && i.Arguments.Count > 0 && i.Arguments[0] as string == containerId);

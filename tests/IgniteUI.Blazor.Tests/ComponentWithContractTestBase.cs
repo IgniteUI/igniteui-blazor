@@ -367,7 +367,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 var registration = harness.FindPropertyUpdate(containerId, WireMemberName(bind.DrivingEvent))
                     ?? throw new XunitException(
                         $"binding transmitted no \"{bind.DrivingEvent}\" event registration — without it the " +
-                        "client never reports changes, so the binding can never fire");
+                        $"client never reports changes, so the binding can never fire ({harness.DescribeTraffic(containerId)})");
                 Assert.Equal(bind.DrivingEvent, registration.GetString());
 
                 harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
@@ -487,7 +487,8 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 Assert.Equal(bound, evt.Get(cut.Instance));
                 var wireName = WireMemberName(evt.EventName);
                 var registration = harness.FindPropertyUpdate(containerId, wireName)
-                    ?? throw new XunitException("no event-handler registration transmission was observed");
+                    ?? throw new XunitException(
+                        "no event-handler registration transmission was observed — " + harness.DescribeTraffic(containerId));
                 Assert.Equal(evt.EventName, registration.GetString());
 
                 var argsJson = evt.ArgsJson.Get(harness, cut);
@@ -557,7 +558,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     {
                         throw new XunitException(
                             $"re-binding \"{evt.EventName}\" transmitted {rebound?.ToString() ?? "no registration"} — " +
-                            "the client would never resubscribe");
+                            $"the client would never resubscribe ({harness.DescribeTraffic(containerId)})");
                     }
                 }
             }

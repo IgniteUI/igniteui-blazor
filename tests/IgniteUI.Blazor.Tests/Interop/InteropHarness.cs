@@ -203,6 +203,14 @@ public abstract class InteropHarness
     /// </summary>
     public abstract IReadOnlyList<int> DataItemInsertions(string containerId, int expected);
 
+    /// <summary>
+    /// A short account of what the instance has transmitted, to report alongside an expected
+    /// transmission that never showed up. Absence on its own is ambiguous: a message that was never
+    /// queued reads exactly like one that was queued and never flushed, and only the second is a
+    /// timing problem. "Sent nothing at all" separates them.
+    /// </summary>
+    public abstract string DescribeTraffic(string containerId);
+
     public IEnumerable<InteropMethodCall> CallsOf(string methodName, string? containerId = null) =>
         MethodCalls.Where(c => c.MethodName == methodName && (containerId is null || c.ContainerId == containerId));
 
