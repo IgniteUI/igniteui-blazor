@@ -11,13 +11,11 @@ namespace IgniteUI.Blazor.Lite.AotSmoke
         Beta,
     }
 
-    // The documented consumer pattern from docs/TRIMMING.md — data item types must be preserved.
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)]
     internal class SmokeItem
     {
         public int Id { get; set; }
         public double Ratio { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         public DateTime Stamp { get; set; }
         public bool Flag { get; set; }
         public decimal Price { get; set; }
@@ -47,6 +45,10 @@ namespace IgniteUI.Blazor.Lite.AotSmoke
             return index;
         }
 
+        // The documented consumer preservation pattern from docs/TRIMMING.md. The DynamicDependency
+        // form specifically: class-level [DynamicallyAccessedMembers] on SmokeItem preserved the
+        // reflected properties under wasm ILLink (PublishSmoke) but NOT under ILC — verified 2026-09-01.
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields, typeof(SmokeItem))]
         private static int Main()
         {
             try
@@ -107,7 +109,7 @@ namespace IgniteUI.Blazor.Lite.AotSmoke
                 var context = new IgbJsonContext(new JsonSerializerOptions());
                 var json = JsonSerializer.Serialize(dict, context.DictionaryStringObject);
                 var back = JsonSerializer.Deserialize(json, context.DictionaryStringObject);
-                Check(back.Count == 3 && ((JsonElement)back["n"]).GetInt32() == 5, "IgbJsonContext round-trip");
+                Check(back != null && back.Count == 3 && ((JsonElement)back["n"]).GetInt32() == 5, "IgbJsonContext round-trip");
 
                 Console.WriteLine($"AOT smoke: OK ({_checks} checks)");
                 // Magic success code (aspnetcore trimming-test convention): a silent early exit

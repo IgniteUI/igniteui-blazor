@@ -8,15 +8,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishAot>true</PublishAot>
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
-    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+    <!-- ILC's warnings-as-errors property (ILLinkTreatWarningsAsErrors never reaches ILC). -->
+    <IlcTreatWarningsAsErrors>true</IlcTreatWarningsAsErrors>
     <InvariantGlobalization>true</InvariantGlobalization>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\IgniteUI.Blazor.Lite.csproj" />
-    <!-- Root the whole library so ILC analyzes all of it, not just what Main reaches. -->
-    <TrimmerRootAssembly Include="IgniteUI.Blazor.Lite" />
+    <!-- No TrimmerRootAssembly: rooting the whole library drags aspnetcore Components internals
+         (not AOT-clean, dotnet/aspnetcore#51598) into ILC analysis — IL2072 noise we can't fix.
+         Analysis covers what Main reaches: the library's entire RequiresDynamicCode surface. -->
   </ItemGroup>
 
   <!-- dotnet run -p:SimulateNoDynamicCode=true — forces the interpreter paths ILC uses at runtime,

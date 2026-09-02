@@ -23,6 +23,8 @@ public class MyDataItem { ... }
 
 or with a [trimmer root descriptor](https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#root-descriptors) listing the types.
 
+> **Prefer the `DynamicDependency` form.** It is honored by every trim/AOT pipeline. Annotating the type itself works under Blazor WebAssembly's ILLink (verified in the trimmed browser smoke) but was found **insufficient under NativeAOT's ILC** (verified 2026-09-01 via the AotSmoke gate) — the class-level annotation only takes effect where a `Type` value flows through annotated locations, and the data-source entry points deliberately take unannotated `Type`s.
+
 Preservation must cover **every complex type reachable from the item type**, not just the root: if `MyDataItem` has an `Address` property whose members the component renders, `Address` needs the same treatment — the schema builder reflects over nested object types as it encounters them.
 
 ## Module preloading: trim-safe by design
@@ -43,7 +45,7 @@ The library's code is AOT-clean: it builds warning-free under the [AOT analyzer]
 
 - **Blazor WebAssembly** — unaffected either way: both the default interpreter and `RunAOTCompilation=true` publishes use Mono AOT with the interpreter retained, so no NativeAOT semantics apply.
 - **NativeAOT (ILC)** — the library's expression-tree getters run in `System.Linq.Expressions`' interpreted form (a documented NativeAOT limitation: slower, not broken), and all generic instantiations the library creates at runtime are statically visible or reference-type-shared. Note ILC deployment of *Blazor apps* is not a supported platform scenario today (ASP.NET Core NativeAOT excludes Blazor; MAUI BlazorWebView under `PublishAot` is undocumented upstream and unverified) — the analyzer-clean code positions the library for those consumers as they materialize.
-- The trimming guidance above (preserving data item types) applies identically under AOT.
+- The trimming guidance above (preserving data item types) applies under AOT with one sharpening: use the `DynamicDependency` form — see the note in that section.
 
 ## Maintaining AOT compatibility (contributors)
 

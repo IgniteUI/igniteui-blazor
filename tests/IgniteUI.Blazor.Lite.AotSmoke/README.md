@@ -2,7 +2,7 @@
 
 A console app that publishes `IgniteUI.Blazor.Lite` **under real NativeAOT** and runs the `RequiresDynamicCode`-adjacent paths. The build-time AOT analyzer only checks library source against reference assemblies — ILC at publish sees the whole closed program (IL3052–IL3055 exist only there), and no analyzer verifies runtime behavior: that expression getters produce correct values interpreted, that every closed-set `Func<object, T>` instantiation is actually pregenerated, that suppression justifications hold under ILC. This app is to AOT what PublishSmoke's browser checklist is to trimming.
 
-The csproj roots the whole library (`TrimmerRootAssembly`), so ILC analyzes all of it — not just what `Main` reaches — and any ILC warning fails the publish (`ILLinkTreatWarningsAsErrors`).
+ILC analysis covers what `Main` reaches — the library's entire `RequiresDynamicCode` surface — and any ILC warning fails the publish (`IlcTreatWarningsAsErrors`; note `ILLinkTreatWarningsAsErrors` never reaches ILC). Whole-library rooting (`TrimmerRootAssembly`) was tried and dropped: it drags aspnetcore Components internals — not AOT-clean, dotnet/aspnetcore#51598 — into analysis with IL2072 noise we can't fix.
 
 ## What Main checks (asserted; success = exit code 100, the aspnetcore trimming-test convention — a silent early exit with the default 0 cannot pass)
 
