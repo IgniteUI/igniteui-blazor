@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
@@ -8,6 +9,8 @@ namespace IgniteUI.Blazor.Controls
 
         private Type? _componentType;
         [Parameter]
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+        [UnconditionalSuppressMessage("Trimming", "IL2078", Justification = "The backing field is only assigned through this annotated property; annotating the field would surface IL2110 in consuming apps.")]
         public Type? ComponentType
         {
             get

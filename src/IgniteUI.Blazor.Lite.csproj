@@ -30,6 +30,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/IgniteUI/igniteui-blazor</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <!-- Trim-analysis diagnostics build as errors (.editorconfig, category-Trimming); suppression policy: docs/TRIMMING.md. -->
+    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

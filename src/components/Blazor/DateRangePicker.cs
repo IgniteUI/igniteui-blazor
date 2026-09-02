@@ -1,5 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -1194,7 +1192,7 @@ namespace IgniteUI.Blazor.Controls
                             var newValueValue = default(IgbDateRangeValue?);
 
                             {
-                                newValueValue = JsonSerializer.Deserialize<IgbDateRangeValue?>(JsonSerializer.Serialize(args.Detail, new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.IgnoreCycles }));
+                                newValueValue = args.Detail == null ? null : new IgbDateRangeValue { Start = args.Detail.Start, End = args.Detail.End };
 
                                 if (newValueValue != null)
                                 {

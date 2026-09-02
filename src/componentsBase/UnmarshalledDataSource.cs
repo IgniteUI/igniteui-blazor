@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace IgniteUI.Blazor.Controls
@@ -2540,7 +2541,7 @@ namespace IgniteUI.Blazor.Controls
         //         _itemToOriginal[itemJson] = item;
         //     }
         // }
-        // private void OnRemove(IJSDataSourceItem itemJson, object item) 
+        // private void OnRemove(IJSDataSourceItem itemJson, object item)
         // {
         //     if (_uuidToItem.ContainsKey(itemJson.Id)) {
         //         _uuidToItem.Remove(itemJson.Id);
@@ -2558,6 +2559,7 @@ namespace IgniteUI.Blazor.Controls
         //     }
         // }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Data item types are supplied by the application at runtime; trimmed apps must preserve their data item types — see docs/TRIMMING.md.")]
         public static JSDataSourceSchema? ExtractSchema(object item)
         {
             if (item == null)
@@ -2625,7 +2627,7 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchema.Create(c);
         }
 
-        private static Type? GetIListTypeArg(Type itemType)
+        private static Type? GetIListTypeArg([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type itemType)
         {
             foreach (var inter in itemType.GetInterfaces())
             {
@@ -2641,7 +2643,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private static Type? GetIEnumerableTypeArg(Type itemType)
+        private static Type? GetIEnumerableTypeArg([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type itemType)
         {
             foreach (var inter in itemType.GetInterfaces())
             {
@@ -2657,6 +2659,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Data item types are supplied by the application at runtime; trimmed apps must preserve their data item types — see docs/TRIMMING.md.")]
         public static JSDataSourceSchema ExtractSchemaFromType(Type? itemType)
         {
             if (itemType == null)
