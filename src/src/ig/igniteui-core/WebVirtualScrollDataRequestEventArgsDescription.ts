@@ -1,6 +1,6 @@
 import { Description } from "./Description";
 import { WebVirtualScrollDataRequestEventArgsDetailDescription } from "./WebVirtualScrollDataRequestEventArgsDetailDescription";
-import { Base, Type, markType } from "./type";
+import { Type, markType } from "./type";
 
 /**
  * @hidden

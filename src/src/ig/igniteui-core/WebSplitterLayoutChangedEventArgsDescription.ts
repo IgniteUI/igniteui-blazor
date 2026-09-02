@@ -1,6 +1,6 @@
 import { Description } from "./Description";
 import { WebSplitterLayoutChangedEventArgsDetailDescription } from "./WebSplitterLayoutChangedEventArgsDetailDescription";
-import { Base, Type, markType } from "./type";
+import { Type, markType } from "./type";
 
 /**
  * @hidden
