@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbComboChangeEventArgsDetail : BaseRendererElement
+    public partial class IgbComboChangeEventArgsDetail<T> : BaseRendererElement
     {
         /// <inheritdoc />
         public override string Type { get { return "WebComboChangeEventArgsDetail"; } }
@@ -10,10 +10,10 @@ namespace IgniteUI.Blazor.Controls
         private static bool _marshalByValue = true;
 
         private string _newValueRef;
-        private object[] _newValue;
+        private T[] _newValue;
 
         [Parameter]
-        public object[] NewValue
+        public T[] NewValue
         {
             get { return this._newValue; }
 
@@ -166,7 +166,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args.ContainsKey("newValue"))
-            { this.NewValue = ReturnToObjectArray(args["newValue"]); }
+            { this.NewValue = ReturnToObjectArray<T>(args["newValue"]); }
             if (args.ContainsKey("items"))
             { this.Items = ReturnToObjectArray(args["items"]); }
             if (args.ContainsKey("changeType"))
