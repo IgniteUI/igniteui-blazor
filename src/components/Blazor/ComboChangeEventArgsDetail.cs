@@ -155,7 +155,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Items"))
             { args["items"] = ObjectArrayToParam(this._items); }
             if (IsPropDirty("ChangeType"))
-            { args["changeType"] = EnumToString(this._changeType); }
+            { args["type"] = EnumToString(this._changeType); }
 
         }
 
@@ -169,8 +169,8 @@ namespace IgniteUI.Blazor.Controls
             { this.NewValue = ReturnToObjectArray(args["newValue"]); }
             if (args.ContainsKey("items"))
             { this.Items = ReturnToObjectArray(args["items"]); }
-            if (args.ContainsKey("changeType"))
-            { this.ChangeType = StringToEnum<ComboChangeType>(args["changeType"]); }
+            if (args.ContainsKey("type"))
+            { this.ChangeType = StringToEnum<ComboChangeType>(args["type"]); }
 
             this.SuppressParentNotify = false;
         }

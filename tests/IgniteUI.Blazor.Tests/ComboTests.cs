@@ -282,6 +282,39 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
         combo.CaseSensitiveIcon = true;
         Assert.True(combo.CaseSensitiveIcon);
     }
+
+    [Fact]
+    public void Combo_Change_SelectionEvent_HasSelectionChangeType()
+    {
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs? received = null;
+        var cut = Render<IgbCombo<ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.Change, (IgbComboChangeEventArgs args) => received = args));
+
+        var argsJson = ChangeDetail(UuidRef(Interop, cut, 0), UuidRef(Interop, cut, 0));
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", argsJson);
+
+        Assert.NotNull(received);
+        Assert.Equal(ComboChangeType.Selection, received.Detail.ChangeType);
+    }
+
+    [Fact]
+    public void Combo_Change_DeselectionEvent_HasDeselectionChangeType()
+    {
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs? received = null;
+        var cut = Render<IgbCombo<ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.Value, new[] { _valueItem1 })
+            .Add(c => c.Change, (IgbComboChangeEventArgs args) => received = args));
+
+        var argsJson = ChangeDetail("", UuidRef(Interop, cut, 0), "deselection");
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", argsJson);
+
+        Assert.NotNull(received);
+        Assert.Equal(ComboChangeType.Deselection, received.Detail.ChangeType);
+    }
 }
 
 // TODO: Mismatched T=int inbound handling (T[])DowncastArray<T>(Detail.NewValue) for
