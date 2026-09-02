@@ -1,5 +1,4 @@
 import { WebBaseComboBoxDescription } from "./WebBaseComboBoxDescription";
-import { Description } from "./Description";
 import { Base, Type, markType } from "./type";
 
 /**
