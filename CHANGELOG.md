@@ -25,15 +25,14 @@ The following public members changed from nullable to non-nullable. Value-type c
 | `IgbDateTimeInput` | `GetCurrentValue()` | `DateTime?` | `DateTime` |
 | `IgbDateTimeInput` | `GetCurrentValueAsync()` | `Task<DateTime?>` | `Task<DateTime>` |
 | `IgbDateTimeInput` | `ValueChanged` | `EventCallback<DateTime?>` | `EventCallback<DateTime>` |
-| `IgbDateTimeInputBase` | `Min` | `DateTime?` | `DateTime` |
-| `IgbDateTimeInputBase` | `Max` | `DateTime?` | `DateTime` |
+| `IgbDateTimeInput` | `Min` | `DateTime?` | `DateTime` |
+| `IgbDateTimeInput` | `Max` | `DateTime?` | `DateTime` |
 | `IgbDateRangePicker` | `Min` | `DateTime?` | `DateTime` |
 | `IgbDateRangePicker` | `Max` | `DateTime?` | `DateTime` |
 | `IgbTile` | `ColStart` | `double?` | `double` |
 | `IgbTile` | `RowStart` | `double?` | `double` |
-| `CalendarBase` (calendar-based components) | `SpecialDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
-| `CalendarBase` (calendar-based components) | `DisabledDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
-| `RendererSerializer` | `AddDateTimeProp(string, DateTime?)` | `DateTime?` (param) | `DateTime` (param) |
+| `IgbCalendar` | `SpecialDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+| `IgbCalendar` | `DisabledDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
 
 ## 0.1.0 - 2026-07-14
 
