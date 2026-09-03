@@ -222,6 +222,14 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         handler.SetResult(ToResultPayload(result));
     }
 
+    public override Action<InteropReturn> WithholdMethodReply(string methodName)
+    {
+        _stubbedMethods.TryAdd(methodName, true);
+        var handler = _js.Setup<object>(SendMessage, inv => MethodNameOf(inv) == methodName);
+        _methodHandlers[methodName] = handler;
+        return result => handler.SetResult(ToResultPayload(result));
+    }
+
     public override void SetupPropertyRead(string propertyName, InteropReturn result) =>
         SetupMethodResult(PropertyReadMethodName(propertyName), result);
 
