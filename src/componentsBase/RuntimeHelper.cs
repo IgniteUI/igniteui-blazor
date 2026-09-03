@@ -1,62 +1,53 @@
 using System.Diagnostics.CodeAnalysis;
+#if NET8_0
 using System.Linq.Expressions;
+#endif
 using System.Runtime.CompilerServices;
 using Microsoft.JSInterop;
 
 namespace IgniteUI.Blazor.Controls
 {
+    // The InvokeUnmarshalled fast path exists only on net8 (API removed in net9+), so the probe and its
+    // trim/AOT surface compile only there; net9+ always uses the raw-pointer InvokeVoid path.
     internal class RuntimeHelper
     {
-#if NET5_0
-        private IJSUnmarshalledRuntime _unmarshalledRuntime;
-#else
+#if NET8_0
         private Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[], string> _callSendUnmarshalledColumnMessage;
         private Func<IJSInProcessRuntime, string, string, string, string> _callSendUnmarshalledColumnDataIntentMessage;
 #endif
         private IJSInProcessRuntime _inprocRuntime;
         private IIgniteUIBlazor _igBlazor;
 
-#if !NETSTANDARD
+#if NET8_0
         [DynamicDependency(
             DynamicallyAccessedMemberTypes.PublicMethods,
             "Microsoft.AspNetCore.Components.WebAssembly.Services.DefaultWebAssemblyJSRuntime",
             "Microsoft.AspNetCore.Components.WebAssembly")]
-#endif
-        //[System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicMethods, typeof(WebAssemblyJSRuntime))]
-        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the net8-only InvokeUnmarshalled methods (removed in net9+), preserved via the DynamicDependency above; absence falls back to the raw-pointer InvokeVoid path.")]
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the net8-only InvokeUnmarshalled methods, preserved via the DynamicDependency above; absence falls back to the raw-pointer InvokeVoid path.")]
         [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The generic arguments are statically referenced framework/library types, and the InvokeUnmarshalled generic parameters carry no DynamicallyAccessedMembers requirements.")]
         [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The DynamicDependency above marks the runtime's RequiresUnreferencedCode members (Invoke, GetValue, SetValue, ...); the probe filters by name and never invokes them.")]
+        [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "net8 Blazor WASM-only probe (IJSInProcessRuntime + InvokeUnmarshalled); no NativeAOT target exists for net8 wasm, and under Mono AOT the interpreter executes this.")]
+#endif
         public RuntimeHelper(IJSRuntime runtime, IIgniteUIBlazor igBlazor)
         {
             _igBlazor = igBlazor;
-            //Console.WriteLine("initializing runtime helper");
-            if (runtime == null)
-            {
-                //Console.WriteLine("runtime is null");
-            }
             var inprocRuntime = runtime as IJSInProcessRuntime;
             _inprocRuntime = inprocRuntime;
             if (inprocRuntime != null)
             {
                 IsInproc = true;
-                //Console.WriteLine("is inproc");
             }
+#if NET8_0
             if (IsInproc)
             {
-#if NET5_0
-                _unmarshalledRuntime = _inprocRuntime as IJSUnmarshalledRuntime;
-#else
-                //Console.WriteLine("inproc type: " + _inprocRuntime.GetType().Name);
                 var unmarshalled = inprocRuntime.GetType().GetMethods().Where(m => m.Name == "InvokeUnmarshalled").ToList();
 
-                var name = inprocRuntime.GetType().Assembly.GetName();
                 if (unmarshalled.Count > 0)
                 {
                     var target = unmarshalled.Where(m => m.GetGenericArguments() != null &&
                     m.GetGenericArguments().Length == 4).FirstOrDefault();
                     if (target != null)
                     {
-                        //Console.WriteLine("found target");
                         var meth = target.MakeGenericMethod(new Type[] {
                             typeof(string),
                             typeof(int),
@@ -75,7 +66,7 @@ namespace IgniteUI.Blazor.Controls
                         indexParam, columnsParam);
 
                         _callSendUnmarshalledColumnMessage =
-                        (Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[], string>)Expression.Lambda(
+                        Expression.Lambda<Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[], string>>(
                             call, jsRuntimeParam, methodNameParam, refNameParam, indexParam, columnsParam).Compile();
                     }
 
@@ -83,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
                     m.GetGenericArguments().Length == 3).FirstOrDefault();
                     if (target != null)
                     {
-                        //Console.WriteLine("found target");
                         var meth = target.MakeGenericMethod(new Type[] {
                             typeof(string),
                             typeof(string),
@@ -100,22 +90,17 @@ namespace IgniteUI.Blazor.Controls
                         dataIntentParam);
 
                         _callSendUnmarshalledColumnDataIntentMessage =
-                        (Func<IJSInProcessRuntime, string, string, string, string>)Expression.Lambda(
+                        Expression.Lambda<Func<IJSInProcessRuntime, string, string, string, string>>(
                             call, jsRuntimeParam, methodNameParam, refNameParam, dataIntentParam).Compile();
                     }
                 }
-#endif
             }
+#endif
         }
 
         public unsafe string SendUnmarshalledColumnMessage(string methodName, string refName, int index, UnmarshalledColumn[] columns)
         {
-#if NET5_0
-            if (_unmarshalledRuntime != null)
-            {
-                return _unmarshalledRuntime.InvokeUnmarshalled<string, int, UnmarshalledColumn[], string>(methodName, refName, index, columns);
-            }
-#else
+#if NET8_0
             if (_callSendUnmarshalledColumnMessage != null)
             {
                 return _callSendUnmarshalledColumnMessage(_inprocRuntime, methodName, refName, index, columns);
@@ -129,16 +114,9 @@ namespace IgniteUI.Blazor.Controls
 
         public string SendUnmarshalledColumnDataIntentsMessage(string methodName, string refName, string dataIntents)
         {
-#if NET5_0
-            if (_unmarshalledRuntime != null)
+#if NET8_0
+            if (_callSendUnmarshalledColumnDataIntentMessage != null)
             {
-                //Console.WriteLine("invoking data intent");
-                return _unmarshalledRuntime.InvokeUnmarshalled<string, string, string>(methodName, refName, dataIntents);
-            }
-#else
-            if (_callSendUnmarshalledColumnMessage != null)
-            {
-                //Console.WriteLine("invoking sadness");
                 return _callSendUnmarshalledColumnDataIntentMessage(_inprocRuntime, methodName, refName, dataIntents);
             }
 #endif

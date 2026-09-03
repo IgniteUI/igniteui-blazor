@@ -66,6 +66,16 @@ jobs:
           dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net9.0
           dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net10.0
 
+      # NativeAOT (ILC) gate: publishes the console smoke app rooting the whole library
+      # (fails on ILC warnings) and runs its checks — behavior the build analyzer cannot see.
+      # Success is exit code 100 (aspnetcore trimming-test convention: no accidental passes).
+      - name: Publish and run NativeAOT smoke app
+        run: |
+          dotnet publish tests/IgniteUI.Blazor.Lite.AotSmoke --configuration Release -r linux-x64
+          status=0
+          tests/IgniteUI.Blazor.Lite.AotSmoke/bin/Release/net10.0/linux-x64/publish/IgniteUI.Blazor.Lite.AotSmoke || status=$?
+          test "$status" -eq 100
+
       - name: Build VS Templates
         run: dotnet pack templates/IgniteUI.Blazor.Templates/
 
