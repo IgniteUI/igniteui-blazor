@@ -82,6 +82,29 @@
         </Template>
     </Story>
 
+    <Story Name="Collapsed Panes">
+        <Arguments>
+            <Arg For="_ => _!.StartCollapsed" Value="false" />
+            <Arg For="_ => _!.EndCollapsed" Value="false" />
+        </Arguments>
+        <Template>
+            <IgbSplitter @attributes="context.Args" LayoutChanged="OnLayoutChanged" style="height: 400px;">
+                <div slot="start" style="padding: 1rem; box-sizing: border-box;">
+                    <strong>Start panel</strong>
+                    <p>@_lorem</p>
+                </div>
+                <div slot="end" style="padding: 1rem; box-sizing: border-box;">
+                    <strong>End panel</strong>
+                    <p>@_loremLong</p>
+                </div>
+            </IgbSplitter>
+
+            <div style="margin-top: 12px; font-family: ui-monospace, monospace; font-size: 0.85rem;">
+                @_layoutInfo
+            </div>
+        </Template>
+    </Story>
+
     <Story Name="Nested Splitters">
         <Template>
             <IgbSplitter Orientation="SplitterOrientation.Horizontal" style="height: 600px;">
@@ -171,5 +194,13 @@
         }
 
         await _toggleSplitter.ToggleAsync(position);
+    }
+
+    private string _layoutInfo = "Resize or collapse a pane to see the layout snapshot.";
+
+    private void OnLayoutChanged(IgbSplitterLayoutChangedEventArgs args)
+    {
+        var detail = args.Detail;
+        _layoutInfo = $"startSize: {detail.StartSize} | endSize: {detail.EndSize} | startCollapsed: {detail.StartCollapsed} | endCollapsed: {detail.EndCollapsed}";
     }
 }

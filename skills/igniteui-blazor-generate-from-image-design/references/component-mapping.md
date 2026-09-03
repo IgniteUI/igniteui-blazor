@@ -33,6 +33,7 @@ A selection reference, not an API reference. Confirm exact parameters with `get_
 | Carousel / slideshow | `IgbCarousel` + `IgbCarouselSlide` | `Interval`, `AnimationType` |
 | Highlighted search matches in text | `IgbHighlight` | `SearchText`, `CaseSensitive` |
 | Chat / conversation surface | `IgbChat` | configured through `IgbChatOptions` |
+| QR code | `IgbQrCode` | `Value` (encoded payload), `Size`, `ErrorLevel`, `DotStyle`, `LogoSrc` |
 
 Use `IgbList` when its row anatomy and keyboard behavior fit; native `<ul>/<li>` when they do not.
 
@@ -65,6 +66,7 @@ Only pick a grid when the content is genuinely tabular. A list of records with r
 | Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group |
 | Slider / range slider | `IgbSlider` / `IgbRangeSlider` | range uses `Lower` / `Upper` |
 | Star rating | `IgbRating` | |
+| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |
 | Primary action button | `IgbButton` | `Variant`: `Contained`/`Outlined`/`Flat`/`Fab` |
 | Segmented / toggle control | `IgbButtonGroup` + `IgbToggleButton` | |
 | Icon-only button | `IgbIconButton` | |

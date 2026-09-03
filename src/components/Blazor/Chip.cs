@@ -171,6 +171,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private bool _outlined = false;
+
+        /// <summary>
+        /// Defines if the chip is outlined or not.
+        /// </summary>
+        [Parameter]
+        public bool Outlined
+        {
+            get { return this._outlined; }
+            set
+            {
+                if (this._outlined != value || !IsPropDirty("Outlined"))
+                {
+                    MarkPropDirty("Outlined");
+                }
+                this._outlined = value;
+
+            }
+        }
 
         public async Task SetNativeElementAsync(Object element)
         {
@@ -406,6 +425,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddBooleanProp("selected", this._selected); }
             if (IsPropDirty("Variant"))
             { ser.AddEnumProp("variant", this._variant); }
+            if (IsPropDirty("Outlined"))
+            { ser.AddBooleanProp("outlined", this._outlined); }
             if (IsPropDirty("RemoveRef"))
             { ser.AddStringProp("removeRef", this._removeRef); }
             if (IsPropDirty("SelectRef"))

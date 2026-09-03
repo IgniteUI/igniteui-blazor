@@ -267,6 +267,20 @@ export class Loader {
         break;
       }
 
+      case 'WebColorPickerModule': {
+        let { IgcColorPickerComponent } = await import('igniteui-webcomponents');
+        let { WebColorPickerDescriptionModule } = await import('igniteui-core/WebColorPickerDescriptionModule');
+
+        this._loadingSet.delete(module);
+
+        IgcColorPickerComponent.register();
+        TypeRegistrar.registerCons('IgcColorPickerComponent', IgcColorPickerComponent);
+
+        WebColorPickerDescriptionModule.register(cr.context);
+        this.checkDone();
+        break;
+      }
+
       case 'WebComboModule': {
         let { IgcComboComponent } = await import('igniteui-webcomponents');
         let { WebComboDescriptionModule } = await import('igniteui-core/WebComboDescriptionModule');
@@ -523,6 +537,20 @@ export class Loader {
         NumberFormatSpecifierDescriptionModule.register(cr.context);
         this.checkDone();
         break;
+
+      case 'WebQrCodeModule': {
+        let { IgcQrCodeComponent } = await import('igniteui-webcomponents');
+        let { WebQrCodeDescriptionModule } = await import('igniteui-core/WebQrCodeDescriptionModule');
+
+        this._loadingSet.delete(module);
+
+        IgcQrCodeComponent.register();
+        TypeRegistrar.registerCons('IgcQrCodeComponent', IgcQrCodeComponent);
+
+        WebQrCodeDescriptionModule.register(cr.context);
+        this.checkDone();
+        break;
+      }
 
       case 'WebRadioGroupModule': {
         let { IgcRadioGroupComponent } = await import('igniteui-webcomponents');
@@ -839,6 +867,7 @@ export class Loader {
       Loader.marshalByValueSet.add('FocusOptions');
       Loader.marshalByValueSet.add('FormatSpecifier');
       Loader.marshalByValueSet.add('NumberFormatSpecifier');
+      Loader.marshalByValueSet.add('RegisterIconOptions');
       Loader.marshalByValueSet.add('ActiveStepChangedEventArgs');
       Loader.marshalByValueSet.add('WebActiveStepChangedEventArgs');
       Loader.marshalByValueSet.add('ActiveStepChangedEventArgsDetail');
@@ -897,6 +926,10 @@ export class Loader {
       Loader.marshalByValueSet.add('WebRangeSliderValue');
       Loader.marshalByValueSet.add('SelectItemComponentEventArgs');
       Loader.marshalByValueSet.add('WebSelectItemComponentEventArgs');
+      Loader.marshalByValueSet.add('SplitterLayoutChangedEventArgs');
+      Loader.marshalByValueSet.add('WebSplitterLayoutChangedEventArgs');
+      Loader.marshalByValueSet.add('SplitterLayoutChangedEventArgsDetail');
+      Loader.marshalByValueSet.add('WebSplitterLayoutChangedEventArgsDetail');
       Loader.marshalByValueSet.add('SplitterResizeEventArgs');
       Loader.marshalByValueSet.add('WebSplitterResizeEventArgs');
       Loader.marshalByValueSet.add('SplitterResizeEventArgsDetail');

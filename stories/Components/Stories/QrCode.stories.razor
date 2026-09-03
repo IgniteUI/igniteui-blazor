@@ -1,0 +1,88 @@
+@attribute [Stories("Data Display/QrCode")]
+
+<Stories TComponent="IgbQrCode">
+
+    <ArgType For="_ => _!.ErrorLevel" Control="ControlType.Select" />
+    <ArgType For="_ => _!.DotStyle" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.SquareStyle" Control="ControlType.Radio" />
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Value" Value='"https://www.infragistics.com"' />
+            <Arg For="_ => _!.Size" Value="192" />
+            <Arg For="_ => _!.Margin" Value="4" />
+            <Arg For="_ => _!.ErrorLevel" Value="QrErrorCorrectionLevel.Medium" />
+            <Arg For="_ => _!.DotStyle" Value="QrDotStyle.Square" />
+            <Arg For="_ => _!.SquareStyle" Value="QrCornerSquareStyle.Square" />
+        </Arguments>
+        <Template>
+            <IgbQrCode @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Dot Styles">
+        <Template>
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Square</p>
+                    <IgbQrCode Value="https://www.infragistics.com" Size="160" DotStyle="QrDotStyle.Square" />
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Circle</p>
+                    <IgbQrCode Value="https://www.infragistics.com" Size="160" DotStyle="QrDotStyle.Circle" SquareStyle="QrCornerSquareStyle.Circle" />
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Rounded</p>
+                    <IgbQrCode Value="https://www.infragistics.com" Size="160" DotStyle="QrDotStyle.Rounded" SquareStyle="QrCornerSquareStyle.Rounded" />
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="With Logo">
+        <Arguments>
+            <Arg For="_ => _!.Value" Value='"https://www.infragistics.com"' />
+            <Arg For="_ => _!.Size" Value="256" />
+            <Arg For="_ => _!.LogoSrc" Value='"https://static.infragistics.com/marketing/Website/General/IG-icon.svg"' />
+            <Arg For="_ => _!.LogoSize" Value="0.6" />
+        </Arguments>
+        <Template>
+            <IgbQrCode @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Themed">
+        <Template>
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+                <IgbQrCode Value="https://www.infragistics.com" Size="160"
+                           style="--ig-qr-code-dark-color: #1a237e; --ig-qr-code-background: #e8eaf6;" />
+                <IgbQrCode Value="https://www.infragistics.com" Size="160" DotStyle="QrDotStyle.Rounded"
+                           style="--ig-qr-code-dark-color: #33691e; --ig-qr-code-corner-square-color: #e65100; --ig-qr-code-corner-dot-color: #e65100;" />
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Error Correction Levels">
+        <Template>
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">L (~7%)</p>
+                    <IgbQrCode Value="https://www.infragistics.com" Size="140" ErrorLevel="QrErrorCorrectionLevel.Low" />
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">M (~15%)</p>
+                    <IgbQrCode Value="https://www.infragistics.com" Size="140" ErrorLevel="QrErrorCorrectionLevel.Medium" />
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">Q (~25%)</p>
+                    <IgbQrCode Value="https://www.infragistics.com" Size="140" ErrorLevel="QrErrorCorrectionLevel.Quartile" />
+                </div>
+                <div>
+                    <p style="margin: 0 0 0.5rem; font-weight: 600;">H (~30%)</p>
+                    <IgbQrCode Value="https://www.infragistics.com" Size="140" ErrorLevel="QrErrorCorrectionLevel.High" />
+                </div>
+            </div>
+        </Template>
+    </Story>
+
+</Stories>

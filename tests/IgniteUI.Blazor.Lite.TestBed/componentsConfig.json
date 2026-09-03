@@ -7,6 +7,14 @@
     ],
     "ExcludedEvents": []
   },
+  "IgbColorPicker": {
+    "ExcludedProps": [
+      // The generic sample string is not a valid CSS color and the component clears
+      // invalid values by design, so the live property never reflects it back.
+      // The unit interop contract covers the value round-trip and the @bind-Value pair.
+      "Value"
+    ]
+  },
   "IgbDatePicker": {
     "ExcludedProps": ["ResourceStrings"],
     "DependantMethods": []

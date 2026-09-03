@@ -13,6 +13,8 @@ namespace IgniteUI.Blazor.Controls
                     return true;
                 case "FormatSpecifier":
                     return true;
+                case "RegisterIconOptions":
+                    return true;
                 case "NumberFormatSpecifier":
                     return true;
                 case "ActiveStepChangedEventArgs":
@@ -102,6 +104,12 @@ namespace IgniteUI.Blazor.Controls
                 case "SelectItemComponentEventArgs":
                 case "WebSelectItemComponentEventArgs":
                     return true;
+                case "SplitterLayoutChangedEventArgs":
+                case "WebSplitterLayoutChangedEventArgs":
+                    return true;
+                case "SplitterLayoutChangedEventArgsDetail":
+                case "WebSplitterLayoutChangedEventArgsDetail":
+                    return true;
                 case "SplitterResizeEventArgs":
                 case "WebSplitterResizeEventArgs":
                     return true;
@@ -148,6 +156,9 @@ namespace IgniteUI.Blazor.Controls
                     break;
                 case "FormatSpecifier":
                     return new IgbFormatSpecifier();
+                    break;
+                case "RegisterIconOptions":
+                    return new IgbRegisterIconOptions();
                     break;
                 case "NumberFormatSpecifier":
                     return new IgbNumberFormatSpecifier();
@@ -267,6 +278,14 @@ namespace IgniteUI.Blazor.Controls
                 case "SelectItemComponentEventArgs":
                 case "WebSelectItemComponentEventArgs":
                     return new IgbSelectItemComponentEventArgs();
+                    break;
+                case "SplitterLayoutChangedEventArgs":
+                case "WebSplitterLayoutChangedEventArgs":
+                    return new IgbSplitterLayoutChangedEventArgs();
+                    break;
+                case "SplitterLayoutChangedEventArgsDetail":
+                case "WebSplitterLayoutChangedEventArgsDetail":
+                    return new IgbSplitterLayoutChangedEventArgsDetail();
                     break;
                 case "SplitterResizeEventArgs":
                 case "WebSplitterResizeEventArgs":

@@ -93,13 +93,14 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
     <IgbIcon slot="start" IconName="star" Collection="material" />
     Blazor
 </IgbChip>
+<IgbChip Outlined="true" Variant="StyleVariant.Primary">Outlined</IgbChip>
 
 @code {
     void OnChipRemoved(IgbComponentBoolValueChangedEventArgs e) { }
 }
 ```
 
-`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`. `IgbChip` also has `Selected` / `SelectedChanged` and a `Select` event.
+`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`. `IgbChip` also has `Outlined`, `Selected` / `SelectedChanged` and a `Select` event.
 
 ## Progress
 
@@ -137,6 +138,19 @@ The trigger goes in `slot="target"`. `IgbDropdownGroup` groups items; `Placement
 ```
 
 `Anchor` is the **id string** of the target element. `Message` sets plain text without child content; `ShowTriggers` / `HideTriggers` override the default hover/focus behavior; `Sticky` keeps it open until dismissed.
+
+## QR Code
+
+```razor
+<IgbQrCode Value="https://www.infragistics.com" Size="192" />
+
+<IgbQrCode Value="https://www.infragistics.com" Size="256"
+           ErrorLevel="QrErrorCorrectionLevel.Quartile"
+           DotStyle="QrDotStyle.Rounded" SquareStyle="QrCornerSquareStyle.Rounded"
+           LogoSrc="images/logo.svg" LogoSize="0.6" />
+```
+
+Renders the `Value` string (URL, text, any payload) as a scannable SVG. `Version` (1-40) and `ErrorLevel` (`Low | Medium | Quartile | High`) are chosen automatically when unset, and a logo raises the error level on its own unless one is set explicitly. `Size` is the rendered pixel size and `Margin` the quiet zone in modules; `LogoSrc`, `LogoSize` and `LogoMargin` place a centered logo. Color it with the `--ig-qr-code-background`, `--ig-qr-code-dark-color`, `--ig-qr-code-corner-square-color` and `--ig-qr-code-corner-dot-color` custom properties.
 
 ## Ripple, Highlight, Chat
 

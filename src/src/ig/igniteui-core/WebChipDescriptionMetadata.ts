@@ -33,6 +33,7 @@ export class WebChipDescriptionMetadata extends Base {
 		metadata.item("Variant", "ExportedType:string:StyleVariant");
 		metadata.item("Variant@stringUnion", "WebComponents;React");
 		metadata.item("Variant@names", "Primary;Info;Success;Warning;Danger");
+		metadata.item("Outlined", "Boolean");
 		metadata.item("RemoveRef", "EventRef:ComponentBoolValueChangedEventHandler:remove");
 		metadata.item("RemoveRef@args", "ComponentBoolValueChangedEventArgs");
 		metadata.item("SelectRef", "EventRef:ComponentBoolValueChangedEventHandler:select");

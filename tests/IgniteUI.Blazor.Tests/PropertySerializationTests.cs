@@ -364,12 +364,14 @@ public class PropertySerializationTests : BlazorComponentTestBase
         chip.Selectable = true;
         chip.Selected = true;
         chip.Variant = StyleVariant.Success;
+        chip.Outlined = true;
 
         Assert.True(chip.Disabled);
         Assert.True(chip.Removable);
         Assert.True(chip.Selectable);
         Assert.True(chip.Selected);
         Assert.Equal(StyleVariant.Success, chip.Variant);
+        Assert.True(chip.Outlined);
     }
 
     // Badge full property coverage
@@ -805,5 +807,75 @@ public class PropertySerializationTests : BlazorComponentTestBase
 
         Assert.True(tab.Disabled);
         Assert.True(tab.Selected);
+    }
+
+    // ColorPicker full property coverage
+    [Fact]
+    public void ColorPicker_AllProperties_SetCorrectly()
+    {
+        var colorPicker = new IgbColorPicker();
+        colorPicker.Value = "#ff0000";
+        colorPicker.Label = "Background";
+        colorPicker.Format = ColorFormat.Rgb;
+        colorPicker.HideFormats = true;
+        colorPicker.ShowAlpha = true;
+        colorPicker.Mode = ColorPickerMode.Input;
+        colorPicker.Swatches = ["#ff0000", "#00ff00"];
+        colorPicker.Disabled = true;
+        colorPicker.Required = true;
+        colorPicker.Invalid = true;
+        colorPicker.Open = true;
+
+        Assert.Equal("#ff0000", colorPicker.Value);
+        Assert.Equal("Background", colorPicker.Label);
+        Assert.Equal(ColorFormat.Rgb, colorPicker.Format);
+        Assert.True(colorPicker.HideFormats);
+        Assert.True(colorPicker.ShowAlpha);
+        Assert.Equal(ColorPickerMode.Input, colorPicker.Mode);
+        Assert.Equal(["#ff0000", "#00ff00"], colorPicker.Swatches);
+        Assert.True(colorPicker.Disabled);
+        Assert.True(colorPicker.Required);
+        Assert.True(colorPicker.Invalid);
+        Assert.True(colorPicker.Open);
+    }
+
+    // QrCode full property coverage
+    [Fact]
+    public void QrCode_AllProperties_SetCorrectly()
+    {
+        var qrCode = new IgbQrCode();
+        qrCode.Value = "https://www.infragistics.com";
+        qrCode.Version = 7;
+        qrCode.ErrorLevel = QrErrorCorrectionLevel.Quartile;
+        qrCode.Size = 256;
+        qrCode.Margin = 2;
+        qrCode.LogoSrc = "logo.png";
+        qrCode.LogoSize = 0.6;
+        qrCode.LogoMargin = 8;
+        qrCode.DotStyle = QrDotStyle.Circle;
+        qrCode.SquareStyle = QrCornerSquareStyle.Rounded;
+
+        Assert.Equal("https://www.infragistics.com", qrCode.Value);
+        Assert.Equal(7, qrCode.Version);
+        Assert.Equal(QrErrorCorrectionLevel.Quartile, qrCode.ErrorLevel);
+        Assert.Equal(256, qrCode.Size);
+        Assert.Equal(2, qrCode.Margin);
+        Assert.Equal("logo.png", qrCode.LogoSrc);
+        Assert.Equal(0.6, qrCode.LogoSize);
+        Assert.Equal(8, qrCode.LogoMargin);
+        Assert.Equal(QrDotStyle.Circle, qrCode.DotStyle);
+        Assert.Equal(QrCornerSquareStyle.Rounded, qrCode.SquareStyle);
+    }
+
+    // Splitter collapsed panes coverage
+    [Fact]
+    public void Splitter_CollapsedProperties_SetCorrectly()
+    {
+        var splitter = new IgbSplitter();
+        splitter.StartCollapsed = true;
+        splitter.EndCollapsed = true;
+
+        Assert.True(splitter.StartCollapsed);
+        Assert.True(splitter.EndCollapsed);
     }
 }
