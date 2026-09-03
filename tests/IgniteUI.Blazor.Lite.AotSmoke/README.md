@@ -8,7 +8,9 @@ ILC analysis covers what `Main` reaches — the library's entire `RequiresDynami
 
 - Reflection-built schema over a user POCO (preserved via the docs/TRIMMING.md pattern): every untyped and typed getter across the closed delegate set — int/double/string/DateTime/bool/decimal, enum→underlying conversion, nullables, and the public-field getters.
 - Dictionary-shaped data: indexer reflection + typed dictionary getters.
-- `ExtractSchema`/`ExtractSchemaFromType` entry points, the `MarshalByValueFactory` switch, and an `IgbJsonContext` round-trip.
+- `ExtractSchema`/`ExtractSchemaFromType` entry points and an `IgbJsonContext` round-trip.
+
+Main must not construct any ComponentBase-derived type (components, event args): ILC then compiles `SetParametersAsync` and hits aspnetcore's own IL2072 in `ComponentProperties.SetProperties` (dotnet/aspnetcore#51598) — the same framework wall that forced dropping `TrimmerRootAssembly`.
 
 ## Run it
 

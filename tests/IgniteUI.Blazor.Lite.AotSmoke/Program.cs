@@ -104,8 +104,12 @@ namespace IgniteUI.Blazor.Lite.AotSmoke
                 Check(UnmarshalledDataSource.ExtractSchema(new List<SmokeItem> { item }) != null, "ExtractSchema over a list");
                 Check(UnmarshalledDataSource.ExtractSchemaFromType(typeof(SmokeItem[])) != null, "ExtractSchemaFromType over an array type");
 
-                // Event-args factory + source-generated JSON round-trip.
-                Check(MarshalByValueFactory.CreateInstance("FocusOptions") is IgbFocusOptions, "MarshalByValueFactory switch");
+                // No MarshalByValueFactory check here: constructing any ComponentBase-derived type
+                // (all marshal-by-value types are) makes ILC compile SetParametersAsync and hit
+                // aspnetcore's own IL2072 in ComponentProperties.SetProperties (dotnet/aspnetcore#51598).
+                // The factory is a static switch of news with no dynamic-code surface anyway.
+
+                // Source-generated JSON round-trip.
                 var context = new IgbJsonContext(new JsonSerializerOptions());
                 var json = JsonSerializer.Serialize(dict, context.DictionaryStringObject);
                 var back = JsonSerializer.Deserialize(json, context.DictionaryStringObject);
