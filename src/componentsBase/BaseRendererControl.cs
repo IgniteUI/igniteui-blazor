@@ -1608,15 +1608,14 @@ namespace IgniteUI.Blazor.Controls
 
         private async Task<object> SendMessageImmediate(RendererMessage m)
         {
-            if (disposedValue)
-            {
-                return null;
-            }
-
-            // The send must start under this lock.
+            // The send must start under this lock, which is also where disposal closes it.
             Task<object> sent;
             lock (_messageQueueLock)
             {
+                if (disposedValue)
+                {
+                    return null;
+                }
                 Update();
                 sent = SendJsonImmediate(m);
             }
@@ -1625,12 +1624,12 @@ namespace IgniteUI.Blazor.Controls
 
         private object SendMessageSyncImmediate(RendererMessage m)
         {
-            if (disposedValue)
-            {
-                return null;
-            }
             lock (_messageQueueLock)
             {
+                if (disposedValue)
+                {
+                    return null;
+                }
                 UpdateSync();
                 return SendJsonImmediateSync(m);
             }
@@ -1640,6 +1639,11 @@ namespace IgniteUI.Blazor.Controls
         {
             lock (_messageQueueLock)
             {
+                // Also checked here so disposal cannot land between a caller's check and its enqueue.
+                if (disposedValue)
+                {
+                    return;
+                }
                 _messageQueue.AddLast(m);
             }
         }
@@ -1670,7 +1674,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 this._updateQueued = false;
 
-                if (!_ready)
+                if (!_ready || disposedValue)
                 {
                     return;
                 }
@@ -1691,7 +1695,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 this._updateQueued = false;
 
-                if (!_ready)
+                if (!_ready || disposedValue)
                 {
                     return;
                 }
@@ -2178,7 +2182,7 @@ namespace IgniteUI.Blazor.Controls
                         _methodReturns[invokeId] = result;
                     }
                 }
-                // Completed outside the lock, since a continuation can run inline on this thread.
+                // Completed outside the lock: the continuation runs inline on this thread.
                 waiting?.TrySetResult(result);
             });
         }
@@ -3201,12 +3205,16 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public virtual async ValueTask DisposeAsync()
         {
-            if (disposedValue)
+            // Published under the queue's lock, so nothing can enqueue once teardown has begun.
+            lock (_messageQueueLock)
             {
-                return;
+                if (disposedValue)
+                {
+                    return;
+                }
+                disposedValue = true;
             }
 
-            disposedValue = true;
             _shouldReevaluateRuntime = true;
             try
             {
