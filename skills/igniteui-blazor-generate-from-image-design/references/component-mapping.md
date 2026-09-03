@@ -13,7 +13,6 @@ A selection reference, not an API reference. Confirm exact parameters with `get_
 | Step-by-step wizard | `IgbStepper` + `IgbStep` | `Orientation`, `Linear` |
 | Resizable two-pane split | `IgbSplitter` | `slot="start"` / `slot="end"`, `StartSize`, min/max sizes |
 | Section separator line | `IgbDivider` | `Vertical`, `Middle`, `LineType` |
-| Very long / endless scrolling list of uniform rows | `IgbVirtualScroll` | `Data`, `EstimatedItemSize`, `ItemTemplateScript` (client-side template), `DataRequest` for infinite scroll |
 | Draggable/resizable widget dashboard | `IgbTileManager` + `IgbTile` | `ColumnCount`, `Gap`, `ColSpan`/`RowSpan`, `DragMode`, `ResizeMode` |
 | Static card grid | `IgbCard` inside CSS Grid | use `IgbTileManager` only when tiles actually drag or resize |
 | IDE-style dockable/floating panes | `IgbDockManager` | licensed package only; needs an explicit height |

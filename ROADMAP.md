@@ -7,8 +7,7 @@
 1. Grids performance improvements using a new and faster virtualization component
 2. **[DONE]** `IgbColorPicker` - color input with an HSV canvas, hue/alpha sliders, editable color string, swatches and EyeDropper support
 3. **[DONE]** `IgbQrCode` - renders a scannable QR code as an SVG, with styling options and an optional centered logo
-4. **[DONE]** `IgbVirtualScroll` - virtualization container that renders only the visible items of large or unbounded lists
-5. **[DONE]** Aligned to `igniteui-webcomponents@7.3.0` - Chip `Outlined`, Splitter collapsed panes and `LayoutChanged`, Tabs `SelectedTab`, Icon registration options
+4. **[DONE]** Aligned to `igniteui-webcomponents@7.3.0` - Chip `Outlined`, Splitter collapsed panes and `LayoutChanged`, Tabs `SelectedTab`, Icon registration options
 
 ## Going down the road
 

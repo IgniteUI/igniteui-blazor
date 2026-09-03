@@ -742,20 +742,6 @@ public class RenderingSerializationTests : BlazorComponentTestBase
         Assert.Equal("rounded", el.GetAttribute("square-style"));
     }
 
-    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
-    public void VirtualScroll_RendersAllAttributes()
-    {
-        var cut = Render<IgbVirtualScroll>(p => p
-            .Add(x => x.Orientation, ContentOrientation.Horizontal)
-            .Add(x => x.OverScan, 5)
-            .Add(x => x.EstimatedItemSize, 32));
-
-        var el = cut.Find("igc-virtual-scroll");
-        Assert.Equal("horizontal", el.GetAttribute("orientation"));
-        Assert.Equal("5", el.GetAttribute("over-scan"));
-        Assert.Equal("32", el.GetAttribute("estimated-item-size"));
-    }
-
     [Fact]
     public void Splitter_CollapsedPanes_RenderAttributes()
     {

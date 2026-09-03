@@ -184,34 +184,3 @@ Width comes from the `--menu-full-width` custom property (default `15rem`); the 
 
 `IgbSplitter`: `Orientation`, `StartSize` / `EndSize`, `StartMinSize` / `StartMaxSize` / `EndMinSize` / `EndMaxSize` (all CSS lengths — `280px`, `30%`), `StartCollapsed` / `EndCollapsed`, `DisableResize`, `DisableCollapse`, `HideDragHandle`, `HideCollapseButtons`, `ToggleAsync(PanePosition)`. `LayoutChanged` fires after a user resize or collapse with a full snapshot (`StartSize`, `EndSize`, `StartCollapsed`, `EndCollapsed`); `ResizeStart` / `Resizing` / `ResizeEnd` report pixel sizes during a drag.
 `IgbDivider`: `Vertical`, `Middle`, `LineType`.
-
-## Virtual Scroll
-
-```razor
-<IgbVirtualScroll Data="Items" EstimatedItemSize="40"
-                  ItemTemplateScript="MyItemTemplate"
-                  DataRequest="OnDataRequest"
-                  style="height: 400px;" />
-
-@code {
-    Item[] Items { get; set; } = LoadFirstPage();
-
-    void OnDataRequest(IgbVirtualScrollDataRequestEventArgs e)
-    {
-        // Infinite scroll: append at least e.Detail.Count items from e.Detail.StartIndex,
-        // assigning a NEW collection reference.
-        Items = [.. Items, .. LoadMore((int)e.Detail.StartIndex, (int)e.Detail.Count)];
-    }
-}
-```
-
-Renders only the items in the viewport plus `OverScan`, so an unbounded list stays cheap. The item template is a **client-side** function registered before the component renders — typically from a JS module loaded in `OnAfterRenderAsync` — which receives the item context (`value`, `index`, `count`) and returns a template built with `window.igTemplating.html`:
-
-```js
-window.igRegisterScript('MyItemTemplate', (ctx) => {
-    const html = window.igTemplating.html;
-    return html`<div style="padding: 8px;">${ctx.value.Name}</div>`;
-}, false);
-```
-
-`Data` is compared by reference — assign a new collection instead of mutating in place, or the rendered window will not update. `ScrollToIndexAsync(index)` scrolls to an item, optionally with `IgbScrollIntoViewOptions` for alignment and behavior. `StateChange` reports the rendered window (`StartIndex`, `EndIndex`, `ViewportSize`, `TotalSize`) and `DataRequest` asks for items not yet loaded. `Orientation` is `ContentOrientation.Vertical | Horizontal`, RTL is supported, and item sizes are measured after first render — `EstimatedItemSize` only seeds the initial scrollbar.

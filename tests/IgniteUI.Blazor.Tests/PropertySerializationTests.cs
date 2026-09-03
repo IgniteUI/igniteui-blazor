@@ -867,20 +867,6 @@ public class PropertySerializationTests : BlazorComponentTestBase
         Assert.Equal(QrCornerSquareStyle.Rounded, qrCode.SquareStyle);
     }
 
-    // VirtualScroll full property coverage
-    [Fact]
-    public void VirtualScroll_AllProperties_SetCorrectly()
-    {
-        var virtualScroll = new IgbVirtualScroll();
-        virtualScroll.Orientation = ContentOrientation.Horizontal;
-        virtualScroll.OverScan = 5;
-        virtualScroll.EstimatedItemSize = 32;
-
-        Assert.Equal(ContentOrientation.Horizontal, virtualScroll.Orientation);
-        Assert.Equal(5, virtualScroll.OverScan);
-        Assert.Equal(32, virtualScroll.EstimatedItemSize);
-    }
-
     // Splitter collapsed panes coverage
     [Fact]
     public void Splitter_CollapsedProperties_SetCorrectly()

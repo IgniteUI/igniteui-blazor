@@ -1,7 +1,7 @@
 ---
 license: MIT
 name: igniteui-blazor-components
-description: "Ignite UI for Blazor non-grid components: project setup and module registration; form controls (input, textarea, combo, select, date/time pickers, calendar, checkbox, radio, switch, slider, rating, mask input, color picker); layout and navigation (tabs, stepper, accordion, expansion panel, nav drawer, navbar, tree, splitter, divider, virtual scroll); data display (list, card, carousel, avatar, badge, chip, icon, progress, dropdown, tooltip, chat, QR code); overlays (dialog, snackbar, toast, banner); Dock Manager and Tile Manager; and visualizations (charts, gauges, maps, sparklines). Use for any Ignite UI Blazor component that is not a data grid. For data grids use igniteui-blazor-grids; for theming and CSS use igniteui-blazor-theming."
+description: "Ignite UI for Blazor non-grid components: project setup and module registration; form controls (input, textarea, combo, select, date/time pickers, calendar, checkbox, radio, switch, slider, rating, mask input, color picker); layout and navigation (tabs, stepper, accordion, expansion panel, nav drawer, navbar, tree, splitter, divider); data display (list, card, carousel, avatar, badge, chip, icon, progress, dropdown, tooltip, chat, QR code); overlays (dialog, snackbar, toast, banner); Dock Manager and Tile Manager; and visualizations (charts, gauges, maps, sparklines). Use for any Ignite UI Blazor component that is not a data grid. For data grids use igniteui-blazor-grids; for theming and CSS use igniteui-blazor-theming."
 user-invocable: true
 ---
 
@@ -21,7 +21,7 @@ user-invocable: true
 |---|---|
 | NuGet install, `Program.cs`, `_Imports.razor`, theme CSS + script tags, project types (Server / WASM / Web App / MAUI), render modes | [`references/setup.md`](./references/setup.md) |
 | Input, Textarea, Combo, Select, Date Picker, Date Range Picker, Calendar, Date Time Input, Mask Input, Checkbox, Radio, Switch, Slider, Range Slider, Rating, Color Picker, value binding | [`references/form-controls.md`](./references/form-controls.md) |
-| Tabs, Stepper, Accordion, Expansion Panel, Nav Drawer, Navbar, Tree, Splitter, Divider, Virtual Scroll | [`references/layout.md`](./references/layout.md) |
+| Tabs, Stepper, Accordion, Expansion Panel, Nav Drawer, Navbar, Tree, Splitter, Divider | [`references/layout.md`](./references/layout.md) |
 | List, Card, Carousel, Avatar, Badge, Chip, Icon, Icon Button, Button, Button Group, Circular/Linear Progress, Dropdown, Tooltip, QR Code, Ripple, Chat, Highlight | [`references/data-display.md`](./references/data-display.md) |
 | Dialog, Snackbar, Toast, Banner | [`references/feedback.md`](./references/feedback.md) |
 | Dock Manager, Tile Manager | [`references/layout-manager.md`](./references/layout-manager.md) |
