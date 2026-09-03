@@ -1078,7 +1078,11 @@ namespace IgniteUI.Blazor.Controls
             var ret = await SendMessageImmediate(m);
 
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-            _methodTasks.Add(invokeId, tcs);
+            // A return can arrive on the dispatcher while a call made off it is still getting here.
+            lock (_semLock)
+            {
+                _methodTasks[invokeId] = tcs;
+            }
 
             if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
             {
@@ -1091,20 +1095,29 @@ namespace IgniteUI.Blazor.Controls
                     ((JsonElement)retDict["retType"]).GetString() == "promise")
                 {
                     // did we already get a value returned for this method invoke before we could start up a task?
-                    if (_methodReturns.ContainsKey(invokeId))
+                    object early;
+                    bool arrivedEarly;
+                    lock (_semLock)
                     {
-                        tcs.SetResult(_methodReturns[invokeId]);
+                        arrivedEarly = _methodReturns.TryGetValue(invokeId, out early);
+                    }
+                    if (arrivedEarly)
+                    {
+                        tcs.TrySetResult(early);
                     }
                 }
                 else
                 {
-                    tcs.SetResult(ret);
+                    tcs.TrySetResult(ret);
                 }
             }
             var result = await tcs.Task;
 
-            _methodTasks.Remove(invokeId);
-            _methodReturns.Remove(invokeId);
+            lock (_semLock)
+            {
+                _methodTasks.Remove(invokeId);
+                _methodReturns.Remove(invokeId);
+            }
 
             return result;
         }
@@ -2157,14 +2170,16 @@ namespace IgniteUI.Blazor.Controls
             }
             InvokeAsync(() =>
             {
-                if (_methodTasks.ContainsKey(invokeId))
+                TaskCompletionSource<object> waiting;
+                lock (_semLock)
                 {
-                    _methodTasks[invokeId].SetResult(result);
+                    if (!_methodTasks.TryGetValue(invokeId, out waiting))
+                    {
+                        _methodReturns[invokeId] = result;
+                    }
                 }
-                else
-                {
-                    _methodReturns.Add(invokeId, result);
-                }
+                // Completed outside the lock, since a continuation can run inline on this thread.
+                waiting?.TrySetResult(result);
             });
         }
 
