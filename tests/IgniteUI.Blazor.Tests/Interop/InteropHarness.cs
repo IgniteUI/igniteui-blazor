@@ -157,6 +157,13 @@ public abstract class InteropHarness
     public abstract void SetupMethodResult(string methodName, InteropReturn result);
 
     /// <summary>
+    /// Leaves invocations of <paramref name="methodName"/> unanswered until the returned action is
+    /// called with a reply. Until then the caller stays suspended on its send, so a test can
+    /// deliver something else - a return of its own, say - before the call resumes.
+    /// </summary>
+    public abstract Action<InteropReturn> WithholdMethodReply(string methodName);
+
+    /// <summary>
     /// Stubs the JS-side value for current-state reads of <paramref name="propertyName"/>.
     /// How a read travels is implementation-specific (a <c>"p:Name"</c> method message
     /// today; possibly a dedicated interop call with different arguments later).
