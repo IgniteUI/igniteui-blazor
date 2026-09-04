@@ -7,9 +7,16 @@ import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
 import { IgcPortalModule } from 'igniteui-core/igc-portal';
+import { IgcTemplateContentComponent } from 'igniteui-core/igc-template-content-component';
 import { refValues, itemMaps } from './refs-state';
 
 IgcPortalModule.register();
+// Ensure the <igc-template-content> host element is always defined. Bridged
+// templates invoked directly by a web component (e.g. igc-combo item /
+// group-header templates) rely on this element to satisfy the Blazor template
+// lifecycle contract, and unlike the grid the combo does not pull in the
+// template-container module on its own.
+IgcTemplateContentComponent.register();
 
 (window as any).igTemplating = {
   html: html,
@@ -946,6 +953,28 @@ function updateAngularElement(element: any) {
                 }
                 if (!context) {
                   return html`<div></div>`;
+                }
+                // Some web components (e.g. igc-combo item / group-header templates)
+                // invoke the template function directly with a plain `{ item }`
+                // context that lacks the Blazor lifecycle markers (___contentId /
+                // ___immediate) this bridge relies on. In that case, host the template
+                // in an <igc-template-content> element - the same wrapper the grid uses
+                // for EmptyGridTemplate / cell templates - which drives
+                // ___onTemplateInit / ___onTemplateContextChanged and injects
+                // ___contentId onto the context before re-invoking this function (so
+                // there is no recursion on the second pass).
+                if (
+                  !context.___contentId &&
+                  !context.___immediate &&
+                  !(context.i && context.i.___immediate) &&
+                  !(context.i && context.i.nativeElement && context.i.nativeElement.___immediate) &&
+                  !(context.i && context.i.___contentId) &&
+                  !(context.i && context.i.nativeElement && context.i.nativeElement.___contentId)
+                ) {
+                  return html`<igc-template-content
+                    .template=${currTemplate}
+                    .context=${context}
+                  ></igc-template-content>`;
                 }
                 let contentId = context.___contentId;
                 if (

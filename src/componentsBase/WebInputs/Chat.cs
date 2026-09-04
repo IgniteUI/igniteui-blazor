@@ -6,6 +6,14 @@ namespace IgniteUI.Blazor.Controls
     /// </remarks>
     public partial class IgbChat
     {
+        protected override bool NeedsDynamicContent
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public IgbChatDraftMessage GetCurrentDraftMessage()
         {
             var iv = InvokeMethodSync("p:DraftMessage", new object[] { }, new string[] { });

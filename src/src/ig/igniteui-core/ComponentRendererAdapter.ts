@@ -364,6 +364,10 @@ export class ComponentRendererAdapter implements IComponentRendererAdapter {
                     }
                 }
                 let extObj = target.externalObject;
+                if (!extObj) {
+                    target[propertyName] = value;
+                    return;
+                }
                 if (target.externalObject.externalObject) {
                     extObj = target.externalObject.externalObject;
                 }
