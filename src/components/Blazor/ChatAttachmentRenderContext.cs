@@ -53,5 +53,27 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        {
+            base.ToEventJson(control, args);
+
+            if (IsPropDirty("Attachment"))
+            { args["attachment"] = ObjectToParam(this._attachment); }
+
+        }
+
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args.ContainsKey("attachment"))
+            { this.Attachment = (IgbChatMessageAttachment)ConvertReturnValue(args["attachment"], "ChatMessageAttachment", true); }
+
+            this.SuppressParentNotify = false;
+        }
+
     }
 }

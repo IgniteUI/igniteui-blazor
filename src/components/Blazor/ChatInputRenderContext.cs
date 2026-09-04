@@ -48,5 +48,27 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        {
+            base.ToEventJson(control, args);
+
+            if (IsPropDirty("Value"))
+            { args["value"] = this._value; }
+
+        }
+
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args.ContainsKey("value"))
+            { this.Value = ReturnToString(args["value"]); }
+
+            this.SuppressParentNotify = false;
+        }
+
     }
 }

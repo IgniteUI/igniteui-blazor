@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -298,8 +300,33 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
+        [UnconditionalSuppressMessage("Trimming", "IL2087",
+            Justification = "T is always a concrete context type supplied via a generated DynamicContentInfo<TContext> instantiation, so its parameterless constructor is preserved.")]
         public override void UpdateContext(object context)
         {
+            // Fast path: the client already marshalled a strongly typed context across.
+            if (context is T typed)
+            {
+                Context = typed;
+                return;
+            }
+
+            // Fallback: some web components (e.g. the chat renderers) hand the template
+            // context back as a plain property bag (e.g. {"message":{...}}) without a
+            // top-level marshal-by-value type, so ConvertReturnValue leaves it as a
+            // Dictionary. When the context is a renderer element, build it here and
+            // populate it through FromEventJson (the same path used for event args).
+            if (context is Dictionary<string, object> dict &&
+                typeof(BaseRendererElement).IsAssignableFrom(typeof(T)) &&
+                Owner != null)
+            {
+                var element = (BaseRendererElement)Activator.CreateInstance(typeof(T));
+                element.TempParent = Owner;
+                element.FromEventJson(Owner, dict);
+                Context = (T)(object)element;
+                return;
+            }
+
             Context = (T)context;
         }
     }
