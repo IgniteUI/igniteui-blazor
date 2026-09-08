@@ -482,7 +482,9 @@ jobs:
 
       # -b is the signed package folder, so the shipped nupkg and its hash land in the files section.
       # -bc is the repository root because the npm graph lives there alongside the .NET project.
-      # The manifests go under RUNNER_TEMP: anything written inside -bc is scanned as build content.
+      # Written to its own subtree, not the shared sbom root: New-Sbom.ps1 wipes -OutputRoot before
+      # promoting the generated manifests into it, and sbom/cyclonedx/npm/bom.json already lives
+      # under that root at this point in the job.
       - name: Generate SPDX SBOMs
         shell: pwsh
         run: >
@@ -491,14 +493,14 @@ jobs:
           -PackageVersion "${{ env.VERSION }}"
           -BuildDropPath "${{ github.workspace }}/artifacts"
           -BuildComponentPath "${{ github.workspace }}"
-          -OutputRoot "${{ runner.temp }}/sbom"
+          -OutputRoot "${{ runner.temp }}/sbom/spdx"
           -LicenseTimeoutSeconds ${{ env.SBOM_LICENSE_TIMEOUT_SECONDS }}
 
       - name: Verify SPDX SBOM output
         shell: pwsh
         run: >
           .github/scripts/Assert-Sbom.ps1
-          -OutputRoot "${{ runner.temp }}/sbom"
+          -OutputRoot "${{ runner.temp }}/sbom/spdx"
           -ExpectedPackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
 
       # CycloneDX reads licences and authors from each package's own nuspec, so it fills the fields the
@@ -561,7 +563,7 @@ jobs:
         with:
           subject-name: ${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg
           subject-digest: sha256:${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
-          sbom-path: ${{ runner.temp }}/sbom/_manifest/spdx_2.2/manifest.spdx.json
+          sbom-path: ${{ runner.temp }}/sbom/spdx/_manifest/spdx_2.2/manifest.spdx.json
 
       # Distinct predicate type from the SPDX attestation, so both bind to the same digest without colliding.
       - name: Attest CycloneDX SBOM
@@ -699,8 +701,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          (cd sbom/_manifest/spdx_2.2 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-2.2.zip" .)
-          (cd sbom/_manifest/spdx_3.0 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-3.0.zip" .)
+          (cd sbom/spdx/_manifest/spdx_2.2 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-2.2.zip" .)
+          (cd sbom/spdx/_manifest/spdx_3.0 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-3.0.zip" .)
           (cd evidence/dependency-scan && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.dependency-scan.zip" .)
 
           gh release upload "$TAG" --clobber -R "${{ github.repository }}" \
