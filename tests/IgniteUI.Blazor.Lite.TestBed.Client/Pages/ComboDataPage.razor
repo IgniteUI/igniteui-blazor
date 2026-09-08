@@ -1,0 +1,111 @@
+@page "/combo-data"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.ObjectModel
+@implements IDisposable
+@inject IJSRuntime JS
+
+@* Combo data-binding scenario page, WebAssembly-rendered so data crosses the same
+   in-process channel a production WASM app uses (the Server-rendered sweep covers
+   the JSON channel). The scenario comes from the query string; tests drive further
+   scenarios and mutations through the JSInvokable hooks below via window.clientPageRef.
+   Prerender is off, so the combo existing in the DOM means the WASM runtime is live. *@
+
+<div id="container">
+    <IgbCombo T="object" Data="_data" ValueKey="@_valueKey" DisplayKey="@_displayKey" ValueChanged="OnValueChanged" />
+</div>
+
+@code {
+    private object? _data;
+    private string? _valueKey;
+    private string? _displayKey;
+    private ObservableCollection<ComboDataScenarios.Product>? _observable;
+    private object[]? _lastValue;
+    private DotNetObjectReference<ComboDataPage>? _selfRef;
+
+    [SupplyParameterFromQuery(Name = "scenario")]
+    public string? Scenario { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Apply(Scenario ?? "typed-products");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _selfRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("registerClientPageRef", _selfRef);
+        }
+    }
+
+    public void Dispose()
+    {
+        _selfRef?.Dispose();
+    }
+
+    [JSInvokable]
+    public async Task SetComboScenario(string scenario)
+    {
+        await InvokeAsync(() =>
+        {
+            Apply(scenario);
+            StateHasChanged();
+        });
+    }
+
+    /// <summary>Reports what ValueChanged last received: the item names and whether they
+    /// are the same instances as in the bound data (resolved back, not copies).</summary>
+    [JSInvokable]
+    public object GetLastValue()
+    {
+        var received = _lastValue ?? Array.Empty<object>();
+        var bound = (_data as System.Collections.IEnumerable)?.Cast<object>().ToList() ?? new List<object>();
+        return new
+        {
+            Count = received.Length,
+            Names = received.Select(v => (v as ComboDataScenarios.Product)?.Name ?? v?.ToString()).ToArray(),
+            SameInstances = received.Length > 0 && received.All(v => bound.Any(b => ReferenceEquals(b, v))),
+        };
+    }
+
+    private void OnValueChanged(object[] value)
+    {
+        _lastValue = value;
+    }
+
+    /// <summary>Mutates the observable-products collection in place; change notifications,
+    /// not re-renders, carry it to the client.</summary>
+    [JSInvokable]
+    public async Task MutateComboData(string action)
+    {
+        await InvokeAsync(() =>
+        {
+            var items = _observable!;
+            switch (action)
+            {
+                case "add":
+                    items.Add(ComboDataScenarios.AddedProduct());
+                    break;
+                case "removeFirst":
+                    items.RemoveAt(0);
+                    break;
+                case "replaceFirst":
+                    items[0] = ComboDataScenarios.ReplacementProduct();
+                    break;
+                case "clear":
+                    items.Clear();
+                    break;
+            }
+        });
+    }
+
+    private void Apply(string scenario)
+    {
+        var s = ComboDataScenarios.Get(scenario);
+        _data = s.Data;
+        _valueKey = s.ValueKey;
+        _displayKey = s.DisplayKey;
+        _observable = s.Data as ObservableCollection<ComboDataScenarios.Product>;
+    }
+}

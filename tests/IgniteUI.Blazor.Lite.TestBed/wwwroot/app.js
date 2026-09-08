@@ -12,6 +12,13 @@ function onAfterRender() {
   console.log('App Loaded.');
 }
 
+/** WASM client pages pass a `DotNetObjectReference` here for tests to invoke scenario methods;
+ * `DotNet.invokeMethodAsync` throws if there's a second .NET runtime (e.g. an InteractiveServer island, like HeadOutlet).
+ */
+function registerClientPageRef(pageRef) {
+  window.clientPageRef = pageRef;
+}
+
 async function setSelector(componentSelector) {
   window.targetName = componentSelector;
 }

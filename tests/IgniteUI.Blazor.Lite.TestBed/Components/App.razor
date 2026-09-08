@@ -13,7 +13,8 @@
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveServer" />
+    @* No global render mode: Pages declare InteractiveServer(Home) or InteractiveWebAssembly (client proj). *@
+    <Routes />
 
     <script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
     <script src="_framework/blazor.web.js"></script>

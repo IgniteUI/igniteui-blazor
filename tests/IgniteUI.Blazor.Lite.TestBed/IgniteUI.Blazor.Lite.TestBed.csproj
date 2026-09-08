@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
   </ItemGroup>
 
   <ItemGroup>
 	  <ProjectReference Include="..\..\src\IgniteUI.Blazor.Lite.csproj" />
+	  <ProjectReference Include="..\IgniteUI.Blazor.Lite.TestBed.Client\IgniteUI.Blazor.Lite.TestBed.Client.csproj" />
   </ItemGroup>
 
 </Project>

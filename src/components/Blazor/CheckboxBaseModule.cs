@@ -4,7 +4,8 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for <see cref="IgbCheckboxBase"/>. Registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbCheckboxBaseModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbCheckboxBaseModule
+    [IgbModule<IgbCheckboxBaseModule>]
+    public partial class IgbCheckboxBaseModule : IIgbModule
     {
         /// <summary>
         /// No-op.

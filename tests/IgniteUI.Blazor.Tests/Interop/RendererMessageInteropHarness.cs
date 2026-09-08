@@ -25,14 +25,29 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, bool> _stubbedMethods = new(StringComparer.Ordinal);
     private readonly Dictionary<string, JSRuntimeInvocationHandler<object>> _methodHandlers = new(StringComparer.Ordinal);
 
+    /// <summary>
+    /// Default: forces the JSON data-source channel (as on Blazor Server), keeping data
+    /// transfers observable as refChanged messages.
+    /// </summary>
     public RendererMessageInteropHarness(BunitJSInterop js)
+        : this(js, forceJsonDataMarshalling: true)
+    {
+    }
+
+    /// <summary>
+    /// With <paramref name="forceJsonDataMarshalling"/> false, drives the in-process
+    /// (unmarshalled) data channel instead: the service's runtime carries an
+    /// InvokeUnmarshalled method that RuntimeHelper discovers by reflection, so
+    /// DataSourceManager picks UnmarshalledDataSource and the column messages are
+    /// recorded in <see cref="UnmarshalledColumnMessages"/> instead of crossing to JS.
+    /// </summary>
+    public RendererMessageInteropHarness(BunitJSInterop js, bool forceJsonDataMarshalling)
     {
         _js = js;
-        // Force the JSON data-source channel (as on Blazor Server): bUnit's runtime is
-        // in-process but has no WASM InvokeUnmarshalled support, so the unmarshalled
-        // data channel is unreachable here; JSON marshalling keeps data transfers
-        // observable as refChanged messages.
-        _service = new IgniteUIBlazor(js.JSRuntime, IgniteUIBlazorSettings.Create().WithForceJsonDataMarshalling(true));
+        var runtime = forceJsonDataMarshalling
+            ? js.JSRuntime
+            : new UnmarshalledRecordingRuntime(js.JSRuntime, RecordUnmarshalledMessage);
+        _service = new IgniteUIBlazor(runtime, IgniteUIBlazorSettings.Create().WithForceJsonDataMarshalling(forceJsonDataMarshalling));
 
         // Answer every message with an "undefined" return envelope by default —
         // an unanswered invokeMethod would otherwise await its return forever.
@@ -40,6 +55,79 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         // regardless of bUnit's handler-resolution order.
         _js.Setup<object>(SendMessage, inv => !IsStubbedInvokeMethod(inv))
             .SetResult(ToResultPayload(InteropReturn.Undefined));
+    }
+
+    /// <summary>A data-source column transfer observed on the unmarshalled channel.</summary>
+    internal sealed record UnmarshalledColumnMessage(string MethodName, string RefName, int Index, UnmarshalledColumn[]? Columns);
+
+    // Written by the channel on background flush threads, read on the test thread.
+    private readonly List<UnmarshalledColumnMessage> _unmarshalledMessages = new();
+
+    internal IReadOnlyList<UnmarshalledColumnMessage> UnmarshalledColumnMessages
+    {
+        get { lock (_unmarshalledMessages) { return _unmarshalledMessages.ToList(); } }
+    }
+
+    /// <summary>Retries briefly — column messages flush on an async queue tick.</summary>
+    internal UnmarshalledColumnMessage? WaitForUnmarshalledMessage(Func<UnmarshalledColumnMessage, bool> match)
+    {
+        for (var attempt = 0; attempt < 80; attempt++)
+        {
+            var message = UnmarshalledColumnMessages.LastOrDefault(match);
+            if (message is not null)
+            {
+                return message;
+            }
+            Thread.Sleep(25);
+        }
+        return null;
+    }
+
+    private void RecordUnmarshalledMessage(string methodName, string refName, int index, UnmarshalledColumn[]? columns)
+    {
+        lock (_unmarshalledMessages)
+        {
+            _unmarshalledMessages.Add(new UnmarshalledColumnMessage(methodName, refName, index, columns));
+        }
+    }
+
+    /// <summary>
+    /// In-process runtime whose InvokeUnmarshalled methods RuntimeHelper discovers by
+    /// name-based reflection — the seam replacing the API modern runtimes removed.
+    /// Everything else delegates to bUnit's runtime.
+    /// </summary>
+    private sealed class UnmarshalledRecordingRuntime : Microsoft.JSInterop.IJSInProcessRuntime
+    {
+        private readonly Microsoft.JSInterop.IJSInProcessRuntime _inner;
+        private readonly Action<string, string, int, UnmarshalledColumn[]?> _record;
+
+        public UnmarshalledRecordingRuntime(Microsoft.JSInterop.IJSRuntime inner, Action<string, string, int, UnmarshalledColumn[]?> record)
+        {
+            _inner = (Microsoft.JSInterop.IJSInProcessRuntime)inner;
+            _record = record;
+        }
+
+        public TResult InvokeUnmarshalled<T0, T1, T2, TResult>(string identifier, T0 arg0, T1 arg1, T2 arg2)
+        {
+            _record(identifier, (string)(object)arg0!, (int)(object)arg1!, (UnmarshalledColumn[]?)(object?)arg2);
+            return default!;
+        }
+
+        public TResult InvokeUnmarshalled<T0, T1, TResult>(string identifier, T0 arg0, T1 arg1)
+        {
+            // Data-intents variant; recorded with no columns.
+            _record(identifier, (string)(object)arg0!, -1, null);
+            return default!;
+        }
+
+        public TResult Invoke<TResult>(string identifier, params object?[]? args)
+            => _inner.Invoke<TResult>(identifier, args);
+
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
+            => _inner.InvokeAsync<TValue>(identifier, args);
+
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
+            => _inner.InvokeAsync<TValue>(identifier, cancellationToken, args);
     }
 
     public override IIgniteUIBlazor Service => _service;

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace IgniteUI.Blazor.Controls
@@ -213,6 +214,7 @@ namespace IgniteUI.Blazor.Controls
             return ret;
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Data item types are supplied by the application at runtime; trimmed apps must preserve their data item types — see docs/TRIMMING.md.")]
         private static void GetPropertiesFromType(Type type, List<PropertyInfo> properties)
         {
             if (type.BaseType != null && type.BaseType != typeof(object))
@@ -230,6 +232,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Data item types are supplied by the application at runtime; trimmed apps must preserve their data item types — see docs/TRIMMING.md.")]
         private static void GetFieldsFromType(Type type, List<FieldInfo> fields)
         {
             if (type.BaseType != null && type.BaseType != typeof(object))
@@ -247,6 +250,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Reflects only the indexer of Dictionary<string, object> (both call sites guard on that type), which the library also uses statically — the 'Item' property is always preserved alongside this code.")]
         public static JSDataSourceSchema CreateFromDictionary(IDictionary item)
         {
             JSDataSourceSchema s = new JSDataSourceSchema();
