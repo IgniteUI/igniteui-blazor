@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Every release now publishes an SPDX 2.2 and SPDX 3.0 SBOM covering the NuGet and npm dependencies the package actually ships, plus Sigstore build-provenance and SBOM attestations bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
+- Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
 - Bundle size budgets in `eng/bundle-budgets.json`, enforced during the release. An asset that grows past its budget, or a new asset nobody budgeted for, fails the release.
-- Dependency vulnerability scanning. Pull requests are gated by a dependency review that fails on a new High or Critical advisory; every release additionally scans the dependencies it actually ships and attaches the report to the GitHub release.
+- Dependency vulnerability scanning. Pull requests are gated by a dependency review that fails on a new High or Critical advisory; every release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
 
 ### Changed
 

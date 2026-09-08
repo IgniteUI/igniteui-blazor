@@ -15,9 +15,13 @@ env:
   NODE_VERSION: "22"
   VERSION: ${{ github.ref_name }}
   PACKAGE_ID: IgniteUI.Blazor.Lite
+  PROJECT_PATH: src/IgniteUI.Blazor.Lite.csproj
   REPOSITORY_URL: https://github.com/IgniteUI/igniteui-blazor
-  # Public, deliberately pinned identity. The strong-name counterpart lives in eng/IG.publickey.hex.
+  # Public, deliberately pinned identities.
   EXPECTED_CERT_SHA256_PATH: "eng/IG.authenticode-certificates.sha256"
+  EXPECTED_PUBLIC_KEY_PATH: "eng/IG.publickey.hex"
+  # Bounds sbom-tool's external license lookup.
+  SBOM_LICENSE_TIMEOUT_SECONDS: "180"
 
 jobs:
   # Runs npm lifecycle scripts and webpack, so it is deliberately kept free of every credential:
@@ -66,6 +70,7 @@ jobs:
     needs: build-assets
     runs-on: windows-latest
     timeout-minutes: 30
+    environment: Release build
     permissions:
       contents: read
 
@@ -90,7 +95,7 @@ jobs:
           digest-mismatch: error
 
       - name: Restore .NET dependencies
-        run: dotnet restore ./src/IgniteUI.Blazor.Lite.csproj
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
       - name: Restore strong-name key
         shell: pwsh
@@ -107,7 +112,7 @@ jobs:
       - name: Build strong-named assemblies
         shell: pwsh
         run: |
-          dotnet build ./src/IgniteUI.Blazor.Lite.csproj `
+          dotnet build ${{ env.PROJECT_PATH }} `
             --configuration ${{ env.BUILD_CONFIGURATION }} `
             --no-restore `
             -p:Version=${{ env.VERSION }} `
@@ -186,53 +191,10 @@ jobs:
 
       - name: Validate DLL signatures
         shell: pwsh
-        run: |
-          $dlls = @(Get-ChildItem -Path "${{ github.workspace }}\src\bin\${{ env.BUILD_CONFIGURATION }}" -Filter '*.dll' -Recurse -File)
-          if ($dlls.Count -eq 0) {
-            throw "No DLLs found to validate."
-          }
-
-          $allowedFingerprints = @(
-            Get-Content -LiteralPath $env:EXPECTED_CERT_SHA256_PATH |
-              ForEach-Object { $_.Trim().ToUpperInvariant() } |
-              Where-Object { $_ -and -not $_.StartsWith('#') }
-          )
-          if ($allowedFingerprints.Count -eq 0 -or @($allowedFingerprints | Where-Object { $_ -notmatch '^[0-9A-F]{64}$' }).Count -gt 0) {
-            throw "$($env:EXPECTED_CERT_SHA256_PATH) must contain at least one valid SHA-256 certificate fingerprint."
-          }
-
-          $failed = @()
-          $fingerprints = @{}
-          $signerNames = @{}
-          foreach ($dll in $dlls) {
-            $sig = Get-AuthenticodeSignature $dll.FullName
-            if ($sig.Status -ne 'Valid') {
-              $failed += "$($dll.FullName): signature status $($sig.Status)."
-              continue
-            }
-
-            $cn = $sig.SignerCertificate.GetNameInfo('SimpleName', $false)
-            $fingerprint = [Convert]::ToHexString(
-              [System.Security.Cryptography.SHA256]::HashData($sig.SignerCertificate.RawData)
-            )
-            if ($fingerprint -notin $allowedFingerprints) {
-              $failed += "$($dll.FullName): certificate SHA-256 fingerprint $fingerprint is not approved by '$($env:EXPECTED_CERT_SHA256_PATH)'."
-              continue
-            }
-
-            $fingerprints[$fingerprint] = $true
-            $signerNames[$cn] = $true
-          }
-          if ($failed.Count -gt 0) {
-            throw "Authenticode validation failed:`n$($failed -join "`n")"
-          }
-
-          Write-Host "All $($dlls.Count) DLLs signed by an approved certificate."
-          @(
-            "### Authenticode signer",
-            "- Subject CN: $($signerNames.Keys -join ', ')",
-            "- SHA-256 fingerprint: $($fingerprints.Keys -join ', ')"
-          ) | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+        run: >
+          .github/scripts/Assert-AuthenticodeSignature.ps1
+          -Path "${{ github.workspace }}/src/bin/${{ env.BUILD_CONFIGURATION }}"
+          -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
 
       - name: Upload signed assemblies
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -280,7 +242,7 @@ jobs:
       # but no url, which left consumers unable to reach the source for the version they restored.
       - name: Pack NuGet package
         run: >
-          dotnet pack ./src/IgniteUI.Blazor.Lite.csproj
+          dotnet pack ${{ env.PROJECT_PATH }}
           --configuration ${{ env.BUILD_CONFIGURATION }}
           --no-build
           --no-restore
@@ -290,28 +252,17 @@ jobs:
           -p:RepositoryCommit=${{ github.sha }}
           -o "${{ github.workspace }}/artifacts"
 
-      - name: Validate packaged assembly strong names
+      # The gate that runs on the actual shipped bytes: bin/ output was already checked once, but
+      # packing only re-zips it, so this re-validates both signals against the extracted nupkg
+      # instead of trusting that pack couldn't have picked up something else.
+      - name: Validate packaged assembly signatures
         shell: pwsh
-        run: |
-          $packagePath = "${{ github.workspace }}\artifacts\${env:PACKAGE_ID}.${env:VERSION}.nupkg"
-          $validationRoot = "${{ runner.temp }}\strong-name-validation"
-          $archivePath = "$validationRoot\package.zip"
-          $extractPath = "$validationRoot\package"
-
-          try {
-            if (-not (Test-Path $packagePath)) {
-              throw "NuGet package not found: $packagePath"
-            }
-
-            New-Item -ItemType Directory -Path $validationRoot -Force | Out-Null
-            Copy-Item $packagePath $archivePath
-            Expand-Archive -Path $archivePath -DestinationPath $extractPath -Force
-
-            .github/scripts/verify-strong-name.ps1 -Path $extractPath -ExpectedPublicKeyPath eng/IG.publickey.hex
-          }
-          finally {
-            Remove-Item $validationRoot -Recurse -Force -ErrorAction SilentlyContinue
-          }
+        run: >
+          .github/scripts/Assert-PackageSignatures.ps1
+          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -ExpectedPublicKeyPath "${{ env.EXPECTED_PUBLIC_KEY_PATH }}"
+          -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
+          -WorkingDirectory "${{ runner.temp }}/package-signature-validation"
 
       - name: Validate package provenance metadata
         shell: pwsh
@@ -345,20 +296,22 @@ jobs:
           --verbosity Warning
 
       - name: Validate NuGet package signature
-        run: dotnet nuget verify "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg" --verbosity quiet
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-NuGetSignature.ps1
+          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
 
+      # This digest is the identity every downstream job re-checks before acting on the package.
       - name: Record package digest
         id: digest
         shell: pwsh
-        run: |
-          $name = "${env:PACKAGE_ID}.${env:VERSION}.nupkg"
-          $package = "${{ github.workspace }}\artifacts\$name"
-          $digest = (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash.ToLowerInvariant()
-
-          "$digest  $name" | Set-Content -LiteralPath "$package.sha256" -Encoding ascii
-          "nupkg-sha256=$digest" | Add-Content -LiteralPath $env:GITHUB_OUTPUT
-          @("### Signed package digest", '```', "$digest  $name", '```') |
-            Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+        run: >
+          .github/scripts/Get-PackageDigest.ps1
+          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -WriteChecksumFile
+          -GitHubOutputName 'nupkg-sha256'
+          -SummaryTitle 'Signed package digest'
 
       - name: Upload signed package
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -402,11 +355,13 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
-  # Advisory by design. A finding is annotated and attached to the release as evidence,
-  # but never holds up the publish — the blocking gate for new vulnerable dependencies is
-  # the dependency-review job on pull requests, which stops them entering master.
+  # Advisory by design. A finding is annotated and attached to the release as evidence, but never
+  # holds up the publish — the blocking gate for new vulnerable dependencies is the dependency-review
+  # job on pull requests, which stops them entering master. It waits on pack so that its evidence and
+  # the SBOM's dependency data describe the same point in the pipeline.
   dependency-scan:
     name: Scan dependencies
+    needs: pack
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -431,86 +386,14 @@ jobs:
 
       # Only what the package actually ships: the library project, and npm without devDependencies.
       - name: Scan NuGet and npm dependencies
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p artifacts/dependency-scan
-
-          dotnet restore ./src/IgniteUI.Blazor.Lite.csproj > /dev/null
-          nuget_status=0
-          dotnet list ./src/IgniteUI.Blazor.Lite.csproj package --vulnerable --include-transitive \
-            --format json --output-version 1 \
-            > artifacts/dependency-scan/nuget-vulnerable.json \
-            2> artifacts/dependency-scan/nuget-vulnerable.stderr.txt || nuget_status=$?
-          if [ "$nuget_status" -ne 0 ]; then
-            cat artifacts/dependency-scan/nuget-vulnerable.stderr.txt >&2
-            echo "::error title=NuGet vulnerability scan failed::dotnet list package exited with status $nuget_status."
-            exit "$nuget_status"
-          fi
-          if ! jq -e '
-            .version == 1 and
-            (.parameters | type == "string") and
-            (.sources | type == "array") and
-            (.projects | type == "array" and length > 0) and
-            all(.projects[]; (.path | type == "string" and length > 0))
-          ' artifacts/dependency-scan/nuget-vulnerable.json > /dev/null; then
-            echo "::error title=NuGet vulnerability scan failed::dotnet list package did not produce a valid version 1 JSON report."
-            exit 1
-          fi
-          nuget_vulnerabilities=$(jq '[.. | objects | .vulnerabilities? | arrays | length] | add // 0' artifacts/dependency-scan/nuget-vulnerable.json)
-          jq . artifacts/dependency-scan/nuget-vulnerable.json > artifacts/dependency-scan/nuget-vulnerable.txt
-
-          npm_status=0
-          npm audit --omit=dev --audit-level=info --json \
-            > artifacts/dependency-scan/npm-audit.json \
-            2> artifacts/dependency-scan/npm-audit.stderr.txt || npm_status=$?
-          if ! jq -e '
-            (.auditReportVersion | type == "number") and
-            (.vulnerabilities | type == "object") and
-            (.metadata.vulnerabilities.total | type == "number") and
-            (has("error") | not)
-          ' artifacts/dependency-scan/npm-audit.json > /dev/null; then
-            cat artifacts/dependency-scan/npm-audit.stderr.txt >&2
-            echo "::error title=npm vulnerability scan failed::npm audit did not produce a valid JSON report."
-            exit 1
-          fi
-          npm_vulnerabilities=$(jq '.metadata.vulnerabilities.total' artifacts/dependency-scan/npm-audit.json)
-          if ! { [ "$npm_status" -eq 0 ] && [ "$npm_vulnerabilities" -eq 0 ]; } &&
-             ! { [ "$npm_status" -eq 1 ] && [ "$npm_vulnerabilities" -gt 0 ]; }; then
-            cat artifacts/dependency-scan/npm-audit.stderr.txt >&2
-            echo "::error title=npm vulnerability scan failed::npm audit exited with status $npm_status and reported $npm_vulnerabilities vulnerabilities."
-            exit 1
-          fi
-          jq . artifacts/dependency-scan/npm-audit.json > artifacts/dependency-scan/npm-audit.txt
-
-          {
-            echo "### Dependency vulnerability scan"
-            echo
-            echo "Advisory only — findings are recorded but do not block this release."
-            echo
-            echo '<details><summary>dotnet list package --vulnerable --include-transitive</summary>'
-            echo
-            echo '```'
-            cat artifacts/dependency-scan/nuget-vulnerable.txt
-            echo '```'
-            echo
-            echo '</details>'
-            echo
-            echo '<details><summary>npm audit --omit=dev</summary>'
-            echo
-            echo '```'
-            cat artifacts/dependency-scan/npm-audit.txt
-            echo '```'
-            echo
-            echo '</details>'
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          if [ "$nuget_vulnerabilities" -gt 0 ] || [ "$npm_vulnerabilities" -gt 0 ]; then
-            echo "::warning title=Vulnerable dependencies reported::${PACKAGE_ID} ${VERSION} was released with dependency advisories outstanding. See the run summary and the dependency-scan release asset."
-            echo "> ⚠️ **Vulnerable dependencies were reported for this release.** Review the scan output above and open a servicing issue if a fix is required." >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "> ✅ No vulnerable shipped dependencies reported." >> "$GITHUB_STEP_SUMMARY"
-          fi
+        shell: pwsh
+        run: >
+          .github/scripts/Invoke-DependencyScan.ps1
+          -ProjectPath "${{ env.PROJECT_PATH }}"
+          -OutputDirectory "${{ github.workspace }}/artifacts/dependency-scan"
+          -NpmManifestDirectory "${{ github.workspace }}"
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -Version "${{ env.VERSION }}"
 
       - name: Upload dependency scan
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -524,7 +407,7 @@ jobs:
     name: Generate SBOM and attest
     needs: pack
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     permissions:
       contents: read
       id-token: write
@@ -557,88 +440,112 @@ jobs:
 
       - name: Verify signed package digest
         shell: pwsh
-        env:
-          EXPECTED_NUPKG_SHA256: ${{ needs.pack.outputs.nupkg-sha256 }}
-        run: |
-          $package = "${{ github.workspace }}\artifacts\${env:PACKAGE_ID}.${env:VERSION}.nupkg"
-          $digest = (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash.ToLowerInvariant()
-
-          if ($digest -ne $env:EXPECTED_NUPKG_SHA256) {
-            throw "Package digest changed between jobs. Expected $($env:EXPECTED_NUPKG_SHA256) but found $digest."
-          }
-
-          Write-Host "Verified package digest $digest."
+        run: >
+          .github/scripts/Get-PackageDigest.ps1
+          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}"
 
       # Restores the library alone on purpose: a bare 'dotnet restore' writes project.assets.json for
       # the test, stories and template projects too, and the NuGet detector reads those.
       - name: Restore .NET dependencies
-        run: dotnet restore ./src/IgniteUI.Blazor.Lite.csproj
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
-      # Production-only, then the lockfile goes: sbom-tool's NpmWithRoots detector reads it directly
-      # and an npm lockfile records the whole dev graph regardless of what is installed. Without it
-      # the node_modules walk is the only npm source, which is exactly the shipped set.
+      # The full tree, because cyclonedx-npm is itself a devDependency. It is pruned back to the
+      # shipped set below, before anything walks node_modules as a dependency source.
       - name: Restore JavaScript dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Restore .NET local tools
+        run: dotnet tool restore
+
+      # Runs while the lockfile is still present, because cyclonedx-npm reads it directly. The tool
+      # applies --omit dev itself, so its document already describes only the shipped tree.
+      - name: Generate npm CycloneDX SBOM
+        shell: pwsh
+        run: >
+          .github/scripts/New-NpmCycloneDxSbom.ps1
+          -ManifestPath "package.json"
+          -OutputFile "${{ runner.temp }}/sbom/cyclonedx/npm/bom.json"
+
+      # Production-only, then the lockfile goes: sbom-tool's NpmWithRoots detector reads the lockfile
+      # directly, and an npm lockfile records the whole dev graph regardless of what is installed.
+      # Without it the node_modules walk is the only npm source, which the prune has just reduced to
+      # exactly the shipped set.
+      - name: Reduce JavaScript dependencies to the shipped set
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $true
 
-          npm ci --omit=dev --ignore-scripts
+          npm prune --omit=dev --ignore-scripts
           Remove-Item package-lock.json -Force
-
-      # Dedicated nested manifest keeps sbom-tool out of the root 'dotnet tool restore' used by the sign steps.
-      - name: Restore sbom-tool (pinned)
-        run: dotnet tool restore --tool-manifest .config/sbom-tool/dotnet-tools.json
 
       # -b is the signed package folder, so the shipped nupkg and its hash land in the files section.
       # -bc is the repository root because the npm graph lives there alongside the .NET project.
-      # External license lookup (-li) is off: it cost ~4 min a run and resolved nothing.
-      - name: Generate SBOMs
-        working-directory: .config/sbom-tool
+      # The manifests go under RUNNER_TEMP: anything written inside -bc is scanned as build content.
+      - name: Generate SPDX SBOMs
         shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $PSNativeCommandUseErrorActionPreference = $true
+        run: >
+          .github/scripts/New-Sbom.ps1
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -PackageVersion "${{ env.VERSION }}"
+          -BuildDropPath "${{ github.workspace }}/artifacts"
+          -BuildComponentPath "${{ github.workspace }}"
+          -OutputRoot "${{ runner.temp }}/sbom"
+          -LicenseTimeoutSeconds ${{ env.SBOM_LICENSE_TIMEOUT_SECONDS }}
 
-          $formats = @(
-            @{ Version = 'SPDX:2.2'; Output = 'spdx-2.2' },
-            @{ Version = 'SPDX:3.0'; Output = 'spdx-3.0' }
-          )
+      - name: Verify SPDX SBOM output
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-Sbom.ps1
+          -OutputRoot "${{ runner.temp }}/sbom"
+          -ExpectedPackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
 
-          foreach ($format in $formats) {
-            $manifestDirectory = Join-Path $env:GITHUB_WORKSPACE "sbom\$($format.Output)"
-            # sbom-tool requires the manifest directory to exist before generation.
-            New-Item -ItemType Directory -Path $manifestDirectory -Force | Out-Null
+      # CycloneDX reads licences and authors from each package's own nuspec, so it fills the fields the
+      # ClearlyDefined-backed SPDX documents leave as NOASSERTION whenever that service is degraded.
+      # This is the .NET half only — dotnet-CycloneDX has no notion of npm packages.
+      - name: Generate .NET CycloneDX SBOM
+        shell: pwsh
+        env:
+          GH_TOKEN_FOR_LICENSES: ${{ github.token }}
+        run: >
+          .github/scripts/New-CycloneDxSbom.ps1
+          -ProjectPath "${{ env.PROJECT_PATH }}"
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -PackageVersion "${{ env.VERSION }}"
+          -OutputDirectory "${{ runner.temp }}/sbom/cyclonedx/dotnet"
+          -GitHubBearerToken "$env:GH_TOKEN_FOR_LICENSES"
 
-            Write-Host "Generating $($format.Version) SBOM..."
-            dotnet tool run sbom-tool -- generate `
-              -b "$env:GITHUB_WORKSPACE\artifacts" `
-              -bc "$env:GITHUB_WORKSPACE" `
-              -m $manifestDirectory `
-              -pn $env:PACKAGE_ID `
-              -pv $env:VERSION `
-              -ps Infragistics `
-              -nsb http://spdx.org/spdxdocs/IgniteUI.Blazor.Lite `
-              -mi $format.Version `
-              -pm true `
-              -V Information
-          }
+      # Pure PowerShell JSON merge, not an external tool: cyclonedx-cli (the only tool with a merge
+      # command) has no package-manager distribution, and cyclonedx-npm's own library can serialize but
+      # not deserialize CycloneDX JSON, so it can't load two finished documents either.
+      - name: Merge CycloneDX SBOMs
+        shell: pwsh
+        run: >
+          .github/scripts/Merge-CycloneDxSbom.ps1
+          -DotNetBomPath "${{ runner.temp }}/sbom/cyclonedx/dotnet/bom.json"
+          -NpmBomPath "${{ runner.temp }}/sbom/cyclonedx/npm/bom.json"
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -PackageVersion "${{ env.VERSION }}"
+          -OutputFile "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.cdx.json"
 
+      - name: Verify CycloneDX SBOM output
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-CycloneDxSbom.ps1
+          -BomPath "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.cdx.json"
+
+      # An attestation binds to a digest rather than a path, so the bytes are re-hashed here and that
+      # value is what gets attested, re-checked before publishing, and reported on the release.
       - name: Reverify package before attestation
         id: verify-before-attestation
         shell: pwsh
-        env:
-          EXPECTED_NUPKG_SHA256: ${{ needs.pack.outputs.nupkg-sha256 }}
-        run: |
-          $package = "${{ github.workspace }}\artifacts\${env:PACKAGE_ID}.${env:VERSION}.nupkg"
-          $digest = (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash.ToLowerInvariant()
-
-          if ($digest -ne $env:EXPECTED_NUPKG_SHA256) {
-            throw "Package changed before attestation. Expected $($env:EXPECTED_NUPKG_SHA256) but found $digest."
-          }
-
-          "nupkg-sha256=$digest" | Add-Content -LiteralPath $env:GITHUB_OUTPUT
-          Write-Host "Verified package digest $digest immediately before attestation."
+        run: >
+          .github/scripts/Get-PackageDigest.ps1
+          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}"
+          -FailureMessage 'Package changed before attestation.'
+          -GitHubOutputName 'nupkg-sha256'
 
       - name: Attest build provenance
         id: attest-provenance
@@ -648,37 +555,45 @@ jobs:
           subject-digest: sha256:${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
 
       # actions/attest derives the predicate from an SPDX 2.x or CycloneDX document; SPDX 3.0 ships as evidence only.
-      - name: Attest SBOM
-        id: attest-sbom
+      - name: Attest SPDX SBOM
+        id: attest-sbom-spdx
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-name: ${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg
           subject-digest: sha256:${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
-          sbom-path: sbom/spdx-2.2/_manifest/spdx_2.2/manifest.spdx.json
+          sbom-path: ${{ runner.temp }}/sbom/_manifest/spdx_2.2/manifest.spdx.json
+
+      # Distinct predicate type from the SPDX attestation, so both bind to the same digest without colliding.
+      - name: Attest CycloneDX SBOM
+        id: attest-sbom-cyclonedx
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg
+          subject-digest: sha256:${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
+          sbom-path: ${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.cdx.json
 
       - name: Collect attestation bundles
         shell: pwsh
-        run: |
-          $target = "${{ github.workspace }}\sbom\attestations"
-          New-Item -ItemType Directory -Path $target -Force | Out-Null
-          Copy-Item "${{ steps.attest-provenance.outputs.bundle-path }}" (Join-Path $target 'provenance.sigstore.json')
-          Copy-Item "${{ steps.attest-sbom.outputs.bundle-path }}" (Join-Path $target 'sbom.sigstore.json')
-
-          @(
-            "### Attestations",
-            "- Provenance: ${{ steps.attest-provenance.outputs.attestation-url }}",
-            "- SBOM: ${{ steps.attest-sbom.outputs.attestation-url }}"
-          ) | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+        run: >
+          .github/scripts/Copy-AttestationBundles.ps1
+          -ProvenanceBundlePath "${{ steps.attest-provenance.outputs.bundle-path }}"
+          -SpdxBundlePath "${{ steps.attest-sbom-spdx.outputs.bundle-path }}"
+          -CycloneDxBundlePath "${{ steps.attest-sbom-cyclonedx.outputs.bundle-path }}"
+          -Destination "${{ runner.temp }}/sbom/attestations"
+          -ProvenanceUrl "${{ steps.attest-provenance.outputs.attestation-url }}"
+          -SpdxUrl "${{ steps.attest-sbom-spdx.outputs.attestation-url }}"
+          -CycloneDxUrl "${{ steps.attest-sbom-cyclonedx.outputs.attestation-url }}"
 
       - name: Upload SBOM and attestations
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sbom
-          path: sbom/**
+          path: ${{ runner.temp }}/sbom/**
           retention-days: 30
           if-no-files-found: error
 
-  # The only job that can publish. It compiles nothing and never checks out the repository.
+  # The only job that can publish. It restores nothing and compiles nothing; its checkout is a
+  # scripts-only sparse one so the publish gate itself is version-controlled and reviewable.
   publish:
     name: Publish to NuGet.org
     needs: [pack, evidence, sbom, dependency-scan]
@@ -686,9 +601,19 @@ jobs:
     timeout-minutes: 15
     environment: nuget-org-publish
     permissions:
+      contents: read
       id-token: write
 
     steps:
+      - name: Checkout release scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts
+            eng/IG.authenticode-certificates.sha256
+          sparse-checkout-cone-mode: false
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
@@ -702,23 +627,18 @@ jobs:
 
       - name: Verify the package that was packed, signed, and attested
         shell: pwsh
-        env:
-          PACK_NUPKG_SHA256: ${{ needs.pack.outputs.nupkg-sha256 }}
-          ATTESTED_NUPKG_SHA256: ${{ needs.sbom.outputs.attested-sha256 }}
-        run: |
-          $package = "${{ github.workspace }}\artifacts\${env:PACKAGE_ID}.${env:VERSION}.nupkg"
-          $digest = (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash.ToLowerInvariant()
-
-          foreach ($expected in @($env:PACK_NUPKG_SHA256, $env:ATTESTED_NUPKG_SHA256)) {
-            if ($digest -ne $expected) {
-              throw "Refusing to publish: expected digest $expected but found $digest."
-            }
-          }
-
-          Write-Host "Publishing package with digest $digest."
+        run: >
+          .github/scripts/Get-PackageDigest.ps1
+          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}","${{ needs.sbom.outputs.attested-sha256 }}"
+          -FailureMessage 'Refusing to publish.'
 
       - name: Validate NuGet package signature
-        run: dotnet nuget verify "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg" --verbosity quiet
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-NuGetSignature.ps1
+          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
 
       - name: NuGet login (OIDC Trusted Publishing)
         uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
@@ -726,50 +646,18 @@ jobs:
         with:
           user: ${{ secrets.INFRAGISTICS_NUGET_ORG_USER }}
 
-      # Refuses to publish over an existing version instead of using --skip-duplicate: a full rerun produces newly signed bytes, so skipping
-      # the duplicate would attach this run's SBOM, attestations and checksum to a release whose published package is a different build.
+      # Refuses to publish over an existing version instead of using --skip-duplicate: a full rerun
+      # produces newly signed bytes, so skipping the duplicate would attach this run's SBOM,
+      # attestations and checksum to a release whose published package is a different build.
       - name: Publish to NuGet.org
         shell: pwsh
         env:
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
-        run: |
-          $ErrorActionPreference = 'Stop'
-          # Pinned: a failed push is inspected through $LASTEXITCODE below rather than terminating the step.
-          $PSNativeCommandUseErrorActionPreference = $false
-
-          $package = "${{ github.workspace }}\artifacts\${env:PACKAGE_ID}.${env:VERSION}.nupkg"
-          $id = ($env:PACKAGE_ID).ToLowerInvariant()
-          $version = ($env:VERSION).ToLowerInvariant()
-          $feedUrl = "https://api.nuget.org/v3-flatcontainer/$id/$version/$id.$version.nupkg"
-
-          # The flat container lags a push by seconds to minutes, so the retries stop a duplicate
-          # rejection from being reported as a package that never reached the feed.
-          function Test-Published([int[]]$RetryDelaysSeconds = @()) {
-            foreach ($delay in @(0) + $RetryDelaysSeconds) {
-              if ($delay -gt 0) { Start-Sleep -Seconds $delay }
-              if ((Invoke-WebRequest -Uri $feedUrl -Method Head -SkipHttpErrorCheck).StatusCode -eq 200) { return $true }
-            }
-            return $false
-          }
-
-          $recovery = "NuGet.org will not accept this version again. If a previous run published it but failed before attaching evidence, attach that run's retained nupkg-signed, sbom, release-evidence and dependency-scan artifacts to the release manually."
-
-          if (Test-Published) {
-            throw "$($env:PACKAGE_ID) $($env:VERSION) is already on NuGet.org, so this run must not attach its evidence to the release: the published package may be a different build. $recovery"
-          }
-
-          dotnet nuget push $package --api-key $env:NUGET_API_KEY --source "https://api.nuget.org/v3/index.json"
-          if ($LASTEXITCODE -eq 0) {
-            Write-Host "Published $($env:PACKAGE_ID) $($env:VERSION)."
-            exit 0
-          }
-
-          Write-Host "::warning title=Push reported a failure::Checking whether the package reached NuGet.org anyway."
-          if (Test-Published -RetryDelaysSeconds @(5, 15, 30)) {
-            throw "dotnet nuget push reported a failure but $($env:PACKAGE_ID) $($env:VERSION) is on NuGet.org. $recovery"
-          }
-
-          throw "dotnet nuget push failed and $($env:PACKAGE_ID) $($env:VERSION) is not on NuGet.org."
+        run: >
+          .github/scripts/Publish-NuGetPackage.ps1
+          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -Version "${{ env.VERSION }}"
 
   attach-to-release:
     name: Attach release evidence
@@ -811,8 +699,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          (cd sbom/spdx-2.2/_manifest && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-2.2.zip" .)
-          (cd sbom/spdx-3.0/_manifest && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-3.0.zip" .)
+          (cd sbom/_manifest/spdx_2.2 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-2.2.zip" .)
+          (cd sbom/_manifest/spdx_3.0 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-3.0.zip" .)
           (cd evidence/dependency-scan && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.dependency-scan.zip" .)
 
           gh release upload "$TAG" --clobber -R "${{ github.repository }}" \
@@ -821,7 +709,10 @@ jobs:
             "${PACKAGE_ID}.${TAG}.spdx-2.2.zip" \
             "${PACKAGE_ID}.${TAG}.spdx-3.0.zip" \
             "${PACKAGE_ID}.${TAG}.dependency-scan.zip" \
+            "sbom/cyclonedx/${PACKAGE_ID}.${TAG}.cdx.json" \
+            "sbom/cyclonedx/${PACKAGE_ID}.${TAG}.cdx.json.sha256" \
             "sbom/attestations/provenance.sigstore.json" \
-            "sbom/attestations/sbom.sigstore.json" \
+            "sbom/attestations/sbom-spdx.sigstore.json" \
+            "sbom/attestations/sbom-cyclonedx.sigstore.json" \
             "evidence/performance-report.md" \
             "evidence/performance-report.json"

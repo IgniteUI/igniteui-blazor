@@ -1,6 +1,12 @@
-# Verifies assemblies are strong-name signed with the approved Infragistics key.
-# 'sn.exe -vf' only proves a strong name is internally consistent, so any valid private key passes;
-# this also compares each assembly's public key against the value pinned in the repository.
+<#
+.SYNOPSIS
+    Verifies that assemblies are strong-name signed with the approved Infragistics key.
+
+.DESCRIPTION
+    'sn.exe -vf' proves only that an assembly's strong name is internally consistent, so any valid
+    private key passes it. This script additionally compares each assembly's public key against a
+    value pinned in the repository and established out of band from the signing key.
+#>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
