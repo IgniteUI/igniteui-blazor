@@ -3142,8 +3142,8 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            disposedValue = true;
             _shouldReevaluateRuntime = true;
+
             try
             {
                 await TrySendCleanupAsync().ConfigureAwait(false);
@@ -3151,6 +3151,7 @@ namespace IgniteUI.Blazor.Controls
             finally
             {
                 _shouldReevaluateRuntime = false;
+                disposedValue = true;
                 _objRef?.Dispose();
             }
 
