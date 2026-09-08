@@ -49,7 +49,7 @@ function Measure-GzipLength([string]$FilePath) {
 }
 
 $rootPath = (Resolve-Path -LiteralPath $Root).ProviderPath
-$files = @(Get-ChildItem -LiteralPath $rootPath -Recurse -File)
+$files = @(Get-ChildItem -LiteralPath $rootPath -Recurse -File -Force)
 if ($files.Count -eq 0) {
     throw "No files found under '$rootPath'. Refusing to report a passing budget for an empty build."
 }
