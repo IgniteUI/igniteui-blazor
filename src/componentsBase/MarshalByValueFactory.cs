@@ -13,7 +13,11 @@ namespace IgniteUI.Blazor.Controls
                     return true;
                 case "FormatSpecifier":
                     return true;
+                case "QrCodeExportOptions":
+                case "WebQrCodeExportOptions":
+                    return true;
                 case "RegisterIconOptions":
+                case "WebRegisterIconOptions":
                     return true;
                 case "NumberFormatSpecifier":
                     return true;
@@ -157,7 +161,12 @@ namespace IgniteUI.Blazor.Controls
                 case "FormatSpecifier":
                     return new IgbFormatSpecifier();
                     break;
+                case "QrCodeExportOptions":
+                case "WebQrCodeExportOptions":
+                    return new IgbQrCodeExportOptions();
+                    break;
                 case "RegisterIconOptions":
+                case "WebRegisterIconOptions":
                     return new IgbRegisterIconOptions();
                     break;
                 case "NumberFormatSpecifier":

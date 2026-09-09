@@ -263,17 +263,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentBoolValueChangedEventArgs>? _remove = null;
+        private EventCallback<IgbVoidEventArgs>? _remove = null;
 
         /// <summary>
         /// Emitted when the chip is removed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentBoolValueChangedEventArgs> Remove
+        public EventCallback<IgbVoidEventArgs> Remove
         {
             get
             {
-                return this._remove != null ? this._remove.Value : EventCallback<IgbComponentBoolValueChangedEventArgs>.Empty;
+                return this._remove != null ? this._remove.Value : EventCallback<IgbVoidEventArgs>.Empty;
             }
             set
             {
@@ -282,7 +282,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_remove))
                     {
                         _remove = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Remove", value);
                         this.OnRefChanged("Remove", null, "event:::Remove", true, false, (refName, oldValue, newValue) =>
                         {
                             this._removeRef = refName;
@@ -293,7 +293,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _remove = null;
-                    this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Remove", null);
                     this.OnRefChanged("Remove", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._removeRef = null;

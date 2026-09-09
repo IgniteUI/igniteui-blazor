@@ -1,6 +1,7 @@
 import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
+import { WebQrCodeExportOptionsDescriptionMetadata } from "./WebQrCodeExportOptionsDescriptionMetadata";
 import { WebQrCodeDescription } from "./WebQrCodeDescription";
 
 /**
@@ -18,6 +19,7 @@ export class WebQrCodeDescriptionMetadata extends Base {
 			return;
 		}
 		context.markSeen(WebQrCodeDescriptionMetadata._metadata);
+		WebQrCodeExportOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:QrCode");

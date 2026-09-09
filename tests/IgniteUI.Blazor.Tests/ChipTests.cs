@@ -11,9 +11,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
         .Event(c => c.Select,
             argsJson: """{"detail": true}""",
             assert: args => Assert.True(args.Detail))
-        .Event(c => c.Remove,
-            argsJson: """{"detail": true}""",
-            assert: args => Assert.True(args.Detail))
+        .Event(c => c.Remove)
         .Bind(c => c.Selected, c => c.SelectedChanged, via: c => c.Select,
             argsJson: """{"detail": true}""", expect: true);
 

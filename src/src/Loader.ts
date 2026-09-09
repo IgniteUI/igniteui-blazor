@@ -867,7 +867,10 @@ export class Loader {
       Loader.marshalByValueSet.add('FocusOptions');
       Loader.marshalByValueSet.add('FormatSpecifier');
       Loader.marshalByValueSet.add('NumberFormatSpecifier');
+      Loader.marshalByValueSet.add('QrCodeExportOptions');
+      Loader.marshalByValueSet.add('WebQrCodeExportOptions');
       Loader.marshalByValueSet.add('RegisterIconOptions');
+      Loader.marshalByValueSet.add('WebRegisterIconOptions');
       Loader.marshalByValueSet.add('ActiveStepChangedEventArgs');
       Loader.marshalByValueSet.add('WebActiveStepChangedEventArgs');
       Loader.marshalByValueSet.add('ActiveStepChangedEventArgsDetail');

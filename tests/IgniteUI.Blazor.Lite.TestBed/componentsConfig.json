@@ -19,6 +19,14 @@
     "ExcludedProps": ["ResourceStrings"],
     "DependantMethods": []
   },
+  "IgbQrCode": {
+    "DependantMethods": [
+      // The client method resolves with a File while the .NET wrapper is void, so the
+      // generic method spy reports a result mismatch (and the generated options sample
+      // triggers a browser download). The unit interop contract covers both dispatches.
+      "ToImageAsync"
+    ]
+  },
   "IgbDateRangePicker": {
     "ExcludedProps": [
       // BUG 40335

@@ -96,7 +96,7 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 <IgbChip Outlined="true" Variant="StyleVariant.Primary">Outlined</IgbChip>
 
 @code {
-    void OnChipRemoved(IgbComponentBoolValueChangedEventArgs e) { }
+    void OnChipRemoved(IgbVoidEventArgs e) { }
 }
 ```
 
@@ -151,6 +151,15 @@ The trigger goes in `slot="target"`. `IgbDropdownGroup` groups items; `Placement
 ```
 
 Renders the `Value` string (URL, text, any payload) as a scannable SVG. `Version` (1-40) and `ErrorLevel` (`Low | Medium | Quartile | High`) are chosen automatically when unset, and a logo raises the error level on its own unless one is set explicitly. `Size` is the rendered pixel size and `Margin` the quiet zone in modules; `LogoSrc`, `LogoSize` and `LogoMargin` place a centered logo. Color it with the `--ig-qr-code-background`, `--ig-qr-code-dark-color`, `--ig-qr-code-corner-square-color` and `--ig-qr-code-corner-dot-color` custom properties.
+
+`ToImageAsync(IgbQrCodeExportOptions)` exports the code as an image file (`Format`: `Svg | Png | Jpeg | Webp`, default `Png`; `Scale` multiplies `Size`; `FileName` defaults to `qr-code`). The exported file stays on the client, so set `Download = true` to open the browser save dialog — there is no way to read the file bytes back into .NET. The export fails when the component has no `Value`.
+
+```razor
+<IgbQrCode @ref="Qr" Value="https://www.infragistics.com" Size="192" />
+<IgbButton @onclick='() => Qr!.ToImageAsync(new IgbQrCodeExportOptions { Format = QrCodeExportFormat.Png, Scale = 2, Download = true })'>Download</IgbButton>
+
+@code { IgbQrCode? Qr; }
+```
 
 ## Ripple, Highlight, Chat
 

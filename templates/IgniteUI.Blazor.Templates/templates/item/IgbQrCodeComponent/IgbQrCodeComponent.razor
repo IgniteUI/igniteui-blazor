@@ -45,11 +45,14 @@
 </div>
 
 <div class="component-host">
-    <IgbQrCode Value="@Value"
+    <IgbQrCode @ref="QrCodeRef"
+               Value="@Value"
                Size="Size"
                ErrorLevel="ErrorLevel"
                DotStyle="DotStyle"
                SquareStyle="SquareStyle" />
+
+    <IgbButton Variant="ButtonVariant.Outlined" @onclick="DownloadPng">Download PNG</IgbButton>
 </div>
 
 <div class="state">Value: @Value &nbsp;|&nbsp; Error level: @ErrorLevelName &nbsp;|&nbsp; Size: @Size</div>
@@ -81,4 +84,23 @@
 
     private double Size { get; set; } = 192;
     private string Value { get; set; } = "https://www.infragistics.com";
+
+    private IgbQrCode? QrCodeRef { get; set; }
+
+    private async Task DownloadPng()
+    {
+        if (QrCodeRef == null)
+        {
+            return;
+        }
+
+        // The scale multiplies the component size; Download opens the browser save dialog.
+        await QrCodeRef.ToImageAsync(new IgbQrCodeExportOptions
+        {
+            FileName = "qr-code",
+            Format = QrCodeExportFormat.Png,
+            Scale = 2,
+            Download = true
+        });
+    }
 }

@@ -62,6 +62,19 @@
         </Template>
     </Story>
 
+    <Story Name="Export">
+        <Template>
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;">
+                <IgbQrCode @ref="_exportQr" Value="https://www.infragistics.com" Size="192" />
+                <div style="display: flex; gap: 0.5rem;">
+                    <IgbButton Variant="ButtonVariant.Outlined" @onclick="() => ExportAsync(QrCodeExportFormat.Png)">Download PNG</IgbButton>
+                    <IgbButton Variant="ButtonVariant.Outlined" @onclick="() => ExportAsync(QrCodeExportFormat.Svg)">Download SVG</IgbButton>
+                    <IgbButton Variant="ButtonVariant.Outlined" @onclick="() => ExportAsync(QrCodeExportFormat.Webp)">Download WebP</IgbButton>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
     <Story Name="Error Correction Levels">
         <Template>
             <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
@@ -86,3 +99,24 @@
     </Story>
 
 </Stories>
+
+@code {
+    private IgbQrCode? _exportQr;
+
+    private async Task ExportAsync(QrCodeExportFormat format)
+    {
+        if (_exportQr == null)
+        {
+            return;
+        }
+
+        // The scale multiplies the component size: 192px x 2 exports as a 384x384 image.
+        await _exportQr.ToImageAsync(new IgbQrCodeExportOptions
+        {
+            FileName = "infragistics-qr",
+            Format = format,
+            Scale = 2,
+            Download = true
+        });
+    }
+}
