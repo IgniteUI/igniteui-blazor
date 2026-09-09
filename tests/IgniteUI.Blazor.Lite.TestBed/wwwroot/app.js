@@ -142,13 +142,10 @@ function Spy(obj, method) {
   return Object.freeze(spy);
 }
 
-function generateClientTmpl(name) {
-  igRegisterScript(
-    name,
-    function TmplHandler(ctx) {
-      var html = window.igTemplating.html;
-      return html`<div>Template</div>`;
-    },
-    false,
-  );
+// Classic script, so the public module is reached with a dynamic import (already loaded by the initializer).
+async function generateClientTmpl(name) {
+  const { registerScript, html } = await import('./_content/IgniteUI.Blazor/api.js');
+  registerScript(name, function TmplHandler(ctx) {
+    return html`<div>Template</div>`;
+  });
 }
