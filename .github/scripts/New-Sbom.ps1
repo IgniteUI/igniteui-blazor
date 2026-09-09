@@ -48,7 +48,12 @@ param(
     [ValidateRange(1, 5)]
     [int]$MaxAttempts = 3,
 
-    [int]$RetryDelaySeconds = 15
+    [int]$RetryDelaySeconds = 15,
+
+    # Minimatch globs (relative to BuildComponentPath) handed to component detection as
+    # --DirectoryExclusionList. Use it to keep the packed .nupkg under BuildDropPath - and any
+    # sibling projects that share the repo root - out of the detected component graph.
+    [string[]]$ComponentScanExclusion = @()
 )
 
 $ErrorActionPreference = 'Stop'
@@ -60,6 +65,7 @@ if (-not $NamespaceBaseUri) {
 
 $resolvedOutputRoot = [System.IO.Path]::GetFullPath($OutputRoot)
 $resolvedComponentPath = [System.IO.Path]::GetFullPath($BuildComponentPath)
+$resolvedBuildDropPath = [System.IO.Path]::GetFullPath($BuildDropPath)
 
 function Test-PathIsWithin {
     param(
@@ -94,6 +100,14 @@ if (Test-PathIsWithin -Path $resolvedOutputRoot -PotentialParent $resolvedCompon
     throw "OutputRoot '$resolvedOutputRoot' is inside BuildComponentPath '$resolvedComponentPath'. The generated manifests would be scanned as components of the build."
 }
 
+# The packed .nupkg sitting under -b, inside the -bc scan tree, gets detected as a component and
+# recorded as a dependency of the package on itself. A warning, not a throw: the layout is
+# sometimes unavoidable (e.g. the npm manifest and the drop share a repo root), and passing the
+# drop directory in -ComponentScanExclusion is the intended fix.
+if (Test-PathIsWithin -Path $resolvedBuildDropPath -PotentialParent $resolvedComponentPath) {
+    Write-Warning "BuildDropPath '$resolvedBuildDropPath' is inside BuildComponentPath '$resolvedComponentPath'. Pass its glob in -ComponentScanExclusion or the shipped package will be detected as its own dependency."
+}
+
 $spdx22Manifest = Join-Path $resolvedOutputRoot '_manifest/spdx_2.2/manifest.spdx.json'
 
 function Get-LicenseCoverage {
@@ -114,6 +128,10 @@ function Get-LicenseCoverage {
 $best = [pscustomobject]@{ Total = 0; Licensed = -1 }
 $staging = "$resolvedOutputRoot.attempt"
 
+# sbom-tool's -cd takes one string that component detection re-parses, so the repeatable
+# --DirectoryExclusionList flag is folded into a single value here.
+$componentDetectorArgs = ($ComponentScanExclusion | ForEach-Object { "--DirectoryExclusionList $_" }) -join ' '
+
 for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
     # Each attempt is generated aside and only promoted if it improves on the one already kept, so a
     # degraded retry can never replace a better document. sbom-tool also will not create -m itself.
@@ -123,19 +141,26 @@ for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
     Write-Host "Generating SPDX 2.2 and SPDX 3.0 SBOMs (attempt $attempt of $MaxAttempts)..."
 
     # /Verbosity has to precede the remaining switches or the parser binds its value to another argument.
-    dotnet tool run sbom-tool -- generate `
-        /Verbosity:Information `
-        -b $BuildDropPath `
-        -bc $BuildComponentPath `
-        -m $staging `
-        -pn $PackageId `
-        -pv $PackageVersion `
-        -ps $Supplier `
-        -nsb $NamespaceBaseUri `
-        -mi 'SPDX:2.2,SPDX:3.0' `
-        -li $ResolveLicenses.ToString().ToLowerInvariant() `
-        -lto $LicenseTimeoutSeconds `
-        -pm true
+    $generateArgs = @(
+        'generate'
+        '/Verbosity:Information'
+        '-b', $BuildDropPath
+        '-bc', $BuildComponentPath
+        '-m', $staging
+        '-pn', $PackageId
+        '-pv', $PackageVersion
+        '-ps', $Supplier
+        '-nsb', $NamespaceBaseUri
+        '-mi', 'SPDX:2.2,SPDX:3.0'
+        '-li', $ResolveLicenses.ToString().ToLowerInvariant()
+        '-lto', $LicenseTimeoutSeconds
+        '-pm', 'true'
+    )
+    if ($componentDetectorArgs) {
+        $generateArgs += '-cd', $componentDetectorArgs
+    }
+
+    dotnet tool run sbom-tool -- @generateArgs
 
     $coverage = Get-LicenseCoverage -ManifestPath (Join-Path $staging '_manifest/spdx_2.2/manifest.spdx.json')
     Write-Host "Attempt ${attempt}: $($coverage.Licensed) of $($coverage.Total) packages carry a resolved license."

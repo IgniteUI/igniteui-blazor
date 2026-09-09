@@ -478,7 +478,9 @@ jobs:
           Remove-Item package-lock.json -Force
 
       # -b is the signed package folder, so the shipped nupkg and its hash land in the files section.
-      # -bc is the repository root because the npm graph lives there alongside the .NET project.
+      # -bc is the repository root because the npm graph lives there alongside the .NET project;
+      # -ComponentScanExclusion then keeps that same nupkg under -b from being detected as a
+      # component (which recorded the package as a dependency of itself).
       # OutputRoot is the shared sbom root: New-Sbom.ps1 replaces only the _manifest subtree it owns,
       # leaving the CycloneDX documents already written under sbom/cyclonedx/ untouched.
       - name: Generate SPDX SBOMs
@@ -489,6 +491,7 @@ jobs:
           -PackageVersion "$env:VERSION"
           -BuildDropPath "${{ github.workspace }}/artifacts"
           -BuildComponentPath "${{ github.workspace }}"
+          -ComponentScanExclusion '**/artifacts/**'
           -OutputRoot "${{ runner.temp }}/sbom"
           -LicenseTimeoutSeconds ${{ env.SBOM_LICENSE_TIMEOUT_SECONDS }}
 
@@ -525,6 +528,8 @@ jobs:
           -NpmBomPath "${{ runner.temp }}/sbom/cyclonedx/npm/bom.json"
           -PackageId "${{ env.PACKAGE_ID }}"
           -PackageVersion "$env:VERSION"
+          -RootLicenseExpression 'MIT'
+          -MergeToolVersion "${{ github.sha }}"
           -OutputFile "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.$env:VERSION.cdx.json"
 
       - name: Verify CycloneDX SBOM output
