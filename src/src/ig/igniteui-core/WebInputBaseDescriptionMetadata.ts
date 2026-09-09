@@ -3,6 +3,7 @@ import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebComponentValueChangedEventArgsDescriptionMetadata } from "./WebComponentValueChangedEventArgsDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 
 /**
  * @hidden 
@@ -21,6 +22,7 @@ export class WebInputBaseDescriptionMetadata extends Base {
 		context.markSeen(WebInputBaseDescriptionMetadata._metadata);
 		WebComponentValueChangedEventArgsDescriptionMetadata.register(context);
 		VoidEventArgsDescriptionMetadata.register(context);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:InputBase");
