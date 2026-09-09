@@ -181,14 +181,11 @@ The library is trim-compatible. Applications publishing with `PublishTrimmed=tru
 # 1. Install Node dependencies
 npm install
 
-# 2. Build the JS interop bundle
+# 2. Build the static web assets (src/wwwroot: JS bundle, initializer, api.js, themes)
 npm run build
-
-# 3. Copy component themes to wwwroot
-npm run copythemes
 ```
 
-The `stories/` directory contains a [Blazing Story](https://github.com/jsakamoto/BlazingStory) app that demonstrates Ignite UI for Blazor components. To run it locally, the JS interop bundle and component themes must be built first.
+The `stories/` directory contains a [Blazing Story](https://github.com/jsakamoto/BlazingStory) app that demonstrates Ignite UI for Blazor components. To run it locally, the static web assets must be built first.
 
 After the above steps, open the solution in Visual Studio or run the stories project with the .NET CLI:
 

@@ -2212,8 +2212,8 @@ function getArrayDataPtr(value: any): any {
   if ((window as any).getValue) {
     getValueActual = (window as any).getValue;
   }
-  if ((global as any).getValue) {
-    getValueActual = (global as any).getValue;
+  if ((globalThis as any).getValue) {
+    getValueActual = (globalThis as any).getValue;
   }
   if ((self as any).getValue) {
     getValueActual = (self as any).getValue;
