@@ -168,7 +168,7 @@ $reportMarkdownPath = Join-Path $OutputDirectory 'performance-report.md'
 $markdown = New-Object System.Collections.Generic.List[string]
 $markdown.Add('## Bundle size budget')
 $markdown.Add('')
-$markdown.Add("Measured `$($budget.root)` on $((Get-Date).ToUniversalTime().ToString('yyyy-MM-dd HH:mm')) UTC.")
+$markdown.Add('Measured `' + $budget.root + '` on ' + (Get-Date).ToUniversalTime().ToString('yyyy-MM-dd HH:mm') + ' UTC.')
 $markdown.Add('')
 $markdown.Add('| Total | Raw KiB | Budget | Gzip KiB | Budget |')
 $markdown.Add('| --- | ---: | ---: | ---: | ---: |')

@@ -62,5 +62,8 @@ if ($coverage -lt $MinimumLicenseCoverage) {
 }
 
 $checksum = (Get-FileHash -LiteralPath $BomPath -Algorithm SHA256).Hash.ToLowerInvariant()
-Set-Content -LiteralPath "$BomPath.sha256" -Value $checksum -NoNewline
+# '<digest>  <file name>', LF-terminated - the same format as the .nupkg sidecar, so `sha256sum -c`
+# can verify it rather than a consumer having to eyeball a bare hash.
+$bomName = [System.IO.Path]::GetFileName($BomPath)
+"$checksum  $bomName`n" | Set-Content -LiteralPath "$BomPath.sha256" -Encoding ascii -NoNewline
 Write-Host "Wrote checksum sidecar $BomPath.sha256."

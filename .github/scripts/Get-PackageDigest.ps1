@@ -17,7 +17,9 @@ param(
 
     [string]$FailureMessage = 'Package digest changed between jobs.',
 
-    # Writes '<digest>  <file name>' next to the package, in the format sha256sum expects.
+    # Writes '<digest>  <file name>' next to the package, LF-terminated, in the format sha256sum
+    # expects (a CRLF terminator makes `sha256sum -c` treat the '\r' as part of the file name on
+    # non-Windows).
     [switch]$WriteChecksumFile,
 
     [string]$GitHubOutputName,
@@ -45,7 +47,8 @@ foreach ($expected in @($ExpectedSha256 | Where-Object { $_ })) {
 }
 
 if ($WriteChecksumFile) {
-    "$digest  $name" | Set-Content -LiteralPath "$PackagePath.sha256" -Encoding ascii
+    # -NoNewline plus an explicit `n keeps the terminator a single LF on the Windows runner.
+    "$digest  $name`n" | Set-Content -LiteralPath "$PackagePath.sha256" -Encoding ascii -NoNewline
 }
 
 if ($GitHubOutputName -and $GitHubOutputPath) {
