@@ -73,7 +73,7 @@ Things worth eyeballing in the generated project:
 
 - Host `.csproj` — `<TargetFramework>net10.0</TargetFramework>`; package refs include `IgniteUI.Blazor.Lite`, and for Wasm/Auto also `Microsoft.AspNetCore.Components.WebAssembly.Server`. With `--IncludeWeatherSample true`, also `Blazor-ApexCharts` and `IgniteUI.Blazor.GridLite`.
 - For Wasm/Auto, the client `.csproj` ships `<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>` and `<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>`; pages, layout, models, and services live under `MyTestApp.Client/` (renamed in via `template.json`).
-- `Components/App.razor` — IgniteUI theme `<link>`s and the `_content/IgniteUI.Blazor/app.bundle.js` `<script>` are present.
+- `Components/App.razor` — IgniteUI theme `<link>`s are present.
 - Namespaces in `Program.cs`, `Models/`, `Services/`, `_Imports.razor` should be `MyTestApp.*` — never `IgniteBlazorApp.*`.
 
 ## 5. Build and run
@@ -100,7 +100,7 @@ Quick smoke without a browser (replace `5148` with the port from `launchSettings
 
 ```bash
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:5148/
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:5148/_content/IgniteUI.Blazor/app.bundle.js
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:5148/_content/IgniteUI.Blazor/IgniteUI.Blazor.Lite.lib.module.js
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:5148/_content/IgniteUI.Blazor/themes/light/bootstrap.css
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:5148/_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css
 ```
