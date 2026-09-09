@@ -22,11 +22,10 @@ Register the services in your `Program.cs`:
 builder.Services.AddIgniteUIBlazor();
 ```
 
-Add the required stylesheet and script to your `App.razor`:
+Add the theme stylesheet to your `App.razor`:
 
 ```html
 <link rel="stylesheet" href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" />
-<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
 ```
 
 ## Resources
