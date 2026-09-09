@@ -62,14 +62,24 @@ Add it to both `_Imports.razor` files in split Blazor Web App solutions.
 
 Host page is `wwwroot/index.html` (WASM/MAUI), `Pages/_Host.cshtml` (Server), or `Components/App.razor` (Web App).
 
+The theme stylesheet is the only required tag — without it components render unstyled.
+
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
 ...
-<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
 <script src="_framework/blazor.web.js"></script>   <!-- or blazor.server.js / blazor.webassembly.js / blazor.webview.js -->
 ```
 
-Both tags are required: without the stylesheet components render unstyled, without `app.bundle.js` they do not render at all. `app.bundle.js` must come **before** the Blazor framework script.
+**`IgniteUI.Blazor.Lite` (≥ 0.1.0) loads its component bundle itself** — a JS initializer runs during Blazor startup on every hosting model: Blazor Server, standalone WASM, Blazor Web App (`blazor.web.js`, any render mode), and BlazorWebView/Hybrid.
+
+**The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`, ≤ 26.1.x) still needs the tag in Blazor Web Apps** — it ships a classic-only initializer that `blazor.web.js` ignores. There the tag must come **before** the Blazor framework script; classic Blazor Server and standalone WASM apps on the full product may omit it.
+
+```html
+<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>   <!-- full product, Blazor Web App only -->
+<script src="_framework/blazor.web.js"></script>
+```
+
+On the full product, **never wrap that tag in `@Assets[...]`** — fingerprinting it breaks loading and the app renders blank ([#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)). On `IgniteUI.Blazor.Lite`, an existing tag — fingerprinted or not — is a harmless no-op kept for compatibility.
 
 Theme files under `_content/IgniteUI.Blazor/themes/` are `{light|dark}/{bootstrap|material|fluent|indigo}.css` — link exactly one.
 

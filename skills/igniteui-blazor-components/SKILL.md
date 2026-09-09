@@ -26,6 +26,7 @@ user-invocable: true
 | Dialog, Snackbar, Toast, Banner | [`references/feedback.md`](./references/feedback.md) |
 | Dock Manager, Tile Manager | [`references/layout-manager.md`](./references/layout-manager.md) |
 | Category / Data / Financial / Pie / Donut charts, Sparkline, Treemap, Geographic Map, Gauges, Dashboard Tile, chart features | [`references/charts.md`](./references/charts.md) |
+| `*Script` parameters: client-side templates, JS event handlers, `registerScript`, `api.js` | [`references/client-scripts.md`](./references/client-scripts.md) |
 
 ## Packages
 
@@ -41,13 +42,14 @@ All four use the `IgniteUI.Blazor.Controls` namespace and serve static assets fr
 ## Rules that apply to every component
 
 - **Registration.** `builder.Services.AddIgniteUIBlazor()` in `Program.cs` is required. Passing `typeof(Igb<Name>Module)` arguments eagerly pre-loads exactly those modules; with no arguments every module is available. In `IgniteUI.Blazor.Lite` each component also registers its own module on first render, so the explicit list is a bundle-size optimization rather than a correctness requirement.
-- **Runtime script.** `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` must appear before the Blazor framework script in the host page. Missing it means no web components register and the app renders blank.
+- **Runtime script.** `IgniteUI.Blazor.Lite` loads its component bundle itself (JS initializer, every hosting model). The full `IgniteUI.Blazor`/`IgniteUI.Blazor.Trial` needs `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` before the Blazor framework script in **Blazor Web Apps** — never wrapped in `@Assets[...]` (fingerprinting it renders the app blank).
 - **Theme CSS.** Exactly one theme stylesheet, e.g. `_content/IgniteUI.Blazor/themes/light/bootstrap.css`.
 - **Slots.** Composition uses named slots (`slot="start"`, `slot="title"`, `slot="footer"`, …), not wrapper components. Use `IgbIcon` inside slots — a font-icon `<span>` is `display: inline` and drifts to the top of the slot's flex box.
 - **`@ref`.** Declare a field of the component type and use `@ref` for programmatic calls (`await dialog.ShowAsync()`). The reference is `null` until after first render. Some components need `await component.EnsureReady()` before their async methods in `OnAfterRenderAsync(firstRender)` — icon registration especially.
 - **Parameters are PascalCase** (`ChartType`, `DataSource`), never Angular-style `[chartType]`.
 - **`Name` is not an HTML name attribute.** On every Ignite UI component `Name` is the framework's element identity used for lookups. Do not use it to group radios or to name a form field.
 - **Forms.** There is no universal form-integration pattern; several components (`IgbCombo`, `IgbRadio`) do not participate in a plain HTML `<form>`. Bind explicitly with `@bind-Value` / `@bind-Checked` and check the component's doc before assuming form behavior.
+- **`*Script` parameters** take the *name* of a JavaScript function registered through `_content/IgniteUI.Blazor/api.js` (Lite) or the `igRegisterScript` window global (full product), not code. Use them for client-side templates (rendered per item in the browser, no server round trip). For events prefer the C# event; the script variant is for synchronous cancellation or purely client-side reactions. See [`client-scripts.md`](./references/client-scripts.md).
 - **Dynamic `class` values** must be a single C# expression (`class="@ChipClass(item)"`). Mixing literal text with `@(...)` in one attribute raises **RZ9986**.
 
 ## MCP server (optional)

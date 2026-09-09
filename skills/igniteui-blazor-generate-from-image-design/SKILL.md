@@ -45,7 +45,7 @@ Start every region with the most appropriate Ignite UI component. Fall back to p
 
 There are no separate DV packages. If a required package is missing from the project, identify the right package and version and **ask before editing the `.csproj`**.
 
-Register every `Igb*Module` you use in `Program.cs`, add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`, and confirm the theme stylesheet and `app.bundle.js` are in the host page — see the components skill's [`setup.md`](../igniteui-blazor-components/references/setup.md).
+Register every `Igb*Module` you use in `Program.cs`, add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`, and confirm the theme stylesheet is in the host page (on `IgniteUI.Blazor`/`.Trial` in a Blazor Web App, also the `_content/IgniteUI.Blazor/app.bundle.js` script tag before the Blazor script; `IgniteUI.Blazor.Lite` needs no tag) — see the components skill's [`setup.md`](../igniteui-blazor-components/references/setup.md).
 
 ## Step 3 — Theme
 
