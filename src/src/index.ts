@@ -1230,7 +1230,10 @@ function updateAngularElement(element: any) {
             methodName = methodName.substr(7);
           }
 
-          if (!hasProp(child, methodName)) {
+          // The prop map stops walking the prototype chain below HTMLElement, so methods
+          // inherited from it (e.g. focus/blur on components that rely on delegatesFocus
+          // instead of overriding them) are missing from it while still being invokable.
+          if (!hasProp(child, methodName) && !(child && typeof child[methodName] === 'function')) {
             let error = "error: target doesn't have prop: " + methodName;
             console.error(error);
             return error;

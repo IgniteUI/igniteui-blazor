@@ -2,6 +2,7 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { DatePartDeltasDescriptionMetadata } from "./DatePartDeltasDescriptionMetadata";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 
 /**
  * @hidden 
@@ -19,6 +20,7 @@ export class WebDateTimeInputBaseDescriptionMetadata extends Base {
 		}
 		context.markSeen(WebDateTimeInputBaseDescriptionMetadata._metadata);
 		DatePartDeltasDescriptionMetadata.register(context);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:DateTimeInputBase");

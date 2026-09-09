@@ -3,6 +3,7 @@ import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebCheckboxChangeEventArgsDescriptionMetadata } from "./WebCheckboxChangeEventArgsDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 import { WebCheckboxBaseDescription } from "./WebCheckboxBaseDescription";
 
 /**
@@ -22,6 +23,7 @@ export class WebCheckboxBaseDescriptionMetadata extends Base {
 		context.markSeen(WebCheckboxBaseDescriptionMetadata._metadata);
 		WebCheckboxChangeEventArgsDescriptionMetadata.register(context);
 		VoidEventArgsDescriptionMetadata.register(context);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:CheckboxBase");

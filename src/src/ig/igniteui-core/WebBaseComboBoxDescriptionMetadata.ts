@@ -1,6 +1,7 @@
 import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 
 /**
  * @hidden 
@@ -17,6 +18,7 @@ export class WebBaseComboBoxDescriptionMetadata extends Base {
 			return;
 		}
 		context.markSeen(WebBaseComboBoxDescriptionMetadata._metadata);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:BaseComboBox");

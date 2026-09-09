@@ -2,6 +2,7 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 
 /**
  * @hidden 
@@ -19,6 +20,7 @@ export class WebButtonBaseDescriptionMetadata extends Base {
 		}
 		context.markSeen(WebButtonBaseDescriptionMetadata._metadata);
 		VoidEventArgsDescriptionMetadata.register(context);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:ButtonBase");

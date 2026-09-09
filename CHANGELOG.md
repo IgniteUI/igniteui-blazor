@@ -48,6 +48,8 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 
 ### Fixed
 
+- The `FocusComponent` / `FocusComponentAsync` and `BlurComponent` / `BlurComponentAsync` methods now work on all components that expose them - Button, Icon Button, Toggle Button, Checkbox, Switch, Radio, Input, Mask Input, Date Time Input, Select and Combo. Two client-side defects were fixed: the `IgbFocusOptions` argument was not registered for by-value marshalling, and methods a component inherits from `HTMLElement` without overriding them - the focus and blur of the buttons, which rely on `delegatesFocus` - were not recognized as invokable. [#297](https://github.com/IgniteUI/igniteui-blazor/issues/297)
+
 For the complete list of fixes arriving with the updated web components, see the [7.3.0](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.0), [7.3.1](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.1) and [7.3.2](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) release notes - highlights include per-element selection tracking in Button Group, correct `WeekStart` on the Calendar's initial render, form-associated components keeping their validation messages after a failed form submission (including hosts that start invalid), Highlight painting matches in recent Firefox versions, Select keyboard-navigation and type-ahead fixes, significantly faster large Tree operations, Tooltip show/hide race fixes, Chip accessibility reworks, and touch input on the Color Picker canvas.
 
 ## 0.1.0 - 2026-07-14
