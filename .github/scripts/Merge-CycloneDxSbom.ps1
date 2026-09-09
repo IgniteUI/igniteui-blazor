@@ -157,6 +157,28 @@ $mergedDependencies.Add([ordered]@{
         dependsOn = @($firstLevelDependsOn | Select-Object -Unique)
     })
 
+# cyclonedx-npm 6.0.1 emits dependency-graph nodes for nested-path bom-refs it never adds to
+# components[] (a package appearing deeper in the tree, e.g. tslib / @floating-ui/core). Drop
+# edges and dependsOn entries that point at a bom-ref no component or the root declares, so the
+# merged graph stays self-consistent regardless of that input quirk.
+$knownRefs = [System.Collections.Generic.HashSet[string]]::new()
+[void]$knownRefs.Add($rootBomRef)
+foreach ($component in $mergedComponents) {
+    if ($component.'bom-ref') { [void]$knownRefs.Add([string]$component.'bom-ref') }
+}
+
+$prunedDependencies = [System.Collections.Generic.List[object]]::new()
+$droppedEdgeCount = 0
+foreach ($dependency in $mergedDependencies) {
+    if (-not $knownRefs.Contains([string]$dependency.ref)) { $droppedEdgeCount++; continue }
+    $keptDependsOn = @(@($dependency.dependsOn) | Where-Object { $knownRefs.Contains([string]$_) })
+    $prunedDependencies.Add([ordered]@{ ref = [string]$dependency.ref; dependsOn = $keptDependsOn })
+}
+$mergedDependencies = $prunedDependencies
+if ($droppedEdgeCount -gt 0) {
+    Write-Host "Pruned $droppedEdgeCount dependency edge(s) whose ref is absent from components (cyclonedx-npm nested-path artifacts)."
+}
+
 # --- metadata.tools.components: both inputs' inventories plus this merge step ---
 $mergeToolEntry = [ordered]@{ type = 'application'; group = $Group; name = 'Merge-CycloneDxSbom.ps1' }
 if ($MergeToolVersion) { $mergeToolEntry.version = $MergeToolVersion }
