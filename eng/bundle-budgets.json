@@ -3,7 +3,7 @@
   "baseline": {
     "measuredOn": "2026-08-27",
     "toolchain": "node 22 / webpack 5 production build (npm run build + npm run copythemes)",
-    "note": "Budgets are the measured size plus roughly 10-15% headroom. Raise one only with a recorded reason in docs/performance.md; a bundle that grows past its budget is a product decision, not a build detail."
+    "note": "Budgets are the measured size plus roughly 10-15% headroom. A bundle that grows past its budget is a product decision, not a build detail."
   },
   "groups": [
     {
