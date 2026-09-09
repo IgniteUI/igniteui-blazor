@@ -676,6 +676,18 @@ jobs:
           name: nupkg-signed
           path: artifacts
 
+      - name: Verify signed package digest
+        shell: bash
+        env:
+          EXPECTED_NUPKG_SHA256: ${{ needs.pack.outputs.nupkg-sha256 }}
+        run: |
+          actual=$(sha256sum "artifacts/${PACKAGE_ID}.${VERSION}.nupkg" | cut -d ' ' -f 1)
+          if [[ "$actual" != "$EXPECTED_NUPKG_SHA256" ]]; then
+            echo "Package digest changed before release attachment." >&2
+            exit 1
+          fi
+          (cd artifacts && sha256sum --check "${PACKAGE_ID}.${VERSION}.nupkg.sha256")
+
       - name: Download SBOM and attestations
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
