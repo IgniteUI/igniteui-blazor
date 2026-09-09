@@ -238,6 +238,13 @@ jobs:
           path: src
           digest-mismatch: error
 
+      # Pack resolves framework references against this runner, and the downloaded obj cache is not
+      # enough: without a restore here, pack fails with NETSDK1127 (targeting pack not installed) for
+      # the netX.0 TFMs. Restoring is not a rebuild - the signed DLLs stand. See
+      # https://github.com/IgniteUI/igniteui-blazor/issues/388.
+      - name: Restore .NET dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
       # Repository url and commit are passed explicitly: 0.1.1 shipped a nuspec carrying a commit
       # but no url, which left consumers unable to reach the source for the version they restored.
       - name: Pack NuGet package
