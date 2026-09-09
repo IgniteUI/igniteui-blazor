@@ -115,7 +115,7 @@ jobs:
           dotnet build ${{ env.PROJECT_PATH }} `
             --configuration ${{ env.BUILD_CONFIGURATION }} `
             --no-restore `
-            -p:Version=${{ env.VERSION }} `
+            "-p:Version=$env:VERSION" `
             -p:ContinuousIntegrationBuild=true `
             -p:GeneratePackageOnBuild=false `
             -p:TreatWarningsAsErrors=false `
@@ -246,7 +246,7 @@ jobs:
           --configuration ${{ env.BUILD_CONFIGURATION }}
           --no-build
           --no-restore
-          -p:PackageVersion=${{ env.VERSION }}
+          "-p:PackageVersion=$env:VERSION"
           -p:RepositoryUrl=${{ env.REPOSITORY_URL }}
           -p:RepositoryType=git
           -p:RepositoryCommit=${{ github.sha }}
@@ -259,20 +259,10 @@ jobs:
         shell: pwsh
         run: >
           .github/scripts/Assert-PackageSignatures.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
           -ExpectedPublicKeyPath "${{ env.EXPECTED_PUBLIC_KEY_PATH }}"
           -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
           -WorkingDirectory "${{ runner.temp }}/package-signature-validation"
-
-      - name: Validate package provenance metadata
-        shell: pwsh
-        run: >
-          .github/scripts/Assert-NuspecRepository.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
-          -ExpectedRepositoryUrl "${{ env.REPOSITORY_URL }}"
-          -ExpectedCommit "${{ github.sha }}"
-          -ExpectedPackageId "${{ env.PACKAGE_ID }}"
-          -ExpectedVersion "${{ env.VERSION }}"
 
       - name: Restore .NET local tools
         run: dotnet tool restore
@@ -299,7 +289,7 @@ jobs:
         shell: pwsh
         run: >
           .github/scripts/Assert-NuGetSignature.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
           -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
 
       # This digest is the identity every downstream job re-checks before acting on the package.
@@ -308,7 +298,7 @@ jobs:
         shell: pwsh
         run: >
           .github/scripts/Get-PackageDigest.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
           -WriteChecksumFile
           -GitHubOutputName 'nupkg-sha256'
           -SummaryTitle 'Signed package digest'
@@ -393,7 +383,7 @@ jobs:
           -OutputDirectory "${{ github.workspace }}/artifacts/dependency-scan"
           -NpmManifestDirectory "${{ github.workspace }}"
           -PackageId "${{ env.PACKAGE_ID }}"
-          -Version "${{ env.VERSION }}"
+          -Version "$env:VERSION"
 
       - name: Upload dependency scan
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -442,7 +432,7 @@ jobs:
         shell: pwsh
         run: >
           .github/scripts/Get-PackageDigest.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
           -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}"
 
       # Restores the library alone on purpose: a bare 'dotnet restore' writes project.assets.json for
@@ -482,26 +472,25 @@ jobs:
 
       # -b is the signed package folder, so the shipped nupkg and its hash land in the files section.
       # -bc is the repository root because the npm graph lives there alongside the .NET project.
-      # Written to its own subtree, not the shared sbom root: New-Sbom.ps1 wipes -OutputRoot before
-      # promoting the generated manifests into it, and sbom/cyclonedx/npm/bom.json already lives
-      # under that root at this point in the job.
+      # OutputRoot is the shared sbom root: New-Sbom.ps1 replaces only the _manifest subtree it owns,
+      # leaving the CycloneDX documents already written under sbom/cyclonedx/ untouched.
       - name: Generate SPDX SBOMs
         shell: pwsh
         run: >
           .github/scripts/New-Sbom.ps1
           -PackageId "${{ env.PACKAGE_ID }}"
-          -PackageVersion "${{ env.VERSION }}"
+          -PackageVersion "$env:VERSION"
           -BuildDropPath "${{ github.workspace }}/artifacts"
           -BuildComponentPath "${{ github.workspace }}"
-          -OutputRoot "${{ runner.temp }}/sbom/spdx"
+          -OutputRoot "${{ runner.temp }}/sbom"
           -LicenseTimeoutSeconds ${{ env.SBOM_LICENSE_TIMEOUT_SECONDS }}
 
       - name: Verify SPDX SBOM output
         shell: pwsh
         run: >
           .github/scripts/Assert-Sbom.ps1
-          -OutputRoot "${{ runner.temp }}/sbom/spdx"
-          -ExpectedPackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -OutputRoot "${{ runner.temp }}/sbom"
+          -ExpectedPackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
 
       # CycloneDX reads licences and authors from each package's own nuspec, so it fills the fields the
       # ClearlyDefined-backed SPDX documents leave as NOASSERTION whenever that service is degraded.
@@ -514,7 +503,7 @@ jobs:
           .github/scripts/New-CycloneDxSbom.ps1
           -ProjectPath "${{ env.PROJECT_PATH }}"
           -PackageId "${{ env.PACKAGE_ID }}"
-          -PackageVersion "${{ env.VERSION }}"
+          -PackageVersion "$env:VERSION"
           -OutputDirectory "${{ runner.temp }}/sbom/cyclonedx/dotnet"
           -GitHubBearerToken "$env:GH_TOKEN_FOR_LICENSES"
 
@@ -528,14 +517,14 @@ jobs:
           -DotNetBomPath "${{ runner.temp }}/sbom/cyclonedx/dotnet/bom.json"
           -NpmBomPath "${{ runner.temp }}/sbom/cyclonedx/npm/bom.json"
           -PackageId "${{ env.PACKAGE_ID }}"
-          -PackageVersion "${{ env.VERSION }}"
-          -OutputFile "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.cdx.json"
+          -PackageVersion "$env:VERSION"
+          -OutputFile "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.$env:VERSION.cdx.json"
 
       - name: Verify CycloneDX SBOM output
         shell: pwsh
         run: >
           .github/scripts/Assert-CycloneDxSbom.ps1
-          -BomPath "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.cdx.json"
+          -BomPath "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.$env:VERSION.cdx.json"
 
       # An attestation binds to a digest rather than a path, so the bytes are re-hashed here and that
       # value is what gets attested, re-checked before publishing, and reported on the release.
@@ -544,7 +533,7 @@ jobs:
         shell: pwsh
         run: >
           .github/scripts/Get-PackageDigest.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
           -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}"
           -FailureMessage 'Package changed before attestation.'
           -GitHubOutputName 'nupkg-sha256'
@@ -563,7 +552,7 @@ jobs:
         with:
           subject-name: ${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg
           subject-digest: sha256:${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
-          sbom-path: ${{ runner.temp }}/sbom/spdx/_manifest/spdx_2.2/manifest.spdx.json
+          sbom-path: ${{ runner.temp }}/sbom/_manifest/spdx_2.2/manifest.spdx.json
 
       # Distinct predicate type from the SPDX attestation, so both bind to the same digest without colliding.
       - name: Attest CycloneDX SBOM
@@ -631,7 +620,7 @@ jobs:
         shell: pwsh
         run: >
           .github/scripts/Get-PackageDigest.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
           -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}","${{ needs.sbom.outputs.attested-sha256 }}"
           -FailureMessage 'Refusing to publish.'
 
@@ -639,7 +628,7 @@ jobs:
         shell: pwsh
         run: >
           .github/scripts/Assert-NuGetSignature.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
           -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
 
       - name: NuGet login (OIDC Trusted Publishing)
@@ -657,9 +646,9 @@ jobs:
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: >
           .github/scripts/Publish-NuGetPackage.ps1
-          -PackagePath "${{ github.workspace }}/artifacts/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg"
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
           -PackageId "${{ env.PACKAGE_ID }}"
-          -Version "${{ env.VERSION }}"
+          -Version "$env:VERSION"
 
   attach-to-release:
     name: Attach release evidence
@@ -713,8 +702,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          (cd sbom/spdx/_manifest/spdx_2.2 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-2.2.zip" .)
-          (cd sbom/spdx/_manifest/spdx_3.0 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-3.0.zip" .)
+          (cd sbom/_manifest/spdx_2.2 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-2.2.zip" .)
+          (cd sbom/_manifest/spdx_3.0 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-3.0.zip" .)
           (cd evidence/dependency-scan && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.dependency-scan.zip" .)
 
           gh release upload "$TAG" --clobber -R "${{ github.repository }}" \

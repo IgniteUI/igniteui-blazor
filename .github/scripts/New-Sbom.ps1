@@ -141,8 +141,14 @@ for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
     Write-Host "Attempt ${attempt}: $($coverage.Licensed) of $($coverage.Total) packages carry a resolved license."
 
     if ($coverage.Licensed -gt $best.Licensed) {
-        Remove-Item -LiteralPath $resolvedOutputRoot -Recurse -Force -ErrorAction SilentlyContinue
-        Move-Item -LiteralPath $staging -Destination $resolvedOutputRoot -Force
+        # Replaces only the _manifest subdirectory sbom-tool owns, not the whole OutputRoot: a caller
+        # that generates other SBOM formats (e.g. CycloneDX) into a sibling path under the same root
+        # must not have that content silently deleted here.
+        $manifestDir = Join-Path $resolvedOutputRoot '_manifest'
+        Remove-Item -LiteralPath $manifestDir -Recurse -Force -ErrorAction SilentlyContinue
+        New-Item -ItemType Directory -Path $resolvedOutputRoot -Force | Out-Null
+        Move-Item -LiteralPath (Join-Path $staging '_manifest') -Destination $manifestDir -Force
+        Remove-Item -LiteralPath $staging -Recurse -Force -ErrorAction SilentlyContinue
         $best = $coverage
     }
     else {

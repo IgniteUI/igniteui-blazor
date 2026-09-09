@@ -43,4 +43,4 @@ if ($LASTEXITCODE -ne 0) {
     throw "NuGet signature validation failed or the signer is not approved by '$ExpectedCertificateSha256Path'."
 }
 
-Write-Host 'NuGet package signature matches an approved certificate.'
+Write-Host "NuGet package signature matches an approved certificate."

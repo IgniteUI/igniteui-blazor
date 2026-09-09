@@ -8,9 +8,9 @@
     dependency-review check. A scan that fails to run, however, is an error: silence must not be
     mistaken for a clean result.
 
-    Both ecosystems are scanned because the .nupkg ships both - the .NET assemblies and the webpack
-    bundle built from the npm runtime dependencies. npm is scanned with --omit=dev for the same reason:
-    build tooling is not part of the shipped artifact.
+    Both ecosystems are scanned because the .nupkg ships both - the .NET assemblies and the bundled
+    JavaScript built from the npm runtime dependencies. npm is scanned with --omit=dev for the same
+    reason: build tooling is not part of the shipped artifact.
 #>
 [CmdletBinding()]
 param(

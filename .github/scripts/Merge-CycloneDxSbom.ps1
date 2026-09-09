@@ -19,7 +19,7 @@
 
     Metadata 'tools' entries are deliberately dropped rather than merged: the array-vs-object shape of
     that field changed across CycloneDX spec versions, and getting it wrong risks a malformed document
-    for a field that carries no information this merge needs.
+    for a field that carries no information this fix needs.
 #>
 [CmdletBinding()]
 param(
