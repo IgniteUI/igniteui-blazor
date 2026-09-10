@@ -286,7 +286,7 @@ namespace IgniteUI.Blazor.Controls
             Func<object, decimal>? decimalGetter = null;
             Func<object, short>? shortGetter = null;
             Func<object, long>? longGetter = null;
-            Func<object, string>? stringGetter = null;
+            Func<object, string?>? stringGetter = null;
             Func<object, DateTime>? dateTimeGetter = null;
             Func<object, object>? objectGetter = null;
 
@@ -301,7 +301,7 @@ namespace IgniteUI.Blazor.Controls
             Func<object, decimal?>? nullableDecimalGetter = null;
             Func<object, bool?>? nullableBoolGetter = null;
             Func<object, byte?>? nullableByteGetter = null;
-            Func<object, DateTime>? nullableDateTimeGetter = null;
+            Func<object, DateTime?>? nullableDateTimeGetter = null;
             Func<object, double?>? nullableFloatingPointGetter = null;
 
             switch (newColumn.Type)
@@ -420,22 +420,22 @@ namespace IgniteUI.Blazor.Controls
                     break;
                 case JSDataSourceSchemaType.NullableCalendarValue:
                 case JSDataSourceSchemaType.NullableDateTimeValue:
-                    if (valueGetter != null && typeof(Func<object, DateTime>).IsAssignableFrom(valueGetter.GetType()))
+                    if (valueGetter != null && typeof(Func<object, DateTime?>).IsAssignableFrom(valueGetter.GetType()))
                     {
-                        nullableDateTimeGetter = (Func<object, DateTime>)valueGetter;
+                        nullableDateTimeGetter = (Func<object, DateTime?>)valueGetter;
                         stringGetter = (o) =>
                         {
                             var val = nullableDateTimeGetter(o);
-                            return val.ToString("o");
+                            return val == null ? null : val.Value.ToString("o");
                         };
                     }
                     else
                     {
-                        nullableDateTimeGetter = (o) => untypedGetter == null ? default : (DateTime)untypedGetter(o);
+                        nullableDateTimeGetter = (o) => untypedGetter == null ? default : (DateTime?)untypedGetter(o);
                         stringGetter = (o) =>
                         {
                             var val = nullableDateTimeGetter(o);
-                            return val.ToString("o");
+                            return val == null ? null : val.Value.ToString("o");
                         };
                     }
                     break;
