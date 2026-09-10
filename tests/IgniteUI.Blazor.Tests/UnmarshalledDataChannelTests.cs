@@ -21,7 +21,7 @@ public class UnmarshalledDataChannelTests : BunitContext
     public UnmarshalledDataChannelTests()
     {
         JSInterop.Mode = JSRuntimeMode.Loose;
-        _interop = new RendererMessageInteropHarness(JSInterop, forceJsonDataMarshalling: false);
+        _interop = new RendererMessageInteropHarness(JSInterop, () => Renderer.Dispatcher, forceJsonDataMarshalling: false);
         _interop.ConfigureServices(Services);
     }
 
