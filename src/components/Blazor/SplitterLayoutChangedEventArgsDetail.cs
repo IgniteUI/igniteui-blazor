@@ -136,14 +136,14 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("startSize"))
-            { this.StartSize = ReturnToString(args["startSize"]); }
-            if (args.ContainsKey("endSize"))
-            { this.EndSize = ReturnToString(args["endSize"]); }
-            if (args.ContainsKey("startCollapsed"))
-            { this.StartCollapsed = ReturnToBoolean(args["startCollapsed"]); }
-            if (args.ContainsKey("endCollapsed"))
-            { this.EndCollapsed = ReturnToBoolean(args["endCollapsed"]); }
+            if (args.TryGetValue("startSize", out var startSize))
+            { this.StartSize = ReturnToString(startSize); }
+            if (args.TryGetValue("endSize", out var endSize))
+            { this.EndSize = ReturnToString(endSize); }
+            if (args.TryGetValue("startCollapsed", out var startCollapsed))
+            { this.StartCollapsed = ReturnToBoolean(startCollapsed); }
+            if (args.TryGetValue("endCollapsed", out var endCollapsed))
+            { this.EndCollapsed = ReturnToBoolean(endCollapsed); }
 
             this.SuppressParentNotify = false;
         }
