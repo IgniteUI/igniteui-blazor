@@ -1,9 +1,10 @@
-import { cpSync } from 'node:fs';
+import { cpSync, renameSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 
 const outDir = 'src/wwwroot';
 const initializer = 'IgniteUI.Blazor.Lite.lib.module.js';
+const licenseManifest = 'THIRD-PARTY-LICENSES.md';
 /** Public modules keep fixed names so apps can import them and/or import maps can override them. */
 const fixedNames: Record<string, string> = { api: 'api.js', 'lit-html': 'lit-html.js', legacyStub: 'app.bundle.js' };
 const entries = { app: 'src/src/index.ts', api: 'src/src/api.ts', legacyStub: 'src/src/app.bundle.ts' };
@@ -42,12 +43,14 @@ function emitInitializer(): Plugin {
   };
 }
 
-/** Copy igniteui-webcomponents themes to wwwroot */
+/** Copy igniteui-webcomponents themes to wwwroot & move the license manifest */
 function copyThemes(): Plugin {
   return {
     name: 'ig-copy-themes',
     closeBundle() {
       cpSync('node_modules/igniteui-webcomponents/themes', `${outDir}/themes`, { recursive: true });
+      // move out of wwwroot since it's not a web asset (rolldown only emits inside outDir)
+      renameSync(`${outDir}/${licenseManifest}`, `src/${licenseManifest}`);
     },
   };
 }
@@ -64,7 +67,7 @@ export default defineConfig(({ mode }) => {
       outDir,
       emptyOutDir: true,
       // One manifest of every bundled dependency's license; does not include inlined ones from rolldownOptions.output.comments.legal
-      license: { fileName: 'THIRD-PARTY-LICENSES.md' },
+      license: { fileName: licenseManifest },
       sourcemap: isDev,
       // Lib mode keeps the lazy imports free of vite's preload helper (import.meta.url-based — wrong under _content/).
       lib: { formats: ['es'] },
