@@ -15,7 +15,7 @@ public class InteropReadinessTests : BlazorComponentTestBase
     {
         var cut = Render<IgbBanner>();
 
-        await Assert.ThrowsAsync<InvalidOperationException>(() => cut.Instance.ShowAsync());
+        await Assert.ThrowsAsync<InvalidOperationException>(() => Interop.OnDispatcher(cut.Instance.ShowAsync));
         Assert.Null(Interop.FindCall("show"));
     }
 
@@ -26,7 +26,7 @@ public class InteropReadinessTests : BlazorComponentTestBase
         Interop.SetupMethodResult("show", InteropReturn.Bool(true));
         var cut = Render<IgbBanner>();
 
-        var shown = await cut.Instance.ShowAsync();
+        var shown = await Interop.OnDispatcher(cut.Instance.ShowAsync);
 
         Assert.True(shown);
         Assert.NotNull(Interop.FindCall("show", Interop.ContainerIdOf(cut)));
@@ -39,7 +39,7 @@ public class InteropReadinessTests : BlazorComponentTestBase
         Interop.SetupMethodResult("hide", InteropReturn.Bool(false));
 
         Interop.MakeReady();
-        var hidden = await cut.Instance.HideAsync();
+        var hidden = await Interop.OnDispatcher(cut.Instance.HideAsync);
 
         Assert.False(hidden);
         Assert.NotNull(Interop.FindCall("hide", Interop.ContainerIdOf(cut)));

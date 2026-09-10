@@ -155,6 +155,14 @@ namespace IgniteUI.Blazor.Controls
         }
         private LinkedList<RendererMessage> _messageQueue = new LinkedList<RendererMessage>();
 
+        /// <summary>
+        /// Guards <see cref="_messageQueue"/> and the <c>_updateQueued</c> flag that decides when it
+        /// is flushed. Two paths flush it - <c>SendMessageImmediate</c> on the caller's thread,
+        /// <c>QueueUpdate</c> on the renderer's - and a component driven from off the Blazor
+        /// dispatcher (a timer, a bound collection filled in the background) hits both at once.
+        /// </summary>
+        private readonly object _messageQueueLock = new object();
+
         private string _containerId = Guid.NewGuid().ToString();
 
         internal string ContainerId
@@ -852,7 +860,7 @@ namespace IgniteUI.Blazor.Controls
             }
             RendererMessage m = new RendererMessage();
             m.Type = ("description");
-            _messageQueue.AddLast(m);
+            Enqueue(m);
             QueueUpdate();
         }
 
@@ -954,6 +962,13 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<long, Object> _methodReturns = new Dictionary<long, Object>();
         private Object _semLock = new Object();
 
+        /// <summary>
+        /// Shared by every instance because the WebView callback paths return only the invoke ID,
+        /// without a container ID to identify the originating component.
+        /// </summary>
+        /// <remarks>
+        /// Only use <see cref="Interlocked.Increment" /> as this is incremented from any thread.
+        /// </remarks>
         static long _invokeId = 0;
         protected async Task<object> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[] nativeElements = null)
         {
@@ -995,7 +1010,7 @@ namespace IgniteUI.Blazor.Controls
             m.Type = ("invokeMethod");
             string[] args = new string[arguments.Length];
             string[] typeStrings = new string[arguments.Length];
-            long invokeId = _invokeId++;
+            long invokeId = Interlocked.Increment(ref _invokeId);
             for (int i = 0; i < arguments.Length; i++)
             {
                 args[i] = GetStringArg(arguments[i], types[i]);
@@ -1045,7 +1060,7 @@ namespace IgniteUI.Blazor.Controls
             m.Type = ("invokeMethod");
             string[] args = new string[arguments.Length];
             string[] typeStrings = new string[arguments.Length];
-            long invokeId = _invokeId++;
+            long invokeId = Interlocked.Increment(ref _invokeId);
             for (int i = 0; i < arguments.Length; i++)
             {
                 args[i] = GetStringArg(arguments[i], types[i]);
@@ -1574,7 +1589,7 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             //Console.WriteLine("sending message");
-            _messageQueue.AddLast(m);
+            Enqueue(m);
             QueueUpdate();
         }
 
@@ -1585,8 +1600,14 @@ namespace IgniteUI.Blazor.Controls
                 return null;
             }
 
-            Update();
-            return await SendJsonImmediate(m);
+            // The send must start under this lock.
+            Task<object> sent;
+            lock (_messageQueueLock)
+            {
+                Update();
+                sent = SendJsonImmediate(m);
+            }
+            return await sent;
         }
 
         private object SendMessageSyncImmediate(RendererMessage m)
@@ -1595,51 +1616,79 @@ namespace IgniteUI.Blazor.Controls
             {
                 return null;
             }
-            UpdateSync();
-            return SendJsonImmediateSync(m);
+            lock (_messageQueueLock)
+            {
+                UpdateSync();
+                return SendJsonImmediateSync(m);
+            }
+        }
+
+        private void Enqueue(RendererMessage m)
+        {
+            lock (_messageQueueLock)
+            {
+                _messageQueue.AddLast(m);
+            }
         }
 
         private void QueueUpdate()
         {
-            if (!_updateQueued && _ready)
+            bool schedule = false;
+            lock (_messageQueueLock)
             {
-                _updateQueued = true;
+                if (!_updateQueued && _ready)
+                {
+                    _updateQueued = true;
+                    schedule = true;
+                }
+            }
+
+            if (schedule)
+            {
                 Task.Delay(0).ContinueWith((t) => InvokeAsync(Update));
             }
         }
 
         private void Update()
         {
-            this._updateQueued = false;
-
-            if (!_ready)
+            // Spans the whole drain, not just the dequeue, so two flushes cannot interleave their
+            // sends. A thread already holding it can take it again, so nesting is fine.
+            lock (_messageQueueLock)
             {
-                return;
-            }
+                this._updateQueued = false;
 
-            //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
-            while (_messageQueue.Count > 0)
-            {
-                RendererMessage m = _messageQueue.First.Value;
-                _messageQueue.RemoveFirst();
-                ProcessMessage(m);
+                if (!_ready)
+                {
+                    return;
+                }
+
+                //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
+                while (_messageQueue.Count > 0)
+                {
+                    RendererMessage m = _messageQueue.First.Value;
+                    _messageQueue.RemoveFirst();
+                    ProcessMessage(m);
+                }
             }
         }
 
         private void UpdateSync()
         {
-            this._updateQueued = false;
-
-            if (!_ready)
+            lock (_messageQueueLock)
             {
-                return;
-            }
+                this._updateQueued = false;
 
-            while (_messageQueue.Count > 0)
-            {
-                RendererMessage m = _messageQueue.First.Value;
-                _messageQueue.RemoveFirst();
-                ProcessMessageSync(m);
+                if (!_ready)
+                {
+                    return;
+                }
+
+                while (_messageQueue.Count > 0)
+                {
+                    RendererMessage m = _messageQueue.First.Value;
+                    _messageQueue.RemoveFirst();
+                    ProcessMessageSync(m);
+                }
             }
         }
 
@@ -3177,7 +3226,10 @@ namespace IgniteUI.Blazor.Controls
                 RendererMessage m = new RendererMessage();
                 m.Type = ("cleanup");
 
-                _messageQueue.Clear();
+                lock (_messageQueueLock)
+                {
+                    _messageQueue.Clear();
+                }
                 await SendMessageImmediate(m).ConfigureAwait(false);
             }
             catch (JSDisconnectedException ex)
