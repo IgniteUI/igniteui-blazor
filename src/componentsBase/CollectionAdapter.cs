@@ -10,11 +10,11 @@ namespace IgniteUI.Blazor.Controls
         private IList<T> _manualItems = new List<T>();
 
         private IList<T>? _allList;
-        private IList<J>? _target;
+        private IList<J> _target;
         private IList<T>? _query;
-        private Func<T, J>? _toTarget;
-        private Action<T>? _onItemAdded;
-        private Action<T>? _onItemRemoved;
+        private Func<T, J> _toTarget;
+        private Action<T> _onItemAdded;
+        private Action<T> _onItemRemoved;
 
         private bool _hasShiftedOnceAlready;
 
@@ -252,8 +252,8 @@ namespace IgniteUI.Blazor.Controls
                 if (!queryMap.ContainsKey(item) && !manualMap.ContainsKey(item))
                 {
                     this._allList.RemoveAt(i);
-                    this._target?.RemoveAt(i);
-                    this._onItemRemoved?.Invoke(item);
+                    this._target.RemoveAt(i);
+                    this._onItemRemoved(item);
                 }
             }
 
@@ -285,38 +285,18 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
-                        var convertedItem = this._toTarget?.Invoke(insItem);
-                        if (this._target != null && convertedItem == null)
-                        {
-                            ind++;
-                            continue;
-                        }
-
                         this._allList.Insert(ins, insItem);
-                        if (this._target != null && convertedItem != null)
-                        {
-                            this._target.Insert(ins, convertedItem);
-                        }
-                        this._onItemAdded?.Invoke(insItem);
+                        this._target.Insert(ins, this._toTarget(insItem));
+                        this._onItemAdded(insItem);
                         ind++;
                         ins++;
                     }
                 }
                 else
                 {
-                    var convertedItem = this._toTarget?.Invoke(insItem);
-                    if (this._target != null && convertedItem == null)
-                    {
-                        ind++;
-                        continue;
-                    }
-
                     this._allList.Add(insItem);
-                    if (this._target != null && convertedItem != null)
-                    {
-                        this._target.Add(convertedItem);
-                    }
-                    this._onItemAdded?.Invoke(insItem);
+                    this._target.Add(this._toTarget(insItem));
+                    this._onItemAdded(insItem);
                     ind++;
                     ins++;
                 }

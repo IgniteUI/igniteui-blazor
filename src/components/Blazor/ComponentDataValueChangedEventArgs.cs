@@ -56,8 +56,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail"))
-            { this.Detail = ReturnToPrimitive(args["detail"]); }
+            if (args != null && args.ContainsKey("detail") && ReturnToPrimitive(args["detail"]) is object detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

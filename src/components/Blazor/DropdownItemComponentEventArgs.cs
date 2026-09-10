@@ -58,8 +58,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbDropdownItem)ConvertReturnValue(args["detail"], "DropdownItem", true); }
+            if (args != null && args.ContainsKey("detail") && ConvertReturnValue(args["detail"], "DropdownItem", true) is IgbDropdownItem detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

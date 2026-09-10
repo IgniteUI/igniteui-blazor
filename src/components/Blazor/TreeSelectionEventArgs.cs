@@ -62,8 +62,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbTreeSelectionEventArgsDetail)ConvertReturnValue(args["detail"], "TreeSelectionEventArgsDetail", true); }
+            if (args != null && args.ContainsKey("detail") && ConvertReturnValue(args["detail"], "TreeSelectionEventArgsDetail", true) is IgbTreeSelectionEventArgsDetail detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

@@ -70,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbDateRangeValue);
             }
-            var retVal = (IgbDateRangeValue)ConvertReturnValue(iv);
+            var retVal = (IgbDateRangeValue?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbDateRangeValue);
@@ -90,7 +90,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default(IgbDateRangeValue);
             }
-            var retVal = (IgbDateRangeValue)ConvertReturnValue(iv);
+            var retVal = (IgbDateRangeValue?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbDateRangeValue);

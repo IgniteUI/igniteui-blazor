@@ -160,17 +160,14 @@ namespace IgniteUI.Blazor.Controls
                 _values["value"] = item;
                 _valueTypes["value"] = schema.PrimitiveType;
             }
-            var propertyNames = schema.PropertyNames;
             var propertyGetters = schema.PropertyGetters;
-            var propertyTypes = schema.PropertyTypes;
-            if (propertyNames != null && propertyGetters != null && propertyTypes != null)
+            if (propertyGetters != null)
             {
-                var propertyLength = Math.Min(propertyNames.Length, Math.Min(propertyGetters.Length, propertyTypes.Length));
-                for (var i = 0; i < propertyLength; i++)
+                for (int i = 0; i < schema.PropertyNames.Length; i++)
                 {
-                    string name = propertyNames[i];
-                    Func<object, object> propGetter = propertyGetters[i];
-                    JSDataSourceSchemaType type = propertyTypes[i];
+                    String name = schema.PropertyNames[i];
+                    Func<object, object?> propGetter = propertyGetters[i];
+                    JSDataSourceSchemaType type = schema.PropertyTypes[i];
                     object? val = schema.ResolveValue(name, item, propGetter, this, type, manager);
 
                     _values[name] = val;
@@ -178,17 +175,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            var fields = schema.Fields;
             var fieldGetters = schema.FieldGetters;
-            var fieldTypes = schema.FieldTypes;
-            if (fields != null && fieldGetters != null && fieldTypes != null)
+            if (fieldGetters != null)
             {
-                var fieldLength = Math.Min(fields.Length, Math.Min(fieldGetters.Length, fieldTypes.Length));
-                for (var i = 0; i < fieldLength; i++)
+                for (int i = 0; i < schema.Fields.Length; i++)
                 {
-                    string name = fields[i].Name;
+                    String name = schema.Fields[i].Name;
                     Func<object, object> fieldGetter = fieldGetters[i];
-                    JSDataSourceSchemaType type = fieldTypes[i];
+                    JSDataSourceSchemaType type = schema.FieldTypes[i];
                     object? val = schema.ResolveFieldValue(name, item, fieldGetter, this, type, manager);
 
                     _values[name] = val;

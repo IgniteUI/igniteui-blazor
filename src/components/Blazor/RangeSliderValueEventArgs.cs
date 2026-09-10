@@ -61,8 +61,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbRangeSliderValue)ConvertReturnValue(args["detail"], "RangeSliderValue", true); }
+            if (args != null && args.ContainsKey("detail") && ConvertReturnValue(args["detail"], "RangeSliderValue", true) is IgbRangeSliderValue detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

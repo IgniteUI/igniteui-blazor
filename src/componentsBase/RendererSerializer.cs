@@ -284,7 +284,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        public void AddEnumProp(string propertyName, Enum? value)
+        public void AddEnumProp(string propertyName, Enum value)
         {
             if (_context.Filter != null)
             {
@@ -292,12 +292,6 @@ namespace IgniteUI.Blazor.Controls
                 {
                     return;
                 }
-            }
-
-            if (value == null)
-            {
-                _context.Writer.WriteNull(propertyName);
-                return;
             }
 
             if (Utils.TryGetWCEnumName(value.GetType(), value.ToString(), out var wcName))
@@ -569,7 +563,12 @@ namespace IgniteUI.Blazor.Controls
             for (int i = 0; i < vals.Count; i++)
             {
                 Enum? val = (Enum?)vals[i];
-                if (val != null)
+                if (val == null)
+                {
+                    // Keep the element positions aligned with the source collection.
+                    _context.Writer.WriteNullValue();
+                }
+                else
                 {
                     _context.Writer.WriteStringValue(Camelize(val.ToString()));
                 }

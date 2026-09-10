@@ -893,7 +893,7 @@ namespace IgniteUI.Blazor.Controls
             return default;
         }
 
-        internal object ConvertReturnValue(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object? ConvertReturnValue(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -904,10 +904,10 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseRendererControl)CurrParent).ConvertReturnValue(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
-            return new object();
+            return null;
         }
 
-        internal object ReturnToPrimitive(object? val)
+        internal object? ReturnToPrimitive(object? val)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
@@ -918,7 +918,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseRendererControl)CurrParent).ReturnToPrimitive(val);
             }
-            return new object();
+            return null;
         }
 
         internal T[]? DowncastArray<T>(object val)

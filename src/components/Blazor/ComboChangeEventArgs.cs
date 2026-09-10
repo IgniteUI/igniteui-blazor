@@ -61,8 +61,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbComboChangeEventArgsDetail)ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true); }
+            if (args != null && args.ContainsKey("detail") && ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true) is IgbComboChangeEventArgsDetail detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

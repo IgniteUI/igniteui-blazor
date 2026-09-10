@@ -63,8 +63,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail"))
-            { this.Detail = (IgbRadioChangeEventArgsDetail)ConvertReturnValue(args["detail"], "RadioChangeEventArgsDetail", true); }
+            if (args != null && args.ContainsKey("detail") && ConvertReturnValue(args["detail"], "RadioChangeEventArgsDetail", true) is IgbRadioChangeEventArgsDetail detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

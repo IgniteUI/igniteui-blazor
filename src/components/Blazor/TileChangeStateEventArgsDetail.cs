@@ -90,8 +90,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("tile"))
-            { this.Tile = (IgbTile)ConvertReturnValue(args["tile"], "Tile", true); }
+            if (args != null && args.ContainsKey("tile") && ConvertReturnValue(args["tile"], "Tile", true) is IgbTile tile)
+            { this.Tile = tile; }
             if (args != null && args.ContainsKey("state"))
             { this.State = ReturnToBoolean(args["state"]); }
 

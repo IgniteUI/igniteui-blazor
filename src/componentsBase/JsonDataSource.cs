@@ -21,8 +21,8 @@ namespace IgniteUI.Blazor.Controls
         object? LookupOriginal(string id);
         bool HasOriginal(object item);
         Guid IdFromOriginal(object item);
-        IJSDataSourceItem? NotifyInsertItem(object data, int index, Object item);
-        IJSDataSourceItem? NotifyRemoveItem(object data, int index, object oldItem);
+        IJSDataSourceItem? NotifyInsertItem(object data, int index, Object? item);
+        IJSDataSourceItem? NotifyRemoveItem(object data, int index, object? oldItem);
         void NotifyClearItems(Object data);
         IJSDataSourceItem? NotifySetItem(Object data, int index, Object oldItem, Object newItem);
         IJSDataSourceItem? NotifyUpdateItem(object data, int index, object item);
@@ -111,7 +111,7 @@ namespace IgniteUI.Blazor.Controls
 
         private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            if (SuppressModifications || _manager == null)
+            if (SuppressModifications || _manager == null || _originalData == null)
             {
                 return;
             }
@@ -126,10 +126,6 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var item = e.NewItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null)
-                            {
-                                return;
-                            }
                             _manager.NotifyInsertItem(refName, e.NewStartingIndex + i, item);
                         }
                     }
@@ -143,10 +139,6 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var item = e.OldItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null)
-                            {
-                                return;
-                            }
                             _manager.NotifyRemoveItem(refName, e.OldStartingIndex, item);
                         }
                     }
@@ -160,10 +152,6 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var item = e.OldItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null)
-                            {
-                                return;
-                            }
                             _manager.NotifyRemoveItem(refName, e.OldStartingIndex, item);
                         }
                     }
@@ -173,10 +161,6 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var item = e.NewItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null)
-                            {
-                                return;
-                            }
                             _manager.NotifyInsertItem(refName, e.NewStartingIndex + i, item);
                         }
                     }
@@ -185,10 +169,6 @@ namespace IgniteUI.Blazor.Controls
                 case NotifyCollectionChangedAction.Reset:
                 {
                     var refName = _manager.GetRefId(_originalData);
-                    if (refName == null)
-                    {
-                        return;
-                    }
                     _manager.NotifyClearItems(refName);
                     break;
                 }
@@ -450,7 +430,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSourceItem NotifyInsertItem(object data, int index, Object item)
+        public IJSDataSourceItem NotifyInsertItem(object data, int index, Object? item)
         {
             EnsureSchema(item);
             IJSDataSourceItem itemJson = JsonDataSourceItem.Create(item, _schema, _manager);
@@ -459,7 +439,7 @@ namespace IgniteUI.Blazor.Controls
             return itemJson;
         }
 
-        public IJSDataSourceItem NotifyRemoveItem(object data, int index, object oldItem)
+        public IJSDataSourceItem NotifyRemoveItem(object data, int index, object? oldItem)
         {
             EnsureSchema(oldItem);
             IJSDataSourceItem itemJson = _data[index];

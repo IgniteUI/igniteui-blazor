@@ -284,7 +284,7 @@ namespace IgniteUI.Blazor.Controls
             s.PropertyTypes = s._buildingPropertiesTypes.ToArray();
             s.PropertyDataIntents = s._buildingPropertiesDataIntents.ToArray();
             s.PropertyNames = names.ToArray();
-            s.PropertyGetters = new Func<object, object>[names.Count];
+            s.PropertyGetters = new Func<object, object?>[names.Count];
             s.TypedPropertyGetters = new Delegate[names.Count];
 
             var itemProp = item.GetType().GetProperty("Item") ?? throw new InvalidOperationException("The 'Item' property was not found on the dictionary type.");
@@ -292,11 +292,7 @@ namespace IgniteUI.Blazor.Controls
             for (int i = 0; i < names.Count; i++)
             {
                 var key = names[i];
-                s.PropertyGetters[i] = (o) =>
-                {
-                    var value = ((IDictionary)o)[key];
-                    return value is null ? new object() : value;
-                };
+                s.PropertyGetters[i] = (o) => ((IDictionary)o)[key];
             }
             for (int i = 0; i < names.Count; i++)
             {
@@ -366,7 +362,7 @@ namespace IgniteUI.Blazor.Controls
             return s;
         }
 
-        public object? ResolveValue(String name, Object item, Func<object, object> propGetter, JsonDataSourceItem jsonItem, JSDataSourceSchemaType type, DataSourceManager? manager)
+        public object? ResolveValue(String name, Object item, Func<object, object?> propGetter, JsonDataSourceItem jsonItem, JSDataSourceSchemaType type, DataSourceManager? manager)
         {
             if (item == null)
             {
@@ -375,7 +371,7 @@ namespace IgniteUI.Blazor.Controls
 
             try
             {
-                object value = propGetter(item);
+                object? value = propGetter(item);
                 if (type == JSDataSourceSchemaType.ObjectValue)
                 {
                     return GetSubObject(name, value, jsonItem, manager);
@@ -388,7 +384,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private object GetSubObject(String name, Object value, JsonDataSourceItem rootItem, DataSourceManager? manager)
+        private object GetSubObject(String name, Object? value, JsonDataSourceItem rootItem, DataSourceManager? manager)
         {
             bool checkedArray = _checkedArray.ContainsKey(name);
             if (!checkedArray && value != null)
@@ -421,7 +417,7 @@ namespace IgniteUI.Blazor.Controls
             return JsonDataSourceItem.Create(value, subSchema, manager, rootItem);
         }
 
-        public JSDataSourceSchema? BuildSubObjectSchema(object subObject)
+        public JSDataSourceSchema? BuildSubObjectSchema(object? subObject)
         {
             if (subObject == null)
             {
@@ -746,7 +742,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public PropertyInfo[] Properties = Array.Empty<PropertyInfo>();
-        public Func<object, object>[]? PropertyGetters;
+        public Func<object, object?>[]? PropertyGetters;
         public Func<object, object>[]? FieldGetters;
         public Delegate[]? TypedPropertyGetters;
         public Delegate[]? TypedFieldGetters;
@@ -882,7 +878,7 @@ namespace IgniteUI.Blazor.Controls
             PropertyTypes = _buildingPropertiesTypes.ToArray();
             PropertyDataIntents = _buildingPropertiesDataIntents.ToArray();
             PropertyNames = new String[_buildingProperties.Count];
-            PropertyGetters = new Func<object, object>[_buildingProperties.Count];
+            PropertyGetters = new Func<object, object?>[_buildingProperties.Count];
             TypedPropertyGetters = new Delegate[_buildingProperties.Count];
             for (int i = 0; i < _buildingProperties.Count; i++)
             {

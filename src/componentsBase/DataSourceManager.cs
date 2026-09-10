@@ -177,10 +177,6 @@ namespace IgniteUI.Blazor.Controls
             }
 
             //Console.WriteLine("notifying insert item");
-            if (refItem == null)
-            {
-                return;
-            }
             if (_refsById.ContainsKey(refName))
             {
                 //Console.WriteLine("found by id");
@@ -202,10 +198,6 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            if (oldItem == null)
-            {
-                return;
-            }
             if (_refsById.ContainsKey(refName))
             {
                 Object data = _refsById[refName];
@@ -288,12 +280,8 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        public string GetRefId(object? dataSource)
+        public string GetRefId(object dataSource)
         {
-            if (dataSource == null)
-            {
-                return string.Empty;
-            }
             if (_idLookup.ContainsKey(dataSource))
             {
                 return _idLookup[dataSource];
