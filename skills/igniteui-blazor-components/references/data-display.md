@@ -150,7 +150,7 @@ The trigger goes in `slot="target"`. `IgbDropdownGroup` groups items; `Placement
            LogoSrc="images/logo.svg" LogoSize="0.6" />
 ```
 
-Renders the `Value` string (URL, text, any payload) as a scannable SVG. `Version` (1-40) and `ErrorLevel` (`Low | Medium | Quartile | High`) are chosen automatically when unset, and a logo raises the error level on its own unless one is set explicitly. `Size` is the rendered pixel size and `Margin` the quiet zone in modules; `LogoSrc`, `LogoSize` and `LogoMargin` place a centered logo. Color it with the `--ig-qr-code-background`, `--ig-qr-code-dark-color`, `--ig-qr-code-corner-square-color` and `--ig-qr-code-corner-dot-color` custom properties.
+Renders the `Value` string (URL, text, any payload) as a scannable SVG. `Version` (1-40) is chosen automatically when unset; `ErrorLevel` (`Low | Medium | Quartile | High`) defaults to `Medium` and should be raised explicitly when a larger logo needs more error correction. `Size` is the rendered pixel size and `Margin` the quiet zone in modules; `LogoSrc`, `LogoSize` and `LogoMargin` place a centered logo. Color it with the `--ig-qr-code-background`, `--ig-qr-code-dark-color`, `--ig-qr-code-corner-square-color` and `--ig-qr-code-corner-dot-color` custom properties.
 
 `ToImageAsync(IgbQrCodeExportOptions)` exports the code as an image file (`Format`: `Svg | Png | Jpeg | Webp`, default `Png`; `Scale` multiplies `Size`; `FileName` defaults to `qr-code`). The exported file stays on the client, so set `Download = true` to open the browser save dialog — there is no way to read the file bytes back into .NET. The export fails when the component has no `Value`.
 

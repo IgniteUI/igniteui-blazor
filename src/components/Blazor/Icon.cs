@@ -178,7 +178,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
         public async Task RegisterIconAsync(String name, String url, IgbRegisterIconOptions options)
         {
-            await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), ObjectToParam(options) }, new string[] { "String", "String", "Json" });
+            await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
         public void RegisterIcon(String name, String url, IgbRegisterIconOptions options)
         {
-            InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), ObjectToParam(options) }, new string[] { "String", "String", "Json" });
+            InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
         public async Task RegisterIconFromTextAsync(String name, String iconText, IgbRegisterIconOptions options)
         {
-            await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), ObjectToParam(options) }, new string[] { "String", "String", "Json" });
+            await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
         public void RegisterIconFromText(String name, String iconText, IgbRegisterIconOptions options)
         {
-            InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), ObjectToParam(options) }, new string[] { "String", "String", "Json" });
+            InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebQrCodeExportOptions"; } }
 
-        private static bool _marshalByValue = true;
+        private static readonly bool _marshalByValue = true;
 
         private string _fileName;
 
