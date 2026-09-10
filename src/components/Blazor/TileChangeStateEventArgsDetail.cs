@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbTile? _tile;
+        private IgbTile _tile = new IgbTile();
 
         /// <summary>
         /// The tile whose state is changing.
         /// </summary>
         [Parameter]
-        public IgbTile? Tile
+        public IgbTile Tile
         {
             get { return this._tile; }
             set
@@ -91,7 +91,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("tile"))
-            { this.Tile = (IgbTile?)ConvertReturnValue(args["tile"], "Tile", true); }
+            { this.Tile = (IgbTile)ConvertReturnValue(args["tile"], "Tile", true); }
             if (args != null && args.ContainsKey("state"))
             { this.State = ReturnToBoolean(args["state"]); }
 

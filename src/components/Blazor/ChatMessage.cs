@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string? _id;
+        private string _id = string.Empty;
 
         /// <summary>
         /// A unique identifier for the message.
         /// </summary>
         [Parameter]
-        public string? Id
+        public string Id
         {
             get { return this._id; }
             set
@@ -31,13 +31,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string? _text;
+        private string _text = string.Empty;
 
         /// <summary>
         /// The textual content of the message.
         /// </summary>
         [Parameter]
-        public string? Text
+        public string Text
         {
             get { return this._text; }
             set
@@ -50,13 +50,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string? _sender;
+        private string _sender = string.Empty;
 
         /// <summary>
         /// The identifier or name of the sender of the message.
         /// </summary>
         [Parameter]
-        public string? Sender
+        public string Sender
         {
             get { return this._sender; }
             set

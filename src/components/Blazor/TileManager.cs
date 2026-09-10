@@ -234,7 +234,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the properties of the current tile collections as a JSON payload.
         /// </summary>
-        public async Task<String?> SaveLayoutAsync()
+        public async Task<String> SaveLayoutAsync()
         {
             var iv = await InvokeMethod("saveLayout", new object?[] { }, new string[] { });
             return ReturnToString(iv);
@@ -243,7 +243,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the properties of the current tile collections as a JSON payload.
         /// </summary>
-        public String? SaveLayout()
+        public String SaveLayout()
         {
             var iv = InvokeMethodSync("saveLayout", new object?[] { }, new string[] { });
             return ReturnToString(iv);

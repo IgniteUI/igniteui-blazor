@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string? _id;
+        private string _id = string.Empty;
 
         /// <summary>
         /// A unique identifier for the attachment.
         /// </summary>
         [Parameter]
-        public string? Id
+        public string Id
         {
             get { return this._id; }
             set
@@ -142,7 +142,7 @@ namespace IgniteUI.Blazor.Controls
             if (args != null && args.ContainsKey("id"))
             { this.Id = ReturnToString(args["id"]); }
             if (args != null && args.ContainsKey("name"))
-            { this.Name = ReturnToString(args["name"]) ?? Guid.NewGuid().ToString(); }
+            { this.Name = ReturnToString(args["name"]); }
             if (args != null && args.ContainsKey("url"))
             { this.Url = ReturnToString(args["url"]); }
             if (args != null && args.ContainsKey("attachmentType"))
