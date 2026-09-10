@@ -135,6 +135,7 @@ dist
 dist
 node_modules
 src/wwwroot/
+src/THIRD-PARTY-LICENSES.md
 bin
 obj
 
