@@ -12,13 +12,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string? _collection;
+        private string _collection = string.Empty;
 
         /// <summary>
         /// The name of the collection the icon is registered in.
         /// </summary>
         [Parameter]
-        public string? Collection
+        public string Collection
         {
             get { return this._collection; }
             set

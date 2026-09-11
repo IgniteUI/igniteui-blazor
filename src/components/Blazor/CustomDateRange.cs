@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebCustomDateRange"; } }
 
-        private string? _label;
+        private string _label = string.Empty;
 
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
         [Parameter]
-        public string? Label
+        public required string Label
         {
             get { return this._label; }
             set
@@ -35,7 +35,7 @@ namespace IgniteUI.Blazor.Controls
         /// The date range applied when the chip is selected.
         /// </summary>
         [Parameter]
-        public IgbDateRangeValue DateRange
+        public required IgbDateRangeValue DateRange
         {
             get { return this._dateRange; }
             set

@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatAttachmentRenderContext"; } }
 
-        private IgbChatMessageAttachment? _attachment;
+        private IgbChatMessageAttachment _attachment = new IgbChatMessageAttachment();
 
         /// <summary>
         /// The specific attachment being rendered.
         /// </summary>
         [Parameter]
-        public IgbChatMessageAttachment? Attachment
+        public IgbChatMessageAttachment Attachment
         {
             get { return this._attachment; }
             set
@@ -26,11 +26,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._attachment);
                 }
+                this._attachment = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._attachment = value;
             }
 
         }
