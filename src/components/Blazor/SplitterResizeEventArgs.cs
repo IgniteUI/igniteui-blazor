@@ -62,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail") && ConvertReturnValue(args["detail"], "SplitterResizeEventArgsDetail", true) is IgbSplitterResizeEventArgsDetail detail)
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "SplitterResizeEventArgsDetail", true) is IgbSplitterResizeEventArgsDetail detail)
             { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
