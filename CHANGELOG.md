@@ -23,6 +23,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
 - `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
+### Breaking Changes
+
+#### Public API nullability
+
+> [!NOTE]
+> As part of this release the public API was annotated for nullable reference types. Beyond the members listed below, reference-type parameters, properties, and return values now declare whether they accept or produce `null`. Consumers building with nullable reference types enabled may see new nullable warnings — or errors, if warnings are treated as errors — and may need to update their code accordingly.
+
+The following public members changed from nullable to non-nullable. Value-type changes (`double?` → `double`) are binary-breaking.
+
+| Type | Member | Before | After |
+|------|--------|--------|-------|
+| `IgbTile` | `ColStart` | `double?` | `double` |
+| `IgbTile` | `RowStart` | `double?` | `double` |
+| `IgbCalendar` | `SpecialDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+| `IgbCalendar` | `DisabledDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
 
 ## 0.1.0 - 2026-07-14
 

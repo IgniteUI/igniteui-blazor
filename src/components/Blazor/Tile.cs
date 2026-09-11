@@ -97,13 +97,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _colStart = 0;
+        private double _colStart = 0;
 
         /// <summary>
         /// The starting column for the tile.
         /// </summary>
         [Parameter]
-        public double? ColStart
+        public double ColStart
         {
             get { return this._colStart; }
             set
@@ -116,13 +116,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _rowStart = 0;
+        private double _rowStart = 0;
 
         /// <summary>
         /// The starting row for the tile.
         /// </summary>
         [Parameter]
-        public double? RowStart
+        public double RowStart
         {
             get { return this._rowStart; }
             set
@@ -141,7 +141,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> GetFullscreenAsync()
         {
-            var iv = await InvokeMethod("p:Fullscreen", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Fullscreen", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -150,7 +150,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool GetFullscreen()
         {
-            var iv = InvokeMethodSync("p:Fullscreen", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Fullscreen", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         private bool _maximized = false;
@@ -254,8 +254,8 @@ namespace IgniteUI.Blazor.Controls
         }
 
 
-        private string _tileFullscreenRef = null;
-        private string _tileFullscreenScript = null;
+        private string? _tileFullscreenRef = null;
+        private string? _tileFullscreenScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileFullscreen"/> event in the browser instead.
@@ -265,7 +265,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileFullscreenScript
+        public string? TileFullscreenScript
         {
 
             set
@@ -273,7 +273,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileFullscreenScript)
                 {
                     this._tileFullscreenScript = value;
-                    this.OnRefChanged("TileFullscreen", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileFullscreen", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileFullscreenRef = refName;
                         this.MarkPropDirty("TileFullscreenRef");
@@ -326,8 +326,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileMaximizeRef = null;
-        private string _tileMaximizeScript = null;
+        private string? _tileMaximizeRef = null;
+        private string? _tileMaximizeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileMaximize"/> event in the browser instead.
@@ -337,7 +337,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileMaximizeScript
+        public string? TileMaximizeScript
         {
 
             set
@@ -345,7 +345,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileMaximizeScript)
                 {
                     this._tileMaximizeScript = value;
-                    this.OnRefChanged("TileMaximize", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileMaximize", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileMaximizeRef = refName;
                         this.MarkPropDirty("TileMaximizeRef");
@@ -398,8 +398,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileDragStartRef = null;
-        private string _tileDragStartScript = null;
+        private string? _tileDragStartRef = null;
+        private string? _tileDragStartScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileDragStart"/> event in the browser instead.
@@ -409,7 +409,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragStartScript
+        public string? TileDragStartScript
         {
 
             set
@@ -417,7 +417,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileDragStartScript)
                 {
                     this._tileDragStartScript = value;
-                    this.OnRefChanged("TileDragStart", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileDragStart", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileDragStartRef = refName;
                         this.MarkPropDirty("TileDragStartRef");
@@ -470,8 +470,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileDragEndRef = null;
-        private string _tileDragEndScript = null;
+        private string? _tileDragEndRef = null;
+        private string? _tileDragEndScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileDragEnd"/> event in the browser instead.
@@ -481,7 +481,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragEndScript
+        public string? TileDragEndScript
         {
 
             set
@@ -489,7 +489,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileDragEndScript)
                 {
                     this._tileDragEndScript = value;
-                    this.OnRefChanged("TileDragEnd", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileDragEnd", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileDragEndRef = refName;
                         this.MarkPropDirty("TileDragEndRef");
@@ -542,8 +542,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileDragCancelRef = null;
-        private string _tileDragCancelScript = null;
+        private string? _tileDragCancelRef = null;
+        private string? _tileDragCancelScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileDragCancel"/> event in the browser instead.
@@ -553,7 +553,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileDragCancelScript
+        public string? TileDragCancelScript
         {
 
             set
@@ -561,7 +561,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileDragCancelScript)
                 {
                     this._tileDragCancelScript = value;
-                    this.OnRefChanged("TileDragCancel", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileDragCancel", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileDragCancelRef = refName;
                         this.MarkPropDirty("TileDragCancelRef");
@@ -614,8 +614,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileResizeStartRef = null;
-        private string _tileResizeStartScript = null;
+        private string? _tileResizeStartRef = null;
+        private string? _tileResizeStartScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileResizeStart"/> event in the browser instead.
@@ -625,7 +625,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeStartScript
+        public string? TileResizeStartScript
         {
 
             set
@@ -633,7 +633,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileResizeStartScript)
                 {
                     this._tileResizeStartScript = value;
-                    this.OnRefChanged("TileResizeStart", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileResizeStart", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileResizeStartRef = refName;
                         this.MarkPropDirty("TileResizeStartRef");
@@ -686,8 +686,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileResizeEndRef = null;
-        private string _tileResizeEndScript = null;
+        private string? _tileResizeEndRef = null;
+        private string? _tileResizeEndScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileResizeEnd"/> event in the browser instead.
@@ -697,7 +697,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeEndScript
+        public string? TileResizeEndScript
         {
 
             set
@@ -705,7 +705,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileResizeEndScript)
                 {
                     this._tileResizeEndScript = value;
-                    this.OnRefChanged("TileResizeEnd", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileResizeEnd", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileResizeEndRef = refName;
                         this.MarkPropDirty("TileResizeEndRef");
@@ -758,8 +758,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _tileResizeCancelRef = null;
-        private string _tileResizeCancelScript = null;
+        private string? _tileResizeCancelRef = null;
+        private string? _tileResizeCancelScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="TileResizeCancel"/> event in the browser instead.
@@ -769,7 +769,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string TileResizeCancelScript
+        public string? TileResizeCancelScript
         {
 
             set
@@ -777,7 +777,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._tileResizeCancelScript)
                 {
                     this._tileResizeCancelScript = value;
-                    this.OnRefChanged("TileResizeCancel", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("TileResizeCancel", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._tileResizeCancelRef = refName;
                         this.MarkPropDirty("TileResizeCancelRef");

@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebFilteringOptions"; } }
 
-        private string _filterKey;
+        private string? _filterKey;
 
         /// <summary>
         /// The key in the data source used when filtering the list of options.
         /// </summary>
         [Parameter]
-        public string FilterKey
+        public string? FilterKey
         {
             get { return this._filterKey; }
             set
