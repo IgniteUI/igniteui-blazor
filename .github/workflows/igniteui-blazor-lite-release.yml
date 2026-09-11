@@ -4,34 +4,48 @@ on:
   release:
     types: [published]
 
-permissions:
-  contents: read
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref_name }}
 
 env:
+  BUILD_CONFIGURATION: Release
+  DOTNET_VERSION: "10.0.x"
+  NODE_VERSION: "22"
   VERSION: ${{ github.ref_name }}
+  PACKAGE_ID: IgniteUI.Blazor.Lite
+  PROJECT_PATH: src/IgniteUI.Blazor.Lite.csproj
+  REPOSITORY_URL: https://github.com/IgniteUI/igniteui-blazor
+  # Public, deliberately pinned identities.
+  EXPECTED_CERT_SHA256_PATH: "eng/IG.authenticode-certificates.sha256"
+  EXPECTED_PUBLIC_KEY_PATH: "eng/IG.publickey.hex"
+  # Bounds sbom-tool's external license lookup.
+  SBOM_LICENSE_TIMEOUT_SECONDS: "180"
 
 jobs:
-  release:
-    name: Build & Pack NuGet
+  # Holds the strong-name key, but no OIDC token, no Key Vault access and no publishing rights.
+  # Also runs npm/webpack: per Microsoft's guidance, a strong-name key is not a security boundary
+  # (https://learn.microsoft.com/en-us/dotnet/standard/assembly/security-considerations#strong-named-assemblies-and-signing-tools),
+  # so isolating it from the npm toolchain in a separate job bought nothing worth the extra job.
+  build:
+    name: Build library
     runs-on: windows-latest
-    environment: nuget-org-publish
+    timeout-minutes: 30
+    environment: Release build
     permissions:
-      id-token: write # enable Azure OIDC token issuance for this job
       contents: read
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
-          dotnet-version: 10.0.x
+          persist-credentials: false
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "24"
-          registry-url: "https://registry.npmjs.org"
+          node-version: ${{ env.NODE_VERSION }}
           package-manager-cache: false # never use caching in release builds
 
       - name: Install npm dependencies
@@ -43,14 +57,90 @@ jobs:
       - name: Copy component themes to wwwroot
         run: npm run copythemes
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # The Razor SDK reads wwwroot when it builds the static web asset manifest, so the assets
+      # have to be in place (via the npm steps above) before restore rather than merged in later.
       - name: Restore .NET dependencies
-        run: dotnet restore ./src/IgniteUI.Blazor.Lite.csproj
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      - name: Restore strong-name key
+        shell: pwsh
+        env:
+          STRONG_NAME_KEY_BASE64: ${{ secrets.IG_STRONG_NAME_KEY }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:STRONG_NAME_KEY_BASE64)) {
+            throw "The IG_STRONG_NAME_KEY organization secret is empty or unavailable to this repository."
+          }
+
+          $keyBytes = [Convert]::FromBase64String($env:STRONG_NAME_KEY_BASE64)
+          [System.IO.File]::WriteAllBytes("${{ runner.temp }}\IG.StrongName.snk", $keyBytes)
+
+      - name: Build strong-named assemblies
+        shell: pwsh
+        run: |
+          dotnet build ${{ env.PROJECT_PATH }} `
+            --configuration ${{ env.BUILD_CONFIGURATION }} `
+            --no-restore `
+            "-p:Version=$env:VERSION" `
+            -p:ContinuousIntegrationBuild=true `
+            -p:GeneratePackageOnBuild=false `
+            -p:TreatWarningsAsErrors=false `
+            -p:ExposeInternalsToTests=false `
+            -p:SignAssembly=true `
+            -p:AssemblyOriginatorKeyFile="${{ runner.temp }}\IG.StrongName.snk"
+
+      - name: Delete strong-name key
+        if: always()
+        shell: pwsh
+        run: Remove-Item "${{ runner.temp }}\IG.StrongName.snk" -Force -ErrorAction SilentlyContinue
+
+      # wwwroot is gitignored and produced by webpack, so this artifact is its only carrier.
+      - name: Upload build output
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: build-output
+          path: |
+            src/bin/**
+            src/obj/**
+            src/wwwroot/**
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
+  sign-assemblies:
+    name: Sign assemblies
+    needs: build
+    runs-on: windows-latest
+    timeout-minutes: 20
+    environment: nuget-org-publish
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Download build output
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: build-output
+          path: src
+          digest-mismatch: error
 
       - name: Restore .NET local tools
         run: dotnet tool restore
-
-      - name: Build .NET library
-        run: dotnet build ./src/IgniteUI.Blazor.Lite.csproj --no-restore --configuration Release /p:Version=${{ env.VERSION }} /p:TreatWarningsAsErrors=false /p:ExposeInternalsToTests=false
 
       - name: Authenticate to Azure
         uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
@@ -71,29 +161,101 @@ jobs:
 
       - name: Validate DLL signatures
         shell: pwsh
-        run: |
-          $dlls = Get-ChildItem -Path "${{ github.workspace }}\src\bin\${{ env.BUILD_CONFIGURATION }}" -Filter "*.dll" -Recurse
-          $failed = @()
-          foreach ($dll in $dlls) {
-            $sig = Get-AuthenticodeSignature $dll.FullName
-            if ($sig.Status -ne 'Valid') {
-              $failed += $dll.FullName
-            }
-          }
-          if ($failed.Count -gt 0) {
-            Write-Error "Unsigned DLLs found:`n$($failed -join "`n")"
-            exit 1
-          }
-          Write-Host "All DLLs signed successfully."
+        run: >
+          .github/scripts/Assert-AuthenticodeSignature.ps1
+          -Path "${{ github.workspace }}/src/bin/${{ env.BUILD_CONFIGURATION }}"
+          -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
 
+      - name: Upload signed assemblies
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: signed-assemblies
+          path: |
+            src/bin/**
+            src/obj/**
+            src/wwwroot/**
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
+  pack:
+    name: Pack and sign package
+    needs: sign-assemblies
+    runs-on: windows-latest
+    timeout-minutes: 20
+    environment: nuget-org-publish
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      nupkg-sha256: ${{ steps.digest.outputs.nupkg-sha256 }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Download signed assemblies
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: signed-assemblies
+          path: src
+          digest-mismatch: error
+
+      # Pack resolves framework references against this runner, and the downloaded obj cache is not
+      # enough: without a restore here, pack fails with NETSDK1127 (targeting pack not installed) for
+      # the netX.0 TFMs. Restoring is not a rebuild - the signed DLLs stand. See
+      # https://github.com/IgniteUI/igniteui-blazor/issues/388.
+      - name: Restore .NET dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      # Repository url and commit are passed explicitly: 0.1.1 shipped a nuspec carrying a commit
+      # but no url, which left consumers unable to reach the source for the version they restored.
       - name: Pack NuGet package
-        run: dotnet pack ./src/IgniteUI.Blazor.Lite.csproj --no-build --configuration Release --output ./nupkg /p:Version=${{ env.VERSION }}
+        run: >
+          dotnet pack ${{ env.PROJECT_PATH }}
+          --configuration ${{ env.BUILD_CONFIGURATION }}
+          --no-build
+          --no-restore
+          "-p:PackageVersion=$env:VERSION"
+          -p:RepositoryUrl=${{ env.REPOSITORY_URL }}
+          -p:RepositoryType=git
+          -p:RepositoryCommit=${{ github.sha }}
+          -o "${{ github.workspace }}/artifacts"
+
+      # The gate that runs on the actual shipped bytes: bin/ output was already checked once, but
+      # packing only re-zips it, so this re-validates both signals against the extracted nupkg
+      # instead of trusting that pack couldn't have picked up something else.
+      - name: Validate packaged assembly signatures
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-PackageSignatures.ps1
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -ExpectedPublicKeyPath "${{ env.EXPECTED_PUBLIC_KEY_PATH }}"
+          -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
+          -WorkingDirectory "${{ runner.temp }}/package-signature-validation"
+
+      - name: Restore .NET local tools
+        run: dotnet tool restore
+
+      - name: Authenticate to Azure
+        uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Sign NuGet package
         shell: pwsh
         run: >
           dotnet tool run sign code azure-key-vault "*.nupkg"
-          --base-directory "${{ github.workspace }}/nupkg"
+          --base-directory "${{ github.workspace }}/artifacts"
           --azure-key-vault-url "${{ secrets.AZURE_KEYVAULT_URL }}"
           --azure-key-vault-certificate "${{ secrets.AZURE_KEYVAULT_CERTIFICATE }}"
           --azure-credential-type azure-cli
@@ -101,7 +263,322 @@ jobs:
           --verbosity Warning
 
       - name: Validate NuGet package signature
-        run: dotnet nuget verify "${{ github.workspace }}/nupkg/IgniteUI.Blazor.Lite.${{ env.VERSION }}.nupkg" -v q
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-NuGetSignature.ps1
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
+
+      # This digest is the identity every downstream job re-checks before acting on the package.
+      - name: Record package digest
+        id: digest
+        shell: pwsh
+        run: >
+          .github/scripts/Get-PackageDigest.ps1
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -WriteChecksumFile
+          -GitHubOutputName 'nupkg-sha256'
+          -SummaryTitle 'Signed package digest'
+
+      - name: Upload signed package
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: nupkg-signed
+          path: artifacts/*
+          retention-days: 30
+          if-no-files-found: error
+
+  # Advisory by design. A finding is annotated and attached to the release as evidence, but never
+  # holds up the publish — the blocking gate for new vulnerable dependencies is the dependency-review
+  # job on pull requests, which stops them entering master. It waits on pack so that its evidence and
+  # the SBOM's dependency data describe the same point in the pipeline.
+  dependency-scan:
+    name: Scan dependencies
+    needs: pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+
+      # Only what the package actually ships: the library project, and npm without devDependencies.
+      - name: Scan NuGet and npm dependencies
+        shell: pwsh
+        run: >
+          .github/scripts/Invoke-DependencyScan.ps1
+          -ProjectPath "${{ env.PROJECT_PATH }}"
+          -OutputDirectory "${{ github.workspace }}/artifacts/dependency-scan"
+          -NpmManifestDirectory "${{ github.workspace }}"
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -Version "$env:VERSION"
+
+      - name: Upload dependency scan
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dependency-scan
+          path: artifacts/dependency-scan/*
+          retention-days: 30
+          if-no-files-found: error
+
+  sbom:
+    name: Generate SBOM and attest
+    needs: pack
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    outputs:
+      attested-sha256: ${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+
+      - name: Download signed package
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nupkg-signed
+          path: artifacts
+
+      - name: Verify signed package digest
+        shell: pwsh
+        run: >
+          .github/scripts/Get-PackageDigest.ps1
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}"
+
+      # Restores the library alone on purpose: a bare 'dotnet restore' writes project.assets.json for
+      # the test, stories and template projects too, and the NuGet detector reads those.
+      - name: Restore .NET dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      # The full tree, because cyclonedx-npm is itself a devDependency. It is pruned back to the
+      # shipped set below, before anything walks node_modules as a dependency source.
+      - name: Restore JavaScript dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Restore .NET local tools
+        run: dotnet tool restore
+
+      # Runs while the lockfile is still present, because cyclonedx-npm reads it directly. The tool
+      # applies --omit dev itself, so its document already describes only the shipped tree.
+      - name: Generate npm CycloneDX SBOM
+        shell: pwsh
+        run: >
+          .github/scripts/New-NpmCycloneDxSbom.ps1
+          -ManifestPath "package.json"
+          -OutputFile "${{ runner.temp }}/sbom/cyclonedx/npm/bom.json"
+
+      # Production-only, then the lockfile goes: sbom-tool's NpmWithRoots detector reads the lockfile
+      # directly, and an npm lockfile records the whole dev graph regardless of what is installed.
+      # Without it the node_modules walk is the only npm source, which the prune has just reduced to
+      # exactly the shipped set.
+      - name: Reduce JavaScript dependencies to the shipped set
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+
+          npm prune --omit=dev --ignore-scripts
+          Remove-Item package-lock.json -Force
+
+      # -b is the signed package folder, so the shipped nupkg and its hash land in the files section.
+      # -bc is the repository root because the npm graph lives there alongside the .NET project;
+      # -ComponentScanExclusion then keeps that same nupkg under -b from being detected as a
+      # component (which recorded the package as a dependency of itself).
+      # OutputRoot is the shared sbom root: New-Sbom.ps1 replaces only the _manifest subtree it owns,
+      # leaving the CycloneDX documents already written under sbom/cyclonedx/ untouched.
+      - name: Generate SPDX SBOMs
+        shell: pwsh
+        run: >
+          .github/scripts/New-Sbom.ps1
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -PackageVersion "$env:VERSION"
+          -BuildDropPath "${{ github.workspace }}/artifacts"
+          -BuildComponentPath "${{ github.workspace }}"
+          -ComponentScanExclusion '**/artifacts/**'
+          -OutputRoot "${{ runner.temp }}/sbom"
+          -LicenseTimeoutSeconds ${{ env.SBOM_LICENSE_TIMEOUT_SECONDS }}
+
+      - name: Verify SPDX SBOM output
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-Sbom.ps1
+          -OutputRoot "${{ runner.temp }}/sbom"
+          -ExpectedPackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -PackageId "${{ env.PACKAGE_ID }}"
+
+      # CycloneDX reads licences and authors from each package's own nuspec, so it fills the fields the
+      # ClearlyDefined-backed SPDX documents leave as NOASSERTION whenever that service is degraded.
+      # This is the .NET half only — dotnet-CycloneDX has no notion of npm packages.
+      - name: Generate .NET CycloneDX SBOM
+        shell: pwsh
+        env:
+          GH_TOKEN_FOR_LICENSES: ${{ github.token }}
+        run: >
+          .github/scripts/New-CycloneDxSbom.ps1
+          -ProjectPath "${{ env.PROJECT_PATH }}"
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -PackageVersion "$env:VERSION"
+          -OutputDirectory "${{ runner.temp }}/sbom/cyclonedx/dotnet"
+          -GitHubBearerToken "$env:GH_TOKEN_FOR_LICENSES"
+
+      # Pure PowerShell JSON merge, not an external tool: cyclonedx-cli (the only tool with a merge
+      # command) has no package-manager distribution, and cyclonedx-npm's own library can serialize but
+      # not deserialize CycloneDX JSON, so it can't load two finished documents either.
+      - name: Merge CycloneDX SBOMs
+        shell: pwsh
+        run: >
+          .github/scripts/Merge-CycloneDxSbom.ps1
+          -DotNetBomPath "${{ runner.temp }}/sbom/cyclonedx/dotnet/bom.json"
+          -NpmBomPath "${{ runner.temp }}/sbom/cyclonedx/npm/bom.json"
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -PackageVersion "$env:VERSION"
+          -RootLicenseExpression 'MIT'
+          -MergeToolVersion "${{ github.sha }}"
+          -OutputFile "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.$env:VERSION.cdx.json"
+
+      - name: Verify CycloneDX SBOM output
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-CycloneDxSbom.ps1
+          -BomPath "${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.$env:VERSION.cdx.json"
+
+      # An attestation binds to a digest rather than a path, so the bytes are re-hashed here and that
+      # value is what gets attested, re-checked before publishing, and reported on the release.
+      - name: Reverify package before attestation
+        id: verify-before-attestation
+        shell: pwsh
+        run: >
+          .github/scripts/Get-PackageDigest.ps1
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}"
+          -FailureMessage 'Package changed before attestation.'
+          -GitHubOutputName 'nupkg-sha256'
+
+      - name: Attest build provenance
+        id: attest-provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg
+          subject-digest: sha256:${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
+
+      # actions/attest derives the predicate from an SPDX 2.x or CycloneDX document; SPDX 3.0 ships as evidence only.
+      - name: Attest SPDX SBOM
+        id: attest-sbom-spdx
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg
+          subject-digest: sha256:${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
+          sbom-path: ${{ runner.temp }}/sbom/_manifest/spdx_2.2/manifest.spdx.json
+
+      # Distinct predicate type from the SPDX attestation, so both bind to the same digest without colliding.
+      - name: Attest CycloneDX SBOM
+        id: attest-sbom-cyclonedx
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ${{ env.PACKAGE_ID }}.${{ env.VERSION }}.nupkg
+          subject-digest: sha256:${{ steps.verify-before-attestation.outputs.nupkg-sha256 }}
+          sbom-path: ${{ runner.temp }}/sbom/cyclonedx/${{ env.PACKAGE_ID }}.${{ env.VERSION }}.cdx.json
+
+      - name: Collect attestation bundles
+        shell: pwsh
+        run: >
+          .github/scripts/Copy-AttestationBundles.ps1
+          -ProvenanceBundlePath "${{ steps.attest-provenance.outputs.bundle-path }}"
+          -SpdxBundlePath "${{ steps.attest-sbom-spdx.outputs.bundle-path }}"
+          -CycloneDxBundlePath "${{ steps.attest-sbom-cyclonedx.outputs.bundle-path }}"
+          -Destination "${{ runner.temp }}/sbom/attestations"
+          -ProvenanceUrl "${{ steps.attest-provenance.outputs.attestation-url }}"
+          -SpdxUrl "${{ steps.attest-sbom-spdx.outputs.attestation-url }}"
+          -CycloneDxUrl "${{ steps.attest-sbom-cyclonedx.outputs.attestation-url }}"
+
+      - name: Upload SBOM and attestations
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sbom
+          path: ${{ runner.temp }}/sbom/**
+          retention-days: 30
+          if-no-files-found: error
+
+  # The only job that can publish. It restores nothing and compiles nothing; its checkout is a
+  # scripts-only sparse one so the publish gate itself is version-controlled and reviewable.
+  publish:
+    name: Publish to NuGet.org
+    needs: [pack, sbom, dependency-scan]
+    runs-on: windows-latest
+    timeout-minutes: 15
+    environment: nuget-org-publish
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout release scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/scripts
+            eng/IG.authenticode-certificates.sha256
+          sparse-checkout-cone-mode: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Download signed package
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nupkg-signed
+          path: artifacts
+
+      - name: Verify the package that was packed, signed, and attested
+        shell: pwsh
+        run: >
+          .github/scripts/Get-PackageDigest.ps1
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -ExpectedSha256 "${{ needs.pack.outputs.nupkg-sha256 }}","${{ needs.sbom.outputs.attested-sha256 }}"
+          -FailureMessage 'Refusing to publish.'
+
+      - name: Validate NuGet package signature
+        shell: pwsh
+        run: >
+          .github/scripts/Assert-NuGetSignature.ps1
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -ExpectedCertificateSha256Path "${{ env.EXPECTED_CERT_SHA256_PATH }}"
 
       - name: NuGet login (OIDC Trusted Publishing)
         uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
@@ -109,5 +586,77 @@ jobs:
         with:
           user: ${{ secrets.INFRAGISTICS_NUGET_ORG_USER }}
 
+      # Refuses to publish over an existing version instead of using --skip-duplicate: a full rerun
+      # produces newly signed bytes, so skipping the duplicate would attach this run's SBOM,
+      # attestations and checksum to a release whose published package is a different build.
       - name: Publish to NuGet.org
-        run: dotnet nuget push "${{ github.workspace }}/nupkg/IgniteUI.Blazor.Lite.${{ env.VERSION }}.nupkg" --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json"
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: >
+          .github/scripts/Publish-NuGetPackage.ps1
+          -PackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -PackageId "${{ env.PACKAGE_ID }}"
+          -Version "$env:VERSION"
+
+  attach-to-release:
+    name: Attach release evidence
+    needs: [pack, sbom, dependency-scan, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download signed package
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nupkg-signed
+          path: artifacts
+
+      - name: Verify signed package digest
+        shell: bash
+        env:
+          EXPECTED_NUPKG_SHA256: ${{ needs.pack.outputs.nupkg-sha256 }}
+        run: |
+          actual=$(sha256sum "artifacts/${PACKAGE_ID}.${VERSION}.nupkg" | cut -d ' ' -f 1)
+          if [[ "$actual" != "$EXPECTED_NUPKG_SHA256" ]]; then
+            echo "Package digest changed before release attachment." >&2
+            exit 1
+          fi
+          (cd artifacts && sha256sum --check "${PACKAGE_ID}.${VERSION}.nupkg.sha256")
+
+      - name: Download SBOM and attestations
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: sbom
+          path: sbom
+
+      - name: Download dependency scan
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dependency-scan
+          path: dependency-scan
+
+      - name: Attach evidence to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          (cd sbom/_manifest/spdx_2.2 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-2.2.zip" .)
+          (cd sbom/_manifest/spdx_3.0 && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.spdx-3.0.zip" .)
+          (cd dependency-scan && zip -r "${GITHUB_WORKSPACE}/${PACKAGE_ID}.${TAG}.dependency-scan.zip" .)
+
+          gh release upload "$TAG" --clobber -R "${{ github.repository }}" \
+            "artifacts/${PACKAGE_ID}.${TAG}.nupkg" \
+            "artifacts/${PACKAGE_ID}.${TAG}.nupkg.sha256" \
+            "${PACKAGE_ID}.${TAG}.spdx-2.2.zip" \
+            "${PACKAGE_ID}.${TAG}.spdx-3.0.zip" \
+            "${PACKAGE_ID}.${TAG}.dependency-scan.zip" \
+            "sbom/cyclonedx/${PACKAGE_ID}.${TAG}.cdx.json" \
+            "sbom/cyclonedx/${PACKAGE_ID}.${TAG}.cdx.json.sha256" \
+            "sbom/attestations/provenance.sigstore.json" \
+            "sbom/attestations/sbom-spdx.sigstore.json" \
+            "sbom/attestations/sbom-cyclonedx.sigstore.json"
