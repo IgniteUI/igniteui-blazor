@@ -223,14 +223,6 @@ namespace IgniteUI.Blazor.Controls
 
             return null;
         }
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Returns the properties of the current tile collections as a JSON payload.
         /// </summary>

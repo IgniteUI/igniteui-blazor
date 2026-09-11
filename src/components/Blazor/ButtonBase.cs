@@ -270,14 +270,6 @@ namespace IgniteUI.Blazor.Controls
         {
             InvokeMethodSync("blur", new object?[] { }, new string[] { });
         }
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object?[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Simulates a mouse click on the button, triggering its click handler and any associated form action.
         /// </summary>

@@ -48,7 +48,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             // exclude methods coming from BaseRendererControl.
             .Where(x => !baseRendererMethodNames.Contains(x.Name))
             // this is not user settable but exist in all classes.
-            .Where(x => x.Name != "SetNativeElementAsync" && x.Name != "SetParametersAsync")
+            .Where(x => x.Name != "SetParametersAsync")
             // exclude methods that are just wrappers to get existing props values. They don't actually match with existing client methods. They follow the naming Get{PropName}Async.
             .Where(x => !(x.Name.StartsWith("Get") && x.Name.EndsWith("Async")))
             //exclude methods that depend on some condition, based on component specific configuration.
