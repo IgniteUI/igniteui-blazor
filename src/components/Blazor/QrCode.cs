@@ -267,14 +267,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Exports the QR code as an image file in the browser.
         /// The <see cref="IgbQrCodeExportOptions.Scale"/> option multiplies the <see cref="Size"/> of the
