@@ -139,16 +139,16 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("id"))
-            { this.Id = ReturnToString(args["id"]); }
-            if (args != null && args.ContainsKey("name"))
-            { this.Name = ReturnToString(args["name"]); }
-            if (args != null && args.ContainsKey("url"))
-            { this.Url = ReturnToString(args["url"]); }
-            if (args != null && args.ContainsKey("attachmentType"))
-            { this.AttachmentType = ReturnToString(args["attachmentType"]); }
-            if (args != null && args.ContainsKey("thumbnail"))
-            { this.Thumbnail = ReturnToString(args["thumbnail"]); }
+            if (args != null && args.TryGetValue("id", out var idObj))
+            { this.Id = ReturnToString(idObj); }
+            if (args != null && args.TryGetValue("name", out var nameObj))
+            { this.Name = ReturnToString(nameObj); }
+            if (args != null && args.TryGetValue("url", out var urlObj))
+            { this.Url = ReturnToString(urlObj); }
+            if (args != null && args.TryGetValue("attachmentType", out var attachmentTypeObj))
+            { this.AttachmentType = ReturnToString(attachmentTypeObj); }
+            if (args != null && args.TryGetValue("thumbnail", out var thumbnailObj))
+            { this.Thumbnail = ReturnToString(thumbnailObj); }
 
             this.SuppressParentNotify = false;
         }

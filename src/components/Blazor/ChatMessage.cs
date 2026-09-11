@@ -182,18 +182,18 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("id"))
-            { this.Id = ReturnToString(args["id"]); }
-            if (args != null && args.ContainsKey("text"))
-            { this.Text = ReturnToString(args["text"]); }
-            if (args != null && args.ContainsKey("sender"))
-            { this.Sender = ReturnToString(args["sender"]); }
-            if (args != null && args.ContainsKey("timestamp"))
-            { this.Timestamp = ReturnToString(args["timestamp"]); }
-            if (args != null && args.ContainsKey("attachments"))
-            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]); }
-            if (args != null && args.ContainsKey("reactions"))
-            { this.Reactions = ReturnToStringArray(args["reactions"]); }
+            if (args != null && args.TryGetValue("id", out var idObj))
+            { this.Id = ReturnToString(idObj); }
+            if (args != null && args.TryGetValue("text", out var textObj))
+            { this.Text = ReturnToString(textObj); }
+            if (args != null && args.TryGetValue("sender", out var senderObj))
+            { this.Sender = ReturnToString(senderObj); }
+            if (args != null && args.TryGetValue("timestamp", out var timestampObj))
+            { this.Timestamp = ReturnToString(timestampObj); }
+            if (args != null && args.TryGetValue("attachments", out var attachmentsObj))
+            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(attachmentsObj); }
+            if (args != null && args.TryGetValue("reactions", out var reactionsObj))
+            { this.Reactions = ReturnToStringArray(reactionsObj); }
 
             this.SuppressParentNotify = false;
         }

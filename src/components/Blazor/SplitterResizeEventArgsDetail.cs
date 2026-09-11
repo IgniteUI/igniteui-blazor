@@ -114,12 +114,12 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("startPanelSize"))
-            { this.StartPanelSize = ReturnToDouble(args["startPanelSize"]); }
-            if (args != null && args.ContainsKey("endPanelSize"))
-            { this.EndPanelSize = ReturnToDouble(args["endPanelSize"]); }
-            if (args != null && args.ContainsKey("delta"))
-            { this.Delta = ReturnToDouble(args["delta"]); }
+            if (args != null && args.TryGetValue("startPanelSize", out var startPanelSizeObj))
+            { this.StartPanelSize = ReturnToDouble(startPanelSizeObj); }
+            if (args != null && args.TryGetValue("endPanelSize", out var endPanelSizeObj))
+            { this.EndPanelSize = ReturnToDouble(endPanelSizeObj); }
+            if (args != null && args.TryGetValue("delta", out var deltaObj))
+            { this.Delta = ReturnToDouble(deltaObj); }
 
             this.SuppressParentNotify = false;
         }

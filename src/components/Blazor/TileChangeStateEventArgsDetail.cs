@@ -92,8 +92,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (args != null && args.TryGetValue("tile", out var tileObj) && ConvertReturnValue(tileObj, "Tile", true) is IgbTile tile)
             { this.Tile = tile; }
-            if (args != null && args.ContainsKey("state"))
-            { this.State = ReturnToBoolean(args["state"]); }
+            if (args != null && args.TryGetValue("state", out var stateObj))
+            { this.State = ReturnToBoolean(stateObj); }
 
             this.SuppressParentNotify = false;
         }
