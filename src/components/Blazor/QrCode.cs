@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -135,7 +136,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._size; }
             set
             {
-                if (this._size != value || !IsPropDirty("Size"))
+                if (Math.Abs(this._size - value) > 1e-9 || !IsPropDirty("Size"))
                 {
                     MarkPropDirty("Size");
                 }
@@ -199,7 +200,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._logoSize; }
             set
             {
-                if (this._logoSize != value || !IsPropDirty("LogoSize"))
+                if (System.Math.Abs(this._logoSize - value) > 1e-12 || !IsPropDirty("LogoSize"))
                 {
                     MarkPropDirty("LogoSize");
                 }

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -12,6 +13,17 @@ namespace IgniteUI.Blazor.Controls
         public override string Type { get { return "WebQrCodeExportOptions"; } }
 
         private static readonly bool _marshalByValue = true;
+        private const double ScaleComparisonEpsilon = 1e-9;
+
+        private static bool AreDoublesEqual(double left, double right)
+        {
+            if (left == right)
+            {
+                return true;
+            }
+
+            return Math.Abs(left - right) <= ScaleComparisonEpsilon;
+        }
 
         private string _fileName;
 
@@ -66,7 +78,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._scale; }
             set
             {
-                if (this._scale != value || !IsPropDirty("Scale"))
+                if (!AreDoublesEqual(this._scale, value) || !IsPropDirty("Scale"))
                 {
                     MarkPropDirty("Scale");
                 }
