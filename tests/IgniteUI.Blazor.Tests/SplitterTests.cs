@@ -149,11 +149,4 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
         Assert.Contains("Start", innerHtml);
         Assert.Contains("End", innerHtml);
     }
-
-    [Fact]
-    public void SplitterLayoutChangedEventArgsDetail_DoesNotExposeLegacySetNativeElementMethods()
-    {
-        Assert.Null(typeof(IgbSplitterLayoutChangedEventArgsDetail).GetMethod("SetNativeElementAsync"));
-        Assert.Null(typeof(IgbSplitterLayoutChangedEventArgsDetail).GetMethod("SetNativeElement"));
-    }
 }

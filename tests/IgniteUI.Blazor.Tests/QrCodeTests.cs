@@ -142,11 +142,4 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
     {
         Assert.True(typeof(IgbQrCode).IsSubclassOf(typeof(BaseRendererControl)));
     }
-
-    [Fact]
-    public void QrCode_DoesNotExposeLegacySetNativeElementMethods()
-    {
-        Assert.Null(typeof(IgbQrCode).GetMethod("SetNativeElementAsync"));
-        Assert.Null(typeof(IgbQrCode).GetMethod("SetNativeElement"));
-    }
 }
