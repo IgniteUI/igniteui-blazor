@@ -163,6 +163,50 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
+        public async Task RegisterIconAsync(String name, String url, IgbRegisterIconOptions options)
+        {
+            await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
+        }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
+        public void RegisterIcon(String name, String url, IgbRegisterIconOptions options)
+        {
+            InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
+        }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
+        public async Task RegisterIconFromTextAsync(String name, String iconText, IgbRegisterIconOptions options)
+        {
+            await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
+        }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
+        public void RegisterIconFromText(String name, String iconText, IgbRegisterIconOptions options)
+        {
+            InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
+        }
+
+        /// <summary>
         /// Sets an icon reference/alias that points to another icon.
         /// </summary>
         /// <param name="name">The alias name.</param>

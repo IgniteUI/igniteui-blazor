@@ -182,5 +182,5 @@ Width comes from the `--menu-full-width` custom property (default `15rem`); the 
 <IgbDivider LineType="DividerType.Solid" Middle="true" />
 ```
 
-`IgbSplitter`: `Orientation`, `StartSize` / `EndSize`, `StartMinSize` / `StartMaxSize` / `EndMinSize` / `EndMaxSize`, `DisableResize`, `DisableCollapse`, `HideDragHandle`, `HideCollapseButtons`, `ToggleAsync(PanePosition)`.
+`IgbSplitter`: `Orientation`, `StartSize` / `EndSize`, `StartMinSize` / `StartMaxSize` / `EndMinSize` / `EndMaxSize` (all CSS lengths — `280px`, `30%`), `StartCollapsed` / `EndCollapsed`, `DisableResize`, `DisableCollapse`, `HideDragHandle`, `HideCollapseButtons`, `ToggleAsync(PanePosition)`. `LayoutChanged` fires after a user resize or collapse with a full snapshot (`StartSize`, `EndSize`, `StartCollapsed`, `EndCollapsed`); `ResizeStart` / `Resizing` / `ResizeEnd` report pixel sizes during a drag.
 `IgbDivider`: `Vertical`, `Middle`, `LineType`.

@@ -11,9 +11,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
         .Event(c => c.Select,
             argsJson: """{"detail": true}""",
             assert: args => Assert.True(args.Detail))
-        .Event(c => c.Remove,
-            argsJson: """{"detail": true}""",
-            assert: args => Assert.True(args.Detail))
+        .Event(c => c.Remove)
         .Bind(c => c.Selected, c => c.SelectedChanged, via: c => c.Select,
             argsJson: """{"detail": true}""", expect: true);
 
@@ -68,6 +66,16 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
 
         var element = cut.Find("igc-chip");
         Assert.NotNull(element.GetAttribute("selectable"));
+    }
+
+    [Fact]
+    public void Chip_Outlined_RendersAttribute()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Outlined, true));
+
+        var element = cut.Find("igc-chip");
+        Assert.NotNull(element.GetAttribute("outlined"));
     }
 
     [Fact]

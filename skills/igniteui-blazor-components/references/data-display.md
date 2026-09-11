@@ -93,13 +93,14 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
     <IgbIcon slot="start" IconName="star" Collection="material" />
     Blazor
 </IgbChip>
+<IgbChip Outlined="true" Variant="StyleVariant.Primary">Outlined</IgbChip>
 
 @code {
-    void OnChipRemoved(IgbComponentBoolValueChangedEventArgs e) { }
+    void OnChipRemoved(IgbVoidEventArgs e) { }
 }
 ```
 
-`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`. `IgbChip` also has `Selected` / `SelectedChanged` and a `Select` event.
+`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`. `IgbChip` also has `Outlined`, `Selected` / `SelectedChanged` and a `Select` event.
 
 ## Progress
 
@@ -137,6 +138,28 @@ The trigger goes in `slot="target"`. `IgbDropdownGroup` groups items; `Placement
 ```
 
 `Anchor` is the **id string** of the target element. `Message` sets plain text without child content; `ShowTriggers` / `HideTriggers` override the default hover/focus behavior; `Sticky` keeps it open until dismissed.
+
+## QR Code
+
+```razor
+<IgbQrCode Value="https://www.infragistics.com" Size="192" />
+
+<IgbQrCode Value="https://www.infragistics.com" Size="256"
+           ErrorLevel="QrErrorCorrectionLevel.Quartile"
+           DotStyle="QrDotStyle.Rounded" SquareStyle="QrCornerSquareStyle.Rounded"
+           LogoSrc="images/logo.svg" LogoSize="0.6" />
+```
+
+Renders the `Value` string (URL, text, any payload) as a scannable SVG. `Version` (1-40) is chosen automatically when unset; `ErrorLevel` (`Low | Medium | Quartile | High`) defaults to `Medium` and should be raised explicitly when a larger logo needs more error correction. `Size` is the rendered pixel size and `Margin` the quiet zone in modules; `LogoSrc`, `LogoSize` and `LogoMargin` place a centered logo. Color it with the `--ig-qr-code-background`, `--ig-qr-code-dark-color`, `--ig-qr-code-corner-square-color` and `--ig-qr-code-corner-dot-color` custom properties.
+
+`ToImageAsync(IgbQrCodeExportOptions)` exports the code as an image file (`Format`: `Svg | Png | Jpeg | Webp`, default `Png`; `Scale` multiplies `Size`; `FileName` defaults to `qr-code`). The exported file stays on the client, so set `Download = true` to open the browser save dialog — there is no way to read the file bytes back into .NET. The export fails when the component has no `Value`.
+
+```razor
+<IgbQrCode @ref="Qr" Value="https://www.infragistics.com" Size="192" />
+<IgbButton @onclick='() => Qr!.ToImageAsync(new IgbQrCodeExportOptions { Format = QrCodeExportFormat.Png, Scale = 2, Download = true })'>Download</IgbButton>
+
+@code { IgbQrCode? Qr; }
+```
 
 ## Ripple, Highlight, Chat
 

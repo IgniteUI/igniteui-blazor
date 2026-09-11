@@ -192,7 +192,17 @@
             if (CustomTypes.PredefinedMethodArgs.ContainsKey(method.Name))
             {
                 // this is a special method that needs special values
-                parameters.AddRange(CustomTypes.PredefinedMethodArgs[method.Name]);
+                var predefined = CustomTypes.PredefinedMethodArgs[method.Name];
+                var predefinedFit = method.GetParameters();
+                if (predefined.Length != predefinedFit.Length ||
+                    !predefined.Zip(predefinedFit).All(x => x.First == null || x.Second.ParameterType.IsInstanceOfType(x.First)))
+                {
+                    // Another overload of a method with predefined args. Its arguments cannot be
+                    // modeled generically (and the predefined set targets the primary overload),
+                    // so leave it to the unit interop contract.
+                    continue;
+                }
+                parameters.AddRange(predefined);
             }
             else
             {

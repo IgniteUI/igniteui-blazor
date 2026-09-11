@@ -124,6 +124,26 @@ Radios are grouped by being children of `IgbRadioGroup`, and the selected option
 
 `Min`, `Max`, `Step`, `LowerBound`, `UpperBound`, `PrimaryTicks`, `SecondaryTicks`, `DiscreteTrack` and the label/tooltip options come from the shared slider base and apply to both sliders. `IgbRangeSlider` uses `Lower` / `Upper` instead of `Value`. `IgbRating.Value` and `IgbSlider.Value` are `double`.
 
+## Color Picker
+
+```razor
+<IgbColorPicker @bind-Value="Background" Label="Background" />
+
+<IgbColorPicker @bind-Value="Accent" Label="Accent"
+                Mode="ColorPickerMode.Input" Format="ColorFormat.Rgb"
+                ShowAlpha="true" Swatches="Palette" />
+
+@code {
+    string? Background { get; set; } = "#875fc4";
+    string? Accent { get; set; }
+    static readonly string[] Palette = ["#e91e63", "#3f51b5", "#009688"];
+}
+```
+
+An HSV canvas with hue and alpha sliders, an editable color string, preset swatches, and the native EyeDropper where the browser has one. `Value` is a CSS color string (hex, `rgb(a)`, `hsl(a)`, or a named color); an empty or invalid string clears it. `Format` (`Hex | Rgb | Hsl`) changes only the notation, not the color, and `HideFormats` drops the format switcher. `Mode` is `Default` (trigger button) or `Input` (editable text field with a swatch prefix).
+
+`Input` fires on every color change while `Change` fires on commit and drives `@bind-Value`; `Opening` / `Opened` / `Closing` / `Closed` track the picker surface. `Required`, `Disabled`, `Invalid` plus `CheckValidityAsync()` / `ReportValidityAsync()` / `SetCustomValidityAsync(message)` behave as on the other form controls.
+
 ## Binding and validation
 
 ```razor

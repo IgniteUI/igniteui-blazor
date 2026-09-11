@@ -211,6 +211,46 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToString(iv);
         }
 
+        /// <summary>
+        /// Returns the currently selected tab, or <see langword="null"/> when no tab is selected.
+        /// </summary>
+        public async Task<IgbTab?> GetSelectedTabAsync()
+        {
+            var iv = await InvokeMethod("p:SelectedTab", new object[] { }, new string[] { });
+
+            if (iv == null)
+            {
+                return default(IgbTab);
+            }
+            var retVal = (IgbTab)ConvertReturnValue(iv);
+            if (retVal == null)
+            {
+                return default(IgbTab);
+            }
+            return retVal;
+
+        }
+
+        /// <summary>
+        /// Returns the currently selected tab, or <see langword="null"/> when no tab is selected.
+        /// </summary>
+        public IgbTab? GetSelectedTab()
+        {
+            var iv = InvokeMethodSync("p:SelectedTab", new object[] { }, new string[] { });
+
+            if (iv == null)
+            {
+                return default(IgbTab);
+            }
+            var retVal = (IgbTab)ConvertReturnValue(iv);
+            if (retVal == null)
+            {
+                return default(IgbTab);
+            }
+            return retVal;
+
+        }
+
         /// <inheritdoc />
         public override object FindByName(string name)
         {

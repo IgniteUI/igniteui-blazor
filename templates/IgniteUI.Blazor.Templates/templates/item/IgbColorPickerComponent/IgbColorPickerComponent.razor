@@ -1,0 +1,90 @@
+@page "/IgbColorPickerComponent"
+@using IgniteUI.Blazor.Controls
+
+<PageTitle>IgbColorPickerComponent</PageTitle>
+
+<h3>IgbColorPickerComponent</h3>
+
+<div class="controls">
+    <div class="control">
+        <label>Format</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="FormatName">
+                <IgbRadio Value="Hex">Hex</IgbRadio>
+                <IgbRadio Value="Rgb">Rgb</IgbRadio>
+                <IgbRadio Value="Hsl">Hsl</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Mode</label>
+        <div class="control-box">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ModeName">
+                <IgbRadio Value="Default">Default</IgbRadio>
+                <IgbRadio Value="Input">Input</IgbRadio>
+            </IgbRadioGroup>
+        </div>
+    </div>
+
+    <div class="control">
+        <label>Options</label>
+        <div class="control-box switches">
+            <IgbSwitch @bind-Checked="ShowAlpha">Show alpha</IgbSwitch>
+            <IgbSwitch @bind-Checked="HideFormats">Hide formats</IgbSwitch>
+            <IgbSwitch @bind-Checked="Disabled">Disabled</IgbSwitch>
+        </div>
+    </div>
+</div>
+
+<div class="component-host color-picker-host">
+    <IgbColorPicker Label="Pick a color"
+                    Format="Format"
+                    Mode="Mode"
+                    ShowAlpha="ShowAlpha"
+                    HideFormats="HideFormats"
+                    Disabled="Disabled"
+                    Swatches="Swatches"
+                    @bind-Value="Value" />
+
+    <span class="color-preview" style="@($"background: {Value};")"></span>
+</div>
+
+<div class="state">Value: @Value &nbsp;|&nbsp; Format: @FormatName &nbsp;|&nbsp; Mode: @ModeName</div>
+
+@code {
+    /*
+     * Ignite UI for Blazor - open-source (MIT) component from IgniteUI.Blazor.Lite.
+     * An item template can't modify project files, so do this once per project:
+     *
+     * 1. Install:   dotnet add package IgniteUI.Blazor.Lite
+     * 2. Register (Program.cs):   builder.Services.AddIgniteUIBlazor();
+     * 3. _Imports.razor:          @using IgniteUI.Blazor.Controls
+     *    (optional here — this file already declares its own @using;
+     *    add it to _Imports.razor to share it project-wide)
+     * 4. Host page theme (index.html / App.razor / _Host.cshtml):
+     *    <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+     * 5. Blazor Web App (.NET 8+): add an interactive render mode to this page,
+     *    e.g. @rendermode InteractiveServer (or InteractiveWebAssembly / InteractiveAuto).
+     *
+     * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
+     */
+
+    private string FormatName { get; set; } = "Hex";
+    private ColorFormat Format => Enum.Parse<ColorFormat>(FormatName);
+
+    private string ModeName { get; set; } = "Default";
+    private ColorPickerMode Mode => Enum.Parse<ColorPickerMode>(ModeName);
+
+    private bool ShowAlpha { get; set; }
+    private bool HideFormats { get; set; }
+    private bool Disabled { get; set; }
+
+    private string Value { get; set; } = "#875fc4";
+
+    private static readonly string[] Swatches =
+    [
+        "#e91e63", "#9c27b0", "#3f51b5", "#2196f3", "#009688",
+        "#4caf50", "#ffc107", "#ff5722", "#795548", "#607d8b"
+    ];
+}
