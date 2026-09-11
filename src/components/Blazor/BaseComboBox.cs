@@ -42,14 +42,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Shows the component.
         /// </summary>
@@ -57,7 +49,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already open.</returns>
         public async Task<bool> ShowAsync()
         {
-            var iv = await InvokeMethod("show", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -68,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already open.</returns>
         public bool Show()
         {
-            var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -78,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already closed.</returns>
         public async Task<bool> HideAsync()
         {
-            var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -89,7 +81,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already closed.</returns>
         public bool Hide()
         {
-            var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -98,7 +90,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns><see langword="true"/> when the open state was changed.</returns>
         public async Task<bool> ToggleAsync()
         {
-            var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -108,7 +100,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns><see langword="true"/> when the open state was changed.</returns>
         public bool Toggle()
         {
-            var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
