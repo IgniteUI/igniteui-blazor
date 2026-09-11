@@ -61,7 +61,7 @@ Grids are **not** included in `IgniteUI.Blazor.Lite`.
 | Using directive | `@using IgniteUI.Blazor.Controls` in `_Imports.razor` |
 | CSS — full grids | **both** `_content/IgniteUI.Blazor/themes/light/bootstrap.css` **and** `_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css` |
 | CSS — Grid Lite | `_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css` only — not the two above |
-| Script | `_content/IgniteUI.Blazor/app.bundle.js` before the Blazor framework script |
+| Script | None for `IgniteUI.Blazor.GridLite`; full grids (`IgniteUI.Blazor`/`.Trial`) need `_content/IgniteUI.Blazor/app.bundle.js` before the Blazor framework script in Blazor Web Apps — never wrapped in `@Assets[...]` |
 
 The grid-specific stylesheet is easy to miss and is required whenever any full-featured grid is on the page. Full setup detail lives in the components skill's [`setup.md`](../igniteui-blazor-components/references/setup.md).
 

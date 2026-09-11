@@ -37,11 +37,8 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Build TypeScript/Webpack assets
+      - name: Build static web assets (src/wwwroot)
         run: npm run build
-
-      - name: Copy component themes to wwwroot
-        run: npm run copythemes
 
       - name: Restore .NET dependencies
         run: dotnet restore ./src/IgniteUI.Blazor.Lite.csproj

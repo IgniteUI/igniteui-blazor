@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Public ES module at `_content/IgniteUI.Blazor/api.js` (typings at `api.d.ts`): `registerScript(name, fn, shouldCall = false)` / `removeScript(name)` for `*Script` component parameters, and `html` — the lit-html template tag for client templates, the same instance the components render with.
+
+### Changed
+
+- The client build now emits native ES modules; the package's JS initializer loads the whole script graph during Blazor startup, so no `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag is needed on any hosting model (Blazor Server, standalone WASM, Blazor Web App, BlazorWebView). Existing tags keep working — including wrapped in `@Assets[...]`.
+- A component whose `*Script` parameter names a function that is not registered now logs a console warning naming it (previously the parameter was silently dropped).
+- Hosting the library's assets elsewhere (CDN/self-host) is done with a standard [import map](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/static-files?view=aspnetcore-10.0#importmap-component) prefix entry — e.g. `{"imports": {"./_content/IgniteUI.Blazor/": "https://cdn.example.com/ig/"}}` relocates the entire module graph, initializer included.
+
+### Deprecated
+
+- The `window.igRegisterScript`, `window.igRemoveScript`, and `window.igTemplating.html` globals — use the `api.js` module exports instead. The globals keep working with the same signatures and log a one-time console notice; they exist once `api.js` has loaded, so a classic script calling them while the page parses still needs the `app.bundle.js` tag, which queues those calls. Note the defaults differ: `igRegisterScript` still defaults `shouldCall` to `true` (call the function and use its result), `registerScript` defaults to `false` (the function is the script) so passing one explicitly in most cases is no longer needed.
+
+### Fixed
+
+- Loading no longer breaks under .NET 9+ static asset fingerprinting — a script tag wrapped in `@Assets[...]` previously left the app blank with no error. [#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)
+
 ## 0.1.0 - 2026-07-14
 
 This release updates the Ignite UI for Blazor to the latest [igniteui-webcomponents@7.2.4 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.2.4) and matching related changes from `IgniteUI.Blazor` [25.2.77 (March 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25277-march-2026), [25.2.102 (May 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#252102-may-2026) and [26.1.51 (June 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#26151-june-2026) with highlights noted below:
