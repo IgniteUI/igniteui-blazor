@@ -501,6 +501,7 @@ jobs:
           .github/scripts/Assert-Sbom.ps1
           -OutputRoot "${{ runner.temp }}/sbom"
           -ExpectedPackagePath "${env:GITHUB_WORKSPACE}/artifacts/${env:PACKAGE_ID}.${env:VERSION}.nupkg"
+          -PackageId "${{ env.PACKAGE_ID }}"
 
       # CycloneDX reads licences and authors from each package's own nuspec, so it fills the fields the
       # ClearlyDefined-backed SPDX documents leave as NOASSERTION whenever that service is degraded.

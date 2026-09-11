@@ -21,6 +21,11 @@ param(
     [Parameter(Mandatory)]
     [string]$ExpectedPackagePath,
 
+    # The id of the package being released. Any package entry other than the document root carrying
+    # this id means the shipped .nupkg was scanned as a component of itself.
+    [Parameter(Mandatory)]
+    [string]$PackageId,
+
     # Below this share of packages carrying a resolved license, the run is annotated rather than failed.
     # Zero resolved licenses fails regardless of this threshold - see the check below.
     [ValidateRange(0, 1)]
@@ -117,6 +122,40 @@ if ($documents.ContainsKey('SPDX 2.2') -and $documents.ContainsKey('SPDX 3.0')) 
     $packages30 = @($graph | Where-Object { $_.type -eq 'software_Package' }).Count
     if ($packages22 -ne $packages30) {
         $problems += "SPDX 2.2 records $packages22 packages but SPDX 3.0 records $packages30. The two formats must describe the same build."
+    }
+}
+
+# The other shape of "the SBOM describes itself": the shipped .nupkg under -b was picked up as a
+# component, so a package entry (not the document root) carries the released package's own id and
+# SPDXRef-RootPackage ends up depending on itself. Happens whenever New-Sbom.ps1's caller drops or
+# mis-globs -ComponentScanExclusion; sbom-tool does not report it, and the filename check above
+# only catches a generated manifest, not the package.
+if ($documents.ContainsKey('SPDX 2.2')) {
+    $describedIds = @($documents['SPDX 2.2'].documentDescribes)
+    $selfPackages = @(
+        $documents['SPDX 2.2'].packages |
+            Where-Object { $_.name -eq $PackageId -and $describedIds -notcontains $_.SPDXID }
+    )
+    if ($selfPackages.Count -gt 0) {
+        $versions = @($selfPackages | ForEach-Object { $_.versionInfo } | Where-Object { $_ } | Select-Object -Unique) -join ', '
+        $problems += "SPDX 2.2 lists '$PackageId'$(if ($versions) { " ($versions)" }) as a component package - the shipped .nupkg was scanned as its own dependency. Check the -ComponentScanExclusion glob passed to New-Sbom.ps1."
+    }
+}
+
+if ($documents.ContainsKey('SPDX 3.0')) {
+    $graph30 = @($documents['SPDX 3.0'].'@graph')
+    # The 3.0 analogue of 2.2's documentDescribes: the targets of every DESCRIBES relationship.
+    $describedIds30 = @(
+        $graph30 |
+            Where-Object { $_.type -eq 'Relationship' -and $_.relationshipType -eq 'DESCRIBES' } |
+            ForEach-Object { $_.to }
+    )
+    $selfPackages30 = @(
+        $graph30 |
+            Where-Object { $_.type -eq 'software_Package' -and $_.name -eq $PackageId -and $describedIds30 -notcontains $_.spdxId }
+    )
+    if ($selfPackages30.Count -gt 0) {
+        $problems += "SPDX 3.0 lists '$PackageId' as a software_Package outside the document's DESCRIBES set - the shipped .nupkg was scanned as its own dependency."
     }
 }
 
