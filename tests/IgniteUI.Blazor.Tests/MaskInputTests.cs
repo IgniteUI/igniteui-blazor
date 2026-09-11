@@ -7,7 +7,6 @@ namespace IgniteUI.Blazor.Tests;
 public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
 {
     // Interop contract — source: src/components/Blazor/MaskInput.cs, src/components/Blazor/InputBase.cs.
-    // Skipped: none.
     // IgbMaskInput does not override UseDirectRender, so — like IgbDateTimeInput — it renders
     // through the component-renderer-container and all its scalar props travel as .Prop updates.
     protected override ComponentContract<IgbMaskInput> InteropContract { get; } = new ComponentContract<IgbMaskInput>()
