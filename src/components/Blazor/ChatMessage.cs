@@ -88,14 +88,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbChatMessageAttachment[]? _attachments;
+        private IgbChatMessageAttachment[] _attachments = Array.Empty<IgbChatMessageAttachment>();
 
         /// <summary>
         /// Optional list of attachments associated with the message,
         /// such as images, files, or links.
         /// </summary>
         [Parameter]
-        public IgbChatMessageAttachment[]? Attachments
+        public IgbChatMessageAttachment[] Attachments
         {
             get { return this._attachments; }
             set
@@ -108,13 +108,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[]? _reactions;
+        private string[] _reactions = Array.Empty<string>();
 
         /// <summary>
         /// Optional list of reactions associated with the message.
         /// </summary>
         [Parameter]
-        public string[]? Reactions
+        public string[] Reactions
         {
             get { return this._reactions; }
             set
@@ -183,9 +183,9 @@ namespace IgniteUI.Blazor.Controls
             if (args != null && args.ContainsKey("timestamp"))
             { this.Timestamp = ReturnToString(args["timestamp"]); }
             if (args != null && args.ContainsKey("attachments"))
-            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]); }
+            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]) ?? Array.Empty<IgbChatMessageAttachment>(); }
             if (args != null && args.ContainsKey("reactions"))
-            { this.Reactions = ReturnToStringArray(args["reactions"]); }
+            { this.Reactions = ReturnToStringArray(args["reactions"]) ?? Array.Empty<string>(); }
 
             this.SuppressParentNotify = false;
         }

@@ -28,13 +28,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbChatMessageAttachment[]? _attachments;
+        private IgbChatMessageAttachment[] _attachments = Array.Empty<IgbChatMessageAttachment>();
 
         /// <summary>
         /// An array of attachments associated with the draft message.
         /// </summary>
         [Parameter]
-        public IgbChatMessageAttachment[]? Attachments
+        public IgbChatMessageAttachment[] Attachments
         {
             get { return this._attachments; }
             set
@@ -81,7 +81,7 @@ namespace IgniteUI.Blazor.Controls
             if (args != null && args.ContainsKey("text"))
             { this.Text = ReturnToString(args["text"]); }
             if (args != null && args.ContainsKey("attachments"))
-            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]); }
+            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]) ?? Array.Empty<IgbChatMessageAttachment>(); }
 
             this.SuppressParentNotify = false;
         }

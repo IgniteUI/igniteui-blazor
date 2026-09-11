@@ -126,13 +126,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[]? _suggestions;
+        private string[] _suggestions = Array.Empty<string>();
 
         /// <summary>
         /// Suggested text snippets or quick replies that can be shown as user-selectable options.
         /// </summary>
         [Parameter]
-        public string[]? Suggestions
+        public string[] Suggestions
         {
             get { return this._suggestions; }
             set
