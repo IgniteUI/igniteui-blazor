@@ -6,7 +6,8 @@ namespace IgniteUI.Blazor.Controls
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
     /// </remarks>
-    public partial class IgbTooltipModule
+    [IgbModule<IgbTooltipModule>]
+    public partial class IgbTooltipModule : IIgbModule
     {
         /// <summary>
         /// Requests this module's client resources to be loaded into the runtime.

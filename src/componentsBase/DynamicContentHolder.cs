@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
@@ -104,6 +105,7 @@ namespace IgniteUI.Blazor.Controls
 
     public abstract class DynamicContentInfo
     {
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public Type ControlType { get; set; }
         public DynamicContentInfo()
         {
@@ -155,7 +157,7 @@ namespace IgniteUI.Blazor.Controls
     public class TypedDynamicContent
         : DynamicContentInfo
     {
-        public TypedDynamicContent(Type t)
+        public TypedDynamicContent([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type t)
         {
             ControlType = t;
         }
