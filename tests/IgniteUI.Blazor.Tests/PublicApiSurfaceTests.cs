@@ -16,8 +16,7 @@ public class PublicApiSurfaceTests
     [Fact]
     public void PublicApi_DoesNotExposeSetNativeElement()
     {
-        var offenders = typeof(IgbBanner).Assembly.GetTypes()
-            .Where(t => t.IsPublic || t.IsNestedPublic)
+        var offenders = typeof(IgbBanner).Assembly.GetExportedTypes()
             .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
             .Where(m => m.Name is "SetNativeElement" or "SetNativeElementAsync")
             .Select(m => $"{m.DeclaringType?.FullName}.{m.Name}")

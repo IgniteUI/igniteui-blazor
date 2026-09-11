@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- The undocumented `SetNativeElement(Object)`/`SetNativeElementAsync(Object)` methods were removed from all components. They were leftovers of the legacy component generation, had no XML documentation and no valid use from Blazor, since the underlying element is owned by the renderer.
+- **Breaking change**: The undocumented `SetNativeElement(Object)`/`SetNativeElementAsync(Object)` methods were removed from all components. They were leftovers of the legacy component generation, had no XML documentation and no valid use from Blazor, since the underlying element is owned by the renderer.
 
 ## 0.1.0 - 2026-07-14
 
