@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatRenderContext"; } }
 
-        private IgbChat _instance;
+        private IgbChat _instance = new IgbChat();
 
         /// <summary>
         /// The instance of the <see cref="IgbChat"/> component.

@@ -11,10 +11,10 @@
 @code 
 {
     [Parameter]
-    public RenderFragment<T> Template { get; set; }
+    public RenderFragment<T>? Template { get; set; }
 
     private bool _hasPopulatedContext = false;
-    private T _context;
+    private T _context = default!;
     [Parameter]
     public T Context 
     { 

@@ -19,30 +19,30 @@ namespace IgniteUI.Blazor.Controls
             SubSchema = null;
         }
 
-        public string PropertyPath { get; set; }
+        public string? PropertyPath { get; set; }
         public JSDataSourceSchemaType Type { get; set; }
-        public int[] IntValues { get; set; }
-        public long[] LongValues { get; set; }
-        public double[] DoubleValues { get; set; }
-        public string[] StringValues { get; set; }
-        public bool[] NullValues { get; set; }
-        public Guid[] IDValues { get; set; }
-        public UnmarshalledColumn[][] SubDataSourceValues;
+        public int[]? IntValues { get; set; }
+        public long[]? LongValues { get; set; }
+        public double[]? DoubleValues { get; set; }
+        public string?[]? StringValues { get; set; }
+        public bool[]? NullValues { get; set; }
+        public Guid[]? IDValues { get; set; }
+        public UnmarshalledColumn[]?[]? SubDataSourceValues;
 
         public UnmarshalledColumn Column { get; set; }
 
         public bool IsObjectColumn { get; set; }
 
-        public UnmarshalledColumnData[] SubColumns { get; set; }
-        public JSDataSourceSchema SubSchema { get; set; }
-        public Action<int, UnmarshalledColumnData, int, object> Insert { get; internal set; }
-        public Action<int, UnmarshalledColumnData, int, object, object> Update { get; internal set; }
-        public Action<int, UnmarshalledColumnData, int> Remove { get; internal set; }
+        public UnmarshalledColumnData?[]? SubColumns { get; set; }
+        public JSDataSourceSchema? SubSchema { get; set; }
+        public Action<int, UnmarshalledColumnData, int, object?>? Insert { get; internal set; }
+        public Action<int, UnmarshalledColumnData, int, object?, object?>? Update { get; internal set; }
+        public Action<int, UnmarshalledColumnData, int>? Remove { get; internal set; }
         public bool IsIDColumn { get; internal set; }
-        public Action<int, UnmarshalledColumnData> Clear { get; internal set; }
-        public string PropertyName { get; internal set; }
+        public Action<int, UnmarshalledColumnData>? Clear { get; internal set; }
+        public string? PropertyName { get; internal set; }
         public bool IsSubDataSource { get; internal set; }
-        public Delegate Getter { get; internal set; }
+        public Delegate? Getter { get; internal set; }
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 56)]
@@ -67,7 +67,7 @@ namespace IgniteUI.Blazor.Controls
         [FieldOffset(40)]
         public string[] StringValues;
         [FieldOffset(40)]
-        public UnmarshalledColumn[][] SubDataSourceValues;
+        public UnmarshalledColumn[]?[]? SubDataSourceValues;
         [FieldOffset(48)]
         public bool[] NullValues;
     }
@@ -84,21 +84,21 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         public bool IsSent { get; set; }
-        private object _originalData;
+        private object? _originalData;
 
         private Dictionary<Guid, object> _uuidToOriginal = new Dictionary<Guid, object>();
         private Dictionary<object, Guid> _originalToUuid = new Dictionary<object, Guid>();
         //private Dictionary<string, Guid> _stringToUuid = new Dictionary<string, Guid>();
-        private RuntimeHelper _helper;
-        private JSDataSourceSchema _parentSchema = null;
-        private string _parentId;
-        private DataSourceManager _manager = null;
+        private RuntimeHelper? _helper;
+        private JSDataSourceSchema? _parentSchema = null;
+        private string? _parentId;
+        private DataSourceManager? _manager = null;
 
-        private UnmarshalledColumnData[] _columns = null;
+        private UnmarshalledColumnData?[]? _columns = null;
 
         private Dictionary<Guid, Dictionary<string, UnmarshalledDataSource>> _subDataSources = new Dictionary<Guid, Dictionary<string, UnmarshalledDataSource>>();
 
-        private Func<object, Guid> _idGetter;
+        private Func<object, Guid>? _idGetter;
 
         private int _size = 0;
         private int _capacity = 0;
@@ -142,15 +142,14 @@ namespace IgniteUI.Blazor.Controls
             };
         }
 
-        private UnmarshalledColumnData[] AdjustCapacity(string parentPath, UnmarshalledColumnData[] columns, JSDataSourceSchema schema, int oldValue, int newValue)
+        private UnmarshalledColumnData?[]? AdjustCapacity(string? parentPath, UnmarshalledColumnData?[]? columns, JSDataSourceSchema? schema, int oldValue, int newValue)
         {
             //Console.WriteLine("adjusting capacity, oldValue: " + oldValue + ", newValue: " + newValue);
             DateTime start = DateTime.Now;
-            if (columns == null && schema == null)
+            if (schema == null)
             {
-                return null;
+                return columns;
             }
-
             if (schema.IsDataSource)
             {
                 if (columns == null)
@@ -164,6 +163,15 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
+                var propertyNames = schema.PropertyNames ?? Array.Empty<string>();
+                var fieldNames = schema.FieldNames ?? Array.Empty<string>();
+                var propertyGetters = schema.PropertyGetters ?? Array.Empty<Func<object, object?>>();
+                var fieldGetters = schema.FieldGetters ?? Array.Empty<Func<object, object>>();
+                var typedPropertyGetters = schema.TypedPropertyGetters ?? Array.Empty<Delegate>();
+                var typedFieldGetters = schema.TypedFieldGetters ?? Array.Empty<Delegate>();
+                var propertyTypes = schema.PropertyTypes ?? Array.Empty<JSDataSourceSchemaType>();
+                var fieldTypes = schema.FieldTypes ?? Array.Empty<JSDataSourceSchemaType>();
+
                 if (columns == null)
                 {
                     var extraCols = 1;
@@ -171,21 +179,22 @@ namespace IgniteUI.Blazor.Controls
                     {
                         extraCols = 0;
                     }
-                    columns = new UnmarshalledColumnData[schema.PropertyNames.Length + schema.FieldNames.Length + extraCols];
+                    columns = new UnmarshalledColumnData[propertyNames.Length + fieldNames.Length + extraCols];
                     for (var k = 0; k < columns.Length; k++)
                     {
                         columns[k] = null;
                     }
                 }
+
                 int i = 0;
 
-                for (i = 0; i < schema.PropertyNames.Length; i++)
+                for (i = 0; i < propertyNames.Length; i++)
                 {
-                    columns[i] = AdjustColumnCapacity(parentPath, columns[i], schema, schema.PropertyNames[i], schema.TypedPropertyGetters[i], schema.PropertyGetters[i], false, schema.PropertyTypes[i], oldValue, newValue);
+                    columns[i] = AdjustColumnCapacity(parentPath, columns[i], schema, propertyNames[i], typedPropertyGetters[i], propertyGetters[i], false, propertyTypes[i], oldValue, newValue);
                 }
-                for (int j = 0; j < _schema.FieldNames.Length; i++, j++)
+                for (int j = 0; j < fieldNames.Length; i++, j++)
                 {
-                    columns[i] = AdjustColumnCapacity(parentPath, columns[i], schema, schema.FieldNames[j], schema.TypedFieldGetters[j], schema.FieldGetters[j], false, schema.FieldTypes[j], oldValue, newValue);
+                    columns[i] = AdjustColumnCapacity(parentPath, columns[i], schema, fieldNames[j], typedFieldGetters[j], fieldGetters[j], false, fieldTypes[j], oldValue, newValue);
                 }
             }
             if (schema.IsPrimitive)
@@ -220,8 +229,9 @@ namespace IgniteUI.Blazor.Controls
                 };
                 if (columns[columns.Length - 1] == null)
                 {
-                    columns[columns.Length - 1] = CreateColumn(parentPath, "___id", schema, JSDataSourceSchemaType.StringValue, idGetter, untypedIdGetter, true);
-                    columns[columns.Length - 1].IsIDColumn = true;
+                    var idColumn = CreateColumn(parentPath, "___id", schema, JSDataSourceSchemaType.StringValue, idGetter, untypedIdGetter, true);
+                    idColumn.IsIDColumn = true;
+                    columns[columns.Length - 1] = idColumn;
                 }
                 columns[columns.Length - 1] = AdjustColumnCapacity(parentPath, columns[columns.Length - 1], schema, "___id", idGetter, untypedIdGetter, true, JSDataSourceSchemaType.StringValue, oldValue, newValue);
             }
@@ -230,7 +240,7 @@ namespace IgniteUI.Blazor.Controls
             return columns;
         }
 
-        private UnmarshalledColumnData CreateColumn(string parentPath, string propertyName, JSDataSourceSchema schema, JSDataSourceSchemaType type, Delegate valueGetter, Func<object, object> untypedGetter, bool isIDColumn)
+        private UnmarshalledColumnData CreateColumn(string? parentPath, string? propertyName, JSDataSourceSchema schema, JSDataSourceSchemaType type, Delegate? valueGetter, Func<object, object?>? untypedGetter, bool isIDColumn)
         {
             if (parentPath != null && parentPath.Length > 0)
             {
@@ -262,86 +272,89 @@ namespace IgniteUI.Blazor.Controls
             col.IsSubDataSource = newColumn.IsSubDataSource ? 1 : 0;
             newColumn.Column = col;
 
-            Func<object, Guid> idGetter = null;
-            Func<object, double> doubleGetter = null;
-            Func<object, float> singleGetter = null;
-            Func<object, bool> boolGetter = null;
-            Func<object, byte> byteGetter = null;
-            Func<object, decimal> decimalGetter = null;
-            Func<object, short> shortGetter = null;
-            Func<object, long> longGetter = null;
-            Func<object, string> stringGetter = null;
-            Func<object, DateTime> dateTimeGetter = null;
-            Func<object, object> objectGetter = null;
+            Func<object, Guid>? idGetter = null;
+            Func<object, double>? doubleGetter = null;
+            Func<object, float>? singleGetter = null;
+            Func<object, bool>? boolGetter = null;
+            Func<object, byte>? byteGetter = null;
+            Func<object, decimal>? decimalGetter = null;
+            Func<object, short>? shortGetter = null;
+            Func<object, long>? longGetter = null;
+            Func<object, string?>? stringGetter = null;
+            Func<object, DateTime>? dateTimeGetter = null;
+            Func<object, object?>? objectGetter = null;
 
-            Func<object, double> floatingPointGetter = null;
-            Func<object, int> integerGetter = null;
+            Func<object, double>? floatingPointGetter = null;
+            Func<object, int>? integerGetter = null;
 
-            Func<object, short?> nullableShortGetter = null;
-            Func<object, int?> nullableIntegerGetter = null;
-            Func<object, long?> nullableLongGetter = null;
-            Func<object, float?> nullableSingleGetter = null;
-            Func<object, double?> nullableDoubleGetter = null;
-            Func<object, decimal?> nullableDecimalGetter = null;
-            Func<object, bool?> nullableBoolGetter = null;
-            Func<object, byte?> nullableByteGetter = null;
-            Func<object, DateTime?> nullableDateTimeGetter = null;
-            Func<object, double?> nullableFloatingPointGetter = null;
+            Func<object, short?>? nullableShortGetter = null;
+            Func<object, int?>? nullableIntegerGetter = null;
+            Func<object, long?>? nullableLongGetter = null;
+            Func<object, float?>? nullableSingleGetter = null;
+            Func<object, double?>? nullableDoubleGetter = null;
+            Func<object, decimal?>? nullableDecimalGetter = null;
+            Func<object, bool?>? nullableBoolGetter = null;
+            Func<object, byte?>? nullableByteGetter = null;
+            Func<object, DateTime?>? nullableDateTimeGetter = null;
+            Func<object, double?>? nullableFloatingPointGetter = null;
 
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
-                    doubleGetter = (Func<object, double>)valueGetter;
+                    doubleGetter = (Func<object, double>?)valueGetter;
                     floatingPointGetter = doubleGetter;
                     break;
                 case JSDataSourceSchemaType.SingleValue:
-                    singleGetter = (Func<object, float>)valueGetter;
-                    floatingPointGetter = (o) => (double)singleGetter(o);
+                    singleGetter = (Func<object, float>?)valueGetter;
+                    floatingPointGetter = (o) => singleGetter == null ? double.NaN : (double)singleGetter(o);
                     break;
                 case JSDataSourceSchemaType.BooleanValue:
-                    boolGetter = (Func<object, bool>)valueGetter;
-                    integerGetter = (o) => boolGetter(o) ? 1 : 0;
+                    boolGetter = (Func<object, bool>?)valueGetter;
+                    integerGetter = (o) => (boolGetter != null && boolGetter(o)) ? 1 : 0;
                     break;
                 case JSDataSourceSchemaType.ByteValue:
-                    byteGetter = (Func<object, byte>)valueGetter;
-                    integerGetter = (o) => (int)byteGetter(o);
+                    byteGetter = (Func<object, byte>?)valueGetter;
+                    integerGetter = (o) => byteGetter == null ? 0 : (int)byteGetter(o);
                     break;
                 case JSDataSourceSchemaType.DecimalValue:
-                    decimalGetter = (Func<object, decimal>)valueGetter;
-                    floatingPointGetter = (o) => (double)decimalGetter(o);
+                    decimalGetter = (Func<object, decimal>?)valueGetter;
+                    floatingPointGetter = (o) => decimalGetter == null ? double.NaN : (double)decimalGetter(o);
                     break;
                 case JSDataSourceSchemaType.IntValue:
-                    integerGetter = (Func<object, int>)valueGetter;
+                    integerGetter = (Func<object, int>?)valueGetter;
                     break;
                 case JSDataSourceSchemaType.ShortValue:
-                    shortGetter = (Func<object, short>)valueGetter;
-                    integerGetter = (o) => (int)shortGetter(o);
+                    shortGetter = (Func<object, short>?)valueGetter;
+                    integerGetter = (o) => shortGetter == null ? 0 : (int)shortGetter(o);
                     break;
                 case JSDataSourceSchemaType.LongValue:
-                    longGetter = (Func<object, long>)valueGetter;
+                    longGetter = (Func<object, long>?)valueGetter;
                     break;
                 case JSDataSourceSchemaType.StringValue:
                     if (isIDColumn)
                     {
-                        idGetter = (Func<object, Guid>)valueGetter;
-                        stringGetter = (o) => idGetter(o).ToString();
+                        idGetter = (Func<object, Guid>?)valueGetter;
+                        stringGetter = (o) => idGetter == null ? string.Empty : idGetter(o).ToString();
                     }
                     else
                     {
-                        stringGetter = (Func<object, string>)valueGetter;
+                        stringGetter = (Func<object, string>?)valueGetter;
                     }
                     break;
                 case JSDataSourceSchemaType.CalendarValue:
                 case JSDataSourceSchemaType.DateTimeValue:
-                    if (typeof(Func<object, DateTime>).IsAssignableFrom(valueGetter.GetType()))
+                    if (valueGetter != null && typeof(Func<object, DateTime>).IsAssignableFrom(valueGetter.GetType()))
                     {
                         dateTimeGetter = (Func<object, DateTime>)valueGetter;
                         stringGetter = (o) => ((DateTime)dateTimeGetter(o)).ToString("o");
                     }
                     else
                     {
-                        dateTimeGetter = (o) => (DateTime)untypedGetter(o);
-                        stringGetter = (o) => ((DateTime)dateTimeGetter(o)).ToString("o");
+                        stringGetter = (o) =>
+                        {
+                            var val = (DateTime?)untypedGetter?.Invoke(o);
+                            return val == null ? null : val.Value.ToString("o");
+                        };
                     }
                     break;
                 case JSDataSourceSchemaType.ObjectValue:
@@ -363,17 +376,21 @@ namespace IgniteUI.Blazor.Controls
                     break;
 
                 case JSDataSourceSchemaType.NullableDoubleValue:
-                    nullableDoubleGetter = (Func<object, double?>)valueGetter;
+                    nullableDoubleGetter = (Func<object, double?>?)valueGetter;
                     nullableFloatingPointGetter = nullableDoubleGetter;
                     break;
                 case JSDataSourceSchemaType.NullableSingleValue:
-                    nullableSingleGetter = (Func<object, float?>)valueGetter;
-                    nullableFloatingPointGetter = (o) => (double?)nullableSingleGetter(o);
+                    nullableSingleGetter = (Func<object, float?>?)valueGetter;
+                    nullableFloatingPointGetter = (o) => nullableSingleGetter == null ? null : (double?)nullableSingleGetter(o);
                     break;
                 case JSDataSourceSchemaType.NullableBooleanValue:
-                    nullableBoolGetter = (Func<object, bool?>)valueGetter;
+                    nullableBoolGetter = (Func<object, bool?>?)valueGetter;
                     nullableIntegerGetter = (o) =>
                     {
+                        if (nullableBoolGetter == null)
+                        {
+                            return null;
+                        }
                         var val = nullableBoolGetter(o);
                         int? t = 1;
                         int? f = 0;
@@ -381,26 +398,26 @@ namespace IgniteUI.Blazor.Controls
                     };
                     break;
                 case JSDataSourceSchemaType.NullableByteValue:
-                    nullableByteGetter = (Func<object, byte?>)valueGetter;
-                    nullableIntegerGetter = (o) => (int?)nullableByteGetter(o);
+                    nullableByteGetter = (Func<object, byte?>?)valueGetter;
+                    nullableIntegerGetter = (o) => nullableByteGetter == null ? null : (int?)nullableByteGetter(o);
                     break;
                 case JSDataSourceSchemaType.NullableDecimalValue:
-                    nullableDecimalGetter = (Func<object, decimal?>)valueGetter;
-                    nullableFloatingPointGetter = (o) => (double?)nullableDecimalGetter(o);
+                    nullableDecimalGetter = (Func<object, decimal?>?)valueGetter;
+                    nullableFloatingPointGetter = (o) => nullableDecimalGetter == null ? null : (double?)nullableDecimalGetter(o);
                     break;
                 case JSDataSourceSchemaType.NullableIntValue:
-                    nullableIntegerGetter = (Func<object, int?>)valueGetter;
+                    nullableIntegerGetter = (Func<object, int?>?)valueGetter;
                     break;
                 case JSDataSourceSchemaType.NullableShortValue:
-                    nullableShortGetter = (Func<object, short?>)valueGetter;
-                    nullableIntegerGetter = (o) => (int?)nullableShortGetter(o);
+                    nullableShortGetter = (Func<object, short?>?)valueGetter;
+                    nullableIntegerGetter = (o) => nullableShortGetter == null ? null : (int?)nullableShortGetter(o);
                     break;
                 case JSDataSourceSchemaType.NullableLongValue:
-                    nullableLongGetter = (Func<object, long?>)valueGetter;
+                    nullableLongGetter = (Func<object, long?>?)valueGetter;
                     break;
                 case JSDataSourceSchemaType.NullableCalendarValue:
                 case JSDataSourceSchemaType.NullableDateTimeValue:
-                    if (typeof(Func<object, DateTime?>).IsAssignableFrom(valueGetter.GetType()))
+                    if (valueGetter != null && typeof(Func<object, DateTime?>).IsAssignableFrom(valueGetter.GetType()))
                     {
                         nullableDateTimeGetter = (Func<object, DateTime?>)valueGetter;
                         stringGetter = (o) =>
@@ -411,17 +428,16 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
-                        nullableDateTimeGetter = (o) => (DateTime?)untypedGetter(o);
                         stringGetter = (o) =>
                         {
-                            var val = nullableDateTimeGetter(o);
+                            var val = (DateTime?)untypedGetter?.Invoke(o);
                             return val == null ? null : val.Value.ToString("o");
                         };
                     }
                     break;
             }
 
-            Action<int, UnmarshalledColumnData, int, object> insert = null;
+            Action<int, UnmarshalledColumnData, int, object?>? insert = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
@@ -429,12 +445,19 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DecimalValue:
                     insert = (size, column, index, item) =>
                     {
+                        if (column.DoubleValues == null)
+                        {
+                            return;
+                        }
                         double floatVal = double.NaN;
                         if (item != null)
                         {
                             if (!schema.IsPrimitive)
                             {
-                                floatVal = floatingPointGetter(item);
+                                if (floatingPointGetter != null)
+                                {
+                                    floatVal = floatingPointGetter(item);
+                                }
                             }
                             else
                             {
@@ -458,10 +481,17 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDecimalValue:
                     insert = (size, column, index, item) =>
                     {
+                        if (column.DoubleValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         double? floatVal = null;
                         if (item != null)
                         {
-                            floatVal = nullableFloatingPointGetter(item);
+                            if (nullableFloatingPointGetter != null)
+                            {
+                                floatVal = nullableFloatingPointGetter(item);
+                            }
                         }
                         if (index == size)
                         {
@@ -484,12 +514,19 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.ShortValue:
                     insert = (size, column, index, item) =>
                     {
+                        if (column.IntValues == null)
+                        {
+                            return;
+                        }
                         int intVal = int.MinValue;
                         if (item != null)
                         {
                             if (!schema.IsPrimitive)
                             {
-                                intVal = integerGetter(item);
+                                if (integerGetter != null)
+                                {
+                                    intVal = integerGetter(item);
+                                }
                             }
                             else
                             {
@@ -514,10 +551,17 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableShortValue:
                     insert = (size, column, index, item) =>
                     {
+                        if (column.IntValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         int? intVal = null;
                         if (item != null)
                         {
-                            intVal = nullableIntegerGetter(item);
+                            if (nullableIntegerGetter != null)
+                            {
+                                intVal = nullableIntegerGetter(item);
+                            }
                         }
                         if (index == size)
                         {
@@ -537,12 +581,19 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.LongValue:
                     insert = (size, column, index, item) =>
                     {
+                        if (column.LongValues == null)
+                        {
+                            return;
+                        }
                         long longVal = long.MinValue;
                         if (item != null)
                         {
                             if (!schema.IsPrimitive)
                             {
-                                longVal = longGetter(item);
+                                if (longGetter != null)
+                                {
+                                    longVal = longGetter(item);
+                                }
                             }
                             else
                             {
@@ -564,10 +615,17 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableLongValue:
                     insert = (size, column, index, item) =>
                     {
+                        if (column.LongValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         long? longVal = null;
                         if (item != null)
                         {
-                            longVal = nullableLongGetter(item);
+                            if (nullableLongGetter != null)
+                            {
+                                longVal = nullableLongGetter(item);
+                            }
                         }
                         if (index == size)
                         {
@@ -589,20 +647,27 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DateTimeValue:
                     insert = (size, column, index, item) =>
                     {
-                        string stringVal = null;
+                        if (column.StringValues == null)
+                        {
+                            return;
+                        }
+                        string? stringVal = null;
                         Guid idVal = Guid.Empty;
                         if (item != null)
                         {
                             if (column.IsIDColumn)
                             {
-                                idVal = idGetter(item);
+                                if (idGetter != null)
+                                {
+                                    idVal = idGetter(item);
+                                }
                                 stringVal = _parentId != null ? _parentId + "/" + idVal.ToString() : idVal.ToString();
                             }
                             else if (!schema.IsPrimitive)
                             {
                                 try
                                 {
-                                    stringVal = stringGetter(item);
+                                    stringVal = stringGetter != null ? stringGetter(item) : null;
                                 }
                                 catch
                                 {
@@ -616,10 +681,6 @@ namespace IgniteUI.Blazor.Controls
                         }
                         if (index == size)
                         {
-                            if (column.StringValues == null)
-                            {
-                                //Console.WriteLine("stringvalues null: " + column.PropertyName);
-                            }
                             column.StringValues[index] = stringVal;
                         }
                         else
@@ -629,14 +690,10 @@ namespace IgniteUI.Blazor.Controls
                             column.StringValues[index] = stringVal;
                         }
 
-                        if (column.IsIDColumn)
+                        if (column.IsIDColumn && column.IDValues != null)
                         {
                             if (index == size)
                             {
-                                if (column.IDValues == null)
-                                {
-                                    //Console.WriteLine("stringvalues null: " + column.PropertyName);
-                                }
                                 column.IDValues[index] = idVal;
                             }
                             else
@@ -652,12 +709,16 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDateTimeValue:
                     insert = (size, column, index, item) =>
                     {
-                        string stringVal = null;
+                        if (column.StringValues == null)
+                        {
+                            return;
+                        }
+                        string? stringVal = null;
                         if (item != null)
                         {
                             try
                             {
-                                stringVal = stringGetter(item);
+                                stringVal = stringGetter != null ? stringGetter(item) : null;
                             }
                             catch
                             {
@@ -666,10 +727,6 @@ namespace IgniteUI.Blazor.Controls
                         }
                         if (index == size)
                         {
-                            if (column.StringValues == null)
-                            {
-                                //Console.WriteLine("stringvalues null: " + column.PropertyName);
-                            }
                             column.StringValues[index] = stringVal;
                         }
                         else
@@ -684,8 +741,8 @@ namespace IgniteUI.Blazor.Controls
                     insert = (size, column, index, item) =>
                     {
                         //Console.WriteLine("shouldn't be here");
-                        object objVal = null;
-                        if (item != null)
+                        object? objVal = null;
+                        if (item != null && objectGetter != null)
                         {
                             objVal = objectGetter(item);
                         }
@@ -698,7 +755,7 @@ namespace IgniteUI.Blazor.Controls
                                 schema.SetSubSchema(column.PropertyName, subSchema);
                                 column.SubSchema = subSchema;
                             }
-                            if (subSchema.IsDataSource && !column.IsSubDataSource)
+                            if (subSchema != null && subSchema.IsDataSource && !column.IsSubDataSource)
                             {
                                 column.IsSubDataSource = true;
                                 var c = column.Column;
@@ -714,20 +771,27 @@ namespace IgniteUI.Blazor.Controls
 
                         if (column.IsSubDataSource)
                         {
-                            UnmarshalledColumn[] cols = null;
+                            if (column.SubDataSourceValues == null)
+                            {
+                                return;
+                            }
+                            UnmarshalledColumn[]? cols = null;
                             if (objVal != null)
                             {
-                                var id = _idGetter(item);
+                                var id = _idGetter != null && item != null ? _idGetter(item) : Guid.Empty;
                                 var parentId = _parentId != null ? _parentId + "/" + id.ToString() : id.ToString();
 
-                                var sub = (UnmarshalledDataSource)UnmarshalledDataSource.CreateWithSchema(objVal, parentId, column.SubSchema, _manager, _helper);
-                                cols = sub.GetColumns("");
+                                var sub = (UnmarshalledDataSource?)UnmarshalledDataSource.CreateWithSchema(objVal, parentId, column.SubSchema, _manager, _helper);
+                                cols = sub?.GetColumns("");
 
                                 if (!_subDataSources.ContainsKey(id))
                                 {
                                     _subDataSources[id] = new Dictionary<string, UnmarshalledDataSource>();
                                 }
-                                _subDataSources[id].Add(column.PropertyName, sub);
+                                if (column.PropertyName != null && sub != null)
+                                {
+                                    _subDataSources[id].Add(column.PropertyName, sub);
+                                }
                             }
                             if (index == size)
                             {
@@ -747,7 +811,10 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < column.SubColumns.Length; i++)
                                 {
                                     var subColumn = column.SubColumns[i];
-                                    subColumn.Insert(size, subColumn, index, objVal);
+                                    if (subColumn != null)
+                                    {
+                                        subColumn.Insert?.Invoke(size, subColumn, index, objVal);
+                                    }
                                 }
                             }
                         }
@@ -766,8 +833,8 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.SingleArrayValue:
                     insert = (size, column, index, item) =>
                     {
-                        object objVal = null;
-                        if (item != null)
+                        object? objVal = null;
+                        if (item != null && objectGetter != null)
                         {
                             objVal = objectGetter(item);
                         }
@@ -781,7 +848,7 @@ namespace IgniteUI.Blazor.Controls
                                 schema.SetSubSchema(column.PropertyName, subSchema);
                                 column.SubSchema = subSchema;
                             }
-                            if (subSchema.IsDataSource && !column.IsSubDataSource)
+                            if (subSchema != null && subSchema.IsDataSource && !column.IsSubDataSource)
                             {
                                 column.IsSubDataSource = true;
                                 var c = column.Column;
@@ -797,74 +864,81 @@ namespace IgniteUI.Blazor.Controls
 
                         if (column.IsSubDataSource)
                         {
-                            UnmarshalledColumn[] cols = null;
+                            if (column.SubDataSourceValues == null)
+                            {
+                                return;
+                            }
+                            UnmarshalledColumn[]? cols = null;
                             if (objVal != null)
                             {
-                                var sub = (UnmarshalledDataSource)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
-                                var subcols = sub.GetColumns("");
-
-                                UnmarshalledColumn primcol = new UnmarshalledColumn();
-                                primcol.ActualCount = subcols[0].ActualCount;
-                                primcol.DataSourceID = subcols[0].DataSourceID;
-                                primcol.PropertyPath = "___primitiveVal";
-                                primcol.Type = GetArrayType(newColumn.Type);
-                                int i = 0;
-                                switch (newColumn.Type)
+                                var sub = (UnmarshalledDataSource?)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
+                                if (sub != null)
                                 {
-                                    case JSDataSourceSchemaType.StringArrayValue:
-                                        primcol.StringValues = new string[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.StringValues[i] = (string)v;
-                                            i++;
-                                        }
-                                        break;
-                                    case JSDataSourceSchemaType.DateTimeArrayValue:
-                                    case JSDataSourceSchemaType.CalendarArrayValue:
-                                        primcol.StringValues = new string[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.StringValues[i] = ((DateTime)v).ToString("o");
-                                            i++;
-                                        }
-                                        break;
-                                    case JSDataSourceSchemaType.BooleanArrayValue:
-                                    case JSDataSourceSchemaType.ByteArrayValue:
-                                    case JSDataSourceSchemaType.IntArrayValue:
-                                    case JSDataSourceSchemaType.ShortArrayValue:
-                                        primcol.IntValues = new int[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.IntValues[i] = Convert.ToInt32(v);
-                                            i++;
-                                        }
-                                        break;
-                                    case JSDataSourceSchemaType.DoubleArrayValue:
-                                    case JSDataSourceSchemaType.SingleArrayValue:
-                                    case JSDataSourceSchemaType.DecimalArrayValue:
-                                        primcol.DoubleValues = new double[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.DoubleValues[i] = Convert.ToDouble(v);
-                                            i++;
-                                        }
-                                        break;
-                                    case JSDataSourceSchemaType.LongArrayValue:
-                                        primcol.LongValues = new long[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.LongValues[i] = Convert.ToInt64(v);
-                                            i++;
-                                        }
-                                        break;
-                                }
+                                    var subcols = sub.GetColumns("");
 
-                                cols = new UnmarshalledColumn[subcols.Length + 1];
-                                for (i = 0; i < subcols.Length; i++)
-                                {
-                                    cols[i] = subcols[i];
+                                    UnmarshalledColumn primcol = new UnmarshalledColumn();
+                                    primcol.ActualCount = subcols[0].ActualCount;
+                                    primcol.DataSourceID = subcols[0].DataSourceID;
+                                    primcol.PropertyPath = "___primitiveVal";
+                                    primcol.Type = GetArrayType(newColumn.Type);
+                                    int i = 0;
+                                    switch (newColumn.Type)
+                                    {
+                                        case JSDataSourceSchemaType.StringArrayValue:
+                                            primcol.StringValues = new string[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.StringValues[i] = (string)v;
+                                                i++;
+                                            }
+                                            break;
+                                        case JSDataSourceSchemaType.DateTimeArrayValue:
+                                        case JSDataSourceSchemaType.CalendarArrayValue:
+                                            primcol.StringValues = new string[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.StringValues[i] = ((DateTime)v).ToString("o");
+                                                i++;
+                                            }
+                                            break;
+                                        case JSDataSourceSchemaType.BooleanArrayValue:
+                                        case JSDataSourceSchemaType.ByteArrayValue:
+                                        case JSDataSourceSchemaType.IntArrayValue:
+                                        case JSDataSourceSchemaType.ShortArrayValue:
+                                            primcol.IntValues = new int[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.IntValues[i] = Convert.ToInt32(v);
+                                                i++;
+                                            }
+                                            break;
+                                        case JSDataSourceSchemaType.DoubleArrayValue:
+                                        case JSDataSourceSchemaType.SingleArrayValue:
+                                        case JSDataSourceSchemaType.DecimalArrayValue:
+                                            primcol.DoubleValues = new double[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.DoubleValues[i] = Convert.ToDouble(v);
+                                                i++;
+                                            }
+                                            break;
+                                        case JSDataSourceSchemaType.LongArrayValue:
+                                            primcol.LongValues = new long[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.LongValues[i] = Convert.ToInt64(v);
+                                                i++;
+                                            }
+                                            break;
+                                    }
+
+                                    cols = new UnmarshalledColumn[subcols.Length + 1];
+                                    for (i = 0; i < subcols.Length; i++)
+                                    {
+                                        cols[i] = subcols[i];
+                                    }
+                                    cols[subcols.Length] = primcol;
                                 }
-                                cols[subcols.Length] = primcol;
                             }
                             if (index == size)
                             {
@@ -884,7 +958,10 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < column.SubColumns.Length; i++)
                                 {
                                     var subColumn = column.SubColumns[i];
-                                    subColumn.Insert(size, subColumn, index, objVal);
+                                    if (subColumn != null)
+                                    {
+                                        subColumn.Insert?.Invoke(size, subColumn, index, objVal);
+                                    }
                                 }
                             }
                         }
@@ -892,7 +969,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
 
-            Action<int, UnmarshalledColumnData, int, object, object> update = null;
+            Action<int, UnmarshalledColumnData, int, object?, object?>? update = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
@@ -900,8 +977,12 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DecimalValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
+                        if (column.DoubleValues == null)
+                        {
+                            return;
+                        }
                         double floatVal = double.NaN;
-                        if (newItem != null)
+                        if (newItem != null && floatingPointGetter != null)
                         {
                             floatVal = floatingPointGetter(newItem);
                         }
@@ -913,8 +994,12 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDecimalValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
+                        if (column.DoubleValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         double? floatVal = null;
-                        if (newItem != null)
+                        if (newItem != null && nullableFloatingPointGetter != null)
                         {
                             floatVal = nullableFloatingPointGetter(newItem);
                         }
@@ -928,8 +1013,12 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.ShortValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
+                        if (column.IntValues == null)
+                        {
+                            return;
+                        }
                         int intVal = int.MinValue;
-                        if (newItem != null)
+                        if (newItem != null && integerGetter != null)
                         {
                             intVal = integerGetter(newItem);
                         }
@@ -942,8 +1031,12 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableShortValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
+                        if (column.IntValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         int? intVal = null;
-                        if (newItem != null)
+                        if (newItem != null && nullableIntegerGetter != null)
                         {
                             intVal = nullableIntegerGetter(newItem);
                         }
@@ -954,8 +1047,12 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.LongValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
+                        if (column.LongValues == null)
+                        {
+                            return;
+                        }
                         long longVal = long.MinValue;
-                        if (newItem != null)
+                        if (newItem != null && longGetter != null)
                         {
                             longVal = longGetter(newItem);
                         }
@@ -965,8 +1062,12 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableLongValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
+                        if (column.LongValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         long? longVal = null;
-                        if (newItem != null)
+                        if (newItem != null && nullableLongGetter != null)
                         {
                             longVal = nullableLongGetter(newItem);
                         }
@@ -979,9 +1080,13 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DateTimeValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
-                        string stringVal = null;
+                        if (column.StringValues == null)
+                        {
+                            return;
+                        }
+                        string? stringVal = null;
                         Guid idVal = Guid.Empty;
-                        if (column.IsIDColumn && oldItem != newItem)
+                        if (column.IsIDColumn && oldItem != newItem && column.IDValues != null)
                         {
                             var oldId = column.IDValues[index];
                             OnRemoveId(oldId);
@@ -990,17 +1095,20 @@ namespace IgniteUI.Blazor.Controls
                         {
                             if (column.IsIDColumn)
                             {
-                                idVal = idGetter(newItem);
+                                if (idGetter != null)
+                                {
+                                    idVal = idGetter(newItem);
+                                }
                                 stringVal = idVal.ToString();
                             }
                             else
                             {
-                                stringVal = stringGetter(newItem);
+                                stringVal = stringGetter != null ? stringGetter(newItem) : null;
                             }
                         }
 
                         column.StringValues[index] = stringVal;
-                        if (column.IsIDColumn)
+                        if (column.IsIDColumn && column.IDValues != null)
                         {
                             column.IDValues[index] = idVal;
                         }
@@ -1010,8 +1118,12 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDateTimeValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
-                        string stringVal = null;
-                        if (newItem != null)
+                        if (column.StringValues == null)
+                        {
+                            return;
+                        }
+                        string? stringVal = null;
+                        if (newItem != null && stringGetter != null)
                         {
                             stringVal = stringGetter(newItem);
                         }
@@ -1021,14 +1133,14 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.ObjectValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
-                        object objVal = null;
-                        if (newItem != null)
+                        object? objVal = null;
+                        if (newItem != null && objectGetter != null)
                         {
                             objVal = objectGetter(newItem);
                         }
 
-                        object oldObjVal = null;
-                        if (oldItem != null)
+                        object? oldObjVal = null;
+                        if (oldItem != null && objectGetter != null)
                         {
                             oldObjVal = objectGetter(oldItem);
                         }
@@ -1042,7 +1154,7 @@ namespace IgniteUI.Blazor.Controls
                                 schema.SetSubSchema(column.PropertyName, subSchema);
                                 column.SubSchema = subSchema;
                             }
-                            if (subSchema.IsDataSource && !column.IsSubDataSource)
+                            if (subSchema != null && subSchema.IsDataSource && !column.IsSubDataSource)
                             {
                                 column.IsSubDataSource = true;
                                 var c = column.Column;
@@ -1056,11 +1168,15 @@ namespace IgniteUI.Blazor.Controls
 
                         if (column.IsSubDataSource)
                         {
-                            UnmarshalledColumn[] cols = null;
+                            if (column.SubDataSourceValues == null)
+                            {
+                                return;
+                            }
+                            UnmarshalledColumn[]? cols = null;
                             if (objVal != null)
                             {
-                                var sub = (UnmarshalledDataSource)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
-                                cols = sub.GetColumns("");
+                                var sub = (UnmarshalledDataSource?)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
+                                cols = sub?.GetColumns("");
                             }
                             column.SubDataSourceValues[index] = cols;
                         }
@@ -1071,7 +1187,10 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < column.SubColumns.Length; i++)
                                 {
                                     var subColumn = column.SubColumns[i];
-                                    subColumn.Update(size, subColumn, index, oldObjVal, objVal);
+                                    if (subColumn != null)
+                                    {
+                                        subColumn.Update?.Invoke(size, subColumn, index, oldObjVal, objVal);
+                                    }
                                 }
                             }
                         }
@@ -1090,88 +1209,95 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.SingleArrayValue:
                     update = (size, column, index, oldItem, newItem) =>
                     {
-                        object objVal = null;
-                        if (newItem != null)
+                        object? objVal = null;
+                        if (newItem != null && objectGetter != null)
                         {
                             objVal = objectGetter(newItem);
                         }
 
-                        object oldObjVal = null;
-                        if (oldItem != null)
+                        object? oldObjVal = null;
+                        if (oldItem != null && objectGetter != null)
                         {
                             oldObjVal = objectGetter(oldItem);
                         }
 
                         if (column.IsSubDataSource)
                         {
-                            UnmarshalledColumn[] cols = null;
+                            if (column.SubDataSourceValues == null)
+                            {
+                                return;
+                            }
+                            UnmarshalledColumn[]? cols = null;
                             if (objVal != null)
                             {
-                                var sub = (UnmarshalledDataSource)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
-                                var subcols = sub.GetColumns("");
-
-                                UnmarshalledColumn primcol = new UnmarshalledColumn();
-                                primcol.ActualCount = subcols[0].ActualCount;
-                                primcol.DataSourceID = subcols[0].DataSourceID;
-                                primcol.PropertyPath = "___primitiveVal";
-                                primcol.Type = GetArrayType(newColumn.Type);
-                                int i = 0;
-                                switch (newColumn.Type)
+                                var sub = (UnmarshalledDataSource?)UnmarshalledDataSource.CreateWithSchema(objVal, column.SubSchema, _manager, _helper);
+                                if (sub != null)
                                 {
-                                    case JSDataSourceSchemaType.StringArrayValue:
-                                        primcol.StringValues = new string[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.StringValues[i] = (string)v;
-                                            i++;
-                                        }
-                                        break;
-                                    case JSDataSourceSchemaType.DateTimeArrayValue:
-                                    case JSDataSourceSchemaType.CalendarArrayValue:
-                                        primcol.StringValues = new string[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.StringValues[i] = ((DateTime)v).ToString("o");
-                                            i++;
-                                        }
-                                        break;
-                                    case JSDataSourceSchemaType.BooleanArrayValue:
-                                    case JSDataSourceSchemaType.ByteArrayValue:
-                                    case JSDataSourceSchemaType.IntArrayValue:
-                                    case JSDataSourceSchemaType.ShortArrayValue:
-                                        primcol.IntValues = new int[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.IntValues[i] = Convert.ToInt32(v);
-                                            i++;
-                                        }
-                                        break;
-                                    case JSDataSourceSchemaType.DoubleArrayValue:
-                                    case JSDataSourceSchemaType.SingleArrayValue:
-                                    case JSDataSourceSchemaType.DecimalArrayValue:
-                                        primcol.DoubleValues = new double[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.DoubleValues[i] = Convert.ToDouble(v);
-                                            i++;
-                                        }
-                                        break;
-                                    case JSDataSourceSchemaType.LongArrayValue:
-                                        primcol.LongValues = new long[primcol.ActualCount];
-                                        foreach (var v in (objVal as IEnumerable))
-                                        {
-                                            primcol.LongValues[i] = Convert.ToInt64(v);
-                                            i++;
-                                        }
-                                        break;
-                                }
+                                    var subcols = sub.GetColumns("");
 
-                                cols = new UnmarshalledColumn[subcols.Length + 1];
-                                for (i = 0; i < subcols.Length; i++)
-                                {
-                                    cols[i] = subcols[i];
+                                    UnmarshalledColumn primcol = new UnmarshalledColumn();
+                                    primcol.ActualCount = subcols[0].ActualCount;
+                                    primcol.DataSourceID = subcols[0].DataSourceID;
+                                    primcol.PropertyPath = "___primitiveVal";
+                                    primcol.Type = GetArrayType(newColumn.Type);
+                                    int i = 0;
+                                    switch (newColumn.Type)
+                                    {
+                                        case JSDataSourceSchemaType.StringArrayValue:
+                                            primcol.StringValues = new string[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.StringValues[i] = (string)v;
+                                                i++;
+                                            }
+                                            break;
+                                        case JSDataSourceSchemaType.DateTimeArrayValue:
+                                        case JSDataSourceSchemaType.CalendarArrayValue:
+                                            primcol.StringValues = new string[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.StringValues[i] = ((DateTime)v).ToString("o");
+                                                i++;
+                                            }
+                                            break;
+                                        case JSDataSourceSchemaType.BooleanArrayValue:
+                                        case JSDataSourceSchemaType.ByteArrayValue:
+                                        case JSDataSourceSchemaType.IntArrayValue:
+                                        case JSDataSourceSchemaType.ShortArrayValue:
+                                            primcol.IntValues = new int[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.IntValues[i] = Convert.ToInt32(v);
+                                                i++;
+                                            }
+                                            break;
+                                        case JSDataSourceSchemaType.DoubleArrayValue:
+                                        case JSDataSourceSchemaType.SingleArrayValue:
+                                        case JSDataSourceSchemaType.DecimalArrayValue:
+                                            primcol.DoubleValues = new double[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.DoubleValues[i] = Convert.ToDouble(v);
+                                                i++;
+                                            }
+                                            break;
+                                        case JSDataSourceSchemaType.LongArrayValue:
+                                            primcol.LongValues = new long[primcol.ActualCount];
+                                            foreach (var v in ((IEnumerable)objVal))
+                                            {
+                                                primcol.LongValues[i] = Convert.ToInt64(v);
+                                                i++;
+                                            }
+                                            break;
+                                    }
+
+                                    cols = new UnmarshalledColumn[subcols.Length + 1];
+                                    for (i = 0; i < subcols.Length; i++)
+                                    {
+                                        cols[i] = subcols[i];
+                                    }
+                                    cols[subcols.Length] = primcol;
                                 }
-                                cols[subcols.Length] = primcol;
                             }
 
                             column.SubDataSourceValues[index] = cols;
@@ -1183,7 +1309,10 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < column.SubColumns.Length; i++)
                                 {
                                     var subColumn = column.SubColumns[i];
-                                    subColumn.Update(size, subColumn, index, oldItem, newItem);
+                                    if (subColumn != null)
+                                    {
+                                        subColumn.Update?.Invoke(size, subColumn, index, oldItem, newItem);
+                                    }
                                 }
                             }
                         }
@@ -1191,7 +1320,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
 
-            Action<int, UnmarshalledColumnData, int> remove = null;
+            Action<int, UnmarshalledColumnData, int>? remove = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
@@ -1199,6 +1328,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DecimalValue:
                     remove = (size, column, index) =>
                     {
+                        if (column.DoubleValues == null)
+                        {
+                            return;
+                        }
                         if (index == (size - 1))
                         {
                             column.DoubleValues[index] = double.NaN;
@@ -1215,6 +1348,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDecimalValue:
                     remove = (size, column, index) =>
                     {
+                        if (column.DoubleValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         if (index == (size - 1))
                         {
                             column.DoubleValues[index] = double.NaN;
@@ -1235,6 +1372,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.ShortValue:
                     remove = (size, column, index) =>
                     {
+                        if (column.IntValues == null)
+                        {
+                            return;
+                        }
                         if (index == (size - 1))
                         {
                             column.IntValues[index] = 0;
@@ -1252,6 +1393,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableShortValue:
                     remove = (size, column, index) =>
                     {
+                        if (column.IntValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         if (index == (size - 1))
                         {
                             column.IntValues[index] = 0;
@@ -1269,6 +1414,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.LongValue:
                     remove = (size, column, index) =>
                     {
+                        if (column.LongValues == null)
+                        {
+                            return;
+                        }
                         if (index == (size - 1))
                         {
                             column.LongValues[index] = 0;
@@ -1283,6 +1432,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableLongValue:
                     remove = (size, column, index) =>
                     {
+                        if (column.LongValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         if (index == (size - 1))
                         {
                             column.LongValues[index] = 0;
@@ -1302,7 +1455,11 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DateTimeValue:
                     remove = (size, column, index) =>
                     {
-                        if (column.IsIDColumn)
+                        if (column.StringValues == null)
+                        {
+                            return;
+                        }
+                        if (column.IsIDColumn && column.IDValues != null)
                         {
                             var oldId = column.IDValues[index];
                             OnRemoveId(oldId);
@@ -1317,7 +1474,7 @@ namespace IgniteUI.Blazor.Controls
                             Array.Copy(column.StringValues, index + 1, column.StringValues, index, (size - 1) - index);
                             column.StringValues[size - 1] = null;
                         }
-                        if (column.IsIDColumn)
+                        if (column.IsIDColumn && column.IDValues != null)
                         {
                             if (index == (size - 1))
                             {
@@ -1335,6 +1492,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDateTimeValue:
                     remove = (size, column, index) =>
                     {
+                        if (column.StringValues == null)
+                        {
+                            return;
+                        }
                         if (index == (size - 1))
                         {
                             column.StringValues[index] = null;
@@ -1362,6 +1523,10 @@ namespace IgniteUI.Blazor.Controls
                     {
                         if (column.IsSubDataSource)
                         {
+                            if (column.SubDataSourceValues == null)
+                            {
+                                return;
+                            }
                             if (index == (size - 1))
                             {
                                 column.SubDataSourceValues[index] = null;
@@ -1379,7 +1544,10 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < column.SubColumns.Length; i++)
                                 {
                                     var subColumn = column.SubColumns[i];
-                                    subColumn.Remove(size, subColumn, index);
+                                    if (subColumn != null)
+                                    {
+                                        subColumn.Remove?.Invoke(size, subColumn, index);
+                                    }
                                 }
                             }
                         }
@@ -1387,7 +1555,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
 
-            Action<int, UnmarshalledColumnData> clear = null;
+            Action<int, UnmarshalledColumnData>? clear = null;
             switch (newColumn.Type)
             {
                 case JSDataSourceSchemaType.DoubleValue:
@@ -1395,6 +1563,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DecimalValue:
                     clear = (size, column) =>
                     {
+                        if (column.DoubleValues == null)
+                        {
+                            return;
+                        }
                         Array.Clear(column.DoubleValues, 0, size);
                     };
                     break;
@@ -1403,6 +1575,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDecimalValue:
                     clear = (size, column) =>
                     {
+                        if (column.DoubleValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         Array.Clear(column.DoubleValues, 0, size);
                         Array.Clear(column.NullValues, 0, size);
                     };
@@ -1413,6 +1589,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.ShortValue:
                     clear = (size, column) =>
                     {
+                        if (column.IntValues == null)
+                        {
+                            return;
+                        }
                         Array.Clear(column.IntValues, 0, size);
                     };
                     break;
@@ -1422,6 +1602,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableShortValue:
                     clear = (size, column) =>
                     {
+                        if (column.IntValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         Array.Clear(column.IntValues, 0, size);
                         Array.Clear(column.NullValues, 0, size);
                     };
@@ -1429,12 +1613,20 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.LongValue:
                     clear = (size, column) =>
                     {
+                        if (column.LongValues == null)
+                        {
+                            return;
+                        }
                         Array.Clear(column.LongValues, 0, size);
                     };
                     break;
                 case JSDataSourceSchemaType.NullableLongValue:
                     clear = (size, column) =>
                     {
+                        if (column.LongValues == null || column.NullValues == null)
+                        {
+                            return;
+                        }
                         Array.Clear(column.LongValues, 0, size);
                         Array.Clear(column.NullValues, 0, size);
                     };
@@ -1444,7 +1636,11 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.DateTimeValue:
                     clear = (size, column) =>
                     {
-                        if (column.IsIDColumn)
+                        if (column.StringValues == null)
+                        {
+                            return;
+                        }
+                        if (column.IsIDColumn && column.IDValues != null)
                         {
                             for (var i = 0; i < size; i++)
                             {
@@ -1453,7 +1649,7 @@ namespace IgniteUI.Blazor.Controls
                         }
 
                         Array.Clear(column.StringValues, 0, size);
-                        if (column.IsIDColumn)
+                        if (column.IsIDColumn && column.IDValues != null)
                         {
                             Array.Clear(column.IDValues, 0, size);
                         }
@@ -1463,6 +1659,10 @@ namespace IgniteUI.Blazor.Controls
                 case JSDataSourceSchemaType.NullableDateTimeValue:
                     clear = (size, column) =>
                     {
+                        if (column.StringValues == null)
+                        {
+                            return;
+                        }
                         Array.Clear(column.StringValues, 0, size);
                     };
                     break;
@@ -1482,6 +1682,10 @@ namespace IgniteUI.Blazor.Controls
                     {
                         if (column.IsSubDataSource)
                         {
+                            if (column.SubDataSourceValues == null)
+                            {
+                                return;
+                            }
                             Array.Clear(column.SubDataSourceValues, 0, size);
                         }
                         else
@@ -1491,7 +1695,10 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < column.SubColumns.Length; i++)
                                 {
                                     var subColumn = column.SubColumns[i];
-                                    subColumn.Clear(size, subColumn);
+                                    if (subColumn != null)
+                                    {
+                                        subColumn.Clear?.Invoke(size, subColumn);
+                                    }
                                 }
                             }
                         }
@@ -1537,9 +1744,9 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchemaType.ObjectValue;
         }
 
-        private void GetColumns(string refName, UnmarshalledColumnData[] columns, List<UnmarshalledColumn> l)
+        private void GetColumns(string refName, UnmarshalledColumnData?[]? columns, List<UnmarshalledColumn> l)
         {
-            List<UnmarshalledColumnData[]> toDrill = new List<UnmarshalledColumnData[]>();
+            List<UnmarshalledColumnData?[]> toDrill = new List<UnmarshalledColumnData?[]>();
 
             if (columns == null)
             {
@@ -1583,26 +1790,46 @@ namespace IgniteUI.Blazor.Controls
 
         public void SendClear(string containerId, string refName)
         {
+            if (_helper == null)
+            {
+                return;
+            }
             _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceClear", containerId + ":" + refName, -1, GetColumns(refName));
         }
 
         public void SendRemove(string containerId, string refName, int index)
         {
+            if (_helper == null)
+            {
+                return;
+            }
             _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceRemove", containerId + ":" + refName, index, GetColumns(refName));
         }
 
         public void SendInsert(string containerId, string refName, int index)
         {
+            if (_helper == null)
+            {
+                return;
+            }
             _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceInsert", containerId + ":" + refName, index, GetColumns(refName));
         }
 
         public void SendUpdate(string containerId, string refName, int index, bool syncDataOnly)
         {
+            if (_helper == null)
+            {
+                return;
+            }
             _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceUpdate", containerId + ":" + refName + ":" + (syncDataOnly ? "true" : "false"), index, GetColumns(refName));
         }
 
-        public void SendCreate(string containerId, string refName, string dataIntents)
+        public void SendCreate(string containerId, string refName, string? dataIntents)
         {
+            if (_helper == null)
+            {
+                return;
+            }
             if (dataIntents != null)
             {
                 //Console.WriteLine("sending create data intents");
@@ -1629,7 +1856,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private UnmarshalledColumnData AdjustColumnCapacity(string parentPath, UnmarshalledColumnData column, JSDataSourceSchema schema, string propertyName, Delegate getter, Func<object, object> untypedGetter, bool isIdColumn, JSDataSourceSchemaType type, int oldValue, int newValue)
+        private UnmarshalledColumnData AdjustColumnCapacity(string? parentPath, UnmarshalledColumnData? column, JSDataSourceSchema schema, string? propertyName, Delegate? getter, Func<object, object?>? untypedGetter, bool isIdColumn, JSDataSourceSchemaType type, int oldValue, int newValue)
         {
             if (column == null)
             {
@@ -1699,7 +1926,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var floatColumn = new double[newValue];
                             var nullColumn = new bool[newValue];
-                            if (existingColumn != null)
+                            if (existingColumn != null && column.NullValues != null)
                             {
                                 Array.Copy(existingColumn, floatColumn, _size);
                                 Array.Copy(column.NullValues, nullColumn, _size);
@@ -1743,7 +1970,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var intColumn = new int[newValue];
                             var nullColumn = new bool[newValue];
-                            if (existingColumn != null)
+                            if (existingColumn != null && column.NullValues != null)
                             {
                                 Array.Copy(existingColumn, intColumn, _size);
                                 Array.Copy(column.NullValues, nullColumn, _size);
@@ -1781,7 +2008,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var longColumn = new long[newValue];
                             var nullColumn = new bool[newValue];
-                            if (existingColumn != null)
+                            if (existingColumn != null && column.NullValues != null)
                             {
                                 Array.Copy(existingColumn, longColumn, _size);
                                 Array.Copy(column.NullValues, nullColumn, _size);
@@ -1861,7 +2088,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public static IJSDataSource CreateWithSchema(Object data, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        public static IJSDataSource? CreateWithSchema(Object data, JSDataSourceSchema? schema, DataSourceManager? manager, RuntimeHelper? helper)
         {
             if (data == null)
             {
@@ -1883,7 +2110,7 @@ namespace IgniteUI.Blazor.Controls
             }
             return null;
         }
-        public static IJSDataSource CreateWithSchema(Object data, string parentId, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        public static IJSDataSource? CreateWithSchema(Object data, string? parentId, JSDataSourceSchema? schema, DataSourceManager? manager, RuntimeHelper? helper)
         {
             if (data == null)
             {
@@ -1915,9 +2142,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             if (SuppressModifications)
+            {
+                return;
+            }
+
+            if (_manager == null || _originalData == null)
             {
                 return;
             }
@@ -1932,10 +2164,6 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var item = e.NewItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null)
-                            {
-                                return;
-                            }
                             _manager.NotifyInsertItem(refName, e.NewStartingIndex + i, item);
                         }
                     }
@@ -1949,10 +2177,6 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var item = e.OldItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null)
-                            {
-                                return;
-                            }
                             _manager.NotifyRemoveItem(refName, e.OldStartingIndex, item);
                         }
                     }
@@ -1966,10 +2190,6 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var item = e.OldItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null)
-                            {
-                                return;
-                            }
                             _manager.NotifyRemoveItem(refName, e.OldStartingIndex, item);
                         }
                     }
@@ -1979,10 +2199,6 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var item = e.NewItems[i];
                             var refName = _manager.GetRefId(_originalData);
-                            if (refName == null)
-                            {
-                                return;
-                            }
                             _manager.NotifyInsertItem(refName, e.NewStartingIndex + i, item);
                         }
                     }
@@ -1991,10 +2207,6 @@ namespace IgniteUI.Blazor.Controls
                 case NotifyCollectionChangedAction.Reset:
                 {
                     var refName = _manager.GetRefId(_originalData);
-                    if (refName == null)
-                    {
-                        return;
-                    }
                     _manager.NotifyClearItems(refName);
                     break;
                 }
@@ -2028,7 +2240,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public object LookupOriginal(Guid id)
+        public object? LookupOriginal(Guid id)
         {
             if (_uuidToOriginal.ContainsKey(id))
             {
@@ -2036,7 +2248,7 @@ namespace IgniteUI.Blazor.Controls
             }
             return null;
         }
-        public object LookupOriginal(string id)
+        public object? LookupOriginal(string id)
         {
             if (id.Contains("/"))
             {
@@ -2074,7 +2286,7 @@ namespace IgniteUI.Blazor.Controls
             return _originalToUuid.ContainsKey(item);
         }
 
-        public static IJSDataSource Create(Object data, DataSourceManager manager, RuntimeHelper helper)
+        public static IJSDataSource? Create(Object data, DataSourceManager manager, RuntimeHelper helper)
         {
             if (data == null)
             {
@@ -2095,11 +2307,11 @@ namespace IgniteUI.Blazor.Controls
             }
             return null;
         }
-        private static IJSDataSource CreateFromIEnumerable(IEnumerable data, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        private static IJSDataSource CreateFromIEnumerable(IEnumerable data, JSDataSourceSchema? schema, DataSourceManager? manager, RuntimeHelper? helper)
         {
             return CreateFromIEnumerable(data, null, schema, manager, helper);
         }
-        private static IJSDataSource CreateFromIEnumerable(IEnumerable data, string parentId, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        private static IJSDataSource CreateFromIEnumerable(IEnumerable data, string? parentId, JSDataSourceSchema? schema, DataSourceManager? manager, RuntimeHelper? helper)
         {
             UnmarshalledDataSource newData = new UnmarshalledDataSource();
             newData._helper = helper;
@@ -2120,11 +2332,11 @@ namespace IgniteUI.Blazor.Controls
             return newData;
         }
 
-        private static IJSDataSource CreateFromIList(IList data, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        private static IJSDataSource CreateFromIList(IList data, JSDataSourceSchema? schema, DataSourceManager? manager, RuntimeHelper? helper)
         {
             return CreateFromIList(data, null, schema, manager, helper);
         }
-        private static IJSDataSource CreateFromIList(IList data, string parentId, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        private static IJSDataSource CreateFromIList(IList data, string? parentId, JSDataSourceSchema? schema, DataSourceManager? manager, RuntimeHelper? helper)
         {
             //Console.WriteLine("test json");
             //DateTime testTime = DateTime.Now;
@@ -2169,11 +2381,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private static IJSDataSource CreateFromArray(Array data, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        private static IJSDataSource CreateFromArray(Array data, JSDataSourceSchema? schema, DataSourceManager? manager, RuntimeHelper? helper)
         {
             return CreateFromArray(data, null, schema, manager, helper);
         }
-        private static IJSDataSource CreateFromArray(Array data, string parentId, JSDataSourceSchema schema, DataSourceManager manager, RuntimeHelper helper)
+        private static IJSDataSource CreateFromArray(Array data, string? parentId, JSDataSourceSchema? schema, DataSourceManager? manager, RuntimeHelper? helper)
         {
             UnmarshalledDataSource newData = new UnmarshalledDataSource();
             newData._helper = helper;
@@ -2193,11 +2405,11 @@ namespace IgniteUI.Blazor.Controls
             return newData;
         }
 
-        private JSDataSourceSchema _schema = null;
+        private JSDataSourceSchema? _schema = null;
 
         private int _leadingNullItems = 0;
 
-        private void Add(object item)
+        private void Add(object? item)
         {
             if (_schema == null)
             {
@@ -2215,8 +2427,12 @@ namespace IgniteUI.Blazor.Controls
             //_data.Add(itemJson);
         }
 
-        private void EnsureLeadingNullsInserted(JSDataSourceSchema schema, UnmarshalledColumnData[] columns)
+        private void EnsureLeadingNullsInserted(JSDataSourceSchema? schema, UnmarshalledColumnData?[]? columns)
         {
+            if (schema == null || columns == null)
+            {
+                return;
+            }
             if (_leadingNullItems > 0)
             {
                 //Console.WriteLine("dealing with leading nulls.");
@@ -2231,10 +2447,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void InsertItemAt(object item, int index, JSDataSourceSchema schema, UnmarshalledColumnData[] columns)
+        private void InsertItemAt(object? item, int index, JSDataSourceSchema? schema, UnmarshalledColumnData?[]? columns)
         {
             EnsureLeadingNullsInserted(schema, columns);
             EnsureCapacity(_size + 1);
+            if (columns == null)
+            {
+                return;
+            }
             for (var i = 0; i < columns.Length; i++)
             {
                 var column = columns[i];
@@ -2244,31 +2464,45 @@ namespace IgniteUI.Blazor.Controls
                     continue;
                 }
                 //Console.WriteLine(column.PropertyName);
-                column.Insert(_size, column, index, item);
+                column.Insert?.Invoke(_size, column, index, item);
             }
 
             _size++;
         }
 
-        private void UpdateItemAt(object oldItem, object newItem, int index, JSDataSourceSchema schema, UnmarshalledColumnData[] columns)
+        private void UpdateItemAt(object? oldItem, object? newItem, int index, JSDataSourceSchema schema, UnmarshalledColumnData?[]? columns)
         {
             EnsureLeadingNullsInserted(schema, columns);
+            if (columns == null)
+            {
+                return;
+            }
             for (var i = 0; i < columns.Length; i++)
             {
                 var column = columns[i];
-
-                column.Update(_size, column, index, oldItem, newItem);
+                if (column == null)
+                {
+                    continue;
+                }
+                column.Update?.Invoke(_size, column, index, oldItem, newItem);
             }
         }
 
-        private void RemoveItemAt(int index, JSDataSourceSchema schema, UnmarshalledColumnData[] columns)
+        private void RemoveItemAt(int index, JSDataSourceSchema schema, UnmarshalledColumnData?[]? columns)
         {
             EnsureLeadingNullsInserted(schema, columns);
+            if (columns == null)
+            {
+                return;
+            }
             for (var i = 0; i < columns.Length; i++)
             {
                 var column = columns[i];
-
-                column.Remove(_size, column, index);
+                var remove = column?.Remove;
+                if (column != null && remove != null)
+                {
+                    remove(_size, column, index);
+                }
             }
             _size--;
         }
@@ -2280,7 +2514,7 @@ namespace IgniteUI.Blazor.Controls
         //         _itemToOriginal[itemJson] = item;
         //     }
         // }
-        // private void OnRemove(IJSDataSourceItem itemJson, object item) 
+        // private void OnRemove(IJSDataSourceItem itemJson, object item)
         // {
         //     if (_uuidToItem.ContainsKey(itemJson.Id)) {
         //         _uuidToItem.Remove(itemJson.Id);
@@ -2299,7 +2533,7 @@ namespace IgniteUI.Blazor.Controls
         // }
 
         [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Data item types are supplied by the application at runtime; trimmed apps must preserve their data item types — see docs/TRIMMING.md.")]
-        public static JSDataSourceSchema ExtractSchema(object item)
+        public static JSDataSourceSchema? ExtractSchema(object item)
         {
             if (item == null)
             {
@@ -2315,7 +2549,10 @@ namespace IgniteUI.Blazor.Controls
                 if (isEmpty)
                 {
                     var eleType = c.GetElementType();
-                    s.ItemSchema = ExtractSchemaFromType(eleType);
+                    if (eleType != null)
+                    {
+                        s.ItemSchema = ExtractSchemaFromType(eleType);
+                    }
                 }
                 s.Commit();
                 return s;
@@ -2325,10 +2562,13 @@ namespace IgniteUI.Blazor.Controls
                 JSDataSourceSchema s = new JSDataSourceSchema();
                 s.IsDataSource = true;
                 var isEmpty = item != null && ((IList)item).Count == 0;
-                if (isEmpty && GetIListTypeArg(item.GetType()) != null)
+                if (isEmpty && item != null)
                 {
                     var eleType = GetIListTypeArg(item.GetType());
-                    s.ItemSchema = ExtractSchemaFromType(eleType);
+                    if (eleType != null)
+                    {
+                        s.ItemSchema = ExtractSchemaFromType(eleType);
+                    }
                 }
                 s.Commit();
                 return s;
@@ -2346,10 +2586,13 @@ namespace IgniteUI.Blazor.Controls
                 {
                     isEmpty = false;
                 }
-                if (isEmpty && GetIEnumerableTypeArg(item.GetType()) != null)
+                if (isEmpty)
                 {
                     var eleType = GetIEnumerableTypeArg(item.GetType());
-                    s.ItemSchema = ExtractSchemaFromType(eleType);
+                    if (eleType != null)
+                    {
+                        s.ItemSchema = ExtractSchemaFromType(eleType);
+                    }
                 }
                 s.Commit();
                 return s;
@@ -2366,7 +2609,7 @@ namespace IgniteUI.Blazor.Controls
             return JSDataSourceSchema.Create(c);
         }
 
-        private static Type GetIListTypeArg([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type itemType)
+        private static Type? GetIListTypeArg([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type itemType)
         {
             foreach (var inter in itemType.GetInterfaces())
             {
@@ -2382,7 +2625,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private static Type GetIEnumerableTypeArg([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type itemType)
+        private static Type? GetIEnumerableTypeArg([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type itemType)
         {
             foreach (var inter in itemType.GetInterfaces())
             {
@@ -2408,7 +2651,10 @@ namespace IgniteUI.Blazor.Controls
                 //if (isEmpty)
                 {
                     var eleType = itemType.GetElementType();
-                    s.ItemSchema = ExtractSchemaFromType(eleType);
+                    if (eleType != null)
+                    {
+                        s.ItemSchema = ExtractSchemaFromType(eleType);
+                    }
                 }
                 s.Commit();
                 return s;
@@ -2417,9 +2663,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 JSDataSourceSchema s = new JSDataSourceSchema();
                 s.IsDataSource = true;
-                if (GetIListTypeArg(itemType) != null)
+                var eleType = GetIListTypeArg(itemType);
+                if (eleType != null)
                 {
-                    var eleType = GetIListTypeArg(itemType);
                     s.ItemSchema = ExtractSchemaFromType(eleType);
                 }
                 s.Commit();
@@ -2430,9 +2676,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 JSDataSourceSchema s = new JSDataSourceSchema();
                 s.IsDataSource = true;
-                if (GetIEnumerableTypeArg(itemType) != null)
+                var eleType = GetIEnumerableTypeArg(itemType);
+                if (eleType != null)
                 {
-                    var eleType = GetIEnumerableTypeArg(itemType);
                     s.ItemSchema = ExtractSchemaFromType(eleType);
                 }
                 s.Commit();
@@ -2458,7 +2704,7 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        public string GetDataIntentsAsJson()
+        public string? GetDataIntentsAsJson()
         {
             if (_schema != null)
             {
@@ -2467,7 +2713,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private void EnsureSchema(object item)
+        private void EnsureSchema(object? item)
         {
             if (item != null && _schema == null)
             {
@@ -2495,7 +2741,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSourceItem NotifyInsertItem(object data, int index, Object item)
+        public IJSDataSourceItem? NotifyInsertItem(object data, int index, Object? item)
         {
             EnsureSchema(item);
             if (_schema == null && item == null)
@@ -2512,7 +2758,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public IJSDataSourceItem NotifyRemoveItem(object data, int index, object oldItem)
+        public IJSDataSourceItem? NotifyRemoveItem(object data, int index, object? oldItem)
         {
             EnsureSchema(oldItem);
             if (_schema == null)
@@ -2538,7 +2784,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     for (var i = 0; i < _columns.Length; i++)
                     {
-                        _columns[i].Clear(_size, _columns[i]);
+                        var column = _columns[i];
+                        var clear = column?.Clear;
+                        if (column != null && clear != null)
+                        {
+                            clear(_size, column);
+                        }
                     }
                 }
             }
@@ -2571,7 +2822,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IJSDataSourceItem NotifySetItem(Object data, int index, Object oldItem, Object newItem)
+        public IJSDataSourceItem? NotifySetItem(Object data, int index, Object oldItem, Object newItem)
         {
             EnsureSchema(newItem);
             if (_schema == null)
@@ -2584,7 +2835,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        public IJSDataSourceItem NotifyUpdateItem(object data, int index, object item)
+        public IJSDataSourceItem? NotifyUpdateItem(object data, int index, object item)
         {
             EnsureSchema(item);
             if (_schema == null)

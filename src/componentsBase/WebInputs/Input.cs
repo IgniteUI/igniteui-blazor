@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbInputBase : BaseRendererControl
     {
         [Inject]
-        internal ILogger<IgbInputBase> Logger { get; set; } = default;
+        internal ILogger<IgbInputBase>? Logger { get; set; }
 
         private void EnsureInputOcurredHandled()
         {
@@ -64,10 +64,10 @@ namespace IgniteUI.Blazor.Controls
         {
             // Params are case-insensitive & can't keep old name as deprecated,
             // so coerce value to avoid old code setting incorrect type errors:
-            parameters.TryGetValue("Readonly", out object result);
+            parameters.TryGetValue("Readonly", out object? result);
             if (result != null && result is string value)
             {
-                Logger.LogWarning("Readonly has been renamed, use ReadOnly instead");
+                Logger?.LogWarning("Readonly has been renamed, use ReadOnly instead");
                 var updatedParams = parameters.ToDictionary().ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 bool.TryParse(value, out var coerced);
                 updatedParams["Readonly"] = coerced;
@@ -92,10 +92,10 @@ namespace IgniteUI.Blazor.Controls
 
         private ParameterView TryCoerceRenamedNumericProp(ParameterView parameters, string oldName, string newName)
         {
-            parameters.TryGetValue(oldName, out object result);
+            parameters.TryGetValue(oldName, out object? result);
             if (result != null && result is string value)
             {
-                Logger.LogWarning($"{oldName} has been renamed, use {newName} instead");
+                Logger?.LogWarning($"{oldName} has been renamed, use {newName} instead");
                 var updatedParams = parameters.ToDictionary().ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 if (double.TryParse(value, out var coerced))
                 {

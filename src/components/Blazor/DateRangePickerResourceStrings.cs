@@ -11,12 +11,12 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebDateRangePickerResourceStrings"; } }
 
-        private string _separator;
+        private string? _separator;
         /// <summary>
         /// The text shown between the start and end inputs when the date range picker is configured with separate inputs.
         /// </summary>
         [Parameter]
-        public string Separator
+        public string? Separator
         {
             get { return this._separator; }
             set
@@ -30,13 +30,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _doneButton;
+        private string? _doneButton;
         /// <summary>
         /// Text for the button that commits the range selection when the picker is in dialog mode.
         /// </summary>
         [Parameter]
         [WCWidgetMemberName("done")]
-        public string DoneButton
+        public string? DoneButton
         {
             get { return this._doneButton; }
             set
@@ -50,13 +50,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _cancelButton;
+        private string? _cancelButton;
         /// <summary>
         /// Text for the button that cancels the range selection when the picker is in dialog mode.
         /// </summary>
         [Parameter]
         [WCWidgetMemberName("cancel")]
-        public string CancelButton
+        public string? CancelButton
         {
             get { return this._cancelButton; }
             set
@@ -70,12 +70,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _last7Days;
+        private string? _last7Days;
         /// <summary>
         /// Text for the preset range button that selects the last 7 days.
         /// </summary>
         [Parameter]
-        public string Last7Days
+        public string? Last7Days
         {
             get { return this._last7Days; }
             set
@@ -89,12 +89,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _last30Days;
+        private string? _last30Days;
         /// <summary>
         /// Text for the preset range button that selects the last 30 days.
         /// </summary>
         [Parameter]
-        public string Last30Days
+        public string? Last30Days
         {
             get { return this._last30Days; }
             set
@@ -108,12 +108,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _currentMonth;
+        private string? _currentMonth;
         /// <summary>
         /// Text for the preset range button that selects the current month.
         /// </summary>
         [Parameter]
-        public string CurrentMonth
+        public string? CurrentMonth
         {
             get { return this._currentMonth; }
             set
@@ -127,12 +127,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _yearToDate;
+        private string? _yearToDate;
         /// <summary>
         /// Text for the preset range button that selects from the start of the current year to today.
         /// </summary>
         [Parameter]
-        public string YearToDate
+        public string? YearToDate
         {
             get { return this._yearToDate; }
             set

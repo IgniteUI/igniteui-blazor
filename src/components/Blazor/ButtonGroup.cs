@@ -116,7 +116,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[] _selectedItems;
+        private string[] _selectedItems = Array.Empty<string>();
 
         /// <summary>
         /// Gets or sets the values of the currently selected buttons.
@@ -137,8 +137,8 @@ namespace IgniteUI.Blazor.Controls
         }
 
 
-        private string _selectRef = null;
-        private string _selectScript = null;
+        private string? _selectRef = null;
+        private string? _selectScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
@@ -148,7 +148,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SelectScript
+        public string? SelectScript
         {
 
             set
@@ -156,7 +156,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._selectScript)
                 {
                     this._selectScript = value;
-                    this.OnRefChanged("Select", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Select", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._selectRef = refName;
                         this.MarkPropDirty("SelectRef");
@@ -209,8 +209,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _deselectRef = null;
-        private string _deselectScript = null;
+        private string? _deselectRef = null;
+        private string? _deselectScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Deselect"/> event in the browser instead.
@@ -220,7 +220,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string DeselectScript
+        public string? DeselectScript
         {
 
             set
@@ -228,7 +228,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._deselectScript)
                 {
                     this._deselectScript = value;
-                    this.OnRefChanged("Deselect", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Deselect", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._deselectRef = refName;
                         this.MarkPropDirty("DeselectRef");

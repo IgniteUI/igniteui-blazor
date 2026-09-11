@@ -7,6 +7,10 @@ namespace IgniteUI.Blazor.Controls
 
     public class DynamicContentHolder : ComponentBase
     {
+        public DynamicContentHolder()
+        {
+            DynamicContentInfo = new LinkedList<DynamicContentInfo>();
+        }
         protected LinkedList<DynamicContentInfo> DynamicContentInfo
         {
             get;
@@ -17,7 +21,6 @@ namespace IgniteUI.Blazor.Controls
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            DynamicContentInfo = new LinkedList<DynamicContentInfo>();
         }
 
         private bool _isDirty = false;
@@ -29,6 +32,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void AddDynamicContent(DynamicContentInfo content)
         {
+            DynamicContentInfo ??= new LinkedList<DynamicContentInfo>();
             _contentInfos[content.RefName] = content;
             _contentInfoNode[content.RefName] = DynamicContentInfo.AddLast(content);
             _isDirty = true;
@@ -106,7 +110,7 @@ namespace IgniteUI.Blazor.Controls
     public abstract class DynamicContentInfo
     {
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-        public Type ControlType { get; set; }
+        public required Type ControlType { get; set; }
         public DynamicContentInfo()
         {
             RefName = Guid.NewGuid().ToString();
@@ -121,8 +125,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private object _component = null;
-        public object Component
+        private object? _component = null;
+        public object? Component
         {
             get
             {
@@ -136,19 +140,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public BaseRendererControl Owner { get; internal set; }
+        public BaseRendererControl? Owner { get; internal set; }
 
-        protected virtual void OnComponentChanged(object oldValue, object component)
+        protected virtual void OnComponentChanged(object? oldValue, object? component)
         {
 
         }
 
-        public virtual void UpdateTemplate(object template)
+        public virtual void UpdateTemplate(object? template)
         {
 
         }
 
-        public virtual void UpdateContext(object context)
+        public virtual void UpdateContext(object? context)
         {
 
         }
@@ -163,7 +167,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override void OnComponentChanged(object oldValue, object component)
+        protected override void OnComponentChanged(object? oldValue, object? component)
         {
             //if (component != null)
             {
@@ -182,7 +186,14 @@ namespace IgniteUI.Blazor.Controls
 
             foreach (var item in toSignal)
             {
-                item.SetResult(Component);
+                if (component != null)
+                {
+                    item.SetResult(component);
+                }
+                else
+                {
+                    item.SetException(new InvalidOperationException("Component is null."));
+                }
             }
         }
 
@@ -191,8 +202,8 @@ namespace IgniteUI.Blazor.Controls
         public Task<object> GetInstanceAsync()
         {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-            object component = null;
-            List<TaskCompletionSource<object>> toSignal = null;
+            object? component = null;
+            List<TaskCompletionSource<object>>? toSignal = null;
 
             lock (_lock)
             {
@@ -206,26 +217,33 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
 
-            if (component != null)
+            if (toSignal != null)
             {
                 foreach (var item in toSignal)
                 {
-                    item.SetResult(Component);
+                    if (component != null)
+                    {
+                        item.SetResult(component);
+                    }
+                    else
+                    {
+                        item.SetException(new InvalidOperationException("Component is null."));
+                    }
                 }
             }
 
             return tcs.Task;
         }
 
-        public event DynamicComponentChangingEventHandler OnComponentChanging;
+        public event DynamicComponentChangingEventHandler? OnComponentChanging;
     }
 
     public delegate void DynamicComponentChangingEventHandler(object sender, DynamicComponentChangingEventArgs e);
 
     public class DynamicComponentChangingEventArgs
     {
-        public object OldComponent { get; internal set; }
-        public object NewComponent { get; internal set; }
+        public object? OldComponent { get; internal set; }
+        public object? NewComponent { get; internal set; }
     }
 
     public class DynamicContentInfo<T>
@@ -236,12 +254,12 @@ namespace IgniteUI.Blazor.Controls
             ControlType = typeof(IgbTemplateContent<T>);
         }
 
-        private RenderFragment<T> _template;
-        private T _context;
+        private RenderFragment<T>? _template;
+        private T? _context;
 
         private bool _hasPopulatedContext = false;
 
-        public RenderFragment<T> Template
+        public RenderFragment<T>? Template
         {
             get
             {
@@ -252,7 +270,7 @@ namespace IgniteUI.Blazor.Controls
                 _template = value;
             }
         }
-        public T Context
+        public T? Context
         {
             get
             {
@@ -268,23 +286,23 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override void OnComponentChanged(object oldValue, object component)
+        protected override void OnComponentChanged(object? oldValue, object? component)
         {
             if (component is IgbTemplateContent<T>)
             {
-                OnContextChanged((T)Context, (T)Context);
+                OnContextChanged((T?)Context, (T?)Context);
             }
         }
 
-        private void OnContextChanged(T oldValue, T newValue)
+        private void OnContextChanged(T? oldValue, T? newValue)
         {
             if (Component is IgbTemplateContent<T>)
             {
                 var template = (IgbTemplateContent<T>)Component;
 
-                if (_hasPopulatedContext)
+                if (_hasPopulatedContext && Context != null)
                 {
-                    template.Context = (T)Context;
+                    template.Context = Context;
                 }
                 template.Template = Template;
                 template.Update();
@@ -292,15 +310,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override void UpdateTemplate(object template)
+        public override void UpdateTemplate(object? template)
         {
-            Template = (RenderFragment<T>)template;
+            Template = (RenderFragment<T>?)template;
         }
 
         /// <inheritdoc />
-        public override void UpdateContext(object context)
+        public override void UpdateContext(object? context)
         {
-            Context = (T)context;
+            Context = (T?)context;
         }
     }
 

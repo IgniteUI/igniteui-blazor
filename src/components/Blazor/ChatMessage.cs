@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string _id;
+        private string _id = string.Empty;
 
         /// <summary>
         /// A unique identifier for the message.
@@ -31,7 +31,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _text;
+        private string _text = string.Empty;
 
         /// <summary>
         /// The textual content of the message.
@@ -50,7 +50,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _sender;
+        private string _sender = string.Empty;
 
         /// <summary>
         /// The identifier or name of the sender of the message.
@@ -69,13 +69,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _timestamp;
+        private string? _timestamp;
 
         /// <summary>
         /// The timestamp indicating when the message was sent.
         /// </summary>
         [Parameter]
-        public string Timestamp
+        public string? Timestamp
         {
             get { return this._timestamp; }
             set
@@ -88,7 +88,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbChatMessageAttachment[] _attachments;
+        private IgbChatMessageAttachment[] _attachments = Array.Empty<IgbChatMessageAttachment>();
 
         /// <summary>
         /// Optional list of attachments associated with the message,
@@ -108,7 +108,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[] _reactions;
+        private string[] _reactions = Array.Empty<string>();
 
         /// <summary>
         /// Optional list of reactions associated with the message.
@@ -149,7 +149,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -169,23 +169,23 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("id"))
+            if (args != null && args.ContainsKey("id"))
             { this.Id = ReturnToString(args["id"]); }
-            if (args.ContainsKey("text"))
+            if (args != null && args.ContainsKey("text"))
             { this.Text = ReturnToString(args["text"]); }
-            if (args.ContainsKey("sender"))
+            if (args != null && args.ContainsKey("sender"))
             { this.Sender = ReturnToString(args["sender"]); }
-            if (args.ContainsKey("timestamp"))
+            if (args != null && args.ContainsKey("timestamp"))
             { this.Timestamp = ReturnToString(args["timestamp"]); }
-            if (args.ContainsKey("attachments"))
-            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]); }
-            if (args.ContainsKey("reactions"))
-            { this.Reactions = ReturnToStringArray(args["reactions"]); }
+            if (args != null && args.ContainsKey("attachments"))
+            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]) ?? Array.Empty<IgbChatMessageAttachment>(); }
+            if (args != null && args.ContainsKey("reactions"))
+            { this.Reactions = ReturnToStringArray(args["reactions"]) ?? Array.Empty<string>(); }
 
             this.SuppressParentNotify = false;
         }
