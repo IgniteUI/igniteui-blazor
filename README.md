@@ -196,6 +196,10 @@ After the above steps, open the solution in Visual Studio or run the stories pro
 dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 ```
 
+## Performance
+
+- [Performance targets and measurements](docs/performance.md) — the enforced bundle size budgets and the runtime targets.
+
 [Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Commercial]: https://www.infragistics.com/legal/license
 [MIT]: https://github.com/IgniteUI/igniteui-blazor/blob/master/LICENSE
