@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
@@ -38,5 +39,30 @@ public class InteropThreadingTests : BlazorComponentTestBase
         // count shows neither. Only the renderer drains here, so this says nothing about two
         // drains interleaving - that is what holding the lock across the whole drain is for.
         Assert.Equal(Enumerable.Range(0, Rows), Interop.DataItemInsertions(Interop.ContainerIdOf(cut), Rows));
+    }
+
+    [Fact]
+    public async Task ConcurrentApiCalls_KeepInvocationBookkeepingIntact()
+    {
+        Interop.PrimeReady();
+        Interop.SetupMethodResult("show", InteropReturn.Bool(true));
+        var cut = Render<IgbSnackbar>();
+
+        // Unsynchronised, concurrent calls corrupt the maps pairing an invocation with its return.
+        // Sending from eight threads is only safe here because the queue's lock also covers the
+        // send, which is where bUnit records the invocation - see InteropHarness.OnDispatcher.
+        await Task.WhenAll(Enumerable.Range(0, 8).Select(_ => Task.Run(async () =>
+        {
+            for (var i = 0; i < 2000; i++)
+            {
+                Assert.True(await cut.Instance.ShowAsync());
+            }
+        })));
+
+        // Every call also has to have been given an id of its own: two sharing one collide in
+        // those maps, and each still completes its own local task, so nothing above would notice.
+        var ids = Interop.CallsOf("show", Interop.ContainerIdOf(cut)).Select(c => c.InvokeId).ToList();
+        Assert.Equal(8 * 2000, ids.Count);
+        Assert.Equal(ids.Count, ids.Distinct().Count());
     }
 }
