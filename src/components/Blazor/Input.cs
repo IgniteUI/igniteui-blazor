@@ -130,7 +130,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputMode = string.Empty;
+        private string? _inputMode;
 
         /// <summary>
         /// The input mode attribute of the control.
@@ -139,7 +139,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         [Parameter]
         [WCAttributeName("inputmode")]
-        public string InputMode
+        public string? InputMode
         {
             get { return this._inputMode; }
             set
@@ -287,13 +287,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _autocomplete = string.Empty;
+        private string? _autocomplete;
 
         /// <summary>
         /// The autocomplete attribute of the control.
         /// </summary>
         [Parameter]
-        public string Autocomplete
+        public string? Autocomplete
         {
             get { return this._autocomplete; }
             set
