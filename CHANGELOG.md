@@ -10,13 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
-- Bundle size budgets in `eng/bundle-budgets.json`, enforced during the release. An asset that grows past its budget, or a new asset nobody budgeted for, fails the release.
 - Dependency vulnerability scanning. Pull requests are gated by a dependency review that fails on a new High or Critical advisory; every release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
 
 ### Changed
 
 - **Breaking:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Projects with binding redirects or an explicit fully-qualified assembly reference to `IgniteUI.Blazor.Lite` need updating.
-- The release workflow is split into isolated build, signing, packaging, evidence, SBOM, publish, and release-attachment jobs with least-privilege permissions and digest-verified handoffs between them. The strong-name key, the Key Vault credential, and the publish credential are no longer available to the same job.
+- The release workflow is split into isolated build, signing, packaging, SBOM, publish, and release-attachment jobs with least-privilege permissions and digest-verified handoffs between them. The Key Vault credential and the publish credential are no longer available to the same job as the build step.
 - Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
 
 ### Fixed

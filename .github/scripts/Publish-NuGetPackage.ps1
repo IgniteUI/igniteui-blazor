@@ -49,7 +49,7 @@ function Test-Published([int[]]$RetryDelaysSeconds = @()) {
     return $false
 }
 
-$recovery = "NuGet.org will not accept this version again. If a previous run published it but failed before attaching evidence, attach that run's retained nupkg-signed, sbom, release-evidence and dependency-scan artifacts to the release manually."
+$recovery = "NuGet.org will not accept this version again. If a previous run published it but failed before attaching evidence, attach that run's retained nupkg-signed, sbom and dependency-scan artifacts to the release manually."
 
 if (Test-Published) {
     throw "$PackageId $Version is already on NuGet.org, so this run must not attach its evidence to the release: the published package may be a different build. $recovery"
