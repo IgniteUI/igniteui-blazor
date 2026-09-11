@@ -6,7 +6,8 @@ namespace IgniteUI.Blazor.Controls
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
     /// </remarks>
-    public partial class IgbMaskInputModule
+    [IgbModule<IgbMaskInputModule>]
+    public partial class IgbMaskInputModule : IIgbModule
     {
         /// <summary>
         /// Requests this module's client resources to be loaded into the runtime.

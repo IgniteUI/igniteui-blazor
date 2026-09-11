@@ -123,14 +123,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -155,7 +147,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Items"))
             { args["items"] = ObjectArrayToParam(this._items); }
             if (IsPropDirty("ChangeType"))
-            { args["changeType"] = EnumToString(this._changeType); }
+            { args["type"] = EnumToString(this._changeType); }
 
         }
 
@@ -169,8 +161,8 @@ namespace IgniteUI.Blazor.Controls
             { this.NewValue = ReturnToObjectArray<T>(args["newValue"]); }
             if (args.ContainsKey("items"))
             { this.Items = ReturnToObjectArray(args["items"]); }
-            if (args.ContainsKey("changeType"))
-            { this.ChangeType = StringToEnum<ComboChangeType>(args["changeType"]); }
+            if (args.ContainsKey("type"))
+            { this.ChangeType = StringToEnum<ComboChangeType>(args["type"]); }
 
             this.SuppressParentNotify = false;
         }
