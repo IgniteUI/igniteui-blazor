@@ -89,10 +89,10 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("checked"))
-            { this.Checked = ReturnToBoolean(args["checked"]); }
-            if (args != null && args.ContainsKey("value"))
-            { this.Value = ReturnToString(args["value"]); }
+            if (args != null && args.TryGetValue("checked", out var checkedObj))
+            { this.Checked = ReturnToBoolean(checkedObj); }
+            if (args != null && args.TryGetValue("value", out var valueObj))
+            { this.Value = ReturnToString(valueObj); }
 
             this.SuppressParentNotify = false;
         }

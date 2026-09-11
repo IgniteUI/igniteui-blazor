@@ -90,10 +90,10 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("start"))
-            { this.Start = ReturnToDate(args["start"]); }
-            if (args != null && args.ContainsKey("end"))
-            { this.End = ReturnToDate(args["end"]); }
+            if (args != null && args.TryGetValue("start", out var startObj))
+            { this.Start = ReturnToDate(startObj); }
+            if (args != null && args.TryGetValue("end", out var endObj))
+            { this.End = ReturnToDate(endObj); }
 
             this.SuppressParentNotify = false;
         }
