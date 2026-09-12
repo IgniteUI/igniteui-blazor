@@ -1,12 +1,12 @@
 ![Ignite UI for Blazor](https://raw.githubusercontent.com/IgniteUI/igniteui-blazor/master/images/general/Ignite-UI-for-Blazor.png)
 
-# Ignite UI for Blazor - from Infragistics 
+# Ignite UI for Blazor - from Infragistics
 
 [![CI](https://github.com/IgniteUI/igniteui-blazor/actions/workflows/ci.yml/badge.svg)](https://github.com/IgniteUI/igniteui-blazor/actions/workflows/ci.yml)
 [![NuGet version](https://badge.fury.io/nu/IgniteUI.Blazor.Lite.svg)](https://www.nuget.org/packages/IgniteUI.Blazor.Lite)
 [![Discord](https://img.shields.io/discord/836634487483269200?logo=discord&logoColor=ffffff)](https://discord.com/channels/836634487483269200/836636796229386241)
 
-[Ignite UI for Blazor] is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach. 
+[Ignite UI for Blazor] is a complete library of UI components, giving you the ability to build modern web applications using encapsulation and the concept of reusable components in a dependency-free approach.
 All components are based on the [Indigo.Design Design System](https://www.infragistics.com/products/appbuilder/ui-toolkit) and are backed by ready-to-use UI kits for Figma.
 
 ## Browser Support
@@ -101,7 +101,7 @@ Provide a complete windowing experience, splitting complex layouts into smaller,
 ### [Ignite UI for Blazor WebAssembly](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-getting-started-blazor-client)
 
 
-In order to use the Ignite UI Blazor in your application you should install 
+In order to use the Ignite UI Blazor in your application you should install
 [NuGet packages](https://www.nuget.org/packages?q=IgniteUI.Blazor).
 
 There are three ways to install Ignite UI for Blazor using NuGet:
@@ -169,6 +169,28 @@ Build and run the Blazor app.
 
 <!-- ![](images/general/getting-started-blazor-card.jpg) -->
 
+### Supported render modes
+
+Ignite UI for Blazor components require an **interactive** render mode. The following render modes are supported:
+
+- **InteractiveServer**
+- **InteractiveWebAssembly**
+- **InteractiveAuto**
+
+Static server-side rendering (SSR) is not supported because the components rely on JavaScript interop to render and update the underlying web components.
+
+When using the **Per page/component** interactivity location, make sure an interactive render mode is explicitly specified on every page or component that uses Ignite UI for Blazor components, for example:
+
+```razor
+@rendermode InteractiveServer
+```
+
+### Accessibility (WAI-ARIA)
+
+Each Ignite UI for Blazor component is a wrapper around its corresponding [Ignite UI Web Components](https://github.com/IgniteUI/igniteui-webcomponents) custom element (`igc-*`). As a result, the applicable **WAI-ARIA design pattern**, the expected **keyboard interaction**, and all accessibility support (roles, states, properties, focus management), along with the associated tests and accessibility gating, are implemented and maintained in the [igniteui-webcomponents](https://github.com/IgniteUI/igniteui-webcomponents) repository.
+
+Any accessibility claim, ARIA pattern conformance, keyboard interaction behavior, and related automated testing therefore originate from the [igniteui-webcomponents](https://github.com/IgniteUI/igniteui-webcomponents) repository rather than from this Blazor wrapper repository. Refer to that repository and the per-component documentation for the specific WAI-ARIA pattern and keyboard interaction supported by each component.
+
 ### Publishing with trimming
 
 The library is trim-compatible. Applications publishing with `PublishTrimmed=true` (the Blazor WebAssembly default) should read [docs/TRIMMING.md](docs/TRIMMING.md) — mainly for preserving the data item types they bind.
@@ -212,7 +234,7 @@ dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 [Data Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/data-grid
 [Tree Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/tree-grid/overview
 [Hierarchical Grid Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grids/hierarchical-grid/overview
-[Grid Lite]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grid-lite/overview 
+[Grid Lite]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/grid-lite/overview
 [Switch Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/switch
 [Ripple Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/ripple
 [Radio Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/radio
@@ -259,7 +281,7 @@ dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 [blazor Charts & Graphs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/chart-overview
 [Bubble charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/bubble-chart
 [Financial/Stock charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/stock-chart
-[Donut charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/donut-chart 
+[Donut charts]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/donut-chart
 [Spreadsheet Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/spreadsheet-overview
 [Dock Manager Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager
 [Toolbar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/menus/toolbar
@@ -299,7 +321,7 @@ dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
 [Geographic Polygon Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polygon-series
 [Geographic Polyline Map Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map-type-shape-polyline-series
 [Dashboard Tile Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/dashboard-tile
-[Ignite UI for Blazor]: https://www.infragistics.com/products/ignite-ui-blazor 
+[Ignite UI for Blazor]: https://www.infragistics.com/products/ignite-ui-blazor
 [Chat Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/interactivity/chat
 [Tile Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/tile-manager
 [Tooltip]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/tooltip
