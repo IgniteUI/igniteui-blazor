@@ -3312,6 +3312,7 @@ namespace IgniteUI.Blazor.Controls
 
             disposedValue = true;
             _shouldReevaluateRuntime = true;
+
             try
             {
                 await TrySendCleanupAsync().ConfigureAwait(false);
@@ -3349,7 +3350,8 @@ namespace IgniteUI.Blazor.Controls
                 {
                     _messageQueue.Clear();
                 }
-                await SendMessageImmediate(m).ConfigureAwait(false);
+                // Normal sends are already closed by disposal; cleanup intentionally bypasses the disposed guard.
+                await SendJsonImmediate(m).ConfigureAwait(false);
             }
             catch (JSDisconnectedException ex)
             {
