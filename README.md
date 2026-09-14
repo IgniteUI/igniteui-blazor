@@ -162,6 +162,24 @@ Build and run the Blazor app.
 
 <!-- ![](images/general/getting-started-blazor-card.jpg) -->
 
+### Supported render modes
+
+Ignite UI for Blazor components currently require an **interactive** render mode. The following render modes are supported:
+
+- **InteractiveServer**
+- **InteractiveWebAssembly**
+- **InteractiveAuto**
+
+> **Note:** Render modes apply only to Blazor Web Apps (.NET 8+). Standalone Blazor WebAssembly and Blazor Server apps are interactive by default.
+
+Static server-side rendering (SSR) is not yet supported because the components rely on JavaScript interop to render and setup the client web components.
+
+### Accessibility (WAI-ARIA)
+
+Each Ignite UI for Blazor component is a wrapper around its corresponding [Ignite UI Web Components](https://github.com/IgniteUI/igniteui-webcomponents) custom element (`igc-*`). As a result, the applicable **WAI-ARIA design pattern**, the expected **keyboard interaction**, and all accessibility support (roles, states, properties, focus management), along with the associated tests and accessibility gating, are implemented and maintained in the [igniteui-webcomponents](https://github.com/IgniteUI/igniteui-webcomponents) repository.
+
+Any accessibility claim, ARIA pattern conformance, keyboard interaction behavior, and related automated testing therefore originate from the [igniteui-webcomponents](https://github.com/IgniteUI/igniteui-webcomponents) repository rather than from this Blazor wrapper repository. Refer to that repository and the per-component documentation for the specific WAI-ARIA pattern and keyboard interaction supported by each component.
+
 ### Publishing with trimming
 
 The library is trim-compatible. Applications publishing with `PublishTrimmed=true` (the Blazor WebAssembly default) should read [docs/TRIMMING.md](docs/TRIMMING.md) — mainly for preserving the data item types they bind.
@@ -184,6 +202,22 @@ After the above steps, open the solution in Visual Studio or run the stories pro
 
 ```bash
 dotnet run --project stories/IgniteUI.Blazor.Stories.csproj
+```
+
+## Supply chain
+
+Every release publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering both the NuGet and the npm dependencies the package ships, together with three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package that was pushed to NuGet.org. They are attached to the corresponding [GitHub release](https://github.com/IgniteUI/igniteui-blazor/releases) alongside the package and its checksum. To verify a package you downloaded:
+
+```bash
+gh attestation verify IgniteUI.Blazor.Lite.<version>.nupkg -R IgniteUI/igniteui-blazor
+dotnet nuget verify IgniteUI.Blazor.Lite.<version>.nupkg
+```
+
+The two SBOM attestations carry distinct predicate types, so either can be requested on its own:
+
+```bash
+gh attestation verify IgniteUI.Blazor.Lite.<version>.nupkg -R IgniteUI/igniteui-blazor --predicate-type https://spdx.dev/Document/v2.2
+gh attestation verify IgniteUI.Blazor.Lite.<version>.nupkg -R IgniteUI/igniteui-blazor --predicate-type https://cyclonedx.org/bom
 ```
 
 [Dock Manager]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/dock-manager

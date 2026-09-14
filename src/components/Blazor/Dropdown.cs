@@ -154,16 +154,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbDropdownItem[]> GetItemsAsync()
         {
-            var iv = await InvokeMethod("p:Items", new object[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbDropdownItem[]);
-            }
+            var iv = await InvokeMethod("p:Items", new object?[] { }, new string[] { });
             var retVal = ReturnToObjectArray<IgbDropdownItem>(iv);
             if (retVal == null)
             {
-                return default(IgbDropdownItem[]);
+                return Array.Empty<IgbDropdownItem>();
             }
             return retVal;
 
@@ -174,16 +169,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbDropdownItem[] GetItems()
         {
-            var iv = InvokeMethodSync("p:Items", new object[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbDropdownItem[]);
-            }
+            var iv = InvokeMethodSync("p:Items", new object?[] { }, new string[] { });
             var retVal = ReturnToObjectArray<IgbDropdownItem>(iv);
             if (retVal == null)
             {
-                return default(IgbDropdownItem[]);
+                return Array.Empty<IgbDropdownItem>();
             }
             return retVal;
 
@@ -194,16 +184,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbDropdownGroup[]> GetGroupsAsync()
         {
-            var iv = await InvokeMethod("p:Groups", new object[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbDropdownGroup[]);
-            }
+            var iv = await InvokeMethod("p:Groups", new object?[] { }, new string[] { });
             var retVal = ReturnToObjectArray<IgbDropdownGroup>(iv);
             if (retVal == null)
             {
-                return default(IgbDropdownGroup[]);
+                return Array.Empty<IgbDropdownGroup>();
             }
             return retVal;
 
@@ -214,16 +199,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbDropdownGroup[] GetGroups()
         {
-            var iv = InvokeMethodSync("p:Groups", new object[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbDropdownGroup[]);
-            }
+            var iv = InvokeMethodSync("p:Groups", new object?[] { }, new string[] { });
             var retVal = ReturnToObjectArray<IgbDropdownGroup>(iv);
             if (retVal == null)
             {
-                return default(IgbDropdownGroup[]);
+                return Array.Empty<IgbDropdownGroup>();
             }
             return retVal;
 
@@ -234,13 +214,13 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbDropdownItem?> GetSelectedItemAsync()
         {
-            var iv = await InvokeMethod("p:SelectedItem", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:SelectedItem", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -254,13 +234,13 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbDropdownItem? GetSelectedItem()
         {
-            var iv = InvokeMethodSync("p:SelectedItem", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:SelectedItem", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -270,7 +250,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override object FindByName(string name)
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -292,15 +272,15 @@ namespace IgniteUI.Blazor.Controls
         /// Navigates to the item at the specified index.
         /// </summary>
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
-        public async Task<IgbDropdownItem> NavigateToAsync(Object index)
+        public async Task<IgbDropdownItem?> NavigateToAsync(Object index)
         {
-            var iv = await InvokeMethod("navigateTo", new object[] { ObjectToParam(index) }, new string[] { "Json" });
+            var iv = await InvokeMethod("navigateTo", new object?[] { ObjectToParam(index) }, new string[] { "Json" });
 
             if (iv == null)
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -313,15 +293,15 @@ namespace IgniteUI.Blazor.Controls
         /// Navigates to the item at the specified index.
         /// </summary>
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
-        public IgbDropdownItem NavigateTo(Object index)
+        public IgbDropdownItem? NavigateTo(Object index)
         {
-            var iv = InvokeMethodSync("navigateTo", new object[] { ObjectToParam(index) }, new string[] { "Json" });
+            var iv = InvokeMethodSync("navigateTo", new object?[] { ObjectToParam(index) }, new string[] { "Json" });
 
             if (iv == null)
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -333,15 +313,15 @@ namespace IgniteUI.Blazor.Controls
         /// Selects the item with the specified value.
         /// </summary>
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
-        public async Task<IgbDropdownItem> SelectAsync(Object value)
+        public async Task<IgbDropdownItem?> SelectAsync(Object value)
         {
-            var iv = await InvokeMethod("select", new object[] { ObjectToParam(value) }, new string[] { "Json" });
+            var iv = await InvokeMethod("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
 
             if (iv == null)
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
@@ -354,36 +334,28 @@ namespace IgniteUI.Blazor.Controls
         /// Selects the item with the specified value.
         /// </summary>
         /// <returns>The found item, or <see langword="null"/> if no such item exists.</returns>
-        public IgbDropdownItem Select(Object value)
+        public IgbDropdownItem? Select(Object value)
         {
-            var iv = InvokeMethodSync("select", new object[] { ObjectToParam(value) }, new string[] { "Json" });
+            var iv = InvokeMethodSync("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
 
             if (iv == null)
             {
                 return default(IgbDropdownItem);
             }
-            var retVal = (IgbDropdownItem)ConvertReturnValue(iv);
+            var retVal = (IgbDropdownItem?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbDropdownItem);
             }
             return retVal;
 
-        }
-        public async Task DisconnectedCallbackAsync()
-        {
-            await InvokeMethod("disconnectedCallback", new object[] { }, new string[] { });
-        }
-        public void DisconnectedCallback()
-        {
-            InvokeMethodSync("disconnectedCallback", new object[] { }, new string[] { });
         }
         /// <summary>
         /// Clears the current selection of the dropdown.
         /// </summary>
         public async Task ClearSelectionAsync()
         {
-            await InvokeMethod("clearSelection", new object[] { }, new string[] { });
+            await InvokeMethod("clearSelection", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -391,11 +363,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void ClearSelection()
         {
-            InvokeMethodSync("clearSelection", new object[] { }, new string[] { });
+            InvokeMethodSync("clearSelection", new object?[] { }, new string[] { });
         }
 
-        private string _openingRef = null;
-        private string _openingScript = null;
+        private string? _openingRef = null;
+        private string? _openingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
@@ -406,7 +378,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string OpeningScript
+        public string? OpeningScript
         {
 
             set
@@ -414,7 +386,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._openingScript)
                 {
                     this._openingScript = value;
-                    this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Opening", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._openingRef = refName;
                         this.MarkPropDirty("OpeningRef");
@@ -467,8 +439,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _openedRef = null;
-        private string _openedScript = null;
+        private string? _openedRef = null;
+        private string? _openedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
@@ -479,7 +451,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string OpenedScript
+        public string? OpenedScript
         {
 
             set
@@ -487,7 +459,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._openedScript)
                 {
                     this._openedScript = value;
-                    this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Opened", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._openedRef = refName;
                         this.MarkPropDirty("OpenedRef");
@@ -540,8 +512,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _closingRef = null;
-        private string _closingScript = null;
+        private string? _closingRef = null;
+        private string? _closingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
@@ -552,7 +524,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ClosingScript
+        public string? ClosingScript
         {
 
             set
@@ -560,7 +532,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closingScript)
                 {
                     this._closingScript = value;
-                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closingRef = refName;
                         this.MarkPropDirty("ClosingRef");
@@ -613,8 +585,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _closedRef = null;
-        private string _closedScript = null;
+        private string? _closedRef = null;
+        private string? _closedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
@@ -625,7 +597,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ClosedScript
+        public string? ClosedScript
         {
 
             set
@@ -633,7 +605,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closedScript)
                 {
                     this._closedScript = value;
-                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closedRef = refName;
                         this.MarkPropDirty("ClosedRef");
@@ -686,8 +658,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
@@ -698,7 +670,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -706,7 +678,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");

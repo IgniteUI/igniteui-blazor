@@ -13,8 +13,9 @@
     "*.{js,ts,json,yml,yaml,css}": "prettier --write"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
+    "@cyclonedx/cyclonedx-npm": "6.0.1",
     "@types/node": "^26.4.1",
     "eslint": "^10.3.0",
     "lint-staged": "^17.0.8",

@@ -42,14 +42,14 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
@@ -59,8 +59,18 @@ namespace IgniteUI.Blazor.Controls
 
     }
 
+    /// <summary>
+    /// Client resource module for <see cref="IgbFormatSpecifier"/>.
+    /// </summary>
+    /// <remarks>
+    /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
+    /// </remarks>
     public class IgbFormatSpecifierModule
     {
+        /// <summary>
+        /// Requests this module's client resources to be loaded into the runtime.
+        /// </summary>
+        /// <param name="runtime">The Ignite UI Blazor runtime to load the resources into.</param>
         public static void Register(IIgniteUIBlazor runtime)
         {
             ModuleLoader.Load(runtime, "FormatSpecifierModule");
