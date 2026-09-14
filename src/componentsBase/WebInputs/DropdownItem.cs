@@ -4,6 +4,9 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbDropdownItem
     {
+        /// <summary>
+        /// The owning <see cref="IgbDropdown"/>, supplied as a cascading parameter.
+        /// </summary>
         [CascadingParameter(Name = "DropdownParent")]
         protected BaseRendererControl? DropdownParent
         {
