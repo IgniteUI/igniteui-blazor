@@ -216,13 +216,13 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbTab?> GetSelectedTabAsync()
         {
-            var iv = await InvokeMethod("p:SelectedTab", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:SelectedTab", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
                 return default(IgbTab);
             }
-            var retVal = (IgbTab)ConvertReturnValue(iv);
+            var retVal = (IgbTab?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbTab);
@@ -236,13 +236,13 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbTab? GetSelectedTab()
         {
-            var iv = InvokeMethodSync("p:SelectedTab", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:SelectedTab", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
                 return default(IgbTab);
             }
-            var retVal = (IgbTab)ConvertReturnValue(iv);
+            var retVal = (IgbTab?)ConvertReturnValue(iv);
             if (retVal == null)
             {
                 return default(IgbTab);

@@ -20,14 +20,14 @@ namespace IgniteUI.Blazor.Controls
             return Math.Abs(left - right) <= ScaleComparisonEpsilon;
         }
 
-        private string _fileName;
+        private string? _fileName;
 
         /// <summary>
         /// The name of the exported file. The extension of the format is appended when the name
         /// does not end with it. Defaults to <c>qr-code</c>.
         /// </summary>
         [Parameter]
-        public string FileName
+        public string? FileName
         {
             get { return this._fileName; }
             set

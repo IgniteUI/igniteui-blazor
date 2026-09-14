@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
 
         private static readonly bool _marshalByValue = true;
 
-        private string _startSize;
+        private string? _startSize;
 
         /// <summary>
         /// The current size of the start pane.
         /// </summary>
         [Parameter]
-        public string StartSize
+        public string? StartSize
         {
             get { return this._startSize; }
             set
@@ -32,13 +32,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _endSize;
+        private string? _endSize;
 
         /// <summary>
         /// The current size of the end pane.
         /// </summary>
         [Parameter]
-        public string EndSize
+        public string? EndSize
         {
             get { return this._endSize; }
             set
@@ -106,7 +106,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -122,18 +122,18 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.TryGetValue("startSize", out var startSize))
+            if (args != null && args.TryGetValue("startSize", out var startSize))
             { this.StartSize = ReturnToString(startSize); }
-            if (args.TryGetValue("endSize", out var endSize))
+            if (args != null && args.TryGetValue("endSize", out var endSize))
             { this.EndSize = ReturnToString(endSize); }
-            if (args.TryGetValue("startCollapsed", out var startCollapsed))
+            if (args != null && args.TryGetValue("startCollapsed", out var startCollapsed))
             { this.StartCollapsed = ReturnToBoolean(startCollapsed); }
-            if (args.TryGetValue("endCollapsed", out var endCollapsed))
+            if (args != null && args.TryGetValue("endCollapsed", out var endCollapsed))
             { this.EndCollapsed = ReturnToBoolean(endCollapsed); }
 
             this.SuppressParentNotify = false;

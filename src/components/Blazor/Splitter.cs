@@ -552,8 +552,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _layoutChangedRef = null;
-        private string _layoutChangedScript = null;
+        private string? _layoutChangedRef = null;
+        private string? _layoutChangedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="LayoutChanged"/> event in the browser instead.
@@ -563,7 +563,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string LayoutChangedScript
+        public string? LayoutChangedScript
         {
 
             set
@@ -571,7 +571,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._layoutChangedScript)
                 {
                     this._layoutChangedScript = value;
-                    this.OnRefChanged("LayoutChanged", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("LayoutChanged", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._layoutChangedRef = refName;
                         this.MarkPropDirty("LayoutChangedRef");

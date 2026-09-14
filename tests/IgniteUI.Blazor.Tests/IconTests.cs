@@ -10,11 +10,11 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
         .Method(c => c.RegisterIconAsync("home", "https://example.com/home.svg", "material"), c => c.RegisterIcon("home", "https://example.com/home.svg", "material"),
             "registerIcon", args: ["home", "https://example.com/home.svg", "material"], types: ["String", "String", "String"])
         .Method(c => c.RegisterIconAsync("home", "https://example.com/home.svg", new IgbRegisterIconOptions { Collection = "material", StripMeta = true }), c => c.RegisterIcon("home", "https://example.com/home.svg", new IgbRegisterIconOptions { Collection = "material", StripMeta = true }),
-            "registerIcon", args: ["home", "https://example.com/home.svg", "material", true])
+            "registerIcon", args: ["home", "https://example.com/home.svg", "material", true], types: ["String", "String", "String", "Boolean"])
         .Method(c => c.RegisterIconFromTextAsync("home", "<svg></svg>", "material"), c => c.RegisterIconFromText("home", "<svg></svg>", "material"),
             "registerIconFromText", args: ["home", "<svg></svg>", "material"], types: ["String", "String", "String"])
         .Method(c => c.RegisterIconFromTextAsync("home", "<svg></svg>", new IgbRegisterIconOptions { Collection = "material", StripMeta = true }), c => c.RegisterIconFromText("home", "<svg></svg>", new IgbRegisterIconOptions { Collection = "material", StripMeta = true }),
-            "registerIconFromText", args: ["home", "<svg></svg>", "material", true])
+            "registerIconFromText", args: ["home", "<svg></svg>", "material", true], types: ["String", "String", "String", "Boolean"])
         // IgbIconMeta is a MarshalByValueFactory type ("WebIconMeta")
         // wire object carries name/collection plus bookkeeping (___byValue, type), hence JsonSubset.
         .Method(c => c.SetIconRefAsync("chevron", "material", new IgbIconMeta { Name = "chevron_right", Collection = "custom" }), c => c.SetIconRef("chevron", "material", new IgbIconMeta { Name = "chevron_right", Collection = "custom" }),
