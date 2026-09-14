@@ -56,22 +56,5 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public async Task ConnectedCallbackAsync()
-        {
-            await InvokeMethod("connectedCallback", new object[] { }, new string[] { });
-        }
-        public void ConnectedCallback()
-        {
-            InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
-        }
-
     }
 }

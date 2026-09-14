@@ -80,13 +80,14 @@ public class ScriptPropTests : BlazorComponentTestBase
             if (actual is null)
             {
                 throw new Xunit.Sdk.XunitException(
-                    $"{componentType.Name}.{prop.Name}: no script-ref transmission observed for \"{wireName}\"");
+                    $"{componentType.Name}.{prop.Name}: no script-ref transmission observed for \"{wireName}\" — " +
+                    interop.DescribeTraffic(interop.ContainerIdOf(cut)));
             }
             Assert.Equal(scriptName, actual.Value.GetString());
 
             // Clear:
             interop.ClearObserved();
-            prop.SetValue(cut.Instance, null);
+            interop.OnDispatcher(() => prop.SetValue(cut.Instance, null));
             var cleared = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), wireName);
             if (cleared is null)
             {

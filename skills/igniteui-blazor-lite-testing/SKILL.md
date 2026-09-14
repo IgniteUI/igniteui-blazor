@@ -1,4 +1,5 @@
 ---
+license: MIT
 name: igniteui-blazor-lite-testing
 description: "Testing in the IgniteUI Blazor (Lite) repository itself: the bUnit unit suite (tests/IgniteUI.Blazor.Tests — base classes, attribute/serialization specs, declarative interop wire contracts) and the Playwright integration suite (tests/IgniteUI.Blazor.Lite.IntegrationTests + TestBed — reflection-driven live-browser sweep, componentsConfig.json). Use when adding or changing tests in this repo, covering a new component, pinning interop behavior, or deciding which suite a check belongs in. Not for consumer-facing component usage — use igniteui-blazor-components for that."
 user-invocable: true
@@ -27,7 +28,7 @@ Three test projects under `tests/`, two suites:
 | End-to-end prop/event/method behavior against the **real web component in a real browser** | integration: the TestBed sweep |
 | Visual output, client-side component logic | integration / e2e — never unit |
 
-The two suites overlap on purpose but answer different questions: integration proves the full pipeline works end-to-end (but can't attribute a failure to a side of the boundary, and skips everything excluded in `componentsConfig.json`); interop contracts pin the .NET side of the wire protocol at unit speed, per member — including the members integration excludes — and can accommodate different implementations via the `InteropHarness` seam (`InteropHarnessRegistry` swaps stacks per component).
+The suites overlap on purpose but answer different questions. Integration proves the full pipeline works end-to-end, but can't attribute a failure to a side of the boundary and skips everything excluded in `componentsConfig.json`. Interop contracts pin the .NET side of the wire protocol at unit speed, per member — including the members integration excludes — and tolerate different implementations through the `InteropHarness` seam (`InteropHarnessRegistry` swaps stacks per component).
 
 ## Unit suite (`tests/IgniteUI.Blazor.Tests`)
 

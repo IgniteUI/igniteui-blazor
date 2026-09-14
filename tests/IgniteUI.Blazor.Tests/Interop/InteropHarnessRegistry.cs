@@ -12,15 +12,18 @@ namespace IgniteUI.Blazor.Tests.Interop;
 /// </summary>
 public static class InteropHarnessRegistry
 {
-    private static readonly Dictionary<Type, Func<BunitJSInterop, InteropHarness>> Overrides = [];
+    private static readonly Dictionary<Type, HarnessFactory> Overrides = [];
 
-    public static void Register<TComponent>(Func<BunitJSInterop, InteropHarness> factory)
+    /// <summary>Builds a harness from the test's JS interop and its renderer's dispatcher.</summary>
+    public delegate InteropHarness HarnessFactory(BunitJSInterop jsInterop, Func<Dispatcher> dispatcher);
+
+    public static void Register<TComponent>(HarnessFactory factory)
         where TComponent : IComponent
         => Overrides[typeof(TComponent)] = factory;
 
-    public static InteropHarness CreateDefault(BunitJSInterop jsInterop) =>
-        new RendererMessageInteropHarness(jsInterop);
+    public static InteropHarness CreateDefault(BunitJSInterop jsInterop, Func<Dispatcher> dispatcher) =>
+        new RendererMessageInteropHarness(jsInterop, dispatcher);
 
-    internal static Func<BunitJSInterop, InteropHarness>? OverrideFor(Type componentType) =>
+    internal static HarnessFactory? OverrideFor(Type componentType) =>
         Overrides.TryGetValue(componentType, out var factory) ? factory : null;
 }

@@ -4,7 +4,8 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for the <see cref="IgbTile"/> child component of <see cref="IgbTileManager"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbTileModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbTileModule
+    [IgbModule<IgbTileModule>]
+    public partial class IgbTileModule : IIgbModule
     {
         /// <summary>
         /// No-op.

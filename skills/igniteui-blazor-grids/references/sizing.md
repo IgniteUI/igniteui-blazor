@@ -1,278 +1,77 @@
-# Sizing - Grid Width, Height, Column Sizing & Cell Spacing
+# Sizing — Grid Dimensions, Column Widths, Density
 
-> **Part of the [`igniteui-blazor-grids`](../SKILL.md) skill hub.**
-> For grid setup and column configuration — see [`structure.md`](./structure.md).
-
-## Contents
-
-- [Grid Width](#grid-width)
-- [Grid Height](#grid-height)
-- [Column Sizing](#column-sizing)
-- [Row Height](#row-height)
-- [Cell Spacing (CSS Variables)](#cell-spacing-css-variables)
-- [Key Rules](#key-rules)
-
----
-
-## Grid Width
-
-### Pixel width
+## Grid width and height
 
 ```razor
-<IgbGrid Data="data" PrimaryKey="Id" Width="800px" Height="500px">
-    ...
-</IgbGrid>
-```
+<IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="600px">…</IgbGrid>
 
-### Percentage width
-
-```razor
-<IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="500px">
-    ...
-</IgbGrid>
-```
-
-### Default width
-
-When `Width` is not set, the grid defaults to `100%` of its parent container.
-
-### Key behavior
-
-- If the total column width exceeds the grid width, a horizontal scrollbar appears and column virtualization activates.
-- If the total column width is less than the grid width, columns stretch to fill (unless explicit widths are set).
-
----
-
-## Grid Height
-
-### Pixel height
-
-```razor
-<IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="600px">
-    ...
-</IgbGrid>
-```
-
-### Percentage height
-
-```razor
-<!-- Parent must have a defined height for percentage to work -->
 <div style="height: 80vh;">
-    <IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="100%">
-        ...
-    </IgbGrid>
+    <IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="100%">…</IgbGrid>
 </div>
 ```
 
-### No height (null/unset)
+`Width` defaults to `100%` of the parent. If the columns are wider than the grid a horizontal scrollbar appears and column virtualization activates; if they are narrower they stretch to fill.
 
-When `Height` is not set, the grid renders **all rows** without a vertical scrollbar. This disables row virtualization.
-
-```razor
-<!-- No Height: renders all rows, no virtualization -->
-<IgbGrid Data="data" PrimaryKey="Id" Width="100%">
-    ...
-</IgbGrid>
-```
-
-> **Warning:** Without a height, large datasets will render all rows to the DOM, causing severe performance degradation. Always set `Height` for datasets with more than 50 rows.
-
-### Auto height
-
-The grid does not have a built-in "auto height" mode. To fit a limited number of rows, calculate the height:
+**`Height` has no default.** Unset, the grid renders every row with no vertical scrollbar and **row virtualization is disabled** — fine for a handful of rows, ruinous past ~50. There is no auto-height mode; to fit a bounded number of rows, compute it:
 
 ```razor
 @{
     var rowCount = Math.Min(data.Count, 20);
-    var gridHeight = $"{50 + rowCount * 50}px"; // 50px header + 50px per row
+    var gridHeight = $"{50 + rowCount * 50}px";   // header + rows, at the default density
 }
-
-<IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="@gridHeight">
-    ...
-</IgbGrid>
+<IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="@gridHeight">…</IgbGrid>
 ```
 
----
+## Column widths
 
-## Column Sizing
-
-### Fixed pixel width
+**Default to no `Width` at all.** With none set, the grid distributes the available space proportionally (down to a ~136px minimum per column) and fills the container with no dead space on the right. Add widths only when the user asks for fixed sizing — and if you set a width on some columns, leave at least one without so it absorbs the remainder.
 
 ```razor
 <IgbColumn Field="Id" Header="ID" Width="80px" />
-<IgbColumn Field="Name" Header="Name" Width="250px" />
-<IgbColumn Field="Department" Header="Department" Width="200px" />
-```
-
-### Percentage width
-
-```razor
-<IgbColumn Field="Id" Header="ID" Width="10%" />
-<IgbColumn Field="Name" Header="Name" Width="40%" />
-<IgbColumn Field="Department" Header="Department" Width="25%" />
-<IgbColumn Field="Salary" Header="Salary" Width="25%" />
-```
-
-### Auto-size (fit content)
-
-No explicit width - the column auto-sizes:
-
-```razor
-<IgbColumn Field="Name" Header="Name" />
-```
-
-Without a `Width`, the grid distributes available space proportionally among columns.
-
-### Min/Max width constraints
-
-```razor
 <IgbColumn Field="Name" Header="Name" Width="200px" MinWidth="100px" MaxWidth="400px" Resizable="true" />
+<IgbColumn Field="Notes" Header="Notes" />   @* absorbs the rest *@
 ```
 
-- `MinWidth` prevents the column from shrinking below a threshold (useful with resizing).
-- `MaxWidth` prevents the column from growing beyond a threshold.
+- `Width` accepts px, `%`, or `"auto"`. `"auto"` fits header and visible content **once at initial render** and does not track later data changes.
+- `MinWidth` / `MaxWidth` bound user resizing — set both whenever `Resizable="true"`.
+- Widths are border-box: padding and borders are included.
+- `ColumnWidth` on the grid sets a default for all columns instead of repeating a per-column `Width`.
 
-### Column resizing
-
-```razor
-<IgbGrid Data="data" PrimaryKey="Id">
-    <IgbColumn Field="Name" Header="Name" Width="200px" Resizable="true" />
-    <IgbColumn Field="Department" Header="Department" Width="200px" Resizable="true" />
-    <IgbColumn Field="Salary" Header="Salary" Width="150px" Resizable="true" />
-</IgbGrid>
-```
-
-Users can drag column borders to resize. Combine with `MinWidth` and `MaxWidth` for constrained resizing.
-
-### Auto-size column to fit content
-
-Programmatically auto-size a column to fit its longest visible cell value:
+Auto-size from code:
 
 ```razor
 @code {
     private IgbGrid grid = default!;
 
-    private void AutoSizeNameColumn()
-    {
-        var column = grid.GetColumnByName("Name");
-        column.Autosize(false); // false = include cell content, true = header only
-    }
-
-    private void AutoSizeAllColumns()
-    {
-        foreach (var col in grid.Columns)
-        {
-            col.Autosize(false);
-        }
-    }
+    private void AutoSizeName() => grid.GetColumnByName("Name").Autosize(false);   // false = include cell content
+    private void AutoSizeAll()  { foreach (var col in grid.Columns) col.Autosize(false); }
 }
 ```
 
-### Column auto-width on init
+## Row height and density
 
-```razor
-<IgbColumn Field="Name" Header="Name" Width="auto" />
-```
+Row height, cell padding, and header height all follow the `--ig-size` CSS custom property. All rows in a grid share one height — variable row heights are not supported.
 
-When `Width="auto"`, the column width adjusts on initial render to fit the header and visible content.
-
----
-
-## Row Height
-
-### Default row height
-
-The default row height depends on the `--ig-size` CSS custom property. Set it on the grid or a parent element:
-
-```css
-igc-grid {
-    --ig-size: var(--ig-size-large); /* default */
-}
-```
-
-| `--ig-size` value | Approximate Row Height |
+| `--ig-size` | Row height |
 |---|---|
-| `var(--ig-size-large)` | 50px (default) |
-| `var(--ig-size-medium)` | 40px |
-| `var(--ig-size-small)` | 32px |
-
-### Custom row height
-
-Use CSS to override row height:
-
-```css
-igc-grid::part(tbody-content) igc-grid-row {
-    height: 60px;
-}
-```
-
-Or use `RowHeight` parameter:
+| `var(--ig-size-large)` | ~50px (default) |
+| `var(--ig-size-medium)` | ~40px |
+| `var(--ig-size-small)` | ~32px |
 
 ```razor
-<IgbGrid Data="data" PrimaryKey="Id" RowHeight="60">
-    ...
-</IgbGrid>
+<IgbGrid Data="data" PrimaryKey="Id" class="compact-grid">…</IgbGrid>
 ```
-
----
-
-## Cell Spacing (CSS Variables)
-
-The grid does not expose individual cell-padding CSS custom properties. Cell padding and row height are controlled by the `--ig-size` CSS variable:
-
-| CSS Variable | Description | Default |
-|---|---|---|
-| `--ig-size` | Overall component size (affects row height, cell padding, header height) | `var(--ig-size-large)` |
-
-### Sizing via `--ig-size`
-
-The grid respects the global `--ig-size` CSS variable for responsive sizing:
 
 ```css
-/* Compact grid */
-igc-grid {
-    --ig-size: var(--ig-size-small);
-}
-
-/* Medium grid */
-igc-grid {
-    --ig-size: var(--ig-size-medium);
-}
-
-/* Large grid (default) */
-igc-grid {
-    --ig-size: var(--ig-size-large);
-}
+/* global CSS */
+.compact-grid { --ig-size: var(--ig-size-small); }
+igc-grid       { --ig-size: var(--ig-size-medium); }
 ```
 
-### Scoped sizing
+In a `.razor.css` isolation file prefix the `igc-*` selector with `::deep`. The grid exposes no separate cell-padding custom property; `--ig-size` is the single density knob.
 
-Apply different sizing to a specific grid:
+An explicit override wins over the density scale:
 
 ```razor
-<IgbGrid Data="data" PrimaryKey="Id" class="compact-grid">
-    ...
-</IgbGrid>
-
-<style>
-    .compact-grid {
-        --ig-size: var(--ig-size-small);
-    }
-</style>
+<IgbGrid Data="data" PrimaryKey="Id" RowHeight="60">…</IgbGrid>
 ```
-
----
-
-## Key Rules
-
-1. **Do not add column `Width` unless explicitly requested** — omitting `Width` causes the grid to distribute available space proportionally across all columns, producing a responsive layout with no empty space. Only set explicit pixel or percentage widths when the user specifically asks for fixed column sizing.
-2. **If any column has a specified `Width`, leave at least one column without `Width`** - so it fills the remaining space in the grid.
-3. **Always set `Height` for performance** - without it, virtualization is disabled and all rows render to the DOM.
-4. **Percentage height needs a sized parent** - `Height="100%"` only works if the parent element has an explicit height.
-5. **Box model is border-box** - column widths include padding and borders.
-6. **Horizontal scroll triggers when columns overflow** - if total column width > grid width, a horizontal scrollbar appears.
-7. **`MinWidth` and `MaxWidth` constrain resizing** - always set them when `Resizable="true"` for predictable UX.
-8. **`--ig-size` controls the overall density** - it affects row height, cell padding, header height, and internal spacing.
-9. **Column virtualization works without explicit per-column widths** — when no `Width` is set on a column, the grid distributes available space across all columns (minimum 136px per column). If columns cannot fit at that minimum, a horizontal scrollbar appears and horizontal virtualization activates automatically. You can also set a grid-level default with `ColumnWidth` on `IgbGrid` instead of setting per-column widths. Only set per-column `Width` when a specific column needs a fixed or percentage size.
-10. **Auto-size is a one-time operation** - `Width="auto"` on a column fits content at initial render; it doesn't update dynamically as data changes.
-11. **Row height consistency** - all rows in a grid have the same height. Variable row height is not supported.

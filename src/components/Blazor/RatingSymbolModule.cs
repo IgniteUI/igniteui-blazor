@@ -4,7 +4,8 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for the <see cref="IgbRatingSymbol"/> child component of <see cref="IgbRating"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbRatingSymbolModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbRatingSymbolModule
+    [IgbModule<IgbRatingSymbolModule>]
+    public partial class IgbRatingSymbolModule : IIgbModule
     {
         /// <summary>
         /// No-op.

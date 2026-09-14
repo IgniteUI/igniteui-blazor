@@ -4,7 +4,8 @@ namespace IgniteUI.Blazor.Controls
     /// Provides the module for <see cref="IgbSliderBase"/>. Registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbSliderBaseModule is no longer required, has no effect and can be safely removed.")]
-    public partial class IgbSliderBaseModule
+    [IgbModule<IgbSliderBaseModule>]
+    public partial class IgbSliderBaseModule : IIgbModule
     {
         /// <summary>
         /// No-op.
