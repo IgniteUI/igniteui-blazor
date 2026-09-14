@@ -3106,6 +3106,7 @@ namespace IgniteUI.Blazor.Controls
                 _handlers.Remove(name + "/" + propertyName);
                 return;
             }
+            var handlerValue = handler.Value;
             Action<object?, object?> inner = (sender, args) =>
             {
                 // Native void events (e.g. focus/blur) legitimately deliver null args,
@@ -3125,7 +3126,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     onArgs(a);
                 }
-                var task = handler.Value.InvokeAsync(a);
+                var task = handlerValue.InvokeAsync(a);
                 ObserveHandlerTask(task);
                 if (eventArgs != null)
                 {
@@ -3146,6 +3147,7 @@ namespace IgniteUI.Blazor.Controls
                 _handlers.Remove(name + "/" + propertyName);
                 return;
             }
+            var callback = handler.Value;
             Action<object?, object?> inner = (sender, args) =>
             {
                 T a = getReturn(args!);
@@ -3154,7 +3156,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     onArgs(a);
                 }
-                var task = handler.Value.InvokeAsync(a);
+                var task = callback.InvokeAsync(a);
                 ObserveHandlerTask(task);
             };
 
