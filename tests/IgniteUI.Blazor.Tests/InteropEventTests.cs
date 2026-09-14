@@ -9,6 +9,7 @@ namespace IgniteUI.Blazor.Tests;
 /// no-op. (Per-member dispatch/args/registration coverage lives in each
 /// component's contract.)
 /// </summary>
+[Collection(ConsoleCaptureCollection.Name)]
 public class InteropEventTests : BlazorComponentTestBase
 {
     [Fact]
@@ -144,4 +145,14 @@ public class InteropEventTests : BlazorComponentTestBase
         Assert.True(completed);
         Assert.Equal(string.Empty, writer.ToString());
     }
+}
+
+/// <summary>
+/// Tests that redirect <see cref="Console.Out"/> must not run alongside anything
+/// else that writes to it, or the captured output picks up unrelated lines.
+/// </summary>
+[CollectionDefinition(Name, DisableParallelization = true)]
+public class ConsoleCaptureCollection
+{
+    public const string Name = "Console capture";
 }
