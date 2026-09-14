@@ -35,7 +35,7 @@ builder.Services.AddIgniteUIBlazor(
     typeof(IgbInputModule), typeof(IgbComboModule), typeof(IgbDialogModule));
 ```
 
-Module names always follow `Igb{ComponentName}Module`. In `IgniteUI.Blazor.Lite` a component registers its own module on first render, so the explicit list trims the initial payload rather than gating rendering.
+Module names always follow `Igb{ComponentName}Module`. A component requests its own module on first render, so the explicit list trims the initial payload rather than gating rendering. The exception is the full product's feature modules, which add behavior to a component instead of defining one (`IgbDataChartInteractivityModule`, `IgbDataChartAnnotationModule`) and the `*FullModule` bundles that include them: nothing requests those on render, so they must be listed.
 
 **Blazor Web App:** call `AddIgniteUIBlazor()` in **both** the server and the client `Program.cs`.
 
@@ -62,7 +62,7 @@ Add it to both `_Imports.razor` files in split Blazor Web App solutions.
 
 Host page is `wwwroot/index.html` (WASM/MAUI), `Pages/_Host.cshtml` (Server), or `Components/App.razor` (Web App).
 
-The theme stylesheet is the only required tag — without it components render unstyled.
+For `IgniteUI.Blazor.Lite` the theme stylesheet is the only required tag — without it components render unstyled. The full product also needs a script tag in Blazor Web Apps so the library's client resources initialize correctly (below).
 
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
@@ -72,7 +72,7 @@ The theme stylesheet is the only required tag — without it components render u
 
 **`IgniteUI.Blazor.Lite` (≥ 0.1.0) loads its component bundle itself** — a JS initializer runs during Blazor startup on every hosting model: Blazor Server, standalone WASM, Blazor Web App (`blazor.web.js`, any render mode), and BlazorWebView/Hybrid.
 
-**The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`, ≤ 26.1.x) still needs the tag in Blazor Web Apps** — it ships a classic-only initializer that `blazor.web.js` ignores. There the tag must come **before** the Blazor framework script; classic Blazor Server and standalone WASM apps on the full product may omit it.
+**The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`) currently needs the tag in Blazor Web Apps** so its client resources initialize correctly. There the tag must come **before** the Blazor framework script; classic Blazor Server and standalone WASM apps on the full product may omit it.
 
 ```html
 <script src="_content/IgniteUI.Blazor/app.bundle.js"></script>   <!-- full product, Blazor Web App only -->

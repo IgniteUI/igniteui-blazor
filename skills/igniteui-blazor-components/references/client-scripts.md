@@ -81,7 +81,7 @@ registerScript('AgentHeader', ({ message }) => {
 });
 ```
 
-`html` is the Lit HTML template tag: `${}` interpolates values, `@click=${fn}` binds listeners, and so on. Ignite UI web components (`<igc-avatar>`, `<igc-icon-button>`, …) work inside a template; if the component is not used as a Blazor component elsewhere in the app, register its module explicitly with `AddIgniteUIBlazor(typeof(IgbAvatarModule), …)` in `Program.cs`.
+`html` is the Lit HTML template tag: `${}` interpolates values, `@click=${fn}` binds listeners, and so on. Ignite UI web components (`<igc-avatar>`, `<igc-icon-button>`, …) work inside a template as long as the custom element is defined: registering the module (`AddIgniteUIBlazor(typeof(IgbAvatarModule), …)` in `Program.cs`) defines it, as does using the corresponding Blazor component anywhere in the app. Without either, `<igc-avatar>` is an undefined element and renders nothing.
 
 ## Event handler scripts
 

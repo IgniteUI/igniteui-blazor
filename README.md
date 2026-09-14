@@ -186,7 +186,7 @@ The library is trim-compatible. Applications publishing with `PublishTrimmed=tru
 
 ## Building and Running Locally
 
-**Prerequisites:** [Node.js](https://nodejs.org/) 22 or later.
+**Prerequisites:** [Node.js](https://nodejs.org/) 22.12 or later (the Vite build requires it).
 
 ```bash
 # 1. Install Node dependencies
