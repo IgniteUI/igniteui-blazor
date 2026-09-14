@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
+    /// <summary>
+    /// Describes a selection change of an <see cref="IgbCombo{T}"/>: the new value, the items it affected and the kind of change.
+    /// </summary>
     public partial class IgbComboChangeEventArgsDetail : BaseRendererElement
     {
         /// <inheritdoc />
@@ -12,6 +15,9 @@ namespace IgniteUI.Blazor.Controls
         private string? _newValueRef;
         private object[] _newValue = Array.Empty<object>();
 
+        /// <summary>
+        /// The value of the combo after the change.
+        /// </summary>
         [Parameter]
         public object[] NewValue
         {
@@ -60,6 +66,9 @@ namespace IgniteUI.Blazor.Controls
         private string? _itemsRef;
         private object[] _items = Array.Empty<object>();
 
+        /// <summary>
+        /// The data items the change applies to.
+        /// </summary>
         [Parameter]
         public object[] Items
         {
@@ -107,6 +116,9 @@ namespace IgniteUI.Blazor.Controls
         }
         private ComboChangeType _changeType = ComboChangeType.Selection;
 
+        /// <summary>
+        /// The kind of change.
+        /// </summary>
         [Parameter]
         [WCWidgetMemberName("Type")]
         public ComboChangeType ChangeType
