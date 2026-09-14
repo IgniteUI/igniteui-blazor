@@ -58,11 +58,11 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task ConnectedCallbackAsync()
         {
-            await InvokeMethod("connectedCallback", new object[] { }, new string[] { });
+            await InvokeMethod("connectedCallback", new object?[] { }, new string[] { });
         }
         public void ConnectedCallback()
         {
-            InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
+            InvokeMethodSync("connectedCallback", new object?[] { }, new string[] { });
         }
 
     }

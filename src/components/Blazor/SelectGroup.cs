@@ -58,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private IgbSelectItem[] _items;
+        private IgbSelectItem[] _items = Array.Empty<IgbSelectItem>();
 
         /// <summary>
         /// All child <see cref="IgbSelectItem"/> components.

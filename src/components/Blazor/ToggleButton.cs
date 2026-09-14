@@ -61,13 +61,13 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the control.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set
@@ -126,7 +126,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public async Task FocusComponentAsync(IgbFocusOptions options)
         {
-            await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            await InvokeMethod("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
-            InvokeMethodSync("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            InvokeMethodSync("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
         /// <summary>
         /// Removes focus from the button.
@@ -144,7 +144,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public async Task BlurComponentAsync()
         {
-            await InvokeMethod("blur", new object[] { }, new string[] { });
+            await InvokeMethod("blur", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -153,14 +153,14 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
-            InvokeMethodSync("blur", new object[] { }, new string[] { });
+            InvokeMethodSync("blur", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Simulates a mouse click on the button.
         /// </summary>
         public async Task ClickAsync()
         {
-            await InvokeMethod("click", new object[] { }, new string[] { });
+            await InvokeMethod("click", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Click()
         {
-            InvokeMethodSync("click", new object[] { }, new string[] { });
+            InvokeMethodSync("click", new object?[] { }, new string[] { });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

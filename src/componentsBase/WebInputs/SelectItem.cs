@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSelectItem
     {
         [CascadingParameter(Name = "SelectParent")]
-        protected BaseRendererControl SelectParent
+        protected BaseRendererControl? SelectParent
         {
             get; set;
         }

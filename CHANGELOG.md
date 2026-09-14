@@ -49,6 +49,21 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 ### Fixed
 
 For the complete list of fixes arriving with the updated web components, see the [7.3.0](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.0), [7.3.1](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.1) and [7.3.2](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) release notes - highlights include per-element selection tracking in Button Group, correct `WeekStart` on the Calendar's initial render, form-associated components keeping their validation messages after a failed form submission (including hosts that start invalid), Highlight painting matches in recent Firefox versions, Select keyboard-navigation and type-ahead fixes, significantly faster large Tree operations, Tooltip show/hide race fixes, Chip accessibility reworks, and touch input on the Color Picker canvas.
+### Breaking Changes
+
+#### Public API nullability
+
+> [!NOTE]
+> As part of this release the public API was annotated for nullable reference types. Beyond the members listed below, reference-type parameters, properties, and return values now declare whether they accept or produce `null`. Consumers building with nullable reference types enabled may see new nullable warnings — or errors, if warnings are treated as errors — and may need to update their code accordingly.
+
+The following public members changed from nullable to non-nullable. Value-type changes (`double?` → `double`) are binary-breaking.
+
+| Type | Member | Before | After |
+|------|--------|--------|-------|
+| `IgbTile` | `ColStart` | `double?` | `double` |
+| `IgbTile` | `RowStart` | `double?` | `double` |
+| `IgbCalendar` | `SpecialDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+| `IgbCalendar` | `DisabledDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
 
 ## 0.1.0 - 2026-07-14
 

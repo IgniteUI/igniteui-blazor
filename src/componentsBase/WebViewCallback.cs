@@ -41,11 +41,11 @@ namespace IgniteUI.Blazor.Controls
 
         private void ForControls(Action<BaseRendererControl> act)
         {
-            List<string> toRemove = null;
+            List<string>? toRemove = null;
             foreach (var controlKey in _controlsMap.Keys)
             {
                 var control = _controlsMap[controlKey];
-                BaseRendererControl target;
+                BaseRendererControl? target;
                 if (control.TryGetTarget(out target))
                 {
                     target.OnReady();
@@ -69,12 +69,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseRendererControl GetControl(string key)
+        private BaseRendererControl? GetControl(string key)
         {
             if (_controlsMap.ContainsKey(key))
             {
                 var control = _controlsMap[key];
-                BaseRendererControl target;
+                BaseRendererControl? target;
                 if (control.TryGetTarget(out target))
                 {
                     return target;
@@ -135,21 +135,24 @@ namespace IgniteUI.Blazor.Controls
             if (control != null)
             {
                 var arr = control.DeserializeDictionaryArray(batch);
-                for (var i = 0; i < arr.Length; i++)
+                if (arr != null)
                 {
-                    var item = arr[i];
-                    string currContainer = item.ContainsKey("containerId") ? (string)item["containerId"].ToString() : null;
-                    string contentType = item.ContainsKey("contentType") ? (string)item["contentType"].ToString() : null;
-                    string templateId = item.ContainsKey("templateId") ? (string)item["templateId"].ToString() : null;
-                    string contentId = item.ContainsKey("contentId") ? (string)item["contentId"].ToString() : null;
-                    string actionType = item.ContainsKey("actionType") ? (string)item["actionType"].ToString() : null;
-                    string args = item.ContainsKey("args") ? (item["args"] != null ? item["args"].ToString() : null) : null;
-                    //Console.WriteLine("raising event");
-                    if (currContainer != null)
+                    for (var i = 0; i < arr.Length; i++)
                     {
-                        var currControl = GetControl(currContainer);
-                        //Console.WriteLine("found target");
-                        currControl.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                        var item = arr[i];
+                        string? currContainer = item.ContainsKey("containerId") ? item["containerId"].ToString() : null;
+                        string? contentType = item.ContainsKey("contentType") ? item["contentType"].ToString() : null;
+                        string? templateId = item.ContainsKey("templateId") ? item["templateId"].ToString() : null;
+                        string? contentId = item.ContainsKey("contentId") ? item["contentId"].ToString() : null;
+                        string? actionType = item.ContainsKey("actionType") ? item["actionType"].ToString() : null;
+                        string? args = item.ContainsKey("args") ? (item["args"] != null ? item["args"].ToString() : null) : null;
+                        //Console.WriteLine("raising event");
+                        if (currContainer != null)
+                        {
+                            var currControl = GetControl(currContainer);
+                            //Console.WriteLine("found target");
+                            currControl?.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                        }
                     }
                 }
                 control.RefreshDynamicContent();
