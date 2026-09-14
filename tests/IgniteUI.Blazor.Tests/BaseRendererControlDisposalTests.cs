@@ -1,6 +1,7 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using Microsoft.JSInterop;
+using System.Text.Json;
 
 namespace IgniteUI.Blazor.Tests;
 
@@ -96,14 +97,38 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
     }
 
     [Fact]
+    public async Task DisposeAsync_SendsCleanupMessage()
+    {
+        Interop.PrimeReady();
+        var cut = Render<IgbButton>();
+        var invocationCount = JSInterop.Invocations.Count;
+
+        await cut.Instance.DisposeAsync();
+
+        AssertCleanupSentOnce(invocationCount);
+    }
+
+    [Fact]
     public async Task DisposeAsync_CalledTwice_IsIdempotent()
     {
+        Interop.PrimeReady();
         var cut = Render<IgbButton>();
         var instance = (IAsyncDisposable)cut.Instance;
+        var invocationCount = JSInterop.Invocations.Count;
 
         await instance.DisposeAsync();
 
         var ex = await Record.ExceptionAsync(async () => await instance.DisposeAsync());
         Assert.Null(ex);
+        AssertCleanupSentOnce(invocationCount);
+    }
+
+    private void AssertCleanupSentOnce(int invocationCount)
+    {
+        var cleanup = Assert.Single(JSInterop.Invocations
+            .Skip(invocationCount)
+            .Where(invocation => invocation.Identifier == "igSendMessage"));
+        using var message = JsonDocument.Parse((string)cleanup.Arguments[1]!);
+        Assert.Equal("cleanup", message.RootElement.GetProperty("type").GetString());
     }
 }
