@@ -13,14 +13,14 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private string _weekday;
+        private string? _weekday;
 
         /// <summary>
         /// The representation of the weekday names, one of <c>long</c>, <c>short</c> or <c>narrow</c>.
         /// Defaults to <c>narrow</c>.
         /// </summary>
         [Parameter]
-        public string Weekday
+        public string? Weekday
         {
             get { return this._weekday; }
             set
@@ -33,14 +33,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _month;
+        private string? _month;
 
         /// <summary>
         /// The representation of the month names, one of <c>numeric</c>, <c>2-digit</c>, <c>long</c>,
         /// <c>short</c> or <c>narrow</c>. Defaults to <c>long</c>.
         /// </summary>
         [Parameter]
-        public string Month
+        public string? Month
         {
             get { return this._month; }
             set
@@ -66,7 +66,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -78,14 +78,14 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("weekday"))
+            if (args != null && args.ContainsKey("weekday"))
             { this.Weekday = ReturnToString(args["weekday"]); }
-            if (args.ContainsKey("month"))
+            if (args != null && args.ContainsKey("month"))
             { this.Month = ReturnToString(args["month"]); }
 
             this.SuppressParentNotify = false;

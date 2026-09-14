@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         [CascadingParameter(Name = "TabsParent")]
-        protected BaseRendererControl TabsParent
+        protected BaseRendererControl? TabsParent
         {
             get; set;
         }
@@ -86,13 +86,13 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The tab item label.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -144,14 +144,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {

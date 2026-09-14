@@ -7,11 +7,11 @@ namespace IgniteUI.Blazor.Controls
     public class IgbComponentRendererContainer : ComponentBase
     {
 
-        private Type _componentType;
+        private Type? _componentType;
         [Parameter]
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         [UnconditionalSuppressMessage("Trimming", "IL2078", Justification = "The backing field is only assigned through this annotated property; annotating the field would surface IL2110 in consuming apps.")]
-        public Type ComponentType
+        public Type? ComponentType
         {
             get
             {
@@ -28,8 +28,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private object _rootComponent = null;
-        public object RootComponent
+        private object? _rootComponent = null;
+        public object? RootComponent
         {
             get
             {
@@ -46,7 +46,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private void OnRootComponentChanged(object oldComponent, object newComponent)
+        private void OnRootComponentChanged(object? oldComponent, object? newComponent)
         {
             if (ComponentChanged != null)
             {
@@ -73,15 +73,15 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public event ComponentRendererComponentChangedEventHandler ComponentChanged;
+        public event ComponentRendererComponentChangedEventHandler? ComponentChanged;
     }
 
     public delegate void ComponentRendererComponentChangedEventHandler(object sender, ComponentRendererComponentChangedEventArgs args);
 
     public class ComponentRendererComponentChangedEventArgs
     {
-        public object OldComponent { get; internal set; }
-        public object NewComponent { get; internal set; }
+        public object? OldComponent { get; internal set; }
+        public object? NewComponent { get; internal set; }
     }
 
 }
