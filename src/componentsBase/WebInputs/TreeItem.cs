@@ -4,6 +4,9 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbTreeItem
     {
+        /// <summary>
+        /// The owning <see cref="IgbTree"/>, supplied as a cascading parameter.
+        /// </summary>
         [CascadingParameter(Name = "TreeParent")]
         protected BaseRendererControl? TreeParent
         {
