@@ -171,12 +171,6 @@ Build and run the Blazor app.
 
 ### Supported render modes
 
-Ignite UI for Blazor components require an **interactive** render mode. The following render modes are supported:
-
-- **InteractiveServer**
-- **InteractiveWebAssembly**
-- **InteractiveAuto**
-
 Ignite UI for Blazor components currently require an **interactive** render mode. The following render modes are supported:
 
 - **InteractiveServer**
@@ -184,12 +178,6 @@ Ignite UI for Blazor components currently require an **interactive** render mode
 - **InteractiveAuto**
 
 Static server-side rendering (SSR) is not yet supported because the components rely on JavaScript interop to render and setup the client web components.
-
-When using the **Per page/component** interactivity location, make sure an interactive render mode is explicitly specified on every page or component that uses Ignite UI for Blazor components, for example:
-
-```razor
-@rendermode InteractiveServer
-```
 
 ### Accessibility (WAI-ARIA)
 
