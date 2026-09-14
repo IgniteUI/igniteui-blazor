@@ -168,14 +168,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task ConnectedCallbackAsync()
-        {
-            await InvokeMethod("connectedCallback", new object?[] { }, new string[] { });
-        }
-        public void ConnectedCallback()
-        {
-            InvokeMethodSync("connectedCallback", new object?[] { }, new string[] { });
-        }
         /// <summary>
         /// Opens the component.
         /// </summary>
