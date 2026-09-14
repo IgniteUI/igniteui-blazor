@@ -3092,7 +3092,7 @@ namespace IgniteUI.Blazor.Controls
             }
             task.ContinueWith(static t =>
             {
-                Console.WriteLine(t.Exception!);
+                Console.WriteLine(t.Exception);
             }, System.Threading.CancellationToken.None,
             System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted | System.Threading.Tasks.TaskContinuationOptions.ExecuteSynchronously,
             System.Threading.Tasks.TaskScheduler.Default);
