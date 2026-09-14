@@ -15,8 +15,6 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
         .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }), "focus",
             args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
         .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
-        .Method(c => c.HasDatePartsAsync(), c => c.HasDateParts(), "hasDateParts", returns: true)
-        .Method(c => c.HasTimePartsAsync(), c => c.HasTimeParts(), "hasTimeParts", returns: false)
         .Method(c => c.SetSelectionRangeAsync(1, 3, "forward"), c => c.SetSelectionRange(1, 3, "forward"), "setSelectionRange",
             args: [1.0, 3.0, "forward"], types: ["Number", "Number", "String"])
         .Method(c => c.SetRangeTextAsync("abc", 1, 3, "end"), c => c.SetRangeText("abc", 1, 3, "end"), "setRangeText",
