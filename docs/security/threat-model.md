@@ -1,133 +1,130 @@
 # Threat model — IgniteUI.Blazor.Lite
 
-| | |
-|---|---|
-| **Status** | Draft — awaiting maintainer review |
-| **Package in scope** | `IgniteUI.Blazor.Lite` (net8.0 / net9.0 / net10.0) |
-| **Repository** | https://github.com/IgniteUI/igniteui-blazor |
-| **Reviewed commit** | <!-- TODO(maintainer): SHA at time of sign-off --> |
-| **Document owner** | <!-- TODO(maintainer): name --> |
-| **Last updated** | 2026-08-11 |
-| **Method** | STRIDE per trust-boundary, mapped to Microsoft's Blazor threat-mitigation guidance |
+This document explains where the trust boundaries of `IgniteUI.Blazor.Lite` lie, what the library guarantees at each of them, and what remains the consuming application's responsibility. It builds on Microsoft's threat mitigation guidance for Blazor rather than repeating it; the [Threat mitigation](#4-threat-mitigation) section lists only what is specific to this library.
+
+To report a suspected vulnerability, follow [`SECURITY.md`](../../SECURITY.md). Do not open a public issue.
 
 ## 1. Scope
 
 **In scope**
 
-- Managed code under `src/` (notably `src/componentsBase/`) and the webpack bundle produced from `src/src/` (`igniteui-webcomponents`, `igniteui-core`, `lit-html`) plus the themes copied into `src/wwwroot/`.
-- The build and release pipelines that produce and sign the package.
+- The managed library and the JavaScript bundle it ships: the .NET component classes, the interop layer between them and the browser, the bundled `igniteui-webcomponents`, `igniteui-core` and `lit-html`.
+- The build and release pipelines that produce and sign the NuGet package.
 
 **Out of scope**
 
-- The consuming application.
-- Internal implementation of `igniteui-webcomponents` / `igniteui-core` / `lit-html` — trusted-but-verified dependencies; their behaviour at the rendering boundary *is* in scope (TM-DOM-01).
-- The ASP.NET Core Blazor framework. Framework guarantees are assumptions ([§4](#4-assumptions-and-consumer-responsibilities)).
+- The consuming application, including its authentication, authorization, data access and Content Security Policy.
+- The internals of `igniteui-webcomponents`, `igniteui-core` and `lit-html`. Their behaviour at the rendering boundary is in scope; their implementation is a trusted-but-verified dependency.
+- The ASP.NET Core Blazor framework. Its guarantees are assumed, not re-verified here.
 - Storybook stories, tests and samples.
 
-## 2. Architecture and trust boundaries
+## 2. How the library works
+
+Every component the application places in a Razor page is a **.NET component instance** that owns one **web component** in the browser. The .NET side is the source of truth: parameter values, bound data and template registrations flow to the browser as **renderer messages**, and the web component renders them inside its shadow DOM. In the other direction the browser sends back DOM events, return values of methods the .NET side invoked, and requests to instantiate templates the application registered. All of that traffic enters .NET through a single **interop callback object** that is scoped to the Blazor circuit (or, in WebAssembly, to the runtime) and addresses the target component by an opaque container id.
+
+On WebAssembly there is an additional **unmarshalled data channel**: tabular bound data is handed to the bundle as typed column buffers that JavaScript reads directly from the managed heap instead of receiving JSON.
 
 ```mermaid
 flowchart LR
-  subgraph SRV["Server circuit / WASM runtime — trusted"]
-    B["BaseRendererControl<br/>component wrappers"]
-    W["WebCallback<br/>[JSInvokable] surface"]
-    R["RuntimeHelper<br/>unsafe / InvokeUnmarshalled"]
-    A["Consuming app<br/>event handlers, templates"]
+  subgraph NET[".NET side"]
+    C[".NET component instances"]
+    K["Interop callback object<br/>(one per circuit / runtime)"]
+    A["Consuming app<br/>event handlers, templates, bound data"]
   end
-  subgraph BR["Browser — untrusted"]
-    L["webpack bundle<br/>Loader / ComponentRenderer"]
-    E["igniteui-webcomponents<br/>+ lit-html (shadow DOM)"]
+  subgraph BR["Browser"]
+    L["Bundle: loader / renderer"]
+    E["Web components<br/>+ lit-html (shadow DOM)"]
   end
-  B -- "TB1: RendererSerializer / JsonDataSource" --> L
-  R -- "TB1b: unmarshalled column buffers (WASM only)" --> L
-  L -- "TB2: invokeMethodAsync(containerId, ...)" --> W
-  W --> A
+  A --> C
+  C -- "renderer messages (JSON)" --> L
+  C -. "unmarshalled column buffers (WASM only)" .-> L
+  L -- "events, return values, template requests" --> K
+  K --> C --> A
   L --> E
 ```
 
-Three boundaries:
+## 3. Trust boundaries by hosting model
 
-- **TB1 — server → client.** Component state and bound data serialized to the browser.
-- **TB1b — managed → WASM heap.** The unmarshalled fast path; a *memory-safety* boundary, not just a trust boundary. Unique to this package.
-- **TB2 — client → server.** Attacker-controlled input. Per Microsoft's guidance, *"Treat any .NET method exposed to JavaScript as you would a public endpoint to the app."*
+Where the trust boundary sits depends entirely on how the application hosts Blazor. The library ships the same code for every model, so this section is the key to reading the rest of the document.
 
-## 3. Assets and security objectives
+| Hosting model | Where .NET runs | Boundary | What Microsoft's guidance says |
+|---|---|---|---|
+| **Interactive Server** | On the server, inside a SignalR circuit | Browser → circuit. Every call from the bundle into the interop callback object is a call into the server. | [Interactive server-side rendering](https://learn.microsoft.com/aspnet/core/blazor/security/interactive-server-side-rendering): *"Treat any .NET method exposed to JavaScript as you would a public endpoint to the app."* Circuit and message-size limits bound resource exhaustion. |
+| **WebAssembly** | In the browser, same origin as the page script | None inside the browser. The .NET runtime, the bundle and any attacker script share one origin on the user's machine; the security boundary is the application's own HTTP APIs. | No dedicated page exists because nothing on the client is trusted. Standard client-side rules apply: no secrets in the app, all authorization on the server. |
+| **Static SSR / prerendering** | On the server, once, with no interactivity | Server → HTML. No interop runs; the bundle only hydrates whatever the server emitted. | [Static server-side rendering](https://learn.microsoft.com/aspnet/core/blazor/security/static-server-side-rendering). For this library the only exposure is which bound data is written into the page. |
+| **Hybrid (WebView)** | In a native process hosting a WebView | Browser → native process. The same interop surface as Interactive Server, but the callee has the privileges of the host application rather than of a web server. | [Blazor Hybrid security](https://learn.microsoft.com/aspnet/core/blazor/hybrid/security/). Treat the WebView content as untrusted and keep the interop surface minimal. |
 
-| Asset | Objective |
+Three flows cross these boundaries:
+
+- **Outbound: .NET → browser.** Renderer messages and, on WebAssembly, unmarshalled column buffers. The concern is *confidentiality*: which data leaves the .NET side.
+- **Inbound: browser → .NET.** Events, method return values and template requests through the interop callback object. Under Interactive Server and Hybrid this is attacker-reachable input; the concern is *integrity* and *availability* of the .NET side.
+- **Rendering: data → markup.** Bound values becoming DOM, on the server through Blazor's render tree and in the browser through lit-html. The concern is *script injection* into the application's origin.
+
+The unmarshalled data channel is not a trust boundary. JavaScript reads memory at pointers and layouts the .NET side produced, and page script can already read the whole WebAssembly heap on its own. It is a memory-layout correctness concern, covered below, not an attacker-facing one.
+
+## 4. Threat mitigation
+
+The consuming application must first apply Microsoft's guidance for its hosting model. On top of that, the library guarantees the following properties. They are verified against the code and re-verified whenever the interop layer, the rendering path or the bundled third-party JavaScript changes.
+
+### 4.1 Inbound interop
+
+| Threat | What the library does |
 |---|---|
-| Consumer data bound to components | Confidentiality — only intended fields reach the browser |
-| The Blazor circuit and the WASM heap | Availability and memory integrity |
-| The consuming app's browser origin | Integrity — components never introduce script execution |
-| The published NuGet package | Integrity — signed, reproducible, no unintended content |
+| A client forges a call targeting another user's components | Impossible by construction. The interop callback object is reached only through a Blazor `DotNetObjectReference` that belongs to one circuit, so a caller can address only components registered in its own circuit. The container id is a lookup key inside that circuit, never an authority. |
+| A client raises an event the application did not subscribe to | Dropped. An event is dispatched only if the .NET component instance has a handler registered for that exact event name; unknown names are ignored. |
+| A client-supplied payload selects a .NET type or executes code | Not possible. Payloads are parsed with source-generated `System.Text.Json` into plain dictionaries and primitive values. Object references in a payload are resolved by id against a registry of elements the .NET side created; no client-supplied type name is ever used to instantiate anything. |
+| A client instantiates arbitrary templates or content | Only templates the application registered on the component can be requested, and they render through Blazor `RenderFragment`s like any other Razor content. |
+| Resource exhaustion through interop floods or oversized payloads | Handled by the framework limits the application configures (`CircuitOptions`, `MaximumReceiveMessageSize`, interop timeout). The library adds no independent caps and relies on those defaults being kept. Inbound work is processed one invocation at a time per connection, so a flood from one client costs it a connection per unit of parallelism; limiting connections per user is the application's job, as for any SignalR hub. |
 
-## 4. Assumptions and consumer responsibilities
+What remains after these guarantees is exactly what remains for a plain Blazor `@onclick`: a compromised client can fire a handler the application wired up, with arguments of the shape the application expects. See [§5](#5-guidance-for-application-developers).
 
-| # | Assumption |
+### 4.2 Rendering
+
+| Threat | What the library does |
 |---|---|
-| A1 | The consuming app enforces authentication/authorization; components perform none. |
-| A2 | The consuming app enforces a Content Security Policy appropriate to its render mode. |
-| A3 | The consuming app is free of XSS. Most TB2 threats require attacker script in the page; per Microsoft's guidance an XSS-compromised client can already forge interop calls. The library's obligation is to avoid *causing* XSS and to avoid *widening* the blast radius. |
-| A4 | Data bound to components has already passed the app's authorization filter. |
-| A5 | Framework limits (`CircuitOptions`, `MaximumReceiveMessageSize`, interop call timeout) are left at or below their defaults. |
+| A bound value is interpreted as HTML on the server | Never. Server-side markup is produced through `RenderTreeBuilder.AddContent` and `AddAttribute`, which encode. The only `AddMarkupContent` calls carry whitespace literals. Bound values are never wrapped in `MarkupString`. |
+| A bound value is interpreted as HTML in the browser | Never through the library. The bundle renders via `lit-html`, whose text and attribute bindings escape. `igniteui-core` contains a string-concatenating `innerHTML` fallback renderer, but the bundle installs lit-html's renderer at module load, so the fallback is unreachable. |
+| Dynamic code in the bundle requires `unsafe-eval` | Not required. The bundle contains no `eval` or `new Function`, and the production build uses `hidden-source-map`, not an eval-based devtool. Applications can run the bundle under a CSP without `unsafe-eval`. |
 
-## 5. Analysis areas
+Content the application renders *inside* a component through templates or child content is the application's own Razor markup and is subject to the same rules as anywhere else in the app.
 
-Threat identification is performed per trust boundary against the areas below. This document records **what is analysed and how**; the concrete findings produced by that analysis are **not published here** — see [§6](#6-how-findings-are-handled).
+### 4.3 Outbound data
 
-| Area | Boundary | What is analysed |
-|---|---|---|
-| JS interop callback surface | TB2 | Every `[JSInvokable]` entry point: caller identification, parameter typing, deserialization of client-supplied payloads, and the routing of untrusted event data into consumer handlers. |
-| Unmarshalled data path | TB1b | Memory safety and layout agreement between the managed side and the JS reader, plus behaviour when the fast path is unavailable. |
-| Serialization boundary | TB1 | What consumer data leaves the server, and its exposure under prerendering. |
-| Rendering path | TB1 | Whether bound values can reach markup-interpreting APIs (`AddMarkupContent`, `innerHTML`, `unsafeHTML`), and dynamic-code constructs (`eval`, `new Function`). |
-| Supply chain, build and release | — | Bundled third-party JavaScript, dependency scanning coverage, signing and signature-validation gates, and the compiler safety settings of the shipped project. |
+| Threat | What the library does |
+|---|---|
+| Bound data reaches the browser beyond what is displayed | Data-bound components serialize the **public properties and fields** of the bound item type, not only the members a template happens to render. Prerendering writes that serialized state into the HTML. This is by design; see [§5](#5-guidance-for-application-developers). |
+| Unmarshalled column buffers are read at the wrong layout | The .NET writer and the JavaScript reader agree on a fixed column layout, covered by unit tests. On .NET 8 the channel uses `InvokeUnmarshalled`; on .NET 9 and later it passes raw pointers through the in-process runtime. Outside WebAssembly the same data travels as JSON. |
 
-## 6. How findings are handled
+## 5. Guidance for application developers
 
-Findings are **tracked privately**, not enumerated in this repository. Publishing an unfixed, exploitable weakness ahead of a fix would put consumers at risk, so this document defines the process instead of the results.
+- **Treat event arguments as user input.** Anything a handler receives from a component event originated in the browser. Validate it as you would a form post before acting on it, and never derive authorization from it.
+- **Bind projections, not entities.** Every public property and field of a bound item type is serialized to the browser and, under prerendering, into the page HTML. Map to a view model that holds only what the component needs.
+- **Authorize before binding.** Components perform no authentication or authorization. Data handed to a component has already passed the application's filters.
+- **Keep the framework limits.** Leave `CircuitOptions`, `MaximumReceiveMessageSize` and the interop timeout at their defaults or lower them. The library depends on them for availability.
+- **Apply a Content Security Policy.** The library needs neither `unsafe-eval` nor inline script. Most inbound threats presuppose attacker script already running in the page, which a CSP and an XSS-free application prevent. Load third-party scripts only from origins the policy allows, with Subresource Integrity where possible, following [Microsoft's Blazor CSP guidance](https://learn.microsoft.com/aspnet/core/blazor/security/content-security-policy).
+- **In Hybrid apps, treat WebView content as untrusted.** The interop callback object has the privileges of the host process; follow Microsoft's Blazor Hybrid guidance for the WebView.
 
-1. **Recording.** Each finding is filed in the maintainers' private security tracker with an identifier, the trust boundary, a STRIDE classification and a residual severity assessed **given** A1–A5.
-2. **Triage.** Findings are triaged under the timelines published in [`SECURITY.md`](../../SECURITY.md) — acknowledgement within 3 business days, triage within 7 business days — regardless of whether they originated internally or from an external reporter.
-3. **Disposition.** Every finding reaches one of: `Fixed`, `Mitigated` (a named compensating control), `By design` (documented consumer responsibility), or `Accepted` (residual risk with a named approver and a date).
-4. **Release gate.** No finding of severity High or above may ship while it is still open. The gate is enforced at review time via [review-template.md](review-template.md).
-5. **Disclosure.** Fixed findings are disclosed after a fix is available, through a GitHub Security Advisory and the release notes, following the coordinated-disclosure process in `SECURITY.md`. Consumer-facing findings that require action by the application developer are additionally documented in the public product documentation.
-6. **Re-analysis triggers.** The analysis in [§5](#5-analysis-areas) is re-run whenever the JS interop surface, the unmarshalled data path, or the bundled third-party JavaScript changes, and at minimum once per major release.
+## 6. Supply chain, build and release
 
-To report a suspected vulnerability, follow [`SECURITY.md`](../../SECURITY.md). Please do not open a public issue.
+- **Static analysis** — GitHub CodeQL code scanning (default setup) analyses C# and JavaScript/TypeScript on pushes and pull requests.
+- **Dependency alerts** — GitHub Dependabot alerts cover the NuGet and npm manifests; Dependabot version updates are configured for GitHub Actions with a 14-day cooldown and security updates fast-tracked.
+- **Release integrity** — Authenticode signing of all DLLs followed by a signature validation gate; NuGet package signing followed by `dotnet nuget verify`.
+- **Credential hygiene** — Azure OIDC federation and NuGet Trusted Publishing with short-lived OIDC-issued keys; no long-lived publish secrets.
+- **Least privilege and pinning** — repository-level `contents: read`, job-scoped `id-token: write`, publishing gated behind the protected `nuget-org-publish` environment, release actions pinned to commit SHAs.
+- **Reproducible inputs** — `npm ci` without package-manager caching in release builds, `<Deterministic>true</Deterministic>`, central package version management.
+- **Compiler safety** — the library compiles with `Nullable` enabled and nullable warnings as errors, and is trim-compatible with the trim analyzer warning-free. `AllowUnsafeBlocks` is enabled solely for the unmarshalled data channel.
+- **Testing** — bUnit unit tests, including the unmarshalled channel, and Playwright integration tests run in CI.
 
-## 7. Existing controls
+## 7. Reporting and disclosure
 
-Verified in `.github/workflows/igniteui-blazor-lite-release.yml`, `ci.yml` and the build props:
+Suspected vulnerabilities are reported privately as described in [`SECURITY.md`](../../SECURITY.md), which also states the acknowledgement and triage timelines. Fixed issues are disclosed through GitHub Security Advisories and release notes once a fix is available. Findings that require action by application developers are added to [§5](#5-guidance-for-application-developers).
 
-- **Release integrity** — Authenticode signing of all DLLs with a post-sign verification gate; NuGet package signing followed by `dotnet nuget verify`.
-- **Credential hygiene** — Azure OIDC federation and NuGet Trusted Publishing via short-lived OIDC-issued API keys; no long-lived publish secrets.
-- **Action pinning** — release-workflow actions are pinned to **commit SHAs**, not tags.
-- **Least privilege** — repository-level `permissions: contents: read`, job-scoped `id-token: write`, publishing gated behind the protected `nuget-org-publish` environment.
-- **Reproducible dependency install** — `npm ci` with `package-manager-cache: false` in release builds ("never use caching in release builds").
-- **Deterministic builds** — `<Deterministic>true</Deterministic>` in `Directory.Build.props`.
-- **Central package management** — `Directory.Packages.props` with `ManagePackageVersionsCentrally`.
-- **Disclosure process** — a complete `SECURITY.md`: private reporting (GitHub PVR → email → support case), 3/7-business-day acknowledgement/triage SLAs, severity bands, coordinated disclosure, advisories.
-- **Dependency updates** — Dependabot for GitHub Actions with a 14-day cooldown and security updates fast-tracked outside the batch.
-- **Testing** — bUnit unit tests plus Playwright integration tests with coverage in CI.
+## 8. References
 
-## 8. Residual risk
-
-Accepted residual risks are recorded against their finding in the private tracker and in the corresponding security review record, each with a named approver and a date. They are not itemised here. Residual risks that require action or awareness on the consuming application's part are surfaced in the public product documentation and in [§4](#4-assumptions-and-consumer-responsibilities) ("Assumptions and consumer responsibilities").
-
-## 9. Review and sign-off log
-
-| Version | Commit | Reviewers | Date | Open Critical/High | Outcome |
-|---|---|---|---|---|---|
-| <!-- TODO --> | | | | | |
-
-Release gate: **no `Open` finding of severity High or above may ship.**
-
-## 10. References
-
-- [`SECURITY.md`](../../SECURITY.md) — this repository's vulnerability reporting and disclosure policy.
-- [`CONTRIBUTING.md`](../../.github/CONTRIBUTING.md) — contribution and review process.
-- [review-template.md](review-template.md) — the security review record template.
+- [`SECURITY.md`](../../SECURITY.md) — vulnerability reporting and disclosure policy.
 - [Threat mitigation guidance for ASP.NET Core Blazor interactive server-side rendering](https://learn.microsoft.com/aspnet/core/blazor/security/interactive-server-side-rendering)
+- [Threat mitigation guidance for ASP.NET Core Blazor static server-side rendering](https://learn.microsoft.com/aspnet/core/blazor/security/static-server-side-rendering)
+- [ASP.NET Core Blazor Hybrid security considerations](https://learn.microsoft.com/aspnet/core/blazor/hybrid/security/)
 - [ASP.NET Core Blazor authentication and authorization](https://learn.microsoft.com/aspnet/core/blazor/security/)
 - [Prevent cross-site scripting (XSS) in ASP.NET Core](https://learn.microsoft.com/aspnet/core/security/cross-site-scripting)
-- [Microsoft Threat Modeling / STRIDE](https://learn.microsoft.com/azure/security/develop/threat-modeling-tool-threats)
+- [Microsoft Security Development Lifecycle: threat modeling](https://www.microsoft.com/en-us/securityengineering/sdl/threatmodeling)
