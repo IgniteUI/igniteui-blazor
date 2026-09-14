@@ -260,22 +260,6 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        public async Task ConnectedCallbackAsync()
-        {
-            await InvokeMethod("connectedCallback", new object?[] { }, new string[] { });
-        }
-        public void ConnectedCallback()
-        {
-            InvokeMethodSync("connectedCallback", new object?[] { }, new string[] { });
-        }
-        public async Task DisconnectedCallbackAsync()
-        {
-            await InvokeMethod("disconnectedCallback", new object?[] { }, new string[] { });
-        }
-        public void DisconnectedCallback()
-        {
-            InvokeMethodSync("disconnectedCallback", new object?[] { }, new string[] { });
-        }
         /// <summary>
         /// Toggles tree item expansion state.
         /// </summary>

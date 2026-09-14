@@ -56,14 +56,5 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public async Task ConnectedCallbackAsync()
-        {
-            await InvokeMethod("connectedCallback", new object?[] { }, new string[] { });
-        }
-        public void ConnectedCallback()
-        {
-            InvokeMethodSync("connectedCallback", new object?[] { }, new string[] { });
-        }
-
     }
 }
