@@ -5,9 +5,9 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public enum BadgeShape
     {
-        /// <summary>Fully rounded ends.</summary>
+        /// <summary>Circular or pill shape.</summary>
         Rounded,
-        /// <summary>Square corners.</summary>
+        /// <summary>Square shape with rounded corners.</summary>
         Square
 
     }
