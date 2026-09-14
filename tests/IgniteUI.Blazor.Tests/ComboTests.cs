@@ -288,10 +288,10 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     public void Combo_Change_SelectionEvent_HasSelectionChangeType()
     {
         Interop.PrimeReady();
-        IgbComboChangeEventArgs? received = null;
+        IgbComboChangeEventArgs<ComboItem>? received = null;
         var cut = Render<IgbCombo<ComboItem>>(ps => ps
             .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
-            .Add(c => c.Change, (IgbComboChangeEventArgs args) => received = args));
+            .Add(c => c.Change, (IgbComboChangeEventArgs<ComboItem> args) => received = args));
 
         var argsJson = ChangeDetail(UuidRef(Interop, cut, 0), UuidRef(Interop, cut, 0));
         Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", argsJson);
@@ -304,11 +304,11 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     public void Combo_Change_DeselectionEvent_HasDeselectionChangeType()
     {
         Interop.PrimeReady();
-        IgbComboChangeEventArgs? received = null;
+        IgbComboChangeEventArgs<ComboItem>? received = null;
         var cut = Render<IgbCombo<ComboItem>>(ps => ps
             .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
             .Add(c => c.Value, new[] { _valueItem1 })
-            .Add(c => c.Change, (IgbComboChangeEventArgs args) => received = args));
+            .Add(c => c.Change, (IgbComboChangeEventArgs<ComboItem> args) => received = args));
 
         var argsJson = ChangeDetail("", UuidRef(Interop, cut, 0), "deselection");
         Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", argsJson);
