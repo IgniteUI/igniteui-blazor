@@ -173,14 +173,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _indicatorsLabelFormat;
+        private string? _indicatorsLabelFormat;
 
         /// <summary>
         /// The format used to set the aria-label on the carousel indicators.
         /// Instances of <c>{0}</c> will be replaced with the index of the corresponding slide.
         /// </summary>
         [Parameter]
-        public string IndicatorsLabelFormat
+        public string? IndicatorsLabelFormat
         {
             get { return this._indicatorsLabelFormat; }
             set
@@ -193,7 +193,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _slidesLabelFormat;
+        private string? _slidesLabelFormat;
 
         /// <summary>
         /// The format used to set the aria-label on the carousel slides and the text displayed
@@ -202,7 +202,7 @@ namespace IgniteUI.Blazor.Controls
         /// Instances of <c>{1}</c> will be replaced with the total amount of slides.
         /// </summary>
         [Parameter]
-        public string SlidesLabelFormat
+        public string? SlidesLabelFormat
         {
             get { return this._slidesLabelFormat; }
             set
@@ -278,7 +278,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<double> GetTotalAsync()
         {
-            var iv = await InvokeMethod("p:Total", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Total", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -287,7 +287,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public double GetTotal()
         {
-            var iv = InvokeMethodSync("p:Total", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Total", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -296,7 +296,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<double> GetCurrentAsync()
         {
-            var iv = await InvokeMethod("p:Current", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Current", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -305,7 +305,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public double GetCurrent()
         {
-            var iv = InvokeMethodSync("p:Current", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Current", new object?[] { }, new string[] { });
             return ReturnToDouble(iv);
         }
 
@@ -314,7 +314,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> GetIsPlayingAsync()
         {
-            var iv = await InvokeMethod("p:IsPlaying", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:IsPlaying", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -323,7 +323,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool GetIsPlaying()
         {
-            var iv = InvokeMethodSync("p:IsPlaying", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:IsPlaying", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -332,7 +332,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> GetIsPausedAsync()
         {
-            var iv = await InvokeMethod("p:IsPaused", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:IsPaused", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -341,7 +341,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool GetIsPaused()
         {
-            var iv = InvokeMethodSync("p:IsPaused", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:IsPaused", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -350,7 +350,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task PlayAsync()
         {
-            await InvokeMethod("play", new object[] { }, new string[] { });
+            await InvokeMethod("play", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -358,14 +358,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Play()
         {
-            InvokeMethodSync("play", new object[] { }, new string[] { });
+            InvokeMethodSync("play", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Pauses the rotation of the carousel slides.
         /// </summary>
         public async Task PauseAsync()
         {
-            await InvokeMethod("pause", new object[] { }, new string[] { });
+            await InvokeMethod("pause", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Pause()
         {
-            InvokeMethodSync("pause", new object[] { }, new string[] { });
+            InvokeMethodSync("pause", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Switches to the next slide, running any animations.
@@ -383,7 +383,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> NextAsync()
         {
-            var iv = await InvokeMethod("next", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("next", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -395,7 +395,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Next()
         {
-            var iv = InvokeMethodSync("next", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("next", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -406,7 +406,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> PrevAsync()
         {
-            var iv = await InvokeMethod("prev", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("prev", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -418,7 +418,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Prev()
         {
-            var iv = InvokeMethodSync("prev", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("prev", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -430,7 +430,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> SelectAsync(double index, CarouselAnimationDirection? animationDirection = null)
         {
-            var iv = await InvokeMethod("select", new object[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
+            var iv = await InvokeMethod("select", new object?[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
             return ReturnToBoolean(iv);
         }
 
@@ -442,12 +442,12 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Select(double index, CarouselAnimationDirection? animationDirection = null)
         {
-            var iv = InvokeMethodSync("select", new object[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
+            var iv = InvokeMethodSync("select", new object?[] { index, ObjectToParam(animationDirection, typeof(CarouselAnimationDirection)) }, new string[] { "Number", "Json" });
             return ReturnToBoolean(iv);
         }
 
-        private string _slideChangedRef = null;
-        private string _slideChangedScript = null;
+        private string? _slideChangedRef = null;
+        private string? _slideChangedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="SlideChanged"/> event in the browser instead.
@@ -457,7 +457,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SlideChangedScript
+        public string? SlideChangedScript
         {
 
             set
@@ -465,7 +465,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._slideChangedScript)
                 {
                     this._slideChangedScript = value;
-                    this.OnRefChanged("SlideChanged", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("SlideChanged", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._slideChangedRef = refName;
                         this.MarkPropDirty("SlideChangedRef");
@@ -518,8 +518,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _playingRef = null;
-        private string _playingScript = null;
+        private string? _playingRef = null;
+        private string? _playingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Playing"/> event in the browser instead.
@@ -529,7 +529,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string PlayingScript
+        public string? PlayingScript
         {
 
             set
@@ -537,7 +537,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._playingScript)
                 {
                     this._playingScript = value;
-                    this.OnRefChanged("Playing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Playing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._playingRef = refName;
                         this.MarkPropDirty("PlayingRef");
@@ -590,8 +590,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _pausedRef = null;
-        private string _pausedScript = null;
+        private string? _pausedRef = null;
+        private string? _pausedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Paused"/> event in the browser instead.
@@ -601,7 +601,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string PausedScript
+        public string? PausedScript
         {
 
             set
@@ -609,7 +609,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._pausedScript)
                 {
                     this._pausedScript = value;
-                    this.OnRefChanged("Paused", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Paused", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._pausedRef = refName;
                         this.MarkPropDirty("PausedRef");

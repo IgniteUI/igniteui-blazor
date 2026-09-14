@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTreeItem
     {
         [CascadingParameter(Name = "TreeParent")]
-        protected BaseRendererControl TreeParent
+        protected BaseRendererControl? TreeParent
         {
             get; set;
         }

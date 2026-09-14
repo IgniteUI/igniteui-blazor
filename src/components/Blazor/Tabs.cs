@@ -71,9 +71,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private CollectionAdapter<IgbTab, IgbTab> _tabsCollectionAdapter;
-        private IgbTabs_TabCollection _allTabsCollection;
-        private IgbTabs_TabCollection _contentTabsCollection = null;
+        private CollectionAdapter<IgbTab, IgbTab>? _tabsCollectionAdapter;
+        private IgbTabs_TabCollection? _allTabsCollection;
+        private IgbTabs_TabCollection? _contentTabsCollection = null;
 
         public IgbTabs_TabCollection ContentTabsCollection
         {
@@ -87,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
                 return this._contentTabsCollection;
             }
         }
-        private IgbTabs_TabCollection _actualTabsCollection = null;
+        private IgbTabs_TabCollection? _actualTabsCollection = null;
 
         public IgbTabs_TabCollection ActualTabsCollection
         {
@@ -125,7 +125,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private IgbTabs_TabCollection _tabsCollection = null;
+        private IgbTabs_TabCollection? _tabsCollection = null;
 
         public IgbTabs_TabCollection TabsCollection
         {
@@ -197,7 +197,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
         public async Task<string> GetSelectedAsync()
         {
-            var iv = await InvokeMethod("p:Selected", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Selected", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
@@ -207,12 +207,12 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
         public string GetSelected()
         {
-            var iv = InvokeMethodSync("p:Selected", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Selected", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
         /// <inheritdoc />
-        public override object FindByName(string name)
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -230,7 +230,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SelectAsync(String id)
         {
-            await InvokeMethod("select", new object[] { StringToString(id) }, new string[] { "String" });
+            await InvokeMethod("select", new object?[] { StringToString(id) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -238,11 +238,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Select(String id)
         {
-            InvokeMethodSync("select", new object[] { StringToString(id) }, new string[] { "String" });
+            InvokeMethodSync("select", new object?[] { StringToString(id) }, new string[] { "String" });
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
@@ -252,7 +252,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -260,7 +260,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");

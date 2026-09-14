@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTile
     {
         [CascadingParameter(Name = "TileManagerParent")]
-        protected BaseRendererControl TileManagerParent
+        protected BaseRendererControl? TileManagerParent
         {
             get; set;
         }

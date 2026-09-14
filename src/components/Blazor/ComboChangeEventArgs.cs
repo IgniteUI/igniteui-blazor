@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool _marshalByValue = true;
 
-        private IgbComboChangeEventArgsDetail<object> _detail;
+        private IgbComboChangeEventArgsDetail<object> _detail = new IgbComboChangeEventArgsDetail<object>();
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
@@ -28,11 +28,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
         }
 
@@ -46,7 +46,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -56,13 +56,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbComboChangeEventArgsDetail<object>)ConvertReturnValue<object>(args["detail"], "ComboChangeEventArgsDetail", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<object>(detailObj, "ComboChangeEventArgsDetail", true) is IgbComboChangeEventArgsDetail<object> detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }
@@ -73,7 +73,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbComboChangeEventArgs<T> : IgbComboChangeEventArgs
     {
-        private IgbComboChangeEventArgsDetail<T> _detail;
+        private IgbComboChangeEventArgsDetail<T> _detail = new();
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
@@ -89,23 +89,23 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbComboChangeEventArgsDetail<T>)ConvertReturnValue<T>(args["detail"], "ComboChangeEventArgsDetail", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<T>(detailObj, "ComboChangeEventArgsDetail", true) is IgbComboChangeEventArgsDetail<T> detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

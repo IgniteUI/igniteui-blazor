@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessageRenderContext"; } }
 
-        private IgbChatMessage _message;
+        private IgbChatMessage _message = new IgbChatMessage();
 
         /// <summary>
         /// The specific chat message being rendered.
@@ -26,11 +26,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._message);
                 }
+                this._message = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._message = value;
             }
 
         }

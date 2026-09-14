@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Reflection;
 using IgniteUI.Blazor.Controls;
 using Microsoft.AspNetCore.Components;
@@ -185,7 +185,8 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             }
 
             // Invoke the generic method to create RenderFragment<T>
-            return methodInfo.Invoke(null, new object[] { value })!;
+            var renderFragment = methodInfo.Invoke(null, new object[] { value });
+            return renderFragment ?? throw new InvalidOperationException($"Cannot create RenderFragment for type '{propertyType.Name}'.");
         }
 
         private static RenderFragment<T> CreateTypedRenderFragment<T>(T value)

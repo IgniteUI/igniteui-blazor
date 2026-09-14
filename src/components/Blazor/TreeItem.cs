@@ -58,13 +58,13 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private IgbTreeItem _parent;
+        private IgbTreeItem? _parent;
 
         /// <summary>
         /// The parent item of the current tree item (if any)
         /// </summary>
         [Parameter]
-        public IgbTreeItem Parent
+        public IgbTreeItem? Parent
         {
             get { return this._parent; }
             set
@@ -96,13 +96,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The tree item label.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -210,13 +210,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private object _value;
+        private object? _value;
 
         /// <summary>
         /// The value entry that the tree item is visualizing. Required for searching through items.
         /// </summary>
         [Parameter]
-        public object Value
+        public object? Value
         {
             get { return this._value; }
             set
@@ -235,16 +235,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbTreeItem[]> GetPathAsync()
         {
-            var iv = await InvokeMethod("p:Path", new object[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbTreeItem[]);
-            }
+            var iv = await InvokeMethod("p:Path", new object?[] { }, new string[] { });
             var retVal = ReturnToObjectArray<IgbTreeItem>(iv);
             if (retVal == null)
             {
-                return default(IgbTreeItem[]);
+                return Array.Empty<IgbTreeItem>();
             }
             return retVal;
 
@@ -255,16 +250,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbTreeItem[] GetPath()
         {
-            var iv = InvokeMethodSync("p:Path", new object[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbTreeItem[]);
-            }
+            var iv = InvokeMethodSync("p:Path", new object?[] { }, new string[] { });
             var retVal = ReturnToObjectArray<IgbTreeItem>(iv);
             if (retVal == null)
             {
-                return default(IgbTreeItem[]);
+                return Array.Empty<IgbTreeItem>();
             }
             return retVal;
 
@@ -272,26 +262,26 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task ConnectedCallbackAsync()
         {
-            await InvokeMethod("connectedCallback", new object[] { }, new string[] { });
+            await InvokeMethod("connectedCallback", new object?[] { }, new string[] { });
         }
         public void ConnectedCallback()
         {
-            InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
+            InvokeMethodSync("connectedCallback", new object?[] { }, new string[] { });
         }
         public async Task DisconnectedCallbackAsync()
         {
-            await InvokeMethod("disconnectedCallback", new object[] { }, new string[] { });
+            await InvokeMethod("disconnectedCallback", new object?[] { }, new string[] { });
         }
         public void DisconnectedCallback()
         {
-            InvokeMethodSync("disconnectedCallback", new object[] { }, new string[] { });
+            InvokeMethodSync("disconnectedCallback", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Toggles tree item expansion state.
         /// </summary>
         public async Task ToggleAsync()
         {
-            await InvokeMethod("toggle", new object[] { }, new string[] { });
+            await InvokeMethod("toggle", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -299,14 +289,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Toggle()
         {
-            InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            InvokeMethodSync("toggle", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Expands the tree item.
         /// </summary>
         public async Task ExpandAsync()
         {
-            await InvokeMethod("expand", new object[] { }, new string[] { });
+            await InvokeMethod("expand", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -314,14 +304,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Expand()
         {
-            InvokeMethodSync("expand", new object[] { }, new string[] { });
+            InvokeMethodSync("expand", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Collapses the tree item.
         /// </summary>
         public async Task CollapseAsync()
         {
-            await InvokeMethod("collapse", new object[] { }, new string[] { });
+            await InvokeMethod("collapse", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -329,7 +319,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Collapse()
         {
-            InvokeMethodSync("collapse", new object[] { }, new string[] { });
+            InvokeMethodSync("collapse", new object?[] { }, new string[] { });
         }
 
         internal override void SerializeCore(RendererSerializer ser)
