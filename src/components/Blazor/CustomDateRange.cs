@@ -10,13 +10,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebCustomDateRange"; } }
 
-        private string _label;
+        private string _label = string.Empty;
 
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
         [Parameter]
-        public string Label
+        public required string Label
         {
             get { return this._label; }
             set
@@ -29,13 +29,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeValue _dateRange;
+        private IgbDateRangeValue _dateRange = new IgbDateRangeValue();
 
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
         [Parameter]
-        public IgbDateRangeValue DateRange
+        public required IgbDateRangeValue DateRange
         {
             get { return this._dateRange; }
             set
@@ -45,23 +45,15 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._dateRange);
                 }
+                this._dateRange = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._dateRange = value;
             }
 
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {

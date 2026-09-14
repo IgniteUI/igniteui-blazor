@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
+- Еvery release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
+
+### Changed
+
+**Binary compatibility:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Normal NuGet consumers that rebuild should require no source changes, but precompiled dependents, binding redirects, and explicit fully-qualified assembly references may need updating.
+- Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
+
+### Fixed
+
+- The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
+- `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
+### Breaking Changes
+
+#### Public API nullability
+
+> [!NOTE]
+> As part of this release the public API was annotated for nullable reference types. Beyond the members listed below, reference-type parameters, properties, and return values now declare whether they accept or produce `null`. Consumers building with nullable reference types enabled may see new nullable warnings — or errors, if warnings are treated as errors — and may need to update their code accordingly.
+
+The following public members changed from nullable to non-nullable. Value-type changes (`double?` → `double`) are binary-breaking.
+
+| Type | Member | Before | After |
+|------|--------|--------|-------|
+| `IgbTile` | `ColStart` | `double?` | `double` |
+| `IgbTile` | `RowStart` | `double?` | `double` |
+| `IgbCalendar` | `SpecialDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+| `IgbCalendar` | `DisabledDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+
 ## 0.1.0 - 2026-07-14
 
 This release updates the Ignite UI for Blazor to the latest [igniteui-webcomponents@7.2.4 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.2.4) and matching related changes from `IgniteUI.Blazor` [25.2.77 (March 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25277-march-2026), [25.2.102 (May 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#252102-may-2026) and [26.1.51 (June 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#26151-june-2026) with highlights noted below:
