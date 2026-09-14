@@ -149,7 +149,3 @@ artifacts/
 
 **/tmp/*
 .idea/*
-
-# Claude cache
-.claude/
-

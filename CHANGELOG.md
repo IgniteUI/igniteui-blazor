@@ -14,8 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Breaking:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Projects with binding redirects or an explicit fully-qualified assembly reference to `IgniteUI.Blazor.Lite` need updating.
-- The release workflow is split into isolated build, signing, packaging, SBOM, publish, and release-attachment jobs with least-privilege permissions and digest-verified handoffs between them. The Key Vault credential and the publish credential are no longer available to the same job as the build step.
+**Binary compatibility:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Normal NuGet consumers that rebuild should require no source changes, but precompiled dependents, binding redirects, and explicit fully-qualified assembly references may need updating.
 - Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
 
 ### Fixed
