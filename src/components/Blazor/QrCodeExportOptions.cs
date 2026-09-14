@@ -17,11 +17,6 @@ namespace IgniteUI.Blazor.Controls
 
         private static bool AreDoublesEqual(double left, double right)
         {
-            if (left == right)
-            {
-                return true;
-            }
-
             return Math.Abs(left - right) <= ScaleComparisonEpsilon;
         }
 
