@@ -350,14 +350,6 @@ namespace IgniteUI.Blazor.Controls
             return retVal;
 
         }
-        public async Task DisconnectedCallbackAsync()
-        {
-            await InvokeMethod("disconnectedCallback", new object?[] { }, new string[] { });
-        }
-        public void DisconnectedCallback()
-        {
-            InvokeMethodSync("disconnectedCallback", new object?[] { }, new string[] { });
-        }
         /// <summary>
         /// Clears the current selection of the dropdown.
         /// </summary>
