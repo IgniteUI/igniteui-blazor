@@ -3862,12 +3862,12 @@ namespace IgniteUI.Blazor.Controls
             //runtime.JsRuntime.InvokeAsync<object>("igRequestLoad", moduleName);
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
             runtime.MarkIsLoadRequested(moduleName);
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
             return runtime.IsLoadRequested(moduleName);
         }
