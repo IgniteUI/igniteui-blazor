@@ -198,4 +198,29 @@ public class ServiceRegistrationTests
 
         Assert.Equal(2, FirstModule.Registrations.Count);
     }
+
+    /// <summary>
+    /// Type-based preload is trim-safe only because every module carries a self-referencing
+    /// <c>[IgbModule&lt;TSelf&gt;]</c>. A missing attribute — or one pasted from another
+    /// module — silently breaks that module's preload in trimmed apps; this guards both.
+    /// </summary>
+    [Fact]
+    public void EveryLibraryModule_CarriesSelfReferencingIgbModuleAttribute()
+    {
+        var moduleTypes = typeof(IgbAvatarModule).Assembly.GetTypes()
+            .Where(t => t.IsClass && typeof(IIgbModule).IsAssignableFrom(t))
+            .ToList();
+        Assert.NotEmpty(moduleTypes);
+
+        foreach (var type in moduleTypes)
+        {
+            var attributeType = type.GetCustomAttributes(inherit: false)
+                .Select(a => a.GetType())
+                .SingleOrDefault(a => a.IsGenericType && a.GetGenericTypeDefinition() == typeof(IgbModuleAttribute<>));
+
+            Assert.True(attributeType != null, $"{type.Name} is missing [IgbModule<{type.Name}>].");
+            Assert.True(attributeType!.GenericTypeArguments[0] == type,
+                $"{type.Name} carries [IgbModule<{attributeType.GenericTypeArguments[0].Name}>] — the attribute must reference its own type.");
+        }
+    }
 }

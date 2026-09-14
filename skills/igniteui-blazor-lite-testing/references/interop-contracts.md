@@ -114,7 +114,7 @@ A `[Parameter] TValue X` plus `EventCallback<TValue> XChanged` is what `@bind-X`
       argsJson: """{"detail": true}""", expect: true)
 ```
 
-One dispatch pins: the driving event's registration crossed, the callback member kept the callback, the binding received the decoded value, and the property adopted it. Payload is the same shape and can be reused from the driving event's own `.Event` spec.
+One dispatch pins: the driving event's registration crossed, the callback member kept the callback, the binding received the decoded value, and the property adopted it. Clearing the parameter then has to stop the callback. Payload is the same shape and can be reused from the driving event's own `.Event` spec.
 
 - `expect:` is the value the dispatch must produce, often a projection of the detail — a checkbox detail is an object, the bound value is its `checked` field. The runner checks the property doesn't already hold it, so a spec can't pass without the change happening. For a type with no value equality add `assert:` and check field-wise.
 - `arrange:` when the dispatch needs more — Calendar's `Selection` for the `Values` branch, Combo's `Data`. Order the named arguments arrange → argsJson → expect, so a spec reads arrange/act/assert.

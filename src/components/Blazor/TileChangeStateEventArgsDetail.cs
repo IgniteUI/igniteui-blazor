@@ -7,11 +7,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbTileChangeStateEventArgsDetail : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTileChangeStateEventArgsDetail"; } }
 
         private static bool _marshalByValue = true;
 
-        private IgbTile _tile;
+        private IgbTile _tile = new IgbTile();
 
         /// <summary>
         /// The tile whose state is changing.
@@ -51,14 +52,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -71,7 +64,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -82,14 +76,15 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("tile"))
-            { this.Tile = (IgbTile)ConvertReturnValue(args["tile"], "Tile", true); }
-            if (args.ContainsKey("state"))
+            if (args != null && args.TryGetValue("tile", out var tileObj) && ConvertReturnValue(tileObj, "Tile", true) is IgbTile tile)
+            { this.Tile = tile; }
+            if (args != null && args.ContainsKey("state"))
             { this.State = ReturnToBoolean(args["state"]); }
 
             this.SuppressParentNotify = false;

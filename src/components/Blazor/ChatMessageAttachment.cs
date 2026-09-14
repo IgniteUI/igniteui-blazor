@@ -7,11 +7,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatMessageAttachment : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatMessageAttachment"; } }
 
         private static bool _marshalByValue = true;
 
-        private string _id;
+        private string _id = string.Empty;
 
         /// <summary>
         /// A unique identifier for the attachment.
@@ -30,14 +31,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _url;
+        private string? _url;
 
         /// <summary>
         /// The URL from which the attachment can be downloaded or viewed.
         /// Typically used for attachments stored on a server or CDN.
         /// </summary>
         [Parameter]
-        public string Url
+        public string? Url
         {
             get { return this._url; }
             set
@@ -50,14 +51,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _attachmentType;
+        private string? _attachmentType;
 
         /// <summary>
         /// The MIME type or a custom type identifier for the attachment (e.g. "image/png", "pdf", "audio").
         /// </summary>
         [Parameter]
         [WCWidgetMemberName("Type")]
-        public string AttachmentType
+        public string? AttachmentType
         {
             get { return this._attachmentType; }
             set
@@ -70,13 +71,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _thumbnail;
+        private string? _thumbnail;
 
         /// <summary>
         /// Optional URL to a thumbnail preview of the attachment (e.g. for images or videos).
         /// </summary>
         [Parameter]
-        public string Thumbnail
+        public string? Thumbnail
         {
             get { return this._thumbnail; }
             set
@@ -90,14 +91,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -114,7 +107,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -131,20 +125,21 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("id"))
+            if (args != null && args.ContainsKey("id"))
             { this.Id = ReturnToString(args["id"]); }
-            if (args.ContainsKey("name"))
+            if (args != null && args.ContainsKey("name"))
             { this.Name = ReturnToString(args["name"]); }
-            if (args.ContainsKey("url"))
+            if (args != null && args.ContainsKey("url"))
             { this.Url = ReturnToString(args["url"]); }
-            if (args.ContainsKey("attachmentType"))
+            if (args != null && args.ContainsKey("attachmentType"))
             { this.AttachmentType = ReturnToString(args["attachmentType"]); }
-            if (args.ContainsKey("thumbnail"))
+            if (args != null && args.ContainsKey("thumbnail"))
             { this.Thumbnail = ReturnToString(args["thumbnail"]); }
 
             this.SuppressParentNotify = false;

@@ -7,21 +7,16 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSliderBase : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSliderBase"; } }
 
-        protected override void EnsureModulesLoaded()
-        {
-            if (!IgbSliderBaseModule.IsLoadRequested(IgBlazor))
-            {
-                IgbSliderBaseModule.Register(IgBlazor);
-            }
-        }
-
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +25,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -312,13 +310,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// The locale used to format the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -331,13 +329,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _valueFormat;
+        private string? _valueFormat;
 
         /// <summary>
         /// String format used for the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public string ValueFormat
+        public string? ValueFormat
         {
             get { return this._valueFormat; }
             set
@@ -369,13 +367,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbNumberFormatSpecifier _valueFormatOptions;
+        private IgbNumberFormatSpecifier? _valueFormatOptions;
 
         /// <summary>
         /// Number format options used for the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public IgbNumberFormatSpecifier ValueFormatOptions
+        public IgbNumberFormatSpecifier? ValueFormatOptions
         {
             get { return this._valueFormatOptions; }
             set
@@ -389,14 +387,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -435,7 +425,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("TickLabelRotation"))
             { ser.AddEnumProp("tickLabelRotation", this._tickLabelRotation); }
             if (IsPropDirty("ValueFormatOptions"))
-            { ser.AddSerializableProp("valueFormatOptions", (JsonSerializable)this._valueFormatOptions); }
+            { ser.AddSerializableProp("valueFormatOptions", (JsonSerializable?)this._valueFormatOptions); }
 
         }
 

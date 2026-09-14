@@ -4,12 +4,13 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbComboChangeEventArgsDetail : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebComboChangeEventArgsDetail"; } }
 
         private static bool _marshalByValue = true;
 
-        private string _newValueRef;
-        private object[] _newValue;
+        private string? _newValueRef;
+        private object[] _newValue = Array.Empty<object>();
 
         [Parameter]
         public object[] NewValue
@@ -24,7 +25,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     MarkPropDirty("NewValue");
                     this._newValue = value;
-                    this.OnRefChanged("NewValue", oldValue, value, false, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("NewValue", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._newValueRef = refName;
                         this.MarkPropDirty("NewValueRef");
@@ -33,11 +34,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _newValueScript;
+        private string? _newValueScript;
 
         ///<summary>Provides a means of setting NewValue in the JavaScript environment.</summary>
         [Parameter]
-        public string NewValueScript
+        public string? NewValueScript
         {
             get { return _newValueScript; }
 
@@ -48,7 +49,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._newValueScript = value;
                     MarkPropDirty("NewValue");
-                    this.OnRefChanged("NewValue", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("NewValue", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._newValueRef = refName;
                         this.MarkPropDirty("NewValueRef");
@@ -56,8 +57,8 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private string _itemsRef;
-        private object[] _items;
+        private string? _itemsRef;
+        private object[] _items = Array.Empty<object>();
 
         [Parameter]
         public object[] Items
@@ -72,7 +73,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     MarkPropDirty("Items");
                     this._items = value;
-                    this.OnRefChanged("Items", oldValue, value, false, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Items", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemsRef = refName;
                         this.MarkPropDirty("ItemsRef");
@@ -81,11 +82,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemsScript;
+        private string? _itemsScript;
 
         ///<summary>Provides a means of setting Items in the JavaScript environment.</summary>
         [Parameter]
-        public string ItemsScript
+        public string? ItemsScript
         {
             get { return _itemsScript; }
 
@@ -96,7 +97,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._itemsScript = value;
                     MarkPropDirty("Items");
-                    this.OnRefChanged("Items", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Items", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemsRef = refName;
                         this.MarkPropDirty("ItemsRef");
@@ -122,14 +123,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -144,7 +137,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -153,21 +147,22 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Items"))
             { args["items"] = ObjectArrayToParam(this._items); }
             if (IsPropDirty("ChangeType"))
-            { args["changeType"] = EnumToString(this._changeType); }
+            { args["type"] = EnumToString(this._changeType); }
 
         }
 
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("newValue"))
+            if (args != null && args.ContainsKey("newValue"))
             { this.NewValue = ReturnToObjectArray(args["newValue"]); }
-            if (args.ContainsKey("items"))
+            if (args != null && args.ContainsKey("items"))
             { this.Items = ReturnToObjectArray(args["items"]); }
-            if (args.ContainsKey("changeType"))
-            { this.ChangeType = StringToEnum<ComboChangeType>(args["changeType"]); }
+            if (args != null && args.ContainsKey("type"))
+            { this.ChangeType = StringToEnum<ComboChangeType>(args["type"]); }
 
             this.SuppressParentNotify = false;
         }

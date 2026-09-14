@@ -1,23 +1,26 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbSelectGroupModule
+    /// <summary>
+    /// Provides the module for the <see cref="IgbSelectGroup"/> child component of <see cref="IgbSelect"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbSelectGroupModule is no longer required, has no effect and can be safely removed.")]
+    [IgbModule<IgbSelectGroupModule>]
+    public partial class IgbSelectGroupModule : IIgbModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebSelectGroupModule");
-
-            IgbSelectItemModule.MarkIsLoadRequested(runtime);
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebSelectGroupModule");
         }
 
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebSelectGroupModule");
+            return true;
         }
     }
 }

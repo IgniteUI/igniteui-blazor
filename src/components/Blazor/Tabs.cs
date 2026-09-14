@@ -11,8 +11,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbTabs : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTabs"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbTabsModule.IsLoadRequested(IgBlazor))
@@ -21,11 +23,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -34,6 +38,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -42,6 +47,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -50,11 +56,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get
@@ -63,9 +71,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private CollectionAdapter<IgbTab, IgbTab> _tabsCollectionAdapter;
-        private IgbTabs_TabCollection _allTabsCollection;
-        private IgbTabs_TabCollection _contentTabsCollection = null;
+        private CollectionAdapter<IgbTab, IgbTab>? _tabsCollectionAdapter;
+        private IgbTabs_TabCollection? _allTabsCollection;
+        private IgbTabs_TabCollection? _contentTabsCollection = null;
 
         public IgbTabs_TabCollection ContentTabsCollection
         {
@@ -79,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
                 return this._contentTabsCollection;
             }
         }
-        private IgbTabs_TabCollection _actualTabsCollection = null;
+        private IgbTabs_TabCollection? _actualTabsCollection = null;
 
         public IgbTabs_TabCollection ActualTabsCollection
         {
@@ -117,7 +125,7 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private IgbTabs_TabCollection _tabsCollection = null;
+        private IgbTabs_TabCollection? _tabsCollection = null;
 
         public IgbTabs_TabCollection TabsCollection
         {
@@ -189,7 +197,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
         public async Task<string> GetSelectedAsync()
         {
-            var iv = await InvokeMethod("p:Selected", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Selected", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
@@ -199,11 +207,12 @@ namespace IgniteUI.Blazor.Controls
         /// <returns>The label of the selected tab, or its ID if no label is set.</returns>
         public string GetSelected()
         {
-            var iv = InvokeMethodSync("p:Selected", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Selected", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
-        public override object FindByName(string name)
+        /// <inheritdoc />
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -216,20 +225,12 @@ namespace IgniteUI.Blazor.Controls
 
             return null;
         }
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Selects the specified tab and displays the corresponding panel.
         /// </summary>
         public async Task SelectAsync(String id)
         {
-            await InvokeMethod("select", new object[] { StringToString(id) }, new string[] { "String" });
+            await InvokeMethod("select", new object?[] { StringToString(id) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -237,11 +238,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Select(String id)
         {
-            InvokeMethodSync("select", new object[] { StringToString(id) }, new string[] { "String" });
+            InvokeMethodSync("select", new object?[] { StringToString(id) }, new string[] { "String" });
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
@@ -251,7 +252,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -259,7 +260,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -286,9 +287,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTabComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _change, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_change))
                     {
                         _change = value;
                         this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", value, (args) =>

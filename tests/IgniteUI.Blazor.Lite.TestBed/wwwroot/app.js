@@ -7,7 +7,16 @@ async function renderComponent(componentName) {
 }
 
 function onAfterRender() {
+  //a flag, so a test can check for load it if it missed the message
+  window.appLoaded = true;
   console.log('App Loaded.');
+}
+
+/** WASM client pages pass a `DotNetObjectReference` here for tests to invoke scenario methods;
+ * `DotNet.invokeMethodAsync` throws if there's a second .NET runtime (e.g. an InteractiveServer island, like HeadOutlet).
+ */
+function registerClientPageRef(pageRef) {
+  window.clientPageRef = pageRef;
 }
 
 async function setSelector(componentSelector) {

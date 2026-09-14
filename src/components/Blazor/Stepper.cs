@@ -7,8 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbStepper : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebStepper"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbStepperModule.IsLoadRequested(IgBlazor))
@@ -17,11 +19,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,6 +52,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -56,16 +63,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<IgbStep[]> GetStepsAsync()
         {
-            var iv = await InvokeMethod("p:Steps", new object[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbStep[]);
-            }
+            var iv = await InvokeMethod("p:Steps", new object?[] { }, new string[] { });
             var retVal = ReturnToObjectArray<IgbStep>(iv);
             if (retVal == null)
             {
-                return default(IgbStep[]);
+                return Array.Empty<IgbStep>();
             }
             return retVal;
 
@@ -76,16 +78,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public IgbStep[] GetSteps()
         {
-            var iv = InvokeMethodSync("p:Steps", new object[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbStep[]);
-            }
+            var iv = InvokeMethodSync("p:Steps", new object?[] { }, new string[] { });
             var retVal = ReturnToObjectArray<IgbStep>(iv);
             if (retVal == null)
             {
-                return default(IgbStep[]);
+                return Array.Empty<IgbStep>();
             }
             return retVal;
 
@@ -243,20 +240,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Activates the step at a given index.
         /// </summary>
         public async Task NavigateToAsync(double index)
         {
-            await InvokeMethod("navigateTo", new object[] { index }, new string[] { "Number" });
+            await InvokeMethod("navigateTo", new object?[] { index }, new string[] { "Number" });
         }
 
         /// <summary>
@@ -264,14 +253,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void NavigateTo(double index)
         {
-            InvokeMethodSync("navigateTo", new object[] { index }, new string[] { "Number" });
+            InvokeMethodSync("navigateTo", new object?[] { index }, new string[] { "Number" });
         }
         /// <summary>
         /// Activates the next enabled step.
         /// </summary>
         public async Task NextAsync()
         {
-            await InvokeMethod("next", new object[] { }, new string[] { });
+            await InvokeMethod("next", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -279,14 +268,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Next()
         {
-            InvokeMethodSync("next", new object[] { }, new string[] { });
+            InvokeMethodSync("next", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Activates the previous enabled step.
         /// </summary>
         public async Task PrevAsync()
         {
-            await InvokeMethod("prev", new object[] { }, new string[] { });
+            await InvokeMethod("prev", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -294,14 +283,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Prev()
         {
-            InvokeMethodSync("prev", new object[] { }, new string[] { });
+            InvokeMethodSync("prev", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Resets the stepper to its initial state, i.e. activates the first step.
         /// </summary>
         public async Task ResetAsync()
         {
-            await InvokeMethod("reset", new object[] { }, new string[] { });
+            await InvokeMethod("reset", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -309,11 +298,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Reset()
         {
-            InvokeMethodSync("reset", new object[] { }, new string[] { });
+            InvokeMethodSync("reset", new object?[] { }, new string[] { });
         }
 
-        private string _activeStepChangingRef = null;
-        private string _activeStepChangingScript = null;
+        private string? _activeStepChangingRef = null;
+        private string? _activeStepChangingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ActiveStepChanging"/> event in the browser instead.
@@ -323,7 +312,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ActiveStepChangingScript
+        public string? ActiveStepChangingScript
         {
 
             set
@@ -331,7 +320,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._activeStepChangingScript)
                 {
                     this._activeStepChangingScript = value;
-                    this.OnRefChanged("ActiveStepChanging", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ActiveStepChanging", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._activeStepChangingRef = refName;
                         this.MarkPropDirty("ActiveStepChangingRef");
@@ -358,9 +347,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbActiveStepChangingEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _activeStepChanging, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_activeStepChanging))
                     {
                         _activeStepChanging = value;
                         this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", value);
@@ -384,8 +373,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _activeStepChangedRef = null;
-        private string _activeStepChangedScript = null;
+        private string? _activeStepChangedRef = null;
+        private string? _activeStepChangedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ActiveStepChanged"/> event in the browser instead.
@@ -395,7 +384,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ActiveStepChangedScript
+        public string? ActiveStepChangedScript
         {
 
             set
@@ -403,7 +392,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._activeStepChangedScript)
                 {
                     this._activeStepChangedScript = value;
-                    this.OnRefChanged("ActiveStepChanged", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ActiveStepChanged", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._activeStepChangedRef = refName;
                         this.MarkPropDirty("ActiveStepChangedRef");
@@ -430,9 +419,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbActiveStepChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _activeStepChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_activeStepChanged))
                     {
                         _activeStepChanged = value;
                         this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value);

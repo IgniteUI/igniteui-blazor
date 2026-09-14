@@ -2,6 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbTileManager
     {
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get
@@ -10,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseCollection<IgbTile> _contentItems = null;
+        private BaseCollection<IgbTile>? _contentItems = null;
 
         internal BaseCollection<IgbTile> ContentItems
         {

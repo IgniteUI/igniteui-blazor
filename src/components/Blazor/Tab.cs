@@ -5,23 +5,27 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A tab nested in an <see cref="IgbTabs"/> component.
     /// </summary>
-    public partial class IgbTab : BaseRendererControl, IDisposable
+    public partial class IgbTab : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTab"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbTabModule.IsLoadRequested(IgBlazor))
+            if (!IgbTabsModule.IsLoadRequested(IgBlazor))
             {
-                IgbTabModule.Register(IgBlazor);
+                IgbTabsModule.Register(IgBlazor);
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -30,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -38,6 +43,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -46,27 +52,30 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
         [CascadingParameter(Name = "TabsParent")]
-        protected BaseRendererControl TabsParent
+        protected BaseRendererControl? TabsParent
         {
             get; set;
         }
 
-        public void Dispose()
+        /// <inheritdoc />
+        public override async ValueTask DisposeAsync()
         {
             if (TabsParent != null)
             {
                 var sv = (IgbTabs)TabsParent;
                 sv.ContentTabsCollection.Remove(this);
             }
-
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         protected override async Task OnInitializedAsync()
         {
             if (TabsParent != null)
@@ -77,13 +86,13 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The tab item label.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -135,14 +144,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {

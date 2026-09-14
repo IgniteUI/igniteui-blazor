@@ -1,21 +1,26 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbCarouselIndicatorModule
+    /// <summary>
+    /// Provides the module for the <see cref="IgbCarouselIndicator"/> child component of <see cref="IgbCarousel"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbCarouselIndicatorModule is no longer required, has no effect and can be safely removed.")]
+    [IgbModule<IgbCarouselIndicatorModule>]
+    public partial class IgbCarouselIndicatorModule : IIgbModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebCarouselIndicatorModule");
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebCarouselIndicatorModule");
         }
 
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebCarouselIndicatorModule");
+            return true;
         }
     }
 }

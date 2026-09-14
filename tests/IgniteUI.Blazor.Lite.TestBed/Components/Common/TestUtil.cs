@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using IgniteUI.Blazor.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -42,8 +42,16 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
             if (prop.PropertyType == typeof(DateTime))
             {
-                serverString = JsonConvert.DeserializeObject<DateTime>(serverString).ToShortDateString();
-                clientValue = JsonConvert.DeserializeObject<DateTime>(clientValue).ToShortDateString();
+                // Nullable: a client with no value yet compares unequal instead of throwing.
+                var serverDate = JsonConvert.DeserializeObject<DateTime?>(serverString);
+                var clientDate = JsonConvert.DeserializeObject<DateTime?>(clientValue);
+                if (serverDate == null || clientDate == null)
+                {
+                    return false;
+                }
+
+                serverString = serverDate.Value.ToShortDateString();
+                clientValue = clientDate.Value.ToShortDateString();
             }
 
             if (prop.PropertyType == typeof(DateTime[]))
@@ -76,9 +84,9 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                         return false;
                     }
 
-                    DateTime[] serverDateArray = (DateTime[])serverDateRangeArray[i].DateRange;
+                    DateTime[] serverDateArray = (DateTime[])serverDateRangeArray[i].DateRange!;
                     string[] serverStringArray = serverDateArray.Select(x => x.ToShortDateString()).ToArray();
-                    var clientRangeArray = ((JArray)clientDateArray[i].DateRange).ToObject<DateTime[]>();
+                    var clientRangeArray = ((JArray)clientDateArray[i].DateRange!).ToObject<DateTime[]>();
                     if (clientRangeArray == null)
                     {
                         return false;

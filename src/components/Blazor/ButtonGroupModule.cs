@@ -6,7 +6,8 @@ namespace IgniteUI.Blazor.Controls
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
     /// </remarks>
-    public partial class IgbButtonGroupModule
+    [IgbModule<IgbButtonGroupModule>]
+    public partial class IgbButtonGroupModule : IIgbModule
     {
         /// <summary>
         /// Requests this module's client resources to be loaded into the runtime.
@@ -15,9 +16,6 @@ namespace IgniteUI.Blazor.Controls
         public static void Register(IIgniteUIBlazor runtime)
         {
             ModuleLoader.Load(runtime, "WebButtonGroupModule");
-
-            IgbToggleButtonModule.MarkIsLoadRequested(runtime);
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)

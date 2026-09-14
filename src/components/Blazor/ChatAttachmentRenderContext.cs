@@ -7,9 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatAttachmentRenderContext : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatAttachmentRenderContext"; } }
 
-        private IgbChatMessageAttachment _attachment;
+        private IgbChatMessageAttachment _attachment = new IgbChatMessageAttachment();
 
         /// <summary>
         /// The specific attachment being rendered.
@@ -25,23 +26,15 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._attachment);
                 }
+                this._attachment = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._attachment = value;
             }
 
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {

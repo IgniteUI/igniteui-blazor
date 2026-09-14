@@ -7,15 +7,16 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbFilteringOptions : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebFilteringOptions"; } }
 
-        private string _filterKey;
+        private string? _filterKey;
 
         /// <summary>
         /// The key in the data source used when filtering the list of options.
         /// </summary>
         [Parameter]
-        public string FilterKey
+        public string? FilterKey
         {
             get { return this._filterKey; }
             set
@@ -67,14 +68,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {

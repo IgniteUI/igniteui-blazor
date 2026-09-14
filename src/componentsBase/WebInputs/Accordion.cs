@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbAccordion
     {
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get
@@ -12,7 +13,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseCollection<IgbExpansionPanel> _contentItems = null;
+        private BaseCollection<IgbExpansionPanel>? _contentItems = null;
 
         internal BaseCollection<IgbExpansionPanel> ContentItems
         {
@@ -29,23 +30,26 @@ namespace IgniteUI.Blazor.Controls
 
     }
 
-    public partial class IgbExpansionPanel : IDisposable
+    public partial class IgbExpansionPanel
     {
         [CascadingParameter(Name = "AccordionParent")]
-        protected BaseRendererControl AccordionParent
+        protected BaseRendererControl? AccordionParent
         {
             get; set;
         }
 
-        public void Dispose()
+        /// <inheritdoc/>
+        public override async ValueTask DisposeAsync()
         {
             if (AccordionParent != null)
             {
                 var sv = (IgbAccordion)AccordionParent;
                 sv.ContentItems.Remove(this);
             }
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         protected override async Task OnInitializedAsync()
         {
             if (AccordionParent != null)

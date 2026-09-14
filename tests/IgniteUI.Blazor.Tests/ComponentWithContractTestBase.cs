@@ -174,7 +174,9 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             ? $"no new current-state read was issued for \"{method.ReadsProperty}\""
             : $"\"{method.JsName}\" sent no new invocation";
 
-        var (call, result) = await InvokeExpectingNewCall(matching, () => method.Invoke(cut.Instance), noNewCall);
+        // On the dispatcher, as application code calling a component API is - see OnDispatcher.
+        var (call, result) = await InvokeExpectingNewCall(
+            matching, () => harness.OnDispatcher(() => method.Invoke(cut.Instance)), noNewCall);
         AssertObserved(harness, cut, scope, method, call, result);
 
         if (method.SyncInvoke is not null)
@@ -183,7 +185,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             // (the stub persists) to the same result.
             var (syncCall, syncResult) = await InvokeExpectingNewCall(
                 matching,
-                () => Task.FromResult(method.SyncInvoke(cut.Instance)),
+                () => Task.FromResult(harness.OnDispatcher(() => method.SyncInvoke(cut.Instance))),
                 "sync twin: " + noNewCall);
             AssertObserved(harness, cut, scope, method, syncCall, syncResult);
         }
@@ -365,7 +367,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 var registration = harness.FindPropertyUpdate(containerId, WireMemberName(bind.DrivingEvent))
                     ?? throw new XunitException(
                         $"binding transmitted no \"{bind.DrivingEvent}\" event registration — without it the " +
-                        "client never reports changes, so the binding can never fire");
+                        $"client never reports changes, so the binding can never fire ({harness.DescribeTraffic(containerId)})");
                 Assert.Equal(bind.DrivingEvent, registration.GetString());
 
                 harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
@@ -399,21 +401,36 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                         $"{bind.PropertyName} did not adopt the value pushed to the binding — {mismatch.Message}");
                 }
 
-                // TODO: unbinding is blocked by the same defect as an event callback's, so one fix
-                // covers both — clearing the parameter arrives as a callback with a Receiver and a
-                // null Delegate, which fails the setter's Empty check, takes the *bound* branch, and
-                // NREs in BaseRendererControl.CompareEventCallbacks on leftDelegate.Equals(...).
-                // What to assert differs from an event's, though: a bind member's empty branch only
-                // nulls its field (no SetHandler(null), no OnRefChanged), so the driving event stays
-                // registered and the property keeps adopting client changes — only the callback
-                // stops. Needs BindPair to accept a null sink, as EventContractSpec.Bind already
-                // does. Then:
-                // received = null;
-                // cut.Render(ps => bind.BindPair(ps, null));
-                // Assert.False(bind.ChangedIsBound(cut.Instance));   // member resets to Empty
-                // harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
-                // Assert.Null(received);                             // the callback stops firing
-                // Assert.NotNull(bind.ReadProperty(cut.Instance));   // but the property still tracks
+                // Unbinding stops the callback. Either callback carrying no handler must clear it,
+                // so both are verified.
+                // Unlike an event member, a bind member's empty branch only nulls its own field,
+                // so the driving event stays subscribed and the property keeps adopting client changes.
+                // TODO: Evaluate design, since EnsureXHandled forced that registration and never withdraws it.
+                VerifyUnbind(useEmpty: false);
+                Rebind();
+                VerifyUnbind(useEmpty: true);
+
+                void VerifyUnbind(bool useEmpty)
+                {
+                    var assigned = useEmpty ? "EventCallback<T>.Empty" : "default";
+
+                    cut.Render(ps => bind.BindPair(ps, null, useEmpty));
+                    Assert.False(
+                        bind.ChangedIsBound(cut.Instance),
+                        $"{bind.PropertyName}Changed still reports a bound callback after being cleared with {assigned}");
+
+                    delivered = false;
+                    harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
+                    Assert.False(delivered, $"{bind.PropertyName}Changed fired after being unbound with {assigned}");
+                }
+
+                void Rebind()
+                {
+                    cut.Render(ps => bind.BindPair(ps, Sink));
+                    Assert.True(
+                        bind.ChangedIsBound(cut.Instance),
+                        $"{bind.PropertyName}Changed did not take the callback again after being cleared");
+                }
             }
             catch (Exception ex) when (ex is not ContractViolationException)
             {
@@ -454,10 +471,11 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             {
                 object? received = null;
                 object bound = null!;
+                void Sink(object args) => received = args;
                 var cut = Render<TComponent>(ps =>
                 {
                     evt.Arrange?.Invoke(ps);
-                    bound = evt.Bind(ps, args => received = args);
+                    bound = evt.Bind(ps, Sink);
                 });
                 var containerId = harness.ContainerIdOf(cut);
 
@@ -469,7 +487,8 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 Assert.Equal(bound, evt.Get(cut.Instance));
                 var wireName = WireMemberName(evt.EventName);
                 var registration = harness.FindPropertyUpdate(containerId, wireName)
-                    ?? throw new XunitException("no event-handler registration transmission was observed");
+                    ?? throw new XunitException(
+                        "no event-handler registration transmission was observed — " + harness.DescribeTraffic(containerId));
                 Assert.Equal(evt.EventName, registration.GetString());
 
                 var argsJson = evt.ArgsJson.Get(harness, cut);
@@ -487,21 +506,61 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 evt.AssertWithComponent?.Invoke(cut.Instance, received);
                 evt.AssertWithCut?.Invoke(cut, received);
 
-                // TODO: removing a bound callback crashes today, on either path. Razor-bound
-                // values arrive wrapped by EventCallback.Factory.Create, so a "default"
-                // carries a Receiver with a null Delegate — that fails the setter's Empty
-                // check, takes the *bound* branch, and NREs in
-                // BaseRendererControl.CompareEventCallbacks on leftDelegate.Equals(...);
-                // a raw Empty (what bUnit/programmatic SetParameters passes) does reach the
-                // unset branch and NREs in OnRefChanged on newValue.ToString(). Once fixed,
-                // validate the removal round-trip; pin the actual cleared wire shape then:
-                // cut.Render(ps => bound = evt.Bind(ps, null));   // bUnit 2.x: no SetParametersAndRender
-                // Assert.Equal(bound, evt.Get(cut.Instance)); // member resets to the empty callback
-                // var cleared = harness.FindPropertyUpdate(containerId, wireName);
-                // Assert.Equal(JsonValueKind.Null, cleared!.Value.ValueKind);
-                // received = null;
-                // harness.RaiseEvent(containerId, evt.EventName, argsJson);
-                // Assert.Null(received); // deregistered handlers must not be invoked
+                // Re-binding an equivalent callback must not read as a new subscription — Blazor hands over a
+                // fresh delegate for the same handler every render. Read through the member (a setter assigns
+                // and registers in one branch) since probing the wire for an absent message costs a 2s retry.
+                // Only bites on net8.0/net9.0, whose EventCallback.Equals compares the delegate by reference.
+                cut.Render(ps => evt.Bind(ps, Sink));
+                Assert.Equal(bound, evt.Get(cut.Instance));
+
+                // Unbinding is the other half of the registration contract: clearing the parameter
+                // must reset the member, tell the client to unsubscribe, and stop delivery. Either
+                // callback carrying no handler must clear it, so both are verified.
+                VerifyUnbind(useEmpty: false);
+                Rebind();
+                VerifyUnbind(useEmpty: true);
+
+                void VerifyUnbind(bool useEmpty)
+                {
+                    var assigned = useEmpty ? "EventCallback<T>.Empty" : "default";
+
+                    // Forget the previous phase's traffic, so what follows is the client state
+                    harness.ClearObserved();
+                    cut.Render(ps => evt.Bind(ps, null, useEmpty));
+
+                    // Asserted through the member rather than against the assigned value: clearing with
+                    // default reads back as Empty, since the getter substitutes it for a null field.
+                    Assert.False(
+                        evt.IsBound(cut.Instance),
+                        $"clearing \"{evt.EventName}\" with {assigned} left the member holding a live callback");
+
+                    // TODO: active @bind-X may still need the sub; fix will make this check conditional.
+                    var cleared = harness.FindPropertyUpdate(containerId, wireName);
+                    if (cleared is null || cleared.Value.ValueKind != JsonValueKind.Null)
+                    {
+                        throw new XunitException(
+                            $"clearing \"{evt.EventName}\" with {assigned} left it registered as " +
+                            $"{cleared?.ToString() ?? "nothing"} — the client would keep reporting an " +
+                            "event nobody handles");
+                    }
+
+                    received = null;
+                    harness.RaiseEvent(containerId, evt.EventName, argsJson);
+                    Assert.Null(received);
+                }
+
+                void Rebind()
+                {
+                    harness.ClearObserved();
+                    cut.Render(ps => evt.Bind(ps, Sink));
+                    var rebound = harness.FindPropertyUpdate(containerId, wireName);
+                    if (rebound is null || rebound.Value.GetString() != evt.EventName)
+                    {
+                        throw new XunitException(
+                            $"re-binding \"{evt.EventName}\" transmitted {rebound?.ToString() ?? "no registration"} — " +
+                            $"the client would never resubscribe ({harness.DescribeTraffic(containerId)})");
+                    }
+                }
             }
             catch (Exception ex) when (ex is not ContractViolationException)
             {

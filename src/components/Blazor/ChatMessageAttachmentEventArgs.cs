@@ -8,11 +8,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatMessageAttachmentEventArgs : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatMessageAttachmentEventArgs"; } }
 
         private static bool _marshalByValue = true;
 
-        private IgbChatMessageAttachment _detail;
+        private IgbChatMessageAttachment _detail = new IgbChatMessageAttachment();
 
         /// <summary>
         /// The chat message attachment the event was raised for.
@@ -28,11 +29,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -46,7 +47,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -55,13 +57,14 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbChatMessageAttachment)ConvertReturnValue(args["detail"], "ChatMessageAttachment", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "ChatMessageAttachment", true) is IgbChatMessageAttachment detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

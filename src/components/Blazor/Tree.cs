@@ -9,8 +9,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbTree : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTree"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbTreeModule.IsLoadRequested(IgBlazor))
@@ -19,11 +21,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -32,6 +36,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -40,6 +45,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -48,6 +54,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -111,7 +118,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public override object FindByName(string name)
+        /// <inheritdoc />
+        public override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -129,25 +137,8 @@ namespace IgniteUI.Blazor.Controls
 
             return null;
         }
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public async Task ConnectedCallbackAsync()
-        {
-            await InvokeMethod("connectedCallback", new object[] { }, new string[] { });
-        }
-        public void ConnectedCallback()
-        {
-            InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
-        }
-
-        private string _selectionChangedRef = null;
-        private string _selectionChangedScript = null;
+        private string? _selectionChangedRef = null;
+        private string? _selectionChangedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="SelectionChanged"/> event in the browser instead.
@@ -157,7 +148,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SelectionChangedScript
+        public string? SelectionChangedScript
         {
 
             set
@@ -165,7 +156,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._selectionChangedScript)
                 {
                     this._selectionChangedScript = value;
-                    this.OnRefChanged("SelectionChanged", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("SelectionChanged", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._selectionChangedRef = refName;
                         this.MarkPropDirty("SelectionChangedRef");
@@ -192,9 +183,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTreeSelectionEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _selectionChanged, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_selectionChanged))
                     {
                         _selectionChanged = value;
                         this.SetHandler<IgbTreeSelectionEventArgs>(this.Name, "SelectionChanged", value);
@@ -218,8 +209,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemExpandingRef = null;
-        private string _itemExpandingScript = null;
+        private string? _itemExpandingRef = null;
+        private string? _itemExpandingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ItemExpanding"/> event in the browser instead.
@@ -229,7 +220,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemExpandingScript
+        public string? ItemExpandingScript
         {
 
             set
@@ -237,7 +228,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._itemExpandingScript)
                 {
                     this._itemExpandingScript = value;
-                    this.OnRefChanged("ItemExpanding", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ItemExpanding", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._itemExpandingRef = refName;
                         this.MarkPropDirty("ItemExpandingRef");
@@ -264,9 +255,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTreeItemComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _itemExpanding, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_itemExpanding))
                     {
                         _itemExpanding = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanding", value);
@@ -290,8 +281,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemExpandedRef = null;
-        private string _itemExpandedScript = null;
+        private string? _itemExpandedRef = null;
+        private string? _itemExpandedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ItemExpanded"/> event in the browser instead.
@@ -301,7 +292,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemExpandedScript
+        public string? ItemExpandedScript
         {
 
             set
@@ -309,7 +300,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._itemExpandedScript)
                 {
                     this._itemExpandedScript = value;
-                    this.OnRefChanged("ItemExpanded", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ItemExpanded", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._itemExpandedRef = refName;
                         this.MarkPropDirty("ItemExpandedRef");
@@ -336,9 +327,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTreeItemComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _itemExpanded, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_itemExpanded))
                     {
                         _itemExpanded = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemExpanded", value);
@@ -362,8 +353,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemCollapsingRef = null;
-        private string _itemCollapsingScript = null;
+        private string? _itemCollapsingRef = null;
+        private string? _itemCollapsingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ItemCollapsing"/> event in the browser instead.
@@ -373,7 +364,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemCollapsingScript
+        public string? ItemCollapsingScript
         {
 
             set
@@ -381,7 +372,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._itemCollapsingScript)
                 {
                     this._itemCollapsingScript = value;
-                    this.OnRefChanged("ItemCollapsing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ItemCollapsing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._itemCollapsingRef = refName;
                         this.MarkPropDirty("ItemCollapsingRef");
@@ -408,9 +399,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTreeItemComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _itemCollapsing, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_itemCollapsing))
                     {
                         _itemCollapsing = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsing", value);
@@ -434,8 +425,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _itemCollapsedRef = null;
-        private string _itemCollapsedScript = null;
+        private string? _itemCollapsedRef = null;
+        private string? _itemCollapsedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ItemCollapsed"/> event in the browser instead.
@@ -445,7 +436,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemCollapsedScript
+        public string? ItemCollapsedScript
         {
 
             set
@@ -453,7 +444,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._itemCollapsedScript)
                 {
                     this._itemCollapsedScript = value;
-                    this.OnRefChanged("ItemCollapsed", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ItemCollapsed", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._itemCollapsedRef = refName;
                         this.MarkPropDirty("ItemCollapsedRef");
@@ -480,9 +471,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTreeItemComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _itemCollapsed, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_itemCollapsed))
                     {
                         _itemCollapsed = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ItemCollapsed", value);
@@ -506,8 +497,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _activeItemRef = null;
-        private string _activeItemScript = null;
+        private string? _activeItemRef = null;
+        private string? _activeItemScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ActiveItem"/> event in the browser instead.
@@ -517,7 +508,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ActiveItemScript
+        public string? ActiveItemScript
         {
 
             set
@@ -525,7 +516,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._activeItemScript)
                 {
                     this._activeItemScript = value;
-                    this.OnRefChanged("ActiveItem", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ActiveItem", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._activeItemRef = refName;
                         this.MarkPropDirty("ActiveItemRef");
@@ -552,9 +543,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbTreeItemComponentEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _activeItem, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_activeItem))
                     {
                         _activeItem = value;
                         this.SetHandler<IgbTreeItemComponentEventArgs>(this.Name, "ActiveItem", value);

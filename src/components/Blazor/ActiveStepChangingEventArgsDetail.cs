@@ -7,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbActiveStepChangingEventArgsDetail : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebActiveStepChangingEventArgsDetail"; } }
 
         private static bool _marshalByValue = true;
@@ -61,7 +62,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -72,14 +74,15 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("oldIndex"))
+            if (args != null && args.ContainsKey("oldIndex"))
             { this.OldIndex = ReturnToDouble(args["oldIndex"]); }
-            if (args.ContainsKey("newIndex"))
+            if (args != null && args.ContainsKey("newIndex"))
             { this.NewIndex = ReturnToDouble(args["newIndex"]); }
 
             this.SuppressParentNotify = false;

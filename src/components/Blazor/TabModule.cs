@@ -1,31 +1,26 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Client resource module for <see cref="IgbTab"/>.
+    /// Provides the module for the <see cref="IgbTab"/> child component of <see cref="IgbTabs"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
-    /// <remarks>
-    /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
-    /// </remarks>
-    public partial class IgbTabModule
+    [Obsolete("Registering IgbTabModule is no longer required, has no effect and can be safely removed.")]
+    [IgbModule<IgbTabModule>]
+    public partial class IgbTabModule : IIgbModule
     {
         /// <summary>
-        /// Requests this module's client resources to be loaded into the runtime.
+        /// No-op.
         /// </summary>
-        /// <param name="runtime">The Ignite UI Blazor runtime to load the resources into.</param>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebTabModule");
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebTabModule");
         }
 
         public static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebTabModule");
+            return true;
         }
     }
 }

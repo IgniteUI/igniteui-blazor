@@ -1,6 +1,5 @@
 using IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure;
 using IgniteUI.Blazor.Lite.TestBed.Components.Common;
-using Microsoft.Playwright;
 using NUnit.Framework.Internal;
 
 namespace IgniteUI.Blazor.Lite.IntegrationTests
@@ -27,12 +26,9 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             TestContext.Out.WriteLine("Test started for " + this.componentName);
 
             await Page.GotoAsync("http://localhost:5249/");
-            // wait for blazor to load
-            await Page.WaitForConsoleMessageAsync(new PageWaitForConsoleMessageOptions
-            {
-                Predicate = msg => msg.Text.Contains("App Loaded.")
-            });
-            //await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            // wait for blazor to load. On the flag rather than the console message, which is
+            // gone for good if it arrives before the listener is attached.
+            await Page.WaitForFunctionAsync("() => window.appLoaded === true");
 
             var summary = await Page.EvaluateAsync<ComponentRunSummary>(
                 @"renderComponent('" + this.componentName + "')");

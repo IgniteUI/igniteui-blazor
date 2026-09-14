@@ -5,21 +5,25 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSelectItem : IgbBaseOptionLike
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSelectItem"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbSelectItemModule.IsLoadRequested(IgBlazor))
+            if (!IgbSelectModule.IsLoadRequested(IgBlazor))
             {
-                IgbSelectItemModule.Register(IgBlazor);
+                IgbSelectModule.Register(IgBlazor);
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -28,6 +32,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -36,6 +41,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get

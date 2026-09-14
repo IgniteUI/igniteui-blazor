@@ -8,9 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbComponentDataValueChangedEventArgs : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebComponentDataValueChangedEventArgs"; } }
 
-        private object _detail;
+        private object _detail = new object();
 
         /// <summary>
         /// The value carried by the event.
@@ -39,7 +40,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -48,13 +50,14 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = ReturnToPrimitive(args["detail"]); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ReturnToPrimitive(detailObj) is object detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

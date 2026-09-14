@@ -8,11 +8,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbTabComponentEventArgs : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebTabComponentEventArgs"; } }
 
         private static bool _marshalByValue = true;
 
-        private IgbTab _detail;
+        private IgbTab _detail = new IgbTab();
 
         /// <summary>
         /// The tab that became selected.
@@ -41,7 +42,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -50,13 +52,14 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbTab)ConvertReturnValue(args["detail"], "Tab", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "Tab", true) is IgbTab detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

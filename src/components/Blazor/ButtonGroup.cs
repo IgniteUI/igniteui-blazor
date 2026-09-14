@@ -8,8 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbButtonGroup : BaseRendererControl
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebButtonGroup"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbButtonGroupModule.IsLoadRequested(IgBlazor))
@@ -18,11 +20,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -31,6 +35,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -39,6 +44,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -47,6 +53,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
@@ -109,7 +116,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string[] _selectedItems;
+        private string[] _selectedItems = Array.Empty<string>();
 
         /// <summary>
         /// Gets or sets the values of the currently selected buttons.
@@ -129,17 +136,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
-        private string _selectRef = null;
-        private string _selectScript = null;
+        private string? _selectRef = null;
+        private string? _selectScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
@@ -149,7 +148,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string SelectScript
+        public string? SelectScript
         {
 
             set
@@ -157,7 +156,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._selectScript)
                 {
                     this._selectScript = value;
-                    this.OnRefChanged("Select", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Select", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._selectRef = refName;
                         this.MarkPropDirty("SelectRef");
@@ -184,9 +183,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _select, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_select))
                     {
                         _select = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", value);
@@ -210,8 +209,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _deselectRef = null;
-        private string _deselectScript = null;
+        private string? _deselectRef = null;
+        private string? _deselectScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Deselect"/> event in the browser instead.
@@ -221,7 +220,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string DeselectScript
+        public string? DeselectScript
         {
 
             set
@@ -229,7 +228,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._deselectScript)
                 {
                     this._deselectScript = value;
-                    this.OnRefChanged("Deselect", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Deselect", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._deselectRef = refName;
                         this.MarkPropDirty("DeselectRef");
@@ -256,9 +255,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbComponentValueChangedEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _deselect, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_deselect))
                     {
                         _deselect = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", value);

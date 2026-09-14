@@ -2,6 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     public partial class IgbSelect
     {
+        /// <inheritdoc />
         protected override string ParentTypeName
         {
             get
@@ -10,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseCollection<IgbSelectItem> _contentItems = null;
+        private BaseCollection<IgbSelectItem>? _contentItems = null;
 
         internal BaseCollection<IgbSelectItem> ContentItems
         {

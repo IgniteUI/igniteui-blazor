@@ -6,7 +6,8 @@ namespace IgniteUI.Blazor.Controls
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
     /// </remarks>
-    public partial class IgbTreeModule
+    [IgbModule<IgbTreeModule>]
+    public partial class IgbTreeModule : IIgbModule
     {
         /// <summary>
         /// Requests this module's client resources to be loaded into the runtime.
@@ -15,9 +16,6 @@ namespace IgniteUI.Blazor.Controls
         public static void Register(IIgniteUIBlazor runtime)
         {
             ModuleLoader.Load(runtime, "WebTreeModule");
-
-            IgbTreeItemModule.MarkIsLoadRequested(runtime);
-
         }
 
         public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)

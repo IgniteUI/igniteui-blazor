@@ -13,8 +13,10 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbSnackbar : IgbBaseAlertLike
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebSnackbar"; } }
 
+        /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
             if (!IgbSnackbarModule.IsLoadRequested(IgBlazor))
@@ -23,11 +25,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
+        /// <inheritdoc />
         protected override bool SupportsVisualChildren
         {
             get
@@ -36,6 +40,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override bool UseDirectRender
         {
             get
@@ -44,6 +49,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <inheritdoc />
         protected override string DirectRenderElementName
         {
             get
@@ -52,13 +58,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _actionText;
+        private string? _actionText;
 
         /// <summary>
         /// The text of the action button.
         /// </summary>
         [Parameter]
-        public string ActionText
+        public string? ActionText
         {
             get { return this._actionText; }
             set
@@ -72,8 +78,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _actionRef = null;
-        private string _actionScript = null;
+        private string? _actionRef = null;
+        private string? _actionScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Action"/> event in the browser instead.
@@ -83,7 +89,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ActionScript
+        public string? ActionScript
         {
 
             set
@@ -91,7 +97,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._actionScript)
                 {
                     this._actionScript = value;
-                    this.OnRefChanged("Action", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Action", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._actionRef = refName;
                         this.MarkPropDirty("ActionRef");
@@ -118,9 +124,9 @@ namespace IgniteUI.Blazor.Controls
             }
             set
             {
-                if (!value.Equals(EventCallback<IgbVoidEventArgs>.Empty))
+                if (value.HasHandler())
                 {
-                    if (!CompareEventCallbacks(value, _action, ref eventCallbacksCache))
+                    if (!value.EqualsCompat(_action))
                     {
                         _action = value;
                         this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value);

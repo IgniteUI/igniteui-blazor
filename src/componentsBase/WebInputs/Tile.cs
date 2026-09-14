@@ -2,23 +2,26 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTile : IDisposable
+    public partial class IgbTile
     {
         [CascadingParameter(Name = "TileManagerParent")]
-        protected BaseRendererControl TileManagerParent
+        protected BaseRendererControl? TileManagerParent
         {
             get; set;
         }
 
-        public void Dispose()
+        /// <inheritdoc />
+        public override async ValueTask DisposeAsync()
         {
             if (TileManagerParent != null)
             {
                 var sv = (IgbTileManager)TileManagerParent;
                 sv.ContentItems.Remove(this);
             }
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         protected override async Task OnInitializedAsync()
         {
             if (TileManagerParent != null)

@@ -7,11 +7,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public partial class IgbChatMessageReaction : BaseRendererElement
     {
+        /// <inheritdoc />
         public override string Type { get { return "WebChatMessageReaction"; } }
 
         private static bool _marshalByValue = true;
 
-        private IgbChatMessage _message;
+        private IgbChatMessage _message = new IgbChatMessage();
 
         /// <summary>
         /// The chat message that the reaction is associated with.
@@ -27,15 +28,15 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._message);
                 }
+                this._message = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._message = value;
             }
 
         }
-        private string _reaction;
+        private string _reaction = string.Empty;
 
         /// <summary>
         /// The string representation of the reaction, such as an emoji or a string;
@@ -55,14 +56,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -75,7 +68,8 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -86,14 +80,15 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        /// <inheritdoc />
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("message"))
-            { this.Message = (IgbChatMessage)ConvertReturnValue(args["message"], "ChatMessage", true); }
-            if (args.ContainsKey("reaction"))
+            if (args != null && args.TryGetValue("message", out var messageObj) && ConvertReturnValue(messageObj, "ChatMessage", true) is IgbChatMessage message)
+            { this.Message = message; }
+            if (args != null && args.ContainsKey("reaction"))
             { this.Reaction = ReturnToString(args["reaction"]); }
 
             this.SuppressParentNotify = false;
