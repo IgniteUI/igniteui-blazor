@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
-- Dependency vulnerability scanning. Pull requests are gated by a dependency review that fails on a new High or Critical advisory; every release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
+- Еvery release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
 
 ### Changed
 
