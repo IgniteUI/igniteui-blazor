@@ -157,7 +157,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._margin; }
             set
             {
-                if (this._margin != value || !IsPropDirty("Margin"))
+                if (Math.Abs(this._margin - value) > 1e-9 || !IsPropDirty("Margin"))
                 {
                     MarkPropDirty("Margin");
                 }
