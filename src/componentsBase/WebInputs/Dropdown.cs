@@ -88,7 +88,7 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbDropdownItemCollection? _contentItems = null;
 
-        public IgbDropdownItemCollection ContentItems
+        internal IgbDropdownItemCollection ContentItems
         {
 
             get
