@@ -79,7 +79,7 @@ The consuming application must first apply Microsoft's guidance for its hosting 
 | A client instantiates arbitrary templates or content | Only templates the application registered on the component can be requested, and they render through Blazor `RenderFragment`s like any other Razor content. |
 | Resource exhaustion through interop floods or oversized payloads | Bounded per payload and per connection, not per rate. `MaximumReceiveMessageSize` bounds each payload and `CircuitOptions` bounds retained circuits and unacknowledged render batches. The framework dispatches inbound invocations one at a time per connection, so one client's calls queue rather than interleave; dispatch is serialized, not completion, since the library hands an event to the application's handler without awaiting it, and that work draws on shared server CPU and memory. Neither the framework nor the library caps the call rate or the cumulative work and state a client accumulates on its circuit; see [§5](#5-guidance-for-application-developers). |
 
-What remains after these guarantees is exactly what remains for a plain Blazor `@onclick`: a compromised client can fire a handler the application wired up, with arguments of the shape the application expects. Nothing in an inbound payload identifies a user; the container id addresses a component, not a principal. Audit at the handler, from the circuit's authenticated identity. See [§5](#5-guidance-for-application-developers).
+What remains after these guarantees is the same kind of risk as for a plain Blazor `@onclick`: a compromised client can fire a handler the application wired up, with arguments of the shape the application expects, and can answer a pending component method call with a value of its choosing. Nothing in an inbound payload identifies a user; the container id addresses a component, not a principal. Audit at the handler, from the circuit's authenticated identity. See [§5](#5-guidance-for-application-developers).
 
 ### 4.2 Rendering
 
@@ -104,7 +104,7 @@ Not a threat, recorded because [§3](#3-trust-boundaries-by-hosting-model) refer
 
 Everything else on Microsoft's pages, including CSRF, click-jacking, WebSocket compression side channels and open redirects, applies to the application unchanged and is not repeated here.
 
-- **Treat event arguments as user input.** Anything a handler receives from a component event originated in the browser. Validate it as you would a form post before acting on it, and never derive authorization from it.
+- **Treat event arguments and method return values as user input.** Anything a handler receives from a component event, and anything a component method returns, is read from the browser. Validate it as you would a form post before acting on it, and never derive authorization from it.
 - **Don't treat component state as an authorization check.** `Disabled`, `Selected`, the active step and similar live in the browser and can be fired past. Re-check the precondition inside the handler, against .NET state, exactly as you would for a plain `@onclick`.
 - **Bind projections, not entities.** Every public property and field of a bound item type is serialized to the browser once the component is interactive. Map to a view model that holds only what the component needs.
 - **Authorize before binding.** Components perform no authentication or authorization. Data handed to a component has already passed the application's filters.
