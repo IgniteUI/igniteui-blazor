@@ -95,9 +95,6 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         }
 
         [Test]
-        [Ignore("Item types with public primitive-typed fields crash schema creation: JsonDataSourceSchema.Commit " +
-            "stores the typed field getters in a Func<object, object>[] and throws ArrayTypeMismatchException " +
-            "(TypedPropertyGetters uses Delegate[]). Enable once the field getter array type is fixed.")]
         public async Task NestedPublicFields_TransferToClient()
         {
             await OpenScenarioAsync("nested-field-shipments", expectedCount: 2);
