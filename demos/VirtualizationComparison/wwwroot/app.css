@@ -1,0 +1,180 @@
+body {
+  margin: 0;
+  padding: 1.5rem 2rem 3rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #18181b;
+  background: #fafafa;
+}
+
+h1 {
+  font-size: 1.35rem;
+}
+
+h1 code,
+h2 code,
+h3 code {
+  font-size: 0.95em;
+}
+
+.section-title {
+  margin-top: 2.5rem;
+}
+
+.controls-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0 1.5rem;
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.control-group .hint {
+  color: #71717a;
+  font-size: 0.85rem;
+}
+
+button {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid #d4d4d8;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f4f4f5;
+}
+
+select,
+input[type='number'] {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #d4d4d8;
+  border-radius: 6px;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  padding: 1rem 1.25rem 1.25rem;
+  /* Grid items default to min-width: auto, so the horizontally virtualized list
+       (50k cards wide) would stretch its track instead of scrolling inside it. */
+  min-width: 0;
+}
+
+.panel h2,
+.panel h3 {
+  margin-top: 0;
+}
+
+.panel-sub {
+  color: #52525b;
+  font-size: 0.85rem;
+  min-height: 4.5rem;
+}
+
+.list-shell {
+  height: 480px;
+  overflow-y: auto;
+  border: 1px solid #d4d4d8;
+  border-radius: 6px;
+}
+
+.list-shell-short {
+  height: 320px;
+}
+
+/* The wrapper renders a container div (the class lands there) with the
+   igc-virtual-scroll element created inside it by the client. */
+.list-igb {
+  display: block;
+  height: 480px;
+  border: 1px solid #d4d4d8;
+  border-radius: 6px;
+}
+
+.list-igb-short {
+  height: 320px;
+}
+
+.list-igb-horizontal {
+  display: block;
+  height: 110px;
+  max-width: 100%;
+  border: 1px solid #d4d4d8;
+  border-radius: 6px;
+}
+
+.list-igb igc-component-renderer-container,
+.list-igb igc-virtual-scroll,
+.list-igb-horizontal igc-component-renderer-container,
+.list-igb-horizontal igc-virtual-scroll {
+  display: block;
+  height: 100%;
+}
+
+.status-line {
+  margin-top: 0.75rem;
+  font-family: ui-monospace, 'Cascadia Mono', monospace;
+  font-size: 0.8rem;
+  color: #52525b;
+  min-height: 1.5rem;
+}
+
+.placeholder-bar {
+  display: inline-block;
+  width: 60%;
+  height: 0.9rem;
+  border-radius: 4px;
+  background: #e4e4e7;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.feature-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.feature-table th,
+.feature-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid #e4e4e7;
+}
+
+.feature-table th {
+  background: #f4f4f5;
+}
+
+.feature-table td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}

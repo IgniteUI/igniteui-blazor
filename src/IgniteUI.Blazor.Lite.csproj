@@ -25,6 +25,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- The codebase carries nullable annotations but is not warning-clean; newer SDKs (11+)
+         default the full analysis on and escalate its diagnostics, so pin annotations-only. -->
+    <Nullable>annotations</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IgniteUI.Blazor$(PackageIdSuffix)</PackageId>

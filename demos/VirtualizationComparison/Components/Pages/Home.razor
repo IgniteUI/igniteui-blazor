@@ -1,0 +1,351 @@
+@page "/"
+@inject IJSRuntime JS
+
+<PageTitle>Virtualization Comparison</PageTitle>
+
+<h1>Blazor <code>&lt;Virtualize&gt;</code> (.NET 11 RC 1) vs <code>IgbVirtualScroll</code> (igniteui-webcomponents)</h1>
+
+<section class="controls-card">
+    <div class="control-group">
+        <label>Rows: <strong>@_rows.Length.ToString("N0")</strong></label>
+        <button @onclick="() => PrependRows(25)">Prepend 25</button>
+        <button @onclick="() => AppendRows(25)">Append 25</button>
+        <button @onclick="ResetRows">Reset (@InitialRowCount.ToString("N0"))</button>
+    </div>
+    <div class="control-group">
+        <label for="jump">Jump to index:</label>
+        <input id="jump" type="number" min="0" @bind="_jumpIndex" style="width: 7rem;" />
+        <button @onclick="JumpBoth">Scroll both</button>
+        <label for="block">Alignment (Igb only):</label>
+        <select id="block" @bind="_jumpBlock">
+            <option value="start">start</option>
+            <option value="center">center</option>
+            <option value="end">end</option>
+            <option value="nearest">nearest</option>
+        </select>
+        <label for="behavior">Behavior (Igb only):</label>
+        <select id="behavior" @bind="_jumpBehavior">
+            <option value="auto">auto</option>
+            <option value="smooth">smooth</option>
+        </select>
+    </div>
+    <div class="control-group">
+        <label for="anchor">AnchorMode (Blazor only):</label>
+        <select id="anchor" @bind="_anchorModeName">
+            <option value="Start">Start (default)</option>
+            <option value="None">None</option>
+            <option value="End">End</option>
+        </select>
+        <span class="hint">Prepend/append with different modes to compare viewport pinning.</span>
+    </div>
+</section>
+
+<section class="compare-grid">
+    <div class="panel">
+        <h2>.NET 11 <code>&lt;Virtualize&gt;</code></h2>
+        <p class="panel-sub">
+            <code>Items</code> in memory, variable measured heights, <code>InitialItemIndex="@InitialIndex"</code>,
+            <code>OverscanCount="@Overscan"</code>, <code>AnchorMode="@_anchorModeName"</code>,
+            <code>ScrollToItemAsync(index)</code> (always aligns to top).
+        </p>
+        <div class="list-shell">
+            <Virtualize @ref="_blazorList" Items="_rows" ItemSize="48f" OverscanCount="Overscan"
+                        InitialItemIndex="InitialIndex" AnchorMode="_anchorMode">
+                <div style="@RowStyle"><span style="@IdStyle">#@context.Id</span> @context.Text</div>
+            </Virtualize>
+        </div>
+        <div class="status-line">Rendered-window feedback: <em>not available (no state-change event)</em></div>
+    </div>
+
+    <div class="panel">
+        <h2><code>IgbVirtualScroll</code></h2>
+        <p class="panel-sub">
+            <code>Data</code> in memory, variable measured heights, <code>EstimatedItemSize="48"</code>,
+            <code>OverScan="@Overscan"</code>, <code>ScrollToIndexAsync(index, options)</code> with
+            alignment + smooth behavior. Initial index is simulated with a scroll call on first render.
+        </p>
+        @if (_templatesReady)
+        {
+            <IgbVirtualScroll @ref="_igbList" Data="_rows" EstimatedItemSize="48" OverScan="Overscan"
+                              ItemTemplateScript="ComparisonItemTemplate"
+                              StateChange="OnIgbStateChange"
+                              class="list-igb" />
+        }
+        <div class="status-line">@_igbWindowInfo</div>
+    </div>
+</section>
+
+<h2 class="section-title">Lazy loading</h2>
+<section class="compare-grid">
+    <div class="panel">
+        <h3><code>ItemsProvider</code> + <code>Placeholder</code></h3>
+        <p class="panel-sub">
+            Known total count (@LazyTotal.ToString("N0")), pages fetched on demand with a simulated
+            400 ms latency; placeholders render while a page loads. <code>RefreshDataAsync()</code> re-queries.
+        </p>
+        <div class="list-shell list-shell-short">
+            <Virtualize @ref="_blazorLazyList" ItemsProvider="LoadRows" ItemSize="48f">
+                <ItemContent>
+                    <div style="@RowStyle"><span style="@IdStyle">#@context.Id</span> @context.Text</div>
+                </ItemContent>
+                <Placeholder>
+                    <div style="@RowStyle"><span class="placeholder-bar"></span></div>
+                </Placeholder>
+            </Virtualize>
+        </div>
+        <div class="status-line">
+            <button @onclick="RefreshLazy">RefreshDataAsync()</button>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3><code>DataRequest</code> (infinite scroll)</h3>
+        <p class="panel-sub">
+            Open-ended list: the component raises <code>DataRequest</code> when the user scrolls past the
+            loaded items and the handler appends a new chunk (no placeholder concept, no known total).
+        </p>
+        @if (_templatesReady)
+        {
+            <IgbVirtualScroll Data="_lazyRows" EstimatedItemSize="48"
+                              ItemTemplateScript="ComparisonItemTemplate"
+                              DataRequest="OnIgbDataRequest"
+                              StateChange="OnIgbLazyStateChange"
+                              class="list-igb list-igb-short" />
+        }
+        <div class="status-line">Loaded: @_lazyRows.Length.ToString("N0") items &nbsp;|&nbsp; @_igbLazyWindowInfo</div>
+    </div>
+</section>
+
+<h2 class="section-title">Horizontal orientation</h2>
+<section class="compare-grid">
+    <div class="panel">
+        <h3><code>&lt;Virtualize&gt;</code></h3>
+        <p class="panel-sub"><em>Not supported — the component only virtualizes vertical scrolling.</em></p>
+    </div>
+    <div class="panel">
+        <h3><code>IgbVirtualScroll</code> with <code>Orientation="Horizontal"</code></h3>
+        @if (_templatesReady)
+        {
+            <IgbVirtualScroll Data="_rows" Orientation="ContentOrientation.Horizontal" EstimatedItemSize="140"
+                              ItemTemplateScript="ComparisonCardTemplate"
+                              class="list-igb-horizontal" />
+        }
+    </div>
+</section>
+
+<h2 class="section-title">Feature matrix</h2>
+<table class="feature-table">
+    <thead>
+        <tr><th>Capability</th><th>.NET 11 RC 1 <code>Virtualize</code></th><th><code>IgbVirtualScroll</code></th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Variable item heights</td>
+            <td>Measured at runtime (new in 11; CSS scroll anchoring + ResizeObserver fallback)</td>
+            <td>Measured after render; <code>EstimatedItemSize</code> seeds the scrollbar</td>
+        </tr>
+        <tr>
+            <td>Scroll to index</td>
+            <td><code>ScrollToItemAsync(index)</code> — top alignment only, cancellable, last call wins</td>
+            <td><code>ScrollToIndexAsync(index, options)</code> — <code>block</code> start/center/end/nearest, <code>behavior</code> auto/smooth</td>
+        </tr>
+        <tr>
+            <td>Initial scroll position</td>
+            <td><code>InitialItemIndex</code> parameter — applied before first paint, no flash of item 0</td>
+            <td>Not built in — a scroll call after first render briefly shows the top of the list</td>
+        </tr>
+        <tr>
+            <td>Viewport pinning on prepend/append</td>
+            <td><code>AnchorMode</code>: <code>Start</code> / <code>End</code> (chat, logs) / <code>None</code></td>
+            <td>Not exposed — keeps the pixel scroll offset</td>
+        </tr>
+        <tr>
+            <td>Rendered-window feedback</td>
+            <td>None</td>
+            <td><code>StateChange</code> event (<code>StartIndex</code>, <code>EndIndex</code>, <code>ViewportSize</code>, <code>TotalSize</code>)</td>
+        </tr>
+        <tr>
+            <td>Lazy loading model</td>
+            <td><code>ItemsProvider</code> with a known total, <code>Placeholder</code> while pages load, <code>RefreshDataAsync()</code>, <code>EmptyContent</code></td>
+            <td><code>DataRequest</code> append-on-demand (open-ended); no placeholders or empty content</td>
+        </tr>
+        <tr>
+            <td>Horizontal orientation</td>
+            <td>No</td>
+            <td>Yes (<code>Orientation</code>, RTL-aware)</td>
+        </tr>
+        <tr>
+            <td>Item templates</td>
+            <td>Razor <code>RenderFragment</code> — full C# closure over server state</td>
+            <td>Client-side JS template via <code>igRegisterScript</code> / <code>ItemTemplateScript</code>; Razor fragments not supported</td>
+        </tr>
+        <tr>
+            <td>Data change detection</td>
+            <td>Re-reads <code>Items</code> on re-render</td>
+            <td><code>Data</code> compared by reference — a new collection instance is required</td>
+        </tr>
+        <tr>
+            <td>Scroll container</td>
+            <td>Nearest scrollable ancestor (component renders no scroller)</td>
+            <td>The component itself scrolls (explicit height on the element)</td>
+        </tr>
+        <tr>
+            <td>Overscan</td>
+            <td><code>OverscanCount</code> — default raised from 3 to 15 in .NET 11 for height sampling</td>
+            <td><code>OverScan</code> — items rendered beyond the viewport edge</td>
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    private const int InitialRowCount = 50000;
+    private const int InitialIndex = 2000;
+    private const int Overscan = 15;
+    private const int LazyTotal = 10000;
+
+    private const string RowStyle = "padding: 0.5rem 1rem; border-bottom: 1px solid #e4e4e7; box-sizing: border-box; line-height: 1.5; font-size: 0.9rem;";
+    private const string IdStyle = "display: inline-block; min-width: 4.5rem; font-weight: 600; color: #6d28d9;";
+
+    public class Row
+    {
+        public int Id { get; set; }
+        public string Text { get; set; } = string.Empty;
+    }
+
+    private static readonly string[] Fragments =
+    [
+        "The quick brown fox jumps over the lazy dog while the band plays on.",
+        "Short line.",
+        "Virtualization keeps the DOM small by rendering only what is visible, plus a configurable overscan region, so very large collections stay responsive.",
+        "Measured item sizes replace the estimate once a row has rendered.",
+        "Rows with longer content wrap onto multiple lines, giving every list a mix of item heights to exercise the measurement logic.",
+    ];
+
+    // Prepending produces negative ids, and C#'s % is negative for them.
+    private static int Mod(int value, int modulus) => ((value % modulus) + modulus) % modulus;
+
+    private static Row MakeRow(int id) => new()
+    {
+        Id = id,
+        Text = string.Join(" ", Enumerable.Range(0, 1 + Mod(id, 3)).Select(r => Fragments[Mod(id + r, Fragments.Length)])),
+    };
+
+    private static Row[] MakeRows(int startId, int count) =>
+        [.. Enumerable.Range(startId, count).Select(MakeRow)];
+
+    private Row[] _rows = MakeRows(0, InitialRowCount);
+    private Row[] _lazyRows = MakeRows(0, 60);
+
+    private Virtualize<Row>? _blazorList;
+    private Virtualize<Row>? _blazorLazyList;
+    private IgbVirtualScroll? _igbList;
+
+    private bool _templatesReady;
+    private bool _igbInitialScrollDone;
+    private int _jumpIndex = 25000;
+    private string _jumpBlock = "start";
+    private string _jumpBehavior = "auto";
+    private string _anchorModeName = "Start";
+    private string _igbWindowInfo = "Scroll to see the rendered window.";
+    private string _igbLazyWindowInfo = "Scroll to load more.";
+
+    private VirtualizeAnchorMode _anchorMode => Enum.Parse<VirtualizeAnchorMode>(_anchorModeName);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // The client-side item templates must exist before IgbVirtualScroll first renders,
+            // so the components are held back until registration completes.
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./templates.js");
+            await module.InvokeVoidAsync("registerComparisonTemplates");
+            _templatesReady = true;
+            StateHasChanged();
+        }
+        else if (_templatesReady && !_igbInitialScrollDone && _igbList is not null)
+        {
+            // IgbVirtualScroll has no InitialItemIndex equivalent: the closest match is a
+            // scroll call once the component is live, which is what this simulates. The
+            // client element connects asynchronously after the first render, so retry
+            // until the interop accepts the call — itself a data point for the comparison.
+            _igbInitialScrollDone = true;
+            for (var attempt = 0; attempt < 20; attempt++)
+            {
+                try
+                {
+                    await _igbList.ScrollToIndexAsync(InitialIndex);
+                    break;
+                }
+                catch (Exception)
+                {
+                    await Task.Delay(150);
+                }
+            }
+        }
+    }
+
+    private void PrependRows(int count)
+    {
+        var firstId = _rows.Length > 0 ? _rows[0].Id : 0;
+        _rows = [.. MakeRows(firstId - count, count), .. _rows];
+    }
+
+    private void AppendRows(int count)
+    {
+        var nextId = _rows.Length > 0 ? _rows[^1].Id + 1 : 0;
+        _rows = [.. _rows, .. MakeRows(nextId, count)];
+    }
+
+    private void ResetRows() => _rows = MakeRows(0, InitialRowCount);
+
+    private async Task JumpBoth()
+    {
+        if (_blazorList is not null)
+        {
+            await _blazorList.ScrollToItemAsync(Math.Clamp(_jumpIndex, 0, _rows.Length - 1));
+        }
+        if (_igbList is not null)
+        {
+            await _igbList.ScrollToIndexAsync(_jumpIndex, new IgbScrollIntoViewOptions
+            {
+                Behavior = _jumpBehavior,
+                Block = _jumpBlock,
+            });
+        }
+    }
+
+    private async ValueTask<ItemsProviderResult<Row>> LoadRows(ItemsProviderRequest request)
+    {
+        await Task.Delay(400, request.CancellationToken);
+        var count = Math.Min(request.Count, LazyTotal - request.StartIndex);
+        return new ItemsProviderResult<Row>(MakeRows(request.StartIndex, count), LazyTotal);
+    }
+
+    private async Task RefreshLazy()
+    {
+        if (_blazorLazyList is not null)
+        {
+            await _blazorLazyList.RefreshDataAsync();
+        }
+    }
+
+    private void OnIgbDataRequest(IgbVirtualScrollDataRequestEventArgs args)
+    {
+        // Append the requested chunk; the component expects a new collection reference.
+        var start = (int)args.Detail.StartIndex;
+        var count = Math.Max((int)args.Detail.Count, 25);
+        _lazyRows = [.. _lazyRows, .. MakeRows(start, count)];
+    }
+
+    private void OnIgbStateChange(IgbVirtualScrollStateChangeEventArgs args)
+    {
+        var d = args.Detail;
+        _igbWindowInfo = $"StateChange — window: {d.StartIndex}–{d.EndIndex} | viewport: {d.ViewportSize}px | total: {d.TotalSize}px";
+    }
+
+    private void OnIgbLazyStateChange(IgbVirtualScrollStateChangeEventArgs args)
+    {
+        var d = args.Detail;
+        _igbLazyWindowInfo = $"window: {d.StartIndex}–{d.EndIndex}";
+    }
+}

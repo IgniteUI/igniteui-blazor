@@ -53,6 +53,7 @@
         <Template>
             <div style="padding: 60px 60px 420px;">
                 <IgbColorPicker Label="Brand color" Value="#e91e63" Swatches="_swatches" />
+                <InputDate @bind-Value="" />
             </div>
         </Template>
     </Story>
@@ -90,4 +91,6 @@
     ];
 
     private readonly string _boundColor = "#875fc4";
+
+    private DateTimeOffset _date = DateTimeOffset.Now;
 }

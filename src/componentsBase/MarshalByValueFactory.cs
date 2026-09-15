@@ -19,6 +19,9 @@ namespace IgniteUI.Blazor.Controls
                 case "RegisterIconOptions":
                 case "WebRegisterIconOptions":
                     return true;
+                case "ScrollIntoViewOptions":
+                case "WebScrollIntoViewOptions":
+                    return true;
                 case "NumberFormatSpecifier":
                     return true;
                 case "ActiveStepChangedEventArgs":
@@ -141,6 +144,18 @@ namespace IgniteUI.Blazor.Controls
                 case "TreeSelectionEventArgsDetail":
                 case "WebTreeSelectionEventArgsDetail":
                     return true;
+                case "VirtualScrollDataRequestEventArgs":
+                case "WebVirtualScrollDataRequestEventArgs":
+                    return true;
+                case "VirtualScrollDataRequestEventArgsDetail":
+                case "WebVirtualScrollDataRequestEventArgsDetail":
+                    return true;
+                case "VirtualScrollStateChangeEventArgs":
+                case "WebVirtualScrollStateChangeEventArgs":
+                    return true;
+                case "VirtualScrollStateChangeEventArgsDetail":
+                case "WebVirtualScrollStateChangeEventArgsDetail":
+                    return true;
 
                     //@@MustMarshalByValueEnd
             }
@@ -168,6 +183,10 @@ namespace IgniteUI.Blazor.Controls
                 case "RegisterIconOptions":
                 case "WebRegisterIconOptions":
                     return new IgbRegisterIconOptions();
+                    break;
+                case "ScrollIntoViewOptions":
+                case "WebScrollIntoViewOptions":
+                    return new IgbScrollIntoViewOptions();
                     break;
                 case "NumberFormatSpecifier":
                     return new IgbNumberFormatSpecifier();
@@ -331,6 +350,22 @@ namespace IgniteUI.Blazor.Controls
                 case "TreeSelectionEventArgsDetail":
                 case "WebTreeSelectionEventArgsDetail":
                     return new IgbTreeSelectionEventArgsDetail();
+                    break;
+                case "VirtualScrollDataRequestEventArgs":
+                case "WebVirtualScrollDataRequestEventArgs":
+                    return new IgbVirtualScrollDataRequestEventArgs();
+                    break;
+                case "VirtualScrollDataRequestEventArgsDetail":
+                case "WebVirtualScrollDataRequestEventArgsDetail":
+                    return new IgbVirtualScrollDataRequestEventArgsDetail();
+                    break;
+                case "VirtualScrollStateChangeEventArgs":
+                case "WebVirtualScrollStateChangeEventArgs":
+                    return new IgbVirtualScrollStateChangeEventArgs();
+                    break;
+                case "VirtualScrollStateChangeEventArgsDetail":
+                case "WebVirtualScrollStateChangeEventArgsDetail":
+                    return new IgbVirtualScrollStateChangeEventArgsDetail();
                     break;
 
                     //@@MarshalByValueEnd
