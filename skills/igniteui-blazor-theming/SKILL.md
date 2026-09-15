@@ -33,7 +33,6 @@ Link exactly **one** stylesheet in the host page; loading two conflicts.
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
 <link href="css/app.css" rel="stylesheet" />                    <!-- your overrides, after -->
-<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
 ```
 
 Paths are `_content/IgniteUI.Blazor/themes/{light|dark}/{bootstrap|material|fluent|indigo}.css`. Any full-featured grid needs the grid stylesheet in the same variant as well (`themes/grid/light/bootstrap.css`); `IgbGridLite` uses its own package path instead.

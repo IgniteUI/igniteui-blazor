@@ -1,5 +1,3 @@
-import './public_path';
-
 import { ComponentRenderer } from 'igniteui-core/ComponentRenderer';
 import { TypeRegistrar, createMutationObserver } from 'igniteui-core/type';
 import { fromSpinal, getAllPropertyNames } from 'igniteui-core/componentUtil';
@@ -8,12 +6,9 @@ import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
 import { IgcPortalModule } from 'igniteui-core/igc-portal';
 import { refValues, itemMaps } from './refs-state';
+import { getRegisteredScript } from './api';
 
 IgcPortalModule.register();
-
-(window as any).igTemplating = {
-  html: html,
-};
 
 let cr = new ComponentRenderer();
 ComponentRenderer.defaultInstance = cr;
@@ -528,17 +523,6 @@ var raiseEvent = function (propertyName: string, sender: any, args: any, contain
   }
 };
 
-let igScripts: Map<string, { shouldCall: boolean; func: Function }> = new Map<
-  string,
-  { shouldCall: boolean; func: Function }
->();
-(window as any).igRegisterScript = function (scriptId: string, script: Function, shouldCall: boolean = true) {
-  igScripts.set(scriptId, { shouldCall: shouldCall, func: script });
-};
-(window as any).igRemoveScript = function (scriptId: string) {
-  igScripts.delete(scriptId);
-};
-
 (window as any).igCheckReady = function (containerId: string) {
   // var cont = document.getElementById(containerId);
   var cont = getContainerByIgIdAttribute(containerId);
@@ -843,10 +827,13 @@ function updateAngularElement(element: any) {
           if (typeof refValue == 'string' && refValue.indexOf('script:::') == 0) {
             refValue = refValue.substring('script:::'.length);
             let scriptRef = refValue;
-            if (!igScripts.has(refValue)) {
+            var f = getRegisteredScript(refValue);
+            if (!f) {
+              console.warn(
+                `[Ignite UI] script '${refValue}' is not registered — call registerScript('${refValue}', ...) (from './_content/IgniteUI.Blazor/api.js') before the component renders.`,
+              );
               return;
             }
-            var f = igScripts.get(refValue);
             if (f.shouldCall && typeof f.func == 'function') {
               refValue = f.func();
             } else {
@@ -2225,8 +2212,8 @@ function getArrayDataPtr(value: any): any {
   if ((window as any).getValue) {
     getValueActual = (window as any).getValue;
   }
-  if ((global as any).getValue) {
-    getValueActual = (global as any).getValue;
+  if ((globalThis as any).getValue) {
+    getValueActual = (globalThis as any).getValue;
   }
   if ((self as any).getValue) {
     getValueActual = (self as any).getValue;
