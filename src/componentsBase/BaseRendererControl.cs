@@ -1941,7 +1941,7 @@ namespace IgniteUI.Blazor.Controls
                 var ret = new T[objArr.Length];
                 for (var i = 0; i < objArr.Length; i++)
                 {
-                    ret[i] = (T)objArr[i];
+                    ret[i] = (T)Convert.ChangeType(objArr[i], typeof(T));
                 }
 
                 return ret;
@@ -1951,6 +1951,10 @@ namespace IgniteUI.Blazor.Controls
         }
 
         internal object? ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            return ConvertReturnValue<object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+        internal object? ConvertReturnValue<T>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             try
             {
@@ -2112,7 +2116,7 @@ namespace IgniteUI.Blazor.Controls
                                 object? o = null;
                                 if (type != null)
                                 {
-                                    o = MarshalByValueFactory.CreateInstance(type);
+                                    o = MarshalByValueFactory.CreateInstance<T>(type);
                                 }
                                 if (o != null)
                                 {
@@ -2764,6 +2768,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal string? ObjectArrayToParam(object[]? arr)
         {
+            return ObjectArrayToParam<object>(arr);
+        }
+
+        internal string? ObjectArrayToParam<T>(T[]? arr)
+        {
             if (arr == null)
             {
                 return null;
@@ -2905,15 +2914,34 @@ namespace IgniteUI.Blazor.Controls
 
         internal T[]? ReturnToObjectArray<T>(object? val, string? typeGuess)
         {
-            val = ConvertReturnValue(val);
-
             if (val == null)
             {
                 return null;
             }
+            // Fast path: already a typed or resolved array (e.g. passed in as object[] after prior ConvertReturnValue, or after DowncastArray resolved).
+            if (val is T[] tArr)
+            {
+                return tArr;
+            }
+            if (val is object[])
+            {
+                return DowncastArray<T>(val);
+            }
+
+            // Use transformArrays=true so that array elements with uuid/name refs are resolved
+            // to their actual data-source objects before we attempt to cast them.
+            val = ConvertReturnValue(val, transformArrays: true);
+
+            // ConvertReturnValue with transformArrays produces an object[] for Array-typed wrappers;
+            // downcast its elements to T
+            if (val is object[] resolved)
+            {
+                return DowncastArray<T>(resolved);
+            }
+
             try
             {
-                var stringVal = val.ToString();
+                var stringVal = val?.ToString();
                 if (stringVal == null)
                 {
                     return null;

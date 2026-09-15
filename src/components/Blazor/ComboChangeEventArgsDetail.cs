@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Describes a selection change of an <see cref="IgbCombo{T}"/>: the new value, the items it affected and the kind of change.
     /// </summary>
-    public partial class IgbComboChangeEventArgsDetail : BaseRendererElement
+    public partial class IgbComboChangeEventArgsDetail<T> : BaseRendererElement
     {
         /// <inheritdoc />
         public override string Type { get { return "WebComboChangeEventArgsDetail"; } }
@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
         private static bool _marshalByValue = true;
 
         private string? _newValueRef;
-        private object[] _newValue = Array.Empty<object>();
+        private T[] _newValue = Array.Empty<T>();
 
         /// <summary>
         /// The value of the combo after the change.
         /// </summary>
         [Parameter]
-        public object[] NewValue
+        public T[] NewValue
         {
             get { return this._newValue; }
 
@@ -170,7 +170,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.ContainsKey("newValue"))
-            { this.NewValue = ReturnToObjectArray(args["newValue"]); }
+            { this.NewValue = ReturnToObjectArray<T>(args["newValue"]) ?? Array.Empty<T>(); }
             if (args != null && args.ContainsKey("items"))
             { this.Items = ReturnToObjectArray(args["items"]); }
             if (args != null && args.ContainsKey("type"))
