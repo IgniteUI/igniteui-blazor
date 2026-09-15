@@ -104,21 +104,6 @@ namespace IgniteUI.Blazor.Controls
         {
             InvokeMethodSync("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
-        /// <summary>
-        /// Clears the component of any user input.
-        /// </summary>
-        public async Task ClearAsync()
-        {
-            await InvokeMethod("clear", new object?[] { }, new string[] { });
-        }
-
-        /// <summary>
-        /// Clears the component of any user input.
-        /// </summary>
-        public void Clear()
-        {
-            InvokeMethodSync("clear", new object?[] { }, new string[] { });
-        }
 
         private EventCallback<DateTime?>? _valueChanged = null;
 
