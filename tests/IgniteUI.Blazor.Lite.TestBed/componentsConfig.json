@@ -7,9 +7,25 @@
     ],
     "ExcludedEvents": []
   },
+  "IgbColorPicker": {
+    "ExcludedProps": [
+      // The generic sample string is not a valid CSS color and the component clears
+      // invalid values by design, so the live property never reflects it back.
+      // The unit interop contract covers the value round-trip and the @bind-Value pair.
+      "Value"
+    ]
+  },
   "IgbDatePicker": {
     "ExcludedProps": ["ResourceStrings"],
     "DependantMethods": []
+  },
+  "IgbQrCode": {
+    "DependantMethods": [
+      // The client method resolves with a File while the .NET wrapper is void, so the
+      // generic method spy reports a result mismatch (and the generated options sample
+      // triggers a browser download). The unit interop contract covers both dispatches.
+      "ToImageAsync"
+    ]
   },
   "IgbDateRangePicker": {
     "ExcludedProps": [

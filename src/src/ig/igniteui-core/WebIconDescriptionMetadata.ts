@@ -1,6 +1,7 @@
 import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { WebIconMetaDescriptionMetadata } from "./WebIconMetaDescriptionMetadata";
+import { WebRegisterIconOptionsDescriptionMetadata } from "./WebRegisterIconOptionsDescriptionMetadata";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebIconDescription } from "./WebIconDescription";
 
@@ -37,6 +38,7 @@ export class WebIconDescriptionMetadata extends Base {
 	}
 	private static registerOtherTypes(context: TypeDescriptionContext): void {
 		WebIconMetaDescriptionMetadata.register(context);
+		WebRegisterIconOptionsDescriptionMetadata.register(context);
 	}
 }
 
