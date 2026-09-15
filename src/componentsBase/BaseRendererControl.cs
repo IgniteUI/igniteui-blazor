@@ -2914,8 +2914,6 @@ namespace IgniteUI.Blazor.Controls
 
         internal T[]? ReturnToObjectArray<T>(object? val, string? typeGuess)
         {
-            val = ConvertReturnValue(val);
-
             if (val == null)
             {
                 return null;
