@@ -12,8 +12,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebTileComponentEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbTile _detail = new IgbTile();
 
         /// <summary>

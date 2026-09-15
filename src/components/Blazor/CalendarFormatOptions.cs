@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "CalendarFormatOptions"; } }
 
-        private static bool _marshalByValue = true;
-
         private string? _weekday;
 
         /// <summary>

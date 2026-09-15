@@ -146,7 +146,6 @@ namespace IgniteUI.Blazor.Controls
         private ElementReference contEle;
         private Dictionary<string, bool> _isDirty = new Dictionary<string, bool>();
         private Dictionary<string, bool> _isDirtyRef = new Dictionary<string, bool>();
-        private bool _hasDirty = false;
         private bool _serializeDirty = true;
         private DataSourceManager? _dataSourceManager;
         internal DataSourceManager? DataSourceManager
@@ -849,7 +848,6 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             //Console.WriteLine("dirty: " + propertyName);
             MarkContentDirty();
@@ -1228,7 +1226,6 @@ namespace IgniteUI.Blazor.Controls
         {
             _isDirtyRef[propertyName] = true;
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             string? refId = _containerId + "/" + propertyName;
 
@@ -2231,12 +2228,6 @@ namespace IgniteUI.Blazor.Controls
                 return this;
             }
 
-            return null;
-        }
-
-        private object? GetObjectById(long objId)
-        {
-            //TODO: this
             return null;
         }
 

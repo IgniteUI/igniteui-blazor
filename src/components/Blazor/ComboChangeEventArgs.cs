@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebComboChangeEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbComboChangeEventArgsDetail _detail = new IgbComboChangeEventArgsDetail();
 
         /// <summary>

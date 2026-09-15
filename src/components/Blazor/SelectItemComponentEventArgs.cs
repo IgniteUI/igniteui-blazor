@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebSelectItemComponentEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbSelectItem _detail = new IgbSelectItem();
 
         /// <summary>

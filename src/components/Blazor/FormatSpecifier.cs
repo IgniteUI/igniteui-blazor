@@ -18,8 +18,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private static bool _marshalByValue = true;
-
         /// <summary>
         /// Gets the culture of the browser, expanded to a culture with a region when the browser
         /// reports a bare language code.

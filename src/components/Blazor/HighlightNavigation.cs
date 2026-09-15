@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebHighlightNavigation"; } }
 
-        private static bool _marshalByValue = true;
-
         private bool _preventScroll = false;
 
         /// <summary>

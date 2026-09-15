@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebComponentDateValueChangedEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private DateTime _detail = DateTime.MinValue;
 
         /// <summary>

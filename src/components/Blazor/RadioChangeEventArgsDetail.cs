@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebRadioChangeEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private bool _checked = false;
 
         /// <summary>

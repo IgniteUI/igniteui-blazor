@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebDateRangeValueDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private DateTime _start = DateTime.MinValue;
 
         /// <summary>
