@@ -1,0 +1,108 @@
+@page "/focus-method"
+@rendermode InteractiveServer
+@using IgniteUI.Blazor.Controls
+@implements IDisposable
+@inject IJSRuntime JS
+
+@* Focus/blur API scenario page for the components that expose FocusComponent(Async) and
+   BlurComponent(Async) - GitHub #297. The calls are made from .NET here, so the test drives
+   the real interop path and then reads which element the browser actually focused. Both
+   defects behind the issue only show up in a live browser: the IgbFocusOptions argument is
+   rebuilt client-side from the wire type name, and the method dispatch resolves the target's
+   methods against a prototype walk that stops below HTMLElement. *@
+
+<div id="container">
+    <IgbButton @ref="_button">Button</IgbButton>
+    <IgbIconButton @ref="_iconButton" IconName="filter" />
+    <IgbButtonGroup>
+        <IgbToggleButton @ref="_toggleButton" Value="toggle">Toggle</IgbToggleButton>
+    </IgbButtonGroup>
+    <IgbCheckbox @ref="_checkbox">Checkbox</IgbCheckbox>
+    <IgbSwitch @ref="_switch">Switch</IgbSwitch>
+    <IgbRadio @ref="_radio" Value="radio">Radio</IgbRadio>
+    <IgbInput @ref="_input" Label="Input" />
+    <IgbMaskInput @ref="_maskInput" Label="Mask input" />
+    <IgbDateTimeInput @ref="_dateTimeInput" Label="Date time input" />
+    <IgbSelect @ref="_select">
+        <IgbSelectItem Value="first">First</IgbSelectItem>
+    </IgbSelect>
+    <IgbCombo @ref="_combo" T="string" Data="_comboData" />
+</div>
+
+@code {
+    private readonly string[] _comboData = ["alpha", "beta"];
+
+    private IgbButton? _button;
+    private IgbIconButton? _iconButton;
+    private IgbToggleButton? _toggleButton;
+    private IgbCheckbox? _checkbox;
+    private IgbSwitch? _switch;
+    private IgbRadio? _radio;
+    private IgbInput? _input;
+    private IgbMaskInput? _maskInput;
+    private IgbDateTimeInput? _dateTimeInput;
+    private IgbSelect? _select;
+    private IgbCombo<string>? _combo;
+
+    private DotNetObjectReference<FocusMethodPage>? _selfRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _selfRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("registerClientPageRef", _selfRef);
+        }
+    }
+
+    public void Dispose() => _selfRef?.Dispose();
+
+    /// <summary>
+    /// Calls FocusComponentAsync on the named component with a non-default IgbFocusOptions,
+    /// so the options object has to survive the crossing rather than being skipped as empty.
+    /// Reports "ok", or the exception the wrapper raised - the client returns a plain error
+    /// string for a call it cannot dispatch, which then fails to parse as the JSON return.
+    /// </summary>
+    [JSInvokable]
+    public Task<string> FocusComponent(string key) => Run(key, focus: true);
+
+    /// <summary>Calls BlurComponentAsync on the named component. Takes no arguments, so it
+    /// isolates the method dispatch from the options argument.</summary>
+    [JSInvokable]
+    public Task<string> BlurComponent(string key) => Run(key, focus: false);
+
+    private async Task<string> Run(string key, bool focus)
+    {
+        var options = NonDefaultOptions();
+        try
+        {
+            switch (key)
+            {
+                case "button": await (focus ? _button!.FocusComponentAsync(options) : _button!.BlurComponentAsync()); break;
+                case "icon-button": await (focus ? _iconButton!.FocusComponentAsync(options) : _iconButton!.BlurComponentAsync()); break;
+                case "toggle-button": await (focus ? _toggleButton!.FocusComponentAsync(options) : _toggleButton!.BlurComponentAsync()); break;
+                case "checkbox": await (focus ? _checkbox!.FocusComponentAsync(options) : _checkbox!.BlurComponentAsync()); break;
+                case "switch": await (focus ? _switch!.FocusComponentAsync(options) : _switch!.BlurComponentAsync()); break;
+                case "radio": await (focus ? _radio!.FocusComponentAsync(options) : _radio!.BlurComponentAsync()); break;
+                case "input": await (focus ? _input!.FocusComponentAsync(options) : _input!.BlurComponentAsync()); break;
+                case "mask-input": await (focus ? _maskInput!.FocusComponentAsync(options) : _maskInput!.BlurComponentAsync()); break;
+                case "date-time-input": await (focus ? _dateTimeInput!.FocusComponentAsync(options) : _dateTimeInput!.BlurComponentAsync()); break;
+                case "select": await (focus ? _select!.FocusComponentAsync(options) : _select!.BlurComponentAsync()); break;
+                case "combo": await (focus ? _combo!.FocusComponentAsync(options) : _combo!.BlurComponentAsync()); break;
+                default: return "no component registered under key: " + key;
+            }
+
+            return "ok";
+        }
+        catch (Exception e)
+        {
+            return e.GetType().Name + ": " + e.Message;
+        }
+    }
+
+    // BL0005 reads IgbFocusOptions' [Parameter] as a component parameter, but the options
+    // object is only ever built by the caller and handed to the method - that is its API.
+    #pragma warning disable BL0005
+    private static IgbFocusOptions NonDefaultOptions() => new() { PreventScroll = true };
+    #pragma warning restore BL0005
+}
