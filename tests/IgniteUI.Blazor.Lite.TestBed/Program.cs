@@ -7,7 +7,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         // Add services to the container.
         builder.Services.AddRazorComponents()
-            .AddInteractiveServerComponents();
+            .AddInteractiveServerComponents()
+            .AddInteractiveWebAssemblyComponents();
 
         builder.Services.AddIgniteUIBlazor();
 
@@ -22,8 +23,14 @@ public class Program
         app.UseStaticFiles();
         app.UseAntiforgery();
 
+        // The WebAssembly render mode serves the _framework boot assets through mapped
+        // static asset endpoints; UseStaticFiles alone does not cover them.
+        app.MapStaticAssets();
+
         app.MapRazorComponents<App>()
-            .AddInteractiveServerRenderMode();
+            .AddInteractiveServerRenderMode()
+            .AddInteractiveWebAssemblyRenderMode()
+            .AddAdditionalAssemblies(typeof(IgniteUI.Blazor.Lite.TestBed.Client.Program).Assembly);
 
         app.Run();
     }

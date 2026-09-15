@@ -14,9 +14,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbListItemModule.IsLoadRequested(IgBlazor))
+            if (!IgbListModule.IsLoadRequested(IgBlazor))
             {
-                IgbListItemModule.Register(IgBlazor);
+                IgbListModule.Register(IgBlazor);
             }
         }
 
@@ -79,14 +79,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {

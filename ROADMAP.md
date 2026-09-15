@@ -2,21 +2,28 @@
 
 # Current Milestone
 
-## Milestone 11 (Due Jun 2026)
+## Milestone 12 (Due Oct 2026)
 
-1. Agent Skills for Blazor
-2. CLI MCP server support for Blazor
-3. AI Chat component
-4. Splitter component
-5. Dock Manager 2.0
-6. Dock Manager - two-way binding for the layout properties
+1. Grids performance improvements using a new and faster virtualization component
+2. Color picker component
 
 ## Going down the road
 
-1. Grids performance improvements using a new and faster virtualizalization component
-2. Color picker component
+1. Breadcrumb component
+2. QR Code component
 
 # Previous Milestone
+
+## Milestone 11, version 26.1.51 (Released Jul 14th, 2026)
+
+1. **[DONE]** `IgbChat` (preview) - Chat UI component for message display and input interaction; under active development, APIs may evolve
+2. **[DONE]** `IgbSplitter` - resizable split-pane layout dividing the view into *start* and *end* panels separated by a draggable bar
+3. **[DONE]** `IgbHighlight` - efficient searching and highlighting of text projected via the default slot
+4. **[DONE]** Aligned to `igniteui-webcomponents@7.2.4`; rolls up `IgniteUI.Blazor` 25.2.102 (May 2026) and 26.1.51 (June 2026)
+5. **[DONE]** Agent Skills for Blazor
+6. **[DONE]** CLI MCP server support for Blazor
+7. **[DONE]** Dock Manager 2.0
+8. **[DONE]** Dock Manager - two-way binding for the layout properties
 
 ## Milestone 10, version 25.2.77 (Released Mar 2026)
 

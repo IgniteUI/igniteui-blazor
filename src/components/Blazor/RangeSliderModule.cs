@@ -6,7 +6,8 @@ namespace IgniteUI.Blazor.Controls
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
     /// </remarks>
-    public partial class IgbRangeSliderModule
+    [IgbModule<IgbRangeSliderModule>]
+    public partial class IgbRangeSliderModule : IIgbModule
     {
         /// <summary>
         /// Requests this module's client resources to be loaded into the runtime.
@@ -15,17 +16,14 @@ namespace IgniteUI.Blazor.Controls
         public static void Register(IIgniteUIBlazor runtime)
         {
             ModuleLoader.Load(runtime, "WebRangeSliderModule");
-
-            IgbSliderBaseModule.MarkIsLoadRequested(runtime);
-
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebRangeSliderModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "WebRangeSliderModule");
         }

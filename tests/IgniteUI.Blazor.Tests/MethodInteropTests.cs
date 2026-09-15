@@ -20,7 +20,7 @@ public class MethodInteropTests : BlazorComponentTestBase
         Interop.SetupMethodResult("toggle", InteropReturn.Deferred);
         var cut = Render<IgbBanner>();
 
-        var pending = cut.Instance.ToggleAsync();
+        var pending = Interop.OnDispatcher(cut.Instance.ToggleAsync);
         Assert.False(pending.IsCompleted);
 
         Interop.CompleteDeferred(Interop.RequireCall("toggle"), InteropReturn.Bool(true));

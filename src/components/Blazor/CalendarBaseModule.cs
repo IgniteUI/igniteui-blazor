@@ -1,21 +1,26 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbCalendarBaseModule
+    /// <summary>
+    /// Provides the module for <see cref="IgbCalendarBase"/>. Registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbCalendarBaseModule is no longer required, has no effect and can be safely removed.")]
+    [IgbModule<IgbCalendarBaseModule>]
+    public partial class IgbCalendarBaseModule : IIgbModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebCalendarBaseModule");
-
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebCalendarBaseModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebCalendarBaseModule");
+            return true;
         }
     }
 }

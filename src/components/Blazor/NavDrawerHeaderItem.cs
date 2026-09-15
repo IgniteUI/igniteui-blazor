@@ -11,9 +11,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbNavDrawerHeaderItemModule.IsLoadRequested(IgBlazor))
+            if (!IgbNavDrawerModule.IsLoadRequested(IgBlazor))
             {
-                IgbNavDrawerHeaderItemModule.Register(IgBlazor);
+                IgbNavDrawerModule.Register(IgBlazor);
             }
         }
 
@@ -56,14 +56,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
     }
 }

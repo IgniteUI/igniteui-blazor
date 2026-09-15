@@ -6,7 +6,8 @@ namespace IgniteUI.Blazor.Controls
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
     /// </remarks>
-    public partial class IgbSelectModule
+    [IgbModule<IgbSelectModule>]
+    public partial class IgbSelectModule : IIgbModule
     {
         /// <summary>
         /// Requests this module's client resources to be loaded into the runtime.
@@ -18,18 +19,15 @@ namespace IgniteUI.Blazor.Controls
 
             IgbIconModule.MarkIsLoadRequested(runtime);
             IgbInputModule.MarkIsLoadRequested(runtime);
-            IgbSelectGroupModule.MarkIsLoadRequested(runtime);
-            IgbSelectHeaderModule.MarkIsLoadRequested(runtime);
-            IgbSelectItemModule.MarkIsLoadRequested(runtime);
 
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebSelectModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "WebSelectModule");
         }

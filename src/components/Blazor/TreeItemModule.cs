@@ -1,21 +1,26 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTreeItemModule
+    /// <summary>
+    /// Provides the module for the <see cref="IgbTreeItem"/> child component of <see cref="IgbTree"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbTreeItemModule is no longer required, has no effect and can be safely removed.")]
+    [IgbModule<IgbTreeItemModule>]
+    public partial class IgbTreeItemModule : IIgbModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebTreeItemModule");
-
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebTreeItemModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebTreeItemModule");
+            return true;
         }
     }
 }

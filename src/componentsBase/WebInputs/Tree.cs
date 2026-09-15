@@ -11,9 +11,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private IgbTreeItemCollection _contentItems = null;
+        private IgbTreeItemCollection? _contentItems = null;
 
-        public IgbTreeItemCollection ContentItems
+        internal IgbTreeItemCollection ContentItems
         {
 
             get

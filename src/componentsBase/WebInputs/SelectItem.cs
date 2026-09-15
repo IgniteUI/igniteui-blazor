@@ -2,21 +2,26 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbSelectItem : IDisposable
+    public partial class IgbSelectItem
     {
+        /// <summary>
+        /// The owning <see cref="IgbSelect"/>, supplied as a cascading parameter.
+        /// </summary>
         [CascadingParameter(Name = "SelectParent")]
-        protected BaseRendererControl SelectParent
+        protected BaseRendererControl? SelectParent
         {
             get; set;
         }
 
-        public void Dispose()
+        /// <inheritdoc />
+        public override async ValueTask DisposeAsync()
         {
             if (SelectParent != null)
             {
                 var sv = (IgbSelect)SelectParent;
                 sv.ContentItems.Remove(this);
             }
+            await base.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

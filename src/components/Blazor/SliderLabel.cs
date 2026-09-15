@@ -12,9 +12,11 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbSliderLabelModule.IsLoadRequested(IgBlazor))
+            // Labels belong to either slider flavour; the range slider already brings them in,
+            // so only fall back to the plain slider module when it has not been requested.
+            if (!IgbRangeSliderModule.IsLoadRequested(IgBlazor) && !IgbSliderModule.IsLoadRequested(IgBlazor))
             {
-                IgbSliderLabelModule.Register(IgBlazor);
+                IgbSliderModule.Register(IgBlazor);
             }
         }
 
@@ -57,14 +59,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
     }
 }

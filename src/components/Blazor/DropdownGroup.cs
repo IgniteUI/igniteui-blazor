@@ -11,9 +11,9 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
-            if (!IgbDropdownGroupModule.IsLoadRequested(IgBlazor))
+            if (!IgbDropdownModule.IsLoadRequested(IgBlazor))
             {
-                IgbDropdownGroupModule.Register(IgBlazor);
+                IgbDropdownModule.Register(IgBlazor);
             }
         }
 
@@ -56,14 +56,6 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
 
     }
 }

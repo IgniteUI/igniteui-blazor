@@ -1,21 +1,26 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbStepModule
+    /// <summary>
+    /// Provides the module for the <see cref="IgbStep"/> child component of <see cref="IgbStepper"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbStepModule is no longer required, has no effect and can be safely removed.")]
+    [IgbModule<IgbStepModule>]
+    public partial class IgbStepModule : IIgbModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebStepModule");
-
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebStepModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebStepModule");
+            return true;
         }
     }
 }

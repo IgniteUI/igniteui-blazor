@@ -1,304 +1,127 @@
 # Charts & Data Visualization
 
-> **Part of the [`igniteui-blazor-components`](../SKILL.md) skill hub.**
-> For project setup and module registration, see [`setup.md`](./setup.md).
+All visualization components require `IgniteUI.Blazor` or `IgniteUI.Blazor.Trial` — they are **not** in `IgniteUI.Blazor.Lite`. Ignite UI ships 65+ chart types; this file covers the common ones and the traps. Call `get_doc` / `get_api_reference` for anything beyond it.
 
-## Contents
+## Choosing a component
 
-- [Overview](#overview)
-- [Chart Type Decision Guide](#chart-type-decision-guide)
-- [Category Chart](#category-chart)
-- [Data Chart](#data-chart)
-- [Financial / Stock Chart](#financial--stock-chart)
-- [Pie Chart](#pie-chart)
-- [Donut Chart](#donut-chart)
-- [Sparkline](#sparkline)
-- [Treemap](#treemap)
-- [Geographic Map](#geographic-map)
-- [Gauges](#gauges)
-- [Dashboard Tile](#dashboard-tile)
-- [Common Chart Features](#common-chart-features)
-- [Key Rules](#key-rules)
-
----
-## Overview
-
-Ignite UI for Blazor provides 65+ chart types for data visualization. Charts are part of the IgniteUI.Blazor package (trial watermarked version available in the IgniteUI.Blazor.Trial public NuGet package).
-This reference gives high-level guidance on when to use some of the chart types, their key features, and common API members. For detailed documentation, call `get_doc` and `get_api_reference` from `igniteui-cli` with the specific chart component or feature you're interested in.
-
-## Chart Type Decision Guide
-
-| Use case | Recommended component |
+| Need | Component |
 |---|---|
-| Simple line/area/column/point/spline/waterfall charts with minimal config | `IgbCategoryChart` |
-| Multiple series types on the same chart, custom axes, annotations | `IgbDataChart` |
-| Candlestick / OHLC financial data with range selector | `IgbFinancialChart` |
-| Part-to-whole proportions (slices) | `IgbPieChart` |
-| Donut with center label | `IgbDoughnutChart` |
-| Inline sparkline for tables or cards | `IgbSparkline` |
-| Hierarchical part-to-whole data | `IgbTreemap` |
-| Geographic points, shapes, map markers | `IgbGeographicMap` |
-| KPI values, ranges, scales, bullet comparisons | `IgbLinearGauge` / `IgbRadialGauge` / `IgbBulletGraph` |
-| Auto-generated dashboard visualization from data | `IgbDashboardTile` |
-
----
+| Line / area / column / point / spline / waterfall with minimal config | `IgbCategoryChart` |
+| Several series types on one chart, custom axes, annotations, true horizontal bars | `IgbDataChart` |
+| Candlestick / OHLC with range selector | `IgbFinancialChart` |
+| Part-to-whole slices | `IgbPieChart` |
+| Ring with a hollow center | `IgbDoughnutChart` + `IgbRingSeries` |
+| Inline micro-chart in a table or card | `IgbSparkline` |
+| Hierarchical part-to-whole | `IgbTreemap` |
+| Geographic points, shapes, routes | `IgbGeographicMap` |
+| KPI value on a scale, needle, bullet comparison | `IgbLinearGauge` / `IgbRadialGauge` / `IgbBulletGraph` |
+| Auto-generated dashboard visual from data | `IgbDashboardTile` |
 
 ## Category Chart
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbCategoryChartModule));
-```
 
 ```razor
 <IgbCategoryChart DataSource="SalesData"
                   ChartType="CategoryChartType.Line"
-                  Height="400px"
-                  Width="100%"
-                  YAxisTitle="Revenue (USD)"
-                  XAxisTitle="Month"
+                  Width="100%" Height="400px"
+                  XAxisTitle="Month" YAxisTitle="Revenue (USD)"
                   Brushes="DodgerBlue IndianRed"
+                  IncludedProperties='@(new string[] { "Month", "Revenue" })'
                   IsHorizontalZoomEnabled="true"
-                  IsVerticalZoomEnabled="false"
                   IsTransitionInEnabled="true" />
-
-@code {
-    public List<SalesRecord> SalesData { get; set; } = SampleData.GetSales();
-}
 ```
 
-> **AGENT INSTRUCTION:** `CategoryChartType.Bar` does **not** exist. For a horizontal bar-style chart, use `CategoryChartType.Column` (vertical) or switch to `IgbDataChart` with `IgbBarSeries` for true horizontal bars. Never generate `ChartType="CategoryChartType.Bar"`.
+The chart auto-detects the string/date property for the X axis and creates a series for every numeric property. Narrow that with `IncludedProperties` / `ExcludedProperties`.
 
-> **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects which string or date property in the data to use as X-axis labels. To control which data properties are charted, use `IncludedProperties` or `ExcludedProperties` (string arrays).
-
-Brush list properties such as `Brushes`, `Outlines`, `MarkerBrushes`, and `MarkerOutlines` are **string** parameters. Separate multiple colors with spaces, as in `Brushes="DodgerBlue IndianRed"`.
-
-> **AGENT INSTRUCTION:** `IgbCategoryChart` auto-detects numeric properties in `DataSource` objects and creates series for them. To control which properties are charted, use `IncludedProperties` or `ExcludedProperties` attributes. These are **array** parameters - bind them with `@(new string[] { ... })` syntax:
-> ```razor
-> <IgbCategoryChart DataSource="SalesData"
->                   ExcludedProperties='@(new string[] { "Id", "InternalCode" })' />
-> ```
-> Do NOT pass a plain string like `ExcludedProperties="Id"` - this causes a type mismatch error.
-
----
+- `CategoryChartType.Bar` **does not exist**. `Column` gives vertical bars; true horizontal bars need `IgbDataChart` + `IgbBarSeries`.
+- `IncludedProperties` / `ExcludedProperties` are `string[]` — bind them as `@(new string[] { … })`, never as a plain string.
+- `XAxisLabel` formats labels; it does not select a data field.
+- Match `ChartType` to the curve in the design: `Spline` / `SplineArea` for smooth curves, `Line` / `Area` for angular, `StepLine` / `StepArea` for steps. Defaulting to `Line` when the design shows smooth curves is the most visible fidelity mistake.
+- Markers are shown at every point by default. Suppress them by adding `MarkerType.None` to `MarkerTypes` once the chart ref is ready.
 
 ## Data Chart
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbDataChartCoreModule), typeof(IgbDataChartCategoryModule));
-// Add additional modules for other series types:
-// IgbDataChartScatterModule, IgbDataChartFinancialModule, etc.
-```
-
 ```razor
 <IgbLegend @ref="Legend" Orientation="LegendOrientation.Horizontal" />
-<IgbDataChart Legend="Legend" Height="500px" Width="100%" IsHorizontalZoomEnabled="true">
+<IgbDataChart Legend="Legend" Width="100%" Height="500px" IsHorizontalZoomEnabled="true">
     <IgbCategoryXAxis Name="xAxis" DataSource="ChartData" Label="Month" />
     <IgbNumericYAxis Name="yAxis" />
-    <IgbLineSeries DataSource="ChartData"
-                   XAxisName="xAxis"
-                   YAxisName="yAxis"
-                   ValueMemberPath="Revenue"
-                   Title="Revenue" />
-    <IgbColumnSeries DataSource="ChartData"
-                     XAxisName="xAxis"
-                     YAxisName="yAxis"
-                     ValueMemberPath="Expenses"
-                     Title="Expenses" />
+    <IgbLineSeries DataSource="ChartData" XAxisName="xAxis" YAxisName="yAxis"
+                   ValueMemberPath="Revenue" Title="Revenue" />
+    <IgbColumnSeries DataSource="ChartData" XAxisName="xAxis" YAxisName="yAxis"
+                     ValueMemberPath="Expenses" Title="Expenses" />
 </IgbDataChart>
 
 @code {
-    public List<MonthData> ChartData { get; set; } = SampleData.GetMonthly();
-
-    private IgbLegend _legend;
+    private IgbLegend _legend = default!;
     private IgbLegend Legend
     {
-        get { return _legend; }
-        set { _legend = value; StateHasChanged(); } // triggers re-render so Legend="Legend" receives the ref
+        get => _legend;
+        set { _legend = value; StateHasChanged(); }   // re-render so Legend="Legend" receives the ref
     }
 }
 ```
 
-Every series must reference its axes by matching `Name` and `XAxisName` / `YAxisName`.
+- Every series must reference its axes by matching `Name` ↔ `XAxisName` / `YAxisName`.
+- `IgbDataChart` needs one module per **series category** — `IgbDataChartCoreModule` plus e.g. `IgbDataChartCategoryModule`, `IgbDataChartScatterModule`, `IgbDataChartFinancialModule`. Check `get_doc` for the exact names.
+- `IgbScatterSeries` / `IgbBubbleSeries` map fields with `XMemberPath` / `YMemberPath` (not `XAxisMemberPath`); bubbles also need `RadiusMemberPath`.
 
-> **AGENT INSTRUCTION:** `IgbDataChart` requires separate NuGet module registrations for each category of series. Always check `get_doc` to find the exact module names, for example category, scatter, polar, radial, stacked, or financial modules.
+The legend property-with-`StateHasChanged` idiom above is required for any chart that binds a legend by reference.
 
----
-
-## Financial / Stock Chart
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbFinancialChartModule));
-```
+## Financial Chart
 
 ```razor
-<IgbFinancialChart DataSource="StockData"
-                   Width="100%"
-                   Height="500px"
+<IgbFinancialChart DataSource="StockData" Width="100%" Height="500px"
                    ChartType="FinancialChartType.Candle"
                    ZoomSliderType="FinancialChartZoomSliderType.Line" />
-
-@code {
-    public List<StockPrice> StockData { get; set; } = SampleData.GetStockPrices();
-}
 ```
 
-The data source must contain `Open`, `High`, `Low`, `Close`, and `Volume` numeric fields plus a `Date`/`Time` field.
+The data source must expose `Open`, `High`, `Low`, `Close` (and usually `Volume`) numeric fields plus a date/time field, or nothing renders.
 
----
-
-## Pie Chart
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbPieChartModule), typeof(IgbItemLegendModule));
-```
+## Pie & Donut
 
 ```razor
-<IgbItemLegend @ref="PieLegend" Orientation="LegendOrientation.Horizontal" />
-<IgbPieChart DataSource="SliceData"
-             LabelMemberPath="Department"
-             ValueMemberPath="Budget"
-             Width="500px"
-             Height="400px"
-             LegendLabelMemberPath="Department"
-             Legend="PieLegend"
-             SliceClick="OnSliceClick" />
+<IgbPieChart DataSource="SliceData" LabelMemberPath="Department" ValueMemberPath="Budget"
+             Width="500px" Height="400px" Legend="PieLegend" SliceClick="OnSliceClick" />
 
-@code {
-    public List<BudgetSlice> SliceData { get; set; } = SampleData.GetBudget();
-
-    private IgbItemLegend _pieLegend;
-    private IgbItemLegend PieLegend
-    {
-        get { return _pieLegend; }
-        set { _pieLegend = value; StateHasChanged(); }
-    }
-
-    void OnSliceClick(IgbSliceClickEventArgs e) { /* handle click */ }
-}
-```
-
----
-
-## Donut Chart
-
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbDoughnutChartModule), typeof(IgbRingSeriesModule));
-```
-
-```razor
-<IgbDoughnutChart Width="400px" Height="400px">
-    <IgbRingSeries DataSource="DonutData"
-                   LabelMemberPath="Category"
-                   ValueMemberPath="Share" />
+<IgbDoughnutChart InnerExtent="0.6" Width="220px" Height="220px">
+    <IgbRingSeries DataSource="DonutData" LabelMemberPath="Category" ValueMemberPath="Share"
+                   Brushes="#5B57E8 #E8E8F5" Outlines="transparent transparent"
+                   LabelsPosition="LabelsPosition.None" />
 </IgbDoughnutChart>
 ```
 
-Supports multiple `IgbRingSeries` for concentric rings.
-
----
+- **`InnerExtent` is a chart property, never a series property.** `<IgbRingSeries InnerExtent="…">` throws `InvalidOperationException: IgbRingSeries does not have a property matching 'InnerExtent'`.
+- `IgbDoughnutChart` supports multiple `IgbRingSeries` for concentric rings.
+- For a static colored ring with a centered value and no needle, use `IgbDoughnutChart` and absolutely position the label over it — `IgbRadialGauge` and `IgbCircularProgress` will not produce that look.
 
 ## Sparkline
 
-```csharp
-builder.Services.AddIgniteUIBlazor(typeof(IgbSparklineModule));
-```
-
 ```razor
-<IgbSparkline DataSource="TrendData"
-              ValueMemberPath="Value"
+<IgbSparkline DataSource="TrendData" ValueMemberPath="Value"
               DisplayType="SparklineDisplayType.Line"
-              Width="120px"
-              Height="40px"
-              Brush="DodgerBlue"
-              LineThickness="2" />
+              Width="120px" Height="40px" Brush="DodgerBlue" LineThickness="2" />
 ```
 
----
+`DisplayType` supports only `Line`, `Area`, `Column`, `WinLoss`, and `Area` renders as an angular polygon. For a smooth mountain-shaped micro-chart use a small `IgbCategoryChart` with `ChartType="CategoryChartType.SplineArea"` and `AreaFillOpacity` — `AreaFillOpacity` does not exist on `IgbSparkline`.
 
-## Treemap
+## Treemap, Geographic Map, Gauges, Dashboard Tile
 
-Always call `get_doc("blazor", "treemap-chart")` before writing markup because hierarchy binding, member paths, and layout options are component-specific.
+Binding shapes differ enough between these that guessing fails: read `get_doc` for `treemap-chart`, the geographic-map series types, the specific gauge, or `dashboard-tile` before writing markup. Map series (`IgbGeographicSymbolSeries`, `IgbGeographicShapeSeries`, `IgbGeographicPolylineSeries`, `IgbGeographicProportionalSymbolSeries`) are declared as child components, not added from code, and do not follow Data Chart axis conventions.
 
----
+## Cross-cutting rules
 
-## Geographic Map
+**Explicit `Width` and `Height` are mandatory** — charts do not size to their container on their own. Inside a CSS Grid track also set `min-height: 0` on the cell and `Height="100%"` on the chart, or the track collapses to zero.
 
-Use Geographic Map for map backgrounds, shape files, geographic points, bubbles, and marker layers. Do not adapt Data Chart axis or series examples to maps unless the Blazor Geographic Map docs explicitly show the same API.
-
----
-
-## Gauges
-
-Use gauges for KPI values, ranges, thresholds, progress-style numeric summaries, and bullet comparisons. Select the exact gauge doc first, then use the MCP-documented property names for ranges, labels, scale, and value binding.
-
----
-
-## Dashboard Tile
-
-Use Dashboard Tile when the requested component should infer or render compact dashboard visualizations from bound data. Verify supported chart modes and binding shape with MCP before producing code.
-
----
-
-## Common Chart Features
-
-### Legends
+**Charts ignore the CSS theme.** Charts, maps, gauges, and sparklines do not read `--ig-*` design tokens. Set their colors through component parameters, using resolved color values rather than `var()` references:
 
 ```razor
-<IgbLegend @ref="Legend" Orientation="LegendOrientation.Horizontal" />
-<IgbCategoryChart DataSource="Data" Legend="Legend" />
-
-@code {
-    private IgbLegend _legend;
-    private IgbLegend Legend
-    {
-        get { return _legend; }
-        set { _legend = value; StateHasChanged(); } // triggers re-render so Legend="Legend" receives the ref
-    }
-}
+<IgbCategoryChart Brushes="#4FC3F7 #81C784" Outlines="#4FC3F7 #81C784"
+                  MarkerBrushes="#4FC3F7 #81C784"
+                  XAxisLabelTextColor="#666666" YAxisLabelTextColor="#666666" />
 ```
 
-### Tooltips
+`Brushes`, `Outlines`, `MarkerBrushes`, `MarkerOutlines` are **space-separated strings**, not arrays.
 
-```razor
-<!-- Default tooltip is shown automatically on hover — no property needed -->
-<IgbCategoryChart DataSource="Data" />
+**Set visual parameters inline in markup, not via `@ref` in `OnAfterRenderAsync`** — assigning them to a component reference raises Blazor warning **BL0005** (component parameter set outside its component).
 
-<!-- Custom tooltip via TooltipTemplate -->
-<IgbCategoryChart DataSource="Data" TooltipTemplate="@TooltipFragment" />
-```
-
-### Animations
-
-```razor
-<IgbCategoryChart IsTransitionInEnabled="true" TransitionInDuration="1000" />
-```
-
-### Highlighting
-
-```razor
-<IgbCategoryChart IsSeriesHighlightingEnabled="true"
-                  HighlightingMode="SeriesHighlightingMode.FadeOthers"
-                  HighlightingBehavior="SeriesHighlightingBehavior.NearestItemsAndSeries" />
-```
-
-### Zooming and Panning
-
-```razor
-<IgbCategoryChart IsHorizontalZoomEnabled="true"
-                  IsVerticalZoomEnabled="false"
-                  CrosshairsDisplayMode="CrosshairsDisplayMode.Both" />
-```
-
----
-
-## Key Rules
-
-1. **`IgbCategoryChart` is the fastest path for standard charts.** It auto-generates series from data. Use `IgbDataChart` only when you need multiple series types, custom axes, or advanced features.
-2. **`IgbDataChart` requires one module per series category.** Check `get_doc` for the exact module name.
-3. **Financial chart data must have `Open`, `High`, `Low`, `Close` fields.** If the data model is different, the chart will not render correctly.
-4. **Always set explicit `Width` and `Height` on charts.** Charts do not auto-size to their container without a height.
-5. **`IgbDataChart` series must match axes by name.** The `XAxisName` / `YAxisName` on each series must match the `Name` attribute of the axis component.
-6. **`IncludedProperties` and `ExcludedProperties` are `string[]` arrays.** Bind with `@(new string[] { "Prop1", "Prop2" })`. Do not pass a plain string.
-7. **`CategoryChartType.Bar` does not exist.** Use `Column` for vertical bars in `IgbCategoryChart`. For horizontal bars, use `IgbDataChart` with `IgbBarSeries`.
-8. **Do not use `XAxisLabel` to specify a data field.** It controls label formatting only. Use `IncludedProperties`/`ExcludedProperties` on `IgbCategoryChart`, or `Label` on `IgbCategoryXAxis` for `IgbDataChart`.
-9. **Scatter and bubble series use `XMemberPath`/`YMemberPath`, not `XAxisMemberPath`.** For `IgbScatterSeries` and `IgbBubbleSeries`, map data fields with `XMemberPath="FieldX"` and `YMemberPath="FieldY"`. `IgbBubbleSeries` additionally requires `RadiusMemberPath`.
+**Other common parameters:** default tooltips appear on hover with no configuration (`TooltipTemplate` replaces them); `IsTransitionInEnabled` / `TransitionInDuration` animate entry; `IsSeriesHighlightingEnabled` with `HighlightingMode` / `HighlightingBehavior` controls hover emphasis; `IsHorizontalZoomEnabled` / `IsVerticalZoomEnabled` and `CrosshairsDisplayMode` handle zoom and crosshairs.

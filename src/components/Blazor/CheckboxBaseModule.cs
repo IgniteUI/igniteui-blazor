@@ -1,21 +1,26 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbCheckboxBaseModule
+    /// <summary>
+    /// Provides the module for <see cref="IgbCheckboxBase"/>. Registering this module has no effect and is no longer required.
+    /// </summary>
+    [Obsolete("Registering IgbCheckboxBaseModule is no longer required, has no effect and can be safely removed.")]
+    [IgbModule<IgbCheckboxBaseModule>]
+    public partial class IgbCheckboxBaseModule : IIgbModule
     {
+        /// <summary>
+        /// No-op.
+        /// </summary>
         public static void Register(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.Load(runtime, "WebCheckboxBaseModule");
-
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
-            ModuleLoader.MarkIsLoadRequested(runtime, "WebCheckboxBaseModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
-            return ModuleLoader.IsLoadRequested(runtime, "WebCheckboxBaseModule");
+            return true;
         }
     }
 }
