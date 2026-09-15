@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -135,7 +136,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._size; }
             set
             {
-                if (this._size != value || !IsPropDirty("Size"))
+                if (Math.Abs(this._size - value) > 1e-9 || !IsPropDirty("Size"))
                 {
                     MarkPropDirty("Size");
                 }
@@ -156,7 +157,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._margin; }
             set
             {
-                if (this._margin != value || !IsPropDirty("Margin"))
+                if (Math.Abs(this._margin - value) > 1e-9 || !IsPropDirty("Margin"))
                 {
                     MarkPropDirty("Margin");
                 }
@@ -199,7 +200,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._logoSize; }
             set
             {
-                if (this._logoSize != value || !IsPropDirty("LogoSize"))
+                if (System.Math.Abs(this._logoSize - value) > 1e-12 || !IsPropDirty("LogoSize"))
                 {
                     MarkPropDirty("LogoSize");
                 }
@@ -267,14 +268,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Exports the QR code as an image file in the browser.
         /// The <see cref="IgbQrCodeExportOptions.Scale"/> option multiplies the <see cref="Size"/> of the

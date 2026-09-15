@@ -320,20 +320,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Toggles the collapsed state of the specified pane.
         /// </summary>
         public async Task ToggleAsync(PanePosition position)
         {
-            await InvokeMethod("toggle", new object[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
+            await InvokeMethod("toggle", new object?[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -341,11 +333,11 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Toggle(PanePosition position)
         {
-            InvokeMethodSync("toggle", new object[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
+            InvokeMethodSync("toggle", new object?[] { ObjectToParam(position, typeof(PanePosition)) }, new string[] { "Json" });
         }
 
-        private string _resizeStartRef = null;
-        private string _resizeStartScript = null;
+        private string? _resizeStartRef = null;
+        private string? _resizeStartScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ResizeStart"/> event in the browser instead.
@@ -355,7 +347,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ResizeStartScript
+        public string? ResizeStartScript
         {
 
             set
@@ -363,7 +355,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._resizeStartScript)
                 {
                     this._resizeStartScript = value;
-                    this.OnRefChanged("ResizeStart", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ResizeStart", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._resizeStartRef = refName;
                         this.MarkPropDirty("ResizeStartRef");
@@ -416,8 +408,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _resizingRef = null;
-        private string _resizingScript = null;
+        private string? _resizingRef = null;
+        private string? _resizingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Resizing"/> event in the browser instead.
@@ -427,7 +419,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ResizingScript
+        public string? ResizingScript
         {
 
             set
@@ -435,7 +427,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._resizingScript)
                 {
                     this._resizingScript = value;
-                    this.OnRefChanged("Resizing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Resizing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._resizingRef = refName;
                         this.MarkPropDirty("ResizingRef");
@@ -488,8 +480,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _resizeEndRef = null;
-        private string _resizeEndScript = null;
+        private string? _resizeEndRef = null;
+        private string? _resizeEndScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="ResizeEnd"/> event in the browser instead.
@@ -499,7 +491,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string ResizeEndScript
+        public string? ResizeEndScript
         {
 
             set
@@ -507,7 +499,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._resizeEndScript)
                 {
                     this._resizeEndScript = value;
-                    this.OnRefChanged("ResizeEnd", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("ResizeEnd", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._resizeEndRef = refName;
                         this.MarkPropDirty("ResizeEndRef");
@@ -560,8 +552,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _layoutChangedRef = null;
-        private string _layoutChangedScript = null;
+        private string? _layoutChangedRef = null;
+        private string? _layoutChangedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="LayoutChanged"/> event in the browser instead.
@@ -571,7 +563,7 @@ namespace IgniteUI.Blazor.Controls
         /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
         /// </remarks>
         [Parameter]
-        public string LayoutChangedScript
+        public string? LayoutChangedScript
         {
 
             set
@@ -579,7 +571,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._layoutChangedScript)
                 {
                     this._layoutChangedScript = value;
-                    this.OnRefChanged("LayoutChanged", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("LayoutChanged", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._layoutChangedRef = refName;
                         this.MarkPropDirty("LayoutChangedRef");

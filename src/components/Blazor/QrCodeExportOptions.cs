@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -11,16 +12,22 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebQrCodeExportOptions"; } }
 
-        private static bool _marshalByValue = true;
+        private static readonly bool _marshalByValue = true;
+        private const double ScaleComparisonEpsilon = 1e-9;
 
-        private string _fileName;
+        private static bool AreDoublesEqual(double left, double right)
+        {
+            return Math.Abs(left - right) <= ScaleComparisonEpsilon;
+        }
+
+        private string? _fileName;
 
         /// <summary>
         /// The name of the exported file. The extension of the format is appended when the name
         /// does not end with it. Defaults to <c>qr-code</c>.
         /// </summary>
         [Parameter]
-        public string FileName
+        public string? FileName
         {
             get { return this._fileName; }
             set
@@ -66,7 +73,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._scale; }
             set
             {
-                if (this._scale != value || !IsPropDirty("Scale"))
+                if (!AreDoublesEqual(this._scale, value) || !IsPropDirty("Scale"))
                 {
                     MarkPropDirty("Scale");
                 }

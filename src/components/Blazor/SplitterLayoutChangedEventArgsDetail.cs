@@ -11,15 +11,15 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebSplitterLayoutChangedEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
+        private static readonly bool _marshalByValue = true;
 
-        private string _startSize;
+        private string? _startSize;
 
         /// <summary>
         /// The current size of the start pane.
         /// </summary>
         [Parameter]
-        public string StartSize
+        public string? StartSize
         {
             get { return this._startSize; }
             set
@@ -32,13 +32,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _endSize;
+        private string? _endSize;
 
         /// <summary>
         /// The current size of the end pane.
         /// </summary>
         [Parameter]
-        public string EndSize
+        public string? EndSize
         {
             get { return this._endSize; }
             set
@@ -90,15 +90,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -115,7 +106,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -131,19 +122,19 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("startSize"))
-            { this.StartSize = ReturnToString(args["startSize"]); }
-            if (args.ContainsKey("endSize"))
-            { this.EndSize = ReturnToString(args["endSize"]); }
-            if (args.ContainsKey("startCollapsed"))
-            { this.StartCollapsed = ReturnToBoolean(args["startCollapsed"]); }
-            if (args.ContainsKey("endCollapsed"))
-            { this.EndCollapsed = ReturnToBoolean(args["endCollapsed"]); }
+            if (args != null && args.TryGetValue("startSize", out var startSize))
+            { this.StartSize = ReturnToString(startSize); }
+            if (args != null && args.TryGetValue("endSize", out var endSize))
+            { this.EndSize = ReturnToString(endSize); }
+            if (args != null && args.TryGetValue("startCollapsed", out var startCollapsed))
+            { this.StartCollapsed = ReturnToBoolean(startCollapsed); }
+            if (args != null && args.TryGetValue("endCollapsed", out var endCollapsed))
+            { this.EndCollapsed = ReturnToBoolean(endCollapsed); }
 
             this.SuppressParentNotify = false;
         }

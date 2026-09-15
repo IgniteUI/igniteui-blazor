@@ -36,6 +36,10 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 #### Mask Input, Date Time Input, Date Range Picker
 - The masked editors now support the standard undo and redo shortcuts: `Ctrl + Z` / `Cmd + Z` to undo, and `Ctrl + Y`, `Ctrl + Shift + Z` / `Cmd + Shift + Z` to redo.
 
+#### Packaging and release
+- Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
+- Every release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
+
 ### Changed
 
 - **Chip:** the `Remove` event now carries `IgbVoidEventArgs` instead of `IgbComponentBoolValueChangedEventArgs`, matching the corrected `igcRemove: CustomEvent<void>` typing of the web component - the event never carried a boolean detail. Update `Remove` handler signatures accordingly.
@@ -45,12 +49,33 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 - **Button Group:** a disabled group no longer sets `Disabled` on its buttons - the buttons inherit the state. A button that is disabled on its own stays disabled when the group is enabled again.
 - **Tooltip:** a tooltip that closes from a hide trigger now waits exactly `HideDelay` (an undocumented extra 180 ms stage was removed); in sticky mode the default close button hides the tooltip immediately; and `focusin` / `focusout` are now part of the default show/hide triggers, so a tooltip opens when its anchor gets keyboard focus.
 - **Tabs:** the scroll buttons now scroll to the nearest tab that is not fully visible, instead of a fixed step of 180px.
+- **Binary compatibility:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Normal NuGet consumers that rebuild should require no source changes, but precompiled dependents, binding redirects, and explicit fully-qualified assembly references may need updating.
+- Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
 
 ### Fixed
 
 - The `FocusComponent` / `FocusComponentAsync` and `BlurComponent` / `BlurComponentAsync` methods now work on all components that expose them - Button, Icon Button, Toggle Button, Checkbox, Switch, Radio, Input, Mask Input, Date Time Input, Select and Combo. Two client-side defects were fixed: the `IgbFocusOptions` argument was not registered for by-value marshalling, and methods a component inherits from `HTMLElement` without overriding them - the focus and blur of the buttons, which rely on `delegatesFocus` - were not recognized as invokable. [#297](https://github.com/IgniteUI/igniteui-blazor/issues/297)
 
 For the complete list of fixes arriving with the updated web components, see the [7.3.0](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.0), [7.3.1](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.1) and [7.3.2](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) release notes - highlights include per-element selection tracking in Button Group, correct `WeekStart` on the Calendar's initial render, form-associated components keeping their validation messages after a failed form submission (including hosts that start invalid), Highlight painting matches in recent Firefox versions, Select keyboard-navigation and type-ahead fixes, significantly faster large Tree operations, Tooltip show/hide race fixes, Chip accessibility reworks, and touch input on the Color Picker canvas.
+
+- The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
+- `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
+
+### Breaking Changes
+
+#### Public API nullability
+
+> [!NOTE]
+> As part of this release the public API was annotated for nullable reference types. Beyond the members listed below, reference-type parameters, properties, and return values now declare whether they accept or produce `null`. Consumers building with nullable reference types enabled may see new nullable warnings — or errors, if warnings are treated as errors — and may need to update their code accordingly.
+
+The following public members changed from nullable to non-nullable. Value-type changes (`double?` → `double`) are binary-breaking.
+
+| Type | Member | Before | After |
+|------|--------|--------|-------|
+| `IgbTile` | `ColStart` | `double?` | `double` |
+| `IgbTile` | `RowStart` | `double?` | `double` |
+| `IgbCalendar` | `SpecialDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+| `IgbCalendar` | `DisabledDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
 
 ## 0.1.0 - 2026-07-14
 
