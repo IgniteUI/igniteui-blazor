@@ -10,6 +10,7 @@ namespace IgniteUI.Blazor.Controls
                 case "CalendarFormatOptions":
                     return true;
                 case "FocusOptions":
+                case "WebFocusOptions":
                     return true;
                 case "FormatSpecifier":
                     return true;
@@ -156,6 +157,7 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbCalendarFormatOptions();
                     break;
                 case "FocusOptions":
+                case "WebFocusOptions":
                     return new IgbFocusOptions();
                     break;
                 case "FormatSpecifier":

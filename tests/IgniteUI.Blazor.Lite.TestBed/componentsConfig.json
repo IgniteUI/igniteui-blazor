@@ -46,22 +46,6 @@
     "ExcludedEvents": [
       // Emits complex object, instance of igc-select-item, which we cannot easily mock.
       "Change"
-    ],
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync"
-    ]
-  },
-  "IgbRadio": {
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync"
-    ]
-  },
-  "IgbCombo": {
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync"
     ]
   },
   "IgbRating": {
@@ -88,12 +72,6 @@
       "Spellcheck"
     ]
   },
-  "IgbToggleButton": {
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync"
-    ]
-  },
   "IgbTree": {
     "ExcludedProps": [
       // circular ref
@@ -106,32 +84,6 @@
       "Parent",
       // this should not be settable, seems to be related to an the internal component state.
       "Level"
-    ]
-  },
-  "IgbCheckbox": {
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync"
-    ]
-  },
-  "IgbIconButton": {
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync",
-      "BlurComponentAsync"
-    ]
-  },
-  "IgbSwitch": {
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync"
-    ]
-  },
-  "IgbButton": {
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync",
-      "BlurComponentAsync"
     ]
   },
   "IgbButtonGroup": {
@@ -159,10 +111,6 @@
     ]
   },
   "IgbTab": {
-    "DependantMethods": [
-      // BUG 35183
-      "FocusAsync"
-    ],
     "ExcludedEvents": [
       // no such client event.
       "SelectedChanged"
@@ -172,20 +120,12 @@
     "ExcludedProps": [
       // BUG 35187
       "SpinDelta"
-    ],
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync"
     ]
   },
   "IgbMaskInput": {
     "ExcludedEvents": [
       // no such client event.
       "ValueChanging"
-    ],
-    "DependantMethods": [
-      // BUG 35183
-      "FocusComponentAsync"
     ]
   },
   "IgbInput": {
@@ -197,9 +137,7 @@
     "DependantMethods": [
       // Depends on the input beign numeric.
       "StepUpAsync",
-      "StepDownAsync",
-      // BUG 35183
-      "FocusComponentAsync"
+      "StepDownAsync"
     ],
     "ExcludedEvents": [
       // no such client event.
