@@ -58,6 +58,9 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
+        /// <summary>
+        /// The owning <see cref="IgbTabs"/>, supplied as a cascading parameter.
+        /// </summary>
         [CascadingParameter(Name = "TabsParent")]
         protected BaseRendererControl? TabsParent
         {

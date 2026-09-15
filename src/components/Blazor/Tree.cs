@@ -137,15 +137,6 @@ namespace IgniteUI.Blazor.Controls
 
             return null;
         }
-        public async Task ConnectedCallbackAsync()
-        {
-            await InvokeMethod("connectedCallback", new object?[] { }, new string[] { });
-        }
-        public void ConnectedCallback()
-        {
-            InvokeMethodSync("connectedCallback", new object?[] { }, new string[] { });
-        }
-
         private string? _selectionChangedRef = null;
         private string? _selectionChangedScript = null;
 

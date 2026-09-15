@@ -410,26 +410,6 @@ namespace IgniteUI.Blazor.Controls
         {
             InvokeMethodSync("clear", new object?[] { }, new string[] { });
         }
-        public async Task<bool> HasDatePartsAsync()
-        {
-            var iv = await InvokeMethod("hasDateParts", new object?[] { }, new string[] { });
-            return ReturnToBoolean(iv);
-        }
-        public bool HasDateParts()
-        {
-            var iv = InvokeMethodSync("hasDateParts", new object?[] { }, new string[] { });
-            return ReturnToBoolean(iv);
-        }
-        public async Task<bool> HasTimePartsAsync()
-        {
-            var iv = await InvokeMethod("hasTimeParts", new object?[] { }, new string[] { });
-            return ReturnToBoolean(iv);
-        }
-        public bool HasTimeParts()
-        {
-            var iv = InvokeMethodSync("hasTimeParts", new object?[] { }, new string[] { });
-            return ReturnToBoolean(iv);
-        }
 
         /// <summary>
         /// Sets the text selection range of the control.

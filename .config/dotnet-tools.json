@@ -6,6 +6,16 @@
       "version": "0.9.1-beta.26330.1",
       "commands": ["sign"],
       "rollForward": false
+    },
+    "microsoft.sbom.dotnettool": {
+      "version": "4.1.5",
+      "commands": ["sbom-tool"],
+      "rollForward": true
+    },
+    "cyclonedx": {
+      "version": "6.2.0",
+      "commands": ["dotnet-CycloneDX"],
+      "rollForward": true
     }
   }
 }

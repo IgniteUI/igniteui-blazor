@@ -3098,6 +3098,34 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync"/> so that
+        /// exceptions raised by asynchronous consumer handlers are not silently swallowed.
+        /// Synchronous faults are rethrown to preserve the previous behavior; asynchronous
+        /// faults are surfaced through the same error channel as the interop dispatcher.
+        /// </summary>
+        internal static void ObserveHandlerTask(System.Threading.Tasks.Task task)
+        {
+            if (task == null)
+            {
+                return;
+            }
+            if (task.IsCompleted)
+            {
+                if (task.Exception != null)
+                {
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(task.Exception).Throw();
+                }
+                return;
+            }
+            task.ContinueWith(static t =>
+            {
+                Console.WriteLine(t.Exception);
+            }, System.Threading.CancellationToken.None,
+            System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted | System.Threading.Tasks.TaskContinuationOptions.ExecuteSynchronously,
+            System.Threading.Tasks.TaskScheduler.Default);
+        }
+
         internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
         {
             if (!handler.HasValue)
@@ -3106,6 +3134,7 @@ namespace IgniteUI.Blazor.Controls
                 _handlers.Remove(name + "/" + propertyName);
                 return;
             }
+            var handlerValue = handler.Value;
             Action<object?, object?> inner = (sender, args) =>
             {
                 // Native void events (e.g. focus/blur) legitimately deliver null args,
@@ -3125,11 +3154,8 @@ namespace IgniteUI.Blazor.Controls
                 {
                     onArgs(a);
                 }
-                var task = handler?.InvokeAsync(a);
-                if (task?.Exception != null)
-                {
-                    throw task.Exception;
-                }
+                var task = handlerValue.InvokeAsync(a);
+                ObserveHandlerTask(task);
                 if (eventArgs != null)
                 {
                     ele.ToEventJson(this, eventArgs);
@@ -3149,6 +3175,7 @@ namespace IgniteUI.Blazor.Controls
                 _handlers.Remove(name + "/" + propertyName);
                 return;
             }
+            var callback = handler.Value;
             Action<object?, object?> inner = (sender, args) =>
             {
                 T a = getReturn(args!);
@@ -3157,11 +3184,8 @@ namespace IgniteUI.Blazor.Controls
                 {
                     onArgs(a);
                 }
-                var task = handler?.InvokeAsync(a);
-                if (task?.Exception != null)
-                {
-                    throw task.Exception;
-                }
+                var task = callback.InvokeAsync(a);
+                ObserveHandlerTask(task);
             };
 
             //Console.WriteLine("setting handler: " + name + "/" + propertyName);
@@ -3890,12 +3914,12 @@ namespace IgniteUI.Blazor.Controls
             //runtime.JsRuntime.InvokeAsync<object>("igRequestLoad", moduleName);
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
             runtime.MarkIsLoadRequested(moduleName);
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
             return runtime.IsLoadRequested(moduleName);
         }
