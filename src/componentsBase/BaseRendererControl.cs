@@ -979,7 +979,7 @@ namespace IgniteUI.Blazor.Controls
         /// without a container ID to identify the originating component.
         /// </summary>
         /// <remarks>
-        /// Only use <see cref="Interlocked.Increment" /> as this is incremented from any thread.
+        /// Only use <see cref="Interlocked.Increment(ref long)" /> as this is incremented from any thread.
         /// </remarks>
         static long _invokeId = 0;
         protected async Task<object?> InvokeMethod(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
@@ -3062,7 +3062,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync"/> so that
+        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync(object?)"/> so that
         /// exceptions raised by asynchronous consumer handlers are not silently swallowed.
         /// Synchronous faults are rethrown to preserve the previous behavior; asynchronous
         /// faults are surfaced through the same error channel as the interop dispatcher.
