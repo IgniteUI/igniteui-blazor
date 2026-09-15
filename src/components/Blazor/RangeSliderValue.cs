@@ -80,10 +80,10 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("lower"))
-            { this.Lower = ReturnToDouble(args["lower"]); }
-            if (args != null && args.ContainsKey("upper"))
-            { this.Upper = ReturnToDouble(args["upper"]); }
+            if (args != null && args.TryGetValue("lower", out var lowerObj))
+            { this.Lower = ReturnToDouble(lowerObj); }
+            if (args != null && args.TryGetValue("upper", out var upperObj))
+            { this.Upper = ReturnToDouble(upperObj); }
 
             this.SuppressParentNotify = false;
         }

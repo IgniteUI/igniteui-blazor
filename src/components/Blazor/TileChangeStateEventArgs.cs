@@ -64,7 +64,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args?.ContainsKey("detail") == true && ConvertReturnValue(args["detail"], "TileChangeStateEventArgsDetail", true) is IgbTileChangeStateEventArgsDetail detail)
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "TileChangeStateEventArgsDetail", true) is IgbTileChangeStateEventArgsDetail detail)
             { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
