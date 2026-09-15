@@ -3226,7 +3226,6 @@ namespace IgniteUI.Blazor.Controls
             if (_handlers.ContainsKey(name + "/" + propertyName))
             {
                 //Console.WriteLine("got handler");
-                bool usedTempParent = false;
                 Object? senderObj = null;
                 try
                 {
