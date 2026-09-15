@@ -2081,7 +2081,7 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < arr.GetArrayLength(); i++)
                                 {
                                     var item = arr[i];
-                                    var cItem = ConvertReturnValue(item);
+                                    var cItem = ConvertReturnValue<T>(item);
                                     ret[i] = cItem;
                                 }
                                 return ret;
@@ -2916,7 +2916,7 @@ namespace IgniteUI.Blazor.Controls
         {
             // Use transformArrays=true so that array elements with uuid/name refs are resolved
             // to their actual data-source objects before we attempt to cast them.
-            val = ConvertReturnValue(val, transformArrays: true);
+            val = ConvertReturnValue<T>(val, transformArrays: true);
 
             if (val == null)
             {
