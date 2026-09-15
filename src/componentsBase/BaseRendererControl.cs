@@ -788,13 +788,16 @@ namespace IgniteUI.Blazor.Controls
         private DynamicContentHolder? Holder { get; set; }
 
         /// <inheritdoc />
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
                 MarkContentDirty();
-                EnsureReady();
+                // start the readiness poll, intentionally unawaited
+                _ = EnsureReady();
             }
+
+            return Task.CompletedTask;
         }
 
         //protected override void OnParametersSet()
@@ -899,7 +902,7 @@ namespace IgniteUI.Blazor.Controls
                     var desc = Encoding.UTF8.GetString(stream.ToArray());
                     m.SetData("description", desc);
 
-                    SendMessageImmediate(m);
+                    _ = SendMessageImmediate(m);
                 }
             }
         }
