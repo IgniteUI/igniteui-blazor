@@ -5,22 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.2.0 - 2026-09-16
 
 ### Added
 
 - Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
 - Еvery release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
+- Public component and enum APIs now include XML documentation for improved discoverability in IDEs and generated API documentation.
+- Ignite UI for Blazor now includes standalone AI skills for component usage, grids, theming, and generating views from image designs.
 
 ### Changed
 
 **Binary compatibility:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Normal NuGet consumers that rebuild should require no source changes, but precompiled dependents, binding redirects, and explicit fully-qualified assembly references may need updating.
 - Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
+- Nullable reference type analysis is enabled for the public API, making nullability contracts explicit for consumers.
+- `IgniteUI.Blazor.Lite` is now trim-compatible, including the required serializer and reflection annotations.
 
 ### Fixed
 
 - The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
 - `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
+- Async `EventCallback` faults are now observed instead of being dropped.
+- Nested public fields in unmarshalled data are now transferred correctly as data columns.
+- Combo change event values now decode to the correct `ChangeType`.
+
 ### Breaking Changes
 
 #### Public API nullability
