@@ -2358,7 +2358,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Array.Empty<DateTime>();
             }
@@ -2818,7 +2818,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<string[]>(arr!, SerializerContext.StringArray);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2839,7 +2839,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<int[]>(arr!, SerializerContext.Int32Array);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2860,7 +2860,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<double[]>(arr!, SerializerContext.DoubleArray);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2892,7 +2892,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Array.Empty<object>();
             }
@@ -2937,7 +2937,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2970,7 +2970,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -3003,7 +3003,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -3031,7 +3031,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
