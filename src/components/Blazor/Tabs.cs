@@ -75,7 +75,7 @@ namespace IgniteUI.Blazor.Controls
         private IgbTabs_TabCollection? _allTabsCollection;
         private IgbTabs_TabCollection? _contentTabsCollection = null;
 
-        public IgbTabs_TabCollection ContentTabsCollection
+        internal IgbTabs_TabCollection ContentTabsCollection
         {
 
             get
@@ -89,7 +89,7 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbTabs_TabCollection? _actualTabsCollection = null;
 
-        public IgbTabs_TabCollection ActualTabsCollection
+        internal IgbTabs_TabCollection ActualTabsCollection
         {
 
             get
@@ -127,7 +127,7 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTabs_TabCollection? _tabsCollection = null;
 
-        public IgbTabs_TabCollection TabsCollection
+        internal IgbTabs_TabCollection TabsCollection
         {
 
             get
@@ -138,7 +138,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return this._tabsCollection;
             }
-            protected set
+            private set
             {
                 if (this._tabsCollection != value || !IsPropDirty("TabsCollection"))
                 {
