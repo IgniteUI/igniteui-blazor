@@ -378,7 +378,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -476,7 +476,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

@@ -158,7 +158,6 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<string, bool> _isDirty = new Dictionary<string, bool>();
         private Dictionary<string, bool> _isDirtyRef = new Dictionary<string, bool>();
 
-        private bool _hasDirty = false;
         private bool _serializeDirty = false;
 
         protected string _name = Guid.NewGuid().ToString();
@@ -417,7 +416,6 @@ namespace IgniteUI.Blazor.Controls
         {
             _isDirtyRef[propertyName] = true;
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             if (_suppressParentNotify)
             {
@@ -462,7 +460,6 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             if (_suppressParentNotify)
             {

@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebComponentBoolValueChangedEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private bool _detail = false;
 
         /// <summary>

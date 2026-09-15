@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessageAttachmentEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbChatMessageAttachment _detail = new IgbChatMessageAttachment();
 
         /// <summary>

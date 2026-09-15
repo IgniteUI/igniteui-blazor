@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebSplitterResizeEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbSplitterResizeEventArgsDetail _detail = new IgbSplitterResizeEventArgsDetail();
 
         /// <summary>

@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebComboChangeEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private string? _newValueRef;
         private object[] _newValue = Array.Empty<object>();
 
@@ -134,7 +132,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

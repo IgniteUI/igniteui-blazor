@@ -146,7 +146,6 @@ namespace IgniteUI.Blazor.Controls
         private ElementReference contEle;
         private Dictionary<string, bool> _isDirty = new Dictionary<string, bool>();
         private Dictionary<string, bool> _isDirtyRef = new Dictionary<string, bool>();
-        private bool _hasDirty = false;
         private bool _serializeDirty = true;
         private DataSourceManager? _dataSourceManager;
         internal DataSourceManager? DataSourceManager
@@ -789,13 +788,16 @@ namespace IgniteUI.Blazor.Controls
         private DynamicContentHolder? Holder { get; set; }
 
         /// <inheritdoc />
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
                 MarkContentDirty();
-                EnsureReady();
+                // start the readiness poll, intentionally unawaited
+                _ = EnsureReady();
             }
+
+            return Task.CompletedTask;
         }
 
         //protected override void OnParametersSet()
@@ -849,7 +851,6 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             //Console.WriteLine("dirty: " + propertyName);
             MarkContentDirty();
@@ -901,7 +902,7 @@ namespace IgniteUI.Blazor.Controls
                     var desc = Encoding.UTF8.GetString(stream.ToArray());
                     m.SetData("description", desc);
 
-                    SendMessageImmediate(m);
+                    _ = SendMessageImmediate(m);
                 }
             }
         }
@@ -981,7 +982,7 @@ namespace IgniteUI.Blazor.Controls
         /// without a container ID to identify the originating component.
         /// </summary>
         /// <remarks>
-        /// Only use <see cref="Interlocked.Increment" /> as this is incremented from any thread.
+        /// Only use <see cref="Interlocked.Increment(ref long)" /> as this is incremented from any thread.
         /// </remarks>
         static long _invokeId = 0;
         protected async Task<object?> InvokeMethod(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
@@ -1228,7 +1229,6 @@ namespace IgniteUI.Blazor.Controls
         {
             _isDirtyRef[propertyName] = true;
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             string? refId = _containerId + "/" + propertyName;
 
@@ -2234,12 +2234,6 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private object? GetObjectById(long objId)
-        {
-            //TODO: this
-            return null;
-        }
-
         internal int ReturnToInt(object? val)
         {
             if (val == null)
@@ -2358,7 +2352,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Array.Empty<DateTime>();
             }
@@ -2818,7 +2812,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<string[]>(arr!, SerializerContext.StringArray);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2839,7 +2833,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<int[]>(arr!, SerializerContext.Int32Array);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2860,7 +2854,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<double[]>(arr!, SerializerContext.DoubleArray);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2892,7 +2886,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Array.Empty<object>();
             }
@@ -2937,7 +2931,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2970,7 +2964,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -3003,7 +2997,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -3031,7 +3025,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -3071,7 +3065,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync"/> so that
+        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync(object?)"/> so that
         /// exceptions raised by asynchronous consumer handlers are not silently swallowed.
         /// Synchronous faults are rethrown to preserve the previous behavior; asynchronous
         /// faults are surfaced through the same error channel as the interop dispatcher.
@@ -3235,7 +3229,6 @@ namespace IgniteUI.Blazor.Controls
             if (_handlers.ContainsKey(name + "/" + propertyName))
             {
                 //Console.WriteLine("got handler");
-                bool usedTempParent = false;
                 Object? senderObj = null;
                 try
                 {

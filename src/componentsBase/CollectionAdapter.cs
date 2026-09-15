@@ -6,7 +6,6 @@ namespace IgniteUI.Blazor.Controls
         where T : class
         where J : class
     {
-        private IList<T>? _queryItems;
         private IList<T> _manualItems = new List<T>();
 
         private IList<T>? _allList;

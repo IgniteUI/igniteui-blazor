@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessageAttachment"; } }
 
-        private static bool _marshalByValue = true;
-
         private string _id = string.Empty;
 
         /// <summary>
@@ -90,7 +88,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

@@ -443,7 +443,6 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToObjectArray(iv).Cast<T>().ToArray();
         }
-        private string? _selectionRef;
 
         /// <summary>
         /// Returns the current selection of the combo.
