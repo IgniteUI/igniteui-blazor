@@ -17,7 +17,7 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 - `IgbQrCode` - Renders a scannable QR code as an SVG from the `Value` property. Supports an explicit `Version` (1-40) and `ErrorLevel`, `Size` and `Margin` (quiet zone), `DotStyle`/`SquareStyle` shapes, an optional centered logo (`LogoSrc`, `LogoSize`, `LogoMargin`), and theming via CSS custom properties. [#2308](https://github.com/IgniteUI/igniteui-webcomponents/pull/2308)
 
 #### QR Code
-- New `ToImage` / `ToImageAsync` methods. They export the code as an image file in `Svg`, `Png`, `Jpeg` or `Webp` format via `IgbQrCodeExportOptions`. The `Scale` option multiplies the component `Size` - a 256px code with a scale of 2 exports as a 512x512 image - and `Download = true` opens the browser download dialog for the file. [#2367](https://github.com/IgniteUI/igniteui-webcomponents/pull/2367)
+- New `ToImage` / `ToImageAsync` methods. They export the code as an image file in `Svg`, `Png`, `Jpeg` or `Webp` format via `IgbQrCodeExportOptions`. The `Scale` option multiplies the component `Size` - a 256px code with a scale of 2 exports as a 512x512 image - and the file is delivered to the user through the browser download dialog. [#2367](https://github.com/IgniteUI/igniteui-webcomponents/pull/2367)
 
 #### Chip
 - New `Outlined` property. When set, the chip shows an outlined style. [#2307](https://github.com/IgniteUI/igniteui-webcomponents/pull/2307)

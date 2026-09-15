@@ -81,25 +81,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private bool _download = false;
-
-        /// <summary>
-        /// Whether to open the browser download dialog for the exported file.
-        /// </summary>
-        [Parameter]
-        public bool Download
-        {
-            get { return this._download; }
-            set
-            {
-                if (this._download != value || !IsPropDirty("Download"))
-                {
-                    MarkPropDirty("Download");
-                }
-                this._download = value;
-
-            }
-        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -111,8 +92,9 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddEnumProp("format", this._format); }
             if (IsPropDirty("Scale"))
             { ser.AddNumberProp("scale", this._scale); }
-            if (IsPropDirty("Download"))
-            { ser.AddBooleanProp("download", this._download); }
+            // The exported file cannot be handed back to .NET, so the export always
+            // goes through the browser download dialog.
+            ser.AddBooleanProp("download", true);
 
         }
 

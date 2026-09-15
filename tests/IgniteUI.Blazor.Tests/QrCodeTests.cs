@@ -7,9 +7,14 @@ namespace IgniteUI.Blazor.Tests;
 public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
 {
     protected override ComponentContract<IgbQrCode> InteropContract { get; } = new ComponentContract<IgbQrCode>()
-        .Method(c => c.ToImageAsync(new IgbQrCodeExportOptions { FileName = "my-code", Format = QrCodeExportFormat.Png, Scale = 2, Download = true }),
-            c => c.ToImage(new IgbQrCodeExportOptions { FileName = "my-code", Format = QrCodeExportFormat.Png, Scale = 2, Download = true }), "toImage",
-            args: [new JsonSubset("""{"fileName": "my-code", "format": "png", "scale": 2, "download": true}""")], types: ["Json"]);
+        .Method(c => c.ToImageAsync(new IgbQrCodeExportOptions { FileName = "my-code", Format = QrCodeExportFormat.Png, Scale = 2 }),
+            c => c.ToImage(new IgbQrCodeExportOptions { FileName = "my-code", Format = QrCodeExportFormat.Png, Scale = 2 }), "toImage",
+            args: [new JsonSubset("""{"fileName": "my-code", "format": "png", "scale": 2, "download": true}""")], types: ["Json"])
+        // The exported file cannot be handed back to .NET, so the export always downloads,
+        // even when the options carry nothing else.
+        .Method(c => c.ToImageAsync(new IgbQrCodeExportOptions()),
+            c => c.ToImage(new IgbQrCodeExportOptions()), "toImage",
+            args: [new JsonSubset("""{"download": true}""")], types: ["Json"]);
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();

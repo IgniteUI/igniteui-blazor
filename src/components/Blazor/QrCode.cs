@@ -274,13 +274,13 @@ namespace IgniteUI.Blazor.Controls
         /// component: a 256px QR code exported with a scale of 2 produces a 512x512 image.
         /// </summary>
         /// <remarks>
-        /// The exported file stays on the client - set <see cref="IgbQrCodeExportOptions.Download"/> to
-        /// <see langword="true"/> to open the browser download dialog and deliver it to the user.
+        /// The exported file stays on the client - it is delivered to the user through the browser
+        /// download dialog and cannot be read back into .NET.
         /// The export fails when the component has no <see cref="Value"/>, when the format is not
         /// supported by the browser, when the scale is not a positive finite number, or when the
         /// resulting image exceeds the maximum canvas size.
         /// </remarks>
-        /// <param name="options">Options controlling the file name, format, scale and download behavior.</param>
+        /// <param name="options">Options controlling the file name, format and scale of the exported image.</param>
         public async Task ToImageAsync(IgbQrCodeExportOptions options)
         {
             await InvokeMethod("toImage", new object[] { ObjectToParam(options) }, new string[] { "Json" });
@@ -292,13 +292,13 @@ namespace IgniteUI.Blazor.Controls
         /// component: a 256px QR code exported with a scale of 2 produces a 512x512 image.
         /// </summary>
         /// <remarks>
-        /// The exported file stays on the client - set <see cref="IgbQrCodeExportOptions.Download"/> to
-        /// <see langword="true"/> to open the browser download dialog and deliver it to the user.
+        /// The exported file stays on the client - it is delivered to the user through the browser
+        /// download dialog and cannot be read back into .NET.
         /// The export fails when the component has no <see cref="Value"/>, when the format is not
         /// supported by the browser, when the scale is not a positive finite number, or when the
         /// resulting image exceeds the maximum canvas size.
         /// </remarks>
-        /// <param name="options">Options controlling the file name, format, scale and download behavior.</param>
+        /// <param name="options">Options controlling the file name, format and scale of the exported image.</param>
         public void ToImage(IgbQrCodeExportOptions options)
         {
             InvokeMethodSync("toImage", new object[] { ObjectToParam(options) }, new string[] { "Json" });
