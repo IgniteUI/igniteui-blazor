@@ -322,10 +322,10 @@
                 // this is a special property with a predefined value for this component only
                 value = scopedValue;
             }
-            else if (CustomTypes.PredefinedPropertyValues.ContainsKey(p.Name))
+            else if (CustomTypes.PredefinedPropertyValues.TryGetValue(p.Name, out var predefinedValue))
             {
                 // this is a special property with predefined value
-                value = CustomTypes.PredefinedPropertyValues[p.Name];
+                value = predefinedValue;
             }
             // set prop and wait for state to change
             parameters.Add(p.Name, value!);
