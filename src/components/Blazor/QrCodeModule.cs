@@ -24,7 +24,7 @@ namespace IgniteUI.Blazor.Controls
             ModuleLoader.MarkIsLoadRequested(runtime, "WebQrCodeModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "WebQrCodeModule");
         }
