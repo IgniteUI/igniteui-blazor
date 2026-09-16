@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebFocusOptions"; } }
 
-        private static readonly bool _marshalByValue = true;
-
         private bool _preventScroll = false;
 
         /// <summary>
