@@ -113,7 +113,6 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
     {
         var options = new IgbChatOptions { DisableInputAttachments = false };
         var chat = Render<IgbChat>(parameters => parameters.Add(x => x.Options, options));
-        chat.Instance.Options = options;
 
         Assert.NotNull(chat.Instance.Options);
         Assert.True(chat.Instance.Options.DisableInputAttachments);
