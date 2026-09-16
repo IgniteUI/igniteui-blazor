@@ -7,7 +7,6 @@ Eight stylesheets under `_content/IgniteUI.Blazor/themes/`: `{light|dark}/{boots
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
 <link href="css/app.css" rel="stylesheet" />
-<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
 ```
 
 .NET 9+ Web App projects can use the fingerprinted asset collection:
