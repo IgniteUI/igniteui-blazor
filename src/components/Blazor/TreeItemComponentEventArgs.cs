@@ -12,8 +12,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebTreeItemComponentEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbTreeItem _detail = new IgbTreeItem();
 
         /// <summary>

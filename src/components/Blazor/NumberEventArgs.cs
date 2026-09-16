@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebNumberEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private double _detail = 0;
 
         /// <summary>
@@ -58,8 +56,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail"))
-            { this.Detail = ReturnToDouble(args["detail"]); }
+            if (args != null && args.TryGetValue("detail", out var detailObj))
+            { this.Detail = ReturnToDouble(detailObj); }
 
             this.SuppressParentNotify = false;
         }

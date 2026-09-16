@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebTileChangeStateEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbTile _tile = new IgbTile();
 
         /// <summary>
@@ -52,7 +50,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -84,8 +81,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (args != null && args.TryGetValue("tile", out var tileObj) && ConvertReturnValue(tileObj, "Tile", true) is IgbTile tile)
             { this.Tile = tile; }
-            if (args != null && args.ContainsKey("state"))
-            { this.State = ReturnToBoolean(args["state"]); }
+            if (args != null && args.TryGetValue("state", out var stateObj))
+            { this.State = ReturnToBoolean(stateObj); }
 
             this.SuppressParentNotify = false;
         }

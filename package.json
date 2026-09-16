@@ -2,10 +2,9 @@
   "name": "igniteui-blazor-lite",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cross-env NODE_ENV=production node node_modules/webpack/bin/webpack.js --mode production --config ./webpack.config.js  --color --bail",
-    "build:dev": "cross-env NODE_ENV=development node node_modules/webpack/bin/webpack.js --mode development --config ./webpack.config.js  --color --bail",
-    "copythemes": "ncp node_modules/igniteui-webcomponents/themes ./src/wwwroot/themes",
+    "test": "node --test \"tests/js/**/*.test.mjs\"",
+    "build": "tsc --noEmit -p tsconfig.json && vite build && tsc -p tsconfig.api.json",
+    "build:dev": "tsc --noEmit -p tsconfig.json && vite build --mode development && tsc -p tsconfig.api.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "git config core.hooksPath .githooks"
@@ -16,14 +15,11 @@
   "author": "",
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12.0"
   },
   "devDependencies": {
     "@cyclonedx/cyclonedx-npm": "6.0.1",
-    "copy-webpack-plugin": "^14.0.0",
-    "cross-env": "^5.2.1",
-    "css-loader": "^6.8.1",
-    "ejs-loader": "^0.5.0",
+    "@types/node": "^26.4.1",
     "eslint": "^10.3.0",
     "glob": "^7.1.4",
     "html-loader": "^5.1.0",
@@ -42,6 +38,7 @@
     "webpack-cli": "^7.2.3",
     "webpack-dev-server": "^6.0.0",
     "worker-loader": "^3.0.8",
+    "vite": "^8.2.2",
     "yargs": "^17.2.1"
   },
   "dependencies": {

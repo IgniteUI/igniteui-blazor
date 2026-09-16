@@ -13,8 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebExpansionPanelComponentEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbExpansionPanel _detail = new IgbExpansionPanel();
 
         /// <summary>

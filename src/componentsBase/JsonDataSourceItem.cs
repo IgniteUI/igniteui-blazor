@@ -8,7 +8,6 @@ namespace IgniteUI.Blazor.Controls
     {
         private Guid _id;
         private bool _isNull = false;
-        private bool _isDataSource = true;
         private IJSDataSource? _source = null;
         private string? _parentId = null;
         private Dictionary<string, object?> _values = new Dictionary<string, object?>();

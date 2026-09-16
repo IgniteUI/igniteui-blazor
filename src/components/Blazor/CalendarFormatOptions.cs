@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "CalendarFormatOptions"; } }
 
-        private static bool _marshalByValue = true;
-
         private string? _weekday;
 
         /// <summary>
@@ -83,10 +81,10 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("weekday"))
-            { this.Weekday = ReturnToString(args["weekday"]); }
-            if (args != null && args.ContainsKey("month"))
-            { this.Month = ReturnToString(args["month"]); }
+            if (args != null && args.TryGetValue("weekday", out var weekdayObj))
+            { this.Weekday = ReturnToString(weekdayObj); }
+            if (args != null && args.TryGetValue("month", out var monthObj))
+            { this.Month = ReturnToString(monthObj); }
 
             this.SuppressParentNotify = false;
         }

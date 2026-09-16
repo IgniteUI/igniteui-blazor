@@ -117,7 +117,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         /// <summary>
         /// Registers an icon by fetching it from a URL.
         /// </summary>

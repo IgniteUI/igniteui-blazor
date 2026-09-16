@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2022",
+    // igniteui-core (translated) redeclares base-class fields and relies on assignment ([[Set]]) semantics.
+    "useDefineForClassFields": false,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "declaration": true,
     "sourceMap": true,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "outDir": "src/dist",
-    "lib": ["es2017", "dom", "scripthost"],
+    "lib": ["es2022", "dom"],
+    // No automatic @types/*: browser code sees DOM types only.
+    "types": [],
     "noImplicitAny": false,
     "removeComments": true,
     "baseUrl": ".",
@@ -16,5 +19,5 @@
       "igniteui-core/*": ["src/src/ig/igniteui-core/*"]
     }
   },
-  "exclude": ["src/dist"]
+  "exclude": ["node_modules", "src/dist", "src/wwwroot", "vite.config.mts"]
 }
