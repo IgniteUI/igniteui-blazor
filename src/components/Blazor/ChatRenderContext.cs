@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -6,7 +5,8 @@ namespace IgniteUI.Blazor.Controls
     /// The base context object passed to custom renderers, containing the
     /// <see cref="IgbChat"/> component instance.
     /// </summary>
-    public partial class IgbChatRenderContext : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbChatRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebChatRenderContext"; } }
@@ -16,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The instance of the <see cref="IgbChat"/> component.
         /// </summary>
-        [Parameter]
         public IgbChat Instance
         {
             get { return this._instance; }

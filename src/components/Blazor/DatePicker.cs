@@ -487,14 +487,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 MarkPropDirty("ResourceStrings");
-                if (this._resourceStrings != null)
-                {
-                    this.DetachChild(this._resourceStrings);
-                }
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
                 this._resourceStrings = value;
             }
 

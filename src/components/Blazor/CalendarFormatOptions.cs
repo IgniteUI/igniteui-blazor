@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -6,7 +5,8 @@ namespace IgniteUI.Blazor.Controls
     /// The options used to format the months and the weekdays in the calendar views.
     /// Set through <see cref="IgbCalendar.FormatOptions"/>.
     /// </summary>
-    public partial class IgbCalendarFormatOptions : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbCalendarFormatOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "CalendarFormatOptions"; } }
@@ -17,7 +17,6 @@ namespace IgniteUI.Blazor.Controls
         /// The representation of the weekday names, one of <c>long</c>, <c>short</c> or <c>narrow</c>.
         /// Defaults to <c>narrow</c>.
         /// </summary>
-        [Parameter]
         public string? Weekday
         {
             get { return this._weekday; }
@@ -37,7 +36,6 @@ namespace IgniteUI.Blazor.Controls
         /// The representation of the month names, one of <c>numeric</c>, <c>2-digit</c>, <c>long</c>,
         /// <c>short</c> or <c>narrow</c>. Defaults to <c>long</c>.
         /// </summary>
-        [Parameter]
         public string? Month
         {
             get { return this._month; }
@@ -61,32 +59,6 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Month"))
             { ser.AddStringProp("month", this._month); }
 
-        }
-
-        /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
-        {
-            base.ToEventJson(control, args);
-
-            if (IsPropDirty("Weekday"))
-            { args["weekday"] = this._weekday; }
-            if (IsPropDirty("Month"))
-            { args["month"] = this._month; }
-
-        }
-
-        /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
-        {
-            base.FromEventJson(control, args);
-            this.SuppressParentNotify = true;
-
-            if (args != null && args.TryGetValue("weekday", out var weekdayObj))
-            { this.Weekday = ReturnToString(weekdayObj); }
-            if (args != null && args.TryGetValue("month", out var monthObj))
-            { this.Month = ReturnToString(monthObj); }
-
-            this.SuppressParentNotify = false;
         }
 
     }

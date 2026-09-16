@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Represents a user's reaction to a specific chat message.
     /// </summary>
-    public partial class IgbChatMessageReaction : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbChatMessageReaction : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessageReaction"; } }
@@ -15,22 +15,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The chat message that the reaction is associated with.
         /// </summary>
-        [Parameter]
         public IgbChatMessage Message
         {
             get { return this._message; }
             set
             {
                 MarkPropDirty("Message");
-                if (this._message != null)
-                {
-                    this.DetachChild(this._message);
-                }
                 this._message = value;
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
             }
 
         }
@@ -39,7 +30,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The string representation of the reaction, such as an emoji or a string;
         /// </summary>
-        [Parameter]
         public string Reaction
         {
             get { return this._reaction; }
@@ -63,32 +53,6 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Reaction"))
             { ser.AddStringProp("reaction", this._reaction); }
 
-        }
-
-        /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
-        {
-            base.ToEventJson(control, args);
-
-            if (IsPropDirty("Message"))
-            { args["message"] = ObjectToParam(this._message); }
-            if (IsPropDirty("Reaction"))
-            { args["reaction"] = this._reaction; }
-
-        }
-
-        /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
-        {
-            base.FromEventJson(control, args);
-            this.SuppressParentNotify = true;
-
-            if (args != null && args.TryGetValue("message", out var messageObj) && ConvertReturnValue(messageObj, "ChatMessage", true) is IgbChatMessage message)
-            { this.Message = message; }
-            if (args != null && args.TryGetValue("reaction", out var reactionObj))
-            { this.Reaction = ReturnToString(reactionObj); }
-
-            this.SuppressParentNotify = false;
         }
 
     }

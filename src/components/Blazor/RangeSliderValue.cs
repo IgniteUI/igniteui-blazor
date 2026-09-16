@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The pair of thumb values carried by the <see cref="IgbRangeSlider"/> value events.
     /// </summary>
-    public partial class IgbRangeSliderValue : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbRangeSliderValue : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebRangeSliderValue"; } }
@@ -15,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The value of the lower thumb.
         /// </summary>
-        [Parameter]
         public double Lower
         {
             get { return this._lower; }
@@ -34,7 +33,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The value of the upper thumb.
         /// </summary>
-        [Parameter]
         public double Upper
         {
             get { return this._upper; }
@@ -58,32 +56,6 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Upper"))
             { ser.AddNumberProp("upper", this._upper); }
 
-        }
-
-        /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
-        {
-            base.ToEventJson(control, args);
-
-            if (IsPropDirty("Lower"))
-            { args["lower"] = (this._lower).ToString(); }
-            if (IsPropDirty("Upper"))
-            { args["upper"] = (this._upper).ToString(); }
-
-        }
-
-        /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
-        {
-            base.FromEventJson(control, args);
-            this.SuppressParentNotify = true;
-
-            if (args != null && args.TryGetValue("lower", out var lowerObj))
-            { this.Lower = ReturnToDouble(lowerObj); }
-            if (args != null && args.TryGetValue("upper", out var upperObj))
-            { this.Upper = ReturnToDouble(upperObj); }
-
-            this.SuppressParentNotify = false;
         }
 
     }

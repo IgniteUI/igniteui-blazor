@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -15,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The text shown between the start and end inputs when the date range picker is configured with separate inputs.
         /// </summary>
-        [Parameter]
         public string? Separator
         {
             get { return this._separator; }
@@ -34,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Text for the button that commits the range selection when the picker is in dialog mode.
         /// </summary>
-        [Parameter]
         [WCWidgetMemberName("done")]
         public string? DoneButton
         {
@@ -54,7 +51,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Text for the button that cancels the range selection when the picker is in dialog mode.
         /// </summary>
-        [Parameter]
         [WCWidgetMemberName("cancel")]
         public string? CancelButton
         {
@@ -74,7 +70,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Text for the preset range button that selects the last 7 days.
         /// </summary>
-        [Parameter]
         public string? Last7Days
         {
             get { return this._last7Days; }
@@ -93,7 +88,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Text for the preset range button that selects the last 30 days.
         /// </summary>
-        [Parameter]
         public string? Last30Days
         {
             get { return this._last30Days; }
@@ -112,7 +106,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Text for the preset range button that selects the current month.
         /// </summary>
-        [Parameter]
         public string? CurrentMonth
         {
             get { return this._currentMonth; }
@@ -131,7 +124,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Text for the preset range button that selects from the start of the current year to today.
         /// </summary>
-        [Parameter]
         public string? YearToDate
         {
             get { return this._yearToDate; }

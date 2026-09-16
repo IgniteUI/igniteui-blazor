@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Options for controlling navigation behavior when moving the active highlight.
     /// </summary>
-    public partial class IgbHighlightNavigation : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbHighlightNavigation : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebHighlightNavigation"; } }
@@ -15,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// When <see langword="true"/>, prevents the component from scrolling the new active match into view.
         /// </summary>
-        [Parameter]
         public bool PreventScroll
         {
             get { return this._preventScroll; }
@@ -37,28 +36,6 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("PreventScroll"))
             { ser.AddBooleanProp("preventScroll", this._preventScroll); }
 
-        }
-
-        /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
-        {
-            base.ToEventJson(control, args);
-
-            if (IsPropDirty("PreventScroll"))
-            { args["preventScroll"] = (this._preventScroll).ToString().ToLower(); }
-
-        }
-
-        /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
-        {
-            base.FromEventJson(control, args);
-            this.SuppressParentNotify = true;
-
-            if (args != null && args.TryGetValue("preventScroll", out var preventScrollObj))
-            { this.PreventScroll = ReturnToBoolean(preventScrollObj); }
-
-            this.SuppressParentNotify = false;
         }
 
     }

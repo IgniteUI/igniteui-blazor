@@ -23,15 +23,7 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 MarkPropDirty("Detail");
-                if (this._detail != null)
-                {
-                    this.DetachChild(this._detail);
-                }
                 this._detail = value;
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
             }
 
         }

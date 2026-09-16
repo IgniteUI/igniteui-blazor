@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-
+﻿
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The localized strings used by the calendar views, exposed through the <c>ResourceStrings</c>
     /// property of <see cref="IgbCalendar"/> and <see cref="IgbDatePicker"/>.
     /// </summary>
-    public partial class IgbCalendarResourceStrings : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbCalendarResourceStrings : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebCalendarResourceStrings"; } }
@@ -16,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The accessible label of the header button that switches the calendar to the months view.
         /// </summary>
-        [Parameter]
         public string? SelectMonth
         {
             get { return this._selectMonth; }
@@ -35,7 +34,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The accessible label of the header button that switches the calendar to the years view.
         /// </summary>
-        [Parameter]
         public string? SelectYear
         {
             get { return this._selectYear; }
@@ -55,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
         /// Title shown in the calendar header in single selection mode.
         /// Defaults to <c>Select Date</c>.
         /// </summary>
-        [Parameter]
         public string? SelectDate
         {
             get { return this._selectDate; }
@@ -75,7 +72,6 @@ namespace IgniteUI.Blazor.Controls
         /// Title shown in the calendar header in range selection mode.
         /// Defaults to <c>Select Range</c>.
         /// </summary>
-        [Parameter]
         public string? SelectRange
         {
             get { return this._selectRange; }
@@ -94,7 +90,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The label for the currently selected date.
         /// </summary>
-        [Parameter]
         [Obsolete("This property is not used in the current localization pipeline and has no effect. It will be removed in a future release.")]
         public string? SelectedDate
         {
@@ -115,7 +110,6 @@ namespace IgniteUI.Blazor.Controls
         /// Placeholder shown in the calendar header in place of the range start date until one is selected.
         /// Defaults to <c>Start</c>.
         /// </summary>
-        [Parameter]
         public string? StartDate
         {
             get { return this._startDate; }
@@ -135,7 +129,6 @@ namespace IgniteUI.Blazor.Controls
         /// Placeholder shown in the calendar header in place of the range end date until one is selected.
         /// Defaults to <c>End</c>.
         /// </summary>
-        [Parameter]
         public string? EndDate
         {
             get { return this._endDate; }
@@ -155,7 +148,6 @@ namespace IgniteUI.Blazor.Controls
         /// The accessible label of the navigation button that moves the days view one month back.
         /// Defaults to <c>Previous Month</c>.
         /// </summary>
-        [Parameter]
         public string? PreviousMonth
         {
             get { return this._previousMonth; }
@@ -175,7 +167,6 @@ namespace IgniteUI.Blazor.Controls
         /// The accessible label of the navigation button that moves the days view one month forward.
         /// Defaults to <c>Next Month</c>.
         /// </summary>
-        [Parameter]
         public string? NextMonth
         {
             get { return this._nextMonth; }
@@ -195,7 +186,6 @@ namespace IgniteUI.Blazor.Controls
         /// The accessible label of the navigation button that moves the months view one year back.
         /// Defaults to <c>Previous Year</c>.
         /// </summary>
-        [Parameter]
         public string? PreviousYear
         {
             get { return this._previousYear; }
@@ -215,7 +205,6 @@ namespace IgniteUI.Blazor.Controls
         /// The accessible label of the navigation button that moves the months view one year forward.
         /// Defaults to <c>Next Year</c>.
         /// </summary>
-        [Parameter]
         public string? NextYear
         {
             get { return this._nextYear; }
@@ -235,7 +224,6 @@ namespace IgniteUI.Blazor.Controls
         /// The accessible label of the navigation button that moves the years view one page back.
         /// Defaults to <c>Previous {0} Years</c>, where <c>{0}</c> is the number of years on a page.
         /// </summary>
-        [Parameter]
         public string? PreviousYears
         {
             get { return this._previousYears; }
@@ -255,7 +243,6 @@ namespace IgniteUI.Blazor.Controls
         /// The accessible label of the navigation button that moves the years view one page forward.
         /// Defaults to <c>Next {0} Years</c>, where <c>{0}</c> is the number of years on a page.
         /// </summary>
-        [Parameter]
         public string? NextYears
         {
             get { return this._nextYears; }
@@ -274,7 +261,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The header of the week numbers column in the days view. Defaults to <c>Wk</c>.
         /// </summary>
-        [Parameter]
         public string? WeekLabel
         {
             get { return this._weekLabel; }
@@ -321,7 +307,6 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddStringProp("nextYears", this._nextYears); }
             if (IsPropDirty("WeekLabel"))
             { ser.AddStringProp("weekLabel", this._weekLabel); }
-
         }
 
     }

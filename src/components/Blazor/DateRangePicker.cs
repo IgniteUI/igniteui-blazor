@@ -46,14 +46,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 MarkPropDirty("Value");
-                if (this._value != null)
-                {
-                    this.DetachChild(this._value);
-                }
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
                 this._value = value;
             }
 
@@ -205,14 +197,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 MarkPropDirty("ResourceStrings");
-                if (this._resourceStrings != null)
-                {
-                    this.DetachChild(this._resourceStrings);
-                }
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
                 this._resourceStrings = value;
             }
 
@@ -1199,10 +1183,6 @@ namespace IgniteUI.Blazor.Controls
                             {
                                 newValueValue = args.Detail == null ? null : new IgbDateRangeValue { Start = args.Detail.Start, End = args.Detail.End };
 
-                                if (newValueValue != null)
-                                {
-                                    this.AttachChild(newValueValue);
-                                }
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

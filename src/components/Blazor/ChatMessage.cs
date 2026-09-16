@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Represents a single chat message in an <see cref="IgbChat"/> conversation.
     /// </summary>
-    public partial class IgbChatMessage : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbChatMessage : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessage"; } }
@@ -15,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// A unique identifier for the message.
         /// </summary>
-        [Parameter]
         public string Id
         {
             get { return this._id; }
@@ -34,7 +33,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The textual content of the message.
         /// </summary>
-        [Parameter]
         public string Text
         {
             get { return this._text; }
@@ -53,7 +51,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The identifier or name of the sender of the message.
         /// </summary>
-        [Parameter]
         public string Sender
         {
             get { return this._sender; }
@@ -72,7 +69,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The timestamp indicating when the message was sent.
         /// </summary>
-        [Parameter]
         public string? Timestamp
         {
             get { return this._timestamp; }
@@ -92,7 +88,6 @@ namespace IgniteUI.Blazor.Controls
         /// Optional list of attachments associated with the message,
         /// such as images, files, or links.
         /// </summary>
-        [Parameter]
         public IgbChatMessageAttachment[] Attachments
         {
             get { return this._attachments; }
@@ -111,7 +106,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Optional list of reactions associated with the message.
         /// </summary>
-        [Parameter]
         public string[] Reactions
         {
             get { return this._reactions; }
@@ -144,48 +138,5 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddArrayProp("reactions", this._reactions); }
 
         }
-
-        /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
-        {
-            base.ToEventJson(control, args);
-
-            if (IsPropDirty("Id"))
-            { args["id"] = this._id; }
-            if (IsPropDirty("Text"))
-            { args["text"] = this._text; }
-            if (IsPropDirty("Sender"))
-            { args["sender"] = this._sender; }
-            if (IsPropDirty("Timestamp"))
-            { args["timestamp"] = this._timestamp; }
-            if (IsPropDirty("Attachments"))
-            { args["attachments"] = ObjectArrayToParam(this._attachments); }
-            if (IsPropDirty("Reactions"))
-            { args["reactions"] = StringArrayToString(this._reactions); }
-
-        }
-
-        /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
-        {
-            base.FromEventJson(control, args);
-            this.SuppressParentNotify = true;
-
-            if (args != null && args.TryGetValue("id", out var idObj))
-            { this.Id = ReturnToString(idObj); }
-            if (args != null && args.TryGetValue("text", out var textObj))
-            { this.Text = ReturnToString(textObj); }
-            if (args != null && args.TryGetValue("sender", out var senderObj))
-            { this.Sender = ReturnToString(senderObj); }
-            if (args != null && args.TryGetValue("timestamp", out var timestampObj))
-            { this.Timestamp = ReturnToString(timestampObj); }
-            if (args != null && args.TryGetValue("attachments", out var attachmentsObj))
-            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(attachmentsObj) ?? Array.Empty<IgbChatMessageAttachment>(); }
-            if (args != null && args.TryGetValue("reactions", out var reactionsObj))
-            { this.Reactions = ReturnToStringArray(reactionsObj) ?? Array.Empty<string>(); }
-
-            this.SuppressParentNotify = false;
-        }
-
     }
 }

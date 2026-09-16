@@ -270,15 +270,7 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 MarkPropDirty("FormatOptions");
-                if (this._formatOptions != null)
-                {
-                    this.DetachChild(this._formatOptions);
-                }
                 this._formatOptions = value;
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
             }
 
         }

@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The context object for renderers that deal with the chat input area.
     /// </summary>
-    public partial class IgbChatInputRenderContext : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbChatInputRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebChatInputRenderContext"; } }
@@ -15,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current value of the input field.
         /// </summary>
-        [Parameter]
         public string Value
         {
             get { return this._value; }

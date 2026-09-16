@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Identifies a registered icon by its name and the collection it belongs to.
     /// </summary>
-    public partial class IgbIconMeta : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbIconMeta : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebIconMeta"; } }
@@ -15,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The name of the collection the icon is registered in.
         /// </summary>
-        [Parameter]
         public string Collection
         {
             get { return this._collection; }
@@ -37,32 +36,6 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Collection"))
             { ser.AddStringProp("collection", this._collection); }
 
-        }
-
-        /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
-        {
-            base.ToEventJson(control, args);
-
-            if (IsPropDirty("Name"))
-            { args["name"] = this._name; }
-            if (IsPropDirty("Collection"))
-            { args["collection"] = this._collection; }
-
-        }
-
-        /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
-        {
-            base.FromEventJson(control, args);
-            this.SuppressParentNotify = true;
-
-            if (args != null && args.TryGetValue("name", out var nameObj))
-            { this.Name = ReturnToString(nameObj); }
-            if (args != null && args.TryGetValue("collection", out var collectionObj))
-            { this.Collection = ReturnToString(collectionObj); }
-
-            this.SuppressParentNotify = false;
         }
 
     }

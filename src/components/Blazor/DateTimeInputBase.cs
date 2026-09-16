@@ -178,14 +178,6 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 MarkPropDirty("SpinDelta");
-                if (this._spinDelta != null)
-                {
-                    this.DetachChild(this._spinDelta);
-                }
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
                 this._spinDelta = value;
             }
 

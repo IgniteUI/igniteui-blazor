@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A predefined date range with label for <see cref="IgbDateRangePicker.CustomRanges"/>.
     /// </summary>
-    public partial class IgbCustomDateRange : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbCustomDateRange : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebCustomDateRange"; } }
@@ -15,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
-        [Parameter]
         public required string Label
         {
             get { return this._label; }
@@ -34,22 +33,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
-        [Parameter]
         public required IgbDateRangeValue DateRange
         {
             get { return this._dateRange; }
             set
             {
                 MarkPropDirty("DateRange");
-                if (this._dateRange != null)
-                {
-                    this.DetachChild(this._dateRange);
-                }
                 this._dateRange = value;
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
             }
 
         }

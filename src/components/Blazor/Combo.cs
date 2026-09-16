@@ -332,15 +332,7 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 MarkPropDirty("FilteringOptions");
-                if (this._filteringOptions != null)
-                {
-                    this.DetachChild(this._filteringOptions);
-                }
                 this._filteringOptions = value;
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
             }
 
         }

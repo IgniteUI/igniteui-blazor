@@ -15,6 +15,13 @@ namespace IgniteUI.Blazor.Controls
             _component = component;
         }
 
+        public RendererSerializer(SerializationContext context, string name)
+        {
+            _name = name;
+            _context = context;
+            _component = null;
+        }
+
         private string? _name;
         private ComponentBase? _component;
 

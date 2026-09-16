@@ -82,15 +82,7 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 MarkPropDirty("DraftMessage");
-                if (this._draftMessage != null)
-                {
-                    this.DetachChild(this._draftMessage);
-                }
                 this._draftMessage = value;
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
             }
 
         }
@@ -110,14 +102,6 @@ namespace IgniteUI.Blazor.Controls
                 value ??= new IgbChatOptions();
                 value.DisableInputAttachments = true;
                 MarkPropDirty("Options");
-                if (this._options != null)
-                {
-                    this.DetachChild(this._options);
-                }
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
                 this._options = value;
             }
 

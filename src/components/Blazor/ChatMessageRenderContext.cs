@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The context object for renderers that deal with a specific chat message.
     /// </summary>
-    public partial class IgbChatMessageRenderContext : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbChatMessageRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessageRenderContext"; } }
@@ -15,22 +14,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The specific chat message being rendered.
         /// </summary>
-        [Parameter]
         public IgbChatMessage Message
         {
             get { return this._message; }
             set
             {
                 MarkPropDirty("Message");
-                if (this._message != null)
-                {
-                    this.DetachChild(this._message);
-                }
                 this._message = value;
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
             }
 
         }

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -7,7 +6,8 @@ namespace IgniteUI.Blazor.Controls
     /// in a date-time input. Set through the <c>SpinDelta</c> property of
     /// <see cref="IgbDateTimeInput"/>; every part defaults to <c>1</c>.
     /// </summary>
-    public partial class IgbDatePartDeltas : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbDatePartDeltas : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "DatePartDeltas"; } }
@@ -17,7 +17,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The number of days the date part is spun by.
         /// </summary>
-        [Parameter]
         public double Date
         {
             get { return this._date; }
@@ -36,7 +35,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The number of months the month part is spun by.
         /// </summary>
-        [Parameter]
         public double Month
         {
             get { return this._month; }
@@ -55,7 +53,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The number of years the year part is spun by.
         /// </summary>
-        [Parameter]
         public double Year
         {
             get { return this._year; }
@@ -74,7 +71,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The number of hours the hours part is spun by.
         /// </summary>
-        [Parameter]
         public double Hours
         {
             get { return this._hours; }
@@ -93,7 +89,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The number of minutes the minutes part is spun by.
         /// </summary>
-        [Parameter]
         public double Minutes
         {
             get { return this._minutes; }
@@ -112,7 +107,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The number of seconds the seconds part is spun by.
         /// </summary>
-        [Parameter]
         public double Seconds
         {
             get { return this._seconds; }

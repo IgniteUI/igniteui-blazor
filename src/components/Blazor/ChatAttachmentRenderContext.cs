@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The context object for renderers that deal with a specific attachment within a chat message.
     /// </summary>
-    public partial class IgbChatAttachmentRenderContext : BaseRendererElement
+    [BlazorPlainObject]
+    public partial class IgbChatAttachmentRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
         public override string Type { get { return "WebChatAttachmentRenderContext"; } }
@@ -15,22 +15,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The specific attachment being rendered.
         /// </summary>
-        [Parameter]
         public IgbChatMessageAttachment Attachment
         {
             get { return this._attachment; }
             set
             {
                 MarkPropDirty("Attachment");
-                if (this._attachment != null)
-                {
-                    this.DetachChild(this._attachment);
-                }
                 this._attachment = value;
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
             }
 
         }
