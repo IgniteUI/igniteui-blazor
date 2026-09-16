@@ -317,7 +317,12 @@
                 // if object cannot resolve, perhaps it needs to be defined as CustomType?
                 continue;
             }
-            if (CustomTypes.PredefinedPropertyValues.ContainsKey(p.Name))
+            if (CustomTypes.PredefinedComponentPropertyValues.TryGetValue(summary.Component + "." + p.Name, out var scopedValue))
+            {
+                // this is a special property with a predefined value for this component only
+                value = scopedValue;
+            }
+            else if (CustomTypes.PredefinedPropertyValues.ContainsKey(p.Name))
             {
                 // this is a special property with predefined value
                 value = CustomTypes.PredefinedPropertyValues[p.Name];
