@@ -51,11 +51,8 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Build TypeScript/Webpack assets
+      - name: Build static web assets (src/wwwroot)
         run: npm run build
-
-      - name: Copy component themes to wwwroot
-        run: npm run copythemes
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0

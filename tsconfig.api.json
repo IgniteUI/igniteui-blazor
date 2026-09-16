@@ -1,0 +1,13 @@
+// Emits src/wwwroot/api.d.ts next to the built api.js — vite only transpiles.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "removeComments": false,
+    "stripInternal": true,
+    "rootDir": "src/src",
+    "outDir": "src/wwwroot"
+  },
+  "files": ["src/src/api.ts"]
+}
