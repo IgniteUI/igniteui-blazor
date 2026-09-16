@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebSplitterResizeEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private double _startPanelSize = 0;
 
         /// <summary>
@@ -71,7 +69,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

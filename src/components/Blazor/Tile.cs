@@ -253,7 +253,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         private string? _tileFullscreenRef = null;
         private string? _tileFullscreenScript = null;
 

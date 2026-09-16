@@ -20,8 +20,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private static bool _marshalByValue = true;
-
         private string? _locale;
 
         /// <summary>

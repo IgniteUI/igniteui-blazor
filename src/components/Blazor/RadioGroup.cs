@@ -118,7 +118,6 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToString(iv);
         }
 
-
         private EventCallback<string>? _valueChanged = null;
 
         /// <summary>

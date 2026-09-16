@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebCheckboxChangeEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private bool _checked = false;
 
         /// <summary>
@@ -50,7 +48,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

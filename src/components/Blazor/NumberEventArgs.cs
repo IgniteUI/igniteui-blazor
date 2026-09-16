@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebNumberEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private double _detail = 0;
 
         /// <summary>

@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebIconMeta"; } }
 
-        private static bool _marshalByValue = true;
-
         private string _collection = string.Empty;
 
         /// <summary>

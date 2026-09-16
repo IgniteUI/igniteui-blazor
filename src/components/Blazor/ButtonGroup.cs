@@ -136,7 +136,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         private string? _selectRef = null;
         private string? _selectScript = null;
 

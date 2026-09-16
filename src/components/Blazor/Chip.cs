@@ -172,7 +172,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         private EventCallback<bool>? _selectedChanged = null;
 
         /// <summary>

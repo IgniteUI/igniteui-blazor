@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebRangeSliderValue"; } }
 
-        private static bool _marshalByValue = true;
-
         private double _lower = 0;
 
         /// <summary>
