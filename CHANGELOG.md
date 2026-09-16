@@ -9,18 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Public ES module at `_content/IgniteUI.Blazor/api.js` (typings at `api.d.ts`): `registerScript(name, fn, shouldCall = false)` / `removeScript(name)` for `*Script` component parameters, and `html` — the lit-html template tag for client templates, the same instance the components render with. Importing these functions is now the preferred way to register `*Script` parameters:
+
+  ```js
+  import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';
+
+  registerScript('CityItem', ({ item }) => html`<b>${item.Name}</b>`);
+  ```
 - Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
 - Еvery release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
 
 ### Changed
 
+- The client build now emits native ES modules; the package's JS initializer loads the whole script graph during Blazor startup, so no `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag is needed on any hosting model (Blazor Server, standalone WASM, Blazor Web App, BlazorWebView). Existing tags keep working — including wrapped in `@Assets[...]`. When removing the tag, use the preferred `api.js` module above to register `*Script` parameters; the deprecated globals are not available until the library loads unless the tag is present to queue earlier calls.
+- A component whose `*Script` parameter names a function that is not registered now logs a console warning naming it (previously the parameter was silently dropped).
+- Hosting the library's assets elsewhere (CDN/self-host) is done with a standard [import map](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/static-files?view=aspnetcore-10.0#importmap-component) prefix entry — e.g. `{"imports": {"./_content/IgniteUI.Blazor/": "https://cdn.example.com/ig/"}}` relocates the entire module graph, initializer included.
 **Binary compatibility:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Normal NuGet consumers that rebuild should require no source changes, but precompiled dependents, binding redirects, and explicit fully-qualified assembly references may need updating.
 - Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
 
+### Deprecated
+
+- The `window.igRegisterScript`, `window.igRemoveScript`, and `window.igTemplating.html` globals — use the `api.js` module exports instead. The globals keep working with the same signatures and log a one-time console notice; they exist once `api.js` has loaded, so a classic script calling them while the page parses still needs the `app.bundle.js` tag, which queues those calls. Note the defaults differ: `igRegisterScript` still defaults `shouldCall` to `true` (call the function and use its result), `registerScript` defaults to `false` (the function is the script) so passing one explicitly in most cases is no longer needed.
+
 ### Fixed
 
+- Loading no longer breaks under .NET 9+ static asset fingerprinting — a script tag wrapped in `@Assets[...]` previously left the app blank with no error. [#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)
 - The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
 - `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
+
 ### Breaking Changes
 
 #### Public API nullability

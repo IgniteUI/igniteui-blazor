@@ -46,8 +46,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders a single chat message attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? AttachmentScript
@@ -105,8 +106,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the content of an attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? AttachmentContentScript
@@ -164,8 +166,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the header of an attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? AttachmentHeaderScript
@@ -223,8 +226,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the main chat input field.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? InputScript
@@ -282,8 +286,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions container within the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? InputActionsScript
@@ -341,8 +346,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions at the end of the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? InputActionsEndScript
@@ -400,8 +406,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions at the start of the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? InputActionsStartScript
@@ -459,8 +466,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders an entire chat message bubble.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? MessageScript
@@ -518,8 +526,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders message-specific actions (e.g. reply or delete buttons).
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? MessageActionsScript
@@ -577,8 +586,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the attachments associated with a message.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? MessageAttachmentsScript
@@ -636,8 +646,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the main text and content of a message.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? MessageContentScript
@@ -695,8 +706,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the header of a message, including sender and timestamp.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? MessageHeaderScript
@@ -754,8 +766,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the message send button.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? SendButtonScript
@@ -813,8 +826,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the prefix text shown before suggestions.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? SuggestionPrefixScript
