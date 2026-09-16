@@ -82,7 +82,7 @@ test('no free `global` references (webpack polyfilled it; ESM does not)', () => 
 });
 
 test('legal notices survive: in-source ones inline, dependencies via the license manifest', () => {
-  assert.ok(existsSync(join(wwwroot, 'THIRD-PARTY-LICENSES.md')), 'build.license manifest missing');
+  assert.ok(existsSync('src/THIRD-PARTY-LICENSES.md'), 'build.license manifest missing next to the csproj');
   // Notices inside our own sources (e.g. vendored snippets) are invisible to build.license, so they must stay inline.
   const emitted = jsFiles.map(read).join('\n');
   const walk = (dir) => {
