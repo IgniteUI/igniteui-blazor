@@ -64,6 +64,7 @@
 
   <ItemGroup Condition="'$(ExposeInternalsToTests)' != 'false'">
     <InternalsVisibleTo Include="IgniteUI.Blazor.Tests" />
+    <InternalsVisibleTo Include="IgniteUI.Blazor.Lite.PublishSmoke" />
   </ItemGroup>
 
   <ItemGroup>
