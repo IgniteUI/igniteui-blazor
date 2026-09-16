@@ -102,23 +102,19 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
     [Fact]
     public void Chat_Options_SetToNull_ReplacedWithDefaultAndAttachmentsDisabled()
     {
-        var chat = new IgbChat();
+        var chat = Render<IgbChat>(parameters => parameters.Add(x => x.Options, null));
 
-        chat.Options = null;
-
-        Assert.NotNull(chat.Options);
-        Assert.True(chat.Options.DisableInputAttachments);
+        Assert.NotNull(chat.Instance.Options);
+        Assert.True(chat.Instance.Options.DisableInputAttachments);
     }
 
     [Fact]
     public void Chat_Options_Assigned_AlwaysDisableInputAttachments()
     {
-        var chat = new IgbChat();
         var options = new IgbChatOptions { DisableInputAttachments = false };
+        var chat = Render<IgbChat>(parameters => parameters.Add(x => x.Options, options));
 
-        chat.Options = options;
-
-        Assert.NotNull(chat.Options);
-        Assert.True(chat.Options.DisableInputAttachments);
+        Assert.NotNull(chat.Instance.Options);
+        Assert.True(chat.Instance.Options.DisableInputAttachments);
     }
 }
