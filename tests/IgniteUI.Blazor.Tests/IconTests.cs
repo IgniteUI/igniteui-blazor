@@ -46,6 +46,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
             parameters.Add(p => p.IconName, "home"));
 
         var element = cut.Find("igc-icon");
+        Assert.Equal("home", cut.Instance.IconName);
         Assert.Equal("home", element.GetAttribute("name"));
     }
 
@@ -56,6 +57,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
             parameters.Add(p => p.Collection, "material"));
 
         var element = cut.Find("igc-icon");
+        Assert.Equal("material", cut.Instance.Collection);
         Assert.Equal("material", element.GetAttribute("collection"));
     }
 
@@ -66,6 +68,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
             parameters.Add(p => p.Mirrored, true));
 
         var element = cut.Find("igc-icon");
+        Assert.True(cut.Instance.Mirrored);
         Assert.NotNull(element.GetAttribute("mirrored"));
     }
 

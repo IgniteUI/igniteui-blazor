@@ -32,6 +32,7 @@ public class CircularProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.Value, 60.0));
 
         var element = cut.Find("igc-circular-progress");
+        Assert.Equal(60.0, cut.Instance.Value);
         Assert.Equal("60", element.GetAttribute("value"));
     }
 
@@ -42,6 +43,7 @@ public class CircularProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.Indeterminate, true));
 
         var element = cut.Find("igc-circular-progress");
+        Assert.True(cut.Instance.Indeterminate);
         Assert.NotNull(element.GetAttribute("indeterminate"));
     }
 
@@ -52,6 +54,7 @@ public class CircularProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.Max, 150.0));
 
         var element = cut.Find("igc-circular-progress");
+        Assert.Equal(150.0, cut.Instance.Max);
         Assert.Equal("150", element.GetAttribute("max"));
     }
 
@@ -62,6 +65,7 @@ public class CircularProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.HideLabel, true));
 
         var element = cut.Find("igc-circular-progress");
+        Assert.True(cut.Instance.HideLabel);
         Assert.NotNull(element.GetAttribute("hide-label"));
     }
 
@@ -72,6 +76,7 @@ public class CircularProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.LabelFormat, "{0} of {1}"));
 
         var element = cut.Find("igc-circular-progress");
+        Assert.Equal("{0} of {1}", cut.Instance.LabelFormat);
         Assert.Equal("{0} of {1}", element.GetAttribute("label-format"));
     }
 
@@ -82,6 +87,7 @@ public class CircularProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.AnimationDuration, 1000));
 
         var element = cut.Find("igc-circular-progress");
+        Assert.Equal(1000, cut.Instance.AnimationDuration);
         Assert.Equal("1000", element.GetAttribute("animation-duration"));
     }
 

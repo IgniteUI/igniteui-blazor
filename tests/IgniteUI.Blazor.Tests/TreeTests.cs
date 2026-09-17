@@ -64,6 +64,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         var cut = Render<IgbTree>(p =>
             p.Add(x => x.SingleBranchExpand, true));
 
+        Assert.True(cut.Instance.SingleBranchExpand);
         Assert.NotNull(cut.Find("igc-tree").GetAttribute("single-branch-expand"));
     }
 
@@ -73,6 +74,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         var cut = Render<IgbTree>(p =>
             p.Add(x => x.ToggleNodeOnClick, true));
 
+        Assert.True(cut.Instance.ToggleNodeOnClick);
         Assert.NotNull(cut.Find("igc-tree").GetAttribute("toggle-node-on-click"));
     }
 
@@ -82,6 +84,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         var cut = Render<IgbTree>(p =>
             p.Add(x => x.Selection, TreeSelection.Multiple));
 
+        Assert.Equal(TreeSelection.Multiple, cut.Instance.Selection);
         Assert.Equal("multiple", cut.Find("igc-tree").GetAttribute("selection"));
     }
 
@@ -116,6 +119,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Label, "Node 1"));
 
+        Assert.Equal("Node 1", cut.Instance.Label);
         Assert.Equal("Node 1", cut.Find("igc-tree-item").GetAttribute("label"));
     }
 
@@ -125,6 +129,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Expanded, true));
 
+        Assert.True(cut.Instance.Expanded);
         Assert.NotNull(cut.Find("igc-tree-item").GetAttribute("expanded"));
     }
 
@@ -134,6 +139,7 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Active, true));
 
+        Assert.True(cut.Instance.Active);
         Assert.NotNull(cut.Find("igc-tree-item").GetAttribute("active"));
     }
 
@@ -143,7 +149,28 @@ public class TreeTests : ComponentWithContractTestBase<IgbTree>
         var cut = Render<IgbTreeItem>(p =>
             p.Add(x => x.Disabled, true));
 
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(cut.Find("igc-tree-item").GetAttribute("disabled"));
+    }
+
+    [Fact]
+    public void TreeItem_Selected_RendersAttribute()
+    {
+        var cut = Render<IgbTreeItem>(p =>
+            p.Add(x => x.Selected, true));
+
+        Assert.True(cut.Instance.Selected);
+        Assert.NotNull(cut.Find("igc-tree-item").GetAttribute("selected"));
+    }
+
+    [Fact]
+    public void TreeItem_Loading_RendersAttribute()
+    {
+        var cut = Render<IgbTreeItem>(p =>
+            p.Add(x => x.Loading, true));
+
+        Assert.True(cut.Instance.Loading);
+        Assert.NotNull(cut.Find("igc-tree-item").GetAttribute("loading"));
     }
 
     [Fact]
