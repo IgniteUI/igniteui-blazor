@@ -138,7 +138,6 @@ public sealed class MethodContractSpec<TComponent> where TComponent : IComponent
 
 public sealed class StatePropContractSpec<TComponent> where TComponent : IComponent
 {
-    public required string PropertyName { get; init; }
     public required string WireName { get; init; }
     public required Action<ComponentParameterCollectionBuilder<TComponent>> Set { get; init; }
     public required Func<TComponent, object?> Get { get; init; }
@@ -689,7 +688,6 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     {
         _props.Add(new StatePropContractSpec<TComponent>
         {
-            PropertyName = MemberOf(member).Name,
             WireName = wireName ?? WirePropertyName(member),
             Set = ps => ps.Add(member, value),
             Get = PropertyGetterOf(member),
