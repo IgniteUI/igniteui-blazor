@@ -76,6 +76,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
             parameters.Add(p => p.Alignment, TabsAlignment.Center));
 
         var element = cut.Find("igc-tabs");
+        Assert.Equal(TabsAlignment.Center, cut.Instance.Alignment);
         Assert.Equal("center", element.GetAttribute("alignment"));
     }
 
@@ -86,6 +87,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
             parameters.Add(p => p.Activation, TabsActivation.Manual));
 
         var element = cut.Find("igc-tabs");
+        Assert.Equal(TabsActivation.Manual, cut.Instance.Activation);
         Assert.Equal("manual", element.GetAttribute("activation"));
     }
 
@@ -194,6 +196,7 @@ public class TabTests : BlazorComponentTestBase
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-tab");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -204,6 +207,7 @@ public class TabTests : BlazorComponentTestBase
             parameters.Add(p => p.Selected, true));
 
         var element = cut.Find("igc-tab");
+        Assert.True(cut.Instance.Selected);
         Assert.NotNull(element.GetAttribute("selected"));
     }
 

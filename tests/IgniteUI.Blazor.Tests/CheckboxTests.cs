@@ -65,6 +65,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             parameters.Add(p => p.Checked, true));
 
         var element = cut.Find("igc-checkbox");
+        Assert.True(cut.Instance.Checked);
         Assert.NotNull(element.GetAttribute("checked"));
     }
 
@@ -75,6 +76,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             parameters.Add(p => p.Indeterminate, true));
 
         var element = cut.Find("igc-checkbox");
+        Assert.True(cut.Instance.Indeterminate);
         Assert.NotNull(element.GetAttribute("indeterminate"));
     }
 
@@ -85,6 +87,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-checkbox");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -95,6 +98,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-checkbox");
+        Assert.True(cut.Instance.Required);
         Assert.NotNull(element.GetAttribute("required"));
     }
 
@@ -105,6 +109,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             parameters.Add(p => p.LabelPosition, ToggleLabelPosition.Before));
 
         var element = cut.Find("igc-checkbox");
+        Assert.Equal(ToggleLabelPosition.Before, cut.Instance.LabelPosition);
         Assert.Equal("before", element.GetAttribute("label-position"));
     }
 
@@ -115,6 +120,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             parameters.Add(p => p.Value, "test-value"));
 
         var element = cut.Find("igc-checkbox");
+        Assert.Equal("test-value", cut.Instance.Value);
         Assert.Equal("test-value", element.GetAttribute("value"));
     }
 
@@ -125,6 +131,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
             parameters.Add(p => p.Invalid, true));
 
         var element = cut.Find("igc-checkbox");
+        Assert.True(cut.Instance.Invalid);
         Assert.NotNull(element.GetAttribute("invalid"));
     }
 

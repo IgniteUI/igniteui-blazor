@@ -65,6 +65,7 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
             parameters.Add(p => p.SingleExpand, true));
 
         var element = cut.Find("igc-accordion");
+        Assert.True(cut.Instance.SingleExpand);
         Assert.NotNull(element.GetAttribute("single-expand"));
     }
 

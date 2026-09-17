@@ -45,6 +45,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
             parameters.Add(p => p.ActionText, "UNDO"));
 
         var element = cut.Find("igc-snackbar");
+        Assert.Equal("UNDO", cut.Instance.ActionText);
         Assert.Equal("UNDO", element.GetAttribute("action-text"));
     }
 
@@ -55,6 +56,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-snackbar");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -75,6 +77,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
             parameters.Add(p => p.KeepOpen, true));
 
         var element = cut.Find("igc-snackbar");
+        Assert.True(cut.Instance.KeepOpen);
         Assert.NotNull(element.GetAttribute("keep-open"));
     }
 
