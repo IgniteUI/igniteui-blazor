@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The kind of range being described, which determines how <see cref="DateRange"/> is matched.
         /// </summary>
-        [Parameter]
         [WCWidgetMemberName("Type")]
         public DateRangeType RangeType
         {
@@ -39,7 +36,6 @@ namespace IgniteUI.Blazor.Controls
         /// <see cref="DateRangeType.Specific"/> matches every date listed. Not used by
         /// <see cref="DateRangeType.Weekdays"/> and <see cref="DateRangeType.Weekends"/>.
         /// </summary>
-        [Parameter]
         public object? DateRange
         {
             get { return this._dateRange; }

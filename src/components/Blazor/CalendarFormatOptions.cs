@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// The representation of the weekday names, one of <c>long</c>, <c>short</c> or <c>narrow</c>.
         /// Defaults to <c>narrow</c>.
         /// </summary>
-        [Parameter]
         public string? Weekday
         {
             get { return this._weekday; }
@@ -37,7 +34,6 @@ namespace IgniteUI.Blazor.Controls
         /// The representation of the month names, one of <c>numeric</c>, <c>2-digit</c>, <c>long</c>,
         /// <c>short</c> or <c>narrow</c>. Defaults to <c>long</c>.
         /// </summary>
-        [Parameter]
         public string? Month
         {
             get { return this._month; }

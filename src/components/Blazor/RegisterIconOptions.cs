@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -18,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The collection to register the icon in. Defaults to <c>default</c>.
         /// </summary>
-        [Parameter]
         public string? Collection
         {
             get { return this._collection; }
@@ -39,7 +36,6 @@ namespace IgniteUI.Blazor.Controls
         /// before storing it. This prevents the native browser tooltip on hover; the title text stays
         /// available as the <c>aria-label</c> of the host icon element.
         /// </summary>
-        [Parameter]
         public bool StripMeta
         {
             get { return this._stripMeta; }

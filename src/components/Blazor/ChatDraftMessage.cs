@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The textual content of the draft message.
         /// </summary>
-        [Parameter]
         public string Text
         {
             get { return this._text; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// An array of attachments associated with the draft message.
         /// </summary>
-        [Parameter]
         public IgbChatMessageAttachment[] Attachments
         {
             get { return this._attachments; }

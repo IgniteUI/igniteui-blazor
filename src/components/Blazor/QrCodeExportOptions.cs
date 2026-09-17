@@ -1,6 +1,3 @@
-using System;
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -26,7 +23,6 @@ namespace IgniteUI.Blazor.Controls
         /// The name of the exported file. The extension of the format is appended when the name
         /// does not end with it. Defaults to <c>qr-code</c>.
         /// </summary>
-        [Parameter]
         public string? FileName
         {
             get { return this._fileName; }
@@ -45,7 +41,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The output format.
         /// </summary>
-        [Parameter]
         public QrCodeExportFormat Format
         {
             get { return this._format; }
@@ -67,7 +62,6 @@ namespace IgniteUI.Blazor.Controls
         /// the multiplier applies to the <c>width</c> and <c>height</c> attributes while the
         /// <c>viewBox</c> is unchanged.
         /// </summary>
-        [Parameter]
         public double Scale
         {
             get { return this._scale; }

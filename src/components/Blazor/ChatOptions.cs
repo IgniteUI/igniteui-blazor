@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The ID of the current user. Used to differentiate between incoming and outgoing messages.
         /// </summary>
-        [Parameter]
         public string? CurrentUserId
         {
             get { return this._currentUserId; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// If <see langword="true"/>, prevents the chat from automatically scrolling to the latest message.
         /// </summary>
-        [Parameter]
         public bool DisableAutoScroll
         {
             get { return this._disableAutoScroll; }
@@ -54,7 +50,6 @@ namespace IgniteUI.Blazor.Controls
         /// If <see langword="true"/>, disables the ability to upload and send attachments.
         /// Defaults to <see langword="false"/>.
         /// </summary>
-        [Parameter]
         public bool DisableInputAttachments
         {
             get { return this._disableInputAttachments; }
@@ -73,7 +68,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Indicates whether the other user is currently typing a message.
         /// </summary>
-        [Parameter]
         public bool IsTyping
         {
             get { return this._isTyping; }
@@ -92,7 +86,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Optional header text to display at the top of the chat component.
         /// </summary>
-        [Parameter]
         public string? HeaderText
         {
             get { return this._headerText; }
@@ -112,7 +105,6 @@ namespace IgniteUI.Blazor.Controls
         /// Optional placeholder text for the chat input area.
         /// Provides a hint to the user about what they can type (e.g. "Type a message...").
         /// </summary>
-        [Parameter]
         public string? InputPlaceholder
         {
             get { return this._inputPlaceholder; }
@@ -131,7 +123,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Suggested text snippets or quick replies that can be shown as user-selectable options.
         /// </summary>
-        [Parameter]
         public string[] Suggestions
         {
             get { return this._suggestions; }
@@ -157,7 +148,6 @@ namespace IgniteUI.Blazor.Controls
         /// </list>
         /// Defaults to <see cref="ChatSuggestionsPosition.BelowMessages"/>.
         /// </summary>
-        [Parameter]
         public ChatSuggestionsPosition SuggestionsPosition
         {
             get { return this._suggestionsPosition; }
@@ -177,7 +167,6 @@ namespace IgniteUI.Blazor.Controls
         /// Time in milliseconds to wait before dispatching a stop typing event.
         /// Default is <c>3000</c>.
         /// </summary>
-        [Parameter]
         public double StopTypingDelay
         {
             get { return this._stopTypingDelay; }
@@ -202,7 +191,6 @@ namespace IgniteUI.Blazor.Controls
         /// into the component, which can produce unpredictable visuals. Prefer the exposed CSS parts and
         /// custom properties, a linked style sheet, or inline styles within the custom renderer template.
         /// </remarks>
-        [Parameter]
         public bool AdoptRootStyles
         {
             get { return this._adoptRootStyles; }
@@ -221,7 +209,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// An object containing a collection of custom renderers for different parts of the chat UI.
         /// </summary>
-        [Parameter]
         public IgbChatRenderers? Renderers
         {
             get { return this._renderers; }

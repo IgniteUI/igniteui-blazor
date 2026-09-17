@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// When <see langword="true"/>, prevents the component from scrolling the new active match into view.
         /// </summary>
-        [Parameter]
         public bool PreventScroll
         {
             get { return this._preventScroll; }
