@@ -162,7 +162,6 @@ namespace IgniteUI.Blazor.Controls
 
         protected string _name = Guid.NewGuid().ToString();
 
-        [Parameter]
         public string Name
         {
             set

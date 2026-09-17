@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// A unique identifier for the message.
         /// </summary>
-        [Parameter]
         public string Id
         {
             get { return this._id; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The textual content of the message.
         /// </summary>
-        [Parameter]
         public string Text
         {
             get { return this._text; }
@@ -53,7 +49,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The identifier or name of the sender of the message.
         /// </summary>
-        [Parameter]
         public string Sender
         {
             get { return this._sender; }
@@ -72,7 +67,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The timestamp indicating when the message was sent.
         /// </summary>
-        [Parameter]
         public string? Timestamp
         {
             get { return this._timestamp; }
@@ -92,7 +86,6 @@ namespace IgniteUI.Blazor.Controls
         /// Optional list of attachments associated with the message,
         /// such as images, files, or links.
         /// </summary>
-        [Parameter]
         public IgbChatMessageAttachment[] Attachments
         {
             get { return this._attachments; }
@@ -111,7 +104,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Optional list of reactions associated with the message.
         /// </summary>
-        [Parameter]
         public string[] Reactions
         {
             get { return this._reactions; }

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The value of the lower thumb.
         /// </summary>
-        [Parameter]
         public double Lower
         {
             get { return this._lower; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The value of the upper thumb.
         /// </summary>
-        [Parameter]
         public double Upper
         {
             get { return this._upper; }

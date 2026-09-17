@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The name of the collection the icon is registered in.
         /// </summary>
-        [Parameter]
         public string Collection
         {
             get { return this._collection; }

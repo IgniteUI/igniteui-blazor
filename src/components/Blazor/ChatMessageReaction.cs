@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The chat message that the reaction is associated with.
         /// </summary>
-        [Parameter]
         public IgbChatMessage Message
         {
             get { return this._message; }
@@ -39,7 +36,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The string representation of the reaction, such as an emoji or a string;
         /// </summary>
-        [Parameter]
         public string Reaction
         {
             get { return this._reaction; }
