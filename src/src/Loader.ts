@@ -864,7 +864,7 @@ export class Loader {
       Loader.marshalByValueSet = new Set<string>();
       //@@MarshalByValue
       Loader.marshalByValueSet.add('CalendarFormatOptions');
-      Loader.marshalByValueSet.add('FocusOptions');
+      Loader.marshalByValueSet.add('WebFocusOptions');
       Loader.marshalByValueSet.add('FormatSpecifier');
       Loader.marshalByValueSet.add('NumberFormatSpecifier');
       Loader.marshalByValueSet.add('QrCodeExportOptions');
