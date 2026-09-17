@@ -381,7 +381,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override object? FindByName(string name)
+        protected internal override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)

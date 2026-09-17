@@ -12,6 +12,7 @@ namespace IgniteUI.Blazor.Controls
         // }
 
         private IIgniteUIBlazor? _igBlazor;
+        /// <summary>The injected <see cref="IIgniteUIBlazor"/> service; pass it to a module's <c>Register</c> from <see cref="EnsureModulesLoaded"/>.</summary>
         [Inject]
         protected IIgniteUIBlazor IgBlazor
         {
@@ -81,7 +82,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string? ParentTypeName
+        private protected virtual string? ParentTypeName
         {
             get
             {
@@ -160,7 +161,7 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _serializeDirty = false;
 
-        protected string _name = Guid.NewGuid().ToString();
+        private protected string _name = Guid.NewGuid().ToString();
 
         public string Name
         {
@@ -452,7 +453,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void MarkPropDirty(String? propertyName)
+        /// <summary>Marks <paramref name="propertyName"/> as changed so the next render sends it to the client.</summary>
+        protected internal void MarkPropDirty(String? propertyName)
         {
             if (propertyName == null)
             {
@@ -477,7 +479,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected bool IsPropDirty(string propertyName)
+        /// <summary>Whether <paramref name="propertyName"/> changed since the component last sent its properties to the client.</summary>
+        protected internal bool IsPropDirty(string propertyName)
         {
             if (_isDirty.ContainsKey(propertyName))
             {
@@ -1080,22 +1083,25 @@ namespace IgniteUI.Blazor.Controls
             return default;
         }
 
+        /// <summary>Reads this element's values from the event payload the client sent for <paramref name="control"/>.</summary>
         protected internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
 
         }
+        /// <summary>Writes this element's values into the event payload returned to the client for <paramref name="control"/>.</summary>
         protected internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
 
         }
 
-        public virtual object? FindByName(string name)
+        /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
+        protected internal virtual object? FindByName(string name)
         {
 
             return null;
         }
 
-        protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
+        private protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
             if (CurrParent == null)
             {
@@ -1110,7 +1116,7 @@ namespace IgniteUI.Blazor.Controls
                 return await ((BaseRendererControl)CurrParent).SetResourceStringAsync(grouping, id, value);
             }
         }
-        protected async Task<object?> SetResourceStringAsync(string grouping, string json)
+        private protected async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
             if (CurrParent == null)
             {

@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ParentTypeName
+        private protected override string ParentTypeName
         {
             get
             {
@@ -252,7 +252,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override object? FindByName(string name)
+        protected internal override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
