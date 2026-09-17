@@ -31,6 +31,9 @@ namespace IgniteUI.Blazor.Controls
         Queued
     }
 
+    /// <summary>
+    /// Base Ignite UI Blazor shared control class.
+    /// </summary>
     // PublicProperties: required by the BuildSequenceInfo parameter walk; rendered components already keep All via OpenComponent<T>.
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
@@ -62,6 +65,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal IIgniteUIBlazorRuntime Runtime => _runtime ?? throw new InvalidOperationException("IgBlazor accessed before dependency injection completed.");
 
+        /// <summary>Requests the client modules this component needs; override to register more through <see cref="IgBlazor"/>.</summary>
         protected virtual void EnsureModulesLoaded()
         {
 
@@ -91,24 +95,34 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// The height of the component, as a CSS value.
+        /// Prefer sizing through CSS or the <c>style</c> attribute.
+        /// </summary>
         [Parameter]
         public string? Height
         {
             get; set;
         }
 
+        /// <summary>
+        /// The width of the component, as a CSS value.
+        /// Prefer sizing through CSS or the <c>style</c> attribute.
+        /// </summary>
         [Parameter]
         public string? Width
         {
             get; set;
         }
 
+        /// <summary>CSS classes added to the component's root element.</summary>
         [Parameter]
         public string? Class
         {
             get; set;
         }
 
+        /// <summary>Attributes not matched by a parameter, applied to the component's root element.</summary>
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
@@ -146,6 +160,7 @@ namespace IgniteUI.Blazor.Controls
             return EventBehavior;
         }
 
+        /// <summary>The content rendered inside the component.</summary>
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
         private ElementReference contEle;
@@ -199,6 +214,7 @@ namespace IgniteUI.Blazor.Controls
             return _objRef;
         }
 
+        /// <summary>Creates the component.</summary>
         public BaseRendererControl() : base()
         {
             //Console.WriteLine("constructed: " + this.GetType().Name);
@@ -814,6 +830,7 @@ namespace IgniteUI.Blazor.Controls
         //     return false;
         // }
 
+        /// <summary>Completes once the client-side component exists and has its parameters, so methods that need it can be called.</summary>
         public async Task EnsureReady()
         {
             if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime))
@@ -937,6 +954,7 @@ namespace IgniteUI.Blazor.Controls
 
         private String _cachedSerializedContent = "";
 
+        /// <summary>The type name of this component.</summary>
         public virtual string? Type
         {
             get
@@ -994,11 +1012,14 @@ namespace IgniteUI.Blazor.Controls
         /// Only use <see cref="Interlocked.Increment(ref long)" /> as this is incremented from any thread.
         /// </remarks>
         static long _invokeId = 0;
+
+        /// <summary>Calls <paramref name="methodName"/> on the client-side component with <paramref name="arguments"/> and returns its result.</summary>
         protected async Task<object?> InvokeMethod(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(null, methodName, arguments, types, nativeElements);
         }
 
+        /// <summary>Calls <paramref name="methodName"/> on the client-side component and returns its result synchronously; only available where .NET runs in the browser.</summary>
         protected object? InvokeMethodSync(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(null, methodName, arguments, types, nativeElements);
@@ -3488,43 +3509,60 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    //
-    // Summary:
-    //     This mirrors the options for System.Text.Json.JsonSerializer that we allow for customization for the component serialization.
+    /// <summary>This mirrors the options for System.Text.Json.JsonSerializer that we allow for customization for the component serialization.</summary>
     public class IgniteUIJsonSerializerOptions
     {
+        /// <summary>Creates default options.</summary>
         public IgniteUIJsonSerializerOptions()
         {
             MaxDepth = 32;
         }
 
+        /// <summary>Creates options with <paramref name="maxDepth"/>.</summary>
         public IgniteUIJsonSerializerOptions(int maxDepth)
         {
             MaxDepth = maxDepth;
         }
 
+        /// <summary>Maximum nesting depth when serializing; 0 uses the serializer default.</summary>
         public int MaxDepth { get; private set; }
 
+        /// <summary>Copies <paramref name="options"/>.</summary>
         public IgniteUIJsonSerializerOptions(IgniteUIJsonSerializerOptions options)
         {
             MaxDepth = options.MaxDepth;
         }
     }
 
+    /// <summary>The Ignite UI for Blazor runtime settings.</summary>
     public interface IIgniteUIBlazorSettings
     {
+        /// <summary>Sends bound data to the client as JSON even where a faster in-memory transfer is available.</summary>
         bool ForceJsonDataMarshalling { get; }
+
+        /// <summary>Options for serializing values sent to the client.</summary>
         IgniteUIJsonSerializerOptions JsonSerializerOptions { get; }
+
+        /// <summary>Modules whose client resources load at startup.</summary>
         ReadOnlyCollection<Type>? ModulesToLoad { get; }
     }
 
+    /// <summary>
+    /// Runtime settings to pass to <c>AddIgniteUIBlazor</c>; immutable, build them with <see cref="Create"/> and the <c>With</c> methods.
+    /// </summary>
     public class IgniteUIBlazorSettings
         : IIgniteUIBlazorSettings
     {
+        /// <inheritdoc />
         public bool ForceJsonDataMarshalling { get; private set; }
+
+        /// <inheritdoc />
         public IgniteUIJsonSerializerOptions JsonSerializerOptions { get; private set; }
+
+        /// <inheritdoc />
         public ReadOnlyCollection<Type>? ModulesToLoad { get; private set; }
 
+        /// <summary>Creates default settings.</summary>
         public IgniteUIBlazorSettings()
         {
             ForceJsonDataMarshalling = false;
@@ -3532,11 +3570,13 @@ namespace IgniteUI.Blazor.Controls
             ModulesToLoad = null;
         }
 
+        /// <summary>Creates default settings.</summary>
         public static IgniteUIBlazorSettings Create()
         {
             return new IgniteUIBlazorSettings();
         }
 
+        /// <summary>Returns a copy with <see cref="ForceJsonDataMarshalling"/> enabled.</summary>
         public IgniteUIBlazorSettings ShouldForceJsonDataMarshalling()
         {
             var newSettings = new IgniteUIBlazorSettings(this);
@@ -3544,6 +3584,7 @@ namespace IgniteUI.Blazor.Controls
             return newSettings;
         }
 
+        /// <summary>Returns a copy with <see cref="ForceJsonDataMarshalling"/> set to <paramref name="forceJsonDataMarshalling"/>.</summary>
         public IgniteUIBlazorSettings WithForceJsonDataMarshalling(bool forceJsonDataMarshalling)
         {
             var newSettings = new IgniteUIBlazorSettings(this);
@@ -3551,6 +3592,7 @@ namespace IgniteUI.Blazor.Controls
             return newSettings;
         }
 
+        /// <summary>Returns a copy using <paramref name="options"/>.</summary>
         public IgniteUIBlazorSettings WithJsonSerializerOptions(IgniteUIJsonSerializerOptions options)
         {
             var newSettings = new IgniteUIBlazorSettings(this);
@@ -3558,6 +3600,7 @@ namespace IgniteUI.Blazor.Controls
             return newSettings;
         }
 
+        /// <summary>Returns a copy that loads <paramref name="modulesToLoad"/> at startup.</summary>
         public IgniteUIBlazorSettings WithModulesToLoad(ReadOnlyCollection<Type>? modulesToLoad)
         {
             var newSettings = new IgniteUIBlazorSettings(this);
