@@ -268,9 +268,9 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// Runner for the contract's <c>.Prop</c> specs — expose it on the suite as
     /// <c>[Fact] public void Props_FollowContract() => VerifyPropContract();</c>.
     /// Renders a fresh instance per spec with the parameter (plus any arrangement) set,
-    /// then asserts a property update carrying the expected wire value was transmitted —
-    /// on whichever channel the current stack uses (the harness abstracts state
-    /// descriptions vs. ref transfers).
+    /// then asserts the component property reads back the assigned parameter value and
+    /// a property update carrying the expected wire value was transmitted — on whichever
+    /// channel the current stack uses (the harness abstracts state descriptions vs. ref transfers).
     /// </summary>
     /// <exception cref="ContractViolationException">
     /// Any spec failure, naming the violated member and carrying the declaring contract
@@ -289,6 +289,8 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     prop.Arrange?.Invoke(ps);
                     prop.Set(ps);
                 });
+
+                Assert.Equal(prop.ExpectedMemberValue, prop.Get(cut.Instance));
 
                 var actual = harness.FindPropertyUpdate(harness.ContainerIdOf(cut), prop.WireName);
 

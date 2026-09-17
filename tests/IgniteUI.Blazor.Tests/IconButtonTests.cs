@@ -38,6 +38,7 @@ public class IconButtonTests : ComponentWithContractTestBase<IgbIconButton>
         var cut = Render<IgbIconButton>(p =>
             p.Add(x => x.IconName, "home"));
 
+        Assert.Equal("home", cut.Instance.IconName);
         Assert.Equal("home", cut.Find("igc-icon-button").GetAttribute("name"));
     }
 
@@ -47,6 +48,7 @@ public class IconButtonTests : ComponentWithContractTestBase<IgbIconButton>
         var cut = Render<IgbIconButton>(p =>
             p.Add(x => x.Collection, "material"));
 
+        Assert.Equal("material", cut.Instance.Collection);
         Assert.Equal("material", cut.Find("igc-icon-button").GetAttribute("collection"));
     }
 
@@ -56,6 +58,7 @@ public class IconButtonTests : ComponentWithContractTestBase<IgbIconButton>
         var cut = Render<IgbIconButton>(p =>
             p.Add(x => x.Mirrored, true));
 
+        Assert.True(cut.Instance.Mirrored);
         Assert.NotNull(cut.Find("igc-icon-button").GetAttribute("mirrored"));
     }
 
@@ -65,6 +68,7 @@ public class IconButtonTests : ComponentWithContractTestBase<IgbIconButton>
         var cut = Render<IgbIconButton>(p =>
             p.Add(x => x.Variant, IconButtonVariant.Flat));
 
+        Assert.Equal(IconButtonVariant.Flat, cut.Instance.Variant);
         Assert.Equal("flat", cut.Find("igc-icon-button").GetAttribute("variant"));
     }
 
@@ -83,6 +87,7 @@ public class IconButtonTests : ComponentWithContractTestBase<IgbIconButton>
         var cut = Render<IgbIconButton>(p =>
             p.Add(x => x.Disabled, true));
 
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(cut.Find("igc-icon-button").GetAttribute("disabled"));
     }
 
@@ -92,6 +97,7 @@ public class IconButtonTests : ComponentWithContractTestBase<IgbIconButton>
         var cut = Render<IgbIconButton>(p =>
             p.Add(x => x.Href, "https://example.com"));
 
+        Assert.Equal("https://example.com", cut.Instance.Href);
         Assert.Equal("https://example.com", cut.Find("igc-icon-button").GetAttribute("href"));
     }
 

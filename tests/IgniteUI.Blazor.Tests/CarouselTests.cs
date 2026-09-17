@@ -43,6 +43,7 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarousel>(p =>
             p.Add(x => x.DisableLoop, true));
 
+        Assert.True(cut.Instance.DisableLoop);
         Assert.NotNull(cut.Find("igc-carousel").GetAttribute("disable-loop"));
     }
 
@@ -52,6 +53,7 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarousel>(p =>
             p.Add(x => x.HideNavigation, true));
 
+        Assert.True(cut.Instance.HideNavigation);
         Assert.NotNull(cut.Find("igc-carousel").GetAttribute("hide-navigation"));
     }
 
@@ -61,6 +63,7 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarousel>(p =>
             p.Add(x => x.HideIndicators, true));
 
+        Assert.True(cut.Instance.HideIndicators);
         Assert.NotNull(cut.Find("igc-carousel").GetAttribute("hide-indicators"));
     }
 
@@ -70,6 +73,7 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarousel>(p =>
             p.Add(x => x.Vertical, true));
 
+        Assert.True(cut.Instance.Vertical);
         Assert.NotNull(cut.Find("igc-carousel").GetAttribute("vertical"));
     }
 
@@ -79,6 +83,7 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarousel>(p =>
             p.Add(x => x.DisablePauseOnInteraction, true));
 
+        Assert.True(cut.Instance.DisablePauseOnInteraction);
         Assert.NotNull(cut.Find("igc-carousel").GetAttribute("disable-pause-on-interaction"));
     }
 
@@ -88,6 +93,7 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarousel>(p =>
             p.Add(x => x.IndicatorsOrientation, CarouselIndicatorsOrientation.Start));
 
+        Assert.Equal(CarouselIndicatorsOrientation.Start, cut.Instance.IndicatorsOrientation);
         Assert.Equal("start", cut.Find("igc-carousel").GetAttribute("indicators-orientation"));
     }
 
@@ -97,6 +103,7 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarousel>(p =>
             p.Add(x => x.AnimationType, HorizontalTransitionAnimation.Fade));
 
+        Assert.Equal(HorizontalTransitionAnimation.Fade, cut.Instance.AnimationType);
         Assert.Equal("fade", cut.Find("igc-carousel").GetAttribute("animation-type"));
     }
 
@@ -115,6 +122,7 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
         var cut = Render<IgbCarousel>(p =>
             p.Add(x => x.Interval, 5000));
 
+        Assert.Equal(5000, cut.Instance.Interval);
         Assert.Equal("5000", cut.Find("igc-carousel").GetAttribute("interval"));
     }
 

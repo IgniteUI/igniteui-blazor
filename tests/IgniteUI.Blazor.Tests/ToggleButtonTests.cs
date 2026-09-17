@@ -28,6 +28,7 @@ public class ToggleButtonTests : ComponentWithContractTestBase<IgbToggleButton>
         var cut = Render<IgbToggleButton>(p =>
             p.Add(x => x.Value, "bold"));
 
+        Assert.Equal("bold", cut.Instance.Value);
         Assert.Equal("bold", cut.Find("igc-toggle-button").GetAttribute("value"));
     }
 
@@ -37,6 +38,7 @@ public class ToggleButtonTests : ComponentWithContractTestBase<IgbToggleButton>
         var cut = Render<IgbToggleButton>(p =>
             p.Add(x => x.Selected, true));
 
+        Assert.True(cut.Instance.Selected);
         Assert.NotNull(cut.Find("igc-toggle-button").GetAttribute("selected"));
     }
 
@@ -55,6 +57,7 @@ public class ToggleButtonTests : ComponentWithContractTestBase<IgbToggleButton>
         var cut = Render<IgbToggleButton>(p =>
             p.Add(x => x.Disabled, true));
 
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(cut.Find("igc-toggle-button").GetAttribute("disabled"));
     }
 

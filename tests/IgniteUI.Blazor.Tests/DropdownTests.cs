@@ -156,6 +156,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-dropdown");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -166,6 +167,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             parameters.Add(p => p.KeepOpenOnSelect, true));
 
         var element = cut.Find("igc-dropdown");
+        Assert.True(cut.Instance.KeepOpenOnSelect);
         Assert.NotNull(element.GetAttribute("keep-open-on-select"));
     }
 

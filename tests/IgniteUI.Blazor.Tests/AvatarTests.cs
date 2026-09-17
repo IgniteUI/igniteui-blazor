@@ -26,6 +26,7 @@ public class AvatarTests : BlazorComponentTestBase
             parameters.Add(p => p.Src, "https://example.com/avatar.png"));
 
         var element = cut.Find("igc-avatar");
+        Assert.Equal("https://example.com/avatar.png", cut.Instance.Src);
         Assert.Equal("https://example.com/avatar.png", element.GetAttribute("src"));
     }
 
@@ -36,6 +37,7 @@ public class AvatarTests : BlazorComponentTestBase
             parameters.Add(p => p.Alt, "User avatar"));
 
         var element = cut.Find("igc-avatar");
+        Assert.Equal("User avatar", cut.Instance.Alt);
         Assert.Equal("User avatar", element.GetAttribute("alt"));
     }
 
@@ -46,6 +48,7 @@ public class AvatarTests : BlazorComponentTestBase
             parameters.Add(p => p.Initials, "JD"));
 
         var element = cut.Find("igc-avatar");
+        Assert.Equal("JD", cut.Instance.Initials);
         Assert.Equal("JD", element.GetAttribute("initials"));
     }
 
@@ -56,6 +59,7 @@ public class AvatarTests : BlazorComponentTestBase
             parameters.Add(p => p.Shape, AvatarShape.Circle));
 
         var element = cut.Find("igc-avatar");
+        Assert.Equal(AvatarShape.Circle, cut.Instance.Shape);
         Assert.Equal("circle", element.GetAttribute("shape"));
     }
 
