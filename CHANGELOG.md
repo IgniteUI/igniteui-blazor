@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- **Infrastructure:** API that was unintentionally public is now internal: the members of `IIgniteUIBlazor`, the runtime and JavaScript callback classes, the serialization, rendering and data-source plumbing of the component base classes, and the data-source adapters and helpers around them. Injecting `IIgniteUIBlazor` and passing it to a module's `Register`, the settings passed to `AddIgniteUIBlazor`, and every component parameter and method are unchanged. The manual data change notifications (`NotifyInsertItem` and the other `Notify*Item` methods, `SuspendNotifications`, `ResumeNotifications`) moved from the base class to `IgbCombo<T>`, the one component with a bound collection, as the `IDataSourceNotifications` interface.
+
 ## 0.2.0 - 2026-09-17
 
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.3.2 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) with highlights noted below:
