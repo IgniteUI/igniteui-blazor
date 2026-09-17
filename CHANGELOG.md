@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.2.0 - 2026-09-17
+
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.3.2 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) with highlights noted below:
 
 ### Added
@@ -46,6 +48,7 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
   ```
 - Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
 - Every release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
+- XML documentation was expanded across public component APIs and existing enums for improved discoverability in IDEs and generated API documentation.
 
 ### Changed
 
@@ -60,8 +63,9 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 - The client build now emits native ES modules; the package's JS initializer loads the whole script graph during Blazor startup, so no `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag is needed on any hosting model (Blazor Server, standalone WASM, Blazor Web App, BlazorWebView). Existing tags keep working — including wrapped in `@Assets[...]`. When removing the tag, use the preferred `api.js` module above to register `*Script` parameters; the deprecated globals are not available until the library loads unless the tag is present to queue earlier calls.
 - A component whose `*Script` parameter names a function that is not registered now logs a console warning naming it (previously the parameter was silently dropped).
 - Hosting the library's assets elsewhere (CDN/self-host) is done with a standard [import map](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/static-files?view=aspnetcore-10.0#importmap-component) prefix entry — e.g. `{"imports": {"./_content/IgniteUI.Blazor/": "https://cdn.example.com/ig/"}}` relocates the entire module graph, initializer included.
-**Binary compatibility:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Normal NuGet consumers that rebuild should require no source changes, but precompiled dependents, binding redirects, and explicit fully-qualified assembly references may need updating.
 - Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
+- Nullable reference type analysis is enabled for the public API, making nullability contracts explicit for consumers.
+- `IgniteUI.Blazor.Lite` is now trim-compatible, including the required serializer and reflection annotations.
 
 ### Deprecated
 
@@ -72,10 +76,12 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 - The `FocusComponent` / `FocusComponentAsync` and `BlurComponent` / `BlurComponentAsync` methods now work on all components that expose them - Button, Icon Button, Toggle Button, Checkbox, Switch, Radio, Input, Mask Input, Date Time Input, Select and Combo. Two client-side defects were fixed: the `IgbFocusOptions` argument was not registered for by-value marshalling, and methods a component inherits from `HTMLElement` without overriding them - the focus and blur of the buttons, which rely on `delegatesFocus` - were not recognized as invokable. [#297](https://github.com/IgniteUI/igniteui-blazor/issues/297)
 
 For the complete list of fixes arriving with the updated web components, see the [7.3.0](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.0), [7.3.1](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.1) and [7.3.2](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) release notes - highlights include per-element selection tracking in Button Group, correct `WeekStart` on the Calendar's initial render, form-associated components keeping their validation messages after a failed form submission (including hosts that start invalid), Highlight painting matches in recent Firefox versions, Select keyboard-navigation and type-ahead fixes, significantly faster large Tree operations, Tooltip show/hide race fixes, Chip accessibility reworks, and touch input on the Color Picker canvas.
-
 - Loading no longer breaks under .NET 9+ static asset fingerprinting — a script tag wrapped in `@Assets[...]` previously left the app blank with no error. [#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)
 - The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
 - `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
+- Async `EventCallback` faults from component event dispatch and generated two-way bindings are now observed instead of being dropped.
+- Nested public fields in unmarshalled data are now transferred correctly as data columns.
+- Combo change event values now decode to the correct `ChangeType`.
 
 ### Breaking Changes
 
