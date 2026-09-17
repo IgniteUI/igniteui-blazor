@@ -54,6 +54,19 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             { "StartSize", "50%" },
             { "EndSize", "50%" },
         };
+
+        /// <summary>
+        /// Predefined values for properties that only make sense on one component, keyed by
+        /// "{Component}.{Property}". <see cref="PredefinedPropertyValues"/> matches on the property
+        /// name alone, so a name shared by several components - Value, for one, is a string here but
+        /// a double on the sliders and a DateTime on the pickers - has to be scoped to its component.
+        /// </summary>
+        public static readonly Dictionary<string, object> PredefinedComponentPropertyValues = new Dictionary<string, object>
+        {
+            // The generic sample string is not a valid CSS color and the component clears invalid
+            // values by design. A full-alpha lowercase hex round-trips verbatim in the default format.
+            { "IgbColorPicker.Value", "#875fc4" },
+        };
     }
 }
 #pragma warning restore BL0005

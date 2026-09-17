@@ -21,14 +21,28 @@
     "@cyclonedx/cyclonedx-npm": "6.0.1",
     "@types/node": "^26.4.1",
     "eslint": "^10.3.0",
-    "lint-staged": "^17.0.8",
+    "glob": "^7.1.4",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.8",
+    "lint-staged": "^17.4.1",
+    "ncp": "^2.0.0",
     "prettier": "^3.9.5",
+    "source-map-loader": "^5.0.0",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.6.2",
+    "tsconfig-paths-webpack-plugin": "^4.2.0",
+    "tslint": "^5.5.0",
+    "tslint-loader": "^3.5.3",
     "typescript": "^5.9.3",
+    "webpack": "^5.110.2",
+    "webpack-cli": "^7.2.3",
+    "webpack-dev-server": "^6.0.0",
+    "worker-loader": "^3.0.8",
     "vite": "^8.2.2",
     "yargs": "^17.2.1"
   },
   "dependencies": {
-    "igniteui-webcomponents": "~7.2.4",
-    "lit-html": "^3.3.2"
+    "igniteui-webcomponents": "~7.3.2",
+    "lit-html": "^3.3.3"
   }
 }

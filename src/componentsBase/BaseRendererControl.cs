@@ -1138,6 +1138,10 @@ namespace IgniteUI.Blazor.Controls
             {
                 return null;
             }
+            if (type == "Boolean" && argument is bool)
+            {
+                return ((bool)argument).ToString().ToLower();
+            }
             if (type == "Date")
             {
                 if (argument is DateTime)
