@@ -49,7 +49,6 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 - Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
 - Every release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
 - XML documentation was expanded across public component APIs and existing enums for improved discoverability in IDEs and generated API documentation.
-- The repository now includes standalone AI skills for component usage, grids, theming, and generating views from image designs.
 
 ### Changed
 
