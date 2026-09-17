@@ -12,6 +12,7 @@ namespace IgniteUI.Blazor.Controls
         // }
 
         private IIgniteUIBlazor? _igBlazor;
+        /// <summary>The injected <see cref="IIgniteUIBlazor"/> service; pass it to a module's <c>Register</c> from <see cref="EnsureModulesLoaded"/>.</summary>
         [Inject]
         protected IIgniteUIBlazor IgBlazor
         {

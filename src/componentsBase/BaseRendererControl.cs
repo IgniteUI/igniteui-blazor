@@ -36,6 +36,8 @@ namespace IgniteUI.Blazor.Controls
     public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
     {
         private IIgniteUIBlazor? _igBlazor;
+        private IIgniteUIBlazorRuntime? _runtime;
+        /// <summary>The injected <see cref="IIgniteUIBlazor"/> service; pass it to a module's <c>Register</c> from <see cref="EnsureModulesLoaded"/>.</summary>
         [Inject]
         protected IIgniteUIBlazor IgBlazor
         {
@@ -46,16 +48,19 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 _igBlazor = value;
+                _runtime = value.AsRuntime();
                 // if (_igBlazor is IJSInProcessRuntime)
                 // {
                 //     this.JsInProcessRuntime = (IJSInProcessRuntime)_igBlazor;
                 // }
 
-                _igBlazor.WebCallback.Register(this);
-                _dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime, _igBlazor));
+                _runtime.WebCallback.Register(this);
+                _dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime, _runtime));
                 EnsureModulesLoaded();
             }
         }
+
+        internal IIgniteUIBlazorRuntime Runtime => _runtime ?? throw new InvalidOperationException("IgBlazor accessed before dependency injection completed.");
 
         protected virtual void EnsureModulesLoaded()
         {
@@ -66,7 +71,7 @@ namespace IgniteUI.Blazor.Controls
         {
             get
             {
-                return _igBlazor != null ? _igBlazor.JsRuntime : null;
+                return _igBlazor != null ? Runtime.JsRuntime : null;
             }
         }
 
@@ -188,7 +193,7 @@ namespace IgniteUI.Blazor.Controls
         {
             if (_objRef == null)
             {
-                _objRef = DotNetObjectReference.Create(IgBlazor.WebCallback);
+                _objRef = DotNetObjectReference.Create(Runtime.WebCallback);
             }
 
             return _objRef;
@@ -811,7 +816,7 @@ namespace IgniteUI.Blazor.Controls
 
         public async Task EnsureReady()
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime))
             {
                 return;
             }
@@ -1004,7 +1009,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (_serializerContext == null)
                 {
-                    var def = IgBlazor.Settings?.JsonSerializerOptions;
+                    var def = Runtime.Settings?.JsonSerializerOptions;
                     var options = new JsonSerializerOptions();
                     options.MaxDepth = def != null ? def.MaxDepth : 0;
                     _serializerContext = new IgbJsonContext(options);
@@ -1684,7 +1689,7 @@ namespace IgniteUI.Blazor.Controls
 
         private async Task<object?> SendJsonImmediate(RendererMessage m)
         {
-            if (_igBlazor == null || !_igBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            if (_igBlazor == null || !Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
@@ -1740,7 +1745,7 @@ namespace IgniteUI.Blazor.Controls
         {
             //json = "window.sendMessage(`" + this._containerId + "`, `" + json + "`)";
             //Console.WriteLine(json);
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return;
             }
@@ -3269,7 +3274,7 @@ namespace IgniteUI.Blazor.Controls
         {
             try
             {
-                if (_igBlazor == null || !_igBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+                if (_igBlazor == null || !Runtime.IsRuntimeValid(_shouldReevaluateRuntime))
                 {
                     return;
                 }
@@ -3335,7 +3340,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
@@ -3344,7 +3349,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
@@ -3565,18 +3570,17 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
+    /// <summary>
+    /// The Ignite UI for Blazor runtime service, registered by
+    /// <see cref="Microsoft.Extensions.DependencyInjection.InfragisticsBlazorExtensions.AddIgniteUIBlazor(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Type[])"/>.
+    /// Inject it and pass it to a module's <see cref="IIgbModule.Register(IIgniteUIBlazor)"/> method to load
+    /// that module's client resources.
+    /// </summary>
     public interface IIgniteUIBlazor
     {
-        IJSRuntime JsRuntime { get; }
-        IIgniteUIBlazorSettings? Settings { get; }
-        WebCallback WebCallback { get; }
-        void RequestLoad(string moduleName);
-        bool IsLoadRequested(string moduleName);
-        void MarkIsLoadRequested(string moduleName);
-        bool IsRuntimeValid(bool reevaluate = false);
     }
 
-    public class IgniteUIBlazor : IIgniteUIBlazor
+    internal class IgniteUIBlazor : IIgniteUIBlazor, IIgniteUIBlazorRuntime
     {
         private bool _isRuntimeValid = false;
         private bool _isRuntimeChecked = false;
@@ -3785,22 +3789,22 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public class ModuleLoader
+    internal class ModuleLoader
     {
         public static void Load(IIgniteUIBlazor runtime, string moduleName)
         {
-            runtime.RequestLoad(moduleName);
+            runtime.AsRuntime().RequestLoad(moduleName);
             //runtime.JsRuntime.InvokeAsync<object>("igRequestLoad", moduleName);
         }
 
         internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
-            runtime.MarkIsLoadRequested(moduleName);
+            runtime.AsRuntime().MarkIsLoadRequested(moduleName);
         }
 
         internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
-            return runtime.IsLoadRequested(moduleName);
+            return runtime.AsRuntime().IsLoadRequested(moduleName);
         }
     }
     /// <summary>
