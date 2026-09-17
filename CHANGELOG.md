@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
 ## 0.2.0 - 2026-09-17
 
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.3.2 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) with highlights noted below:
@@ -46,8 +48,8 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
   ```
 - Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
 - Every release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
-- Public component and enum APIs now include XML documentation for improved discoverability in IDEs and generated API documentation.
-- Ignite UI for Blazor now includes standalone AI skills for component usage, grids, theming, and generating views from image designs.
+- XML documentation was expanded across public component APIs and existing enums for improved discoverability in IDEs and generated API documentation.
+- The repository now includes standalone AI skills for component usage, grids, theming, and generating views from image designs.
 
 ### Changed
 
@@ -76,7 +78,7 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 - Loading no longer breaks under .NET 9+ static asset fingerprinting — a script tag wrapped in `@Assets[...]` previously left the app blank with no error. [#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)
 - The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
 - `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
-- Async `EventCallback` faults are now observed instead of being dropped.
+- Async `EventCallback` faults from component event dispatch and generated two-way bindings are now observed instead of being dropped.
 - Nested public fields in unmarshalled data are now transferred correctly as data columns.
 - Combo change event values now decode to the correct `ChangeType`.
 
