@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebCheckboxChangeEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbCheckboxChangeEventArgsDetail _detail = new IgbCheckboxChangeEventArgsDetail();
 
         /// <summary>

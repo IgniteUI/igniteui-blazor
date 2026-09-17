@@ -2,6 +2,7 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebComponentBoolValueChangedEventArgsDescriptionMetadata } from "./WebComponentBoolValueChangedEventArgsDescriptionMetadata";
+import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
 import { WebChipDescription } from "./WebChipDescription";
 
 /**
@@ -20,6 +21,7 @@ export class WebChipDescriptionMetadata extends Base {
 		}
 		context.markSeen(WebChipDescriptionMetadata._metadata);
 		WebComponentBoolValueChangedEventArgsDescriptionMetadata.register(context);
+		VoidEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:Chip");
@@ -33,8 +35,9 @@ export class WebChipDescriptionMetadata extends Base {
 		metadata.item("Variant", "ExportedType:string:StyleVariant");
 		metadata.item("Variant@stringUnion", "WebComponents;React");
 		metadata.item("Variant@names", "Primary;Info;Success;Warning;Danger");
-		metadata.item("RemoveRef", "EventRef:ComponentBoolValueChangedEventHandler:remove");
-		metadata.item("RemoveRef@args", "ComponentBoolValueChangedEventArgs");
+		metadata.item("Outlined", "Boolean");
+		metadata.item("RemoveRef", "EventRef:VoidHandler:remove");
+		metadata.item("RemoveRef@args", "VoidEventArgs");
 		metadata.item("SelectRef", "EventRef:ComponentBoolValueChangedEventHandler:select");
 		metadata.item("SelectRef@args", "ComponentBoolValueChangedEventArgs");
 	}

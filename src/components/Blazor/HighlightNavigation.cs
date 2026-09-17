@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebHighlightNavigation"; } }
 
-        private static bool _marshalByValue = true;
-
         private bool _preventScroll = false;
 
         /// <summary>
@@ -31,7 +29,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -58,8 +55,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("preventScroll"))
-            { this.PreventScroll = ReturnToBoolean(args["preventScroll"]); }
+            if (args != null && args.TryGetValue("preventScroll", out var preventScrollObj))
+            { this.PreventScroll = ReturnToBoolean(preventScrollObj); }
 
             this.SuppressParentNotify = false;
         }

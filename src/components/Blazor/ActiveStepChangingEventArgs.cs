@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebActiveStepChangingEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbActiveStepChangingEventArgsDetail _detail = new IgbActiveStepChangingEventArgsDetail();
 
         /// <summary>

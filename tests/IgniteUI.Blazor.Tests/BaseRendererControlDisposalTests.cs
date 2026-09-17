@@ -125,9 +125,9 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
 
     private void AssertCleanupSentOnce(int invocationCount)
     {
-        var cleanup = Assert.Single(JSInterop.Invocations
-            .Skip(invocationCount)
-            .Where(invocation => invocation.Identifier == "igSendMessage"));
+        var cleanup = Assert.Single(
+            JSInterop.Invocations.Skip(invocationCount),
+            invocation => invocation.Identifier == "igSendMessage");
         using var message = JsonDocument.Parse((string)cleanup.Arguments[1]!);
         Assert.Equal("cleanup", message.RootElement.GetProperty("type").GetString());
     }

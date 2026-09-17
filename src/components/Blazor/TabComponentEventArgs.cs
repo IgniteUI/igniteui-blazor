@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebTabComponentEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbTab _detail = new IgbTab();
 
         /// <summary>

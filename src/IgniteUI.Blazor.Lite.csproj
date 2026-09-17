@@ -64,6 +64,7 @@
 
   <ItemGroup Condition="'$(ExposeInternalsToTests)' != 'false'">
     <InternalsVisibleTo Include="IgniteUI.Blazor.Tests" />
+    <InternalsVisibleTo Include="IgniteUI.Blazor.Lite.PublishSmoke" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,6 +87,13 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <!-- Written by `npm run build` (vite build.license): every bundled JS dependency's license. Pack runs in the
+         outer multi-target build, where the SDK's default None glob is not evaluated, so the file is added explicitly. -->
+    <None Remove="THIRD-PARTY-LICENSES.md" />
+    <None Include="THIRD-PARTY-LICENSES.md" Condition="Exists('THIRD-PARTY-LICENSES.md')">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -96,7 +104,7 @@
   </ItemGroup>
 
   <!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm run build &amp;&amp; npm run copythemes" />
+    <Exec Command="npm run build" />
   </Target>-->
 
 </Project>

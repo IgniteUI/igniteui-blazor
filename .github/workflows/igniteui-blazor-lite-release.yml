@@ -51,11 +51,8 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Build TypeScript/Webpack assets
+      - name: Build static web assets (src/wwwroot)
         run: npm run build
-
-      - name: Copy component themes to wwwroot
-        run: npm run copythemes
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
@@ -143,7 +140,7 @@ jobs:
         run: dotnet tool restore
 
       - name: Authenticate to Azure
-        uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -245,7 +242,7 @@ jobs:
         run: dotnet tool restore
 
       - name: Authenticate to Azure
-        uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}

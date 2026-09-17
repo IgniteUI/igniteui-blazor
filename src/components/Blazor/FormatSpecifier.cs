@@ -18,8 +18,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private static bool _marshalByValue = true;
-
         /// <summary>
         /// Gets the culture of the browser, expanded to a culture with a region when the browser
         /// reports a bare language code.
@@ -76,12 +74,12 @@ namespace IgniteUI.Blazor.Controls
             ModuleLoader.Load(runtime, "FormatSpecifierModule");
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
             ModuleLoader.MarkIsLoadRequested(runtime, "FormatSpecifierModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "FormatSpecifierModule");
         }
