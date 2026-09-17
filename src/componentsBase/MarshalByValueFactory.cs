@@ -1,6 +1,6 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public class MarshalByValueFactory
+    internal class MarshalByValueFactory
     {
         internal static bool MustMarshalByValue(string? typeName)
         {

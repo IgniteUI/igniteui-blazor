@@ -208,7 +208,7 @@ namespace IgniteUI.Blazor.Controls
             return "block";
         }
 
-        protected string ToSpinal(string? value)
+        private string ToSpinal(string? value)
         {
             if (value == null)
             {
@@ -365,13 +365,13 @@ namespace IgniteUI.Blazor.Controls
             return ret;
         }
 
-        protected virtual string TransformSimpleKey(string? key)
+        private protected virtual string TransformSimpleKey(string? key)
         {
             key = Camelize(key);
             return Sequence.TransformKey(key);
         }
 
-        protected virtual bool IsTransformedEnumValue(string? key)
+        private protected virtual bool IsTransformedEnumValue(string? key)
         {
             key = Camelize(key);
             if (Sequence.IsTransformedEnum(key))
@@ -381,7 +381,7 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        protected virtual object TransformPotentialEnumValue(string? key, object value)
+        private protected virtual object TransformPotentialEnumValue(string? key, object value)
         {
             key = Camelize(key);
             //Console.WriteLine("transforming enum value...." + (value.GetType().Name));
@@ -401,7 +401,7 @@ namespace IgniteUI.Blazor.Controls
         // reflection, so it must not run from the constructor.
         private SequenceInfo Sequence => _sequenceInfo ??= BuildSequenceInfo(3);
 
-        protected virtual SequenceInfo BuildSequenceInfo(int startSequence)
+        private protected virtual SequenceInfo BuildSequenceInfo(int startSequence)
         {
             SequenceInfo info = new SequenceInfo(startSequence);
             var props = this.GetType().GetProperties(System.Reflection.BindingFlags.Public |
@@ -738,7 +738,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected Type? TemplateContentType(string? templateId)
+        private Type? TemplateContentType(string? templateId)
         {
             if (templateId == null || !_contentTemplateTypes.ContainsKey(templateId))
             {
@@ -777,7 +777,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        protected virtual bool NeedsDynamicContent
+        private protected virtual bool NeedsDynamicContent
         {
             get
             {
@@ -928,7 +928,7 @@ namespace IgniteUI.Blazor.Controls
             ser.AddStringProp("name", "mainControl");
         }
 
-        protected String _cachedSerializedContent = "";
+        private String _cachedSerializedContent = "";
 
         public virtual string? Type
         {
@@ -943,7 +943,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext context, string? propertyName = null)
+        void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
+
+        internal void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;
@@ -952,7 +954,7 @@ namespace IgniteUI.Blazor.Controls
             ser.End();
         }
 
-        public string Serialize()
+        internal string Serialize()
         {
             if (_serializeDirty)
             {
@@ -1364,101 +1366,9 @@ namespace IgniteUI.Blazor.Controls
             return val.ToString("o");
         }
 
-        /// <summary>
-        /// Prevents data change notifications from be propagated to the component.
-        /// </summary>
-        /// <param name="dataSource">The datasource that is being changed.</param>
-        public void SuspendNotifications(object dataSource)
-        {
-            if (_dataSourceManager != null)
-            {
-                _dataSourceManager.SuspendNotifications(dataSource);
-            }
-        }
-        /// <summary>
-        /// Resumes data change notifications.
-        /// </summary>
-        /// <param name="dataSource">The datasource that is being changed.</param>
-        /// <param name="notify">Whether to notify the component that the datasource items changed.</param>
-        public void ResumeNotifications(object dataSource, bool notify = true)
-        {
-            if (_dataSourceManager != null)
-            {
-                _dataSourceManager.ResumeNotifications(dataSource, notify);
-            }
-        }
+        void RefSink.OnRefChanged(string refName, object? refValue) => OnRefChanged(refName, refValue);
 
-        public void NotifyInsertItem(object dataSource, int index, object refItem)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifyInsertItem(refName, index, refItem);
-        }
-
-        public void NotifyRemoveItem(object dataSource, int index, object oldItem)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifyRemoveItem(refName, index, oldItem);
-        }
-
-        public void NotifyClearItems(object dataSource)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifyClearItems(refName);
-        }
-
-        public void NotifySetItem(object dataSource, int index, object oldItem, object newItem)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifySetItem(refName, index, oldItem, newItem);
-        }
-
-        public void NotifyUpdateItem(object dataSource, int index, object refItem, bool syncDataOnly = false)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifyUpdateItem(refName, index, refItem, syncDataOnly);
-        }
-
-        public void OnRefChanged(string refName, object? refValue)
+        internal void OnRefChanged(string refName, object? refValue)
         {
             RendererMessage m = new RendererMessage();
             m.Type = ("refChanged");
@@ -2175,7 +2085,7 @@ namespace IgniteUI.Blazor.Controls
             return returnValue;
         }
 
-        public void OnInvokeReturn(long invokeId, Object returnValue)
+        internal void OnInvokeReturn(long invokeId, Object returnValue)
         {
             //lock (_semLock) {
             //    if (returnValue instanceof String) {
@@ -2708,7 +2618,7 @@ namespace IgniteUI.Blazor.Controls
             //return val == null ? null : val.ToString();
         }
 
-        protected virtual bool UseCamelEnumValues
+        private protected virtual bool UseCamelEnumValues
         {
             get
             {
@@ -2716,7 +2626,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected string Camelize(string? value)
+        private string Camelize(string? value)
         {
             if (value == null || value.Length == 0)
             {
@@ -2725,7 +2635,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        protected string? ToPascal(string? value)
+        private string? ToPascal(string? value)
         {
             if (value == null || value.Length == 0)
             {
@@ -3043,7 +2953,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected internal void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
+        internal void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
         {
             List<string> toRename = new List<string>();
             foreach (var key in _handlers.Keys)
@@ -3423,7 +3333,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
+        internal async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
             if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
@@ -3432,7 +3342,7 @@ namespace IgniteUI.Blazor.Controls
             return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "set", grouping, id, value });
         }
 
-        public async Task<object?> SetResourceStringAsync(string grouping, string json)
+        internal async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
             if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
@@ -3441,7 +3351,7 @@ namespace IgniteUI.Blazor.Controls
             return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "register", grouping, "", json });
         }
 
-        protected void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
+        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
         {
             System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
             if (type == null)
@@ -3494,7 +3404,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
         }
-        protected void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
+        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
         {
             System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
             if (type == null)
@@ -3779,7 +3689,7 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public class SequenceInfo
+    internal class SequenceInfo
     {
         private ReadOnlyCollection<string>? _attributeKeys = null;
         public ReadOnlyCollection<string> AttributeKeys
