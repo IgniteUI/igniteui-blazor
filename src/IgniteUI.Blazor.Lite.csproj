@@ -26,7 +26,6 @@
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>$(NoWarn);BL0007</NoWarn>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IgniteUI.Blazor$(PackageIdSuffix)</PackageId>
     <Version>1.0.0</Version>

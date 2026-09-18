@@ -294,6 +294,10 @@ dotnet_diagnostic.IDE2000.severity = warning
 # project generates an XML docs file; always applied in the IDE.
 dotnet_diagnostic.IDE0005.severity = warning
 
+# BL0007: Component parameters should be auto properties.
+# Note: Currently setting diagnostics in .editorconfig do not work for .razor files, even if added to filters. (https://github.com/dotnet/roslyn/issues/85310)
+dotnet_diagnostic.BL0007.severity = suggestion
+
 #### Future candidates (aspnetcore-inspired) — enable after the one-time format
 #### and a cleanup pass. Most below have NO auto-fix via our safe format
 #### command, so enabling them creates manual work; the ones marked [fixer]
