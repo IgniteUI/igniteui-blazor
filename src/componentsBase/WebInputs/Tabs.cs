@@ -18,11 +18,11 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (item == args.Detail)
                 {
-                    item.Selected = true;
+                    item.Select();
                 }
                 else
                 {
-                    item.Selected = false;
+                    item.Deselect();
 
                 }
 

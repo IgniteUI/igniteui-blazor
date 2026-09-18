@@ -302,9 +302,9 @@ namespace IgniteUI.Blazor.Controls
 
                 if (_hasPopulatedContext && Context != null)
                 {
-                    template.Context = Context;
+                    template.UpdateContext(Context);
                 }
-                template.Template = Template;
+                template.UpdateTemplate(Template);
                 template.Update();
             }
         }
