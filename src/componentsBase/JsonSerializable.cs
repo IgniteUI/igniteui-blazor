@@ -1,8 +1,8 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public delegate bool SerializationFilter(string? name, string? property);
+    internal delegate bool SerializationFilter(string? name, string? property);
 
-    public class SerializationContext
+    internal class SerializationContext
     {
         public System.Text.Json.Utf8JsonWriter Writer { get; set; }
         public SerializationFilter? Filter { get; set; }
@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public interface JsonSerializable
+    internal interface JsonSerializable
     {
         void Serialize(SerializationContext writer, string? propertyName = null);
     }

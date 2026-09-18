@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 namespace IgniteUI.Blazor.Controls
 {
 
-    public class BaseCollection<T> : ObservableCollection<T>
+    internal class BaseCollection<T> : ObservableCollection<T>
     {
         private bool _suppressNotify = false;
 

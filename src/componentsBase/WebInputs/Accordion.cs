@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbAccordion
     {
         /// <inheritdoc />
-        protected override string ParentTypeName
+        private protected override string ParentTypeName
         {
             get
             {
