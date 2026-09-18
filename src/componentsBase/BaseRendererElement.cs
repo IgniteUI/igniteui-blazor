@@ -1083,11 +1083,14 @@ namespace IgniteUI.Blazor.Controls
             return default;
         }
 
-        protected internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        /// <summary>Reads this element's values from the event payload the client sent for <paramref name="control"/>.</summary>
+        internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
 
         }
-        protected internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+
+        /// <summary>Writes this element's values into the event payload returned to the client for <paramref name="control"/>.</summary>
+        internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
 
         }
