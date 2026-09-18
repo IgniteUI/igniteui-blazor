@@ -163,9 +163,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         return types;
     }
 
-    [Fact(Skip = "DisposeAsync sets disposedValue before TrySendCleanupAsync, and SendMessageImmediate " +
-        "drops on that flag, so no cleanup message is transmitted for this to order against. " +
-        "Un-skip once disposal sends one.")]
+    [Fact]
     public async Task DisposeAsync_StopsAFlushScheduledBeforeIt()
     {
         Interop.PrimeReady();
@@ -196,9 +194,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         Assert.Collection(afterDisposal, type => Assert.Equal("cleanup", type));
     }
 
-    [Fact(Skip = "DisposeAsync sets disposedValue before TrySendCleanupAsync, and SendMessageImmediate " +
-        "drops on that flag, so no cleanup message is transmitted for this to order against. " +
-        "Un-skip once disposal sends one.")]
+    [Fact]
     public async Task DisposeAsync_SendsNothingAfterCleanup()
     {
         Interop.PrimeReady();
