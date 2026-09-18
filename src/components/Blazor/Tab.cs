@@ -147,6 +147,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        internal void Select()
+        {
+            this.Selected = true;
+        }
+
+        internal void Deselect()
+        {
+            this.Selected = false;
+        }
+
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);

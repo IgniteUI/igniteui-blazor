@@ -158,15 +158,12 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbFocusOptions();
                 case "FormatSpecifier":
                     return new IgbFormatSpecifier();
-                    break;
                 case "QrCodeExportOptions":
                 case "WebQrCodeExportOptions":
                     return new IgbQrCodeExportOptions();
-                    break;
                 case "RegisterIconOptions":
                 case "WebRegisterIconOptions":
                     return new IgbRegisterIconOptions();
-                    break;
                 case "NumberFormatSpecifier":
                     return new IgbNumberFormatSpecifier();
                 case "ActiveStepChangedEventArgs":
@@ -256,15 +253,12 @@ namespace IgniteUI.Blazor.Controls
                 case "SelectItemComponentEventArgs":
                 case "WebSelectItemComponentEventArgs":
                     return new IgbSelectItemComponentEventArgs();
-                    break;
                 case "SplitterLayoutChangedEventArgs":
                 case "WebSplitterLayoutChangedEventArgs":
                     return new IgbSplitterLayoutChangedEventArgs();
-                    break;
                 case "SplitterLayoutChangedEventArgsDetail":
                 case "WebSplitterLayoutChangedEventArgsDetail":
                     return new IgbSplitterLayoutChangedEventArgsDetail();
-                    break;
                 case "SplitterResizeEventArgs":
                 case "WebSplitterResizeEventArgs":
                     return new IgbSplitterResizeEventArgs();

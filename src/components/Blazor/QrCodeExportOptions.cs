@@ -9,7 +9,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebQrCodeExportOptions"; } }
 
-        private static readonly bool _marshalByValue = true;
         private const double ScaleComparisonEpsilon = 1e-9;
 
         private static bool AreDoublesEqual(double left, double right)
