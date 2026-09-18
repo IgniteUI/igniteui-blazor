@@ -250,7 +250,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Reflects only the indexer of Dictionary<string, object> (both call sites guard on that type), which the library also uses statically — the 'Item' property is always preserved alongside this code.")]
         public static JSDataSourceSchema CreateFromDictionary(IDictionary item)
         {
             JSDataSourceSchema s = new JSDataSourceSchema();
@@ -287,7 +286,11 @@ namespace IgniteUI.Blazor.Controls
             s.PropertyGetters = new Func<object, object?>[names.Count];
             s.TypedPropertyGetters = new Delegate[names.Count];
 
-            var itemProp = item.GetType().GetProperty("Item") ?? throw new InvalidOperationException("The 'Item' property was not found on the dictionary type.");
+            // Look the indexer up on IDictionary itself, not on item.GetType(): typeof(T).GetProperty("literal")
+            // is a linker/ILC intrinsic that roots the member, whereas a runtime Type is unanalyzable and its
+            // reflection metadata gets trimmed away under NativeAOT (static use of the indexer preserves only
+            // the get_Item method body, not the PropertyInfo). Every caller passes an IDictionary.
+            var itemProp = typeof(IDictionary).GetProperty("Item") ?? throw new InvalidOperationException("The 'Item' property was not found on the dictionary type.");
 
             for (int i = 0; i < names.Count; i++)
             {
