@@ -279,6 +279,8 @@ dotnet_naming_style.begins_with_i.capitalization = pascal_case
 
 #### Enforced severities (the repo gates) ####
 
+# Note: Currently setting diagnostics in .editorconfig do not work for Razor, even if added to filters. (https://github.com/dotnet/roslyn/issues/85310)
+
 # IDE0055: All formatting rules — build warning + fixed by the whitespace gate.
 # (aspnetcore keeps this at `suggestion` and relies purely on their CI format
 # check; we use `warning` so violations are visible in the IDE/build.)
@@ -294,8 +296,8 @@ dotnet_diagnostic.IDE2000.severity = warning
 # project generates an XML docs file; always applied in the IDE.
 dotnet_diagnostic.IDE0005.severity = warning
 
+# TO DO: Enable when https://github.com/IgniteUI/igniteui-blazor/issues/447 is resolved.
 # BL0007: Component parameters should be auto properties.
-# Note: Currently setting diagnostics in .editorconfig do not work for .razor files, even if added to filters. (https://github.com/dotnet/roslyn/issues/85310)
 dotnet_diagnostic.BL0007.severity = suggestion
 
 #### Future candidates (aspnetcore-inspired) — enable after the one-time format
