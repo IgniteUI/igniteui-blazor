@@ -299,8 +299,7 @@ namespace IgniteUI.Blazor.Controls
             if (Component is IgbTemplateContent<T>)
             {
                 var template = (IgbTemplateContent<T>)Component;
-                var context = _hasPopulatedContext && Context != null ? Context : template.Context;
-                template.UpdateContent(context, Template);
+                template.UpdateContent(Context, Template, _hasPopulatedContext);
             }
         }
 
