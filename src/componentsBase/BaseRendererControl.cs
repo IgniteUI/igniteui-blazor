@@ -1096,7 +1096,11 @@ namespace IgniteUI.Blazor.Controls
             var ret = await SendMessageImmediate(m);
 
             TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
-            _methodTasks.Add(invokeId, tcs);
+            // A return can arrive on the dispatcher while a call made off it is still getting here.
+            lock (_semLock)
+            {
+                _methodTasks[invokeId] = tcs;
+            }
 
             if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
             {
@@ -1109,20 +1113,29 @@ namespace IgniteUI.Blazor.Controls
                     ((JsonElement)retDict["retType"]).GetString() == "promise")
                 {
                     // did we already get a value returned for this method invoke before we could start up a task?
-                    if (_methodReturns.ContainsKey(invokeId))
+                    object? early;
+                    bool arrivedEarly;
+                    lock (_semLock)
                     {
-                        tcs.SetResult(_methodReturns[invokeId]);
+                        arrivedEarly = _methodReturns.TryGetValue(invokeId, out early);
+                    }
+                    if (arrivedEarly)
+                    {
+                        tcs.TrySetResult(early);
                     }
                 }
                 else
                 {
-                    tcs.SetResult(ret);
+                    tcs.TrySetResult(ret);
                 }
             }
             var result = await tcs.Task;
 
-            _methodTasks.Remove(invokeId);
-            _methodReturns.Remove(invokeId);
+            lock (_semLock)
+            {
+                _methodTasks.Remove(invokeId);
+                _methodReturns.Remove(invokeId);
+            }
 
             return result;
         }
@@ -1625,15 +1638,14 @@ namespace IgniteUI.Blazor.Controls
 
         private async Task<object?> SendMessageImmediate(RendererMessage m)
         {
-            if (disposedValue)
-            {
-                return null;
-            }
-
-            // The send must start under this lock.
+            // The send must start under this lock, which is also where disposal closes it.
             Task<object?> sent;
             lock (_messageQueueLock)
             {
+                if (disposedValue)
+                {
+                    return null;
+                }
                 Update();
                 sent = SendJsonImmediate(m);
             }
@@ -1642,12 +1654,12 @@ namespace IgniteUI.Blazor.Controls
 
         private object? SendMessageSyncImmediate(RendererMessage m)
         {
-            if (disposedValue)
-            {
-                return null;
-            }
             lock (_messageQueueLock)
             {
+                if (disposedValue)
+                {
+                    return null;
+                }
                 UpdateSync();
                 return SendJsonImmediateSync(m);
             }
@@ -1657,6 +1669,11 @@ namespace IgniteUI.Blazor.Controls
         {
             lock (_messageQueueLock)
             {
+                // Also checked here so disposal cannot land between a caller's check and its enqueue.
+                if (disposedValue)
+                {
+                    return;
+                }
                 _messageQueue.AddLast(m);
             }
         }
@@ -1687,7 +1704,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 this._updateQueued = false;
 
-                if (!_ready)
+                if (!_ready || disposedValue)
                 {
                     return;
                 }
@@ -1708,7 +1725,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 this._updateQueued = false;
 
-                if (!_ready)
+                if (!_ready || disposedValue)
                 {
                     return;
                 }
@@ -2201,14 +2218,16 @@ namespace IgniteUI.Blazor.Controls
             }
             InvokeAsync(() =>
             {
-                if (_methodTasks.ContainsKey(invokeId))
+                TaskCompletionSource<object?>? waiting;
+                lock (_semLock)
                 {
-                    _methodTasks[invokeId].SetResult(result);
+                    if (!_methodTasks.TryGetValue(invokeId, out waiting))
+                    {
+                        _methodReturns[invokeId] = result;
+                    }
                 }
-                else
-                {
-                    _methodReturns.Add(invokeId, result);
-                }
+                // Completed outside the lock: the continuation runs inline on this thread.
+                waiting?.TrySetResult(result);
             });
         }
 
@@ -3326,12 +3345,16 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public virtual async ValueTask DisposeAsync()
         {
-            if (disposedValue)
+            // Published under the queue's lock, so nothing can enqueue once teardown has begun.
+            lock (_messageQueueLock)
             {
-                return;
+                if (disposedValue)
+                {
+                    return;
+                }
+                disposedValue = true;
             }
 
-            disposedValue = true;
             _shouldReevaluateRuntime = true;
 
             try
