@@ -2146,7 +2146,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
-        protected internal virtual object? FindByName(string name)
+        private protected virtual object? FindByName(string name)
         {
             if ("mainControl".Equals(name))
             {
