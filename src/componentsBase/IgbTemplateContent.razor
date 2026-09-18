@@ -33,13 +33,10 @@
         StateHasChanged();
     }
 
-    internal void UpdateContext(T context)
+    internal void UpdateContent(T context, RenderFragment<T>? template)
     {
         Context = context;
-    }
-
-    internal void UpdateTemplate(RenderFragment<T>? template)
-    {
         Template = template;
+        Update();
     }
 }
