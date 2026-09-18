@@ -1113,7 +1113,7 @@ namespace IgniteUI.Blazor.Controls
                     ((JsonElement)retDict["retType"]).GetString() == "promise")
                 {
                     // did we already get a value returned for this method invoke before we could start up a task?
-                    object early;
+                    object? early;
                     bool arrivedEarly;
                     lock (_semLock)
                     {
@@ -2218,7 +2218,7 @@ namespace IgniteUI.Blazor.Controls
             }
             InvokeAsync(() =>
             {
-                TaskCompletionSource<object> waiting;
+                TaskCompletionSource<object?>? waiting;
                 lock (_semLock)
                 {
                     if (!_methodTasks.TryGetValue(invokeId, out waiting))
