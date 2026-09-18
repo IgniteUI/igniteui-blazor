@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebDateRangeValueDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private DateTime _start = DateTime.MinValue;
 
         /// <summary>
@@ -52,15 +50,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -73,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -85,15 +74,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("start"))
-            { this.Start = ReturnToDate(args["start"]); }
-            if (args.ContainsKey("end"))
-            { this.End = ReturnToDate(args["end"]); }
+            if (args != null && args.TryGetValue("start", out var startObj))
+            { this.Start = ReturnToDate(startObj); }
+            if (args != null && args.TryGetValue("end", out var endObj))
+            { this.End = ReturnToDate(endObj); }
 
             this.SuppressParentNotify = false;
         }

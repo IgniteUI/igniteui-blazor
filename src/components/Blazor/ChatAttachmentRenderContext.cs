@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -10,12 +8,11 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatAttachmentRenderContext"; } }
 
-        private IgbChatMessageAttachment _attachment;
+        private IgbChatMessageAttachment _attachment = new IgbChatMessageAttachment();
 
         /// <summary>
         /// The specific attachment being rendered.
         /// </summary>
-        [Parameter]
         public IgbChatMessageAttachment Attachment
         {
             get { return this._attachment; }
@@ -26,22 +23,13 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._attachment);
                 }
+                this._attachment = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._attachment = value;
             }
 
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

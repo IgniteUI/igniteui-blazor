@@ -58,13 +58,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _actionText;
+        private string? _actionText;
 
         /// <summary>
         /// The text of the action button.
         /// </summary>
         [Parameter]
-        public string ActionText
+        public string? ActionText
         {
             get { return this._actionText; }
             set
@@ -78,18 +78,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _actionRef = null;
-        private string _actionScript = null;
+        private string? _actionRef = null;
+        private string? _actionScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Action"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ActionScript
+        public string? ActionScript
         {
 
             set
@@ -97,7 +98,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._actionScript)
                 {
                     this._actionScript = value;
-                    this.OnRefChanged("Action", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Action", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._actionRef = refName;
                         this.MarkPropDirty("ActionRef");

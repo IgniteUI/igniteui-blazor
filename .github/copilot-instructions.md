@@ -70,14 +70,14 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 
 - **`components/Blazor/`** - Auto-generated and hand-maintained C# component wrappers (e.g., `IgbButton`, `IgbGrid`). Each component extends `BaseRendererControl` and renders an underlying web component (`igc-*` custom element) via `DirectRenderElementName`.
 - **`componentsBase/`** - Shared base classes, DI extensions (`AddIgniteUIBlazor`), serialization, data adapters, and JS interop plumbing.
-- **`src/`** - TypeScript interop layer (webpack-bundled). Manages component mounting, property sync, event bridging, and module loading between Blazor and the `igniteui-webcomponents` package.
+- **`src/`** - TypeScript interop layer (vite, native ESM). Manages component mounting, property sync, event bridging, and module loading between Blazor and the `igniteui-webcomponents` package.
 - **`skills/`** - AI agent skill files that teach LLMs how to *use* this library. These are shipped in the package for downstream consumers.
 
 ## Build & Tooling
 
 - **Multi-target**: `net8.0`, `net9.0`, `net10.0`
 - **C# build**: `dotnet build` - produces the Razor class library
-- **TS build**: `npm run build` - webpack bundles the JS interop into static web assets
+- **TS build**: `npm run build` - type-checks and bundles the JS interop (vite, ESM) into static web assets; `npm test` checks the built output
 
 ## Coding Conventions
 
@@ -85,6 +85,9 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 
 - Use the latest C# version supported by the target frameworks; prefer modern features (pattern matching, file-scoped namespaces) when they compile on all TFMs
 - Use strict nullability (`#nullable enable`) in new files
+- Annotate honestly: a member is `T?` only when `null` is a meaningful state; never use `!`, `null!` or `default!` to satisfy the analyzer, and keep runtime null checks at public entry points, since annotations are not enforced at runtime
+- Prefer non-nullable collections: array and collection properties, parameters and return values are non-nullable and default to an empty collection, unless the web component treats a missing collection differently from an empty one
+- Mirror the web component contract on data and option types: a field the `.d.ts` declares required is non-nullable (`required` when only user code constructs the type); a field declared optional or `| null` is `T?`; a definite-assignment attribute (`name!: string`) that the template renders with `ifDefined` is optional too, so check the render when the `.d.ts` shows a bare attribute string
 - All public types live in `namespace IgniteUI.Blazor.Controls`
 - Use PascalCase for public members; camelCase for private fields
 - Prefix interfaces with `I` (e.g., `IIgniteUIBlazor`)

@@ -60,6 +60,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
             parameters.Add(p => p.Value, "option1"));
 
         var element = cut.Find("igc-radio");
+        Assert.Equal("option1", cut.Instance.Value);
         Assert.Equal("option1", element.GetAttribute("value"));
     }
 
@@ -70,6 +71,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
             parameters.Add(p => p.Checked, true));
 
         var element = cut.Find("igc-radio");
+        Assert.True(cut.Instance.Checked);
         Assert.NotNull(element.GetAttribute("checked"));
     }
 
@@ -80,6 +82,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-radio");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -90,6 +93,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-radio");
+        Assert.True(cut.Instance.Required);
         Assert.NotNull(element.GetAttribute("required"));
     }
 
@@ -100,7 +104,19 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
             parameters.Add(p => p.LabelPosition, ToggleLabelPosition.Before));
 
         var element = cut.Find("igc-radio");
+        Assert.Equal(ToggleLabelPosition.Before, cut.Instance.LabelPosition);
         Assert.Equal("before", element.GetAttribute("label-position"));
+    }
+
+    [Fact]
+    public void Radio_Invalid_RendersAttribute()
+    {
+        var cut = Render<IgbRadio>(parameters =>
+            parameters.Add(p => p.Invalid, true));
+
+        var element = cut.Find("igc-radio");
+        Assert.True(cut.Instance.Invalid);
+        Assert.NotNull(element.GetAttribute("invalid"));
     }
 
     [Fact]

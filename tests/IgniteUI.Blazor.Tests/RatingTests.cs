@@ -53,6 +53,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.Max, 10.0));
 
         var element = cut.Find("igc-rating");
+        Assert.Equal(10.0, cut.Instance.Max);
         Assert.Equal("10", element.GetAttribute("max"));
     }
 
@@ -63,6 +64,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.Value, 3.5));
 
         var element = cut.Find("igc-rating");
+        Assert.Equal(3.5, cut.Instance.Value);
         Assert.Equal("3.5", element.GetAttribute("value"));
     }
 
@@ -73,6 +75,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.Step, 0.5));
 
         var element = cut.Find("igc-rating");
+        Assert.Equal(0.5, cut.Instance.Step);
         Assert.Equal("0.5", element.GetAttribute("step"));
     }
 
@@ -83,6 +86,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.Label, "Product rating"));
 
         var element = cut.Find("igc-rating");
+        Assert.Equal("Product rating", cut.Instance.Label);
         Assert.Equal("Product rating", element.GetAttribute("label"));
     }
 
@@ -93,6 +97,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.ReadOnly, true));
 
         var element = cut.Find("igc-rating");
+        Assert.True(cut.Instance.ReadOnly);
         Assert.NotNull(element.GetAttribute("readonly"));
     }
 
@@ -103,6 +108,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-rating");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -113,6 +119,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.Single, true));
 
         var element = cut.Find("igc-rating");
+        Assert.True(cut.Instance.Single);
         Assert.NotNull(element.GetAttribute("single"));
     }
 
@@ -123,6 +130,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.AllowReset, true));
 
         var element = cut.Find("igc-rating");
+        Assert.True(cut.Instance.AllowReset);
         Assert.NotNull(element.GetAttribute("allow-reset"));
     }
 
@@ -133,6 +141,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
             parameters.Add(p => p.HoverPreview, true));
 
         var element = cut.Find("igc-rating");
+        Assert.True(cut.Instance.HoverPreview);
         Assert.NotNull(element.GetAttribute("hover-preview"));
     }
 

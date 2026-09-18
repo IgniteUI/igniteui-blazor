@@ -41,6 +41,7 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-toast");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -61,6 +62,7 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
             parameters.Add(p => p.KeepOpen, true));
 
         var element = cut.Find("igc-toast");
+        Assert.True(cut.Instance.KeepOpen);
         Assert.NotNull(element.GetAttribute("keep-open"));
     }
 

@@ -32,6 +32,15 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
                 Assert.Equal(150, args.Detail.StartPanelSize);
                 Assert.Equal(50, args.Detail.EndPanelSize);
                 Assert.Equal(30, args.Detail.Delta);
+            })
+        .Event(c => c.LayoutChanged,
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"startSize": "70%", "endSize": "30%", "startCollapsed": false, "endCollapsed": true}}}""",
+            assert: args =>
+            {
+                Assert.Equal("70%", args.Detail.StartSize);
+                Assert.Equal("30%", args.Detail.EndSize);
+                Assert.False(args.Detail.StartCollapsed);
+                Assert.True(args.Detail.EndCollapsed);
             });
 
     [Fact]
@@ -63,6 +72,8 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
         Assert.Null(splitter.EndMaxSize);
         Assert.Null(splitter.StartSize);
         Assert.Null(splitter.EndSize);
+        Assert.False(splitter.StartCollapsed);
+        Assert.False(splitter.EndCollapsed);
     }
 
     [Theory]
@@ -108,6 +119,24 @@ public class SplitterTests : ComponentWithContractTestBase<IgbSplitter>
         Assert.Equal("400px", element.GetAttribute("end-max-size"));
         Assert.Equal("30%", element.GetAttribute("start-size"));
         Assert.Equal("70%", element.GetAttribute("end-size"));
+    }
+
+    [Fact]
+    public void Splitter_StartCollapsed_RendersAttribute()
+    {
+        var cut = Render<IgbSplitter>(parameters =>
+            parameters.Add(p => p.StartCollapsed, true));
+
+        Assert.NotNull(cut.Find("igc-splitter").GetAttribute("start-collapsed"));
+    }
+
+    [Fact]
+    public void Splitter_EndCollapsed_RendersAttribute()
+    {
+        var cut = Render<IgbSplitter>(parameters =>
+            parameters.Add(p => p.EndCollapsed, true));
+
+        Assert.NotNull(cut.Find("igc-splitter").GetAttribute("end-collapsed"));
     }
 
     [Fact]

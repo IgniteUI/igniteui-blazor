@@ -19,12 +19,12 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebCircularGradientModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "WebCircularGradientModule");
         }

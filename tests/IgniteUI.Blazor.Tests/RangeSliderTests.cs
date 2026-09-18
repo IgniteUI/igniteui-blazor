@@ -40,6 +40,7 @@ public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
         var cut = Render<IgbRangeSlider>(p =>
             p.Add(x => x.Lower, 20));
 
+        Assert.Equal(20.0, cut.Instance.Lower);
         Assert.Equal("20", cut.Find("igc-range-slider").GetAttribute("lower"));
     }
 
@@ -49,6 +50,7 @@ public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
         var cut = Render<IgbRangeSlider>(p =>
             p.Add(x => x.Upper, 80));
 
+        Assert.Equal(80.0, cut.Instance.Upper);
         Assert.Equal("80", cut.Find("igc-range-slider").GetAttribute("upper"));
     }
 

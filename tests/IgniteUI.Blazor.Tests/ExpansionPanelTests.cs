@@ -52,6 +52,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-expansion-panel");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -62,6 +63,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-expansion-panel");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -72,6 +74,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
             parameters.Add(p => p.IndicatorPosition, ExpansionPanelIndicatorPosition.End));
 
         var element = cut.Find("igc-expansion-panel");
+        Assert.Equal(ExpansionPanelIndicatorPosition.End, cut.Instance.IndicatorPosition);
         Assert.Equal("end", element.GetAttribute("indicator-position"));
     }
 

@@ -112,6 +112,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-select");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -122,6 +123,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-select");
+        Assert.True(cut.Instance.Required);
         Assert.NotNull(element.GetAttribute("required"));
     }
 
@@ -132,6 +134,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-select");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -142,6 +145,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Placeholder, "Choose..."));
 
         var element = cut.Find("igc-select");
+        Assert.Equal("Choose...", cut.Instance.Placeholder);
         Assert.Equal("Choose...", element.GetAttribute("placeholder"));
     }
 
@@ -152,6 +156,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Label, "Country"));
 
         var element = cut.Find("igc-select");
+        Assert.Equal("Country", cut.Instance.Label);
         Assert.Equal("Country", element.GetAttribute("label"));
     }
 
@@ -162,6 +167,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Outlined, true));
 
         var element = cut.Find("igc-select");
+        Assert.True(cut.Instance.Outlined);
         Assert.NotNull(element.GetAttribute("outlined"));
     }
 
@@ -172,6 +178,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Autofocus, true));
 
         var element = cut.Find("igc-select");
+        Assert.True(cut.Instance.Autofocus);
         Assert.NotNull(element.GetAttribute("autofocus"));
     }
 
@@ -182,6 +189,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Invalid, true));
 
         var element = cut.Find("igc-select");
+        Assert.True(cut.Instance.Invalid);
         Assert.NotNull(element.GetAttribute("invalid"));
     }
 
@@ -192,6 +200,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
             parameters.Add(p => p.Distance, 8));
 
         var element = cut.Find("igc-select");
+        Assert.Equal(8.0, cut.Instance.Distance);
         Assert.Equal("8", element.GetAttribute("distance"));
     }
 

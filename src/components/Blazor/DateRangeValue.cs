@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The first date of the range.
         /// </summary>
-        [Parameter]
         public DateTime Start
         {
             get { return this._start; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The last date of the range.
         /// </summary>
-        [Parameter]
         public DateTime End
         {
             get { return this._end; }
@@ -47,15 +43,6 @@ namespace IgniteUI.Blazor.Controls
                 this._end = value;
 
             }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

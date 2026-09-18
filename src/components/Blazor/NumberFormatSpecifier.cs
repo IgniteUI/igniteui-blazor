@@ -20,16 +20,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private static bool _marshalByValue = true;
-
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// The culture used to format the number. When not set, the browser culture returned by
         /// <see cref="IgbFormatSpecifier.GetLocalCulture"/> is used.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -42,14 +40,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _compactDisplay;
+        private string? _compactDisplay;
 
         /// <summary>
         /// The form of the compact notation, either <c>short</c> or <c>long</c>. Applies only when
         /// <see cref="Notation"/> is <c>compact</c>.
         /// </summary>
         [Parameter]
-        public string CompactDisplay
+        public string? CompactDisplay
         {
             get { return this._compactDisplay; }
             set
@@ -62,13 +60,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _currency;
+        private string? _currency;
 
         /// <summary>
         /// The currency used in currency formatting, given as an ISO 4217 currency code.
         /// </summary>
         [Parameter]
-        public string Currency
+        public string? Currency
         {
             get { return this._currency; }
             set
@@ -81,14 +79,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _currencyDisplay;
+        private string? _currencyDisplay;
 
         /// <summary>
         /// How the currency is shown, one of <c>symbol</c>, <c>narrowSymbol</c>, <c>code</c> or
         /// <c>name</c>.
         /// </summary>
         [Parameter]
-        public string CurrencyDisplay
+        public string? CurrencyDisplay
         {
             get { return this._currencyDisplay; }
             set
@@ -101,13 +99,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _currencySign;
+        private string? _currencySign;
 
         /// <summary>
         /// How negative currency amounts are rendered, either <c>standard</c> or <c>accounting</c>.
         /// </summary>
         [Parameter]
-        public string CurrencySign
+        public string? CurrencySign
         {
             get { return this._currencySign; }
             set
@@ -120,14 +118,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _currencyCode;
+        private string? _currencyCode;
 
         /// <summary>
         /// The currency code applied when <see cref="Style"/> is <c>currency</c>. It takes precedence
         /// over <see cref="Currency"/>; when not set, the code is resolved from the culture.
         /// </summary>
         [Parameter]
-        public string CurrencyCode
+        public string? CurrencyCode
         {
             get { return this._currencyCode; }
             set
@@ -140,13 +138,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _localeMatcher;
+        private string? _localeMatcher;
 
         /// <summary>
         /// The locale matching algorithm, either <c>lookup</c> or <c>best fit</c>.
         /// </summary>
         [Parameter]
-        public string LocaleMatcher
+        public string? LocaleMatcher
         {
             get { return this._localeMatcher; }
             set
@@ -159,14 +157,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _notation;
+        private string? _notation;
 
         /// <summary>
         /// The formatting notation, one of <c>standard</c>, <c>scientific</c>, <c>engineering</c> or
         /// <c>compact</c>.
         /// </summary>
         [Parameter]
-        public string Notation
+        public string? Notation
         {
             get { return this._notation; }
             set
@@ -179,13 +177,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _numberingSystem;
+        private string? _numberingSystem;
 
         /// <summary>
         /// The numbering system used to render the digits.
         /// </summary>
         [Parameter]
-        public string NumberingSystem
+        public string? NumberingSystem
         {
             get { return this._numberingSystem; }
             set
@@ -198,14 +196,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _signDisplay;
+        private string? _signDisplay;
 
         /// <summary>
         /// When the sign is shown, one of <c>auto</c>, <c>never</c>, <c>always</c> or
         /// <c>exceptZero</c>.
         /// </summary>
         [Parameter]
-        public string SignDisplay
+        public string? SignDisplay
         {
             get { return this._signDisplay; }
             set
@@ -218,14 +216,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _style;
+        private string? _style;
 
         /// <summary>
         /// The formatting style, one of <c>decimal</c>, <c>currency</c>, <c>percent</c> or
         /// <c>unit</c>.
         /// </summary>
         [Parameter]
-        public string Style
+        public string? Style
         {
             get { return this._style; }
             set
@@ -238,13 +236,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _unit;
+        private string? _unit;
 
         /// <summary>
         /// The unit used when <see cref="Style"/> is <c>unit</c>.
         /// </summary>
         [Parameter]
-        public string Unit
+        public string? Unit
         {
             get { return this._unit; }
             set
@@ -257,13 +255,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _unitDisplay;
+        private string? _unitDisplay;
 
         /// <summary>
         /// How the unit is shown, one of <c>short</c>, <c>narrow</c> or <c>long</c>.
         /// </summary>
         [Parameter]
-        public string UnitDisplay
+        public string? UnitDisplay
         {
             get { return this._unitDisplay; }
             set
@@ -437,7 +435,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -483,68 +481,78 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("locale"))
-            { this.Locale = ReturnToString(args["locale"]); }
-            if (args.ContainsKey("compactDisplay"))
-            { this.CompactDisplay = ReturnToString(args["compactDisplay"]); }
-            if (args.ContainsKey("currency"))
-            { this.Currency = ReturnToString(args["currency"]); }
-            if (args.ContainsKey("currencyDisplay"))
-            { this.CurrencyDisplay = ReturnToString(args["currencyDisplay"]); }
-            if (args.ContainsKey("currencySign"))
-            { this.CurrencySign = ReturnToString(args["currencySign"]); }
-            if (args.ContainsKey("currencyCode"))
-            { this.CurrencyCode = ReturnToString(args["currencyCode"]); }
-            if (args.ContainsKey("localeMatcher"))
-            { this.LocaleMatcher = ReturnToString(args["localeMatcher"]); }
-            if (args.ContainsKey("notation"))
-            { this.Notation = ReturnToString(args["notation"]); }
-            if (args.ContainsKey("numberingSystem"))
-            { this.NumberingSystem = ReturnToString(args["numberingSystem"]); }
-            if (args.ContainsKey("signDisplay"))
-            { this.SignDisplay = ReturnToString(args["signDisplay"]); }
-            if (args.ContainsKey("style"))
-            { this.Style = ReturnToString(args["style"]); }
-            if (args.ContainsKey("unit"))
-            { this.Unit = ReturnToString(args["unit"]); }
-            if (args.ContainsKey("unitDisplay"))
-            { this.UnitDisplay = ReturnToString(args["unitDisplay"]); }
-            if (args.ContainsKey("useGrouping"))
-            { this.UseGrouping = ReturnToBoolean(args["useGrouping"]); }
-            if (args.ContainsKey("minimumIntegerDigits"))
-            { this.MinimumIntegerDigits = ReturnToInt(args["minimumIntegerDigits"]); }
-            if (args.ContainsKey("minimumFractionDigits"))
-            { this.MinimumFractionDigits = ReturnToInt(args["minimumFractionDigits"]); }
-            if (args.ContainsKey("maximumFractionDigits"))
-            { this.MaximumFractionDigits = ReturnToInt(args["maximumFractionDigits"]); }
-            if (args.ContainsKey("minimumSignificantDigits"))
-            { this.MinimumSignificantDigits = ReturnToInt(args["minimumSignificantDigits"]); }
-            if (args.ContainsKey("maximumSignificantDigits"))
-            { this.MaximumSignificantDigits = ReturnToInt(args["maximumSignificantDigits"]); }
+            if (args != null && args.TryGetValue("locale", out var localeObj))
+            { this.Locale = ReturnToString(localeObj); }
+            if (args != null && args.TryGetValue("compactDisplay", out var compactDisplayObj))
+            { this.CompactDisplay = ReturnToString(compactDisplayObj); }
+            if (args != null && args.TryGetValue("currency", out var currencyObj))
+            { this.Currency = ReturnToString(currencyObj); }
+            if (args != null && args.TryGetValue("currencyDisplay", out var currencyDisplayObj))
+            { this.CurrencyDisplay = ReturnToString(currencyDisplayObj); }
+            if (args != null && args.TryGetValue("currencySign", out var currencySignObj))
+            { this.CurrencySign = ReturnToString(currencySignObj); }
+            if (args != null && args.TryGetValue("currencyCode", out var currencyCodeObj))
+            { this.CurrencyCode = ReturnToString(currencyCodeObj); }
+            if (args != null && args.TryGetValue("localeMatcher", out var localeMatcherObj))
+            { this.LocaleMatcher = ReturnToString(localeMatcherObj); }
+            if (args != null && args.TryGetValue("notation", out var notationObj))
+            { this.Notation = ReturnToString(notationObj); }
+            if (args != null && args.TryGetValue("numberingSystem", out var numberingSystemObj))
+            { this.NumberingSystem = ReturnToString(numberingSystemObj); }
+            if (args != null && args.TryGetValue("signDisplay", out var signDisplayObj))
+            { this.SignDisplay = ReturnToString(signDisplayObj); }
+            if (args != null && args.TryGetValue("style", out var styleObj))
+            { this.Style = ReturnToString(styleObj); }
+            if (args != null && args.TryGetValue("unit", out var unitObj))
+            { this.Unit = ReturnToString(unitObj); }
+            if (args != null && args.TryGetValue("unitDisplay", out var unitDisplayObj))
+            { this.UnitDisplay = ReturnToString(unitDisplayObj); }
+            if (args != null && args.TryGetValue("useGrouping", out var useGroupingObj))
+            { this.UseGrouping = ReturnToBoolean(useGroupingObj); }
+            if (args != null && args.TryGetValue("minimumIntegerDigits", out var minimumIntegerDigitsObj))
+            { this.MinimumIntegerDigits = ReturnToInt(minimumIntegerDigitsObj); }
+            if (args != null && args.TryGetValue("minimumFractionDigits", out var minimumFractionDigitsObj))
+            { this.MinimumFractionDigits = ReturnToInt(minimumFractionDigitsObj); }
+            if (args != null && args.TryGetValue("maximumFractionDigits", out var maximumFractionDigitsObj))
+            { this.MaximumFractionDigits = ReturnToInt(maximumFractionDigitsObj); }
+            if (args != null && args.TryGetValue("minimumSignificantDigits", out var minimumSignificantDigitsObj))
+            { this.MinimumSignificantDigits = ReturnToInt(minimumSignificantDigitsObj); }
+            if (args != null && args.TryGetValue("maximumSignificantDigits", out var maximumSignificantDigitsObj))
+            { this.MaximumSignificantDigits = ReturnToInt(maximumSignificantDigitsObj); }
 
             this.SuppressParentNotify = false;
         }
 
     }
 
+    /// <summary>
+    /// Client resource module for <see cref="IgbNumberFormatSpecifier"/>.
+    /// </summary>
+    /// <remarks>
+    /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
+    /// </remarks>
     public class IgbNumberFormatSpecifierModule
     {
+        /// <summary>
+        /// Requests this module's client resources to be loaded into the runtime.
+        /// </summary>
+        /// <param name="runtime">The Ignite UI Blazor runtime to load the resources into.</param>
         public static void Register(IIgniteUIBlazor runtime)
         {
             ModuleLoader.Load(runtime, "NumberFormatSpecifierModule");
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
             ModuleLoader.MarkIsLoadRequested(runtime, "NumberFormatSpecifierModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "NumberFormatSpecifierModule");
         }
