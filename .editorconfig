@@ -332,11 +332,11 @@ dotnet_diagnostic.IDE0005.severity = warning
 
 #### Trimming ####
 
-# REPO: every trim-analysis diagnostic (IL2xxx) is an error; category bulk-config covers future
-# codes too. Inert in projects without the trim analyzer. Suppression policy: docs/TRIMMING.md.
-# For future AOT work: dotnet_analyzer_diagnostic.category-AOT.severity = error
+# REPO: every trim/AOT-analysis diagnostic (IL2xxx/IL3xxx) is an error; category bulk-config covers
+# future codes too. Inert in projects without the analyzers. Suppression policy: docs/TRIMMING.md.
 dotnet_analyzer_diagnostic.category-Trimming.severity = error
 dotnet_analyzer_diagnostic.category-SingleFile.severity = error
+dotnet_analyzer_diagnostic.category-AOT.severity = error
 
 #### Generated code — keep LAST so it overrides all sections above ####
 

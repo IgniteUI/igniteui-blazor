@@ -15,6 +15,7 @@
     <Project Path="stories/IgniteUI.Blazor.Stories.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/IgniteUI.Blazor.Lite.AotSmoke/IgniteUI.Blazor.Lite.AotSmoke.csproj" />
     <Project Path="tests/IgniteUI.Blazor.Lite.IntegrationTests/IgniteUI.Blazor.Lite.IntegrationTests.csproj" />
     <Project Path="tests/IgniteUI.Blazor.Lite.PublishSmoke/IgniteUI.Blazor.Lite.PublishSmoke.csproj" />
     <Project Path="tests/IgniteUI.Blazor.Lite.TestBed.Client/IgniteUI.Blazor.Lite.TestBed.Client.csproj" />
