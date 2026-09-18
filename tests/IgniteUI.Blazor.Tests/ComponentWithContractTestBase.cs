@@ -174,7 +174,9 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             ? $"no new current-state read was issued for \"{method.ReadsProperty}\""
             : $"\"{method.JsName}\" sent no new invocation";
 
-        var (call, result) = await InvokeExpectingNewCall(matching, () => method.Invoke(cut.Instance), noNewCall);
+        // On the dispatcher, as application code calling a component API is - see OnDispatcher.
+        var (call, result) = await InvokeExpectingNewCall(
+            matching, () => harness.OnDispatcher(() => method.Invoke(cut.Instance)), noNewCall);
         AssertObserved(harness, cut, scope, method, call, result);
 
         if (method.SyncInvoke is not null)
@@ -183,7 +185,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             // (the stub persists) to the same result.
             var (syncCall, syncResult) = await InvokeExpectingNewCall(
                 matching,
-                () => Task.FromResult(method.SyncInvoke(cut.Instance)),
+                () => Task.FromResult(harness.OnDispatcher(() => method.SyncInvoke(cut.Instance))),
                 "sync twin: " + noNewCall);
             AssertObserved(harness, cut, scope, method, syncCall, syncResult);
         }
@@ -266,9 +268,9 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// Runner for the contract's <c>.Prop</c> specs — expose it on the suite as
     /// <c>[Fact] public void Props_FollowContract() => VerifyPropContract();</c>.
     /// Renders a fresh instance per spec with the parameter (plus any arrangement) set,
-    /// then asserts a property update carrying the expected wire value was transmitted —
-    /// on whichever channel the current stack uses (the harness abstracts state
-    /// descriptions vs. ref transfers).
+    /// then asserts the component property reads back the assigned parameter value and
+    /// a property update carrying the expected wire value was transmitted — on whichever
+    /// channel the current stack uses (the harness abstracts state descriptions vs. ref transfers).
     /// </summary>
     /// <exception cref="ContractViolationException">
     /// Any spec failure, naming the violated member and carrying the declaring contract
@@ -287,6 +289,8 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     prop.Arrange?.Invoke(ps);
                     prop.Set(ps);
                 });
+
+                Assert.Equal(prop.ExpectedMemberValue, prop.Get(cut.Instance));
 
                 var actual = harness.FindPropertyUpdate(harness.ContainerIdOf(cut), prop.WireName);
 
@@ -365,7 +369,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 var registration = harness.FindPropertyUpdate(containerId, WireMemberName(bind.DrivingEvent))
                     ?? throw new XunitException(
                         $"binding transmitted no \"{bind.DrivingEvent}\" event registration — without it the " +
-                        "client never reports changes, so the binding can never fire");
+                        $"client never reports changes, so the binding can never fire ({harness.DescribeTraffic(containerId)})");
                 Assert.Equal(bind.DrivingEvent, registration.GetString());
 
                 harness.RaiseEvent(containerId, bind.DrivingEvent, bind.ArgsJson.Get(harness, cut));
@@ -485,7 +489,8 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 Assert.Equal(bound, evt.Get(cut.Instance));
                 var wireName = WireMemberName(evt.EventName);
                 var registration = harness.FindPropertyUpdate(containerId, wireName)
-                    ?? throw new XunitException("no event-handler registration transmission was observed");
+                    ?? throw new XunitException(
+                        "no event-handler registration transmission was observed — " + harness.DescribeTraffic(containerId));
                 Assert.Equal(evt.EventName, registration.GetString());
 
                 var argsJson = evt.ArgsJson.Get(harness, cut);
@@ -555,7 +560,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     {
                         throw new XunitException(
                             $"re-binding \"{evt.EventName}\" transmitted {rebound?.ToString() ?? "no registration"} — " +
-                            "the client would never resubscribe");
+                            $"the client would never resubscribe ({harness.DescribeTraffic(containerId)})");
                     }
                 }
             }

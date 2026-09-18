@@ -32,6 +32,7 @@ public class LinearProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.Value, 75.0));
 
         var element = cut.Find("igc-linear-progress");
+        Assert.Equal(75.0, cut.Instance.Value);
         Assert.Equal("75", element.GetAttribute("value"));
     }
 
@@ -42,6 +43,7 @@ public class LinearProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.Max, 200.0));
 
         var element = cut.Find("igc-linear-progress");
+        Assert.Equal(200.0, cut.Instance.Max);
         Assert.Equal("200", element.GetAttribute("max"));
     }
 
@@ -52,6 +54,7 @@ public class LinearProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.Striped, true));
 
         var element = cut.Find("igc-linear-progress");
+        Assert.True(cut.Instance.Striped);
         Assert.NotNull(element.GetAttribute("striped"));
     }
 
@@ -62,6 +65,7 @@ public class LinearProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.Indeterminate, true));
 
         var element = cut.Find("igc-linear-progress");
+        Assert.True(cut.Instance.Indeterminate);
         Assert.NotNull(element.GetAttribute("indeterminate"));
     }
 
@@ -72,6 +76,7 @@ public class LinearProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.HideLabel, true));
 
         var element = cut.Find("igc-linear-progress");
+        Assert.True(cut.Instance.HideLabel);
         Assert.NotNull(element.GetAttribute("hide-label"));
     }
 
@@ -82,6 +87,7 @@ public class LinearProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.Variant, StyleVariant.Success));
 
         var element = cut.Find("igc-linear-progress");
+        Assert.Equal(StyleVariant.Success, cut.Instance.Variant);
         Assert.Equal("success", element.GetAttribute("variant"));
     }
 
@@ -92,7 +98,19 @@ public class LinearProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.LabelFormat, "{0}%"));
 
         var element = cut.Find("igc-linear-progress");
+        Assert.Equal("{0}%", cut.Instance.LabelFormat);
         Assert.Equal("{0}%", element.GetAttribute("label-format"));
+    }
+
+    [Fact]
+    public void LinearProgress_LabelAlign_RendersAttribute()
+    {
+        var cut = Render<IgbLinearProgress>(parameters =>
+            parameters.Add(p => p.LabelAlign, LinearProgressLabelAlign.BottomEnd));
+
+        var element = cut.Find("igc-linear-progress");
+        Assert.Equal(LinearProgressLabelAlign.BottomEnd, cut.Instance.LabelAlign);
+        Assert.Equal("bottom-end", element.GetAttribute("label-align"));
     }
 
     [Fact]
@@ -102,6 +120,7 @@ public class LinearProgressTests : BlazorComponentTestBase
             parameters.Add(p => p.AnimationDuration, 500));
 
         var element = cut.Find("igc-linear-progress");
+        Assert.Equal(500, cut.Instance.AnimationDuration);
         Assert.Equal("500", element.GetAttribute("animation-duration"));
     }
 

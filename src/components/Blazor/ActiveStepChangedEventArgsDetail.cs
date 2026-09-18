@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebActiveStepChangedEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private double _index = 0;
 
         /// <summary>
@@ -42,7 +40,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -52,13 +50,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("index"))
-            { this.Index = ReturnToDouble(args["index"]); }
+            if (args != null && args.TryGetValue("index", out var indexObj))
+            { this.Index = ReturnToDouble(indexObj); }
 
             this.SuppressParentNotify = false;
         }

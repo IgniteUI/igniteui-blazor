@@ -192,7 +192,17 @@
             if (CustomTypes.PredefinedMethodArgs.ContainsKey(method.Name))
             {
                 // this is a special method that needs special values
-                parameters.AddRange(CustomTypes.PredefinedMethodArgs[method.Name]);
+                var predefined = CustomTypes.PredefinedMethodArgs[method.Name];
+                var predefinedFit = method.GetParameters();
+                if (predefined.Length != predefinedFit.Length ||
+                    !predefined.Zip(predefinedFit).All(x => x.First == null || x.Second.ParameterType.IsInstanceOfType(x.First)))
+                {
+                    // Another overload of a method with predefined args. Its arguments cannot be
+                    // modeled generically (and the predefined set targets the primary overload),
+                    // so leave it to the unit interop contract.
+                    continue;
+                }
+                parameters.AddRange(predefined);
             }
             else
             {
@@ -307,10 +317,15 @@
                 // if object cannot resolve, perhaps it needs to be defined as CustomType?
                 continue;
             }
-            if (CustomTypes.PredefinedPropertyValues.ContainsKey(p.Name))
+            if (CustomTypes.PredefinedComponentPropertyValues.TryGetValue(summary.Component + "." + p.Name, out var scopedValue))
+            {
+                // this is a special property with a predefined value for this component only
+                value = scopedValue;
+            }
+            else if (CustomTypes.PredefinedPropertyValues.TryGetValue(p.Name, out var predefinedValue))
             {
                 // this is a special property with predefined value
-                value = CustomTypes.PredefinedPropertyValues[p.Name];
+                value = predefinedValue;
             }
             // set prop and wait for state to change
             parameters.Add(p.Name, value!);

@@ -69,14 +69,18 @@ namespace IgniteUI.Blazor.Lite.AotSmoke
 
                 // Reflection-built schema over a user POCO: expression getters compile (interpreted under ILC).
                 var schema = JSDataSourceSchema.Create(typeof(SmokeItem));
+                var propertyGetters = schema.PropertyGetters ?? throw new InvalidOperationException("schema.PropertyGetters was null");
+                var typedPropertyGetters = schema.TypedPropertyGetters ?? throw new InvalidOperationException("schema.TypedPropertyGetters was null");
+                var fieldGetters = schema.FieldGetters ?? throw new InvalidOperationException("schema.FieldGetters was null");
+                var typedFieldGetters = schema.TypedFieldGetters ?? throw new InvalidOperationException("schema.TypedFieldGetters was null");
 
-                object Untyped(string name) => schema.PropertyGetters[IndexOf(schema.PropertyNames, name)](item);
-                Delegate Typed(string name) => schema.TypedPropertyGetters[IndexOf(schema.PropertyNames, name)];
+                object? Untyped(string name) => propertyGetters[IndexOf(schema.PropertyNames, name)](item);
+                Delegate Typed(string name) => typedPropertyGetters[IndexOf(schema.PropertyNames, name)];
 
-                Check((int)Untyped("Id") == 42, "untyped int getter");
-                Check((string)Untyped("Name") == "smoke", "untyped string getter");
+                Check((int)Untyped("Id")! == 42, "untyped int getter");
+                Check((string)Untyped("Name")! == "smoke", "untyped string getter");
                 Check(Untyped("Seen") == null, "untyped null nullable getter");
-                Check((SmokeKind)Untyped("Kind") == SmokeKind.Beta, "untyped enum getter boxes the enum");
+                Check((SmokeKind)Untyped("Kind")! == SmokeKind.Beta, "untyped enum getter boxes the enum");
 
                 // The closed-set typed getters — the exact casts UnmarshalledDataSource.CreateColumn performs.
                 Check(((Func<object, int>)Typed("Id"))(item) == 42, "typed int getter");
@@ -90,15 +94,18 @@ namespace IgniteUI.Blazor.Lite.AotSmoke
                 Check(((Func<object, DateTime?>)Typed("Seen"))(item) == null, "typed nullable DateTime getter");
 
                 var bigIndex = IndexOf(schema.FieldNames, "Big");
-                Check((long)schema.FieldGetters[bigIndex](item) == item.Big, "untyped field getter");
-                Check(((Func<object, long>)schema.TypedFieldGetters[bigIndex])(item) == item.Big, "typed field getter (Delegate[] storage)");
+                Check((long)fieldGetters[bigIndex](item) == item.Big, "untyped field getter");
+                Check(((Func<object, long>)typedFieldGetters[bigIndex])(item) == item.Big, "typed field getter (Delegate[] storage)");
 
                 // Dictionary-shaped data: indexer reflection + typed dictionary getters.
                 var dict = new Dictionary<string, object> { ["n"] = 5, ["s"] = "text", ["d"] = 1.25 };
                 var dictSchema = JSDataSourceSchema.CreateFromDictionary(dict);
-                Check(((Func<object, int>)dictSchema.TypedPropertyGetters[IndexOf(dictSchema.PropertyNames, "n")])(dict) == 5, "typed dictionary int getter");
-                Check(((Func<object, string>)dictSchema.TypedPropertyGetters[IndexOf(dictSchema.PropertyNames, "s")])(dict) == "text", "typed dictionary string getter");
-                Check((double)dictSchema.PropertyGetters[IndexOf(dictSchema.PropertyNames, "d")](dict) == 1.25, "untyped dictionary getter");
+                var dictPropertyGetters = dictSchema.PropertyGetters ?? throw new InvalidOperationException("dictSchema.PropertyGetters was null");
+                var dictTypedPropertyGetters = dictSchema.TypedPropertyGetters ?? throw new InvalidOperationException("dictSchema.TypedPropertyGetters was null");
+                Check(((Func<object, int>)dictTypedPropertyGetters[IndexOf(dictSchema.PropertyNames, "n")])(dict) == 5, "typed dictionary int getter");
+                Check(((Func<object, string>)dictTypedPropertyGetters[IndexOf(dictSchema.PropertyNames, "s")])(dict) == "text", "typed dictionary string getter");
+                var dictDouble = dictPropertyGetters[IndexOf(dictSchema.PropertyNames, "d")](dict);
+                Check(dictDouble is double value && value == 1.25, "untyped dictionary getter");
 
                 // Data-source entry points.
                 Check(UnmarshalledDataSource.ExtractSchema(new List<SmokeItem> { item }) != null, "ExtractSchema over a list");

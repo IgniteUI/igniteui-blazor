@@ -12,7 +12,11 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
         .Getter(c => c.GetCurrentDraftMessageAsync(), c => c.GetCurrentDraftMessage(), "DraftMessage",
             arrange: _ => { },
             returns: FromRender.Of((interop, cut) => InteropReturn.Object("", """{"text": "wip draft"}""")),
-            assert: (cut, result) => Assert.Equal("wip draft", result.Text))
+            assert: (cut, result) =>
+            {
+                Assert.NotNull(result);
+                Assert.Equal("wip draft", result.Text);
+            })
         .Event(c => c.TypingChange,
             argsJson: """{"detail": true}""",
             assert: args => Assert.True(args.Detail))
@@ -98,23 +102,19 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
     [Fact]
     public void Chat_Options_SetToNull_ReplacedWithDefaultAndAttachmentsDisabled()
     {
-        var chat = new IgbChat();
+        var chat = Render<IgbChat>(parameters => parameters.Add(x => x.Options, null));
 
-        chat.Options = null;
-
-        Assert.NotNull(chat.Options);
-        Assert.True(chat.Options.DisableInputAttachments);
+        Assert.NotNull(chat.Instance.Options);
+        Assert.True(chat.Instance.Options.DisableInputAttachments);
     }
 
     [Fact]
     public void Chat_Options_Assigned_AlwaysDisableInputAttachments()
     {
-        var chat = new IgbChat();
         var options = new IgbChatOptions { DisableInputAttachments = false };
+        var chat = Render<IgbChat>(parameters => parameters.Add(x => x.Options, options));
 
-        chat.Options = options;
-
-        Assert.NotNull(chat.Options);
-        Assert.True(chat.Options.DisableInputAttachments);
+        Assert.NotNull(chat.Instance.Options);
+        Assert.True(chat.Instance.Options.DisableInputAttachments);
     }
 }

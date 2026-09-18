@@ -98,6 +98,34 @@ public sealed class InteropReturn
 /// </summary>
 public abstract class InteropHarness
 {
+    private readonly Func<Dispatcher> _dispatcher;
+
+    /// <param name="dispatcher">
+    /// Resolves the renderer's dispatcher. Taken as a required argument rather than set afterwards
+    /// so a harness cannot exist without one, and resolved on use rather than up front because the
+    /// harness is built while the test's services are still being configured - asking for the
+    /// renderer that early settles the container.
+    /// </param>
+    protected InteropHarness(Func<Dispatcher> dispatcher) =>
+        _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
+    /// <summary>
+    /// Runs <paramref name="work"/> on the renderer's dispatcher, where Blazor delivers real
+    /// JS-to-.NET calls and application code invokes component APIs. Anything that makes a component
+    /// transmit belongs here: off the dispatcher the send races the renderer's own flush, and bUnit
+    /// records both on one unsynchronized list, so a raced message can be lost outright.
+    /// </summary>
+    public void OnDispatcher(Action work) =>
+        _dispatcher().InvokeAsync(work).GetAwaiter().GetResult();
+
+    /// <summary>
+    /// <inheritdoc cref="OnDispatcher(Action)" path="/summary"/>
+    /// Hands back a still-running task instead of awaiting it on the dispatcher, which would hold
+    /// the dispatcher until it completes and deadlock a deferred return needing it to get there.
+    /// An interop call transmits before it yields, so the send still happens here.
+    /// </summary>
+    public T OnDispatcher<T>(Func<T> work) => _dispatcher().InvokeAsync(work).GetAwaiter().GetResult();
+
     /// <summary>The service instance components resolve via DI.</summary>
     public abstract IIgniteUIBlazor Service { get; }
 
@@ -164,6 +192,24 @@ public abstract class InteropHarness
     /// For tests with phases - bind, then unbind, etc - ensures the next phase's observations are correct.
     /// </summary>
     public abstract void ClearObserved();
+
+    /// <summary>
+    /// The positions of the item insertions transmitted for the instance's bound data, in the order
+    /// the client received them. Transmission is asynchronous and nothing observable says it has
+    /// finished, so <paramref name="expected"/> - what the caller is waiting for - is what the wait
+    /// is pinned to. Everything transmitted comes back, so both a shortfall and an overshoot are
+    /// returned to be asserted on rather than hidden. How an insertion is spelled on the wire is
+    /// implementation-specific; that every one arrives exactly once, in order, is not.
+    /// </summary>
+    public abstract IReadOnlyList<int> DataItemInsertions(string containerId, int expected);
+
+    /// <summary>
+    /// A short account of what the instance has transmitted, to report alongside an expected
+    /// transmission that never showed up. Absence on its own is ambiguous: a message that was never
+    /// queued reads exactly like one that was queued and never flushed, and only the second is a
+    /// timing problem. "Sent nothing at all" separates them.
+    /// </summary>
+    public abstract string DescribeTraffic(string containerId);
 
     public IEnumerable<InteropMethodCall> CallsOf(string methodName, string? containerId = null) =>
         MethodCalls.Where(c => c.MethodName == methodName && (containerId is null || c.ContainerId == containerId));

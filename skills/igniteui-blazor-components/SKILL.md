@@ -1,7 +1,7 @@
 ---
 license: MIT
 name: igniteui-blazor-components
-description: "Ignite UI for Blazor non-grid components: project setup and module registration; form controls (input, textarea, combo, select, date/time pickers, calendar, checkbox, radio, switch, slider, rating, mask input); layout and navigation (tabs, stepper, accordion, expansion panel, nav drawer, navbar, tree, splitter, divider); data display (list, card, carousel, avatar, badge, chip, icon, progress, dropdown, tooltip, chat); overlays (dialog, snackbar, toast, banner); Dock Manager and Tile Manager; and visualizations (charts, gauges, maps, sparklines). Use for any Ignite UI Blazor component that is not a data grid. For data grids use igniteui-blazor-grids; for theming and CSS use igniteui-blazor-theming."
+description: "Ignite UI for Blazor non-grid components: project setup and module registration; form controls (input, textarea, combo, select, date/time pickers, calendar, checkbox, radio, switch, slider, rating, mask input, color picker); layout and navigation (tabs, stepper, accordion, expansion panel, nav drawer, navbar, tree, splitter, divider); data display (list, card, carousel, avatar, badge, chip, icon, progress, dropdown, tooltip, chat, QR code); overlays (dialog, snackbar, toast, banner); Dock Manager and Tile Manager; and visualizations (charts, gauges, maps, sparklines). Use for any Ignite UI Blazor component that is not a data grid. For data grids use igniteui-blazor-grids; for theming and CSS use igniteui-blazor-theming."
 user-invocable: true
 ---
 
@@ -20,12 +20,13 @@ user-invocable: true
 | Task | Read |
 |---|---|
 | NuGet install, `Program.cs`, `_Imports.razor`, theme CSS + script tags, project types (Server / WASM / Web App / MAUI), render modes | [`references/setup.md`](./references/setup.md) |
-| Input, Textarea, Combo, Select, Date Picker, Date Range Picker, Calendar, Date Time Input, Mask Input, Checkbox, Radio, Switch, Slider, Range Slider, Rating, value binding | [`references/form-controls.md`](./references/form-controls.md) |
+| Input, Textarea, Combo, Select, Date Picker, Date Range Picker, Calendar, Date Time Input, Mask Input, Checkbox, Radio, Switch, Slider, Range Slider, Rating, Color Picker, value binding | [`references/form-controls.md`](./references/form-controls.md) |
 | Tabs, Stepper, Accordion, Expansion Panel, Nav Drawer, Navbar, Tree, Splitter, Divider | [`references/layout.md`](./references/layout.md) |
-| List, Card, Carousel, Avatar, Badge, Chip, Icon, Icon Button, Button, Button Group, Circular/Linear Progress, Dropdown, Tooltip, Ripple, Chat, Highlight | [`references/data-display.md`](./references/data-display.md) |
+| List, Card, Carousel, Avatar, Badge, Chip, Icon, Icon Button, Button, Button Group, Circular/Linear Progress, Dropdown, Tooltip, QR Code, Ripple, Chat, Highlight | [`references/data-display.md`](./references/data-display.md) |
 | Dialog, Snackbar, Toast, Banner | [`references/feedback.md`](./references/feedback.md) |
 | Dock Manager, Tile Manager | [`references/layout-manager.md`](./references/layout-manager.md) |
 | Category / Data / Financial / Pie / Donut charts, Sparkline, Treemap, Geographic Map, Gauges, Dashboard Tile, chart features | [`references/charts.md`](./references/charts.md) |
+| `*Script` parameters: client-side templates, JS event handlers, `registerScript`, `api.js` | [`references/client-scripts.md`](./references/client-scripts.md) |
 
 ## Packages
 
@@ -40,14 +41,15 @@ All four use the `IgniteUI.Blazor.Controls` namespace and serve static assets fr
 
 ## Rules that apply to every component
 
-- **Registration.** `builder.Services.AddIgniteUIBlazor()` in `Program.cs` is required. Passing `typeof(Igb<Name>Module)` arguments eagerly pre-loads exactly those modules; with no arguments every module is available. In `IgniteUI.Blazor.Lite` each component also registers its own module on first render, so the explicit list is a bundle-size optimization rather than a correctness requirement.
-- **Runtime script.** `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` must appear before the Blazor framework script in the host page. Missing it means no web components register and the app renders blank.
+- **Registration.** `builder.Services.AddIgniteUIBlazor()` in `Program.cs` is required. Passing `typeof(Igb<Name>Module)` arguments eagerly pre-loads exactly those modules; with no arguments every module is available. Components request their own module on first render, so the explicit list is a bundle-size optimization — except for the full product's feature modules that add behavior to a component instead of defining one (`IgbDataChartInteractivityModule`, `IgbDataChartAnnotationModule`, the `*FullModule` bundles): nothing requests those on render, so they must be listed.
+- **Runtime script.** `IgniteUI.Blazor.Lite` loads its component bundle itself (JS initializer, every hosting model). The full `IgniteUI.Blazor`/`IgniteUI.Blazor.Trial` needs `<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>` before the Blazor framework script in **Blazor Web Apps** so the library's client resources initialize correctly. Never wrap it in `@Assets[...]` (fingerprinting it renders the app blank).
 - **Theme CSS.** Exactly one theme stylesheet, e.g. `_content/IgniteUI.Blazor/themes/light/bootstrap.css`.
 - **Slots.** Composition uses named slots (`slot="start"`, `slot="title"`, `slot="footer"`, …), not wrapper components. Use `IgbIcon` inside slots — a font-icon `<span>` is `display: inline` and drifts to the top of the slot's flex box.
 - **`@ref`.** Declare a field of the component type and use `@ref` for programmatic calls (`await dialog.ShowAsync()`). The reference is `null` until after first render. Some components need `await component.EnsureReady()` before their async methods in `OnAfterRenderAsync(firstRender)` — icon registration especially.
 - **Parameters are PascalCase** (`ChartType`, `DataSource`), never Angular-style `[chartType]`.
 - **`Name` is not an HTML name attribute.** On every Ignite UI component `Name` is the framework's element identity used for lookups. Do not use it to group radios or to name a form field.
 - **Forms.** There is no universal form-integration pattern; several components (`IgbCombo`, `IgbRadio`) do not participate in a plain HTML `<form>`. Bind explicitly with `@bind-Value` / `@bind-Checked` and check the component's doc before assuming form behavior.
+- **`*Script` parameters** take the *name* of a JavaScript function registered through `_content/IgniteUI.Blazor/api.js` (Lite) or the `igRegisterScript` window global (full product), not code. Use them for client-side templates (rendered per item in the browser, no server round trip). For events prefer the C# event; the script variant is for synchronous cancellation or purely client-side reactions. See [`client-scripts.md`](./references/client-scripts.md).
 - **Dynamic `class` values** must be a single C# expression (`class="@ChipClass(item)"`). Mixing literal text with `@(...)` in one attribute raises **RZ9986**.
 
 ## MCP server (optional)

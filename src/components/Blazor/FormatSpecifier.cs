@@ -18,8 +18,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private static bool _marshalByValue = true;
-
         /// <summary>
         /// Gets the culture of the browser, expanded to a culture with a region when the browser
         /// reports a bare language code.
@@ -42,14 +40,14 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
@@ -59,19 +57,29 @@ namespace IgniteUI.Blazor.Controls
 
     }
 
+    /// <summary>
+    /// Client resource module for <see cref="IgbFormatSpecifier"/>.
+    /// </summary>
+    /// <remarks>
+    /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
+    /// </remarks>
     public class IgbFormatSpecifierModule
     {
+        /// <summary>
+        /// Requests this module's client resources to be loaded into the runtime.
+        /// </summary>
+        /// <param name="runtime">The Ignite UI Blazor runtime to load the resources into.</param>
         public static void Register(IIgniteUIBlazor runtime)
         {
             ModuleLoader.Load(runtime, "FormatSpecifierModule");
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
             ModuleLoader.MarkIsLoadRequested(runtime, "FormatSpecifierModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "FormatSpecifierModule");
         }

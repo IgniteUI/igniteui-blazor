@@ -12,11 +12,11 @@ namespace IgniteUI.Blazor.Controls
     internal class RuntimeHelper
     {
 #if NET8_0
-        private Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[], string> _callSendUnmarshalledColumnMessage;
-        private Func<IJSInProcessRuntime, string, string, string, string> _callSendUnmarshalledColumnDataIntentMessage;
+        private Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[]?, string>? _callSendUnmarshalledColumnMessage;
+        private Func<IJSInProcessRuntime, string, string, string, string>? _callSendUnmarshalledColumnDataIntentMessage;
 #endif
-        private IJSInProcessRuntime _inprocRuntime;
-        private IIgniteUIBlazor _igBlazor;
+        private IJSInProcessRuntime? _inprocRuntime;
+        private IIgniteUIBlazor? _igBlazor;
 
 #if NET8_0
         [DynamicDependency(
@@ -28,7 +28,7 @@ namespace IgniteUI.Blazor.Controls
         [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The DynamicDependency above marks the runtime's RequiresUnreferencedCode members (Invoke, GetValue, SetValue, ...); the probe filters by name and never invokes them.")]
         [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "net8 Blazor WASM-only probe (IJSInProcessRuntime + InvokeUnmarshalled); no NativeAOT target exists for net8 wasm, and under Mono AOT the interpreter executes this.")]
 #endif
-        public RuntimeHelper(IJSRuntime runtime, IIgniteUIBlazor igBlazor)
+        public RuntimeHelper(IJSRuntime? runtime, IIgniteUIBlazor igBlazor)
         {
             _igBlazor = igBlazor;
             var inprocRuntime = runtime as IJSInProcessRuntime;
@@ -38,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
                 IsInproc = true;
             }
 #if NET8_0
-            if (IsInproc)
+            if (IsInproc && inprocRuntime != null)
             {
                 var unmarshalled = inprocRuntime.GetType().GetMethods().Where(m => m.Name == "InvokeUnmarshalled").ToList();
 
@@ -66,7 +66,7 @@ namespace IgniteUI.Blazor.Controls
                         indexParam, columnsParam);
 
                         _callSendUnmarshalledColumnMessage =
-                        Expression.Lambda<Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[], string>>(
+                        Expression.Lambda<Func<IJSInProcessRuntime, string, string, int, UnmarshalledColumn[]?, string>>(
                             call, jsRuntimeParam, methodNameParam, refNameParam, indexParam, columnsParam).Compile();
                     }
 
@@ -98,34 +98,40 @@ namespace IgniteUI.Blazor.Controls
 #endif
         }
 
-        public unsafe string SendUnmarshalledColumnMessage(string methodName, string refName, int index, UnmarshalledColumn[] columns)
+        public unsafe string? SendUnmarshalledColumnMessage(string methodName, string refName, int index, UnmarshalledColumn[]? columns)
         {
 #if NET8_0
-            if (_callSendUnmarshalledColumnMessage != null)
+            if (_callSendUnmarshalledColumnMessage != null && _inprocRuntime != null)
             {
                 return _callSendUnmarshalledColumnMessage(_inprocRuntime, methodName, refName, index, columns);
             }
 #endif
             var intptr = Unsafe.AsPointer(ref columns);
-            _inprocRuntime.InvokeVoid(methodName, new object[] { refName, index, (int)intptr });
+            if (_inprocRuntime != null)
+            {
+                _inprocRuntime.InvokeVoid(methodName, new object[] { refName, index, (int)intptr });
+            }
 
             return null;
         }
 
-        public string SendUnmarshalledColumnDataIntentsMessage(string methodName, string refName, string dataIntents)
+        public string? SendUnmarshalledColumnDataIntentsMessage(string methodName, string refName, string dataIntents)
         {
 #if NET8_0
-            if (_callSendUnmarshalledColumnDataIntentMessage != null)
+            if (_callSendUnmarshalledColumnDataIntentMessage != null && _inprocRuntime != null)
             {
                 return _callSendUnmarshalledColumnDataIntentMessage(_inprocRuntime, methodName, refName, dataIntents);
             }
 #endif
-            _inprocRuntime.InvokeVoid(methodName, new object[] { refName, dataIntents });
+            if (_inprocRuntime != null)
+            {
+                _inprocRuntime.InvokeVoid(methodName, new object[] { refName, dataIntents });
+            }
 
             return null;
         }
 
         public bool IsInproc { get; private set; }
-        public bool IsForcedJsonDataMarshalling { get { return _igBlazor.Settings.ForceJsonDataMarshalling; } }
+        public bool IsForcedJsonDataMarshalling { get { return _igBlazor?.Settings?.ForceJsonDataMarshalling ?? false; } }
     }
 }

@@ -20,8 +20,14 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     // JsonDataSourceItem.ToJson's "___id" marker), assigned once item is added to DS.
     internal static string DataItemId(InteropHarness interop, IRenderedComponent<IComponent> cut, int index)
     {
-        var items = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), "data")!.Value.EnumerateArray().ToArray();
-        return items[index].GetProperty("___id").GetString()!;
+        var dataUpdate = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), "data");
+        if (dataUpdate is not { } data)
+        {
+            return string.Empty;
+        }
+
+        var items = data.EnumerateArray().ToArray();
+        return items[index].GetProperty("___id").GetString() ?? string.Empty;
     }
 
     internal static string UuidRef(InteropHarness interop, IRenderedComponent<IComponent> cut, int index) =>
@@ -164,123 +170,36 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     }
 
     [Fact]
-    public void Combo_Label_Property()
+    public void Combo_Change_SelectionEvent_HasSelectionChangeType()
     {
-        var combo = new IgbCombo<object>();
-        combo.Label = "Select item";
-        Assert.Equal("Select item", combo.Label);
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs? received = null;
+        var cut = Render<IgbCombo<ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.Change, (IgbComboChangeEventArgs args) => received = args));
+
+        var argsJson = ChangeDetail(UuidRef(Interop, cut, 0), UuidRef(Interop, cut, 0));
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", argsJson);
+
+        Assert.NotNull(received);
+        Assert.Equal(ComboChangeType.Selection, received.Detail.ChangeType);
     }
 
     [Fact]
-    public void Combo_Placeholder_Property()
+    public void Combo_Change_DeselectionEvent_HasDeselectionChangeType()
     {
-        var combo = new IgbCombo<object>();
-        combo.Placeholder = "Choose...";
-        Assert.Equal("Choose...", combo.Placeholder);
-    }
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs? received = null;
+        var cut = Render<IgbCombo<ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.Value, new[] { _valueItem1 })
+            .Add(c => c.Change, (IgbComboChangeEventArgs args) => received = args));
 
-    [Fact]
-    public void Combo_PlaceholderSearch_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.PlaceholderSearch = "Search...";
-        Assert.Equal("Search...", combo.PlaceholderSearch);
-    }
+        var argsJson = ChangeDetail("", UuidRef(Interop, cut, 0), "deselection");
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", argsJson);
 
-    [Fact]
-    public void Combo_Open_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.Open = true;
-        Assert.True(combo.Open);
-    }
-
-    [Fact]
-    public void Combo_Disabled_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.Disabled = true;
-        Assert.True(combo.Disabled);
-    }
-
-    [Fact]
-    public void Combo_Required_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.Required = true;
-        Assert.True(combo.Required);
-    }
-
-    [Fact]
-    public void Combo_Outlined_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.Outlined = true;
-        Assert.True(combo.Outlined);
-    }
-
-    [Fact]
-    public void Combo_SingleSelect_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.SingleSelect = true;
-        Assert.True(combo.SingleSelect);
-    }
-
-    [Fact]
-    public void Combo_Autofocus_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.Autofocus = true;
-        Assert.True(combo.Autofocus);
-    }
-
-    [Fact]
-    public void Combo_ValueKey_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.ValueKey = "id";
-        Assert.Equal("id", combo.ValueKey);
-    }
-
-    [Fact]
-    public void Combo_DisplayKey_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.DisplayKey = "name";
-        Assert.Equal("name", combo.DisplayKey);
-    }
-
-    [Fact]
-    public void Combo_GroupKey_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.GroupKey = "category";
-        Assert.Equal("category", combo.GroupKey);
-    }
-
-    [Fact]
-    public void Combo_DisableFiltering_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.DisableFiltering = true;
-        Assert.True(combo.DisableFiltering);
-    }
-
-    [Fact]
-    public void Combo_Invalid_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.Invalid = true;
-        Assert.True(combo.Invalid);
-    }
-
-    [Fact]
-    public void Combo_CaseSensitiveIcon_Property()
-    {
-        var combo = new IgbCombo<object>();
-        combo.CaseSensitiveIcon = true;
-        Assert.True(combo.CaseSensitiveIcon);
+        Assert.NotNull(received);
+        Assert.Equal(ComboChangeType.Deselection, received.Detail.ChangeType);
     }
 }
 

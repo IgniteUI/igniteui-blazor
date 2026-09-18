@@ -62,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<DateTime> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
 
@@ -72,10 +72,10 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public DateTime GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToDate(iv);
         }
-        private DateTime[] _values;
+        private DateTime[] _values = Array.Empty<DateTime>();
 
         /// <summary>
         /// The current values of the calendar.
@@ -104,7 +104,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<DateTime[]> GetCurrentValuesAsync()
         {
-            var iv = await InvokeMethod("p:Values", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Values", new object?[] { }, new string[] { });
             return ReturnToDateArray(iv);
         }
 
@@ -115,7 +115,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public DateTime[] GetCurrentValues()
         {
-            var iv = InvokeMethodSync("p:Values", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Values", new object?[] { }, new string[] { });
             return ReturnToDateArray(iv);
         }
         private DateTime _activeDate = DateTime.MinValue;
@@ -254,7 +254,11 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbCalendarFormatOptions _formatOptions;
+        private IgbCalendarFormatOptions _formatOptions = new IgbCalendarFormatOptions()
+        {
+            Month = "long",
+            Weekday = "narrow",
+        };
 
         /// <summary>
         /// The options used to format the months and the weekdays in the calendar views.
@@ -270,11 +274,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._formatOptions);
                 }
+                this._formatOptions = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._formatOptions = value;
             }
 
         }
@@ -341,18 +345,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -360,7 +365,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -431,19 +436,13 @@ namespace IgniteUI.Blazor.Controls
                             if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                             if (!EventCallback<DateTime[]>.Empty.Equals(ValuesChanged))
                             {
                                 var task = ValuesChanged.InvokeAsync(newValueValues);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });

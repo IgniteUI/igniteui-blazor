@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebSplitterResizeEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private double _startPanelSize = 0;
 
         /// <summary>
@@ -72,15 +70,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -95,7 +84,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -109,17 +98,17 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("startPanelSize"))
-            { this.StartPanelSize = ReturnToDouble(args["startPanelSize"]); }
-            if (args.ContainsKey("endPanelSize"))
-            { this.EndPanelSize = ReturnToDouble(args["endPanelSize"]); }
-            if (args.ContainsKey("delta"))
-            { this.Delta = ReturnToDouble(args["delta"]); }
+            if (args != null && args.TryGetValue("startPanelSize", out var startPanelSizeObj))
+            { this.StartPanelSize = ReturnToDouble(startPanelSizeObj); }
+            if (args != null && args.TryGetValue("endPanelSize", out var endPanelSizeObj))
+            { this.EndPanelSize = ReturnToDouble(endPanelSizeObj); }
+            if (args != null && args.TryGetValue("delta", out var deltaObj))
+            { this.Delta = ReturnToDouble(deltaObj); }
 
             this.SuppressParentNotify = false;
         }

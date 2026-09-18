@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -9,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbFocusOptions : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "FocusOptions"; } }
+        public override string Type { get { return "WebFocusOptions"; } }
 
         private bool _preventScroll = false;
 
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// Whether the browser should keep the current scroll position instead of scrolling the newly
         /// focused component into view. Defaults to <see langword="false"/>.
         /// </summary>
-        [Parameter]
         public bool PreventScroll
         {
             get { return this._preventScroll; }

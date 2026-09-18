@@ -60,6 +60,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.Value, 50.0));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(50.0, cut.Instance.Value);
         Assert.Equal("50", element.GetAttribute("value"));
     }
 
@@ -70,6 +71,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.Min, 10.0));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(10.0, cut.Instance.Min);
         Assert.Equal("10", element.GetAttribute("min"));
     }
 
@@ -80,6 +82,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.Max, 100.0));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(100.0, cut.Instance.Max);
         Assert.Equal("100", element.GetAttribute("max"));
     }
 
@@ -90,6 +93,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.Step, 5.0));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(5.0, cut.Instance.Step);
         Assert.Equal("5", element.GetAttribute("step"));
     }
 
@@ -100,6 +104,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-slider");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -110,6 +115,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.DiscreteTrack, true));
 
         var element = cut.Find("igc-slider");
+        Assert.True(cut.Instance.DiscreteTrack);
         Assert.NotNull(element.GetAttribute("discrete-track"));
     }
 
@@ -120,6 +126,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.HideTooltip, true));
 
         var element = cut.Find("igc-slider");
+        Assert.True(cut.Instance.HideTooltip);
         Assert.NotNull(element.GetAttribute("hide-tooltip"));
     }
 
@@ -130,6 +137,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.LowerBound, 20.0));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(20.0, cut.Instance.LowerBound);
         Assert.Equal("20", element.GetAttribute("lower-bound"));
     }
 
@@ -140,6 +148,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.UpperBound, 80.0));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(80.0, cut.Instance.UpperBound);
         Assert.Equal("80", element.GetAttribute("upper-bound"));
     }
 
@@ -150,6 +159,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.PrimaryTicks, 5));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(5.0, cut.Instance.PrimaryTicks);
         Assert.Equal("5", element.GetAttribute("primary-ticks"));
     }
 
@@ -160,6 +170,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.SecondaryTicks, 3));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(3.0, cut.Instance.SecondaryTicks);
         Assert.Equal("3", element.GetAttribute("secondary-ticks"));
     }
 
@@ -170,6 +181,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.HidePrimaryLabels, true));
 
         var element = cut.Find("igc-slider");
+        Assert.True(cut.Instance.HidePrimaryLabels);
         Assert.NotNull(element.GetAttribute("hide-primary-labels"));
     }
 
@@ -180,6 +192,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.HideSecondaryLabels, true));
 
         var element = cut.Find("igc-slider");
+        Assert.True(cut.Instance.HideSecondaryLabels);
         Assert.NotNull(element.GetAttribute("hide-secondary-labels"));
     }
 
@@ -190,6 +203,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.TickOrientation, SliderTickOrientation.Mirror));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal(SliderTickOrientation.Mirror, cut.Instance.TickOrientation);
         Assert.Equal("mirror", element.GetAttribute("tick-orientation"));
     }
 
@@ -200,6 +214,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.Locale, "en-US"));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal("en-US", cut.Instance.Locale);
         Assert.Equal("en-US", element.GetAttribute("locale"));
     }
 
@@ -210,6 +225,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.ValueFormat, "{0}%"));
 
         var element = cut.Find("igc-slider");
+        Assert.Equal("{0}%", cut.Instance.ValueFormat);
         Assert.Equal("{0}%", element.GetAttribute("value-format"));
     }
 
@@ -220,6 +236,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             parameters.Add(p => p.Invalid, true));
 
         var element = cut.Find("igc-slider");
+        Assert.True(cut.Instance.Invalid);
         Assert.NotNull(element.GetAttribute("invalid"));
     }
 }

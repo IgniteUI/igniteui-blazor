@@ -30,6 +30,7 @@ public class ButtonGroupTests : ComponentWithContractTestBase<IgbButtonGroup>
         var cut = Render<IgbButtonGroup>(p =>
             p.Add(x => x.Disabled, true));
 
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(cut.Find("igc-button-group").GetAttribute("disabled"));
     }
 
@@ -48,6 +49,7 @@ public class ButtonGroupTests : ComponentWithContractTestBase<IgbButtonGroup>
         var cut = Render<IgbButtonGroup>(p =>
             p.Add(x => x.Selection, ButtonGroupSelection.Multiple));
 
+        Assert.Equal(ButtonGroupSelection.Multiple, cut.Instance.Selection);
         Assert.Equal("multiple", cut.Find("igc-button-group").GetAttribute("selection"));
     }
 
@@ -66,6 +68,7 @@ public class ButtonGroupTests : ComponentWithContractTestBase<IgbButtonGroup>
         var cut = Render<IgbButtonGroup>(p =>
             p.Add(x => x.Alignment, ContentOrientation.Vertical));
 
+        Assert.Equal(ContentOrientation.Vertical, cut.Instance.Alignment);
         Assert.Equal("vertical", cut.Find("igc-button-group").GetAttribute("alignment"));
     }
 

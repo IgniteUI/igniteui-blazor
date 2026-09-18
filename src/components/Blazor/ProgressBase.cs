@@ -163,7 +163,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _labelFormat;
+        private string? _labelFormat;
 
         /// <summary>
         /// Format string for the default label of the control. Placeholders:
@@ -173,7 +173,7 @@ namespace IgniteUI.Blazor.Controls
         /// </list>
         /// </summary>
         [Parameter]
-        public string LabelFormat
+        public string? LabelFormat
         {
             get { return this._labelFormat; }
             set
@@ -185,15 +185,6 @@ namespace IgniteUI.Blazor.Controls
                 this._labelFormat = value;
 
             }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

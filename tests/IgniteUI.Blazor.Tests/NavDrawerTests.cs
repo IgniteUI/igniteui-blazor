@@ -40,6 +40,7 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-nav-drawer");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -49,6 +50,7 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
         var cut = Render<IgbNavDrawer>(parameters =>
             parameters.Add(p => p.Position, NavDrawerPosition.End));
 
+        Assert.Equal(NavDrawerPosition.End, cut.Instance.Position);
         Assert.Equal("end", cut.Find("igc-nav-drawer").GetAttribute("position"));
     }
 
@@ -101,6 +103,7 @@ public class NavDrawerItemTests : BlazorComponentTestBase
         var cut = Render<IgbNavDrawerItem>(parameters =>
             parameters.Add(p => p.Disabled, true));
 
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(cut.Find("igc-nav-drawer-item").GetAttribute("disabled"));
     }
 
@@ -110,6 +113,7 @@ public class NavDrawerItemTests : BlazorComponentTestBase
         var cut = Render<IgbNavDrawerItem>(parameters =>
             parameters.Add(p => p.Active, true));
 
+        Assert.True(cut.Instance.Active);
         Assert.NotNull(cut.Find("igc-nav-drawer-item").GetAttribute("active"));
     }
 

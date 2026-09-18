@@ -7,6 +7,98 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.2.0 - 2026-09-17
+
+This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.3.2 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) with highlights noted below:
+
+### Added
+
+#### New Components
+
+- `IgbColorPicker` - A color input component. Users pick a color with the HSV saturation/value canvas, the hue slider and the optional alpha slider, or type a color string (hex, rgb(a), hsl(a) or a named CSS color). Supports two-way binding via `@bind-Value`, pre-defined `Swatches`, a trigger-button or editable-input anchor (`Mode`), and the native EyeDropper API where the browser provides one.
+- `IgbQrCode` - Renders a scannable QR code as an SVG from the `Value` property. Supports an explicit `Version` (1-40) and `ErrorLevel`, `Size` and `Margin` (quiet zone), `DotStyle`/`SquareStyle` shapes, an optional centered logo (`LogoSrc`, `LogoSize`, `LogoMargin`), and theming via CSS custom properties. [#2308](https://github.com/IgniteUI/igniteui-webcomponents/pull/2308)
+
+#### QR Code
+- New `ToImage` / `ToImageAsync` methods. They export the code as an image file in `Svg`, `Png`, `Jpeg` or `Webp` format via `IgbQrCodeExportOptions`. The `Scale` option multiplies the component `Size` - a 256px code with a scale of 2 exports as a 512x512 image - and the file is delivered to the user through the browser download dialog. [#2367](https://github.com/IgniteUI/igniteui-webcomponents/pull/2367)
+
+#### Chip
+- New `Outlined` property. When set, the chip shows an outlined style. [#2307](https://github.com/IgniteUI/igniteui-webcomponents/pull/2307)
+
+#### Splitter
+- New `StartCollapsed` and `EndCollapsed` properties. Use them to read and to set the collapsed state of each pane.
+- New `LayoutChanged` event. Emitted after a user-driven resize or expansion change, with a full snapshot of the current layout (`StartSize`, `EndSize`, `StartCollapsed`, `EndCollapsed`).
+
+#### Tabs
+- New `GetSelectedTab` / `GetSelectedTabAsync` methods. They return the selected `IgbTab`, or `null` when no tab is selected.
+- `Select()` now also matches the `Label` of a tab, in addition to its IDREF.
+
+#### Icon
+- `RegisterIcon` and `RegisterIconFromText` now accept an `IgbRegisterIconOptions` argument, in addition to the plain collection string. `StripMeta = true` removes the `<title>` and `<desc>` elements from the stored SVG, preventing the native browser tooltip on hover; the title text stays available as the `aria-label` of the host icon element. [#1822](https://github.com/IgniteUI/igniteui-webcomponents/issues/1822)
+
+#### Mask Input, Date Time Input, Date Range Picker
+- The masked editors now support the standard undo and redo shortcuts: `Ctrl + Z` / `Cmd + Z` to undo, and `Ctrl + Y`, `Ctrl + Shift + Z` / `Cmd + Shift + Z` to redo.
+
+#### Packaging and release
+- Public ES module at `_content/IgniteUI.Blazor/api.js` (typings at `api.d.ts`): `registerScript(name, fn, shouldCall = false)` / `removeScript(name)` for `*Script` component parameters, and `html` — the lit-html template tag for client templates, the same instance the components render with. Importing these functions is now the preferred way to register `*Script` parameters:
+
+  ```js
+  import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';
+
+  registerScript('CityItem', ({ item }) => html`<b>${item.Name}</b>`);
+  ```
+- Every release now publishes an SPDX 2.2 SBOM, an SPDX 3.0 SBOM, and a CycloneDX SBOM covering the NuGet and npm dependencies the package actually ships, plus three Sigstore attestations — build provenance, the SPDX SBOM, and the CycloneDX SBOM — each bound to the SHA-256 digest of the signed package. All of it is attached to the GitHub release next to the package and its checksum. Verify with `gh attestation verify <package>.nupkg -R IgniteUI/igniteui-blazor`.
+- Every release additionally scans the NuGet and npm dependencies it actually ships and attaches the report to the GitHub release.
+- XML documentation was expanded across public component APIs and existing enums for improved discoverability in IDEs and generated API documentation.
+
+### Changed
+
+- **Chip:** the `Remove` event now carries `IgbVoidEventArgs` instead of `IgbComponentBoolValueChangedEventArgs`, matching the corrected `igcRemove: CustomEvent<void>` typing of the web component - the event never carried a boolean detail. Update `Remove` handler signatures accordingly.
+- **Date Time Input, Date Picker, Date Range Picker:** the components no longer change `Value` while the user types. `Value` now holds only a committed value and changes together with the `Change` event, which the components still emit on blur. The value being typed is available in the detail of the `Input` event. Thus the components can be used in templates that bind `Value` externally, such as grid edit templates. [#1346](https://github.com/IgniteUI/igniteui-webcomponents/issues/1346)
+- **Calendar, Date Picker, Date Range Picker:** when `WeekStart` is not set, the week starts on the first day of the week of the `Locale`, as reported by the browser's `Intl.Locale` week info - for example `bg` starts on Monday while `en` stays on Sunday. An explicit `WeekStart` has priority, and browsers without week-info support keep the Sunday default. The header date and the month/year navigation also follow the field order of the locale. [#1020](https://github.com/IgniteUI/igniteui-webcomponents/issues/1020) [#1712](https://github.com/IgniteUI/igniteui-webcomponents/issues/1712)
+- **Dropdown:** the component no longer emits `Change` when the item that is already selected is selected again. The list still closes, as before.
+- **Button Group:** a disabled group no longer sets `Disabled` on its buttons - the buttons inherit the state. A button that is disabled on its own stays disabled when the group is enabled again.
+- **Tooltip:** a tooltip that closes from a hide trigger now waits exactly `HideDelay` (an undocumented extra 180 ms stage was removed); in sticky mode the default close button hides the tooltip immediately; and `focusin` / `focusout` are now part of the default show/hide triggers, so a tooltip opens when its anchor gets keyboard focus.
+- **Tabs:** the scroll buttons now scroll to the nearest tab that is not fully visible, instead of a fixed step of 180px.
+- **Binary compatibility:** shipped assemblies are now strong-name signed. This changes the assembly identity, so `PublicKeyToken` moves from null to `7dd5c3163f2cd0cb`. Normal NuGet consumers that rebuild should require no source changes, but precompiled dependents, binding redirects, and explicit fully-qualified assembly references may need updating.
+- The client build now emits native ES modules; the package's JS initializer loads the whole script graph during Blazor startup, so no `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag is needed on any hosting model (Blazor Server, standalone WASM, Blazor Web App, BlazorWebView). Existing tags keep working — including wrapped in `@Assets[...]`. When removing the tag, use the preferred `api.js` module above to register `*Script` parameters; the deprecated globals are not available until the library loads unless the tag is present to queue earlier calls.
+- A component whose `*Script` parameter names a function that is not registered now logs a console warning naming it (previously the parameter was silently dropped).
+- Hosting the library's assets elsewhere (CDN/self-host) is done with a standard [import map](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/static-files?view=aspnetcore-10.0#importmap-component) prefix entry — e.g. `{"imports": {"./_content/IgniteUI.Blazor/": "https://cdn.example.com/ig/"}}` relocates the entire module graph, initializer included.
+- Authenticode signatures are now validated against a repository-pinned certificate fingerprint allowlist (`eng/IG.authenticode-certificates.sha256`) rather than only checking that a signature is valid.
+- Nullable reference type analysis is enabled for the public API, making nullability contracts explicit for consumers.
+- `IgniteUI.Blazor.Lite` is now trim-compatible, including the required serializer and reflection annotations.
+
+### Deprecated
+
+- The `window.igRegisterScript`, `window.igRemoveScript`, and `window.igTemplating.html` globals — use the `api.js` module exports instead. The globals keep working with the same signatures and log a one-time console notice; they exist once `api.js` has loaded, so a classic script calling them while the page parses still needs the `app.bundle.js` tag, which queues those calls. Note the defaults differ: `igRegisterScript` still defaults `shouldCall` to `true` (call the function and use its result), `registerScript` defaults to `false` (the function is the script) so passing one explicitly in most cases is no longer needed.
+
+### Fixed
+
+- The `FocusComponent` / `FocusComponentAsync` and `BlurComponent` / `BlurComponentAsync` methods now work on all components that expose them - Button, Icon Button, Toggle Button, Checkbox, Switch, Radio, Input, Mask Input, Date Time Input, Select and Combo. Two client-side defects were fixed: the `IgbFocusOptions` argument was not registered for by-value marshalling, and methods a component inherits from `HTMLElement` without overriding them - the focus and blur of the buttons, which rely on `delegatesFocus` - were not recognized as invokable. [#297](https://github.com/IgniteUI/igniteui-blazor/issues/297)
+
+For the complete list of fixes arriving with the updated web components, see the [7.3.0](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.0), [7.3.1](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.1) and [7.3.2](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) release notes - highlights include per-element selection tracking in Button Group, correct `WeekStart` on the Calendar's initial render, form-associated components keeping their validation messages after a failed form submission (including hosts that start invalid), Highlight painting matches in recent Firefox versions, Select keyboard-navigation and type-ahead fixes, significantly faster large Tree operations, Tooltip show/hide race fixes, Chip accessibility reworks, and touch input on the Color Picker canvas.
+- Loading no longer breaks under .NET 9+ static asset fingerprinting — a script tag wrapped in `@Assets[...]` previously left the app blank with no error. [#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)
+- The package's `.nuspec` now carries the repository URL alongside the commit, and both are asserted against the released tag before the package is signed. `0.1.1` shipped a `<repository>` element with a commit but no URL, which left consumers unable to reach the source for the version they restored.
+- `<Authors>` is now set explicitly, so the package no longer reports its own package id as its author.
+- Async `EventCallback` faults from component event dispatch and generated two-way bindings are now observed instead of being dropped.
+- Nested public fields in unmarshalled data are now transferred correctly as data columns.
+- Combo change event values now decode to the correct `ChangeType`.
+
+### Breaking Changes
+
+#### Public API nullability
+
+> [!NOTE]
+> As part of this release the public API was annotated for nullable reference types. Beyond the members listed below, reference-type parameters, properties, and return values now declare whether they accept or produce `null`. Consumers building with nullable reference types enabled may see new nullable warnings — or errors, if warnings are treated as errors — and may need to update their code accordingly.
+
+The following public members changed from nullable to non-nullable. Value-type changes (`double?` → `double`) are binary-breaking.
+
+| Type | Member | Before | After |
+|------|--------|--------|-------|
+| `IgbTile` | `ColStart` | `double?` | `double` |
+| `IgbTile` | `RowStart` | `double?` | `double` |
+| `IgbCalendar` | `SpecialDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+| `IgbCalendar` | `DisabledDates` | `IgbDateRangeDescriptor[]?` | `IgbDateRangeDescriptor[]` |
+
 ## 0.1.0 - 2026-07-14
 
 This release updates the Ignite UI for Blazor to the latest [igniteui-webcomponents@7.2.4 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.2.4) and matching related changes from `IgniteUI.Blazor` [25.2.77 (March 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#25277-march-2026), [25.2.102 (May 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#252102-may-2026) and [26.1.51 (June 2026)](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-changelog-dv-blazor#26151-june-2026) with highlights noted below:

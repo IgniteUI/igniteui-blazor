@@ -35,6 +35,7 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
         var cut = Render<IgbTooltip>(p =>
             p.Add(x => x.Open, true));
 
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(cut.Find("igc-tooltip").GetAttribute("open"));
     }
 
@@ -44,6 +45,7 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
         var cut = Render<IgbTooltip>(p =>
             p.Add(x => x.WithArrow, true));
 
+        Assert.True(cut.Instance.WithArrow);
         Assert.NotNull(cut.Find("igc-tooltip").GetAttribute("with-arrow"));
     }
 
@@ -53,6 +55,7 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
         var cut = Render<IgbTooltip>(p =>
             p.Add(x => x.Offset, 10));
 
+        Assert.Equal(10.0, cut.Instance.Offset);
         Assert.Equal("10", cut.Find("igc-tooltip").GetAttribute("offset"));
     }
 
@@ -62,6 +65,7 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
         var cut = Render<IgbTooltip>(p =>
             p.Add(x => x.Anchor, "my-button"));
 
+        Assert.Equal("my-button", cut.Instance.Anchor);
         Assert.Equal("my-button", cut.Find("igc-tooltip").GetAttribute("anchor"));
     }
 
@@ -71,6 +75,7 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
         var cut = Render<IgbTooltip>(p =>
             p.Add(x => x.ShowDelay, 500));
 
+        Assert.Equal(500.0, cut.Instance.ShowDelay);
         Assert.Equal("500", cut.Find("igc-tooltip").GetAttribute("show-delay"));
     }
 
@@ -80,6 +85,7 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
         var cut = Render<IgbTooltip>(p =>
             p.Add(x => x.HideDelay, 300));
 
+        Assert.Equal(300.0, cut.Instance.HideDelay);
         Assert.Equal("300", cut.Find("igc-tooltip").GetAttribute("hide-delay"));
     }
 
@@ -89,6 +95,7 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
         var cut = Render<IgbTooltip>(p =>
             p.Add(x => x.Message, "Tooltip text"));
 
+        Assert.Equal("Tooltip text", cut.Instance.Message);
         Assert.Equal("Tooltip text", cut.Find("igc-tooltip").GetAttribute("message"));
     }
 
@@ -98,6 +105,7 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
         var cut = Render<IgbTooltip>(p =>
             p.Add(x => x.Sticky, true));
 
+        Assert.True(cut.Instance.Sticky);
         Assert.NotNull(cut.Find("igc-tooltip").GetAttribute("sticky"));
     }
 

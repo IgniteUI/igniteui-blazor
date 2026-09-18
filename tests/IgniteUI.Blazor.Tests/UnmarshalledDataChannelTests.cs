@@ -21,7 +21,7 @@ public class UnmarshalledDataChannelTests : BunitContext
     public UnmarshalledDataChannelTests()
     {
         JSInterop.Mode = JSRuntimeMode.Loose;
-        _interop = new RendererMessageInteropHarness(JSInterop, forceJsonDataMarshalling: false);
+        _interop = new RendererMessageInteropHarness(JSInterop, () => Renderer.Dispatcher, forceJsonDataMarshalling: false);
         _interop.ConfigureServices(Services);
     }
 
@@ -83,9 +83,7 @@ public class UnmarshalledDataChannelTests : BunitContext
         Assert.Equal(["alpha", "beta", "gamma"], values.StringValues.Take(3));
     }
 
-    [Fact(Skip = "Item types with public primitive-typed fields crash schema creation: JsonDataSourceSchema.Commit " +
-        "stores the typed field getters in a Func<object, object>[] and throws ArrayTypeMismatchException " +
-        "(TypedPropertyGetters uses Delegate[]). Enable once the field getter array type is fixed.")]
+    [Fact]
     public void NestedPublicFields_TransferAsColumns()
     {
         var create = RenderScenario("nested-field-shipments");
