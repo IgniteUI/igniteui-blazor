@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebComponentBoolValueChangedEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
         private bool _detail = false;
 
         /// <summary>
@@ -43,7 +41,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -53,13 +51,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("detail"))
-            { this.Detail = ReturnToBoolean(args["detail"]); }
+            if (args != null && args.TryGetValue("detail", out var detailObj))
+            { this.Detail = ReturnToBoolean(detailObj); }
 
             this.SuppressParentNotify = false;
         }

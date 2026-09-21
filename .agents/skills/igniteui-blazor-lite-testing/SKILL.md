@@ -22,7 +22,7 @@ Three test projects under `tests/`, two suites:
 | Property → rendered attribute (direct-render components) | unit: plain bUnit facts (`cut.Find(...).GetAttribute(...)`) |
 | Markup/child content rendering | unit: plain bUnit facts |
 | **Parent/child collection membership** — a child registering itself into its parent's collection and leaving again over the child's lifetime | unit: plain bUnit facts in the *parent's* suite, in a `#region Child collection lifecycle` — membership only; name resolution *off* that collection is interop behavior and stays in the contract |
-| Message-borne state serialization shapes | unit: `PropertySerializationTests` / `EnumSerializationTests` / `RenderingSerializationTests` |
+| Message-borne state serialization shapes | unit: `EnumSerializationTests` / `RenderingSerializationTests` |
 | **Interop wire behavior** — method identifiers, argument serialization + type tags, return decoding, event-handler registration/removal transmissions + JS→.NET event dispatch, `@bind-` two-way round trips, interop-borne props/data | unit: the component's `ComponentContract` — full authoring guide: [`references/interop-contracts.md`](./references/interop-contracts.md) |
 | `<Member>Script` parameters (JS-side handlers/providers) | unit: automated sweep (`ScriptPropTests`, all components at once — no per-contract entries, no integration coverage exists) |
 | End-to-end prop/event/method behavior against the **real web component in a real browser** | integration: the TestBed sweep |

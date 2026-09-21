@@ -43,7 +43,11 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
                 Assert.True(tabSelection[1]);
             })
         .Method(c => c.SelectAsync("tab-1"), c => c.Select("tab-1"), "select", args: ["tab-1"], types: ["String"])
-        .Getter(c => c.GetSelectedAsync(), c => c.GetSelected(), "Selected", returns: "tab-1");
+        .Getter(c => c.GetSelectedAsync(), c => c.GetSelected(), "Selected", returns: "tab-1")
+        .Getter(c => c.GetSelectedTabAsync(), c => c.GetSelectedTab(), "SelectedTab",
+            tabsArrange,
+            returns: FromRender.Of((interop, cut) => InteropReturn.Ref($$"""{"refType": "name", "id": "{{interop.ContainerIdOf(cut, "igc-tab:nth-of-type(1)")}}"}""")),
+            assert: (cut, result) => Assert.Same(cut.Instance.ActualTabsCollection[0], result));
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
@@ -72,6 +76,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
             parameters.Add(p => p.Alignment, TabsAlignment.Center));
 
         var element = cut.Find("igc-tabs");
+        Assert.Equal(TabsAlignment.Center, cut.Instance.Alignment);
         Assert.Equal("center", element.GetAttribute("alignment"));
     }
 
@@ -82,6 +87,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
             parameters.Add(p => p.Activation, TabsActivation.Manual));
 
         var element = cut.Find("igc-tabs");
+        Assert.Equal(TabsActivation.Manual, cut.Instance.Activation);
         Assert.Equal("manual", element.GetAttribute("activation"));
     }
 
@@ -190,6 +196,7 @@ public class TabTests : BlazorComponentTestBase
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-tab");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -200,6 +207,7 @@ public class TabTests : BlazorComponentTestBase
             parameters.Add(p => p.Selected, true));
 
         var element = cut.Find("igc-tab");
+        Assert.True(cut.Instance.Selected);
         Assert.NotNull(element.GetAttribute("selected"));
     }
 

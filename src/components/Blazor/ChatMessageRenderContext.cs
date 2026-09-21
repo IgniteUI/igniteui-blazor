@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The specific chat message being rendered.
         /// </summary>
-        [Parameter]
         public IgbChatMessage Message
         {
             get { return this._message; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

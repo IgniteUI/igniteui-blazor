@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
-        [Parameter]
         public required string Label
         {
             get { return this._label; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
-        [Parameter]
         public required IgbDateRangeValue DateRange
         {
             get { return this._dateRange; }
@@ -53,7 +49,6 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

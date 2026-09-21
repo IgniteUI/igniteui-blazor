@@ -3,6 +3,7 @@ import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebRadioChangeEventArgsDescriptionMetadata } from "./WebRadioChangeEventArgsDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 import { WebRadioDescription } from "./WebRadioDescription";
 
 /**
@@ -22,6 +23,7 @@ export class WebRadioDescriptionMetadata extends Base {
 		context.markSeen(WebRadioDescriptionMetadata._metadata);
 		WebRadioChangeEventArgsDescriptionMetadata.register(context);
 		VoidEventArgsDescriptionMetadata.register(context);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:Radio");

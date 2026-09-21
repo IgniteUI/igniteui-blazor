@@ -24,13 +24,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
+        private protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
         /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool SupportsVisualChildren
         {
             get
             {
@@ -39,7 +39,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -48,7 +48,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -63,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ParentTypeName
+        private protected override string ParentTypeName
         {
             get
             {
@@ -211,8 +211,48 @@ namespace IgniteUI.Blazor.Controls
             return ReturnToString(iv);
         }
 
+        /// <summary>
+        /// Returns the currently selected tab, or <see langword="null"/> when no tab is selected.
+        /// </summary>
+        public async Task<IgbTab?> GetSelectedTabAsync()
+        {
+            var iv = await InvokeMethod("p:SelectedTab", new object?[] { }, new string[] { });
+
+            if (iv == null)
+            {
+                return default(IgbTab);
+            }
+            var retVal = (IgbTab?)ConvertReturnValue(iv);
+            if (retVal == null)
+            {
+                return default(IgbTab);
+            }
+            return retVal;
+
+        }
+
+        /// <summary>
+        /// Returns the currently selected tab, or <see langword="null"/> when no tab is selected.
+        /// </summary>
+        public IgbTab? GetSelectedTab()
+        {
+            var iv = InvokeMethodSync("p:SelectedTab", new object?[] { }, new string[] { });
+
+            if (iv == null)
+            {
+                return default(IgbTab);
+            }
+            var retVal = (IgbTab?)ConvertReturnValue(iv);
+            if (retVal == null)
+            {
+                return default(IgbTab);
+            }
+            return retVal;
+
+        }
+
         /// <inheritdoc />
-        public override object? FindByName(string name)
+        private protected override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -248,8 +288,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ChangeScript

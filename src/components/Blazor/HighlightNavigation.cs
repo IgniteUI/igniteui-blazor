@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -10,14 +8,11 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebHighlightNavigation"; } }
 
-        private static bool _marshalByValue = true;
-
         private bool _preventScroll = false;
 
         /// <summary>
         /// When <see langword="true"/>, prevents the component from scrolling the new active match into view.
         /// </summary>
-        [Parameter]
         public bool PreventScroll
         {
             get { return this._preventScroll; }
@@ -32,7 +27,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -43,7 +37,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -53,13 +47,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("preventScroll"))
-            { this.PreventScroll = ReturnToBoolean(args["preventScroll"]); }
+            if (args != null && args.TryGetValue("preventScroll", out var preventScrollObj))
+            { this.PreventScroll = ReturnToBoolean(preventScrollObj); }
 
             this.SuppressParentNotify = false;
         }

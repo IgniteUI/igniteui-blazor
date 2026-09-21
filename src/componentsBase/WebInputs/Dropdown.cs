@@ -78,7 +78,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ParentTypeName
+        private protected override string ParentTypeName
         {
             get
             {

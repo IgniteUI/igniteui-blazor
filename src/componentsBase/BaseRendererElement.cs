@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace IgniteUI.Blazor.Controls
 {
 
+    /// <summary>
+    /// Base class of the child elements.
+    /// </summary>
     public partial class BaseRendererElement : ComponentBase, JsonSerializable
     {
         // public BaseRendererElement()
@@ -12,6 +15,7 @@ namespace IgniteUI.Blazor.Controls
         // }
 
         private IIgniteUIBlazor? _igBlazor;
+        /// <summary>The injected <see cref="IIgniteUIBlazor"/> service; pass it to a module's <c>Register</c> from <see cref="EnsureModulesLoaded"/>.</summary>
         [Inject]
         protected IIgniteUIBlazor IgBlazor
         {
@@ -30,12 +34,13 @@ namespace IgniteUI.Blazor.Controls
                 EnsureModulesLoaded();
             }
         }
+        /// <summary>Requests the client modules this element needs; override to register more through <see cref="IgBlazor"/>.</summary>
         protected virtual void EnsureModulesLoaded()
         {
             //Console.WriteLine("ensuring element modules loaded");
         }
 
-        public bool IsComponentRooted
+        internal bool IsComponentRooted
         {
             get
             {
@@ -81,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string? ParentTypeName
+        private protected virtual string? ParentTypeName
         {
             get
             {
@@ -89,7 +94,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual bool UseDirectRender
+        private protected virtual bool UseDirectRender
         {
             get
             {
@@ -97,9 +102,10 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>The child elements declared inside this element.</summary>
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
-        protected virtual bool SupportsVisualChildren
+        private protected virtual bool SupportsVisualChildren
         {
             get
             {
@@ -158,12 +164,11 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<string, bool> _isDirty = new Dictionary<string, bool>();
         private Dictionary<string, bool> _isDirtyRef = new Dictionary<string, bool>();
 
-        private bool _hasDirty = false;
         private bool _serializeDirty = false;
 
-        protected string _name = Guid.NewGuid().ToString();
+        private protected string _name = Guid.NewGuid().ToString();
 
-        [Parameter]
+        /// <summary>The name of this element.</summary>
         public string Name
         {
             set
@@ -178,7 +183,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
+        internal void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
         {
             if (CurrParent != null)
             {
@@ -260,13 +265,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public object? Parent
+        internal object? Parent
         {
             get
             {
                 return _parent;
             }
-            internal set
+            set
             {
                 Object? oldParent = _parent;
                 _parent = value;
@@ -322,7 +327,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string MethodTarget
+        private protected virtual string MethodTarget
         {
             get
             {
@@ -330,17 +335,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>Calls <paramref name="methodName"/> on the client-side element with <paramref name="arguments"/> and returns its result.</summary>
         protected async Task<object?> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(MethodTarget, methodName, arguments, types, nativeElements);
         }
 
+        /// <summary>Calls <paramref name="methodName"/> on the client-side element and returns its result synchronously; only available where .NET runs in the browser.</summary>
         protected object? InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(MethodTarget, methodName, arguments, types, nativeElements);
         }
 
-        protected async Task<object?> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
+        private async Task<object?> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (CurrParent == null)
             {
@@ -356,7 +363,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected object? InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
+        private object? InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (CurrParent == null)
             {
@@ -417,7 +424,6 @@ namespace IgniteUI.Blazor.Controls
         {
             _isDirtyRef[propertyName] = true;
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             if (_suppressParentNotify)
             {
@@ -455,6 +461,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>Marks <paramref name="propertyName"/> as changed so the next render sends it to the client.</summary>
         internal void MarkPropDirty(String? propertyName)
         {
             if (propertyName == null)
@@ -462,7 +469,6 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             if (_suppressParentNotify)
             {
@@ -481,7 +487,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected bool IsPropDirty(string propertyName)
+        /// <summary>Whether <paramref name="propertyName"/> changed since the component last sent its properties to the client.</summary>
+        private protected bool IsPropDirty(string propertyName)
         {
             if (_isDirty.ContainsKey(propertyName))
             {
@@ -515,8 +522,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected String _cachedSerializedContent = "";
+        private String _cachedSerializedContent = "";
 
+        /// <summary>The type name of this element.</summary>
         public virtual string Type
         {
             get
@@ -530,7 +538,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext context, string? propertyName = null)
+        void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
+
+        internal void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;
@@ -539,7 +549,7 @@ namespace IgniteUI.Blazor.Controls
             ser.End();
         }
 
-        public string Serialize()
+        internal string Serialize()
         {
             if (_serializeDirty)
             {
@@ -558,7 +568,7 @@ namespace IgniteUI.Blazor.Controls
             return _cachedSerializedContent;
         }
 
-        protected void EnsureValid()
+        private void EnsureValid()
         {
             if (_parent == null && _tempParent == null)
             {
@@ -566,7 +576,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected object? CurrParent
+        internal object? CurrParent
         {
             get
             {
@@ -1092,22 +1102,26 @@ namespace IgniteUI.Blazor.Controls
             return default;
         }
 
-        protected internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        /// <summary>Reads this element's values from the event payload the client sent for <paramref name="control"/>.</summary>
+        internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
 
         }
-        protected internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+
+        /// <summary>Writes this element's values into the event payload returned to the client for <paramref name="control"/>.</summary>
+        internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
 
         }
 
-        public virtual object? FindByName(string name)
+        /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
+        internal virtual object? FindByName(string name)
         {
 
             return null;
         }
 
-        protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
+        private protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
             if (CurrParent == null)
             {
@@ -1122,7 +1136,7 @@ namespace IgniteUI.Blazor.Controls
                 return await ((BaseRendererControl)CurrParent).SetResourceStringAsync(grouping, id, value);
             }
         }
-        protected async Task<object?> SetResourceStringAsync(string grouping, string json)
+        private protected async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
             if (CurrParent == null)
             {

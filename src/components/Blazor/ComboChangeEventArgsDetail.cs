@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebComboChangeEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private string? _newValueRef;
         private T[] _newValue = Array.Empty<T>();
 
@@ -135,7 +133,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -150,7 +147,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -164,17 +161,17 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("newValue"))
-            { this.NewValue = ReturnToObjectArray<T>(args["newValue"]) ?? Array.Empty<T>(); }
-            if (args != null && args.ContainsKey("items"))
-            { this.Items = ReturnToObjectArray(args["items"]); }
-            if (args != null && args.ContainsKey("type"))
-            { this.ChangeType = StringToEnum<ComboChangeType>(args["type"]); }
+            if (args != null && args.TryGetValue("newValue", out var newValueObj))
+            { this.NewValue = ReturnToObjectArray<T>(newValueObj) ?? Array.Empty<T>(); }
+            if (args != null && args.TryGetValue("items", out var itemsObj))
+            { this.Items = ReturnToObjectArray(itemsObj); }
+            if (args != null && args.TryGetValue("type", out var typeObj))
+            { this.ChangeType = StringToEnum<ComboChangeType>(typeObj); }
 
             this.SuppressParentNotify = false;
         }

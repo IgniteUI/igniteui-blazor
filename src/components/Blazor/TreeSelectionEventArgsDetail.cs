@@ -11,8 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebTreeSelectionEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbTreeItem[] _newSelection = Array.Empty<IgbTreeItem>();
 
         /// <summary>
@@ -43,7 +41,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -53,13 +51,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("newSelection"))
-            { this.NewSelection = ReturnToObjectArray<IgbTreeItem>(args["newSelection"]) ?? Array.Empty<IgbTreeItem>(); }
+            if (args != null && args.TryGetValue("newSelection", out var newSelectionObj))
+            { this.NewSelection = ReturnToObjectArray<IgbTreeItem>(newSelectionObj) ?? Array.Empty<IgbTreeItem>(); }
 
             this.SuppressParentNotify = false;
         }

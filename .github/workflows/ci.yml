@@ -69,17 +69,17 @@ jobs:
       - name: Verify JS/TS formatting
         run: npm run format:check
 
-      - name: Build TypeScript/Webpack assets
+      - name: Build static web assets (src/wwwroot)
         run: npm run build
 
-      - name: Copy component themes to wwwroot
-        run: npm run copythemes
+      - name: Check static web assets
+        run: npm test
 
       - name: Restore .NET dependencies
         run: dotnet restore
 
       - name: Build .NET library
-        run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=false
+        run: dotnet build --no-restore --configuration Release
 
       # Trimmed publish of the smoke app fails on any linker warning; publish runs per TFM
       - name: Publish trimmed smoke app

@@ -16,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for a single chat message attachment.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatAttachmentRenderContext>? Attachment
         {
             get { return this._attachment; }
@@ -46,10 +45,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders a single chat message attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? AttachmentScript
         {
             get { return _attachmentScript; }
@@ -75,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the content of an attachment.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatAttachmentRenderContext>? AttachmentContent
         {
             get { return this._attachmentContent; }
@@ -105,10 +103,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the content of an attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? AttachmentContentScript
         {
             get { return _attachmentContentScript; }
@@ -134,7 +132,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the header of an attachment.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatAttachmentRenderContext>? AttachmentHeader
         {
             get { return this._attachmentHeader; }
@@ -164,10 +161,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the header of an attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? AttachmentHeaderScript
         {
             get { return _attachmentHeaderScript; }
@@ -193,7 +190,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the main chat input field.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatInputRenderContext>? Input
         {
             get { return this._input; }
@@ -223,10 +219,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the main chat input field.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? InputScript
         {
             get { return _inputScript; }
@@ -252,7 +248,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the actions container within the input area.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? InputActions
         {
             get { return this._inputActions; }
@@ -282,10 +277,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions container within the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? InputActionsScript
         {
             get { return _inputActionsScript; }
@@ -311,7 +306,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the actions at the end of the input area.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? InputActionsEnd
         {
             get { return this._inputActionsEnd; }
@@ -341,10 +335,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions at the end of the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? InputActionsEndScript
         {
             get { return _inputActionsEndScript; }
@@ -370,7 +364,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the actions at the start of the input area.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? InputActionsStart
         {
             get { return this._inputActionsStart; }
@@ -400,10 +393,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions at the start of the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? InputActionsStartScript
         {
             get { return _inputActionsStartScript; }
@@ -429,7 +422,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for an entire chat message bubble.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? Message
         {
             get { return this._message; }
@@ -459,10 +451,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders an entire chat message bubble.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageScript
         {
             get { return _messageScript; }
@@ -488,7 +480,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for message-specific actions (e.g. reply or delete buttons).
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? MessageActions
         {
             get { return this._messageActions; }
@@ -518,10 +509,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders message-specific actions (e.g. reply or delete buttons).
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageActionsScript
         {
             get { return _messageActionsScript; }
@@ -547,7 +538,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the attachments associated with a message.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? MessageAttachments
         {
             get { return this._messageAttachments; }
@@ -577,10 +567,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the attachments associated with a message.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageAttachmentsScript
         {
             get { return _messageAttachmentsScript; }
@@ -606,7 +596,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the main text and content of a message.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? MessageContent
         {
             get { return this._messageContent; }
@@ -636,10 +625,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the main text and content of a message.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageContentScript
         {
             get { return _messageContentScript; }
@@ -665,7 +654,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the header of a message, including sender and timestamp.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? MessageHeader
         {
             get { return this._messageHeader; }
@@ -695,10 +683,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the header of a message, including sender and timestamp.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageHeaderScript
         {
             get { return _messageHeaderScript; }
@@ -724,7 +712,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the message send button.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? SendButton
         {
             get { return this._sendButton; }
@@ -754,10 +741,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the message send button.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? SendButtonScript
         {
             get { return _sendButtonScript; }
@@ -783,7 +770,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the prefix text shown before suggestions.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? SuggestionPrefix
         {
             get { return this._suggestionPrefix; }
@@ -813,10 +799,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the prefix text shown before suggestions.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? SuggestionPrefixScript
         {
             get { return _suggestionPrefixScript; }

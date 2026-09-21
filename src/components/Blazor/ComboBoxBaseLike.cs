@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
         public override string Type { get { return "WebComboBoxBaseLike"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
+        private protected override string ResolveDisplay()
         {
             return "inline-block";
         }

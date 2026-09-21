@@ -20,13 +20,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
+        private protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
         /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool SupportsVisualChildren
         {
             get
             {
@@ -35,7 +35,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -44,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -171,7 +171,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private bool _outlined = false;
 
+        /// <summary>
+        /// Defines if the chip is outlined or not.
+        /// </summary>
+        [Parameter]
+        public bool Outlined
+        {
+            get { return this._outlined; }
+            set
+            {
+                if (this._outlined != value || !IsPropDirty("Outlined"))
+                {
+                    MarkPropDirty("Outlined");
+                }
+                this._outlined = value;
+
+            }
+        }
 
         private EventCallback<bool>? _selectedChanged = null;
 
@@ -211,8 +229,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Remove"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? RemoveScript
@@ -236,17 +255,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentBoolValueChangedEventArgs>? _remove = null;
+        private EventCallback<IgbVoidEventArgs>? _remove = null;
 
         /// <summary>
         /// Emitted when the chip is removed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentBoolValueChangedEventArgs> Remove
+        public EventCallback<IgbVoidEventArgs> Remove
         {
             get
             {
-                return this._remove != null ? this._remove.Value : EventCallback<IgbComponentBoolValueChangedEventArgs>.Empty;
+                return this._remove != null ? this._remove.Value : EventCallback<IgbVoidEventArgs>.Empty;
             }
             set
             {
@@ -255,7 +274,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_remove))
                     {
                         _remove = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Remove", value);
                         this.OnRefChanged("Remove", null, "event:::Remove", true, false, (refName, oldValue, newValue) =>
                         {
                             this._removeRef = refName;
@@ -266,7 +285,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _remove = null;
-                    this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Remove", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Remove", null);
                     this.OnRefChanged("Remove", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._removeRef = null;
@@ -283,8 +302,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? SelectScript
@@ -395,6 +415,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddBooleanProp("selected", this._selected); }
             if (IsPropDirty("Variant"))
             { ser.AddEnumProp("variant", this._variant); }
+            if (IsPropDirty("Outlined"))
+            { ser.AddBooleanProp("outlined", this._outlined); }
             if (IsPropDirty("RemoveRef"))
             { ser.AddStringProp("removeRef", this._removeRef); }
             if (IsPropDirty("SelectRef"))

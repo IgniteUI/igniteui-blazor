@@ -11,9 +11,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
         .Event(c => c.Select,
             argsJson: """{"detail": true}""",
             assert: args => Assert.True(args.Detail))
-        .Event(c => c.Remove,
-            argsJson: """{"detail": true}""",
-            assert: args => Assert.True(args.Detail))
+        .Event(c => c.Remove)
         .Bind(c => c.Selected, c => c.SelectedChanged, via: c => c.Select,
             argsJson: """{"detail": true}""", expect: true);
 
@@ -47,6 +45,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-chip");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -57,6 +56,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
             parameters.Add(p => p.Removable, true));
 
         var element = cut.Find("igc-chip");
+        Assert.True(cut.Instance.Removable);
         Assert.NotNull(element.GetAttribute("removable"));
     }
 
@@ -67,7 +67,19 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
             parameters.Add(p => p.Selectable, true));
 
         var element = cut.Find("igc-chip");
+        Assert.True(cut.Instance.Selectable);
         Assert.NotNull(element.GetAttribute("selectable"));
+    }
+
+    [Fact]
+    public void Chip_Outlined_RendersAttribute()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Outlined, true));
+
+        var element = cut.Find("igc-chip");
+        Assert.True(cut.Instance.Outlined);
+        Assert.NotNull(element.GetAttribute("outlined"));
     }
 
     [Fact]
@@ -77,6 +89,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
             parameters.Add(p => p.Selected, true));
 
         var element = cut.Find("igc-chip");
+        Assert.True(cut.Instance.Selected);
         Assert.NotNull(element.GetAttribute("selected"));
     }
 
@@ -87,6 +100,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
             parameters.Add(p => p.Variant, StyleVariant.Info));
 
         var element = cut.Find("igc-chip");
+        Assert.Equal(StyleVariant.Info, cut.Instance.Variant);
         Assert.Equal("info", element.GetAttribute("variant"));
     }
 

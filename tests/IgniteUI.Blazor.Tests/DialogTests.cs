@@ -40,6 +40,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-dialog");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -50,6 +51,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
             parameters.Add(p => p.Title, "Confirm Action"));
 
         var element = cut.Find("igc-dialog");
+        Assert.Equal("Confirm Action", cut.Instance.Title);
         Assert.Equal("Confirm Action", element.GetAttribute("title"));
     }
 
@@ -60,6 +62,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
             parameters.Add(p => p.KeepOpenOnEscape, true));
 
         var element = cut.Find("igc-dialog");
+        Assert.True(cut.Instance.KeepOpenOnEscape);
         Assert.NotNull(element.GetAttribute("keep-open-on-escape"));
     }
 
@@ -70,6 +73,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
             parameters.Add(p => p.CloseOnOutsideClick, true));
 
         var element = cut.Find("igc-dialog");
+        Assert.True(cut.Instance.CloseOnOutsideClick);
         Assert.NotNull(element.GetAttribute("close-on-outside-click"));
     }
 
@@ -80,6 +84,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
             parameters.Add(p => p.HideDefaultAction, true));
 
         var element = cut.Find("igc-dialog");
+        Assert.True(cut.Instance.HideDefaultAction);
         Assert.NotNull(element.GetAttribute("hide-default-action"));
     }
 
@@ -90,6 +95,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
             parameters.Add(p => p.ReturnValue, "confirmed"));
 
         var element = cut.Find("igc-dialog");
+        Assert.Equal("confirmed", cut.Instance.ReturnValue);
         Assert.Equal("confirmed", element.GetAttribute("return-value"));
     }
 

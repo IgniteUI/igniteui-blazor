@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -10,14 +8,11 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessageReaction"; } }
 
-        private static bool _marshalByValue = true;
-
         private IgbChatMessage _message = new IgbChatMessage();
 
         /// <summary>
         /// The chat message that the reaction is associated with.
         /// </summary>
-        [Parameter]
         public IgbChatMessage Message
         {
             get { return this._message; }
@@ -41,7 +36,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The string representation of the reaction, such as an emoji or a string;
         /// </summary>
-        [Parameter]
         public string Reaction
         {
             get { return this._reaction; }
@@ -56,7 +50,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -69,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -81,15 +74,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("message", out var messageObj) && ConvertReturnValue(messageObj, "ChatMessage", true) is IgbChatMessage message)
             { this.Message = message; }
-            if (args != null && args.ContainsKey("reaction"))
-            { this.Reaction = ReturnToString(args["reaction"]); }
+            if (args != null && args.TryGetValue("reaction", out var reactionObj))
+            { this.Reaction = ReturnToString(reactionObj); }
 
             this.SuppressParentNotify = false;
         }

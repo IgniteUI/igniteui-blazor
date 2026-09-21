@@ -40,6 +40,7 @@ public class BannerTests : ComponentWithContractTestBase<IgbBanner>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-banner");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 

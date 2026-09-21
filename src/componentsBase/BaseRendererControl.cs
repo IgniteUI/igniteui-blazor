@@ -31,11 +31,16 @@ namespace IgniteUI.Blazor.Controls
         Queued
     }
 
+    /// <summary>
+    /// Base Ignite UI Blazor shared control class.
+    /// </summary>
     // PublicProperties: required by the BuildSequenceInfo parameter walk; rendered components already keep All via OpenComponent<T>.
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
     {
         private IIgniteUIBlazor? _igBlazor;
+        private IIgniteUIBlazorRuntime? _runtime;
+        /// <summary>The injected <see cref="IIgniteUIBlazor"/> service; pass it to a module's <c>Register</c> from <see cref="EnsureModulesLoaded"/>.</summary>
         [Inject]
         protected IIgniteUIBlazor IgBlazor
         {
@@ -46,17 +51,21 @@ namespace IgniteUI.Blazor.Controls
             set
             {
                 _igBlazor = value;
+                _runtime = value.AsRuntime();
                 // if (_igBlazor is IJSInProcessRuntime)
                 // {
                 //     this.JsInProcessRuntime = (IJSInProcessRuntime)_igBlazor;
                 // }
 
-                _igBlazor.WebCallback.Register(this);
-                _dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime, _igBlazor));
+                _runtime.WebCallback.Register(this);
+                _dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime, _runtime));
                 EnsureModulesLoaded();
             }
         }
 
+        internal IIgniteUIBlazorRuntime Runtime => _runtime ?? throw new InvalidOperationException("IgBlazor accessed before dependency injection completed.");
+
+        /// <summary>Requests the client modules this component needs; override to register more through <see cref="IgBlazor"/>.</summary>
         protected virtual void EnsureModulesLoaded()
         {
 
@@ -66,7 +75,7 @@ namespace IgniteUI.Blazor.Controls
         {
             get
             {
-                return _igBlazor != null ? _igBlazor.JsRuntime : null;
+                return _igBlazor != null ? Runtime.JsRuntime : null;
             }
         }
 
@@ -86,28 +95,38 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// The height of the component, as a CSS value.
+        /// Prefer sizing through CSS or the <c>style</c> attribute.
+        /// </summary>
         [Parameter]
         public string? Height
         {
             get; set;
         }
 
+        /// <summary>
+        /// The width of the component, as a CSS value.
+        /// Prefer sizing through CSS or the <c>style</c> attribute.
+        /// </summary>
         [Parameter]
         public string? Width
         {
             get; set;
         }
 
+        /// <summary>CSS classes added to the component's root element.</summary>
         [Parameter]
         public string? Class
         {
             get; set;
         }
 
+        /// <summary>Attributes not matched by a parameter, applied to the component's root element.</summary>
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
-        protected virtual string ParentTypeName
+        private protected virtual string ParentTypeName
         {
             get
             {
@@ -141,12 +160,12 @@ namespace IgniteUI.Blazor.Controls
             return EventBehavior;
         }
 
+        /// <summary>The content rendered inside the component.</summary>
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
         private ElementReference contEle;
         private Dictionary<string, bool> _isDirty = new Dictionary<string, bool>();
         private Dictionary<string, bool> _isDirtyRef = new Dictionary<string, bool>();
-        private bool _hasDirty = false;
         private bool _serializeDirty = true;
         private DataSourceManager? _dataSourceManager;
         internal DataSourceManager? DataSourceManager
@@ -189,12 +208,13 @@ namespace IgniteUI.Blazor.Controls
         {
             if (_objRef == null)
             {
-                _objRef = DotNetObjectReference.Create(IgBlazor.WebCallback);
+                _objRef = DotNetObjectReference.Create(Runtime.WebCallback);
             }
 
             return _objRef;
         }
 
+        /// <summary>Creates the component.</summary>
         public BaseRendererControl() : base()
         {
             //Console.WriteLine("constructed: " + this.GetType().Name);
@@ -204,12 +224,12 @@ namespace IgniteUI.Blazor.Controls
             //_webCallbackHelper.WebCallback = WebCallback.Instance;
         }
 
-        protected virtual string ResolveDisplay()
+        private protected virtual string ResolveDisplay()
         {
             return "block";
         }
 
-        protected string ToSpinal(string? value)
+        private string ToSpinal(string? value)
         {
             if (value == null)
             {
@@ -264,7 +284,7 @@ namespace IgniteUI.Blazor.Controls
             return sb.ToString();
         }
 
-        protected virtual bool SupportsVisualChildren
+        private protected virtual bool SupportsVisualChildren
         {
             get
             {
@@ -272,7 +292,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual bool UseDirectRender
+        private protected virtual bool UseDirectRender
         {
             get
             {
@@ -280,7 +300,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string DirectRenderElementName
+        private protected virtual string DirectRenderElementName
         {
             get
             {
@@ -366,13 +386,13 @@ namespace IgniteUI.Blazor.Controls
             return ret;
         }
 
-        protected virtual string TransformSimpleKey(string? key)
+        private protected virtual string TransformSimpleKey(string? key)
         {
             key = Camelize(key);
             return Sequence.TransformKey(key);
         }
 
-        protected virtual bool IsTransformedEnumValue(string? key)
+        private protected virtual bool IsTransformedEnumValue(string? key)
         {
             key = Camelize(key);
             if (Sequence.IsTransformedEnum(key))
@@ -382,7 +402,7 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        protected virtual object TransformPotentialEnumValue(string? key, object value)
+        private protected virtual object TransformPotentialEnumValue(string? key, object value)
         {
             key = Camelize(key);
             //Console.WriteLine("transforming enum value...." + (value.GetType().Name));
@@ -402,7 +422,7 @@ namespace IgniteUI.Blazor.Controls
         // reflection, so it must not run from the constructor.
         private SequenceInfo Sequence => _sequenceInfo ??= BuildSequenceInfo(3);
 
-        protected virtual SequenceInfo BuildSequenceInfo(int startSequence)
+        private protected virtual SequenceInfo BuildSequenceInfo(int startSequence)
         {
             SequenceInfo info = new SequenceInfo(startSequence);
             var props = this.GetType().GetProperties(System.Reflection.BindingFlags.Public |
@@ -739,7 +759,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected Type? TemplateContentType(string? templateId)
+        private Type? TemplateContentType(string? templateId)
         {
             if (templateId == null || !_contentTemplateTypes.ContainsKey(templateId))
             {
@@ -778,7 +798,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        protected virtual bool NeedsDynamicContent
+        private protected virtual bool NeedsDynamicContent
         {
             get
             {
@@ -789,13 +809,16 @@ namespace IgniteUI.Blazor.Controls
         private DynamicContentHolder? Holder { get; set; }
 
         /// <inheritdoc />
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
                 MarkContentDirty();
-                EnsureReady();
+                // start the readiness poll, intentionally unawaited
+                _ = EnsureReady();
             }
+
+            return Task.CompletedTask;
         }
 
         //protected override void OnParametersSet()
@@ -807,9 +830,10 @@ namespace IgniteUI.Blazor.Controls
         //     return false;
         // }
 
+        /// <summary>Completes once the client-side component exists and has its parameters, so methods that need it can be called.</summary>
         public async Task EnsureReady()
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime))
             {
                 return;
             }
@@ -842,14 +866,14 @@ namespace IgniteUI.Blazor.Controls
             QueueUpdate();
         }
 
-        protected internal void MarkPropDirty(string? propertyName)
+        /// <summary>Marks <paramref name="propertyName"/> as changed so the next render sends it to the client.</summary>
+        internal void MarkPropDirty(string? propertyName)
         {
             if (propertyName == null)
             {
                 return;
             }
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             //Console.WriteLine("dirty: " + propertyName);
             MarkContentDirty();
@@ -901,12 +925,13 @@ namespace IgniteUI.Blazor.Controls
                     var desc = Encoding.UTF8.GetString(stream.ToArray());
                     m.SetData("description", desc);
 
-                    SendMessageImmediate(m);
+                    _ = SendMessageImmediate(m);
                 }
             }
         }
 
-        protected bool IsPropDirty(String propertyName)
+        /// <summary>Whether <paramref name="propertyName"/> changed since the component last sent its properties to the client.</summary>
+        private protected bool IsPropDirty(String propertyName)
         {
             if (_isDirty.ContainsKey(propertyName))
             {
@@ -927,8 +952,9 @@ namespace IgniteUI.Blazor.Controls
             ser.AddStringProp("name", "mainControl");
         }
 
-        protected String _cachedSerializedContent = "";
+        private String _cachedSerializedContent = "";
 
+        /// <summary>The type name of this component.</summary>
         public virtual string? Type
         {
             get
@@ -942,7 +968,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext context, string? propertyName = null)
+        void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
+
+        internal void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;
@@ -951,7 +979,7 @@ namespace IgniteUI.Blazor.Controls
             ser.End();
         }
 
-        public string Serialize()
+        internal string Serialize()
         {
             if (_serializeDirty)
             {
@@ -981,14 +1009,17 @@ namespace IgniteUI.Blazor.Controls
         /// without a container ID to identify the originating component.
         /// </summary>
         /// <remarks>
-        /// Only use <see cref="Interlocked.Increment" /> as this is incremented from any thread.
+        /// Only use <see cref="Interlocked.Increment(ref long)" /> as this is incremented from any thread.
         /// </remarks>
         static long _invokeId = 0;
+
+        /// <summary>Calls <paramref name="methodName"/> on the client-side component with <paramref name="arguments"/> and returns its result.</summary>
         protected async Task<object?> InvokeMethod(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(null, methodName, arguments, types, nativeElements);
         }
 
+        /// <summary>Calls <paramref name="methodName"/> on the client-side component and returns its result synchronously; only available where .NET runs in the browser.</summary>
         protected object? InvokeMethodSync(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(null, methodName, arguments, types, nativeElements);
@@ -1001,7 +1032,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (_serializerContext == null)
                 {
-                    var def = IgBlazor.Settings?.JsonSerializerOptions;
+                    var def = Runtime.Settings?.JsonSerializerOptions;
                     var options = new JsonSerializerOptions();
                     options.MaxDepth = def != null ? def.MaxDepth : 0;
                     _serializerContext = new IgbJsonContext(options);
@@ -1137,6 +1168,10 @@ namespace IgniteUI.Blazor.Controls
             {
                 return null;
             }
+            if (type == "Boolean" && argument is bool)
+            {
+                return ((bool)argument).ToString().ToLower();
+            }
             if (type == "Date")
             {
                 if (argument is DateTime)
@@ -1228,7 +1263,6 @@ namespace IgniteUI.Blazor.Controls
         {
             _isDirtyRef[propertyName] = true;
             _isDirty[propertyName] = true;
-            _hasDirty = true;
             _serializeDirty = true;
             string? refId = _containerId + "/" + propertyName;
 
@@ -1360,101 +1394,9 @@ namespace IgniteUI.Blazor.Controls
             return val.ToString("o");
         }
 
-        /// <summary>
-        /// Prevents data change notifications from be propagated to the component.
-        /// </summary>
-        /// <param name="dataSource">The datasource that is being changed.</param>
-        public void SuspendNotifications(object dataSource)
-        {
-            if (_dataSourceManager != null)
-            {
-                _dataSourceManager.SuspendNotifications(dataSource);
-            }
-        }
-        /// <summary>
-        /// Resumes data change notifications.
-        /// </summary>
-        /// <param name="dataSource">The datasource that is being changed.</param>
-        /// <param name="notify">Whether to notify the component that the datasource items changed.</param>
-        public void ResumeNotifications(object dataSource, bool notify = true)
-        {
-            if (_dataSourceManager != null)
-            {
-                _dataSourceManager.ResumeNotifications(dataSource, notify);
-            }
-        }
+        void RefSink.OnRefChanged(string refName, object? refValue) => OnRefChanged(refName, refValue);
 
-        public void NotifyInsertItem(object dataSource, int index, object refItem)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifyInsertItem(refName, index, refItem);
-        }
-
-        public void NotifyRemoveItem(object dataSource, int index, object oldItem)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifyRemoveItem(refName, index, oldItem);
-        }
-
-        public void NotifyClearItems(object dataSource)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifyClearItems(refName);
-        }
-
-        public void NotifySetItem(object dataSource, int index, object oldItem, object newItem)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifySetItem(refName, index, oldItem, newItem);
-        }
-
-        public void NotifyUpdateItem(object dataSource, int index, object refItem, bool syncDataOnly = false)
-        {
-            if (_dataSourceManager == null || !_dataSourceManager.HasRefId(dataSource))
-            {
-                return;
-            }
-            string refName = _dataSourceManager.GetRefId(dataSource);
-            if (refName == null)
-            {
-                return;
-            }
-            _dataSourceManager.NotifyUpdateItem(refName, index, refItem, syncDataOnly);
-        }
-
-        public void OnRefChanged(string refName, object? refValue)
+        internal void OnRefChanged(string refName, object? refValue)
         {
             RendererMessage m = new RendererMessage();
             m.Type = ("refChanged");
@@ -1770,7 +1712,7 @@ namespace IgniteUI.Blazor.Controls
 
         private async Task<object?> SendJsonImmediate(RendererMessage m)
         {
-            if (_igBlazor == null || !_igBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            if (_igBlazor == null || !Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
@@ -1826,7 +1768,7 @@ namespace IgniteUI.Blazor.Controls
         {
             //json = "window.sendMessage(`" + this._containerId + "`, `" + json + "`)";
             //Console.WriteLine(json);
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return;
             }
@@ -2175,7 +2117,7 @@ namespace IgniteUI.Blazor.Controls
             return returnValue;
         }
 
-        public void OnInvokeReturn(long invokeId, Object returnValue)
+        internal void OnInvokeReturn(long invokeId, Object returnValue)
         {
             //lock (_semLock) {
             //    if (returnValue instanceof String) {
@@ -2228,19 +2170,14 @@ namespace IgniteUI.Blazor.Controls
             return (T?)val;
         }
 
-        public virtual object? FindByName(string name)
+        /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
+        private protected virtual object? FindByName(string name)
         {
             if ("mainControl".Equals(name))
             {
                 return this;
             }
 
-            return null;
-        }
-
-        private object? GetObjectById(long objId)
-        {
-            //TODO: this
             return null;
         }
 
@@ -2362,7 +2299,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Array.Empty<DateTime>();
             }
@@ -2714,7 +2651,7 @@ namespace IgniteUI.Blazor.Controls
             //return val == null ? null : val.ToString();
         }
 
-        protected virtual bool UseCamelEnumValues
+        private protected virtual bool UseCamelEnumValues
         {
             get
             {
@@ -2722,7 +2659,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected string Camelize(string? value)
+        private string Camelize(string? value)
         {
             if (value == null || value.Length == 0)
             {
@@ -2731,7 +2668,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        protected string? ToPascal(string? value)
+        private string? ToPascal(string? value)
         {
             if (value == null || value.Length == 0)
             {
@@ -2827,7 +2764,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<string[]>(arr!, SerializerContext.StringArray);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2848,7 +2785,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<int[]>(arr!, SerializerContext.Int32Array);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2869,7 +2806,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return JsonSerializer.Serialize<double[]>(arr!, SerializerContext.DoubleArray);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2901,7 +2838,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Array.Empty<object>();
             }
@@ -2957,7 +2894,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -2990,7 +2927,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -3023,7 +2960,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -3051,7 +2988,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return ret;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -3065,7 +3002,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected internal void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
+        internal void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
         {
             List<string> toRename = new List<string>();
             foreach (var key in _handlers.Keys)
@@ -3091,7 +3028,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync"/> so that
+        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync(object?)"/> so that
         /// exceptions raised by asynchronous consumer handlers are not silently swallowed.
         /// Synchronous faults are rethrown to preserve the previous behavior; asynchronous
         /// faults are surfaced through the same error channel as the interop dispatcher.
@@ -3255,7 +3192,6 @@ namespace IgniteUI.Blazor.Controls
             if (_handlers.ContainsKey(name + "/" + propertyName))
             {
                 //Console.WriteLine("got handler");
-                bool usedTempParent = false;
                 Object? senderObj = null;
                 try
                 {
@@ -3382,7 +3318,7 @@ namespace IgniteUI.Blazor.Controls
         {
             try
             {
-                if (_igBlazor == null || !_igBlazor.IsRuntimeValid(_shouldReevaluateRuntime))
+                if (_igBlazor == null || !Runtime.IsRuntimeValid(_shouldReevaluateRuntime))
                 {
                     return;
                 }
@@ -3446,25 +3382,25 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
+        internal async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
             return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "set", grouping, id, value });
         }
 
-        public async Task<object?> SetResourceStringAsync(string grouping, string json)
+        internal async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
-            if (!IgBlazor.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
             {
                 return null;
             }
             return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "register", grouping, "", json });
         }
 
-        protected void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
+        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
         {
             System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
             if (type == null)
@@ -3517,7 +3453,7 @@ namespace IgniteUI.Blazor.Controls
                     break;
             }
         }
-        protected void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
+        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
         {
             System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
             if (type == null)
@@ -3593,43 +3529,60 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    //
-    // Summary:
-    //     This mirrors the options for System.Text.Json.JsonSerializer that we allow for customization for the component serialization.
+    /// <summary>This mirrors the options for System.Text.Json.JsonSerializer that we allow for customization for the component serialization.</summary>
     public class IgniteUIJsonSerializerOptions
     {
+        /// <summary>Creates default options.</summary>
         public IgniteUIJsonSerializerOptions()
         {
             MaxDepth = 32;
         }
 
+        /// <summary>Creates options with <paramref name="maxDepth"/>.</summary>
         public IgniteUIJsonSerializerOptions(int maxDepth)
         {
             MaxDepth = maxDepth;
         }
 
+        /// <summary>Maximum nesting depth when serializing; 0 uses the serializer default.</summary>
         public int MaxDepth { get; private set; }
 
+        /// <summary>Copies <paramref name="options"/>.</summary>
         public IgniteUIJsonSerializerOptions(IgniteUIJsonSerializerOptions options)
         {
             MaxDepth = options.MaxDepth;
         }
     }
 
+    /// <summary>The Ignite UI for Blazor runtime settings.</summary>
     public interface IIgniteUIBlazorSettings
     {
+        /// <summary>Sends bound data to the client as JSON even where a faster in-memory transfer is available.</summary>
         bool ForceJsonDataMarshalling { get; }
+
+        /// <summary>Options for serializing values sent to the client.</summary>
         IgniteUIJsonSerializerOptions JsonSerializerOptions { get; }
+
+        /// <summary>Modules whose client resources load at startup.</summary>
         ReadOnlyCollection<Type>? ModulesToLoad { get; }
     }
 
+    /// <summary>
+    /// Runtime settings to pass to <c>AddIgniteUIBlazor</c>; immutable, build them with <see cref="Create"/> and the <c>With</c> methods.
+    /// </summary>
     public class IgniteUIBlazorSettings
         : IIgniteUIBlazorSettings
     {
+        /// <inheritdoc />
         public bool ForceJsonDataMarshalling { get; private set; }
+
+        /// <inheritdoc />
         public IgniteUIJsonSerializerOptions JsonSerializerOptions { get; private set; }
+
+        /// <inheritdoc />
         public ReadOnlyCollection<Type>? ModulesToLoad { get; private set; }
 
+        /// <summary>Creates default settings.</summary>
         public IgniteUIBlazorSettings()
         {
             ForceJsonDataMarshalling = false;
@@ -3637,11 +3590,13 @@ namespace IgniteUI.Blazor.Controls
             ModulesToLoad = null;
         }
 
+        /// <summary>Creates default settings.</summary>
         public static IgniteUIBlazorSettings Create()
         {
             return new IgniteUIBlazorSettings();
         }
 
+        /// <summary>Returns a copy with <see cref="ForceJsonDataMarshalling"/> enabled.</summary>
         public IgniteUIBlazorSettings ShouldForceJsonDataMarshalling()
         {
             var newSettings = new IgniteUIBlazorSettings(this);
@@ -3649,6 +3604,7 @@ namespace IgniteUI.Blazor.Controls
             return newSettings;
         }
 
+        /// <summary>Returns a copy with <see cref="ForceJsonDataMarshalling"/> set to <paramref name="forceJsonDataMarshalling"/>.</summary>
         public IgniteUIBlazorSettings WithForceJsonDataMarshalling(bool forceJsonDataMarshalling)
         {
             var newSettings = new IgniteUIBlazorSettings(this);
@@ -3656,6 +3612,7 @@ namespace IgniteUI.Blazor.Controls
             return newSettings;
         }
 
+        /// <summary>Returns a copy using <paramref name="options"/>.</summary>
         public IgniteUIBlazorSettings WithJsonSerializerOptions(IgniteUIJsonSerializerOptions options)
         {
             var newSettings = new IgniteUIBlazorSettings(this);
@@ -3663,6 +3620,7 @@ namespace IgniteUI.Blazor.Controls
             return newSettings;
         }
 
+        /// <summary>Returns a copy that loads <paramref name="modulesToLoad"/> at startup.</summary>
         public IgniteUIBlazorSettings WithModulesToLoad(ReadOnlyCollection<Type>? modulesToLoad)
         {
             var newSettings = new IgniteUIBlazorSettings(this);
@@ -3678,18 +3636,17 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
+    /// <summary>
+    /// The Ignite UI for Blazor runtime service, registered by
+    /// <see cref="Microsoft.Extensions.DependencyInjection.InfragisticsBlazorExtensions.AddIgniteUIBlazor(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Type[])"/>.
+    /// Inject it and pass it to a module's <see cref="IIgbModule.Register(IIgniteUIBlazor)"/> method to load
+    /// that module's client resources.
+    /// </summary>
     public interface IIgniteUIBlazor
     {
-        IJSRuntime JsRuntime { get; }
-        IIgniteUIBlazorSettings? Settings { get; }
-        WebCallback WebCallback { get; }
-        void RequestLoad(string moduleName);
-        bool IsLoadRequested(string moduleName);
-        void MarkIsLoadRequested(string moduleName);
-        bool IsRuntimeValid(bool reevaluate = false);
     }
 
-    public class IgniteUIBlazor : IIgniteUIBlazor
+    internal class IgniteUIBlazor : IIgniteUIBlazor, IIgniteUIBlazorRuntime
     {
         private bool _isRuntimeValid = false;
         private bool _isRuntimeChecked = false;
@@ -3802,7 +3759,7 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public class SequenceInfo
+    internal class SequenceInfo
     {
         private ReadOnlyCollection<string>? _attributeKeys = null;
         public ReadOnlyCollection<string> AttributeKeys
@@ -3898,22 +3855,22 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public class ModuleLoader
+    internal class ModuleLoader
     {
         public static void Load(IIgniteUIBlazor runtime, string moduleName)
         {
-            runtime.RequestLoad(moduleName);
+            runtime.AsRuntime().RequestLoad(moduleName);
             //runtime.JsRuntime.InvokeAsync<object>("igRequestLoad", moduleName);
         }
 
         internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
-            runtime.MarkIsLoadRequested(moduleName);
+            runtime.AsRuntime().MarkIsLoadRequested(moduleName);
         }
 
         internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
-            return runtime.IsLoadRequested(moduleName);
+            return runtime.AsRuntime().IsLoadRequested(moduleName);
         }
     }
     /// <summary>

@@ -134,13 +134,6 @@ builder.Services.AddIgniteUIBlazor();
 </head>
 ```
 
-4 - Add Script Reference to the **wwwroot/index.html** file:
-
-```html
-<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
-<script src="_framework/blazor.webassembly.js"></script>
-```
-
 ### Add Ignite UI for Blazor Component
 
 Add an Ignite UI for Blazor component to your razor page:
@@ -193,20 +186,17 @@ The library is trim-compatible. Applications publishing with `PublishTrimmed=tru
 
 ## Building and Running Locally
 
-**Prerequisites:** [Node.js](https://nodejs.org/) 22 or later.
+**Prerequisites:** [Node.js](https://nodejs.org/) 22.12 or later (the Vite build requires it).
 
 ```bash
 # 1. Install Node dependencies
 npm install
 
-# 2. Build the JS interop bundle
+# 2. Build the static web assets (src/wwwroot: JS bundle, initializer, api.js, themes)
 npm run build
-
-# 3. Copy component themes to wwwroot
-npm run copythemes
 ```
 
-The `stories/` directory contains a [Blazing Story](https://github.com/jsakamoto/BlazingStory) app that demonstrates Ignite UI for Blazor components. To run it locally, the JS interop bundle and component themes must be built first.
+The `stories/` directory contains a [Blazing Story](https://github.com/jsakamoto/BlazingStory) app that demonstrates Ignite UI for Blazor components. To run it locally, the static web assets must be built first.
 
 After the above steps, open the solution in Visual Studio or run the stories project with the .NET CLI:
 

@@ -18,8 +18,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private static bool _marshalByValue = true;
-
         /// <summary>
         /// Gets the culture of the browser, expanded to a culture with a region when the browser
         /// reports a bare language code.
@@ -42,14 +40,14 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

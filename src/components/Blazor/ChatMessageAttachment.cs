@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -10,14 +8,11 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatMessageAttachment"; } }
 
-        private static bool _marshalByValue = true;
-
         private string _id = string.Empty;
 
         /// <summary>
         /// A unique identifier for the attachment.
         /// </summary>
-        [Parameter]
         public string Id
         {
             get { return this._id; }
@@ -37,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// The URL from which the attachment can be downloaded or viewed.
         /// Typically used for attachments stored on a server or CDN.
         /// </summary>
-        [Parameter]
         public string? Url
         {
             get { return this._url; }
@@ -56,7 +50,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The MIME type or a custom type identifier for the attachment (e.g. "image/png", "pdf", "audio").
         /// </summary>
-        [Parameter]
         [WCWidgetMemberName("Type")]
         public string? AttachmentType
         {
@@ -76,7 +69,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Optional URL to a thumbnail preview of the attachment (e.g. for images or videos).
         /// </summary>
-        [Parameter]
         public string? Thumbnail
         {
             get { return this._thumbnail; }
@@ -90,7 +82,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -108,7 +99,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -126,21 +117,21 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("id"))
-            { this.Id = ReturnToString(args["id"]); }
-            if (args != null && args.ContainsKey("name"))
-            { this.Name = ReturnToString(args["name"]); }
-            if (args != null && args.ContainsKey("url"))
-            { this.Url = ReturnToString(args["url"]); }
-            if (args != null && args.ContainsKey("attachmentType"))
-            { this.AttachmentType = ReturnToString(args["attachmentType"]); }
-            if (args != null && args.ContainsKey("thumbnail"))
-            { this.Thumbnail = ReturnToString(args["thumbnail"]); }
+            if (args != null && args.TryGetValue("id", out var idObj))
+            { this.Id = ReturnToString(idObj); }
+            if (args != null && args.TryGetValue("name", out var nameObj))
+            { this.Name = ReturnToString(nameObj); }
+            if (args != null && args.TryGetValue("url", out var urlObj))
+            { this.Url = ReturnToString(urlObj); }
+            if (args != null && args.TryGetValue("attachmentType", out var attachmentTypeObj))
+            { this.AttachmentType = ReturnToString(attachmentTypeObj); }
+            if (args != null && args.TryGetValue("thumbnail", out var thumbnailObj))
+            { this.Thumbnail = ReturnToString(thumbnailObj); }
 
             this.SuppressParentNotify = false;
         }

@@ -103,6 +103,22 @@ export class WebSplitterDescription extends Description {
 		this._endSize = value;
 		this.markDirty("EndSize");
 	}
+	private _startCollapsed: boolean = false;
+	get startCollapsed(): boolean {
+		return this._startCollapsed;
+	}
+	set startCollapsed(value: boolean) {
+		this._startCollapsed = value;
+		this.markDirty("StartCollapsed");
+	}
+	private _endCollapsed: boolean = false;
+	get endCollapsed(): boolean {
+		return this._endCollapsed;
+	}
+	set endCollapsed(value: boolean) {
+		this._endCollapsed = value;
+		this.markDirty("EndCollapsed");
+	}
 	private _resizeStart: string = null;
 	get resizeStartRef(): string {
 		return this._resizeStart;
@@ -126,6 +142,14 @@ export class WebSplitterDescription extends Description {
 	set resizeEndRef(value: string) {
 		this._resizeEnd = value;
 		this.markDirty("ResizeEndRef");
+	}
+	private _layoutChanged: string = null;
+	get layoutChangedRef(): string {
+		return this._layoutChanged;
+	}
+	set layoutChangedRef(value: string) {
+		this._layoutChanged = value;
+		this.markDirty("LayoutChangedRef");
 	}
 }
 

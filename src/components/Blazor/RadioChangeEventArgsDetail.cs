@@ -10,8 +10,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebRadioChangeEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
         private bool _checked = false;
 
         /// <summary>
@@ -51,7 +49,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -64,7 +61,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -76,15 +73,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("checked"))
-            { this.Checked = ReturnToBoolean(args["checked"]); }
-            if (args != null && args.ContainsKey("value"))
-            { this.Value = ReturnToString(args["value"]); }
+            if (args != null && args.TryGetValue("checked", out var checkedObj))
+            { this.Checked = ReturnToBoolean(checkedObj); }
+            if (args != null && args.TryGetValue("value", out var valueObj))
+            { this.Value = ReturnToString(valueObj); }
 
             this.SuppressParentNotify = false;
         }

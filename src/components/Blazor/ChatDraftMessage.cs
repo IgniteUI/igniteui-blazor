@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -10,14 +8,11 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebChatDraftMessage"; } }
 
-        private static bool _marshalByValue = true;
-
         private string _text = string.Empty;
 
         /// <summary>
         /// The textual content of the draft message.
         /// </summary>
-        [Parameter]
         public string Text
         {
             get { return this._text; }
@@ -36,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// An array of attachments associated with the draft message.
         /// </summary>
-        [Parameter]
         public IgbChatMessageAttachment[] Attachments
         {
             get { return this._attachments; }
@@ -51,7 +45,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -64,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -76,15 +69,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.ContainsKey("text"))
-            { this.Text = ReturnToString(args["text"]); }
-            if (args != null && args.ContainsKey("attachments"))
-            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(args["attachments"]) ?? Array.Empty<IgbChatMessageAttachment>(); }
+            if (args != null && args.TryGetValue("text", out var textObj))
+            { this.Text = ReturnToString(textObj); }
+            if (args != null && args.TryGetValue("attachments", out var attachmentsObj))
+            { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(attachmentsObj) ?? Array.Empty<IgbChatMessageAttachment>(); }
 
             this.SuppressParentNotify = false;
         }
