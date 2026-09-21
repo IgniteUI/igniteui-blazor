@@ -3,7 +3,6 @@ using System.Text.Json;
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using Microsoft.JSInterop;
-using System.Text.Json;
 
 namespace IgniteUI.Blazor.Tests;
 
