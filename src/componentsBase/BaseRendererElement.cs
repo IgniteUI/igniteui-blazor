@@ -82,7 +82,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string? ParentTypeName
+        private protected virtual string? ParentTypeName
         {
             get
             {
@@ -161,7 +161,7 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _serializeDirty = false;
 
-        protected string _name = Guid.NewGuid().ToString();
+        private protected string _name = Guid.NewGuid().ToString();
 
         public string Name
         {
@@ -453,6 +453,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>Marks <paramref name="propertyName"/> as changed so the next render sends it to the client.</summary>
         internal void MarkPropDirty(String? propertyName)
         {
             if (propertyName == null)
@@ -478,7 +479,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected bool IsPropDirty(string propertyName)
+        /// <summary>Whether <paramref name="propertyName"/> changed since the component last sent its properties to the client.</summary>
+        private protected bool IsPropDirty(string propertyName)
         {
             if (_isDirty.ContainsKey(propertyName))
             {
@@ -1090,13 +1092,14 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        public virtual object? FindByName(string name)
+        /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
+        internal virtual object? FindByName(string name)
         {
 
             return null;
         }
 
-        protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
+        private protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
             if (CurrParent == null)
             {
@@ -1111,7 +1114,7 @@ namespace IgniteUI.Blazor.Controls
                 return await ((BaseRendererControl)CurrParent).SetResourceStringAsync(grouping, id, value);
             }
         }
-        protected async Task<object?> SetResourceStringAsync(string grouping, string json)
+        private protected async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
             if (CurrParent == null)
             {

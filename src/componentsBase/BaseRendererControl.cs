@@ -112,7 +112,7 @@ namespace IgniteUI.Blazor.Controls
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
-        protected virtual string ParentTypeName
+        private protected virtual string ParentTypeName
         {
             get
             {
@@ -849,7 +849,8 @@ namespace IgniteUI.Blazor.Controls
             QueueUpdate();
         }
 
-        protected internal void MarkPropDirty(string? propertyName)
+        /// <summary>Marks <paramref name="propertyName"/> as changed so the next render sends it to the client.</summary>
+        internal void MarkPropDirty(string? propertyName)
         {
             if (propertyName == null)
             {
@@ -912,7 +913,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected bool IsPropDirty(String propertyName)
+        /// <summary>Whether <paramref name="propertyName"/> changed since the component last sent its properties to the client.</summary>
+        private protected bool IsPropDirty(String propertyName)
         {
             if (_isDirty.ContainsKey(propertyName))
             {
@@ -2143,7 +2145,8 @@ namespace IgniteUI.Blazor.Controls
             return (T?)val;
         }
 
-        public virtual object? FindByName(string name)
+        /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
+        private protected virtual object? FindByName(string name)
         {
             if ("mainControl".Equals(name))
             {
