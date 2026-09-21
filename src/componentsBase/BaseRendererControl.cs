@@ -208,7 +208,7 @@ namespace IgniteUI.Blazor.Controls
             //_webCallbackHelper.WebCallback = WebCallback.Instance;
         }
 
-        protected virtual string ResolveDisplay()
+        private protected virtual string ResolveDisplay()
         {
             return "block";
         }
@@ -268,7 +268,7 @@ namespace IgniteUI.Blazor.Controls
             return sb.ToString();
         }
 
-        protected virtual bool SupportsVisualChildren
+        private protected virtual bool SupportsVisualChildren
         {
             get
             {
@@ -276,7 +276,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual bool UseDirectRender
+        private protected virtual bool UseDirectRender
         {
             get
             {
@@ -284,7 +284,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string DirectRenderElementName
+        private protected virtual string DirectRenderElementName
         {
             get
             {

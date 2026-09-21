@@ -90,7 +90,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual bool UseDirectRender
+        private protected virtual bool UseDirectRender
         {
             get
             {
@@ -100,7 +100,7 @@ namespace IgniteUI.Blazor.Controls
 
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
-        protected virtual bool SupportsVisualChildren
+        private protected virtual bool SupportsVisualChildren
         {
             get
             {
