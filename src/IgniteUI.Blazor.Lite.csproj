@@ -17,7 +17,6 @@
        explicitly, so the nuspec is never the only thing that differs between the two. -->
   <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <PropertyGroup>
