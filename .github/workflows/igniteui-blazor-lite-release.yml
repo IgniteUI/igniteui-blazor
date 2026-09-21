@@ -85,7 +85,6 @@ jobs:
             "-p:Version=$env:VERSION" `
             -p:ContinuousIntegrationBuild=true `
             -p:GeneratePackageOnBuild=false `
-            -p:TreatWarningsAsErrors=false `
             -p:ExposeInternalsToTests=false `
             -p:SignAssembly=true `
             -p:AssemblyOriginatorKeyFile="${{ runner.temp }}\IG.StrongName.snk"
@@ -95,7 +94,8 @@ jobs:
         shell: pwsh
         run: Remove-Item "${{ runner.temp }}\IG.StrongName.snk" -Force -ErrorAction SilentlyContinue
 
-      # wwwroot is gitignored and produced by webpack, so this artifact is its only carrier.
+      # wwwroot and THIRD-PARTY-LICENSES.md are gitignored and produced by the npm build, so this
+      # artifact is their only carrier.
       - name: Upload build output
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -104,6 +104,7 @@ jobs:
             src/bin/**
             src/obj/**
             src/wwwroot/**
+            src/THIRD-PARTY-LICENSES.md
           include-hidden-files: true
           retention-days: 1
           if-no-files-found: error
@@ -171,6 +172,7 @@ jobs:
             src/bin/**
             src/obj/**
             src/wwwroot/**
+            src/THIRD-PARTY-LICENSES.md
           include-hidden-files: true
           retention-days: 1
           if-no-files-found: error

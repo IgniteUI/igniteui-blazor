@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
         /// The owning <see cref="IgbTileManager"/>, supplied as a cascading parameter.
         /// </summary>
         [CascadingParameter(Name = "TileManagerParent")]
-        protected BaseRendererControl? TileManagerParent
+        private protected BaseRendererControl? TileManagerParent
         {
             get; set;
         }

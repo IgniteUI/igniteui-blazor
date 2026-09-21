@@ -14,22 +14,33 @@
     public RenderFragment<T>? Template { get; set; }
 
     private bool _hasPopulatedContext = false;
-    private T _context = default!;
+
     [Parameter]
-    public T Context 
-    { 
-        get
+    public T Context { get; set; } = default!;
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        if (parameters.TryGetValue<T>(nameof(Context), out _))
         {
-            return _context;
-        }
-        set
-        {
-            _context = value;
             _hasPopulatedContext = true;
         }
+
+        return base.SetParametersAsync(parameters);
     }
+
     public void Update()
     {
         StateHasChanged();
+    }
+
+    internal void UpdateContent(T? context, RenderFragment<T>? template, bool populateContext = true)
+    {
+        if (populateContext && context != null)
+        {
+            Context = context;
+            _hasPopulatedContext = true;
+        }
+        Template = template;
+        Update();
     }
 }

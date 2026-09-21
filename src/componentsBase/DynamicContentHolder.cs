@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace IgniteUI.Blazor.Controls
 {
 
-    public class DynamicContentHolder : ComponentBase
+    internal class DynamicContentHolder : ComponentBase
     {
         public DynamicContentHolder()
         {
@@ -107,7 +107,7 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public abstract class DynamicContentInfo
+    internal abstract class DynamicContentInfo
     {
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public required Type ControlType { get; set; }
@@ -158,7 +158,7 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public class TypedDynamicContent
+    internal class TypedDynamicContent
         : DynamicContentInfo
     {
         public TypedDynamicContent([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type t)
@@ -238,15 +238,15 @@ namespace IgniteUI.Blazor.Controls
         public event DynamicComponentChangingEventHandler? OnComponentChanging;
     }
 
-    public delegate void DynamicComponentChangingEventHandler(object sender, DynamicComponentChangingEventArgs e);
+    internal delegate void DynamicComponentChangingEventHandler(object sender, DynamicComponentChangingEventArgs e);
 
-    public class DynamicComponentChangingEventArgs
+    internal class DynamicComponentChangingEventArgs
     {
         public object? OldComponent { get; internal set; }
         public object? NewComponent { get; internal set; }
     }
 
-    public class DynamicContentInfo<T>
+    internal class DynamicContentInfo<T>
         : DynamicContentInfo
     {
         public DynamicContentInfo()
@@ -299,13 +299,7 @@ namespace IgniteUI.Blazor.Controls
             if (Component is IgbTemplateContent<T>)
             {
                 var template = (IgbTemplateContent<T>)Component;
-
-                if (_hasPopulatedContext && Context != null)
-                {
-                    template.Context = Context;
-                }
-                template.Template = Template;
-                template.Update();
+                template.UpdateContent(Context, Template, _hasPopulatedContext);
             }
         }
 

@@ -11,13 +11,13 @@ namespace IgniteUI.Blazor.Controls
         public override string Type { get { return "WebCheckboxBase"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
+        private protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
         /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool SupportsVisualChildren
         {
             get
             {
@@ -26,7 +26,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,7 +35,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
