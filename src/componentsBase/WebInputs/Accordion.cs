@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbAccordion
     {
         /// <inheritdoc />
-        protected override string ParentTypeName
+        private protected override string ParentTypeName
         {
             get
             {
@@ -36,7 +36,7 @@ namespace IgniteUI.Blazor.Controls
         /// The owning <see cref="IgbAccordion"/>, supplied as a cascading parameter.
         /// </summary>
         [CascadingParameter(Name = "AccordionParent")]
-        protected BaseRendererControl? AccordionParent
+        private protected BaseRendererControl? AccordionParent
         {
             get; set;
         }

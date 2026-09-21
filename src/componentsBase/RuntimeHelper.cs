@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
         private Func<IJSInProcessRuntime, string, string, string, string>? _callSendUnmarshalledColumnDataIntentMessage;
 #endif
         private IJSInProcessRuntime? _inprocRuntime;
-        private IIgniteUIBlazor? _igBlazor;
+        private readonly IIgniteUIBlazorRuntime? _igBlazor;
 
 #if !NETSTANDARD
         [DynamicDependency(
@@ -26,7 +26,7 @@ namespace IgniteUI.Blazor.Controls
         [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the net8-only InvokeUnmarshalled methods (removed in net9+), preserved via the DynamicDependency above; absence falls back to the raw-pointer InvokeVoid path.")]
         [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The generic arguments are statically referenced framework/library types, and the InvokeUnmarshalled generic parameters carry no DynamicallyAccessedMembers requirements.")]
         [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The DynamicDependency above marks the runtime's RequiresUnreferencedCode members (Invoke, GetValue, SetValue, ...); the probe filters by name and never invokes them.")]
-        public RuntimeHelper(IJSRuntime? runtime, IIgniteUIBlazor igBlazor)
+        public RuntimeHelper(IJSRuntime? runtime, IIgniteUIBlazorRuntime igBlazor)
         {
             _igBlazor = igBlazor;
             //Console.WriteLine("initializing runtime helper");

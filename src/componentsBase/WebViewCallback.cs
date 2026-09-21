@@ -2,26 +2,8 @@ using Microsoft.JSInterop;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public class WebCallback
+    internal class WebCallback
     {
-        //private WebCallback() { }
-        //private static WebCallback _instance;
-        //public static WebCallback Instance {
-        //    get
-        //    {
-        //        if (_instance == null)
-        //        {
-        //            _instance = new WebCallback();                 
-        //        }                    
-
-        //        return _instance;
-        //    }
-        //    private set
-        //    {
-        //        _instance = value;
-        //    } 
-        //}
-
         public bool IsReady
         {
             get

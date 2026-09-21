@@ -12,6 +12,7 @@ namespace IgniteUI.Blazor.Controls
         // }
 
         private IIgniteUIBlazor? _igBlazor;
+        /// <summary>The injected <see cref="IIgniteUIBlazor"/> service; pass it to a module's <c>Register</c> from <see cref="EnsureModulesLoaded"/>.</summary>
         [Inject]
         protected IIgniteUIBlazor IgBlazor
         {
@@ -35,7 +36,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("ensuring element modules loaded");
         }
 
-        public bool IsComponentRooted
+        internal bool IsComponentRooted
         {
             get
             {
@@ -81,7 +82,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string? ParentTypeName
+        private protected virtual string? ParentTypeName
         {
             get
             {
@@ -160,7 +161,7 @@ namespace IgniteUI.Blazor.Controls
 
         private bool _serializeDirty = false;
 
-        protected string _name = Guid.NewGuid().ToString();
+        private protected string _name = Guid.NewGuid().ToString();
 
         public string Name
         {
@@ -176,7 +177,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
+        internal void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
         {
             if (CurrParent != null)
             {
@@ -258,13 +259,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public object? Parent
+        internal object? Parent
         {
             get
             {
                 return _parent;
             }
-            internal set
+            set
             {
                 Object? oldParent = _parent;
                 _parent = value;
@@ -320,7 +321,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected virtual string MethodTarget
+        private protected virtual string MethodTarget
         {
             get
             {
@@ -338,7 +339,7 @@ namespace IgniteUI.Blazor.Controls
             return InvokeMethodHelperSync(MethodTarget, methodName, arguments, types, nativeElements);
         }
 
-        protected async Task<object?> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
+        private async Task<object?> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (CurrParent == null)
             {
@@ -354,7 +355,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected object? InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
+        private object? InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
         {
             if (CurrParent == null)
             {
@@ -452,6 +453,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>Marks <paramref name="propertyName"/> as changed so the next render sends it to the client.</summary>
         internal void MarkPropDirty(String? propertyName)
         {
             if (propertyName == null)
@@ -477,7 +479,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected bool IsPropDirty(string propertyName)
+        /// <summary>Whether <paramref name="propertyName"/> changed since the component last sent its properties to the client.</summary>
+        private protected bool IsPropDirty(string propertyName)
         {
             if (_isDirty.ContainsKey(propertyName))
             {
@@ -511,7 +514,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected String _cachedSerializedContent = "";
+        private String _cachedSerializedContent = "";
 
         public virtual string Type
         {
@@ -526,7 +529,9 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public void Serialize(SerializationContext context, string? propertyName = null)
+        void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
+
+        internal void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
             ser.Type = Type;
@@ -535,7 +540,7 @@ namespace IgniteUI.Blazor.Controls
             ser.End();
         }
 
-        public string Serialize()
+        internal string Serialize()
         {
             if (_serializeDirty)
             {
@@ -554,7 +559,7 @@ namespace IgniteUI.Blazor.Controls
             return _cachedSerializedContent;
         }
 
-        protected void EnsureValid()
+        private void EnsureValid()
         {
             if (_parent == null && _tempParent == null)
             {
@@ -562,7 +567,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        protected object? CurrParent
+        internal object? CurrParent
         {
             get
             {
@@ -1087,13 +1092,14 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        public virtual object? FindByName(string name)
+        /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
+        internal virtual object? FindByName(string name)
         {
 
             return null;
         }
 
-        protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
+        private protected async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
         {
             if (CurrParent == null)
             {
@@ -1108,7 +1114,7 @@ namespace IgniteUI.Blazor.Controls
                 return await ((BaseRendererControl)CurrParent).SetResourceStringAsync(grouping, id, value);
             }
         }
-        protected async Task<object?> SetResourceStringAsync(string grouping, string json)
+        private protected async Task<object?> SetResourceStringAsync(string grouping, string json)
         {
             if (CurrParent == null)
             {

@@ -62,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
         /// The owning <see cref="IgbTabs"/>, supplied as a cascading parameter.
         /// </summary>
         [CascadingParameter(Name = "TabsParent")]
-        protected BaseRendererControl? TabsParent
+        private protected BaseRendererControl? TabsParent
         {
             get; set;
         }
