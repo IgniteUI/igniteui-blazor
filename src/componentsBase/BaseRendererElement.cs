@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace IgniteUI.Blazor.Controls
 {
 
+    /// <summary>
+    /// Base class of the child elements.
+    /// </summary>
     public partial class BaseRendererElement : ComponentBase, JsonSerializable
     {
         // public BaseRendererElement()
@@ -31,6 +34,7 @@ namespace IgniteUI.Blazor.Controls
                 EnsureModulesLoaded();
             }
         }
+        /// <summary>Requests the client modules this element needs; override to register more through <see cref="IgBlazor"/>.</summary>
         protected virtual void EnsureModulesLoaded()
         {
             //Console.WriteLine("ensuring element modules loaded");
@@ -98,6 +102,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>The child elements declared inside this element.</summary>
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
         private protected virtual bool SupportsVisualChildren
@@ -163,6 +168,7 @@ namespace IgniteUI.Blazor.Controls
 
         private protected string _name = Guid.NewGuid().ToString();
 
+        /// <summary>The name of this element.</summary>
         public string Name
         {
             set
@@ -329,11 +335,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>Calls <paramref name="methodName"/> on the client-side element with <paramref name="arguments"/> and returns its result.</summary>
         protected async Task<object?> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return await InvokeMethodHelper(MethodTarget, methodName, arguments, types, nativeElements);
         }
 
+        /// <summary>Calls <paramref name="methodName"/> on the client-side element and returns its result synchronously; only available where .NET runs in the browser.</summary>
         protected object? InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
         {
             return InvokeMethodHelperSync(MethodTarget, methodName, arguments, types, nativeElements);
@@ -516,6 +524,7 @@ namespace IgniteUI.Blazor.Controls
 
         private String _cachedSerializedContent = "";
 
+        /// <summary>The type name of this element.</summary>
         public virtual string Type
         {
             get
