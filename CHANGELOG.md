@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- `*Script` parameters for client templates and events now also support resolving late once `registerScript` is called even after the client component is created.
+
 ## 0.3.0 - 2026-09-21
 
 ### Changed
