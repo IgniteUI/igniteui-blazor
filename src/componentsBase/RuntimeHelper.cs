@@ -16,7 +16,7 @@ namespace IgniteUI.Blazor.Controls
         private Func<IJSInProcessRuntime, string, string, string, string>? _callSendUnmarshalledColumnDataIntentMessage;
 #endif
         private IJSInProcessRuntime? _inprocRuntime;
-        private IIgniteUIBlazor? _igBlazor;
+        private readonly IIgniteUIBlazorRuntime? _igBlazor;
 
 #if NET8_0
         [DynamicDependency(
@@ -28,7 +28,7 @@ namespace IgniteUI.Blazor.Controls
         [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The DynamicDependency above marks the runtime's RequiresUnreferencedCode members (Invoke, GetValue, SetValue, ...); the probe filters by name and never invokes them.")]
         [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "net8 Blazor WASM-only probe (IJSInProcessRuntime + InvokeUnmarshalled); no NativeAOT target exists for net8 wasm, and under Mono AOT the interpreter executes this.")]
 #endif
-        public RuntimeHelper(IJSRuntime? runtime, IIgniteUIBlazor igBlazor)
+        public RuntimeHelper(IJSRuntime? runtime, IIgniteUIBlazorRuntime igBlazor)
         {
             _igBlazor = igBlazor;
             var inprocRuntime = runtime as IJSInProcessRuntime;

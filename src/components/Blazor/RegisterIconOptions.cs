@@ -9,8 +9,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override string Type { get { return "WebRegisterIconOptions"; } }
 
-        private static readonly bool _marshalByValue = true;
-
         private string? _collection;
 
         /// <summary>

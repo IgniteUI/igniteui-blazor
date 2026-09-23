@@ -27,4 +27,24 @@ public class MethodInteropTests : BlazorComponentTestBase
 
         Assert.True(await pending);
     }
+
+    [Fact]
+    public async Task ReturnDeliveredBeforeTheCallRegisters_StillCompletesIt()
+    {
+        Interop.PrimeReady();
+        // Held open so the return arrives while the call is still suspended on its send, with
+        // nothing registered for it yet; the promise reply then sends it looking for a stored one.
+        var reply = Interop.WithholdMethodReply("toggle");
+        var cut = Render<IgbBanner>();
+
+        var pending = Interop.OnDispatcher(cut.Instance.ToggleAsync);
+        Interop.CompleteDeferred(Interop.RequireCall("toggle"), InteropReturn.Bool(true));
+        reply(InteropReturn.Deferred);
+
+        // A dropped return never completes, so this is bounded to fail rather than hang the run.
+        Assert.True(
+            await Task.WhenAny(pending, Task.Delay(TimeSpan.FromSeconds(10))) == pending,
+            "the call never completed - the return that arrived before it registered was dropped");
+        Assert.True(await pending);
+    }
 }

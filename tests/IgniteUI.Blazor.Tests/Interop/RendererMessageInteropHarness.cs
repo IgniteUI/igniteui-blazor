@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Tests.Interop;
 /// <see cref="InteropHarness"/> adapter for the current interop implementation:
 /// global JS functions (<c>igSendMessage</c>, <c>igCheckReady</c>, <c>igWaitForLoaded</c>)
 /// carrying <c>RendererMessage</c> JSON envelopes, with JS→.NET traffic entering
-/// through the public <see cref="WebCallback"/> JSInvokable surface.
+/// through the <see cref="WebCallback"/> JSInvokable surface.
 /// All knowledge of that wire format is intentionally concentrated here.
 /// </summary>
 public sealed class RendererMessageInteropHarness : InteropHarness
@@ -220,6 +220,14 @@ public sealed class RendererMessageInteropHarness : InteropHarness
             _methodHandlers[methodName] = handler;
         }
         handler.SetResult(ToResultPayload(result));
+    }
+
+    public override Action<InteropReturn> WithholdMethodReply(string methodName)
+    {
+        _stubbedMethods.TryAdd(methodName, true);
+        var handler = _js.Setup<object>(SendMessage, inv => MethodNameOf(inv) == methodName);
+        _methodHandlers[methodName] = handler;
+        return result => handler.SetResult(ToResultPayload(result));
     }
 
     public override void SetupPropertyRead(string propertyName, InteropReturn result) =>

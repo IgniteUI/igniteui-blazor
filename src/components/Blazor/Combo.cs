@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
     /// The Combo component features case-sensitive filtering, grouping, complex data binding,
     /// dynamic addition of values and more.
     /// </summary>
-    public partial class IgbCombo<T> : IgbBaseComboBox
+    public partial class IgbCombo<T> : IgbBaseComboBox, IDataSourceNotifications
     {
         /// <inheritdoc />
         public override string Type { get { return "WebCombo"; } }
@@ -27,13 +27,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
+        private protected override string ResolveDisplay()
         {
             return "inline-block";
         }
 
         /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool SupportsVisualChildren
         {
             get
             {
@@ -1346,6 +1346,79 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
+
+        #region IDataSourceNotifications
+
+        /// <inheritdoc />
+        public void NotifyInsertItem(object dataSource, int index, object refItem)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifyInsertItem(refName, index, refItem);
+            }
+        }
+
+        /// <inheritdoc />
+        public void NotifyRemoveItem(object dataSource, int index, object oldItem)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifyRemoveItem(refName, index, oldItem);
+            }
+        }
+
+        /// <inheritdoc />
+        public void NotifyClearItems(object dataSource)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifyClearItems(refName);
+            }
+        }
+
+        /// <inheritdoc />
+        public void NotifySetItem(object dataSource, int index, object oldItem, object newItem)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifySetItem(refName, index, oldItem, newItem);
+            }
+        }
+
+        /// <inheritdoc />
+        public void NotifyUpdateItem(object dataSource, int index, object refItem, bool syncDataOnly = false)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifyUpdateItem(refName, index, refItem, syncDataOnly);
+            }
+        }
+
+        /// <inheritdoc />
+        public void SuspendNotifications(object dataSource)
+        {
+            DataSourceManager?.SuspendNotifications(dataSource);
+        }
+
+        /// <inheritdoc />
+        public void ResumeNotifications(object dataSource, bool notify = true)
+        {
+            DataSourceManager?.ResumeNotifications(dataSource, notify);
+        }
+
+        private bool TryGetDataSourceRef(object dataSource, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out DataSourceManager? manager, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? refName)
+        {
+            manager = DataSourceManager;
+            if (manager == null || !manager.HasRefId(dataSource))
+            {
+                refName = null;
+                return false;
+            }
+            refName = manager.GetRefId(dataSource);
+            return true;
+        }
+
+        #endregion IDataSourceNotifications
 
         internal override void SerializeCore(RendererSerializer ser)
         {

@@ -4,7 +4,9 @@
     <Copyright>Infragistics</Copyright>
     <Deterministic>true</Deterministic>
     <Nullable>enable</Nullable>
-    <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
+    <!-- Every compiler, analyzer and NuGet warning as error in build and in IDEs.
+         Rules/categories and severity configured in .editorconfig -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Run the .editorconfig IDExxxx style rules as analyzers during build
          so formatting violations surface as warnings locally and in CI. -->

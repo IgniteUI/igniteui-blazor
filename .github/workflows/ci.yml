@@ -79,7 +79,7 @@ jobs:
         run: dotnet restore
 
       - name: Build .NET library
-        run: dotnet build --no-restore --configuration Release /p:TreatWarningsAsErrors=false
+        run: dotnet build --no-restore --configuration Release
 
       # Trimmed publish of the smoke app fails on any linker warning; publish runs per TFM
       - name: Publish trimmed smoke app

@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTileManager
     {
         /// <inheritdoc />
-        protected override string ParentTypeName
+        private protected override string ParentTypeName
         {
             get
             {

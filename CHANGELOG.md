@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.3.0 - 2026-09-21
+
+### Changed
+
+- **Infrastructure:** API that was unintentionally public is now internal: the members of `IIgniteUIBlazor`, the runtime and JavaScript callback classes, the serialization, rendering and data-source plumbing of the component base classes, and the data-source adapters and helpers around them. Injecting `IIgniteUIBlazor` and passing it to a module's `Register`, the settings passed to `AddIgniteUIBlazor`, and every component parameter and method are unchanged. The manual data change notifications (`NotifyInsertItem` and the other `Notify*Item` methods, `SuspendNotifications`, `ResumeNotifications`) moved from the base class to `IgbCombo<T>`, the one component with a bound collection, as the `IDataSourceNotifications` interface.
+
+### Fixed
+
+- Removed `[Parameter]` from non-component option/context types (`ChatOptions`, `FocusOptions`, `RegisterIconOptions`, `CalendarResourceStrings`, and others), which caused spurious `BL0005` warnings when assigned outside markup. [#436](https://github.com/IgniteUI/igniteui-blazor/pull/436)
+- **Packaging:** the NuGet package now correctly includes `THIRD-PARTY-LICENSES.md`. [#450](https://github.com/IgniteUI/igniteui-blazor/pull/450)
+- Tightened concurrency handling of async component method calls (`ShowAsync`, `ToggleAsync`, etc) that could have potentially caused errors or hang under certain conditions. Disposing a component while a call was still in flight is also race-free now. [#394](https://github.com/IgniteUI/igniteui-blazor/pull/394)
+
 ## 0.2.0 - 2026-09-17
 
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.3.2 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.3.2) with highlights noted below:
