@@ -1,5 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 #if NET8_0
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 #endif
 using System.Runtime.CompilerServices;
