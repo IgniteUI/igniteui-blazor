@@ -15,7 +15,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Determines the behavior of events as they are fired at the JavaScript level and bubbled up to the Blazor level.
     /// </summary>
-    public enum ControlEventBehavior
+    internal enum ControlEventBehavior
     {
         /// <summary>
         /// The behavior is automatically determined by the component.
@@ -135,29 +135,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Gets or sets how events are bubbled up from JavaScript to Blazor.
-        /// </summary>
-        [Parameter]
-        public ControlEventBehavior EventBehavior { get; set; } = ControlEventBehavior.Auto;
-
-        /// <summary>
         /// Gets the components default event behavior.
         /// </summary>
-        protected virtual ControlEventBehavior DefaultEventBehavior
+        private protected virtual ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
-        }
-
-        /// <summary>
-        /// Resolves the components event behavior if Auto is selected.
-        /// </summary>
-        protected ControlEventBehavior ResolveEventBehavior()
-        {
-            if (EventBehavior == ControlEventBehavior.Auto)
-            {
-                return DefaultEventBehavior;
-            }
-            return EventBehavior;
         }
 
         /// <summary>The content rendered inside the component.</summary>
@@ -1699,7 +1681,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (m.Type == "refChanged")
             {
-                m.SetData("eventBehavior", "\"" + ResolveEventBehavior().ToString().ToLower() + "\"");
+                m.SetData("eventBehavior", "\"" + DefaultEventBehavior.ToString().ToLower() + "\"");
             }
             string json = m.ToJson();
             //Console.WriteLine("message");
@@ -1722,7 +1704,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (m.Type == "refChanged")
             {
-                m.SetData("eventBehavior", "\"" + ResolveEventBehavior().ToString().ToLower() + "\"");
+                m.SetData("eventBehavior", "\"" + DefaultEventBehavior.ToString().ToLower() + "\"");
             }
             string json = m.ToJson();
             SendJsonSync(json, m.NativeElements);
