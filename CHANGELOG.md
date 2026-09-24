@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- **Infrastructure:** the `EventBehavior` parameter and the `ControlEventBehavior` enum are no longer public. Each component keeps the event dispatch it always defaulted to; the per-instance override was never set by any sample, doc or test.
+
 ## 0.3.0 - 2026-09-21
 
 ### Changed
