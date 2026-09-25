@@ -6,7 +6,7 @@ import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
 import { IgcPortalModule } from 'igniteui-core/igc-portal';
 import { refValues, itemMaps } from './refs-state';
-import { getRegisteredScript } from './api';
+import { _getRegisteredScript, _scriptRegistryEvents } from './api';
 
 IgcPortalModule.register();
 
@@ -19,6 +19,28 @@ let containers: Map<string, HTMLElement> = new Map<string, HTMLElement>();
 let containersDirect: Map<string, boolean> = new Map<string, boolean>();
 let containersPendingRefs: Map<string, (() => void)[]> = new Map<string, (() => void)[]>();
 let containersPendingDataRefs: Map<string, (() => void)[]> = new Map<string, (() => void)[]>();
+/** A name and partial payload for a `*Script` ref pending register. */
+type PendingScriptRef = { name: string; json: string };
+/** Keyed by container, then ref */
+const containersPendingScriptRefs = new Map<string, Map<string, PendingScriptRef>>();
+_scriptRegistryEvents.addEventListener('registered', (e) => {
+  // "replay" refChanged to resolve again against the now registered script
+  const name = (e as CustomEvent<string>).detail;
+  // collect first, refChanged re-enters the code that edits this map.
+  const ready: [string, string][] = [];
+  for (const [containerId, refs] of containersPendingScriptRefs) {
+    for (const [refName, pending] of refs) {
+      if (pending.name === name) {
+        ready.push([containerId, pending.json]);
+        refs.delete(refName);
+      }
+    }
+    if (refs.size === 0) containersPendingScriptRefs.delete(containerId);
+  }
+  for (const [containerId, json] of ready) {
+    (window as any).igSendMessage(containerId, json, null /* webCallback not used */, [] /* nativeElements not used */);
+  }
+});
 function getContainer(id: string): HTMLElement {
   let cont = containers.get(id);
   if (!cont) {
@@ -748,6 +770,8 @@ function updateAngularElement(element: any) {
         if (eventBehaviors.has(containerId)) {
           eventBehaviors.delete(containerId);
         }
+
+        containersPendingScriptRefs.delete(containerId);
       }
       break;
     case 'descriptionDelta':
@@ -778,6 +802,7 @@ function updateAngularElement(element: any) {
         let refName = m.refName;
         const originalRefVal = m.refValue;
         let refValue = m.refValue;
+        containersPendingScriptRefs.get(containerId)?.delete(refName);
 
         if (typeof refValue == 'string' && refValue.indexOf('json:::') == 0) {
           refValue = refValue.substring('json:::'.length);
@@ -827,11 +852,14 @@ function updateAngularElement(element: any) {
           if (typeof refValue == 'string' && refValue.indexOf('script:::') == 0) {
             refValue = refValue.substring('script:::'.length);
             let scriptRef = refValue;
-            var f = getRegisteredScript(refValue);
+            var f = _getRegisteredScript(refValue);
             if (!f) {
-              console.warn(
-                `[Ignite UI] script '${refValue}' is not registered — call registerScript('${refValue}', ...) (from './_content/IgniteUI.Blazor/api.js') before the component renders.`,
+              console.debug(
+                `[Ignite UI] script '${scriptRef}' is not registered yet; it will be applied once registerScript('${scriptRef}', ...) runs.`,
               );
+              let refs = containersPendingScriptRefs.get(containerId);
+              if (!refs) containersPendingScriptRefs.set(containerId, (refs = new Map()));
+              refs.set(refName, { name: scriptRef, json });
               return;
             }
             if (f.shouldCall && typeof f.func == 'function') {

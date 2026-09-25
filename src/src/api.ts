@@ -19,6 +19,8 @@ export interface RegisteredScript {
 }
 
 const scripts = new Map<string, RegisteredScript>();
+/** Dispatches `registered` (detail: the script name) after each `registerScript` call. Underscore-prefixed like every export the bundle uses but the typings hide. @internal */
+export const _scriptRegistryEvents = new EventTarget();
 
 /**
  * Registers a script usable from a `*Script` component parameter.
@@ -28,6 +30,7 @@ const scripts = new Map<string, RegisteredScript>();
  */
 export function registerScript(name: string, func: Function, shouldCall = false): void {
   scripts.set(name, { shouldCall, func });
+  _scriptRegistryEvents.dispatchEvent(new CustomEvent('registered', { detail: name }));
 }
 
 /** Removes a previously registered script. */
@@ -36,7 +39,7 @@ export function removeScript(name: string): void {
 }
 
 /** Gets a previously registered script, if any. @internal */
-export function getRegisteredScript(name: string): RegisteredScript | undefined {
+export function _getRegisteredScript(name: string): RegisteredScript | undefined {
   return scripts.get(name);
 }
 
