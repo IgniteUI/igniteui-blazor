@@ -1,0 +1,30 @@
+# Agentic Collaboration Standard (ACS) manifest.
+# Spec: https://github.com/jackby03/agentic-collaboration-standard/tree/main/spec/v1
+# Schema: https://raw.githubusercontent.com/jackby03/agentic-collaboration-standard/main/schemas/v1/manifest.schema.json
+#
+# .github/copilot-instructions.md holds the coding rules and .github/CONTRIBUTING.md
+# the contribution workflow. Both win over this folder.
+# The skills in .agents/skills/ are for contributors to this repository. The
+# end-user skills that ship with the product live in skills/ at the root.
+
+version: "1.0"
+
+project:
+  name: "igniteui-blazor"
+  description: "Ignite UI for Blazor (IgniteUI.Blazor.Lite): a Razor class library of accessible, themable Blazor components (inputs, date pickers, navigation, layout, chat and more) that wrap the igniteui-webcomponents custom elements through a TypeScript JS interop layer."
+  language: csharp
+  framework: blazor
+
+layers:
+  context: true # context/project.md
+  skills: true # .agents/skills/ (contributor workflows)
+  commands: false # no reusable single-shot commands defined yet
+  agents: false # no custom agents defined yet
+  permissions: true # permissions/policy.yaml
+
+compatible_with:
+  - github-copilot
+  - claude-code
+  - cursor
+  - codex
+  - any

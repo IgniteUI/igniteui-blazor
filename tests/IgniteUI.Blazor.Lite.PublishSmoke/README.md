@@ -46,6 +46,6 @@ The manual browser pass above remains useful for the other TFMs and for linker e
 
 ## When to run
 
-- After any change to reflection, serialization, `[DynamicallyAccessedMembers]` annotations, or suppressions in `src/` (see the `igniteui-blazor-lite-trimming` skill in `.agents/skills/` and docs/TRIMMING.md).
+- After any change to reflection, serialization, `[DynamicallyAccessedMembers]` annotations, or suppressions in `src/` (see the `maintain-trim-compatibility` skill in `.agents/skills/` and docs/TRIMMING.md).
 - After SDK updates — linker behavior should be re-validated.
 - For linker experiments, run a control (publish *without* the change) first. Beware: any constrained static-abstract call (e.g. `IIgbModule.Register` through a generic) roots the implementations on all kept module types, contaminating controls.

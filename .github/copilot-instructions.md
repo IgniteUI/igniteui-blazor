@@ -72,6 +72,7 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 - **`componentsBase/`** - Shared base classes, DI extensions (`AddIgniteUIBlazor`), serialization, data adapters, and JS interop plumbing.
 - **`src/`** - TypeScript interop layer (vite, native ESM). Manages component mounting, property sync, event bridging, and module loading between Blazor and the `igniteui-webcomponents` package.
 - **`skills/`** - AI agent skill files that teach LLMs how to *use* this library. These are shipped in the package for downstream consumers.
+- **`.agents/`** - Contributor-facing agent setup: project context (`context/project.md`), permissions policy, and skills for working *on* this repository (`skills/`).
 
 ## Build & Tooling
 
@@ -146,3 +147,5 @@ Domain-specific skills for AI-assisted development are located in the [`skills/`
 - [`skills/igniteui-blazor-grids`](../skills/igniteui-blazor-grids/SKILL.md) - Data grids: `IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid`, `IgbGridLite`.
 - [`skills/igniteui-blazor-theming`](../skills/igniteui-blazor-theming/SKILL.md) - Theming and visual customization: design tokens, CSS parts, built-in themes.
 - [`skills/igniteui-blazor-generate-from-image-design`](../skills/igniteui-blazor-generate-from-image-design/SKILL.md) - Implement Blazor views from design images (screenshots, mockups, wireframes) using Ignite UI Blazor components and MCP servers.
+
+Skills for contributing *to* this repository live in [`.agents/skills/`](../.agents/skills/README.md): writing library tests, keeping the library trim-compatible, writing Blazing Story stories, and authoring skills. Follow the [skill-authoring](../.agents/skills/skill-authoring/SKILL.md) skill when adding or changing any skill in either location.

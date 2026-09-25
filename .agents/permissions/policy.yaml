@@ -1,0 +1,46 @@
+# ACS Permission Policy v1.0
+# Spec: https://github.com/jackby03/agentic-collaboration-standard/blob/main/spec/v1/08-permissions.md
+#
+# Evaluation order: deny rules first, then allow rules, then default deny.
+# Mirrors .agents/context/project.md. Lock files and build output are denied;
+# signing material under eng/ is read-only.
+
+deny:
+  read:
+    - ".env"
+    - ".env.*"
+    - ".envrc"
+    - "**/.envrc"
+    - "**/.env"
+    - "**/.env.*"
+    - "*.pem"
+    - "**/*.pem"
+    - "*.key"
+    - "**/*.key"
+    - "*.pfx"
+    - "**/*.pfx"
+    - "*.snk"
+    - "**/*.snk"
+    - ".npmrc"
+    - "**/.npmrc"
+  write:
+    - ".git/**"
+    - "node_modules/**"
+    - "**/bin/**"
+    - "**/obj/**"
+    - "dist/**"
+    - "**/TestResults/**"
+    - "coverage/**"
+    - "src/wwwroot/**"
+    - "eng/**"
+    - "package-lock.json"
+    - "**/package-lock.json"
+    - "**/yarn.lock"
+    - "**/pnpm-lock.yaml"
+    - "**/packages.lock.json"
+
+allow:
+  read:
+    - "**"
+  write:
+    - "**"

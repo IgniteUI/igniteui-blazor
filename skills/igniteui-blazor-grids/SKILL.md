@@ -1,7 +1,7 @@
 ---
 license: MIT
 name: igniteui-blazor-grids
-description: "All Ignite UI for Blazor data grids — Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, Pivot Grid: setup, columns and templates, sorting, filtering, selection, cell and row editing, grouping, summaries, toolbar, Excel/CSV export, paging, remote and server-side data, virtualization, sizing, state persistence, and migrating Grid Lite to IgbGrid. Use for grids, tables, tabular data, cell editing, row selection, column pinning or hiding, grouped rows, pivot tables, tree or hierarchical data, master-detail views, and grid export. For non-grid components use igniteui-blazor-components; for theming use igniteui-blazor-theming."
+description: "Covers all Ignite UI for Blazor data grids (Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, Pivot Grid): setup, columns and templates, sorting, filtering, selection, cell and row editing, grouping, summaries, toolbar, Excel/CSV export, paging, remote and server-side data, virtualization, sizing, state persistence, and migrating Grid Lite to IgbGrid. WHEN TO USE: grids, tables, tabular data, cell editing, row selection, column pinning or hiding, grouped rows, pivot tables, tree or hierarchical data, master-detail views, grid export, or choosing a grid type. WHEN NOT TO USE: non-grid components such as lists, the tree view, or charts (use igniteui-blazor-components), grid colors, themes, or design tokens (use igniteui-blazor-theming), or building a whole view from a design image (use igniteui-blazor-generate-from-image-design)."
 user-invocable: true
 ---
 

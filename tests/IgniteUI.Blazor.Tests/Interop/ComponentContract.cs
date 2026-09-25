@@ -256,8 +256,7 @@ public sealed class BindContractSpec<TComponent> where TComponent : IComponent
 /// method identifiers, argument serialization and type tags, return decoding, and
 /// event names + args deserialization. Runs through the <see cref="InteropHarness"/>
 /// seam, so the same contract verifies the component before and after it migrates to
-/// a new interop stack (see <see cref="InteropHarnessRegistry"/>). Authoring guide:
-/// skills/igniteui-blazor-lite-testing/references/interop-contracts.md.
+/// a new interop stack (see <see cref="InteropHarnessRegistry"/>).
 /// </summary>
 public sealed class ComponentContract<TComponent> where TComponent : IComponent
 {
