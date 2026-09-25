@@ -300,12 +300,6 @@ dotnet_diagnostic.IDE0005.severity = warning
 # BL0007: Component parameters should be auto properties.
 dotnet_diagnostic.BL0007.severity = suggestion
 
-#### Test Exclusions ####
-[tests/**.{cs,razor}]
-# IDE0005 analyzer can't run on build w/o `GenerateDocumentationFile` (not on for test projects)
-dotnet_diagnostic.IDE0005.severity = suggestion
-
-
 #### Future candidates (aspnetcore-inspired) — enable after the one-time format
 #### and a cleanup pass. Most below have NO auto-fix via our safe format
 #### command, so enabling them creates manual work; the ones marked [fixer]
@@ -349,6 +343,11 @@ dotnet_diagnostic.IDE0005.severity = suggestion
 dotnet_analyzer_diagnostic.category-Trimming.severity = error
 dotnet_analyzer_diagnostic.category-SingleFile.severity = error
 dotnet_analyzer_diagnostic.category-AOT.severity = error
+
+#### Test Exclusions — keep LAST: a section header ends the repo-wide [*.cs] rules above it ####
+[tests/**.{cs,razor}]
+# IDE0005 analyzer can't run on build w/o `GenerateDocumentationFile` (not on for test projects)
+dotnet_diagnostic.IDE0005.severity = suggestion
 
 #### Generated code — keep LAST so it overrides all sections above ####
 
