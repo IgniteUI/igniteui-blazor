@@ -8,6 +8,7 @@ A selection reference, not an API reference. Confirm exact parameters with `get_
 |---|---|---|
 | Top horizontal bar with brand, actions | `IgbNavbar` | slots `start` / default / `end`; use a plain `<header>` if the slot structure fights the design |
 | Sidebar / side navigation | `IgbNavDrawer` + `IgbNavDrawerItem` | **`Position="NavDrawerPosition.Relative"` for a pinned in-flow sidebar**; `slot="mini"` for an icon-only collapsed rail; plain `<aside>` for a fully static custom sidebar |
+| Breadcrumb trail (Home › Section › Page) | `IgbBreadcrumbs` + `IgbBreadcrumb` | wrap in `<nav aria-label>`; anchors as item content; `Current` on the last item; `Separator` icon name |
 | Tab strip switching content | `IgbTabs` + `IgbTab` | header via `Label` or the `label` slot; there is no `IgbTabPanel` |
 | Collapsible sections | `IgbExpansionPanel`, or `IgbAccordion` when only one opens at a time | |
 | Step-by-step wizard | `IgbStepper` + `IgbStep` | `Orientation`, `Linear` |
