@@ -35,6 +35,7 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
         .Prop(c => c.Open, true)
+        .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Prop(c => c.KeepOpenOnSelect, true)
         .Prop(c => c.KeepOpenOnOutsideClick, true)
         .Prop(c => c.Label, "Pick a date")

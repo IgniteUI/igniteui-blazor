@@ -1,14 +1,14 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// What an open popover (dropdown, select list) does when the document scrolls.
+    /// What an open popup (dropdown, select or combo list, picker, tooltip) does when a container scrolls.
     /// </summary>
     public enum PopoverScrollStrategy
     {
-        /// <summary>Stays open and moves with its anchor.</summary>
+        /// <summary>Stays visible and anchored, also while the anchor is out of view.</summary>
         Scroll,
-        /// <summary>Stays open and prevents the scroll.</summary>
-        Block,
+        /// <summary>Hides while the anchor is fully out of view, and shows again when it comes back.</summary>
+        Hide,
         /// <summary>Closes.</summary>
         Close
 

@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.4.0 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.0) with highlights noted below:
+
+### Added
+
+#### New Components
+
+- `IgbBreadcrumbs` and `IgbBreadcrumb` - A navigation trail. `IgbBreadcrumbs` has the `list` role and `Separator` sets the icon between the items (`tree_expand` when not set); put it in a `<nav aria-label="...">` element, as the ARIA breadcrumb pattern requires. Each `IgbBreadcrumb` takes its content, usually an anchor, in the default slot, with `prefix` / `suffix` slots around it and a `separator` slot that replaces the icon of that item. `Current` sets `aria-current="page"`, and `Disabled` sets `aria-disabled` and removes the slotted content from the tab sequence. [#1881](https://github.com/IgniteUI/igniteui-webcomponents/pull/1881)
+
+#### Combo, Color Picker, Date Picker, Date Range Picker, Tooltip
+- New `ScrollStrategy` property, already available on Dropdown and Select. It sets what the popup does when a container scrolls: `PopoverScrollStrategy.Hide` (default) hides it while its anchor is fully out of view, `Scroll` keeps it visible and anchored, `Close` closes the component, including a `Sticky` tooltip. The date pickers ignore it in `Dialog` mode. [#2355](https://github.com/IgniteUI/igniteui-webcomponents/pull/2355)
+
+#### Button Group
+- The single selection modes now use the radio group keyboard pattern: the group is one tab stop, and the arrow keys move the focus and the selection together, skipping disabled buttons and wrapping at both ends. `Alignment` selects the keys - ArrowLeft / ArrowRight following the text direction, or ArrowUp / ArrowDown - and sets the `aria-orientation` of the group. `Multiple` mode is unchanged. [#2385](https://github.com/IgniteUI/igniteui-webcomponents/pull/2385)
+
+### Changed
+
+- **Combo, Color Picker, Date Picker, Date Range Picker, Dropdown, Select, Tooltip:** the popup now hides while its anchor is fully scrolled out of view, as `ScrollStrategy` defaults to `Hide`. Before, it stayed visible. Set `ScrollStrategy="PopoverScrollStrategy.Scroll"` to keep the previous behavior. [#2355](https://github.com/IgniteUI/igniteui-webcomponents/pull/2355)
+- **Dropdown, Select, Tooltip:** the popup no longer moves along the viewport edge to stay in view; it only flips to the opposite side.
+- **Popups:** positioned with native CSS anchor positioning in browsers that support it (Chrome/Edge 133+, Firefox 147+, Safari 26+). Other browsers use `@floating-ui/dom` as before, now loaded only when needed.
+- **Button Group:** the `radiogroup` / `group` role and the disabled state are now on the `igc-button-group` element itself, so an `aria-label` or `aria-labelledby` set on `IgbButtonGroup` names the group.
+
+### Fixed
+
+For the complete list of fixes arriving with the updated web components, see the [7.4.0](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.0) release notes - highlights include a Combo or Select that opened and immediately closed again on a click of its label, a single `click` event (none when disabled) from a click on the label of Input, Date Time Input, Date Range Picker, File Input, Mask Input and Textarea, a Date Picker `Label` set after the first render reaching the native input in dropdown mode, and the documented `container` (Date Picker) and `ranges` (Date Range Picker) CSS parts now being exported.
+
+### Breaking Changes
+
+- **`PopoverScrollStrategy`:** `Block` is replaced by `Hide`. The web component no longer supports blocking the scroll while a popup is open; replace `PopoverScrollStrategy.Block` with `Hide`, `Scroll` or `Close`.
+
 ## 0.3.0 - 2026-09-21
 
 ### Changed

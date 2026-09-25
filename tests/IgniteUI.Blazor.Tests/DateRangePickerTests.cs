@@ -71,6 +71,7 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
                 Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End.ToUniversalTime());
             })
         .Prop(c => c.Open, true)
+        .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Prop(c => c.KeepOpenOnSelect, true)
         .Prop(c => c.KeepOpenOnOutsideClick, true)
         .Prop(c => c.Value,

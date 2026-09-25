@@ -327,4 +327,15 @@ public class EnumSerializationTests : BlazorComponentTestBase
         var cut = Render<IgbQrCode>(p => p.Add(x => x.SquareStyle, style));
         Assert.Equal(expected, cut.Find("igc-qr-code").GetAttribute("square-style"));
     }
+
+    // PopoverScrollStrategy
+    [Theory]
+    [InlineData(PopoverScrollStrategy.Scroll, "scroll")]
+    [InlineData(PopoverScrollStrategy.Hide, "hide")]
+    [InlineData(PopoverScrollStrategy.Close, "close")]
+    public void PopoverScrollStrategy_Serialization(PopoverScrollStrategy strategy, string expected)
+    {
+        var cut = Render<IgbDropdown>(p => p.Add(x => x.ScrollStrategy, strategy));
+        Assert.Equal(expected, cut.Find("igc-dropdown").GetAttribute("scroll-strategy"));
+    }
 }

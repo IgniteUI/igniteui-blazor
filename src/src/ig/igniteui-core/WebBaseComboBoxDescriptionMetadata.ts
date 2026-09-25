@@ -25,6 +25,9 @@ export class WebBaseComboBoxDescriptionMetadata extends Base {
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
 		metadata.item("Open", "Boolean");
+		metadata.item("ScrollStrategy", "ExportedType:string:PopoverScrollStrategy");
+		metadata.item("ScrollStrategy@stringUnion", "WebComponents;React");
+		metadata.item("ScrollStrategy@names", "Scroll;Hide;Close");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebBaseComboBoxDescriptionMetadata.ensureMetadata(context);
