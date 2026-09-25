@@ -8,10 +8,10 @@
 2. **[DONE]** `IgbColorPicker` - color input with an HSV canvas, hue/alpha sliders, editable color string, swatches and EyeDropper support
 3. **[DONE]** `IgbQrCode` - renders a scannable QR code as an SVG, with styling options and an optional centered logo
 4. **[DONE]** Aligned to `igniteui-webcomponents@7.3.2` - QR code image export, Chip `Outlined`, Splitter collapsed panes and `LayoutChanged`, Tabs `SelectedTab`, Icon registration options
+5. **[DONE]** `IgbBreadcrumbs` - navigation trail of `IgbBreadcrumb` items with a configurable separator icon
+6. **[DONE]** Aligned to `igniteui-webcomponents@7.4.0` - popup `ScrollStrategy` on Combo, Select, Dropdown, Date Picker, Date Range Picker, Color Picker and Tooltip, native CSS anchor positioning, Button Group radio keyboard pattern
 
 ## Going down the road
-
-1. Breadcrumb component
 
 # Previous Milestone
 

@@ -110,6 +110,16 @@ public class TooltipTests : ComponentWithContractTestBase<IgbTooltip>
     }
 
     [Fact]
+    public void Tooltip_ScrollStrategy_RendersAttribute()
+    {
+        var cut = Render<IgbTooltip>(p =>
+            p.Add(x => x.ScrollStrategy, PopoverScrollStrategy.Close));
+
+        Assert.Equal(PopoverScrollStrategy.Close, cut.Instance.ScrollStrategy);
+        Assert.Equal("close", cut.Find("igc-tooltip").GetAttribute("scroll-strategy"));
+    }
+
+    [Fact]
     public void Tooltip_ChildContent_Renders()
     {
         var cut = Render<IgbTooltip>(p =>

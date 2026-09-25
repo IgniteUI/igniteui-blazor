@@ -42,7 +42,7 @@
     "yargs": "^17.2.1"
   },
   "dependencies": {
-    "igniteui-webcomponents": "~7.3.2",
+    "igniteui-webcomponents": "~7.4.0",
     "lit-html": "^3.3.3"
   }
 }

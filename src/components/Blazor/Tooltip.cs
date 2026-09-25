@@ -136,6 +136,26 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private PopoverScrollStrategy _scrollStrategy = PopoverScrollStrategy.Hide;
+
+        /// <summary>
+        /// Sets the behavior of the tooltip when a parent container scrolls.
+        /// With <see cref="PopoverScrollStrategy.Close"/>, a <see cref="Sticky"/> tooltip also closes.
+        /// </summary>
+        [Parameter]
+        public PopoverScrollStrategy ScrollStrategy
+        {
+            get { return this._scrollStrategy; }
+            set
+            {
+                if (this._scrollStrategy != value || !IsPropDirty("ScrollStrategy"))
+                {
+                    MarkPropDirty("ScrollStrategy");
+                }
+                this._scrollStrategy = value;
+
+            }
+        }
         private string? _anchor;
 
         /// <summary>
@@ -630,6 +650,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddNumberProp("offset", this._offset); }
             if (IsPropDirty("Placement"))
             { ser.AddEnumProp("placement", this._placement); }
+            if (IsPropDirty("ScrollStrategy"))
+            { ser.AddEnumProp("scrollStrategy", this._scrollStrategy); }
             if (IsPropDirty("Anchor"))
             { ser.AddStringProp("anchor", this._anchor); }
             if (IsPropDirty("ShowTriggers"))
