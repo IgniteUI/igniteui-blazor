@@ -1,0 +1,256 @@
+@attribute [Stories("Navigation/Breadcrumbs")]
+
+@* The links simulate single-page-application routing: a click does not navigate, it only moves Current to the activated item. *@
+<Stories TComponent="IgbBreadcrumbs">
+
+    <Story Name="Default">
+        <Arguments>
+            <Arg For="_ => _!.Separator" Value='"tree_expand"' />
+        </Arguments>
+        <Template>
+            <nav aria-label="Breadcrumb">
+                <IgbBreadcrumbs @attributes="context.Args">
+                    @for (var i = 0; i < _catalog.Length; i++)
+                    {
+                        var index = i;
+                        <IgbBreadcrumb Current="@(index == _catalogCurrent)">
+                            <a href="@_catalog[index].Href" @onclick="() => _catalogCurrent = index" @onclick:preventDefault>@_catalog[index].Label</a>
+                        </IgbBreadcrumb>
+                    }
+                </IgbBreadcrumbs>
+            </nav>
+        </Template>
+    </Story>
+
+    <Story Name="Documentation Site">
+        <Template>
+            <IconRegistrar />
+            <nav aria-label="Breadcrumb">
+                <IgbBreadcrumbs @attributes="context.Args">
+                    <IgbBreadcrumb Current="@(_docsCurrent == 0)">
+                        <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                        <a href="/docs" @onclick="() => _docsCurrent = 0" @onclick:preventDefault>Docs</a>
+                        <span slot="separator">/</span>
+                    </IgbBreadcrumb>
+                    <IgbBreadcrumb Current="@(_docsCurrent == 1)">
+                        <a href="/docs/components" @onclick="() => _docsCurrent = 1" @onclick:preventDefault>Components</a>
+                        <span slot="separator">/</span>
+                    </IgbBreadcrumb>
+                    <IgbBreadcrumb>
+                        <a href="https://example.com/api" target="_blank" rel="noopener">API reference</a>
+                        <IgbIcon slot="suffix" IconName="open_in_new" Collection="default" title="Opens in a new tab" />
+                        <span slot="separator">/</span>
+                    </IgbBreadcrumb>
+                    <IgbBreadcrumb Current="@(_docsCurrent == 3)">
+                        <a href="/docs/components/breadcrumbs" @onclick="() => _docsCurrent = 3" @onclick:preventDefault>Breadcrumbs</a>
+                    </IgbBreadcrumb>
+                </IgbBreadcrumbs>
+            </nav>
+        </Template>
+    </Story>
+
+    <Story Name="Admin Console">
+        <Arguments>
+            <Arg For="_ => _!.Separator" Value='"chevron_right"' />
+        </Arguments>
+        <Template>
+            <IconRegistrar />
+            <nav aria-label="Breadcrumb">
+                <IgbBreadcrumbs @attributes="context.Args">
+                    <IgbBreadcrumb Current="@(_adminCurrent == 0)">
+                        <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                        <a href="/admin" @onclick="() => _adminCurrent = 0" @onclick:preventDefault>Dashboard</a>
+                    </IgbBreadcrumb>
+                    @* A grouping node with no page of its own: disabled keeps the level visible without a dead link. *@
+                    <IgbBreadcrumb Disabled="true">
+                        <IgbIcon slot="prefix" IconName="settings" Collection="default" />
+                        <a href="/admin/settings" @onclick:preventDefault>Settings</a>
+                    </IgbBreadcrumb>
+                    <IgbBreadcrumb Current="@(_adminCurrent == 2)">
+                        <IgbIcon slot="prefix" IconName="people" Collection="default" />
+                        <a href="/admin/settings/users" @onclick="() => _adminCurrent = 2" @onclick:preventDefault>Users</a>
+                        <IgbIcon slot="suffix" IconName="lock" Collection="default" title="Requires the Administrator role" />
+                    </IgbBreadcrumb>
+                    <IgbBreadcrumb Current="@(_adminCurrent == 3)">
+                        <a href="/admin/settings/users/1042" @onclick="() => _adminCurrent = 3" @onclick:preventDefault>Jane Doe</a>
+                    </IgbBreadcrumb>
+                </IgbBreadcrumbs>
+            </nav>
+        </Template>
+    </Story>
+
+    @* Open a folder from the list to push a level, or follow a breadcrumb to go back up. Deeper than four levels, the middle folders collapse into a dropdown inside a breadcrumb item. *@
+    <Story Name="File Explorer">
+        <Template>
+            <IconRegistrar />
+            <nav aria-label="Folder path">
+                <IgbBreadcrumbs @attributes="context.Args">
+                    @foreach (var (node, depth) in VisibleTrail())
+                    {
+                        if (node is null)
+                        {
+                            <IgbBreadcrumb @key="@("collapsed")">
+                                <IgbDropdown Change="@(e => NavigateTo(int.Parse(e.Detail.Value!)))">
+                                    <IgbIconButton slot="target" Variant="IconButtonVariant.Flat" IconName="more_horiz" Collection="default" aria-label="Show hidden folders" />
+                                    @for (var i = 1; i < _drivePath.Count - 2; i++)
+                                    {
+                                        var hidden = i;
+                                        <IgbDropdownItem Value="@hidden.ToString()">
+                                            <IgbIcon slot="prefix" IconName="folder" Collection="default" />
+                                            @_drivePath[hidden].Name
+                                        </IgbDropdownItem>
+                                    }
+                                </IgbDropdown>
+                            </IgbBreadcrumb>
+                        }
+                        else
+                        {
+                            var target = depth;
+                            <IgbBreadcrumb @key="@node" Current="@(target == _drivePath.Count - 1)">
+                                <a href="#@target" @onclick="() => NavigateTo(target)" @onclick:preventDefault>@node.Name</a>
+                            </IgbBreadcrumb>
+                        }
+                    }
+                </IgbBreadcrumbs>
+            </nav>
+
+            <IgbList aria-label="Folder contents" style="margin-top: 1rem;">
+                @foreach (var child in _drivePath[^1].Children)
+                {
+                    <IgbListItem @key="child">
+                        <IgbIcon slot="start" IconName="@child.Kind" Collection="default" />
+                        @if (child.Kind == "folder")
+                        {
+                            <a slot="title" href="#" @onclick="() => _drivePath.Add(child)" @onclick:preventDefault>@child.Name</a>
+                        }
+                        else
+                        {
+                            <span slot="title">@child.Name</span>
+                        }
+                    </IgbListItem>
+                }
+            </IgbList>
+        </Template>
+    </Story>
+
+    @* A deep trail in a narrow column wraps onto more lines instead of overflowing. *@
+    <Story Name="Long Trail">
+        <Arguments>
+            <Arg For="_ => _!.Separator" Value='"chevron_right"' />
+        </Arguments>
+        <Template>
+            <nav aria-label="Breadcrumb" style="max-width: 360px;">
+                <IgbBreadcrumbs @attributes="context.Args">
+                    @for (var i = 0; i < _helpCenter.Length; i++)
+                    {
+                        var index = i;
+                        <IgbBreadcrumb Current="@(index == _helpCenterCurrent)">
+                            <a href="@_helpCenter[index].Href" @onclick="() => _helpCenterCurrent = index" @onclick:preventDefault>@_helpCenter[index].Label</a>
+                        </IgbBreadcrumb>
+                    }
+                </IgbBreadcrumbs>
+            </nav>
+        </Template>
+    </Story>
+
+    @* The trail follows the --ig-size custom property. *@
+    <Story Name="Sizes">
+        <Template>
+            <IconRegistrar />
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                @for (var s = 1; s <= 3; s++)
+                {
+                    var size = s;
+                    <nav aria-label="Breadcrumb, size @size" style="--ig-size: @size;">
+                        <IgbBreadcrumbs @attributes="context.Args">
+                            <IgbBreadcrumb Current="@(_sizesCurrent[size - 1] == 0)">
+                                <IgbIcon slot="prefix" IconName="home" Collection="default" />
+                                <a href="/" @onclick="() => _sizesCurrent[size - 1] = 0" @onclick:preventDefault>Home</a>
+                            </IgbBreadcrumb>
+                            <IgbBreadcrumb Current="@(_sizesCurrent[size - 1] == 1)">
+                                <a href="/projects" @onclick="() => _sizesCurrent[size - 1] = 1" @onclick:preventDefault>Projects</a>
+                            </IgbBreadcrumb>
+                            <IgbBreadcrumb Current="@(_sizesCurrent[size - 1] == 2)">
+                                <a href="/projects/website" @onclick="() => _sizesCurrent[size - 1] = 2" @onclick:preventDefault>Website redesign</a>
+                            </IgbBreadcrumb>
+                        </IgbBreadcrumbs>
+                    </nav>
+                }
+            </div>
+        </Template>
+    </Story>
+
+</Stories>
+
+@code {
+    private record Crumb(string Label, string Href);
+
+    private record DriveNode(string Name, string Kind, params DriveNode[] Children);
+
+    private readonly Crumb[] _catalog =
+    [
+        new("Home", "/"),
+        new("Electronics", "/electronics"),
+        new("Laptops", "/electronics/laptops"),
+        new("Ultrabooks", "/electronics/laptops/ultrabooks"),
+        new("ThinkPad X1 Carbon Gen 12", "/electronics/laptops/ultrabooks/x1-carbon"),
+    ];
+    private int _catalogCurrent = 4;
+
+    private int _docsCurrent = 3;
+    private int _adminCurrent = 3;
+
+    private readonly Crumb[] _helpCenter =
+    [
+        new("Help Center", "/help"),
+        new("Billing", "/help/billing"),
+        new("Subscriptions", "/help/billing/subscriptions"),
+        new("Plans and pricing", "/help/billing/subscriptions/plans"),
+        new("Team plan", "/help/billing/subscriptions/plans/team"),
+        new("How to add seats to an existing subscription", "/help/billing/subscriptions/plans/team/add-seats"),
+    ];
+    private int _helpCenterCurrent = 5;
+
+    private readonly int[] _sizesCurrent = [2, 2, 2];
+
+    private static DriveNode Folder(string name, params DriveNode[] children) => new(name, "folder", children);
+    private static DriveNode File(string name, string icon) => new(name, icon);
+
+    private static readonly DriveNode Drive = Folder("My Drive",
+        Folder("Projects",
+            Folder("Website redesign",
+                Folder("Assets",
+                    Folder("Icons",
+                        File("logo.svg", "image"),
+                        File("favicon.png", "image")),
+                    File("Hero banner.png", "image"),
+                    File("Brand guidelines.pdf", "description")),
+                File("Functional spec.docx", "description")),
+            Folder("Mobile app",
+                File("Q3 roadmap.pdf", "description"))),
+        Folder("Finance",
+            Folder("2026",
+                Folder("Q3",
+                    File("Revenue by region.xlsx", "description"),
+                    File("Expenses.xlsx", "description")))),
+        File("Onboarding checklist.pdf", "description"));
+
+    /// <summary>Number of trail items shown before the middle levels collapse into a menu.</summary>
+    private const int CollapseThreshold = 4;
+
+    private readonly List<DriveNode> _drivePath = [Drive];
+
+    private void NavigateTo(int depth) => _drivePath.RemoveRange(depth + 1, _drivePath.Count - depth - 1);
+
+    /// <summary>The trail items with their depth; a <see langword="null"/> node stands for the collapsed middle levels.</summary>
+    private IEnumerable<(DriveNode? Node, int Depth)> VisibleTrail()
+    {
+        if (_drivePath.Count <= CollapseThreshold)
+        {
+            return _drivePath.Select((node, depth) => ((DriveNode?)node, depth));
+        }
+
+        var last = _drivePath.Count - 1;
+        return [(_drivePath[0], 0), (null, -1), (_drivePath[last - 1], last - 1), (_drivePath[last], last)];
+    }
+}
