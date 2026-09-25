@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <!-- Publish-compatibility smoke app: publishes the library under assembly trimming
-       (and, as future work, AOT compilation) and exercises the reflection-adjacent
-       features in the browser. See docs/TRIMMING.md. -->
+  <!-- Publish-compatibility smoke app: publishes the library under assembly trimming (per-PR CI)
+       and, via the manual Wasm AOT Smoke workflow, under wasm AOT compilation (-p:RunAOTCompilation=true),
+       exercising the reflection-adjacent features in the browser. See docs/TRIMMING.md. -->
   <PropertyGroup>
     <!-- Match the library's TFMs so each gets a real ILLink pass (e.g. the net8-only reflection paths). -->
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>

@@ -1,3 +1,12 @@
+// net8.0 only. The harness records column messages through the InvokeUnmarshalled seam that
+// RuntimeHelper probes for by reflection, and that API exists only on net8 (removed in net9+,
+// where RuntimeHelper always takes the raw-pointer InvokeVoid path instead). Compiling these
+// tests on net9+ would assert the net8 code path against a fake runtime that real apps do not
+// have — coverage that looks green without exercising the shipping channel. The net9+ pointer
+// transport is covered in the browser by the ComboDataTest integration suite; it cannot be
+// covered here, because RuntimeHelper truncates the pointer to int (valid under wasm's 32-bit
+// address space, unrecoverable in a 64-bit test host).
+#if NET8_0
 using System.Collections.ObjectModel;
 using Bunit;
 using IgniteUI.Blazor.Controls;
@@ -144,3 +153,4 @@ public class UnmarshalledDataChannelTests : BunitContext
     private static UnmarshalledColumn Column(UnmarshalledColumnMessage message, string propertyPath) =>
         Assert.Single(message.Columns!, c => c.PropertyPath == propertyPath);
 }
+#endif
