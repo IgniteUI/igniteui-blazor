@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.4.0 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.0) with highlights noted below:
+This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.4.1 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.1) with highlights noted below:
 
 ### Added
 
@@ -30,7 +30,7 @@ This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@
 
 ### Fixed
 
-For the complete list of fixes arriving with the updated web components, see the [7.4.0](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.0) release notes - highlights include a Combo or Select that opened and immediately closed again on a click of its label, a single `click` event (none when disabled) from a click on the label of Input, Date Time Input, Date Range Picker, File Input, Mask Input and Textarea, a Date Picker `Label` set after the first render reaching the native input in dropdown mode, and the documented `container` (Date Picker) and `ranges` (Date Range Picker) CSS parts now being exported.
+For the complete list of fixes arriving with the updated web components, see the [7.4.0](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.0) and [7.4.1](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.1) release notes - highlights include a `<label>` bound through `for` or wrapping the component now naming Checkbox, Switch, Radio, Rating and Slider (a click on it toggles or focuses the control), an `aria-label` / `aria-labelledby` set on a form component now naming its native editor, the Combo `Label` no longer replaced by its selection status text as the accessible name, a Combo or Select that opened and immediately closed again on a click of its label, a single `click` event (none when disabled) from a click on the label of Input, Date Time Input, Date Range Picker, File Input, Mask Input and Textarea, a Date Picker `Label` set after the first render reaching the native input in dropdown mode, and the documented `container` (Date Picker) and `ranges` (Date Range Picker) CSS parts now being exported.
 
 ### Breaking Changes
 
