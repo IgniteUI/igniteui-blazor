@@ -44,6 +44,17 @@ dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=Trimme
 
 The manual browser pass above remains useful for the other TFMs and for linker experiments.
 
+## Wasm AOT
+
+The manual **`Wasm AOT Smoke`** workflow (`workflow_dispatch`) publishes this app with `-p:RunAOTCompilation=true` (net10.0, slow multi-minute compile) and runs the same browser checks against that output. Locally:
+
+```bash
+dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net10.0 -p:RunAOTCompilation=true
+dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=TrimmedPublish --settings .runsettings
+```
+
+Wasm AOT is Mono AOT with the interpreter retained — it validates the product path but emits no NativeAOT diagnostics; that gate is `tests/IgniteUI.Blazor.Lite.AotSmoke` (per-PR CI).
+
 ## When to run
 
 - After any change to reflection, serialization, `[DynamicallyAccessedMembers]` annotations, or suppressions in `src/` (see the `igniteui-blazor-lite-trimming` skill in `.agents/skills/` and docs/TRIMMING.md).
