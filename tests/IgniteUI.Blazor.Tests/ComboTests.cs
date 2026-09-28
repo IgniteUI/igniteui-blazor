@@ -107,6 +107,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
         .Event(c => c.Closing)
         .Event(c => c.Closed)
         .Prop(c => c.Open, true)
+        .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Prop(c => c.Outlined, true)
         .Prop(c => c.SingleSelect, true)
         .Prop(c => c.Autofocus, true)
