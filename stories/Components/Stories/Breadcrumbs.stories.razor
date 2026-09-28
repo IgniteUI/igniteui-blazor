@@ -121,7 +121,7 @@
                         <IgbIcon slot="start" IconName="@child.Kind" Collection="default" />
                         @if (child.Kind == "folder")
                         {
-                            <a slot="title" href="#" @onclick="() => _drivePath.Add(child)" @onclick:preventDefault>@child.Name</a>
+                            <a slot="title" href="#" style="color: inherit; text-decoration: none;" @onclick="() => _drivePath.Add(child)" @onclick:preventDefault>@child.Name</a>
                         }
                         else
                         {
