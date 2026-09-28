@@ -38,9 +38,6 @@ jobs:
       - name: Build TypeScript/Webpack assets
         run: npm run build
 
-      - name: Copy component themes to wwwroot
-        run: npm run copythemes
-
       - name: Install wasm-tools workload
         run: dotnet workload install wasm-tools
 
