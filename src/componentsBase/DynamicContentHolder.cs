@@ -248,6 +248,7 @@ namespace IgniteUI.Blazor.Controls
 
     internal class DynamicContentInfo<T>
         : DynamicContentInfo
+        where T : class // reference types only — keeps the MakeGenericType instantiation AOT-shareable
     {
         public DynamicContentInfo()
         {
