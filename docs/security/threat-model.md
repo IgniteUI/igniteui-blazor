@@ -125,7 +125,7 @@ Everything else on Microsoft's pages, including CSRF, click-jacking, WebSocket c
 - **Least privilege and pinning** — workflow-level `contents: read` or no permissions by default, `id-token: write` and `attestations: write` granted per job, `contents: write` only on the job that attaches release evidence, checkouts without persisted credentials, signing, packing and publishing gated behind the `nuget-org-publish` environment, release actions pinned to commit SHAs.
 - **Reproducible inputs** — `npm ci` without package-manager caching in release builds, `<Deterministic>true</Deterministic>` with `ContinuousIntegrationBuild` for release, central package version management. The bundled JavaScript dependencies' licenses ship in the package as `THIRD-PARTY-LICENSES.md`.
 - **Compiler safety** — the library compiles with `Nullable` enabled and every warning as an error, and is trim-compatible with the trim, AOT and single-file analyzers warning-free ([docs/TRIMMING.md](../TRIMMING.md)). `AllowUnsafeBlocks` is enabled solely for the unmarshalled data channel.
-- **Testing** — bUnit unit tests on every target framework, including the unmarshalled channel, and Playwright integration tests, including a trimmed WebAssembly publish exercised in the browser, run in CI alongside a Native AOT publish of a console smoke app that roots the library.
+- **Testing** — bUnit unit tests on every target framework, including the unmarshalled channel, and Playwright integration tests, including a trimmed WebAssembly publish exercised in the browser, run in CI alongside a Native AOT publish of a console smoke app that exercises the library's dynamic-code paths.
 
 ## 7. Reporting and disclosure
 
