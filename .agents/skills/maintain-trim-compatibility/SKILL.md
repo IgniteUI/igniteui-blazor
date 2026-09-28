@@ -1,6 +1,8 @@
 ---
-name: igniteui-blazor-lite-trimming
-description: Keep IgniteUI.Blazor.Lite trim- and AOT-compatible when changing library code. Use when touching reflection, expression trees, MakeGenericType, JsonSerializer calls, DynamicallyAccessedMembers annotations, or suppressions in src/, when the build fails with IL2xxx/IL3xxx errors, or when asked about trimming, AOT, or the PublishSmoke/AotSmoke apps.
+license: MIT
+name: maintain-trim-compatibility
+description: "Keeps IgniteUI.Blazor.Lite trim- and AOT-compatible when library code changes: source-generated JSON, DynamicallyAccessedMembers annotations, narrow suppressions, and verification through the trimmed PublishSmoke app. WHEN TO USE: touching reflection, expression trees, MakeGenericType, JsonSerializer calls, DynamicallyAccessedMembers annotations, or trim suppressions in src/, a build failing with IL2xxx/IL3xxx errors, adding a new *Module class, or questions about trimming, AOT, related warnings, or the PublishSmoke/AotSmoke apps. WHEN NOT TO USE: general unit or integration test work (use write-library-tests), or trimming questions from app developers consuming the package (point them to docs/TRIMMING.md)."
+user-invocable: true
 ---
 # IgniteUI.Blazor.Lite — Trimming & AOT
 
