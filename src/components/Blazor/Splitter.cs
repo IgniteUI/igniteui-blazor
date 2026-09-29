@@ -563,7 +563,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <remarks>
         /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? LayoutChangedScript

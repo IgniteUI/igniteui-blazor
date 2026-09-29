@@ -346,7 +346,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <remarks>
         /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ChangeScript
@@ -453,7 +453,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <remarks>
         /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? InputScript
@@ -525,7 +525,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <remarks>
         /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? OpeningScript
@@ -597,7 +597,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <remarks>
         /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? OpenedScript
@@ -669,7 +669,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <remarks>
         /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ClosingScript
@@ -741,7 +741,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <remarks>
         /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ClosedScript
