@@ -205,6 +205,17 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     }
 
     [Fact]
+    public void Select_ScrollStrategy_RendersAttribute()
+    {
+        var cut = Render<IgbSelect>(parameters =>
+            parameters.Add(p => p.ScrollStrategy, PopoverScrollStrategy.Close));
+
+        var element = cut.Find("igc-select");
+        Assert.Equal(PopoverScrollStrategy.Close, cut.Instance.ScrollStrategy);
+        Assert.Equal("close", element.GetAttribute("scroll-strategy"));
+    }
+
+    [Fact]
     public void Select_InheritsFromBaseRendererControl()
     {
         Assert.True(typeof(IgbSelect).IsSubclassOf(typeof(BaseRendererControl)));

@@ -250,7 +250,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Reflects only the indexer of Dictionary<string, object> (both call sites guard on that type), which the library also uses statically — the 'Item' property is always preserved alongside this code.")]
         public static JSDataSourceSchema CreateFromDictionary(IDictionary item)
         {
             JSDataSourceSchema s = new JSDataSourceSchema();
@@ -287,7 +286,11 @@ namespace IgniteUI.Blazor.Controls
             s.PropertyGetters = new Func<object, object?>[names.Count];
             s.TypedPropertyGetters = new Delegate[names.Count];
 
-            var itemProp = item.GetType().GetProperty("Item") ?? throw new InvalidOperationException("The 'Item' property was not found on the dictionary type.");
+            // Look the indexer up on IDictionary itself, not on item.GetType(): typeof(T).GetProperty("literal")
+            // is a linker/ILC intrinsic that roots the member, whereas a runtime Type is unanalyzable and its
+            // reflection metadata gets trimmed away under NativeAOT (static use of the indexer preserves only
+            // the get_Item method body, not the PropertyInfo). Every caller passes an IDictionary.
+            var itemProp = typeof(IDictionary).GetProperty("Item") ?? throw new InvalidOperationException("The 'Item' property was not found on the dictionary type.");
 
             for (int i = 0; i < names.Count; i++)
             {
@@ -756,6 +759,41 @@ namespace IgniteUI.Blazor.Controls
         public JSDataSourceSchemaType[] FieldTypes = Array.Empty<JSDataSourceSchemaType>();
         public IDataIntentAttribute[]?[] FieldDataIntents = Array.Empty<IDataIntentAttribute[]?>();
 
+        // Closed set of typed-getter delegate shapes — exactly the types UnmarshalledDataSource.CreateColumn
+        // casts to. The typeof literals keep every Func<object,T> instantiation statically visible (AOT);
+        // member types outside the set fall back to the untyped getter, which is all their columns consume.
+        private static readonly Dictionary<Type, Type> _typedGetterDelegateTypes = new()
+        {
+            [typeof(double)] = typeof(Func<object, double>),
+            [typeof(float)] = typeof(Func<object, float>),
+            [typeof(bool)] = typeof(Func<object, bool>),
+            [typeof(byte)] = typeof(Func<object, byte>),
+            [typeof(decimal)] = typeof(Func<object, decimal>),
+            [typeof(int)] = typeof(Func<object, int>),
+            [typeof(short)] = typeof(Func<object, short>),
+            [typeof(long)] = typeof(Func<object, long>),
+            [typeof(string)] = typeof(Func<object, string>),
+            [typeof(DateTime)] = typeof(Func<object, DateTime>),
+            [typeof(double?)] = typeof(Func<object, double?>),
+            [typeof(float?)] = typeof(Func<object, float?>),
+            [typeof(bool?)] = typeof(Func<object, bool?>),
+            [typeof(byte?)] = typeof(Func<object, byte?>),
+            [typeof(decimal?)] = typeof(Func<object, decimal?>),
+            [typeof(int?)] = typeof(Func<object, int?>),
+            [typeof(short?)] = typeof(Func<object, short?>),
+            [typeof(long?)] = typeof(Func<object, long?>),
+            [typeof(DateTime?)] = typeof(Func<object, DateTime?>),
+        };
+
+        private static Type? TypedGetterDelegateType(Type valueType)
+        {
+            if (valueType.IsEnum)
+            {
+                valueType = Enum.GetUnderlyingType(valueType);
+            }
+            return _typedGetterDelegateTypes.TryGetValue(valueType, out var delegateType) ? delegateType : null;
+        }
+
         private System.Linq.Expressions.UnaryExpression GetConversion(Type? type, System.Linq.Expressions.Expression expression)
         {
             ArgumentNullException.ThrowIfNull(type);
@@ -783,7 +821,7 @@ namespace IgniteUI.Blazor.Controls
                 System.Linq.Expressions.UnaryExpression conversion = this.GetConversion(type, param);
 
                 System.Linq.Expressions.UnaryExpression prop = System.Linq.Expressions.Expression.TypeAs(System.Linq.Expressions.Expression.Property(conversion, propertyInfo), typeof(object));
-                var getPropertyValue = (Func<object, object>)System.Linq.Expressions.Expression.Lambda(prop, param).Compile();
+                var getPropertyValue = System.Linq.Expressions.Expression.Lambda<Func<object, object>>(prop, param).Compile();
 
                 return getPropertyValue;
             }
@@ -791,9 +829,12 @@ namespace IgniteUI.Blazor.Controls
 
         private Delegate GetTypedPropertyValueGetter(Type? type, PropertyInfo propertyInfo)
         {
-            //var propertyInfo = type.GetProperty(propertyName);
+            var delegateType = TypedGetterDelegateType(propertyInfo.PropertyType);
+            if (delegateType == null)
+            {
+                return GetPropertyValueGetter(type, propertyInfo);
+            }
 
-            //if (propertyInfo != null)
             {
                 System.Linq.Expressions.ParameterExpression param = System.Linq.Expressions.Expression.Parameter(typeof(object), "obj");
                 System.Linq.Expressions.UnaryExpression conversion = this.GetConversion(type, param);
@@ -803,9 +844,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     var underlyingType = Enum.GetUnderlyingType(propertyInfo.PropertyType);
                     conversion = GetConversion(underlyingType, prop);
-                    return System.Linq.Expressions.Expression.Lambda(conversion, param).Compile();
+                    return System.Linq.Expressions.Expression.Lambda(delegateType, conversion, param).Compile();
                 }
-                var getPropertyValue = System.Linq.Expressions.Expression.Lambda(prop, param).Compile();
+                var getPropertyValue = System.Linq.Expressions.Expression.Lambda(delegateType, prop, param).Compile();
 
                 return getPropertyValue;
             }
@@ -813,22 +854,26 @@ namespace IgniteUI.Blazor.Controls
 
         private Delegate GetTypedDictionaryValueGetter(Type dictType, Type valueType, PropertyInfo itemProp, string key)
         {
-            //var propertyInfo = type.GetProperty(propertyName);
+            var delegateType = TypedGetterDelegateType(valueType);
 
-            //if (propertyInfo != null)
             {
                 System.Linq.Expressions.ParameterExpression param = System.Linq.Expressions.Expression.Parameter(typeof(object), "obj");
                 System.Linq.Expressions.UnaryExpression conversion = this.GetConversion(dictType, param);
 
                 System.Linq.Expressions.Expression strIndex = System.Linq.Expressions.ConstantExpression.Constant(key);
                 System.Linq.Expressions.Expression prop = System.Linq.Expressions.Expression.Property(conversion, itemProp, strIndex);
+                if (delegateType == null)
+                {
+                    var boxed = System.Linq.Expressions.Expression.TypeAs(prop, typeof(object));
+                    return System.Linq.Expressions.Expression.Lambda<Func<object, object>>(boxed, param).Compile();
+                }
                 System.Linq.Expressions.UnaryExpression retConversion = this.GetConversion(valueType, prop);
                 if (valueType.IsEnum)
                 {
                     var underlyingType = Enum.GetUnderlyingType(valueType);
                     retConversion = GetConversion(underlyingType, retConversion);
                 }
-                var getPropertyValue = System.Linq.Expressions.Expression.Lambda(retConversion, param).Compile();
+                var getPropertyValue = System.Linq.Expressions.Expression.Lambda(delegateType, retConversion, param).Compile();
 
                 return getPropertyValue;
             }
@@ -844,7 +889,7 @@ namespace IgniteUI.Blazor.Controls
                 System.Linq.Expressions.UnaryExpression conversion = this.GetConversion(type, param);
 
                 System.Linq.Expressions.UnaryExpression prop = System.Linq.Expressions.Expression.TypeAs(System.Linq.Expressions.Expression.Field(conversion, fieldInfo), typeof(object));
-                var getPropertyValue = (Func<object, object>)System.Linq.Expressions.Expression.Lambda(prop, param).Compile();
+                var getPropertyValue = System.Linq.Expressions.Expression.Lambda<Func<object, object>>(prop, param).Compile();
 
                 return getPropertyValue;
             }
@@ -852,9 +897,12 @@ namespace IgniteUI.Blazor.Controls
 
         private Delegate GetTypedFieldValueGetter(Type? type, FieldInfo fieldInfo)
         {
-            //var propertyInfo = type.GetProperty(propertyName);
+            var delegateType = TypedGetterDelegateType(fieldInfo.FieldType);
+            if (delegateType == null)
+            {
+                return GetFieldValueGetter(type, fieldInfo);
+            }
 
-            //if (propertyInfo != null)
             {
                 System.Linq.Expressions.ParameterExpression param = System.Linq.Expressions.Expression.Parameter(typeof(object), "obj");
                 System.Linq.Expressions.UnaryExpression conversion = this.GetConversion(type, param);
@@ -864,9 +912,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     var underlyingType = Enum.GetUnderlyingType(fieldInfo.FieldType);
                     conversion = GetConversion(underlyingType, prop);
-                    return System.Linq.Expressions.Expression.Lambda(conversion, param).Compile();
+                    return System.Linq.Expressions.Expression.Lambda(delegateType, conversion, param).Compile();
                 }
-                var getPropertyValue = System.Linq.Expressions.Expression.Lambda(prop, param).Compile();
+                var getPropertyValue = System.Linq.Expressions.Expression.Lambda(delegateType, prop, param).Compile();
 
                 return getPropertyValue;
             }

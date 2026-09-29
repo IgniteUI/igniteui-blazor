@@ -26,6 +26,7 @@ public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker>
         .Prop(c => c.Required, true)
         .Prop(c => c.Invalid, true)
         .Prop(c => c.Open, true)
+        .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Event(c => c.Opening)
         .Event(c => c.Opened)
         .Event(c => c.Closing)

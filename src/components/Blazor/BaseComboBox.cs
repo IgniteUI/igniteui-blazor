@@ -41,6 +41,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private PopoverScrollStrategy _scrollStrategy = PopoverScrollStrategy.Hide;
+
+        /// <summary>
+        /// Sets the behavior of the component when a parent container scrolls.
+        /// </summary>
+        [Parameter]
+        public PopoverScrollStrategy ScrollStrategy
+        {
+            get { return this._scrollStrategy; }
+            set
+            {
+                if (this._scrollStrategy != value || !IsPropDirty("ScrollStrategy"))
+                {
+                    MarkPropDirty("ScrollStrategy");
+                }
+                this._scrollStrategy = value;
+
+            }
+        }
 
         /// <summary>
         /// Shows the component.
@@ -110,6 +129,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }
+            if (IsPropDirty("ScrollStrategy"))
+            { ser.AddEnumProp("scrollStrategy", this._scrollStrategy); }
 
         }
 
