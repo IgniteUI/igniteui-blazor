@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbToggleButton : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebToggleButton"; } }
+        internal override string RendererType { get { return "WebToggleButton"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbHighlight : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebHighlight"; } }
+        internal override string RendererType { get { return "WebHighlight"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

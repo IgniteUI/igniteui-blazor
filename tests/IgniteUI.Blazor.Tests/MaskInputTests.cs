@@ -66,7 +66,7 @@ public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
     public void MaskInput_TypeMetadata_IsCorrect()
     {
         var mask = new IgbMaskInput();
-        Assert.Equal("WebMaskInput", mask.Type);
+        Assert.Equal("WebMaskInput", mask.RendererType);
     }
 
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]

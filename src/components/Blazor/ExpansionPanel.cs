@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbExpansionPanel : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebExpansionPanel"; } }
+        internal override string RendererType { get { return "WebExpansionPanel"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCircularGradient : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCircularGradient"; } }
+        internal override string RendererType { get { return "WebCircularGradient"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

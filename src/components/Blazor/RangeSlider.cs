@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRangeSlider : IgbSliderBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRangeSlider"; } }
+        internal override string RendererType { get { return "WebRangeSlider"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSnackbar : IgbBaseAlertLike
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSnackbar"; } }
+        internal override string RendererType { get { return "WebSnackbar"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

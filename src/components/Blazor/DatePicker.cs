@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDatePicker : IgbComboBoxBaseLike
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDatePicker"; } }
+        internal override string RendererType { get { return "WebDatePicker"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

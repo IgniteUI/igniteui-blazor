@@ -16,6 +16,6 @@ public class RippleTests : BlazorComponentTestBase
     public void Ripple_TypeMetadata_IsCorrect()
     {
         var ripple = new IgbRipple();
-        Assert.Equal("WebRipple", ripple.Type);
+        Assert.Equal("WebRipple", ripple.RendererType);
     }
 }

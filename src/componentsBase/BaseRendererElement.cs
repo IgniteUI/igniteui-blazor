@@ -506,7 +506,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (!_checkedByVal)
                 {
-                    _mustSerializeByValue = MarshalByValueFactory.MustMarshalByValue(this.Type);
+                    _mustSerializeByValue = MarshalByValueFactory.MustMarshalByValue(this.RendererType);
                     _checkedByVal = true;
                 }
                 return _mustSerializeByValue;
@@ -525,7 +525,7 @@ namespace IgniteUI.Blazor.Controls
         private String _cachedSerializedContent = "";
 
         /// <summary>The type name of this element.</summary>
-        public virtual string Type
+        internal virtual string RendererType
         {
             get
             {
@@ -543,7 +543,7 @@ namespace IgniteUI.Blazor.Controls
         internal void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
-            ser.Type = Type;
+            ser.Type = RendererType;
             ser.Start(propertyName);
             SerializeCore(ser);
             ser.End();

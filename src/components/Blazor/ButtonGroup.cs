@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbButtonGroup : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebButtonGroup"; } }
+        internal override string RendererType { get { return "WebButtonGroup"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

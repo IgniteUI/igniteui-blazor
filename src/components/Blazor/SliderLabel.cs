@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSliderLabel : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSliderLabel"; } }
+        internal override string RendererType { get { return "WebSliderLabel"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

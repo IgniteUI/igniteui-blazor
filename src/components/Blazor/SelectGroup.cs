@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSelectGroup : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSelectGroup"; } }
+        internal override string RendererType { get { return "WebSelectGroup"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbNumberEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebNumberEventArgs"; } }
+        internal override string RendererType { get { return "WebNumberEventArgs"; } }
 
         private double _detail = 0;
 

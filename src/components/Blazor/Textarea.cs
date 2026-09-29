@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTextarea : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTextarea"; } }
+        internal override string RendererType { get { return "WebTextarea"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

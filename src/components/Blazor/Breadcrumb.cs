@@ -13,7 +13,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbBreadcrumb : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBreadcrumb"; } }
+        internal override string RendererType { get { return "WebBreadcrumb"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

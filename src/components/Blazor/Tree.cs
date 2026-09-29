@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTree : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTree"; } }
+        internal override string RendererType { get { return "WebTree"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

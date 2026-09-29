@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbQrCode : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebQrCode"; } }
+        internal override string RendererType { get { return "WebQrCode"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

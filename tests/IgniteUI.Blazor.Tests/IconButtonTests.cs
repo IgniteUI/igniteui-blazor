@@ -111,6 +111,6 @@ public class IconButtonTests : ComponentWithContractTestBase<IgbIconButton>
     public void IconButton_TypeMetadata()
     {
         var btn = new IgbIconButton();
-        Assert.Equal("WebIconButton", btn.Type);
+        Assert.Equal("WebIconButton", btn.RendererType);
     }
 }

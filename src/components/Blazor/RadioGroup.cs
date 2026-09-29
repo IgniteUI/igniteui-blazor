@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRadioGroup : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRadioGroup"; } }
+        internal override string RendererType { get { return "WebRadioGroup"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

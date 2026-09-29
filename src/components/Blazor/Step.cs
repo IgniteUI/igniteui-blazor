@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbStep : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebStep"; } }
+        internal override string RendererType { get { return "WebStep"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

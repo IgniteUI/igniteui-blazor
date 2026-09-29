@@ -102,7 +102,7 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
     public void DatePicker_TypeMetadata()
     {
         var picker = new IgbDatePicker();
-        Assert.Equal("WebDatePicker", picker.Type);
+        Assert.Equal("WebDatePicker", picker.RendererType);
     }
 
     /// <summary>

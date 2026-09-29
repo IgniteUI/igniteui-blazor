@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSelectItemComponentEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSelectItemComponentEventArgs"; } }
+        internal override string RendererType { get { return "WebSelectItemComponentEventArgs"; } }
 
         private IgbSelectItem _detail = new IgbSelectItem();
 

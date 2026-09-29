@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbBanner : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBanner"; } }
+        internal override string RendererType { get { return "WebBanner"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDivider : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDivider"; } }
+        internal override string RendererType { get { return "WebDivider"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

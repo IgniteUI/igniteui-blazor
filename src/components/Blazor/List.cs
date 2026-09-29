@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbList : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebList"; } }
+        internal override string RendererType { get { return "WebList"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

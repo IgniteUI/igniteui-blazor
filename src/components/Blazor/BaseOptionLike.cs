@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbBaseOptionLike : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBaseOptionLike"; } }
+        internal override string RendererType { get { return "WebBaseOptionLike"; } }
 
         /// <inheritdoc />
         private protected override string ResolveDisplay()

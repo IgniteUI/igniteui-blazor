@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSlider : IgbSliderBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSlider"; } }
+        internal override string RendererType { get { return "WebSlider"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

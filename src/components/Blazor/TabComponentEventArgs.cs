@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTabComponentEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTabComponentEventArgs"; } }
+        internal override string RendererType { get { return "WebTabComponentEventArgs"; } }
 
         private IgbTab _detail = new IgbTab();
 

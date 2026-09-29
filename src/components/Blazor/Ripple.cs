@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRipple : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRipple"; } }
+        internal override string RendererType { get { return "WebRipple"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbIconMeta : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebIconMeta"; } }
+        internal override string RendererType { get { return "WebIconMeta"; } }
 
         private string _collection = string.Empty;
 

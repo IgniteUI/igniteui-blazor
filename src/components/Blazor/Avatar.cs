@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbAvatar : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebAvatar"; } }
+        internal override string RendererType { get { return "WebAvatar"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

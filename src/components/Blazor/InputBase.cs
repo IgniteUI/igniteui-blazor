@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbInputBase : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebInputBase"; } }
+        internal override string RendererType { get { return "WebInputBase"; } }
 
         /// <inheritdoc />
         private protected override string ResolveDisplay()

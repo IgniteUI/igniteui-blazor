@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbButtonBase : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebButtonBase"; } }
+        internal override string RendererType { get { return "WebButtonBase"; } }
 
         /// <inheritdoc />
         private protected override string ResolveDisplay()

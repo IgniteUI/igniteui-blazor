@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCheckboxChangeEventArgsDetail : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCheckboxChangeEventArgsDetail"; } }
+        internal override string RendererType { get { return "WebCheckboxChangeEventArgsDetail"; } }
 
         private bool _checked = false;
 

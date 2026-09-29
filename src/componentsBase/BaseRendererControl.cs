@@ -477,7 +477,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            string? spinalName = ToSpinal(this.Type);
+            string? spinalName = ToSpinal(this.RendererType);
             string className = "igb-" + spinalName;
             if (Class != null)
             {
@@ -938,7 +938,7 @@ namespace IgniteUI.Blazor.Controls
         private String _cachedSerializedContent = "";
 
         /// <summary>The type name of this component.</summary>
-        public virtual string? Type
+        internal virtual string? RendererType
         {
             get
             {
@@ -956,7 +956,7 @@ namespace IgniteUI.Blazor.Controls
         internal void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
-            ser.Type = Type;
+            ser.Type = RendererType;
             ser.Start(propertyName);
             SerializeCore(ser);
             ser.End();
@@ -2460,11 +2460,11 @@ namespace IgniteUI.Blazor.Controls
 
                 if (val is BaseRendererControl)
                 {
-                    typeName = ((BaseRendererControl)val).Type;
+                    typeName = ((BaseRendererControl)val).RendererType;
                 }
                 else if (val is BaseRendererElement)
                 {
-                    typeName = ((BaseRendererElement)val).Type;
+                    typeName = ((BaseRendererElement)val).RendererType;
                 }
                 else
                 {
@@ -2542,11 +2542,11 @@ namespace IgniteUI.Blazor.Controls
 
                 if (val is BaseRendererControl)
                 {
-                    typeName = ((BaseRendererControl)val).Type ?? "";
+                    typeName = ((BaseRendererControl)val).RendererType ?? "";
                 }
                 else if (val is BaseRendererElement)
                 {
-                    typeName = ((BaseRendererElement)val).Type;
+                    typeName = ((BaseRendererElement)val).RendererType;
                 }
                 else
                 {

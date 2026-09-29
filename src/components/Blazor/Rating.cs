@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRating : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRating"; } }
+        internal override string RendererType { get { return "WebRating"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

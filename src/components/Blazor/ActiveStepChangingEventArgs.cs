@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbActiveStepChangingEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebActiveStepChangingEventArgs"; } }
+        internal override string RendererType { get { return "WebActiveStepChangingEventArgs"; } }
 
         private IgbActiveStepChangingEventArgsDetail _detail = new IgbActiveStepChangingEventArgsDetail();
 

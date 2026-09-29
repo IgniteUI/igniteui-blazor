@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCarousel : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCarousel"; } }
+        internal override string RendererType { get { return "WebCarousel"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

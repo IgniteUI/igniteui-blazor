@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDropdownHeader : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDropdownHeader"; } }
+        internal override string RendererType { get { return "WebDropdownHeader"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbChatInputRenderContext : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatInputRenderContext"; } }
+        internal override string RendererType { get { return "WebChatInputRenderContext"; } }
 
         private string _value = string.Empty;
 

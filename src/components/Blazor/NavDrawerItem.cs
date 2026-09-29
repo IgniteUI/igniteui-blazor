@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbNavDrawerItem : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebNavDrawerItem"; } }
+        internal override string RendererType { get { return "WebNavDrawerItem"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

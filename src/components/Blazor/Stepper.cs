@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbStepper : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebStepper"; } }
+        internal override string RendererType { get { return "WebStepper"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

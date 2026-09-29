@@ -16,7 +16,7 @@ public class CardTests : BlazorComponentTestBase
     public void Card_TypeMetadata_IsCorrect()
     {
         var card = new IgbCard();
-        Assert.Equal("WebCard", card.Type);
+        Assert.Equal("WebCard", card.RendererType);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class CardHeaderTests : BlazorComponentTestBase
     public void CardHeader_TypeMetadata_IsCorrect()
     {
         var header = new IgbCardHeader();
-        Assert.Equal("WebCardHeader", header.Type);
+        Assert.Equal("WebCardHeader", header.RendererType);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class CardContentTests : BlazorComponentTestBase
     public void CardContent_TypeMetadata_IsCorrect()
     {
         var content = new IgbCardContent();
-        Assert.Equal("WebCardContent", content.Type);
+        Assert.Equal("WebCardContent", content.RendererType);
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public class CardActionsTests : BlazorComponentTestBase
     public void CardActions_TypeMetadata_IsCorrect()
     {
         var actions = new IgbCardActions();
-        Assert.Equal("WebCardActions", actions.Type);
+        Assert.Equal("WebCardActions", actions.RendererType);
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class CardMediaTests : BlazorComponentTestBase
     public void CardMedia_TypeMetadata_IsCorrect()
     {
         var media = new IgbCardMedia();
-        Assert.Equal("WebCardMedia", media.Type);
+        Assert.Equal("WebCardMedia", media.RendererType);
     }
 
     [Fact]

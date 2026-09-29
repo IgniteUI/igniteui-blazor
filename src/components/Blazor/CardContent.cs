@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCardContent : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCardContent"; } }
+        internal override string RendererType { get { return "WebCardContent"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

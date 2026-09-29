@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTileManager : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTileManager"; } }
+        internal override string RendererType { get { return "WebTileManager"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
