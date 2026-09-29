@@ -11,7 +11,7 @@ export type TemplateTag = (strings: TemplateStringsArray, ...values: unknown[]) 
 /** lit-html's template tag — use to build client html templates with */
 export const html: TemplateTag = litHtml;
 
-/** Registry record; only the bundle and the legacy queue plumbing use it. @internal */
+/** Registry record; only the bundle uses it. @internal */
 export interface RegisteredScript {
   /** `true` = the function is a factory invoked for the value; `false` = the function *is* the value. */
   readonly shouldCall: boolean;
