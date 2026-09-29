@@ -49,9 +49,12 @@ The manual browser pass above remains useful for the other TFMs and for linker e
 The manual **`Wasm AOT Smoke`** workflow (`workflow_dispatch`) publishes this app with `-p:RunAOTCompilation=true` (net10.0, slow multi-minute compile) and runs the same browser checks against that output. Locally:
 
 ```bash
-dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net10.0 -p:RunAOTCompilation=true
+dotnet workload install wasm-tools
+dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net10.0 -p:TargetFrameworks=net10.0 -p:RunAOTCompilation=true
 dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=TrimmedPublish --settings .runsettings
 ```
+
+Restore ignores `-f`, and restoring net8/net9 with AOT on needs `wasm-tools-net8`/`wasm-tools-net9`. `-p:TargetFrameworks=net10.0` limits restore to net10.
 
 Wasm AOT is Mono AOT with the interpreter retained — it validates the product path but emits no NativeAOT diagnostics; that gate is `tests/IgniteUI.Blazor.Lite.AotSmoke` (per-PR CI).
 

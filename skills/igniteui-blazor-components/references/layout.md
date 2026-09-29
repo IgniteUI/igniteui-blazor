@@ -92,6 +92,20 @@ Tab headers come from the `Label` string or from children in the `label` slot; e
 
 Purely slot-driven: `start`, default (title), `end`. Icons must be registered before they display — see [`data-display.md`](./data-display.md).
 
+## Breadcrumbs
+
+```razor
+<nav aria-label="Breadcrumb">
+    <IgbBreadcrumbs Separator="chevron_right">
+        <IgbBreadcrumb><a href="/">Home</a></IgbBreadcrumb>
+        <IgbBreadcrumb><a href="/products">Products</a></IgbBreadcrumb>
+        <IgbBreadcrumb Current="true"><a href="/products/laptop">Laptop</a></IgbBreadcrumb>
+    </IgbBreadcrumbs>
+</nav>
+```
+
+`IgbBreadcrumbs` is the ARIA `list`; wrap it in `<nav aria-label="...">` — the label belongs on the landmark, not on the list. `Separator` is an icon name from the built-in `default` collection (`tree_expand` when unset, e.g. `chevron_right`, `arrow_next`), and no icon registration is needed for those. Each `IgbBreadcrumb` takes its content, usually an anchor, in the default slot, plus `prefix` / `suffix` slots and a `separator` slot that replaces the icon after that one item. `Current` sets `aria-current="page"`; `Disabled` sets `aria-disabled` and takes the slotted link out of the tab sequence. There are no events — handle navigation on the anchors.
+
 ## Navigation Drawer
 
 ```razor

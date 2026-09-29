@@ -21,14 +21,6 @@ export class WebDropdownDescription extends WebComboBoxBaseLikeDescription {
 		this._placement = value;
 		this.markDirty("Placement");
 	}
-	private _scrollStrategy: string = null;
-	get scrollStrategy(): string {
-		return this._scrollStrategy;
-	}
-	set scrollStrategy(value: string) {
-		this._scrollStrategy = value;
-		this.markDirty("ScrollStrategy");
-	}
 	private _flip: boolean = false;
 	get flip(): boolean {
 		return this._flip;
