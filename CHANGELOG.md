@@ -35,7 +35,7 @@ For the complete list of fixes arriving with the updated web components, see the
 ### Breaking Changes
 
 - **`PopoverScrollStrategy`:** `Block` is replaced by `Hide`. The web component no longer supports blocking the scroll while a popup is open; replace `PopoverScrollStrategy.Block` with `Hide`, `Scroll` or `Close`.
-- **Client scripts:** the deprecated `window.igRegisterScript`, `window.igRemoveScript`, and `window.igTemplating.html` globals have been removed from `IgniteUI.Blazor.Lite`, along with its legacy `app.bundle.js` queue shim. Remove any `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag from Lite apps, since it now returns 404. Import `registerScript`, `removeScript`, and `html` from `_content/IgniteUI.Blazor/api.js` instead. `registerScript` defaults `shouldCall` to `false`; pass `true` only for parameters whose registered function produces a value, such as `DataScript`.
+- **Client scripts:** the deprecated `window.igRegisterScript`, `window.igRemoveScript`, and `window.igTemplating.html` globals have been removed from `IgniteUI.Blazor.Lite`, along with its legacy `app.bundle.js` queue shim. Remove any `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag from Lite apps, since it now returns 404. Import `registerScript`, `removeScript`, and `html` from `./_content/IgniteUI.Blazor/api.js` instead. `registerScript` defaults `shouldCall` to `false`; pass `true` only for parameters whose registered function produces a value, such as `DataScript`.
 
 ## 0.3.0 - 2026-09-21
 
