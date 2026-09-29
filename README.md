@@ -19,15 +19,21 @@ Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
 
 This repository hosts the code for Ignite UI for Blazor Lite and is also intended for users to create feature requests, submit issues, and ask questions related to [Ignite UI for Blazor].
 
+Release notes are in the [CHANGELOG](CHANGELOG.md) and planned work is in the [ROADMAP](ROADMAP.md).
+
 ## Overview
 
 ### Components in [Ignite UI Blazor Lite](https://www.nuget.org/packages/IgniteUI.Blazor.Lite)
 
 | Components              | Status |         Documentation          | Released Version<br> Ignite UI Blazor |Released Version<br> Ignite UI Blazor Lite |   License   |
 | :---------------------- | :----: | :----------------------------: | :--------------: | :---------: | :---------: |
-| Chat                    |   ✅   |       [Docs][Chat Docs]        |     [26.1]       | 0.1.0|    [MIT]    |
+| Breadcrumbs             |   ✅   |          Coming soon           |        —         | Unreleased |    [MIT]    |
+| Color Picker            |   ✅   |          Coming soon           |        —         | 0.2.0|    [MIT]    |
+| QR Code                 |   ✅   |          Coming soon           |        —         | 0.2.0|    [MIT]    |
+| Chat (preview)          |   ✅   |       [Docs][Chat Docs]        |     [26.1]       | 0.1.0|    [MIT]    |
 | Splitter                |   ✅   |     [Docs][Splitter Docs]      |     [26.1]       | 0.1.0|    [MIT]    |
 | Highlight               |   ✅   |     [Docs][Highlight Docs]     |     [26.1]       | 0.1.0|    [MIT]    |
+| Theme Provider          |   ✅   |          Coming soon           |     [25.2]       | 0.1.0|    [MIT]    |
 | Date Range Picker       |   ✅   |       [Docs][Date Range]       |     [25.2]       | 0.0.1|    [MIT]    |
 | Tooltip                 |   ✅   |      [Docs][Tooltip Docs]      |     [25.1]       | 0.0.1|    [MIT]    |
 | Tile Manager            |   ✅   |   [Docs][Tile Manager Docs]    |     [25.1]       | 0.0.1|    [MIT]    |
@@ -53,8 +59,9 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 | Avatar                  |   ✅   |      [Docs][Avatar Docs]       |     [21.2]       | 0.0.1|    [MIT]    |
 | Badge                   |   ✅   |       [Docs][Badge Docs]       |     [21.2]       | 0.0.1|    [MIT]    |
 | Button                  |   ✅   |      [Docs][Button Docs]       |     [21.2]       | 0.0.1|    [MIT]    |
-| Button group            |   ✅   |   [Docs][Button Group Docs]    |     [21.2]       | 0.0.1|    [MIT]    |
-| Textarea                |   ✅   |     [Docs][Textarea Docs]      |     [21.2]       | 0.0.1|    [MIT]    |
+| Button group            |   ✅   |   [Docs][Button Group Docs]    |     [23.2]       | 0.0.1|    [MIT]    |
+| Toggle Button           |   ✅   |   [Docs][Button Group Docs]    |     [23.2]       | 0.0.1|    [MIT]    |
+| Textarea                |   ✅   |     [Docs][Textarea Docs]      |     [23.2]       | 0.0.1|    [MIT]    |
 | Date Time Input         |   ✅   |  [Docs][Date Time Input Docs]  |     [21.2]       | 0.0.1|    [MIT]    |
 | Tabs                    |   ✅   |       [Docs][Tabs Docs]        |     [21.2]       | 0.0.1|    [MIT]    |
 | Expansion Panel         |   ✅   |  [Docs][Expansion Panel Docs]  |     [21.2]       | 0.0.1|    [MIT]    |
@@ -62,7 +69,6 @@ This repository hosts the code for Ignite UI for Blazor Lite and is also intende
 | Calendar                |   ✅   |     [Docs][Calendar Docs]      |     [21.2]       | 0.0.1|    [MIT]    |
 | Card                    |   ✅   |       [Docs][Card Docs]        |     [21.2]       | 0.0.1|    [MIT]    |
 | Checkbox                |   ✅   |     [Docs][Checkbox Docs]      |     [21.2]       |  0.0.1|   [MIT]    |
-| Form                    |   ✅   |       [Docs][Form Docs]        |     [21.2]       |  0.0.1|   [MIT]    |
 | Icon                    |   ✅   |       [Docs][Icon Docs]        |     [21.2]       |  0.0.1|   [MIT]    |
 | Icon Button             |   ✅   |    [Docs][Icon Button Docs]    |     [21.2]       | 0.0.1|   [MIT]    |
 | Input                   |   ✅   |       [Docs][Input Docs]       |     [21.2]       |  0.0.1|   [MIT]    |
@@ -126,13 +132,15 @@ builder.Services.AddIgniteUIBlazor();
 @using IgniteUI.Blazor.Controls
 ```
 
-3 - Add the Style Sheet in the **<head\>** element of the **wwwroot/index.html** file:
+3 - Add the Style Sheet in the **<head\>** element of the **Components/App.razor** file (Blazor Web App) or the **wwwroot/index.html** file (standalone Blazor WebAssembly):
 
 ```html
 <head>
     <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
 </head>
 ```
+
+No `<script>` tag is needed: the package's JavaScript initializer loads the component scripts during Blazor startup on every hosting model.
 
 ### Add Ignite UI for Blazor Component
 
@@ -184,9 +192,13 @@ Any accessibility claim, ARIA pattern conformance, keyboard interaction behavior
 
 The library is trim-compatible. Applications publishing with `PublishTrimmed=true` (the Blazor WebAssembly default) should read [docs/TRIMMING.md](docs/TRIMMING.md) — mainly for preserving the data item types they bind.
 
+### AI agent skills
+
+The [skills/](skills/README.md) directory contains skill files and an `AGENTS.md` instruction file for AI coding assistants (Claude Code, GitHub Copilot, Cursor and others), covering components, grids, theming and generating views from a design image.
+
 ## Building and Running Locally
 
-**Prerequisites:** [Node.js](https://nodejs.org/) 22.12 or later (the Vite build requires it).
+**Prerequisites:** [.NET SDK](https://dotnet.microsoft.com/download) 10.0 and [Node.js](https://nodejs.org/) 22.12 or later (the Vite build requires it). The library targets `net8.0`, `net9.0` and `net10.0`.
 
 ```bash
 # 1. Install Node dependencies
@@ -246,7 +258,6 @@ gh attestation verify IgniteUI.Blazor.Lite.<version>.nupkg -R IgniteUI/igniteui-
 [Input Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/input
 [Icon Button Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/icon-button
 [Icon Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/icon
-[Form Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/form
 [Checkbox Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/checkbox
 [Card Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/card
 [Calendar Docs]: https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/scheduling/calendar
