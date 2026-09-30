@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- **Infrastructure:** the package can now be extended by the full `IgniteUI.Blazor` package, which takes a dependency on it for the components listed here and builds its charts, grids and Dock Manager on the same runtime. Its infrastructure access is granted only to the Infragistics-signed `IgniteUI.Blazor` assembly. `BaseCollection<T>`, `JsonSerializable`, `SerializationContext`, `SerializationFilter` and `IDataIntentAttribute` are public again but hidden from IntelliSense, since the full package's public collection and value types derive from them; they are not intended for application code. `DataIntentAttribute` is public. Format specifiers (`IgbNumberFormatSpecifier`) declared inside a component of the full package attach to it as content children.
+
 ## 0.4.0 - 2026-09-30
 
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.4.1 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.1) with highlights noted below:

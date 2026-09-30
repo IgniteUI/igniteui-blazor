@@ -20,6 +20,15 @@ namespace IgniteUI.Blazor.Controls
 
         private SerializationContext _context;
 
+        /// <summary>
+        /// The context being written to. Lets the full IgniteUI.Blazor package add serializers for its own value types
+        /// (points, rects, brushes) as extension methods.
+        /// </summary>
+        internal SerializationContext Context => _context;
+
+        /// <summary>Whether the serialization filter, if any, lets <paramref name="propertyName"/> be written.</summary>
+        internal bool ShouldWrite(string propertyName) => _context.Filter == null || _context.Filter(_name, propertyName);
+
         //private List<string> _properties = new List<string>();
         private string? _type = null;
 

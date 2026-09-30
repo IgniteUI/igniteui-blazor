@@ -549,7 +549,7 @@ namespace IgniteUI.Blazor.Controls
                 builder.AddAttribute(9 + 15 + Sequence.MaxSequence, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
                 {
                     //builder2.AddMarkupContent(10 + 15 + Sequence.MaxSequence, "\r\n        ");
-                    builder2.AddContent(11 + 15 + Sequence.MaxSequence, ChildContent);
+                    ContentChildHost.AddChildContent(builder2, 11 + 15 + Sequence.MaxSequence, this, ChildContent);
                     //builder2.AddMarkupContent(12 + 15 + Sequence.MaxSequence, "\r\n    ");
                 });
                 builder.CloseComponent();
@@ -626,7 +626,7 @@ namespace IgniteUI.Blazor.Controls
                 builder.AddAttribute(17, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
                 {
                     builder2.AddMarkupContent(18, "\r\n        ");
-                    builder2.AddContent(19, ChildContent);
+                    ContentChildHost.AddChildContent(builder2, 19, this, ChildContent);
                     builder2.AddMarkupContent(20, "\r\n    ");
                 });
                 builder.CloseComponent();
@@ -645,7 +645,7 @@ namespace IgniteUI.Blazor.Controls
                     builder2.OpenElement(26, "igc-portal-entrance");
                     builder2.AddAttribute(27, "portal-id", "portal-" + _containerId);
                     builder2.AddAttribute(28, "move-once-mode", "true");
-                    builder2.AddContent(29, ChildContent);
+                    ContentChildHost.AddChildContent(builder2, 29, this, ChildContent);
                     builder2.CloseElement();
                     builder2.AddMarkupContent(30, "\r\n    ");
                 });
@@ -3404,7 +3404,7 @@ namespace IgniteUI.Blazor.Controls
             return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "register", grouping, "", json });
         }
 
-        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
+        internal void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
         {
             System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
             if (type == null)
@@ -3458,7 +3458,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "Creates the property's own array PropertyType, which is present in metadata whenever the property exists.")]
-        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
+        internal void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
         {
             System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
             if (type == null)
