@@ -137,7 +137,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static Type? GetOriginEventDetailType(Type eventArgsType, Type componentType)
         {
-            var detailProp = eventArgsType.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance);
+            var detailProp = eventArgsType.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             if (detailProp == null)
             {
                 return null;
