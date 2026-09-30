@@ -2846,6 +2846,12 @@ export class ComponentRenderer extends Base {
 				shouldSkip = true;
 			}
 		}
+		// A description's name is the renderer's id for it. It reaches the target only where the
+		// metadata declares a Name property, as the icon metadata does; otherwise a form element
+		// would take the id as its form-field name.
+		if ((propertyName == "Name" || propertyName == "name") && action.propertyMetadata == null) {
+			shouldSkip = true;
+		}
 		if (shouldSkip) {
 			return true;
 		}

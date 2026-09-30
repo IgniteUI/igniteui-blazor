@@ -1,0 +1,15 @@
+@page "/form-names"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+@* Form-associated components inside a real form, so a test can read what the browser would
+   submit. The labels give the test a signal that the client renderer has applied each
+   component's properties. *@
+
+<form id="unnamed">
+    <IgbColorPicker Label="ColorPicker" />
+    <IgbCombo T="object" Label="Combo" />
+    <IgbDatePicker Label="DatePicker" />
+    <IgbDateRangePicker Label="DateRangePicker" />
+    <IgbDateTimeInput Label="DateTimeInput" />
+    <IgbMaskInput Label="MaskInput" />
+</form>

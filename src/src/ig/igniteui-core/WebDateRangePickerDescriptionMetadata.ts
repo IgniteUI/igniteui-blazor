@@ -80,7 +80,6 @@ export class WebDateRangePickerDescriptionMetadata extends Base {
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");
 		metadata.item("OpeningRef", "EventRef:VoidHandler:opening");
 		metadata.item("OpeningRef@args", "VoidEventArgs");

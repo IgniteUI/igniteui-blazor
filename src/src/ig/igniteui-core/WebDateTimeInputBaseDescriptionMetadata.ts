@@ -42,7 +42,6 @@ export class WebDateTimeInputBaseDescriptionMetadata extends Base {
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");
 	}
 	static register(context: TypeDescriptionContext): void {

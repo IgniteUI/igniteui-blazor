@@ -44,7 +44,6 @@ export class WebColorPickerDescriptionMetadata extends Base {
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");
 		metadata.item("ChangeRef", "EventRef:ComponentValueChangedEventHandler:change");
 		metadata.item("ChangeRef@args", "ComponentValueChangedEventArgs");

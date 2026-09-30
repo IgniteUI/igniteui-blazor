@@ -34,7 +34,6 @@ export class WebInputBaseDescriptionMetadata extends Base {
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");
 		metadata.item("InputOcurredRef", "EventRef:ComponentValueChangedEventHandler:inputOcurred");
 		metadata.item("InputOcurredRef@args", "ComponentValueChangedEventArgs");
