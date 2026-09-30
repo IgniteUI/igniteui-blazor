@@ -35,7 +35,13 @@ export function removeScript(name: string): void {
   scripts.delete(name);
 }
 
-/** Gets a previously registered script, if any. @internal */
+/**
+ * Gets a previously registered script, if any.
+ *
+ * Contract with the other Ignite UI packages (the full IgniteUI.Blazor): their client runtime resolves `*Script`
+ * parameters through this function, so there is one registry for both packages. Kept under this name and
+ * signature; see docs/PACKAGE-CONTRACT.md. Not an application API. @internal
+ */
 export function getRegisteredScript(name: string): RegisteredScript | undefined {
   return scripts.get(name);
 }
