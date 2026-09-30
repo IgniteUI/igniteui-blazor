@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.4.0 - 2026-09-30
+
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.4.1 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.1) with highlights noted below:
 
 ### Added
