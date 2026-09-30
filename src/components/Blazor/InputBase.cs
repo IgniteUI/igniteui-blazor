@@ -298,7 +298,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_inputOcurred))
                     {
                         _inputOcurred = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", value, (args) =>
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "InputOcurred", value, (args) =>
                         {
                             RaiseValueChanging(args);
                         });
@@ -312,7 +312,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _inputOcurred = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "InputOcurred", null);
                     this.OnRefChanged("InputOcurred", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._inputOcurredRef = null;
@@ -374,7 +374,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -385,7 +385,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _focus = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", null);
                     this.OnRefChanged("Focus", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._focusRef = null;
@@ -447,7 +447,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -458,7 +458,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _blur = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", null);
                     this.OnRefChanged("Blur", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._blurRef = null;

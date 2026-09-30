@@ -274,7 +274,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_remove))
                     {
                         _remove = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Remove", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Remove", value);
                         this.OnRefChanged("Remove", null, "event:::Remove", true, false, (refName, oldValue, newValue) =>
                         {
                             this._removeRef = refName;
@@ -285,7 +285,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _remove = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Remove", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Remove", null);
                     this.OnRefChanged("Remove", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._removeRef = null;
@@ -348,7 +348,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_select))
                     {
                         _select = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Select", value, (args) =>
+                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.RendererName, "Select", value, (args) =>
                         {
                             var newValueSelected = default(bool);
 
@@ -363,7 +363,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._selected = newValueSelected;
                                 }
-                                OnPropertyPropagatedOut(Name, "Selected");
+                                OnPropertyPropagatedOut(RendererName, "Selected");
                             }
 
                             if (!EventCallback<bool>.Empty.Equals(SelectedChanged))
@@ -383,7 +383,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _select = null;
-                    this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Select", null);
+                    this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.RendererName, "Select", null);
                     this.OnRefChanged("Select", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._selectRef = null;

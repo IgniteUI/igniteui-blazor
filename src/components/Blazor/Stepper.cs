@@ -353,7 +353,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_activeStepChanging))
                     {
                         _activeStepChanging = value;
-                        this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", value);
+                        this.SetHandler<IgbActiveStepChangingEventArgs>(this.RendererName, "ActiveStepChanging", value);
                         this.OnRefChanged("ActiveStepChanging", null, "event:::ActiveStepChanging", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangingRef = refName;
@@ -364,7 +364,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _activeStepChanging = null;
-                    this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", null);
+                    this.SetHandler<IgbActiveStepChangingEventArgs>(this.RendererName, "ActiveStepChanging", null);
                     this.OnRefChanged("ActiveStepChanging", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._activeStepChangingRef = null;
@@ -426,7 +426,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_activeStepChanged))
                     {
                         _activeStepChanged = value;
-                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value);
+                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.RendererName, "ActiveStepChanged", value);
                         this.OnRefChanged("ActiveStepChanged", null, "event:::ActiveStepChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangedRef = refName;
@@ -437,7 +437,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _activeStepChanged = null;
-                    this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", null);
+                    this.SetHandler<IgbActiveStepChangedEventArgs>(this.RendererName, "ActiveStepChanged", null);
                     this.OnRefChanged("ActiveStepChanged", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._activeStepChangedRef = null;

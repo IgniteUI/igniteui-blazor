@@ -463,7 +463,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbNumberEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(double);
 
@@ -478,7 +478,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             if (!EventCallback<double>.Empty.Equals(ValueChanged))
@@ -498,7 +498,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbNumberEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -568,7 +568,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_hover))
                     {
                         _hover = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", value);
+                        this.SetHandler<IgbNumberEventArgs>(this.RendererName, "Hover", value);
                         this.OnRefChanged("Hover", null, "event:::Hover", true, false, (refName, oldValue, newValue) =>
                         {
                             this._hoverRef = refName;
@@ -579,7 +579,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _hover = null;
-                    this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", null);
+                    this.SetHandler<IgbNumberEventArgs>(this.RendererName, "Hover", null);
                     this.OnRefChanged("Hover", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._hoverRef = null;
