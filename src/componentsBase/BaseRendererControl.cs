@@ -529,6 +529,40 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
+            // Non-DirectRender WITH element to adopt as root (data-ig-root) instead of creating a container:
+            if (DirectRenderElementName.Length > 0)
+            {
+                builder.OpenElement(0, DirectRenderElementName);
+                builder.AddAttribute(1, "class", className);
+                builder.AddAttribute(2, "data-ig-id", _containerId);
+                builder.AddAttribute(3, "data-ig-root", true);
+                builder.AddMultipleAttributes(4, AdditionalAttributes);
+                builder.AddElementReferenceCapture(5, delegate (ElementReference value)
+                {
+                    contEle = value;
+                });
+                builder.OpenComponent<CascadingValue<BaseRendererControl>>(6);
+                builder.AddAttribute(7, "Value", this);
+                builder.AddAttribute(8, "Name", ParentTypeName);
+                builder.AddAttribute(9, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
+                {
+                    builder2.AddContent(10, ChildContent);
+                });
+                builder.CloseComponent();
+                if (NeedsDynamicContent)
+                {
+                    // None of the current elements has a default slot, so the hidden holder is never projected too.
+                    builder.OpenComponent<DynamicContentHolder>(11);
+                    builder.AddComponentReferenceCapture(12, delegate (object __value)
+                    {
+                        Holder = (DynamicContentHolder)__value;
+                    });
+                    builder.CloseComponent();
+                }
+                builder.CloseElement();
+                return;
+            }
+
             //Console.WriteLine("rendering");
             var display = ResolveDisplay();
 

@@ -14,10 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** the component no longer takes the internal id `mainControl` as its form-field name, so these fields no longer submit under that name or collide with each other in the same form.
+- **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** a `style` attribute no longer overrides the component's own layout ([#477](https://github.com/IgniteUI/igniteui-blazor/issues/477)), an `id` attribute is no longer duplicated on an extra element, an attribute removed from the markup no longer stays with `"null"` value, and the Chat no longer collapses to no width outside a layout that stretches it.
 
 ### Breaking Changes
 
 - **`Width` and `Height` removed:** size a component with CSS, like any other element. Usually the layout decides it: a flex or grid container sizes and aligns the components in it. For an explicit size, give the component a `class` and target it from your stylesheet, or from the [isolated CSS](https://learn.microsoft.com/aspnet/core/blazor/components/css-isolation) of the component that renders it, through `::deep`.
+- **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** render their element directly, like every other component, instead of inside an `inline-block` wrapper `div`. In normal flow all but the Color Picker now fill their row, and sizing the Date Picker with `width` also needs a `display`, as its element is inline. CSS that reached the element through the wrapper, such as `.my-picker igc-date-picker`, now targets it directly: `igc-date-picker.my-picker`.
 
 ## 0.4.0 - 2026-09-30
 
