@@ -96,6 +96,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, submitted with the form data. Radios with the same name form one group, of which one can be checked.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
         private bool _checked = false;
 
         /// <summary>
@@ -584,6 +603,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddBooleanProp("required", this._required); }
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Checked"))
             { ser.AddBooleanProp("checked", this._checked); }
             if (IsPropDirty("LabelPosition"))

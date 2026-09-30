@@ -442,7 +442,15 @@ namespace IgniteUI.Blazor.Controls
 
                 if (isParam)
                 {
-                    info.AddSequence(Camelize(prop.Name), wcName, wcEnumTransform);
+                    var key = Camelize(prop.Name);
+                    // "name" in the serialized description is the renderer's id for the component, so a Name
+                    // parameter is serialized as "formName" and rendered back as the element's name attribute.
+                    if (key == "name")
+                    {
+                        key = "formName";
+                        wcName ??= "name";
+                    }
+                    info.AddSequence(key, wcName, wcEnumTransform);
                 }
             }
 

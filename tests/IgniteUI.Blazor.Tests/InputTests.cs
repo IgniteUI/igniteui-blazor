@@ -184,6 +184,18 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
     }
 
     [Fact]
+    public void Input_Name_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Name, "field"));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("field", cut.Instance.Name);
+        Assert.Equal("field", Assert.Single(element.Attributes, a => a.Name == "name").Value);
+        Assert.Null(element.GetAttribute("form-name"));
+    }
+
+    [Fact]
     public void Input_Outlined_RendersAttribute()
     {
         var cut = Render<IgbInput>(parameters =>

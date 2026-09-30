@@ -146,6 +146,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, submitted with the form data.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
         private double _maxLength = 0;
 
         /// <summary>
@@ -876,6 +895,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddStringProp("inputMode", this._inputMode); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("MaxLength"))
             { ser.AddNumberProp("maxLength", this._maxLength); }
             if (IsPropDirty("MinLength"))

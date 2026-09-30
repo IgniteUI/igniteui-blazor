@@ -31,6 +31,7 @@ export class WebInputBaseDescriptionMetadata extends Base {
 		metadata.item("Outlined", "Boolean");
 		metadata.item("Placeholder", "String");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");

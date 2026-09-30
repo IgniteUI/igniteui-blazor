@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Infrastructure:** the `EventBehavior` parameter, the `ControlEventBehavior` enum and the `Type` property are no longer public. Each component keeps the event dispatch it always defaulted to; the per-instance override was never set by any sample, doc or test. `Type` returned the internal name the client renderer uses for the component, not a type users could act on. `Name` is gone from the non-component types such as event details and value objects, except `IgbIconMeta` and `IgbChatMessageAttachment`, as it did nothing for the rest.
+- **Infrastructure:** the `EventBehavior` parameter, the `ControlEventBehavior` enum and the `Type` property are no longer public. Each component keeps the event dispatch it always defaulted to; the per-instance override was never set by any sample, doc or test. `Type` returned the internal name the client renderer uses for the component, not a type users could act on. `Name` is gone from the non-component types such as event details and value objects, except `IgbIconMeta` and `IgbChatMessageAttachment`, as it did nothing for the rest. `Name` as a parameter is also removed from all non-form components.
 
 ### Fixed
 

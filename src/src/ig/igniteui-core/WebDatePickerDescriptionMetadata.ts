@@ -35,6 +35,7 @@ export class WebDatePickerDescriptionMetadata extends Base {
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("Mode", "ExportedType:string:PickerMode");
 		metadata.item("Mode@stringUnion", "WebComponents;React");
 		metadata.item("Mode@names", "Dropdown;Dialog");

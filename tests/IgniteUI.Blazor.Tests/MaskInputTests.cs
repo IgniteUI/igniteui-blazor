@@ -39,6 +39,8 @@ public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
         .Prop(c => c.Outlined, true)
         .Prop(c => c.Placeholder, "Enter value")
         .Prop(c => c.Label, "Phone")
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.Disabled, true)
         .Prop(c => c.Required, true)
         .Prop(c => c.Invalid, true);

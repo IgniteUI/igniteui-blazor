@@ -39,6 +39,14 @@ export abstract class WebInputBaseDescription extends Description {
 		this._label = value;
 		this.markDirty("Label");
 	}
+	private _formName: string = null;
+	get formName(): string {
+		return this._formName;
+	}
+	set formName(value: string) {
+		this._formName = value;
+		this.markDirty("FormName");
+	}
 	private _disabled: boolean = false;
 	get disabled(): boolean {
 		return this._disabled;

@@ -54,6 +54,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, submitted with the form data.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
         private PickerMode _mode = PickerMode.Dropdown;
 
         /// <summary>
@@ -1197,6 +1216,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Mode"))
             { ser.AddEnumProp("mode", this._mode); }
             if (IsPropDirty("NonEditable"))

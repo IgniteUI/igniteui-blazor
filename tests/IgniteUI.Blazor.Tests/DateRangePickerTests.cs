@@ -105,6 +105,8 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
         .Prop(c => c.NonEditable, true)
         .Prop(c => c.Outlined, true)
         .Prop(c => c.Label, "Date range")
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.LabelStart, "From")
         .Prop(c => c.LabelEnd, "To")
         .Prop(c => c.Placeholder, "mm/dd/yyyy - mm/dd/yyyy")

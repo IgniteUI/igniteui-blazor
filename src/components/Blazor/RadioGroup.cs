@@ -97,6 +97,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name applied to all radio buttons in the group.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
 
         /// <summary>
         /// Gets the current value of the group.
@@ -262,6 +281,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddEnumProp("alignment", this._alignment); }
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("ChangeRef"))
             { ser.AddStringProp("changeRef", this._changeRef); }
 

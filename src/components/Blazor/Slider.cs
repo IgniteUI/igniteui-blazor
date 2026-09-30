@@ -71,6 +71,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, submitted with the form data.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
 
         /// <summary>
         /// Gets the current value of the component.
@@ -414,6 +433,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (IsPropDirty("Value"))
             { ser.AddNumberProp("value", this._value); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Invalid"))
             { ser.AddBooleanProp("invalid", this._invalid); }
             if (IsPropDirty("InputRef"))

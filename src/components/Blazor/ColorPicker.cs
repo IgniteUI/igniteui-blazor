@@ -97,6 +97,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, submitted with the form data.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
         private ColorFormat _format = ColorFormat.Hex;
 
         /// <summary>
@@ -813,6 +832,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddStringProp("value", this._value); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Format"))
             { ser.AddEnumProp("format", this._format); }
             if (IsPropDirty("HideFormats"))

@@ -29,6 +29,7 @@ export class WebDateTimeInputBaseDescriptionMetadata extends Base {
 		metadata.item("Outlined", "Boolean");
 		metadata.item("Placeholder", "String");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("InputFormat", "String");
 		metadata.item("Min", "Date");
 		metadata.item("Max", "Date");

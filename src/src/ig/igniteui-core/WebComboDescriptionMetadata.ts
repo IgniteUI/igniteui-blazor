@@ -39,6 +39,7 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("AutofocusList", "Boolean");
 		metadata.item("Locale", "String");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("Placeholder", "String");
 		metadata.item("PlaceholderSearch", "String");
 		metadata.item("ValueKey", "String");

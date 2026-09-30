@@ -32,6 +32,7 @@ export class WebColorPickerDescriptionMetadata extends Base {
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
 		metadata.item("Value", "String");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("Format", "ExportedType:string:ColorFormat");
 		metadata.item("Format@stringUnion", "WebComponents;React");
 		metadata.item("Format@names", "Hex;Rgb;Hsl");
