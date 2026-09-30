@@ -2,6 +2,30 @@ namespace IgniteUI.Blazor.Controls
 {
     internal class MarshalByValueFactory
     {
+        private static readonly List<(Func<string, bool> MustMarshal, Func<string, object?> Create)> _providers = new();
+
+        /// <summary>
+        /// Adds the by-value types of another Ignite UI package (the full IgniteUI.Blazor), consulted after this package's own.
+        /// </summary>
+        internal static void AddProvider(Func<string, bool> mustMarshalByValue, Func<string, object?> createInstance)
+        {
+            lock (_providers)
+            {
+                _providers.Add((mustMarshalByValue, createInstance));
+            }
+        }
+
+        private static (Func<string, bool> MustMarshal, Func<string, object?> Create)[] Providers
+        {
+            get
+            {
+                lock (_providers)
+                {
+                    return _providers.ToArray();
+                }
+            }
+        }
+
         internal static bool MustMarshalByValue(string? typeName)
         {
             switch (typeName)
@@ -143,6 +167,16 @@ namespace IgniteUI.Blazor.Controls
                     return true;
 
                     //@@MustMarshalByValueEnd
+            }
+            if (typeName != null)
+            {
+                foreach (var provider in Providers)
+                {
+                    if (provider.MustMarshal(typeName))
+                    {
+                        return true;
+                    }
+                }
             }
             return false;
         }
@@ -288,6 +322,14 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbTreeSelectionEventArgsDetail();
 
                     //@@MarshalByValueEnd
+            }
+            foreach (var provider in Providers)
+            {
+                var instance = provider.Create(typeName);
+                if (instance != null)
+                {
+                    return instance;
+                }
             }
             return null;
         }

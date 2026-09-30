@@ -19,7 +19,7 @@ export class RegisterElementHelper {
             }
             RegisterElementHelper._registeredSet.add(tagName);
             if (window.customElements) {
-                window.customElements.define(tagName, cons as any);
+                if (!window.customElements.get(tagName)) { window.customElements.define(tagName, cons as any); }
             } else {
                 (<any>document).registerElement(tagName, cons as any);
             }

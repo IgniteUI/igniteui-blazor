@@ -18,6 +18,8 @@ that package, so coordinate it with the package's maintainers.
   module load requests are tracked per interop module (`ModuleLoader.Load(runtime, name, interopModulePath)`).
 - `RendererSerializer.Context` / `ShouldWrite`: used to serialize the full package's drawing types (points, rects,
   brushes) as extension methods.
+- `MarshalByValueFactory.AddProvider`: the full package registers its by-value types (chart and grid value objects).
+- `FindByName` is `internal virtual` on both base classes, so the full package's generated types override it the same way.
 
 ## Static web assets (`_content/IgniteUI.Blazor/`)
 
@@ -31,7 +33,8 @@ Both packages serve from the same base path, so the file routes must not overlap
 | `themes/**` | The web components themes. The full package ships only `themes/grid/**`. |
 | `IgniteUI.Blazor.Lite.lib.module.js` | This package's JS initializer. The full package has its own (`IgniteUI.Blazor[.Trial].lib.module.js`). |
 
-This package defines no interop functions or state on `window`. The legacy script globals
+This package defines no interop functions or state on `window`. Custom elements shared by both client runtimes (`igc-portal-*`,
+`igc-template-container`, `igc-template-content`) are defined only if not defined yet, whichever runtime loads first. The legacy script globals
 (`igRegisterScript` / `igRemoveScript` / `igTemplating`) and `app.bundle.js`, where still present, are being
 removed. The full package takes them over for its own users.
 

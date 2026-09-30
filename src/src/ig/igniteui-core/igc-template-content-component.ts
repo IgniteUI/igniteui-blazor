@@ -119,7 +119,7 @@ export class IgcTemplateContentComponent extends IgcHTMLElement {
         if (!IgcTemplateContentComponent._registered) {
             IgcTemplateContentComponent._registered = true;
             if (window.customElements) {
-                window.customElements.define(IgcTemplateContentComponent.htmlTagName, IgcTemplateContentComponent);
+                if (!window.customElements.get(IgcTemplateContentComponent.htmlTagName)) { window.customElements.define(IgcTemplateContentComponent.htmlTagName, IgcTemplateContentComponent); }
             } else {
                 (<any>document).registerElement(IgcTemplateContentComponent.htmlTagName, IgcTemplateContentComponent);
             }
