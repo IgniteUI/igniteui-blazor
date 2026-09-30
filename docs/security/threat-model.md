@@ -118,13 +118,14 @@ Everything else on Microsoft's pages, including CSRF, click-jacking, WebSocket c
 ## 6. Supply chain, build and release
 
 - **Static analysis** — GitHub CodeQL code scanning (default setup) analyses C# and JavaScript/TypeScript on pushes and pull requests; findings of high severity or above block merging.
-- **Dependency alerts** — GitHub Dependabot alerts and security updates cover the NuGet, npm and GitHub Actions manifests; version updates are configured for GitHub Actions with a 14-day cooldown and security updates fast-tracked.
-- **Release integrity** — Authenticode signing of all DLLs followed by a signature validation gate; NuGet package signing followed by `dotnet nuget verify`.
+- **Dependency alerts** — GitHub Dependabot alerts and security updates cover the NuGet, npm and GitHub Actions manifests; version updates are configured for GitHub Actions with a 14-day cooldown and security updates fast-tracked. Pull requests additionally run a dependency review that fails on a new dependency with a known high-severity vulnerability, and release builds run an advisory NuGet and npm vulnerability scan whose report is attached to the release.
+- **Release integrity** — Authenticode signing of all DLLs followed by a signature validation gate; NuGet package signing followed by `dotnet nuget verify`. Assemblies are also strong-named with a key materialised only for the build step and deleted afterwards, both signals are validated again on the packed bytes, and the package digest is recorded once and re-checked by every downstream job before it acts on the package.
+- **Provenance** — the release produces SPDX and CycloneDX SBOMs and attests build provenance and both SBOMs against the signed package.
 - **Credential hygiene** — Azure OIDC federation and NuGet Trusted Publishing with short-lived OIDC-issued keys; no long-lived publish secrets.
-- **Least privilege and pinning** — workflow-level `contents: read` or no permissions by default, `id-token: write` granted per job, `contents: write` only on the job that attaches release evidence, publishing gated behind the `nuget-org-publish` environment, release actions pinned to commit SHAs.
-- **Reproducible inputs** — `npm ci` without package-manager caching in release builds, `<Deterministic>true</Deterministic>`, central package version management.
-- **Compiler safety** — the library compiles with `Nullable` enabled and nullable warnings as errors, and is trim-compatible with the trim analyzer warning-free. `AllowUnsafeBlocks` is enabled solely for the unmarshalled data channel.
-- **Testing** — bUnit unit tests, including the unmarshalled channel, and Playwright integration tests run in CI.
+- **Least privilege and pinning** — workflow-level `contents: read` or no permissions by default, `id-token: write` and `attestations: write` granted per job, `contents: write` only on the job that attaches release evidence, checkouts without persisted credentials, signing, packing and publishing gated behind the `nuget-org-publish` environment, release actions pinned to commit SHAs.
+- **Reproducible inputs** — `npm ci` without package-manager caching in release builds, `<Deterministic>true</Deterministic>` with `ContinuousIntegrationBuild` for release, central package version management. The bundled JavaScript dependencies' licenses ship in the package as `THIRD-PARTY-LICENSES.md`.
+- **Compiler safety** — the library compiles with `Nullable` enabled and every warning as an error, and is trim-compatible with the trim, AOT and single-file analyzers warning-free ([docs/TRIMMING.md](../TRIMMING.md)). `AllowUnsafeBlocks` is enabled solely for the unmarshalled data channel.
+- **Testing** — bUnit unit tests on every target framework, including the unmarshalled channel, and Playwright integration tests, including a trimmed WebAssembly publish exercised in the browser, run in CI alongside a Native AOT publish of a console smoke app that exercises the library's dynamic-code paths.
 
 ## 7. Reporting and disclosure
 
