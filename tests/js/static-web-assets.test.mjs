@@ -24,7 +24,7 @@ test('no emitted file inspects its own URL', () => {
   }
 });
 
-test('initializer is a flat import list covering the app entry and api.js', () => {
+test('initializer is a flat import list covering the app entry, api.js and interop.js', () => {
   const lines = read('IgniteUI.Blazor.Lite.lib.module.js').trim().split('\n');
   const imported = lines.map((l) => {
     const m = /^import '\.\/(.+)';$/.exec(l);
@@ -37,6 +37,7 @@ test('initializer is a flat import list covering the app entry and api.js', () =
     'app entry missing',
   );
   assert.ok(imported.includes('api.js'), 'api.js missing');
+  assert.ok(imported.includes('interop.js'), 'interop.js missing');
 });
 
 test('api.js exports everything api.d.ts declares', () => {

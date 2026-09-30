@@ -23,6 +23,8 @@ const entries = {
  * Emits the Blazor JS initializer as a flat list of static imports.
  * Blazor awaits the import, so no startup hooks required for that.
  * api.js included for the deprecated window globals before Blazor starts.
+ * interop.js included so the module the components import is already evaluated: their import() of it resolves to
+ * this instance without another fetch, and nothing about startup depends on window.
  */
 function emitInitializer(): Plugin {
   return {
@@ -44,6 +46,10 @@ function emitInitializer(): Plugin {
         throw this.error(`no ${fixedNames.api} entry chunk — cannot emit ${initializer}`);
       }
       visit(fixedNames.api);
+      if (bundle[fixedNames.interop]?.type !== 'chunk') {
+        throw this.error(`no ${fixedNames.interop} entry chunk — cannot emit ${initializer}`);
+      }
+      visit(fixedNames.interop);
       this.emitFile({
         type: 'asset',
         fileName: initializer,
