@@ -1,7 +1,7 @@
 ---
 license: MIT
-name: igniteui-blazor-lite-testing
-description: "Testing in the IgniteUI Blazor (Lite) repository itself: the bUnit unit suite (tests/IgniteUI.Blazor.Tests — base classes, attribute/serialization specs, declarative interop wire contracts) and the Playwright integration suite (tests/IgniteUI.Blazor.Lite.IntegrationTests + TestBed — reflection-driven live-browser sweep, componentsConfig.json). Use when adding or changing tests in this repo, covering a new component, pinning interop behavior, or deciding which suite a check belongs in. Not for consumer-facing component usage — use igniteui-blazor-components for that."
+name: write-library-tests
+description: "Covers testing in the IgniteUI Blazor (Lite) repository itself: the bUnit unit suite (tests/IgniteUI.Blazor.Tests: base classes, attribute and serialization specs, declarative interop wire contracts) and the Playwright integration suite (tests/IgniteUI.Blazor.Lite.IntegrationTests with the TestBed reflection-driven live-browser sweep and componentsConfig.json). WHEN TO USE: adding or changing tests in this repository, covering a new component, pinning interop behavior, or deciding which suite a check belongs in. WHEN NOT TO USE: trimmed-publish checks and IL2xxx errors (use maintain-trim-compatibility), Blazing Story stories (use blazing-story-story), or using the components in an app (use the public igniteui-blazor-components skill)."
 user-invocable: true
 ---
 
@@ -76,7 +76,7 @@ over the component's public surface —
 - One-time: build, then install browsers — `pwsh tests/IgniteUI.Blazor.Lite.IntegrationTests/bin/Debug/net<version>/playwright.ps1 install chromium`.
 - `dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests` (or per component from the Test Explorer — fixtures are named by component).
 - `.runsettings` knobs: headless off for local debugging; `useInMemoryClient: false` to run against your own `dotnet run` instance of the TestBed.
-- Full setup details: [tests/IgniteUI.Blazor.Lite.IntegrationTests/README.md](../../tests/IgniteUI.Blazor.Lite.IntegrationTests/README.md).
+- Full setup details: [tests/IgniteUI.Blazor.Lite.IntegrationTests/README.md](../../../tests/IgniteUI.Blazor.Lite.IntegrationTests/README.md).
 
 ## Adding coverage for a new component — checklist
 

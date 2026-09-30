@@ -1,7 +1,7 @@
 ---
 license: MIT
 name: igniteui-blazor-theming
-description: "Theming and visual customization for Ignite UI for Blazor: choosing and switching the built-in Bootstrap, Material, Fluent and Indigo themes in light or dark, scoping a theme to part of the page with IgbThemeProvider, generating palettes and component design tokens with the igniteui-theming MCP server, overriding CSS custom properties, using CSS shadow parts, dark mode, and global roundness/spacing/size tokens. Use when changing the look and feel of Ignite UI Blazor components, applying a color scheme, or writing component CSS. For component configuration use igniteui-blazor-components; for grid data features use igniteui-blazor-grids."
+description: "Covers theming and visual customization for Ignite UI for Blazor: choosing and switching the built-in Bootstrap, Material, Fluent and Indigo themes in light or dark, scoping a theme to part of the page with IgbThemeProvider, generating palettes and component design tokens with the igniteui-theming MCP server, overriding CSS custom properties, CSS shadow parts, dark mode, and global roundness, spacing and size tokens. WHEN TO USE: changing the look and feel of Ignite UI Blazor components, applying a color scheme or brand palette, switching themes at runtime, or writing component CSS in app.css or .razor.css files. WHEN NOT TO USE: component configuration, parameters, or events, or styling charts, maps, and gauges, which have no design tokens (use igniteui-blazor-components), grid data features (use igniteui-blazor-grids), or building a whole view from a design image (use igniteui-blazor-generate-from-image-design, which applies this skill)."
 user-invocable: true
 ---
 

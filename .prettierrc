@@ -1,5 +1,6 @@
 {
   "singleQuote": true,
+  "endOfLine": "auto",
   "overrides": [
     {
       "files": ["*.yml", "*.yaml"],

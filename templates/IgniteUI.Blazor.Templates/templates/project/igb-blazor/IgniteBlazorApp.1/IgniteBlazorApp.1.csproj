@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <!--#if (HostingIsServer) -->
-    <PackageReference Include="IgniteUI.Blazor.Lite" Version="0.2.0" />
+    <PackageReference Include="IgniteUI.Blazor.Lite" Version="0.3.0" />
     <!--#if (IncludeWeatherSample) -->
     <PackageReference Include="Blazor-ApexCharts" Version="7.0.0" />
     <PackageReference Include="IgniteUI.Blazor.GridLite" Version="0.9.1" />

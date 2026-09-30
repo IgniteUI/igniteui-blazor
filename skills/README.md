@@ -15,12 +15,6 @@ Each skill is a `SKILL.md` routing hub with `references/` sub-files. The agent r
 | [`igniteui-blazor-theming`](./igniteui-blazor-theming/SKILL.md) | Built-in themes, `IgbThemeProvider`, palettes, component design tokens, CSS parts, dark mode, layout tokens |
 | [`igniteui-blazor-generate-from-image-design`](./igniteui-blazor-generate-from-image-design/SKILL.md) | End-to-end workflow for implementing a view from a design image; composes the three skills above |
 
-## Skill for working *on* this repository
-
-| Skill | Covers |
-|---|---|
-| [`igniteui-blazor-lite-testing`](./igniteui-blazor-lite-testing/SKILL.md) | The bUnit unit suite and Playwright integration suite under `tests/`, and how to author interop wire contracts |
-
 ## MCP servers
 
 | Server | Purpose | Key tools |

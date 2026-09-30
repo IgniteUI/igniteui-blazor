@@ -125,6 +125,20 @@ export class Loader {
         break;
       }
 
+      case 'WebBreadcrumbsModule': {
+        let { IgcBreadcrumbsComponent } = await import('igniteui-webcomponents');
+        let { WebBreadcrumbsDescriptionModule } = await import('igniteui-core/WebBreadcrumbsDescriptionModule');
+
+        this._loadingSet.delete(module);
+
+        IgcBreadcrumbsComponent.register();
+        TypeRegistrar.registerCons('IgcBreadcrumbsComponent', IgcBreadcrumbsComponent);
+
+        WebBreadcrumbsDescriptionModule.register(cr.context);
+        this.checkDone();
+        break;
+      }
+
       case 'WebButtonGroupModule': {
         let { IgcButtonGroupComponent } = await import('igniteui-webcomponents');
         let { WebButtonGroupDescriptionModule } = await import('igniteui-core/WebButtonGroupDescriptionModule');
