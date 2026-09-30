@@ -95,26 +95,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        /// <summary>
-        /// The height of the component, as a CSS value.
-        /// Prefer sizing through CSS or the <c>style</c> attribute.
-        /// </summary>
-        [Parameter]
-        public string? Height
-        {
-            get; set;
-        }
-
-        /// <summary>
-        /// The width of the component, as a CSS value.
-        /// Prefer sizing through CSS or the <c>style</c> attribute.
-        /// </summary>
-        [Parameter]
-        public string? Width
-        {
-            get; set;
-        }
-
         /// <summary>CSS classes added to the component's root element.</summary>
         [Parameter]
         public string? Class
@@ -550,36 +530,16 @@ namespace IgniteUI.Blazor.Controls
             }
 
             //Console.WriteLine("rendering");
-            var width = Width;
-            var height = Height;
-            var display = "block";
-            bool hasSize = false;
-            if ((width != "" && width != null) ||
-                (height != "" && height != null))
-            {
-                hasSize = true;
-            }
-
-            display = ResolveDisplay();
+            var display = ResolveDisplay();
 
             builder.OpenElement(0, "div");
             builder.AddAttribute(1, "class", className);
-            if (hasSize)
-            {
-                builder.AddAttribute(2, "style", "width: " + Width + "; height: " + Height + "; display: " + display + "; padding: 0px;");
-            }
-            else
-            {
-                builder.AddAttribute(2, "style", "display: " + display + "; padding: 0px;");
-            }
+            builder.AddAttribute(2, "style", "display: " + display + "; padding: 0px;");
             builder.AddMultipleAttributes(3, AdditionalAttributes);
 
             builder.OpenElement(4, "igc-component-renderer-container");
             builder.AddAttribute(5, "data-ig-id", _containerId);
-            //if (hasSize)
-            {
-                builder.AddAttribute(6, "style", "width: 100%; height: 100%; display: " + display + ";");
-            }
+            builder.AddAttribute(6, "style", "width: 100%; height: 100%; display: " + display + ";");
 
             // if (SupportsVisualChildren) {
             //     builder.AddAttribute(7, "shadow-dom-mode", true);

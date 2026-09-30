@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** the component no longer takes the internal id `mainControl` as its form-field name, so these fields no longer submit under that name or collide with each other in the same form.
 
+### Breaking Changes
+
+- **`Width` and `Height` removed:** size a component with CSS, like any other element. Usually the layout decides it: a flex or grid container sizes and aligns the components in it. For an explicit size, give the component a `class` and target it from your stylesheet, or from the [isolated CSS](https://learn.microsoft.com/aspnet/core/blazor/components/css-isolation) of the component that renders it, through `::deep`.
+
 ## 0.4.0 - 2026-09-30
 
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.4.1 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.1) with highlights noted below:
