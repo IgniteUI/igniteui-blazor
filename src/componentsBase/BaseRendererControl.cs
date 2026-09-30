@@ -68,7 +68,14 @@ namespace IgniteUI.Blazor.Controls
         private InteropModule? _interop;
 
         /// <summary>The client interop module this component talks to.</summary>
-        internal InteropModule Interop => _interop ??= Runtime.GetInteropModule(InteropModule.LitePath);
+        internal InteropModule Interop => _interop ??= Runtime.GetInteropModule(InteropModulePath);
+
+        /// <summary>
+        /// The path of the client interop module that renders this component. Components of another Ignite UI package
+        /// (the full IgniteUI.Blazor) override it with their own module, so each package's client runtime handles its
+        /// own components and the two never share window state.
+        /// </summary>
+        private protected virtual string InteropModulePath => InteropModule.LitePath;
 
         /// <summary>Requests the client modules this component needs; override to register more through <see cref="IgBlazor"/>.</summary>
         protected virtual void EnsureModulesLoaded()
@@ -3698,15 +3705,19 @@ namespace IgniteUI.Blazor.Controls
         public WebCallback WebCallback { get; private set; }
 
         private ConcurrentDictionary<string, bool> _loadedCache = new ConcurrentDictionary<string, bool>();
-        public void RequestLoad(string moduleName)
+        public void RequestLoad(string moduleName, string interopModulePath = InteropModule.LitePath)
         {
-            if (!IsRuntimeValid() || _loadedCache.ContainsKey(moduleName))
+            var key = LoadKey(moduleName, interopModulePath);
+            if (!IsRuntimeValid() || _loadedCache.ContainsKey(key))
             {
                 return;
             }
-            _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
-            GetInteropModule(InteropModule.LitePath).Post(module => _ = module.InvokeVoidAsync("requestLoad", moduleName));
+            _loadedCache.AddOrUpdate(key, true, (name, oldValue) => true);
+            GetInteropModule(interopModulePath).Post(module => _ = module.InvokeVoidAsync("requestLoad", moduleName));
         }
+
+        private static string LoadKey(string moduleName, string interopModulePath) =>
+            interopModulePath == InteropModule.LitePath ? moduleName : interopModulePath + "|" + moduleName;
 
         private readonly ConcurrentDictionary<string, InteropModule> _interopModules = new ConcurrentDictionary<string, InteropModule>();
 
@@ -3733,22 +3744,19 @@ namespace IgniteUI.Blazor.Controls
             }
             _interopModules.Clear();
         }
-        public bool IsLoadRequested(string moduleName)
+        public bool IsLoadRequested(string moduleName, string interopModulePath = InteropModule.LitePath)
         {
-            if (_loadedCache.ContainsKey(moduleName))
-            {
-                return true;
-            }
-            return false;
+            return _loadedCache.ContainsKey(LoadKey(moduleName, interopModulePath));
         }
 
-        public void MarkIsLoadRequested(string moduleName)
+        public void MarkIsLoadRequested(string moduleName, string interopModulePath = InteropModule.LitePath)
         {
-            if (!IsRuntimeValid() || _loadedCache.ContainsKey(moduleName))
+            var key = LoadKey(moduleName, interopModulePath);
+            if (!IsRuntimeValid() || _loadedCache.ContainsKey(key))
             {
                 return;
             }
-            _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
+            _loadedCache.AddOrUpdate(key, true, (name, oldValue) => true);
         }
 
         [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the optional RemoteJSRuntime.IsInitialized, which does not exist in supported trim targets (WASM, WebView); a string DynamicDependency is not an option — it fails with IL2035 where the Server assembly is absent.")]
@@ -3891,9 +3899,25 @@ namespace IgniteUI.Blazor.Controls
             runtime.AsRuntime().RequestLoad(moduleName);
         }
 
+        /// <summary>Requests <paramref name="moduleName"/> from the interop module of another Ignite UI package.</summary>
+        internal static void Load(IIgniteUIBlazor runtime, string moduleName, string interopModulePath)
+        {
+            runtime.AsRuntime().RequestLoad(moduleName, interopModulePath);
+        }
+
         internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
             runtime.AsRuntime().MarkIsLoadRequested(moduleName);
+        }
+
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName, string interopModulePath)
+        {
+            runtime.AsRuntime().MarkIsLoadRequested(moduleName, interopModulePath);
+        }
+
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName, string interopModulePath)
+        {
+            return runtime.AsRuntime().IsLoadRequested(moduleName, interopModulePath);
         }
 
         internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
