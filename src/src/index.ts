@@ -25,13 +25,25 @@ function getContainer(id: string): HTMLElement {
     return null;
   }
   if (!containersDirect.has(id)) {
-    if (cont.tagName.toUpperCase() == 'IGC-COMPONENT-RENDERER-CONTAINER') {
-      containersDirect.set(id, false);
-    } else {
-      containersDirect.set(id, true);
-    }
+    // A data-ig-root element is the component too, but driven by the renderer like a container.
+    containersDirect.set(id, !isRendererContainer(cont) && !cont.hasAttribute('data-ig-root'));
   }
   return cont;
+}
+function isRendererContainer(cont: Element): boolean {
+  return cont.tagName.toUpperCase() == 'IGC-COMPONENT-RENDERER-CONTAINER';
+}
+/** The component element for a container: the container's child, or the element itself when Blazor rendered it. */
+function targetOf(cont: Element): any {
+  if (!cont) {
+    return null;
+  }
+  return isRendererContainer(cont) ? cont.children[0] : cont;
+}
+/** Blazor renders the template holder next to a renderer container, and inside a data-ig-root element. */
+function dynamicContentHolderOf(cont: Element): Element {
+  const scope = isRendererContainer(cont) ? cont.parentElement : cont;
+  return scope.querySelector(':scope > .ig-dynamic-content-holder');
 }
 function getContainerId(container) {
   // return container.id;
@@ -71,7 +83,7 @@ cr.addReferenceLookupListener((container, refType, value) => {
     });
     return retVal;
   } else {
-    findByName(container.children[0], value);
+    findByName(targetOf(container), value);
   }
 });
 
@@ -137,13 +149,7 @@ function isContainerDirectRender(): boolean {
 }
 
 function getMainTarget() {
-  let cont = currentContainer();
-
-  if (!containersDirect.get(currentContainerName)) {
-    return cont.children[0];
-  } else {
-    return cont;
-  }
+  return targetOf(currentContainer());
 }
 
 function copyProperties(target: any, source: any) {
@@ -796,8 +802,8 @@ function updateAngularElement(element: any) {
         } else {
           if (typeof refValue == 'string' && refValue.indexOf('containerId:::') == 0) {
             refValue = refValue.substring('containerId:::'.length);
-            if (containers.has(refValue) && containers.get(refValue).children.length > 0) {
-              refValue = containers.get(refValue).children[0];
+            if (containers.has(refValue) && targetOf(containers.get(refValue)) != null) {
+              refValue = targetOf(containers.get(refValue));
             } else {
               if (!containersPendingRefs.has(refValue)) {
                 containersPendingRefs.set(refValue, []);
@@ -805,7 +811,7 @@ function updateAngularElement(element: any) {
               let arr = containersPendingRefs.get(refValue);
               let cc = currentContainer();
               arr.push(() => {
-                refValue = containers.get(refValue).children[0];
+                refValue = targetOf(containers.get(refValue));
                 cr.provideRefValue(cc, refName, refValue);
                 refValues.set(refName, refValue);
               });
@@ -1013,7 +1019,7 @@ function updateAngularElement(element: any) {
                 mut.observe(templateContent, {
                   childList: true,
                 });
-                var dynCont = template.___container.parentElement.querySelector('.ig-dynamic-content-holder');
+                var dynCont = dynamicContentHolderOf(template.___container);
                 let mut2 = createMutationObserver((list) => {
                   for (var mutation of list) {
                     if (mutation.type == 'childList') {
@@ -1173,11 +1179,7 @@ function updateAngularElement(element: any) {
               if (args[i].indexOf('containerId:::') == 0) {
                 args[i] = args[i].substring('containerId:::'.length);
                 if (containers.has(args[i])) {
-                  if (containersDirect.has(args[i])) {
-                    args[i] = containers.get(args[i]);
-                  } else {
-                    args[i] = containers.get(args[i]).children[0];
-                  }
+                  args[i] = targetOf(containers.get(args[i]));
                 } else {
                   var ele = getContainerByIgIdAttribute(args[i]);
                   if (ele) {
