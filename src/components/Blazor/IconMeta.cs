@@ -8,6 +8,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebIconMeta"; } }
 
+        /// <summary>The name identifier of the icon in the collection.</summary>
+        public string Name
+        {
+            get { return RendererName; }
+            set { RendererName = value; }
+        }
+
         private string _collection = string.Empty;
 
         /// <summary>

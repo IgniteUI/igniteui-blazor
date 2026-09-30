@@ -8,6 +8,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChatMessageAttachment"; } }
 
+        /// <summary>The display name of the attachment, for example its file name.</summary>
+        public string Name
+        {
+            get { return RendererName; }
+            set { RendererName = value; }
+        }
+
         private string _id = string.Empty;
 
         /// <summary>
