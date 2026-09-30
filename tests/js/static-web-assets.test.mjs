@@ -73,6 +73,34 @@ test('no window state beyond the legacy queue', () => {
   }
 });
 
+test('interop.js exports the client interop the components import', () => {
+  // The .NET side imports this module by path and calls these names (BaseRendererControl, RuntimeHelper, IgniteUIBlazor).
+  assert.deepEqual(exportsOf(read('interop.js')), [
+    'checkReady',
+    'requestLoad',
+    'sendMessage',
+    'setResourceString',
+    'unmarshalledDataSourceClear',
+    'unmarshalledDataSourceCreate',
+    'unmarshalledDataSourceCreateDataIntents',
+    'unmarshalledDataSourceInsert',
+    'unmarshalledDataSourceRemove',
+    'unmarshalledDataSourceUpdate',
+    'waitForLoaded',
+  ]);
+});
+
+test('no interop functions on window', () => {
+  // The interop is reached through interop.js (JS isolation); a second Ignite UI package brings its own module.
+  const interopGlobal =
+    /\big(?:SendMessages?|CheckReady|WaitForLoaded|RequestLoad|SetResourceString|ConvertReturnValue|UnmarshalledDataSource\w*)\b|\braisingEvent\b/;
+  assert.match('window.igSendMessage = f', interopGlobal);
+  assert.doesNotMatch('window.igRegisterScript = f', interopGlobal);
+  for (const f of jsFiles) {
+    assert.doesNotMatch(read(f), interopGlobal, f);
+  }
+});
+
 test('no free `global` references (webpack polyfilled it; ESM does not)', () => {
   const nodeGlobal = /[^\w$.]global\./;
   assert.match('x=global.getValue', nodeGlobal); // the pattern is live

@@ -97,7 +97,7 @@ async function callDotNet(webCallback, methodName: string, ...args: any[]): Prom
   }
 }
 
-(window as any).igWaitForLoaded = async function waitForLoaded() {
+export const waitForLoaded = async function waitForLoaded() {
   if (Loader.instance.isLoading) {
     await Loader.instance.loadingPromise;
   } else {
@@ -105,16 +105,11 @@ async function callDotNet(webCallback, methodName: string, ...args: any[]): Prom
   }
 };
 
-(window as any).igRequestLoad = function requestLoad(module: string) {
+export const requestLoad = function requestLoad(module: string) {
   Loader.instance.request(module, cr);
 };
 
-(window as any).igSetResourceString = function setResourceString(
-  type: string,
-  grouping: string,
-  id: string,
-  value: string,
-) {
+export const setResourceString = function setResourceString(type: string, grouping: string, id: string, value: string) {
   switch (type) {
     case 'set':
       Loader.instance.setResourceString(grouping, id, value);
@@ -272,8 +267,6 @@ let toReturn = function (retVal: any): any {
 
   return JSON.parse(Loader.stringify(retVal, getMainTarget()));
 };
-
-(window as any).igConvertReturnValue = convertReturnValue;
 
 function toSimpleArgs(args: CustomEvent) {
   let orig = args;
@@ -480,31 +473,25 @@ function raiseEventImpl(propertyName: string, sender: any, args: any, containerN
 
   Loader.clearMarshalIdByValueOnceByEvent(propertyName);
 
-  try {
-    (window as any).raisingEvent = true;
-
-    callDotNet(webCallback, 'OnRaiseEvent', name, propertyName, JSON.stringify({ sender: sender, args: outerArgs }));
-    if ((window as any).webViewCallback) {
-      (window as any).webViewCallback.onRaiseEvent(
-        name,
-        propertyName,
-        JSON.stringify({ sender: sender, args: outerArgs }),
-      );
-    }
-    if (
-      (window as any).webkit &&
-      (window as any).webkit.messageHandlers &&
-      (window as any).webkit.messageHandlers.raiseEvent
-    ) {
-      (window as any).webkit.messageHandlers.raiseEvent.postMessage({
-        name: name,
-        propertyName: propertyName,
-        sender: sender,
-        args: outerArgs,
-      });
-    }
-  } finally {
-    (window as any).raisingEvent = false;
+  callDotNet(webCallback, 'OnRaiseEvent', name, propertyName, JSON.stringify({ sender: sender, args: outerArgs }));
+  if ((window as any).webViewCallback) {
+    (window as any).webViewCallback.onRaiseEvent(
+      name,
+      propertyName,
+      JSON.stringify({ sender: sender, args: outerArgs }),
+    );
+  }
+  if (
+    (window as any).webkit &&
+    (window as any).webkit.messageHandlers &&
+    (window as any).webkit.messageHandlers.raiseEvent
+  ) {
+    (window as any).webkit.messageHandlers.raiseEvent.postMessage({
+      name: name,
+      propertyName: propertyName,
+      sender: sender,
+      args: outerArgs,
+    });
   }
 }
 
@@ -523,17 +510,10 @@ var raiseEvent = function (propertyName: string, sender: any, args: any, contain
   }
 };
 
-(window as any).igCheckReady = function (containerId: string) {
+export const checkReady = function checkReady(containerId: string) {
   // var cont = document.getElementById(containerId);
   var cont = getContainerByIgIdAttribute(containerId);
   return cont !== null && cont !== undefined;
-};
-
-(window as any).igSendMessages = function (json: string) {
-  let m = JSON.parse(json);
-  for (let i = 0; i < m.length; i++) {
-    (window as any).sendMessage(JSON.stringify(m[i]));
-  }
 };
 
 var propMaps = new WeakMap<any, Set<string>>();
@@ -685,7 +665,12 @@ function updateAngularElement(element: any) {
   }
 }
 
-(window as any).igSendMessage = function (containerId: string, json: string, webCallback: any, nativeElements: any[]) {
+export const sendMessage = function sendMessage(
+  containerId: string,
+  json: string,
+  webCallback: any,
+  nativeElements: any[],
+) {
   updateContainer(containerId);
   let m = JSON.parse(json);
 
@@ -1461,7 +1446,6 @@ function updateAngularElement(element: any) {
 };
 
 declare var Blazor: any;
-declare var BINDING: any;
 declare var getValue: any;
 declare var Module: any;
 
@@ -2205,44 +2189,59 @@ function getValueNinePlus(ptr, type) {
   }
 }
 
-let isDotnetNinePlus = false;
-
 function getArrayDataPtr(value: any): any {
   return value + 12;
 }
 
-(window as any).igUnmarshalledDataSourceCreate = function (refName: string, index: number, columns: any) {
-  if ((window as any).getValue) {
-    getValueActual = (window as any).getValue;
-  }
-  if ((globalThis as any).getValue) {
-    getValueActual = (globalThis as any).getValue;
-  }
-  if ((self as any).getValue) {
-    getValueActual = (self as any).getValue;
-  }
-  if (!getValueActual && (window as any).Module !== undefined) {
-    getValueActual = Module.getValue;
-  }
+// Picks the heap readers of the running .NET WebAssembly runtime (getValue on .NET 8, the Blazor.runtime
+// heap views on .NET 9+).
+function ensureHeapAccess() {
   if (!getValueActual) {
-    getValueActual = getValueNinePlus;
-    isDotnetNinePlus = true;
+    if ((window as any).getValue) {
+      getValueActual = (window as any).getValue;
+    }
+    if ((globalThis as any).getValue) {
+      getValueActual = (globalThis as any).getValue;
+    }
+    if ((self as any).getValue) {
+      getValueActual = (self as any).getValue;
+    }
+    if (!getValueActual && (window as any).Module !== undefined) {
+      getValueActual = Module.getValue;
+    }
+    if (!getValueActual) {
+      getValueActual = getValueNinePlus;
+    }
   }
 
-  if (Blazor.platform.getArrayLength) {
-    getArrayLengthActual = Blazor.platform.getArrayLength;
-  }
   if (!getArrayLengthActual) {
-    getArrayLengthActual = (arr: any) => {
-      return getValueActual(getArrayDataPtr(arr), 'i32');
-    };
+    if (Blazor.platform.getArrayLength) {
+      getArrayLengthActual = Blazor.platform.getArrayLength;
+    } else {
+      getArrayLengthActual = (arr: any) => {
+        return getValueActual(getArrayDataPtr(arr), 'i32');
+      };
+    }
   }
+}
 
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
-
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
+// .NET passes the address of the local that holds the columns array (a synchronous in-process call, so the
+// address is valid for its duration); read the array's address out of it.
+function derefColumns(ptr: any): any {
+  ensureHeapAccess();
+  if (Blazor.runtime && Blazor.runtime.getHeapU32) {
+    return Blazor.runtime.getHeapU32(ptr);
   }
+  return getValueActual(ptr, 'i32');
+}
+
+export const unmarshalledDataSourceCreate = function unmarshalledDataSourceCreate(
+  refName: string,
+  index: number,
+  columns: any,
+) {
+  columns = derefColumns(columns);
+
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
@@ -2297,11 +2296,10 @@ function getArrayDataPtr(value: any): any {
   refValues.set(refName, data);
 };
 
-(window as any).igUnmarshalledDataSourceCreateDataIntents = function (refName: string, intents: string) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-    intents = BINDING.conv_string(intents);
-  }
+export const unmarshalledDataSourceCreateDataIntents = function unmarshalledDataSourceCreateDataIntents(
+  refName: string,
+  intents: string,
+) {
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
@@ -2315,16 +2313,17 @@ function getArrayDataPtr(value: any): any {
   refDataIntents.set(refName, dataIntents);
 };
 
-(window as any).igUnmarshalledDataSourceInsert = function (refName: string, index: number, columns: any) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-  }
+export const unmarshalledDataSourceInsert = function unmarshalledDataSourceInsert(
+  refName: string,
+  index: number,
+  columns: any,
+) {
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
 
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
+  columns = derefColumns(columns);
 
   var colItems = getUnmarshalledColumnItems(columns, index);
   var item = createOrUpdateUnmarshalledItem(refName, null, colItems);
@@ -2351,10 +2350,11 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceUpdate = function (refName: string, index: number, columns: any) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-  }
+export const unmarshalledDataSourceUpdate = function unmarshalledDataSourceUpdate(
+  refName: string,
+  index: number,
+  columns: any,
+) {
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
@@ -2364,7 +2364,7 @@ function getArrayDataPtr(value: any): any {
   var syncDataOnly = refName.substr(ind + 1) == 'true';
   refName = n;
 
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
+  columns = derefColumns(columns);
 
   var colItems = getUnmarshalledColumnItems(columns, index);
 
@@ -2391,12 +2391,12 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceRemove = function (refName: string, index: number, columns: any) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-  }
-
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
+export const unmarshalledDataSourceRemove = function unmarshalledDataSourceRemove(
+  refName: string,
+  index: number,
+  columns: any,
+) {
+  columns = derefColumns(columns);
 
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
@@ -2425,16 +2425,17 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceClear = function (refName: string, index: number, columns: any) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-  }
+export const unmarshalledDataSourceClear = function unmarshalledDataSourceClear(
+  refName: string,
+  index: number,
+  columns: any,
+) {
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
 
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
+  columns = derefColumns(columns);
 
   var cols = getUnmarshalledColumns(columns);
 

@@ -58,12 +58,17 @@ namespace IgniteUI.Blazor.Controls
                 // }
 
                 _runtime.WebCallback.Register(this);
-                _dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime, _runtime));
+                _dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime, _runtime, () => Interop));
                 EnsureModulesLoaded();
             }
         }
 
         internal IIgniteUIBlazorRuntime Runtime => _runtime ?? throw new InvalidOperationException("IgBlazor accessed before dependency injection completed.");
+
+        private InteropModule? _interop;
+
+        /// <summary>The client interop module this component talks to.</summary>
+        internal InteropModule Interop => _interop ??= Runtime.GetInteropModule(InteropModule.LitePath);
 
         /// <summary>Requests the client modules this component needs; override to register more through <see cref="IgBlazor"/>.</summary>
         protected virtual void EnsureModulesLoaded()
@@ -848,11 +853,11 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine("ensuring ready: " + this.GetType().Name);
             while (!this._ready)
             {
-                bool ready = await jsRuntime.InvokeAsync<bool>("igCheckReady", new object[] { _containerId });
+                bool ready = await Interop.InvokeAsync<bool>("checkReady", new object[] { _containerId });
                 //Console.WriteLine(ready + " -> " + this.GetType().Name);
                 if (ready)
                 {
-                    await jsRuntime.InvokeVoidAsync("igWaitForLoaded");
+                    await Interop.InvokeVoidAsync("waitForLoaded");
                     OnReady();
                     break;
                 }
@@ -1751,14 +1756,13 @@ namespace IgniteUI.Blazor.Controls
 
             if (m.NativeElements != null)
             {
-                return await JsRuntime.InvokeAsync<object>("igSendMessage",
+                return await Interop.InvokeAsync<object>("sendMessage",
                     new object[] { this._containerId, json,
                     GetObjectRef(), m.NativeElements });
             }
             else
             {
-                //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
-                return await JsRuntime.InvokeAsync<object>("igSendMessage",
+                return await Interop.InvokeAsync<object>("sendMessage",
                     new object[] { this._containerId, json,
                     GetObjectRef() });
             }
@@ -1791,18 +1795,10 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            if (nativeElements != null)
-            {
-                JsRuntime.InvokeAsync<object>("igSendMessage",
-                    new object[] { this._containerId, json,
-                    GetObjectRef(), nativeElements });
-            }
-            else
-            {
-                JsRuntime.InvokeAsync<object>("igSendMessage",
-                    new object[] { this._containerId, json,
-                    GetObjectRef() });
-            }
+            var args = nativeElements != null
+                ? new object[] { this._containerId, json, GetObjectRef(), nativeElements }
+                : new object[] { this._containerId, json, GetObjectRef() };
+            Interop.Post(module => _ = module.InvokeAsync<object>("sendMessage", args));
         }
 
         internal void AttachChild(BaseRendererElement child)
@@ -1867,16 +1863,18 @@ namespace IgniteUI.Blazor.Controls
             {
                 throw new InvalidOperationException("JsInProcessRuntime is not available.");
             }
+            var module = Interop.LoadedInProcess
+                ?? throw new InvalidOperationException("The Ignite UI client interop module is not loaded yet; await EnsureReady() or use the async method.");
             if (nativeElements != null)
             {
-                return JsInProcessRuntime.Invoke<object>("igSendMessage",
+                return module.Invoke<object>("sendMessage",
                     new object[] {
                     this._containerId, json,
                     GetObjectRef(), nativeElements });
             }
             else
             {
-                return JsInProcessRuntime.Invoke<object>("igSendMessage",
+                return module.Invoke<object>("sendMessage",
                     new object[] {
                     this._containerId, json,
                     GetObjectRef() });
@@ -3392,7 +3390,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return null;
             }
-            return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "set", grouping, id, value });
+            return await Interop.InvokeAsync<object>("setResourceString", new object[] { "set", grouping, id, value });
         }
 
         internal async Task<object?> SetResourceStringAsync(string grouping, string json)
@@ -3401,7 +3399,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return null;
             }
-            return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "register", grouping, "", json });
+            return await Interop.InvokeAsync<object>("setResourceString", new object[] { "register", grouping, "", json });
         }
 
         internal void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
@@ -3651,7 +3649,7 @@ namespace IgniteUI.Blazor.Controls
     {
     }
 
-    internal class IgniteUIBlazor : IIgniteUIBlazor, IIgniteUIBlazorRuntime
+    internal class IgniteUIBlazor : IIgniteUIBlazor, IIgniteUIBlazorRuntime, IAsyncDisposable, IDisposable
     {
         private bool _isRuntimeValid = false;
         private bool _isRuntimeChecked = false;
@@ -3707,7 +3705,33 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
-            JsRuntime.InvokeAsync<object>("igRequestLoad", moduleName);
+            GetInteropModule(InteropModule.LitePath).Post(module => _ = module.InvokeVoidAsync("requestLoad", moduleName));
+        }
+
+        private readonly ConcurrentDictionary<string, InteropModule> _interopModules = new ConcurrentDictionary<string, InteropModule>();
+
+        public InteropModule GetInteropModule(string path)
+        {
+            return _interopModules.GetOrAdd(path, p => new InteropModule(JsRuntime, p));
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            foreach (var module in _interopModules.Values)
+            {
+                await module.DisposeAsync().ConfigureAwait(false);
+            }
+            _interopModules.Clear();
+        }
+
+        // For containers disposed synchronously: releasing a module reference is a JS call, so it is started and not awaited.
+        public void Dispose()
+        {
+            foreach (var module in _interopModules.Values)
+            {
+                _ = module.DisposeAsync();
+            }
+            _interopModules.Clear();
         }
         public bool IsLoadRequested(string moduleName)
         {
@@ -3865,7 +3889,6 @@ namespace IgniteUI.Blazor.Controls
         public static void Load(IIgniteUIBlazor runtime, string moduleName)
         {
             runtime.AsRuntime().RequestLoad(moduleName);
-            //runtime.JsRuntime.InvokeAsync<object>("igRequestLoad", moduleName);
         }
 
         internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)

@@ -9,16 +9,20 @@ namespace IgniteUI.Blazor.Tests.Interop;
 
 /// <summary>
 /// <see cref="InteropHarness"/> adapter for the current interop implementation:
-/// global JS functions (<c>igSendMessage</c>, <c>igCheckReady</c>, <c>igWaitForLoaded</c>)
+/// exports of the client interop module (<c>sendMessage</c>, <c>checkReady</c>, <c>waitForLoaded</c>)
 /// carrying <c>RendererMessage</c> JSON envelopes, with JS→.NET traffic entering
 /// through the <see cref="WebCallback"/> JSInvokable surface.
 /// All knowledge of that wire format is intentionally concentrated here.
 /// </summary>
 public sealed class RendererMessageInteropHarness : InteropHarness
 {
-    private const string SendMessage = "igSendMessage";
+    private const string SendMessage = "sendMessage";
 
-    private readonly BunitJSInterop _js;
+    // The component traffic goes to the interop module (JS isolation), recorded on its own interop.
+    private readonly BunitJSInterop _module;
+
+    /// <summary>The recorded interop of the client module, for tests that assert on the wire itself.</summary>
+    internal BunitJSInterop Module => _module;
     private readonly IgniteUIBlazor _service;
     // Read by invocation matchers on background flush threads while tests add
     // stubs on the test thread — must be thread-safe.
@@ -36,15 +40,14 @@ public sealed class RendererMessageInteropHarness : InteropHarness
 
     /// <summary>
     /// With <paramref name="forceJsonDataMarshalling"/> false, drives the in-process
-    /// (unmarshalled) data channel instead: the service's runtime carries an
-    /// InvokeUnmarshalled method that RuntimeHelper discovers by reflection, so
-    /// DataSourceManager picks UnmarshalledDataSource and the column messages are
-    /// recorded in <see cref="UnmarshalledColumnMessages"/> instead of crossing to JS.
+    /// (unmarshalled) data channel instead: DataSourceManager picks UnmarshalledDataSource and
+    /// the column messages reach a recording double of the interop module, recorded in
+    /// <see cref="UnmarshalledColumnMessages"/> instead of crossing to JS.
     /// </summary>
     public RendererMessageInteropHarness(BunitJSInterop js, Func<Dispatcher> dispatcher, bool forceJsonDataMarshalling)
         : base(dispatcher)
     {
-        _js = js;
+        _module = js.SetupModule(InteropModule.LitePath);
         var runtime = forceJsonDataMarshalling
             ? js.JSRuntime
             : new UnmarshalledRecordingRuntime(js.JSRuntime, RecordUnmarshalledMessage);
@@ -54,7 +57,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         // an unanswered invokeMethod would otherwise await its return forever.
         // Method-specific stubs are excluded here so their handlers always win,
         // regardless of bUnit's handler-resolution order.
-        _js.Setup<object>(SendMessage, inv => !IsStubbedInvokeMethod(inv))
+        _module.Setup<object>(SendMessage, inv => !IsStubbedInvokeMethod(inv))
             .SetResult(ToResultPayload(InteropReturn.Undefined));
     }
 
@@ -93,9 +96,9 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     }
 
     /// <summary>
-    /// In-process runtime whose InvokeUnmarshalled methods RuntimeHelper discovers by
-    /// name-based reflection — the seam replacing the API modern runtimes removed.
-    /// Everything else delegates to bUnit's runtime.
+    /// In-process runtime that hands the components a recording double of the interop module, which takes
+    /// the column arrays directly (<see cref="IUnmarshalledColumnSink"/>) — their raw heap address, what the
+    /// real module receives, only resolves on a WebAssembly heap. Everything else delegates to bUnit.
     /// </summary>
     private sealed class UnmarshalledRecordingRuntime : Microsoft.JSInterop.IJSInProcessRuntime
     {
@@ -108,29 +111,55 @@ public sealed class RendererMessageInteropHarness : InteropHarness
             _record = record;
         }
 
-        public TResult InvokeUnmarshalled<T0, T1, T2, TResult>(string identifier, T0 arg0, T1 arg1, T2 arg2)
-        {
-            _record(identifier, (string)(object)arg0!, (int)(object)arg1!, (UnmarshalledColumn[]?)(object?)arg2);
-            return default!;
-        }
-
-        public TResult InvokeUnmarshalled<T0, T1, TResult>(string identifier, T0 arg0, T1 arg1)
-        {
-            // Data-intents variant; recorded with no columns.
-            _record(identifier, (string)(object)arg0!, -1, null);
-            return default!;
-        }
-
         public TResult Invoke<TResult>(string identifier, params object?[]? args)
             => _inner.Invoke<TResult>(identifier, args);
 
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
-            => _inner.InvokeAsync<TValue>(identifier, args);
+            => Wrap(identifier, _inner.InvokeAsync<TValue>(identifier, args));
 
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
-            => _inner.InvokeAsync<TValue>(identifier, cancellationToken, args);
+            => Wrap(identifier, _inner.InvokeAsync<TValue>(identifier, cancellationToken, args));
+
+        private async ValueTask<TValue> Wrap<TValue>(string identifier, ValueTask<TValue> result)
+        {
+            var value = await result;
+            if (identifier == "import" && value is Microsoft.JSInterop.IJSInProcessObjectReference module)
+            {
+                return (TValue)(object)new RecordingModule(module, _record);
+            }
+            return value;
+        }
     }
 
+    private sealed class RecordingModule : Microsoft.JSInterop.IJSInProcessObjectReference, IUnmarshalledColumnSink
+    {
+        private readonly Microsoft.JSInterop.IJSInProcessObjectReference _inner;
+        private readonly Action<string, string, int, UnmarshalledColumn[]?> _record;
+
+        public RecordingModule(Microsoft.JSInterop.IJSInProcessObjectReference inner, Action<string, string, int, UnmarshalledColumn[]?> record)
+        {
+            _inner = inner;
+            _record = record;
+        }
+
+        public void SendColumns(string methodName, string refName, int index, UnmarshalledColumn[]? columns) =>
+            _record(methodName, refName, index, columns);
+
+        // Data-intents variant; recorded with no columns.
+        public void SendDataIntents(string methodName, string refName, string dataIntents) =>
+            _record(methodName, refName, -1, null);
+
+        public TValue Invoke<TValue>(string identifier, params object?[]? args) => _inner.Invoke<TValue>(identifier, args);
+
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => _inner.InvokeAsync<TValue>(identifier, args);
+
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) =>
+            _inner.InvokeAsync<TValue>(identifier, cancellationToken, args);
+
+        public void Dispose() => _inner.Dispose();
+
+        public ValueTask DisposeAsync() => _inner.DisposeAsync();
+    }
     public override IIgniteUIBlazor Service => _service;
 
     public override void ConfigureServices(IServiceCollection services) =>
@@ -147,8 +176,8 @@ public sealed class RendererMessageInteropHarness : InteropHarness
             return;
         }
         _primed = true;
-        _js.Setup<bool>("igCheckReady", _ => true).SetResult(true);
-        _js.SetupVoid("igWaitForLoaded", _ => true).SetVoidResult();
+        _module.Setup<bool>("checkReady", _ => true).SetResult(true);
+        _module.SetupVoid("waitForLoaded", _ => true).SetVoidResult();
     }
 
     // The JS-to-.NET entries below run on the dispatcher, where Blazor delivers the real ones.
@@ -216,7 +245,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         _stubbedMethods.TryAdd(methodName, true);
         if (!_methodHandlers.TryGetValue(methodName, out var handler))
         {
-            handler = _js.Setup<object>(SendMessage, inv => MethodNameOf(inv) == methodName);
+            handler = _module.Setup<object>(SendMessage, inv => MethodNameOf(inv) == methodName);
             _methodHandlers[methodName] = handler;
         }
         handler.SetResult(ToResultPayload(result));
@@ -225,7 +254,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     public override Action<InteropReturn> WithholdMethodReply(string methodName)
     {
         _stubbedMethods.TryAdd(methodName, true);
-        var handler = _js.Setup<object>(SendMessage, inv => MethodNameOf(inv) == methodName);
+        var handler = _module.Setup<object>(SendMessage, inv => MethodNameOf(inv) == methodName);
         _methodHandlers[methodName] = handler;
         return result => handler.SetResult(ToResultPayload(result));
     }
@@ -445,7 +474,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         _observedFrom = SnapshotInvocations().Count(i => i.Identifier == SendMessage);
 
     /// <summary>
-    /// Enumerates every recorded igSendMessage as (containerId, parsed message, element handles).
+    /// Enumerates every recorded sendMessage as (containerId, parsed message, element handles).
     /// Element handles are not part of the JSON envelope on this stack — they ride as a
     /// trailing marshalled argument of the call, alongside the component's object reference.
     /// </summary>
@@ -499,7 +528,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         {
             try
             {
-                return [.. _js.Invocations];
+                return [.. _module.Invocations];
             }
             catch (InvalidOperationException) when (attempt < 200)
             {
@@ -545,7 +574,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     }
 
     /// <summary>
-    /// The value igSendMessage resolves with: a JSON *string* element containing the
+    /// The value sendMessage resolves with: a JSON *string* element containing the
     /// return envelope (<c>{"retType": ..., "value": ...}</c>), matching what the JS
     /// side produces for method invocations.
     /// </summary>

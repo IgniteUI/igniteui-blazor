@@ -109,26 +109,26 @@ public class UnmarshalledDataChannelTests : BunitContext
         RenderScenario(scenario);
 
         items.Add(ComboDataScenarios.AddedProduct());
-        var insert = WaitFor("igUnmarshalledDataSourceInsert");
+        var insert = WaitFor("unmarshalledDataSourceInsert");
         Assert.Equal(3, insert.Index);
         Assert.Equal(4, Column(insert, "Name").ActualCount);
         Assert.Equal("Added", Column(insert, "Name").StringValues[3]);
 
         items.RemoveAt(0);
-        var remove = WaitFor("igUnmarshalledDataSourceRemove");
+        var remove = WaitFor("unmarshalledDataSourceRemove");
         Assert.Equal(0, remove.Index);
         Assert.Equal(3, Column(remove, "Name").ActualCount);
         Assert.Equal("Chang", Column(remove, "Name").StringValues[0]);
 
         // A replace crosses as remove + insert at the same index, not as an update message.
         items[0] = ComboDataScenarios.ReplacementProduct();
-        var replaceInsert = WaitFor("igUnmarshalledDataSourceInsert",
+        var replaceInsert = WaitFor("unmarshalledDataSourceInsert",
             m => m.Index == 0 && Column(m, "Name").StringValues[0] == "Replaced");
         Assert.Equal(3, Column(replaceInsert, "Name").ActualCount);
 
         // Clear resets the source's columns; the message itself carries none.
         items.Clear();
-        var clear = WaitFor("igUnmarshalledDataSourceClear");
+        var clear = WaitFor("unmarshalledDataSourceClear");
         Assert.Empty(clear.Columns!);
     }
 
@@ -143,7 +143,7 @@ public class UnmarshalledDataChannelTests : BunitContext
             .Add(c => c.ValueKey, scenario.ValueKey)
             .Add(c => c.DisplayKey, scenario.DisplayKey));
         _interop.MakeReady();
-        return WaitFor("igUnmarshalledDataSourceCreate");
+        return WaitFor("unmarshalledDataSourceCreate");
     }
 
     private UnmarshalledColumnMessage WaitFor(string methodName, Func<UnmarshalledColumnMessage, bool>? match = null) =>

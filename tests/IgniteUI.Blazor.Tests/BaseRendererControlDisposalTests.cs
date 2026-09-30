@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Text.Json;
 using Bunit;
 using IgniteUI.Blazor.Controls;
+using IgniteUI.Blazor.Tests.Interop;
 using Microsoft.JSInterop;
 
 namespace IgniteUI.Blazor.Tests;
@@ -31,6 +32,9 @@ public sealed class DisposalCollection
 [Collection(DisposalCollection.Name)]
 public class BaseRendererControlDisposalTests : BlazorComponentTestBase
 {
+    /// <summary>The client interop module the components send their messages to.</summary>
+    private BunitJSInterop Module => ((RendererMessageInteropHarness)Interop).Module;
+
     [Fact]
     public async Task DisposeAsync_WhenInteropThrowsJSException_DoesNotThrow()
     {
@@ -39,8 +43,8 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
 
         // Make the cleanup interop call fail the way a mis-behaving JS side would.
         // The most recently registered matching handler wins in bUnit, so this
-        // overrides the default "return undefined" answer for igSendMessage.
-        JSInterop.Setup<object>("igSendMessage", _ => true)
+        // overrides the default "return undefined" answer for sendMessage.
+        Module.Setup<object>("sendMessage", _ => true)
             .SetException(new JSException("simulated JS failure during cleanup"));
 
         var ex = await Record.ExceptionAsync(async () =>
@@ -55,7 +59,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         var cut = Render<IgbButton>();
         var instance = cut.Instance;
 
-        JSInterop.Setup<object>("igSendMessage", _ => true)
+        Module.Setup<object>("sendMessage", _ => true)
             .SetException(new JSDisconnectedException("circuit gone"));
 
         var ex = await Record.ExceptionAsync(async () =>
@@ -70,7 +74,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         var cut = Render<IgbButton>();
         var instance = cut.Instance;
 
-        JSInterop.Setup<object>("igSendMessage", _ => true)
+        Module.Setup<object>("sendMessage", _ => true)
             .SetException(new TaskCanceledException("host shutting down"));
 
         var ex = await Record.ExceptionAsync(async () =>
@@ -85,7 +89,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         var cut = Render<IgbButton>();
         var instance = cut.Instance;
 
-        JSInterop.Setup<object>("igSendMessage", _ => true)
+        Module.Setup<object>("sendMessage", _ => true)
             .SetException(new ObjectDisposedException("JSRuntime"));
 
         var ex = await Record.ExceptionAsync(async () =>
@@ -102,7 +106,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         var cut = Render<IgbButton>();
         var instance = cut.Instance;
 
-        JSInterop.Setup<object>("igSendMessage", _ => true)
+        Module.Setup<object>("sendMessage", _ => true)
             .SetException(new InvalidOperationException("unexpected interop failure"));
 
         var ex = await Record.ExceptionAsync(async () =>
@@ -116,7 +120,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
     {
         Interop.PrimeReady();
         var cut = Render<IgbButton>();
-        var invocationCount = JSInterop.Invocations.Count;
+        var invocationCount = Module.Invocations.Count;
 
         await cut.Instance.DisposeAsync();
 
@@ -129,7 +133,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         Interop.PrimeReady();
         var cut = Render<IgbButton>();
         var instance = (IAsyncDisposable)cut.Instance;
-        var invocationCount = JSInterop.Invocations.Count;
+        var invocationCount = Module.Invocations.Count;
 
         await instance.DisposeAsync();
 
@@ -141,8 +145,8 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
     private void AssertCleanupSentOnce(int invocationCount)
     {
         var cleanup = Assert.Single(
-            JSInterop.Invocations.Skip(invocationCount),
-            invocation => invocation.Identifier == "igSendMessage");
+            Module.Invocations.Skip(invocationCount),
+            invocation => invocation.Identifier == "sendMessage");
         using var message = JsonDocument.Parse((string)cleanup.Arguments[1]!);
         Assert.Equal("cleanup", message.RootElement.GetProperty("type").GetString());
     }
@@ -152,8 +156,8 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
     private IReadOnlyList<string?> MessageTypesFor(string containerId)
     {
         var types = new List<string?>();
-        foreach (var invocation in JSInterop.Invocations.Where(v =>
-            v.Identifier == "igSendMessage" && v.Arguments.Count > 1 && v.Arguments[0] as string == containerId))
+        foreach (var invocation in Module.Invocations.Where(v =>
+            v.Identifier == "sendMessage" && v.Arguments.Count > 1 && v.Arguments[0] as string == containerId))
         {
             using var message = JsonDocument.Parse((string)invocation.Arguments[1]!);
             types.Add(message.RootElement.GetProperty("type").GetString());
@@ -218,8 +222,8 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
         stop.Cancel();
         await producer;
 
-        var sent = JSInterop.Invocations
-            .Where(v => v.Identifier == "igSendMessage" && v.Arguments.Count > 1 && v.Arguments[0] as string == id)
+        var sent = Module.Invocations
+            .Where(v => v.Identifier == "sendMessage" && v.Arguments.Count > 1 && v.Arguments[0] as string == id)
             .Select(v => (string)v.Arguments[1]!)
             .ToList();
         var cleanup = sent.FindIndex(json => json.Contains("\"type\": \"cleanup\""));
