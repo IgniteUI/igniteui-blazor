@@ -2,6 +2,7 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebNumberEventArgsDescriptionMetadata } from "./WebNumberEventArgsDescriptionMetadata";
+import { NumberFormatOptionsDescriptionMetadata } from "./NumberFormatOptionsDescriptionMetadata";
 import { WebSliderBaseDescriptionMetadata } from "./WebSliderBaseDescriptionMetadata";
 import { WebSliderDescription } from "./WebSliderDescription";
 
@@ -20,6 +21,7 @@ export class WebSliderDescriptionMetadata extends Base {
 			return;
 		}
 		context.markSeen(WebSliderDescriptionMetadata._metadata);
+		NumberFormatOptionsDescriptionMetadata.register(context);
 		WebNumberEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
