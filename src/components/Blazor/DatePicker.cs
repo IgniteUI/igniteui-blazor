@@ -57,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
         private string? _name;
 
         /// <summary>
-        /// The name of the control, submitted with the form data.
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name.
         /// </summary>
         [Parameter]
         public string? Name
