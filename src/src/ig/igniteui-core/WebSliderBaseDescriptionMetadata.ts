@@ -43,7 +43,7 @@ export class WebSliderBaseDescriptionMetadata extends Base {
 		metadata.item("ValueFormat", "String");
 		metadata.item("TickLabelRotation", "ExportedType:string:SliderTickLabelRotation");
 		metadata.item("TickLabelRotation@names", "Zero;Ninety;NegativeNinety");
-		metadata.item("ValueFormatOptions", "ExportedType");
+		metadata.item("ValueFormatOptions", "ExportedType:NumberFormatOptions");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebSliderBaseDescriptionMetadata.ensureMetadata(context);
