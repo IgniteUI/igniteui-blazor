@@ -76,6 +76,7 @@ export class IgcComponentRendererContainerComponent {
 
     private listeners: ((r: any) => void)[] = [];
     private _currentRoot: any = null;
+    private _adopted: boolean = false;
 
     createObject(t: any, container: any, context: TypeDescriptionContext, portalChildren: boolean, nameContext: string) {
         if (typeof t == "string") {
@@ -104,6 +105,15 @@ export class IgcComponentRendererContainerComponent {
     }
 
     replaceRootItem(t: any, deferAttach: boolean, continueActions: (resumeRequired: boolean) => void) {
+        // The element marked data-ig-root is the component itself, rendered by Blazor, so it becomes
+        // the root as it is; its children are Blazor's content.
+        if (this.element instanceof Element && this.element.hasAttribute("data-ig-root")) {
+            this._currentRoot = this.element;
+            this._adopted = true;
+            continueActions(false);
+            return;
+        }
+
         for (let i = this.element.children.length - 1; i >= 0; i--) {
             this.element.children[i].remove();
         }
@@ -228,6 +238,13 @@ export class IgcComponentRendererContainerComponent {
     }
 
     clearContainer(continueActions: (resumeRequired: boolean) => void) {
+        if (this._adopted) {
+            this._currentRoot = null;
+            this._adopted = false;
+            continueActions(false);
+            return;
+        }
+
         for (let i = this.element.children.length - 1; i >= 0; i--) {
             this.element.children[i].remove();
         }
