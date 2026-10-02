@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The chat message attachment the event was raised for.
         /// </summary>
-        [Parameter]
         public IgbChatMessageAttachment Detail
         {
             get { return this._detail; }

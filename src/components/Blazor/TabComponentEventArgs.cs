@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tab that became selected.
         /// </summary>
-        [Parameter]
         public IgbTab Detail
         {
             get { return this._detail; }

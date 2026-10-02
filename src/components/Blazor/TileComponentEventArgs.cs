@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tile the operation applies to.
         /// </summary>
-        [Parameter]
         public IgbTile Detail
         {
             get { return this._detail; }

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tile whose state is changing.
         /// </summary>
-        [Parameter]
         public IgbTile Tile
         {
             get { return this._tile; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// The state the tile is changing to; <see langword="true"/> when it is being maximized or
         /// put in fullscreen, and <see langword="false"/> when it is being restored.
         /// </summary>
-        [Parameter]
         public bool State
         {
             get { return this._state; }

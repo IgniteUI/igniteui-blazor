@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The value of the combo after the change.
         /// </summary>
-        [Parameter]
         public object[] NewValue
         {
             get { return this._newValue; }
@@ -41,7 +38,6 @@ namespace IgniteUI.Blazor.Controls
         private string? _newValueScript;
 
         ///<summary>Provides a means of setting NewValue in the JavaScript environment.</summary>
-        [Parameter]
         public string? NewValueScript
         {
             get { return _newValueScript; }
@@ -67,7 +63,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The data items the change applies to.
         /// </summary>
-        [Parameter]
         public object[] Items
         {
             get { return this._items; }
@@ -92,7 +87,6 @@ namespace IgniteUI.Blazor.Controls
         private string? _itemsScript;
 
         ///<summary>Provides a means of setting Items in the JavaScript environment.</summary>
-        [Parameter]
         public string? ItemsScript
         {
             get { return _itemsScript; }
@@ -117,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The kind of change.
         /// </summary>
-        [Parameter]
         [WCWidgetMemberName("Type")]
         public ComboChangeType ChangeType
         {

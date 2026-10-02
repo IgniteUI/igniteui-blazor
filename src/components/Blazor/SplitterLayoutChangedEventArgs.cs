@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// A full snapshot of the current layout (pane sizes and collapsed states).
         /// </summary>
-        [Parameter]
         public IgbSplitterLayoutChangedEventArgsDetail Detail
         {
             get { return this._detail; }

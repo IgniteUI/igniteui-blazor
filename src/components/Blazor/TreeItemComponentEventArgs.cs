@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tree item the event applies to.
         /// </summary>
-        [Parameter]
         public IgbTreeItem Detail
         {
             get { return this._detail; }

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The index of the step that is currently active.
         /// </summary>
-        [Parameter]
         public double OldIndex
         {
             get { return this._oldIndex; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The index of the step that is about to become active.
         /// </summary>
-        [Parameter]
         public double NewIndex
         {
             get { return this._newIndex; }

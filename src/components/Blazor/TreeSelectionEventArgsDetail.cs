@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tree items that will make up the new selection.
         /// </summary>
-        [Parameter]
         public IgbTreeItem[] NewSelection
         {
             get { return this._newSelection; }

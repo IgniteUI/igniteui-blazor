@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current size of the start pane.
         /// </summary>
-        [Parameter]
         public string? StartSize
         {
             get { return this._startSize; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current size of the end pane.
         /// </summary>
-        [Parameter]
         public string? EndSize
         {
             get { return this._endSize; }
@@ -54,7 +50,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Whether the start pane is currently collapsed.
         /// </summary>
-        [Parameter]
         public bool StartCollapsed
         {
             get { return this._startCollapsed; }
@@ -73,7 +68,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Whether the end pane is currently collapsed.
         /// </summary>
-        [Parameter]
         public bool EndCollapsed
         {
             get { return this._endCollapsed; }

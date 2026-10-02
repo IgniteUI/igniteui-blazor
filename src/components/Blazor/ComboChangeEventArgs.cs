@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
         /// </summary>
-        [Parameter]
         public IgbComboChangeEventArgsDetail Detail
         {
             get { return this._detail; }

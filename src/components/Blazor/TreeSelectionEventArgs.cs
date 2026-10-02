@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The selection the tree is about to apply.
         /// </summary>
-        [Parameter]
         public IgbTreeSelectionEventArgsDetail Detail
         {
             get { return this._detail; }
