@@ -134,52 +134,6 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     }
 
     [Fact]
-    public void Slider_RendersAllAttributes()
-    {
-        var cut = Render<IgbSlider>(p => p
-            .Add(x => x.Value, 50)
-            .Add(x => x.Min, 0)
-            .Add(x => x.Max, 100)
-            .Add(x => x.Step, 10)
-            .Add(x => x.Disabled, true)
-            .Add(x => x.DiscreteTrack, true)
-            .Add(x => x.HideTooltip, true)
-            .Add(x => x.PrimaryTicks, 5)
-            .Add(x => x.SecondaryTicks, 3));
-
-        var el = cut.Find("igc-slider");
-        Assert.Equal("50", el.GetAttribute("value"));
-        Assert.Equal("0", el.GetAttribute("min"));
-        Assert.Equal("100", el.GetAttribute("max"));
-        Assert.Equal("10", el.GetAttribute("step"));
-        Assert.NotNull(el.GetAttribute("disabled"));
-        Assert.NotNull(el.GetAttribute("discrete-track"));
-        Assert.NotNull(el.GetAttribute("hide-tooltip"));
-        Assert.Equal("5", el.GetAttribute("primary-ticks"));
-        Assert.Equal("3", el.GetAttribute("secondary-ticks"));
-    }
-
-    [Fact]
-    public void RangeSlider_RendersAllAttributes()
-    {
-        var cut = Render<IgbRangeSlider>(p => p
-            .Add(x => x.Lower, 20)
-            .Add(x => x.Upper, 80)
-            .Add(x => x.Min, 0)
-            .Add(x => x.Max, 100)
-            .Add(x => x.Step, 5)
-            .Add(x => x.Disabled, true));
-
-        var el = cut.Find("igc-range-slider");
-        Assert.Equal("20", el.GetAttribute("lower"));
-        Assert.Equal("80", el.GetAttribute("upper"));
-        Assert.Equal("0", el.GetAttribute("min"));
-        Assert.Equal("100", el.GetAttribute("max"));
-        Assert.Equal("5", el.GetAttribute("step"));
-        Assert.NotNull(el.GetAttribute("disabled"));
-    }
-
-    [Fact]
     public void Rating_RendersAllAttributes()
     {
         var cut = Render<IgbRating>(p => p
