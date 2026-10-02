@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbComboChangeEventArgsDetail : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebComboChangeEventArgsDetail"; } }
+        internal override string RendererType { get { return "WebComboChangeEventArgsDetail"; } }
 
         private string? _newValueRef;
         private object[] _newValue = Array.Empty<object>();

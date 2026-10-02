@@ -15,7 +15,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Determines the behavior of events as they are fired at the JavaScript level and bubbled up to the Blazor level.
     /// </summary>
-    public enum ControlEventBehavior
+    internal enum ControlEventBehavior
     {
         /// <summary>
         /// The behavior is automatically determined by the component.
@@ -95,26 +95,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        /// <summary>
-        /// The height of the component, as a CSS value.
-        /// Prefer sizing through CSS or the <c>style</c> attribute.
-        /// </summary>
-        [Parameter]
-        public string? Height
-        {
-            get; set;
-        }
-
-        /// <summary>
-        /// The width of the component, as a CSS value.
-        /// Prefer sizing through CSS or the <c>style</c> attribute.
-        /// </summary>
-        [Parameter]
-        public string? Width
-        {
-            get; set;
-        }
-
         /// <summary>CSS classes added to the component's root element.</summary>
         [Parameter]
         public string? Class
@@ -135,29 +115,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Gets or sets how events are bubbled up from JavaScript to Blazor.
-        /// </summary>
-        [Parameter]
-        public ControlEventBehavior EventBehavior { get; set; } = ControlEventBehavior.Auto;
-
-        /// <summary>
         /// Gets the components default event behavior.
         /// </summary>
-        protected virtual ControlEventBehavior DefaultEventBehavior
+        private protected virtual ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
-        }
-
-        /// <summary>
-        /// Resolves the components event behavior if Auto is selected.
-        /// </summary>
-        protected ControlEventBehavior ResolveEventBehavior()
-        {
-            if (EventBehavior == ControlEventBehavior.Auto)
-            {
-                return DefaultEventBehavior;
-            }
-            return EventBehavior;
         }
 
         /// <summary>The content rendered inside the component.</summary>
@@ -460,7 +422,15 @@ namespace IgniteUI.Blazor.Controls
 
                 if (isParam)
                 {
-                    info.AddSequence(Camelize(prop.Name), wcName, wcEnumTransform);
+                    var key = Camelize(prop.Name);
+                    // "name" in the serialized description is the renderer's id for the component, so a Name
+                    // parameter is serialized as "formName" and rendered back as the element's name attribute.
+                    if (key == "name")
+                    {
+                        key = "formName";
+                        wcName ??= "name";
+                    }
+                    info.AddSequence(key, wcName, wcEnumTransform);
                 }
             }
 
@@ -495,7 +465,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            string? spinalName = ToSpinal(this.Type);
+            string? spinalName = ToSpinal(this.RendererType);
             string className = "igb-" + spinalName;
             if (Class != null)
             {
@@ -559,37 +529,51 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            //Console.WriteLine("rendering");
-            var width = Width;
-            var height = Height;
-            var display = "block";
-            bool hasSize = false;
-            if ((width != "" && width != null) ||
-                (height != "" && height != null))
+            // Non-DirectRender WITH element to adopt as root (data-ig-root) instead of creating a container:
+            if (DirectRenderElementName.Length > 0)
             {
-                hasSize = true;
+                builder.OpenElement(0, DirectRenderElementName);
+                builder.AddAttribute(1, "class", className);
+                builder.AddAttribute(2, "data-ig-id", _containerId);
+                builder.AddAttribute(3, "data-ig-root", true);
+                builder.AddMultipleAttributes(4, AdditionalAttributes);
+                builder.AddElementReferenceCapture(5, delegate (ElementReference value)
+                {
+                    contEle = value;
+                });
+                builder.OpenComponent<CascadingValue<BaseRendererControl>>(6);
+                builder.AddAttribute(7, "Value", this);
+                builder.AddAttribute(8, "Name", ParentTypeName);
+                builder.AddAttribute(9, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
+                {
+                    builder2.AddContent(10, ChildContent);
+                });
+                builder.CloseComponent();
+                if (NeedsDynamicContent)
+                {
+                    // None of the current elements has a default slot, so the hidden holder is never projected too.
+                    builder.OpenComponent<DynamicContentHolder>(11);
+                    builder.AddComponentReferenceCapture(12, delegate (object __value)
+                    {
+                        Holder = (DynamicContentHolder)__value;
+                    });
+                    builder.CloseComponent();
+                }
+                builder.CloseElement();
+                return;
             }
 
-            display = ResolveDisplay();
+            //Console.WriteLine("rendering");
+            var display = ResolveDisplay();
 
             builder.OpenElement(0, "div");
             builder.AddAttribute(1, "class", className);
-            if (hasSize)
-            {
-                builder.AddAttribute(2, "style", "width: " + Width + "; height: " + Height + "; display: " + display + "; padding: 0px;");
-            }
-            else
-            {
-                builder.AddAttribute(2, "style", "display: " + display + "; padding: 0px;");
-            }
+            builder.AddAttribute(2, "style", "display: " + display + "; padding: 0px;");
             builder.AddMultipleAttributes(3, AdditionalAttributes);
 
             builder.OpenElement(4, "igc-component-renderer-container");
             builder.AddAttribute(5, "data-ig-id", _containerId);
-            //if (hasSize)
-            {
-                builder.AddAttribute(6, "style", "width: 100%; height: 100%; display: " + display + ";");
-            }
+            builder.AddAttribute(6, "style", "width: 100%; height: 100%; display: " + display + ";");
 
             // if (SupportsVisualChildren) {
             //     builder.AddAttribute(7, "shadow-dom-mode", true);
@@ -956,7 +940,7 @@ namespace IgniteUI.Blazor.Controls
         private String _cachedSerializedContent = "";
 
         /// <summary>The type name of this component.</summary>
-        public virtual string? Type
+        internal virtual string? RendererType
         {
             get
             {
@@ -973,8 +957,8 @@ namespace IgniteUI.Blazor.Controls
 
         internal void Serialize(SerializationContext context, string? propertyName = null)
         {
-            RendererSerializer ser = new RendererSerializer(context, this, Name);
-            ser.Type = Type;
+            RendererSerializer ser = new RendererSerializer(context, this, RendererName);
+            ser.Type = RendererType;
             ser.Start(propertyName);
             SerializeCore(ser);
             ser.End();
@@ -1359,7 +1343,7 @@ namespace IgniteUI.Blazor.Controls
                         }
                         if (newValue is BaseRendererElement)
                         {
-                            refId = _containerId + "/" + ((BaseRendererElement)newValue).Name;
+                            refId = _containerId + "/" + ((BaseRendererElement)newValue).RendererName;
                             ((BaseRendererElement)newValue).Parent = this;
                         }
                         else
@@ -1699,7 +1683,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (m.Type == "refChanged")
             {
-                m.SetData("eventBehavior", "\"" + ResolveEventBehavior().ToString().ToLower() + "\"");
+                m.SetData("eventBehavior", "\"" + DefaultEventBehavior.ToString().ToLower() + "\"");
             }
             string json = m.ToJson();
             //Console.WriteLine("message");
@@ -1722,7 +1706,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (m.Type == "refChanged")
             {
-                m.SetData("eventBehavior", "\"" + ResolveEventBehavior().ToString().ToLower() + "\"");
+                m.SetData("eventBehavior", "\"" + DefaultEventBehavior.ToString().ToLower() + "\"");
             }
             string json = m.ToJson();
             SendJsonSync(json, m.NativeElements);
@@ -2409,7 +2393,7 @@ namespace IgniteUI.Blazor.Controls
                 if (val is BaseRendererElement)
                 {
                     //TODO: this should be the parent component's _Container id.... but maybe we don't need elements here.
-                    refId = _containerId + "/" + ((BaseRendererElement)val).Name;
+                    refId = _containerId + "/" + ((BaseRendererElement)val).RendererName;
                     //((BaseRendererElement)val).Parent = this;
                 }
                 else
@@ -2478,11 +2462,11 @@ namespace IgniteUI.Blazor.Controls
 
                 if (val is BaseRendererControl)
                 {
-                    typeName = ((BaseRendererControl)val).Type;
+                    typeName = ((BaseRendererControl)val).RendererType;
                 }
                 else if (val is BaseRendererElement)
                 {
-                    typeName = ((BaseRendererElement)val).Type;
+                    typeName = ((BaseRendererElement)val).RendererType;
                 }
                 else
                 {
@@ -2505,14 +2489,14 @@ namespace IgniteUI.Blazor.Controls
             {
                 w.WriteStartObject();
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererElement)val).Name);
+                w.WriteString("id", ((BaseRendererElement)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is BaseRendererControl)
             {
                 w.WriteStartObject();
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererControl)val).Name);
+                w.WriteString("id", ((BaseRendererControl)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is double)
@@ -2560,11 +2544,11 @@ namespace IgniteUI.Blazor.Controls
 
                 if (val is BaseRendererControl)
                 {
-                    typeName = ((BaseRendererControl)val).Type ?? "";
+                    typeName = ((BaseRendererControl)val).RendererType ?? "";
                 }
                 else if (val is BaseRendererElement)
                 {
-                    typeName = ((BaseRendererElement)val).Type;
+                    typeName = ((BaseRendererElement)val).RendererType;
                 }
                 else
                 {
@@ -2587,14 +2571,14 @@ namespace IgniteUI.Blazor.Controls
             {
                 w.WriteStartObject(propertyName);
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererElement)val).Name);
+                w.WriteString("id", ((BaseRendererElement)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is BaseRendererControl)
             {
                 w.WriteStartObject(propertyName);
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererControl)val).Name);
+                w.WriteString("id", ((BaseRendererControl)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is double)
@@ -2994,7 +2978,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string Name
+        /// <summary>The name the client renderer resolves this component by.</summary>
+        internal string RendererName
         {
             get
             {

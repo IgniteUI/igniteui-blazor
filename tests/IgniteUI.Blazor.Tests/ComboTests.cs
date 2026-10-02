@@ -114,6 +114,8 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
         .Prop(c => c.AutofocusList, true)
         .Prop(c => c.Locale, "en-US")
         .Prop(c => c.Label, "Select item")
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.Placeholder, "Choose...")
         .Prop(c => c.PlaceholderSearch, "Search...")
         .Prop(c => c.ValueKey, "Id")
@@ -167,7 +169,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     public void Combo_TypeMetadata()
     {
         var combo = new IgbCombo<object>();
-        Assert.Equal("WebCombo", combo.Type);
+        Assert.Equal("WebCombo", combo.RendererType);
     }
 
     [Fact]

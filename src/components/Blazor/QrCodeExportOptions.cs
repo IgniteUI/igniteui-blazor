@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbQrCodeExportOptions : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebQrCodeExportOptions"; } }
+        internal override string RendererType { get { return "WebQrCodeExportOptions"; } }
 
         private const double ScaleComparisonEpsilon = 1e-9;
 

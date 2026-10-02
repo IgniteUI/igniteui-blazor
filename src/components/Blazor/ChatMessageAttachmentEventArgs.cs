@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbChatMessageAttachmentEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatMessageAttachmentEventArgs"; } }
+        internal override string RendererType { get { return "WebChatMessageAttachmentEventArgs"; } }
 
         private IgbChatMessageAttachment _detail = new IgbChatMessageAttachment();
 

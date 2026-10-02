@@ -16,7 +16,7 @@ public class LinearProgressTests : BlazorComponentTestBase
     public void LinearProgress_TypeMetadata_IsCorrect()
     {
         var progress = new IgbLinearProgress();
-        Assert.Equal("WebLinearProgress", progress.Type);
+        Assert.Equal("WebLinearProgress", progress.RendererType);
     }
 
     [Fact]

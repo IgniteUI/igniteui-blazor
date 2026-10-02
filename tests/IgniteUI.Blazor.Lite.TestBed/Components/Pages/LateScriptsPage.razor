@@ -1,0 +1,23 @@
+@page "/late-scripts"
+@rendermode InteractiveServer
+@using IgniteUI.Blazor.Controls
+@inject IJSRuntime JS
+
+@* Both *Script parameters name functions that nothing registers on the client; the test registers
+   them after the component rendered and expects the library to apply them then. *@
+
+<div id="container">
+    <IgbCombo T="object" Data="_items" ItemTemplateScript="lateItemTemplate" OpeningScript="lateOpening" />
+</div>
+
+@code {
+    private readonly object[] _items = ["alpha", "beta", "gamma"];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("onAfterRender");
+        }
+    }
+}

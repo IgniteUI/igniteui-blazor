@@ -7,7 +7,7 @@
     public partial class IgbCalendarResourceStrings : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCalendarResourceStrings"; } }
+        internal override string RendererType { get { return "WebCalendarResourceStrings"; } }
 
         private string? _selectMonth;
 

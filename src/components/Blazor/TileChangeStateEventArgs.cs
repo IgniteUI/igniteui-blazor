@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTileChangeStateEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTileChangeStateEventArgs"; } }
+        internal override string RendererType { get { return "WebTileChangeStateEventArgs"; } }
 
         private IgbTileChangeStateEventArgsDetail _detail = new IgbTileChangeStateEventArgsDetail();
 

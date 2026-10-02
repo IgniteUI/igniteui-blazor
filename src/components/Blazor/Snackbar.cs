@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSnackbar : IgbBaseAlertLike
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSnackbar"; } }
+        internal override string RendererType { get { return "WebSnackbar"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -130,7 +130,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_action))
                     {
                         _action = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Action", value);
                         this.OnRefChanged("Action", null, "event:::Action", true, false, (refName, oldValue, newValue) =>
                         {
                             this._actionRef = refName;
@@ -141,7 +141,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _action = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Action", null);
                     this.OnRefChanged("Action", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._actionRef = null;

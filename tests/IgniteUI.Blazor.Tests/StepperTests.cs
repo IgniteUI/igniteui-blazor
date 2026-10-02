@@ -60,7 +60,7 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
     public void Stepper_TypeMetadata_IsCorrect()
     {
         var stepper = new IgbStepper();
-        Assert.Equal("WebStepper", stepper.Type);
+        Assert.Equal("WebStepper", stepper.RendererType);
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class StepTests : BlazorComponentTestBase
     public void Step_TypeMetadata_IsCorrect()
     {
         var step = new IgbStep();
-        Assert.Equal("WebStep", step.Type);
+        Assert.Equal("WebStep", step.RendererType);
     }
 
     [Fact]

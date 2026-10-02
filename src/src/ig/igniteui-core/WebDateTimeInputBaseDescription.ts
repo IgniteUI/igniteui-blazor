@@ -40,6 +40,14 @@ export abstract class WebDateTimeInputBaseDescription extends Description {
 		this._label = value;
 		this.markDirty("Label");
 	}
+	private _formName: string = null;
+	get formName(): string {
+		return this._formName;
+	}
+	set formName(value: string) {
+		this._formName = value;
+		this.markDirty("FormName");
+	}
 	private _inputFormat: string = null;
 	get inputFormat(): string {
 		return this._inputFormat;

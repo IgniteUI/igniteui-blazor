@@ -79,11 +79,6 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 }
                 for (int i = 0; i < serverDateRangeArray.Length; i++)
                 {
-                    if (serverDateRangeArray[i].Type != clientDateArray[i].Type)
-                    {
-                        return false;
-                    }
-
                     DateTime[] serverDateArray = (DateTime[])serverDateRangeArray[i].DateRange!;
                     string[] serverStringArray = serverDateArray.Select(x => x.ToShortDateString()).ToArray();
                     var clientRangeArray = ((JArray)clientDateArray[i].DateRange!).ToObject<DateTime[]>();

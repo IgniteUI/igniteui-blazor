@@ -43,7 +43,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
     public void Rating_TypeMetadata_IsCorrect()
     {
         var rating = new IgbRating();
-        Assert.Equal("WebRating", rating.Type);
+        Assert.Equal("WebRating", rating.RendererType);
     }
 
     [Fact]

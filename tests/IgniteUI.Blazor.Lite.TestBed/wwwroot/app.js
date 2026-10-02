@@ -149,3 +149,11 @@ async function generateClientTmpl(name) {
     return html`<div>Template</div>`;
   });
 }
+
+// Registers an event handler that reports each call on the console for the test to wait on.
+async function generateClientHandler(name) {
+  const { registerScript } = await import('./_content/IgniteUI.Blazor/api.js');
+  registerScript(name, function Handler(evt) {
+    console.log(`[TestBed] script '${name}' handled ${evt.type}`);
+  });
+}

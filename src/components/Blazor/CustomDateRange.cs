@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCustomDateRange : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCustomDateRange"; } }
+        internal override string RendererType { get { return "WebCustomDateRange"; } }
 
         private string _label = string.Empty;
 

@@ -1,0 +1,15 @@
+@page "/root-elements"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+@* Components the client renderer drives through descriptions, rendered as their own elements. *@
+
+<div id="flow" style="width: 600px">
+    <IgbDatePicker id="rooted-picker" class="rooted" style="margin: 2px" title="Picker" hidden="@_hidden" Label="Picker" />
+    <IgbChat />
+</div>
+
+<button id="show-picker" @onclick="() => _hidden = false">Show</button>
+
+@code {
+    private bool _hidden = true;
+}

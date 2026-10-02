@@ -111,11 +111,11 @@ test('api.js registers and removes scripts, defaulting shouldCall to false', asy
   const fn = () => 'value';
   api.registerScript('default', fn);
   api.registerScript('factory', fn, true);
-  assert.equal(api.getRegisteredScript('default').func, fn);
-  assert.equal(api.getRegisteredScript('default').shouldCall, false);
-  assert.equal(api.getRegisteredScript('factory').shouldCall, true);
+  assert.equal(api._getRegisteredScript('default').func, fn);
+  assert.equal(api._getRegisteredScript('default').shouldCall, false);
+  assert.equal(api._getRegisteredScript('factory').shouldCall, true);
   api.removeScript('default');
-  assert.equal(api.getRegisteredScript('default'), undefined);
+  assert.equal(api._getRegisteredScript('default'), undefined);
   assert.equal(typeof api.html, 'function');
   assert.equal(globalThis.igRegisterScript, undefined);
 });
