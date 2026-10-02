@@ -12,7 +12,6 @@ const entries = { app: 'src/src/index.ts', api: 'src/src/api.ts' };
 /**
  * Emits the Blazor JS initializer as a flat list of static imports.
  * Blazor awaits the import, so no startup hooks required for that.
- * api.js is included so applications can register client scripts before components render.
  */
 function emitInitializer(): Plugin {
   return {
