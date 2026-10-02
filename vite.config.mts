@@ -29,9 +29,6 @@ function emitInitializer(): Plugin {
         if (chunk?.type === 'chunk') chunk.imports.forEach(visit);
       };
       visit(app.fileName);
-      if (bundle[fixedNames.api]?.type !== 'chunk') {
-        throw this.error(`no ${fixedNames.api} entry chunk — cannot emit ${initializer}`);
-      }
       visit(fixedNames.api);
       this.emitFile({
         type: 'asset',
