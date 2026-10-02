@@ -45,7 +45,7 @@ namespace IgniteUI.Blazor.Controls
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
-            if (item is BaseRendererElement element)
+            if (item is BaseJsonSerializable element)
             {
                 element.Parent = _parent;
             }
@@ -57,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
         {
             var item = this[index];
             base.RemoveItem(index);
-            if (item is BaseRendererElement element)
+            if (item is BaseJsonSerializable element)
             {
                 element.Parent = null;
             }
@@ -68,7 +68,7 @@ namespace IgniteUI.Blazor.Controls
         protected override void SetItem(int index, T item)
         {
             base.SetItem(index, item);
-            if (item is BaseRendererElement element)
+            if (item is BaseJsonSerializable element)
             {
                 element.Parent = _parent;
             }
@@ -117,9 +117,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
-            if (_parent is BaseRendererElement)
+            if (_parent is BaseJsonSerializable)
             {
-                ((BaseRendererElement)_parent).MarkPropDirty(_propertyName);
+                ((BaseJsonSerializable)_parent).MarkPropDirty(_propertyName);
             }
             if (_parent is BaseRendererControl)
             {
@@ -133,7 +133,7 @@ namespace IgniteUI.Blazor.Controls
             for (var i = 0; i < Count; i++)
             {
                 var item = this[i];
-                if (item is BaseRendererElement element)
+                if (item is BaseJsonSerializable element)
                 {
                     element.Parent = null;
                 }
@@ -198,7 +198,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 else
                 {
-                    if (_parent is BaseRendererElement parentElement)
+                    if (_parent is BaseJsonSerializable parentElement)
                     {
                         parentElement.ObjectToParam(context, val);
                     }
@@ -218,14 +218,14 @@ namespace IgniteUI.Blazor.Controls
             for (var i = 0; i < this.Count; i++)
             {
                 var item = this[i];
-                if (item is BaseRendererElement ele)
+                if (item is BaseJsonSerializable ele)
                 {
                     if (name == ele.RendererName)
                     {
                         return item;
                     }
                     var subEle = ele.FindByName(name);
-                    if (subEle is BaseRendererElement childElement && name == childElement.RendererName)
+                    if (subEle is BaseJsonSerializable childElement && name == childElement.RendererName)
                     {
                         return childElement;
                     }
@@ -247,14 +247,14 @@ namespace IgniteUI.Blazor.Controls
             for (var i = 0; i < this.Count; i++)
             {
                 var item = this[i];
-                if (item is BaseRendererElement ele)
+                if (item is BaseJsonSerializable ele)
                 {
                     if (name == ele.RendererName)
                     {
                         return true;
                     }
                     var subEle = ele.FindByName(name);
-                    if (subEle is BaseRendererElement childElement && name == childElement.RendererName)
+                    if (subEle is BaseJsonSerializable childElement && name == childElement.RendererName)
                     {
                         return true;
                     }

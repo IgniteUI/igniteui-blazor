@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for the <see cref="IgbRangeSlider"/> value events, such as
     /// <see cref="IgbRangeSlider.Input"/> and <see cref="IgbRangeSlider.Change"/>.
     /// </summary>
-    public partial class IgbRangeSliderValueEventArgs : BaseRendererElement
+    public partial class IgbRangeSliderValueEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRangeSliderValueEventArgs"; } }

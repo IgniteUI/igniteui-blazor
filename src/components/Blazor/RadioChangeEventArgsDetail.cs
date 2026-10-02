@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The payload of the <see cref="IgbRadio.Change"/> and <see cref="IgbRadioGroup.Change"/> events.
     /// </summary>
-    public partial class IgbRadioChangeEventArgsDetail : BaseRendererElement
+    public partial class IgbRadioChangeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRadioChangeEventArgsDetail"; } }

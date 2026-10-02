@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for the <see cref="IgbChat.MessageCreated"/> event, carrying the chat message
     /// that was created.
     /// </summary>
-    public partial class IgbChatMessageEventArgs : BaseRendererElement
+    public partial class IgbChatMessageEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChatMessageEventArgs"; } }

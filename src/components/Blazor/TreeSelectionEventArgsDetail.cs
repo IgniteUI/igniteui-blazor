@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// The payload carried by <see cref="IgbTree.SelectionChanged"/>, holding the selection
     /// the tree is about to apply.
     /// </summary>
-    public partial class IgbTreeSelectionEventArgsDetail : BaseRendererElement
+    public partial class IgbTreeSelectionEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTreeSelectionEventArgsDetail"; } }

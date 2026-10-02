@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTree.ItemExpanding"/>, <see cref="IgbTree.ItemCollapsed"/> and
     /// <see cref="IgbTree.ActiveItem"/>.
     /// </summary>
-    public partial class IgbTreeItemComponentEventArgs : BaseRendererElement
+    public partial class IgbTreeItemComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTreeItemComponentEventArgs"; } }

@@ -108,9 +108,9 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 // ObjectToParam this thing
-                if (_component is BaseRendererElement)
+                if (_component is BaseJsonSerializable)
                 {
-                    (_component as BaseRendererElement)?.ObjectToParam(_context, val);
+                    (_component as BaseJsonSerializable)?.ObjectToParam(_context, val);
                 }
                 else if (_component is BaseRendererControl)
                 {
@@ -171,9 +171,9 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 // ObjectToParam this thing
-                if (_component is BaseRendererElement)
+                if (_component is BaseJsonSerializable)
                 {
-                    (_component as BaseRendererElement)?.ObjectToParam(_context, propertyName, val);
+                    (_component as BaseJsonSerializable)?.ObjectToParam(_context, propertyName, val);
                 }
                 else if (_component is BaseRendererControl)
                 {
@@ -190,7 +190,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 foreach (var val in items)
                 {
-                    if (val is BaseRendererControl || val is BaseRendererElement)
+                    if (val is BaseRendererControl || val is BaseJsonSerializable)
                     {
                         containsSub = true;
                         break;
@@ -260,9 +260,9 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
-                        if (_component is BaseRendererElement)
+                        if (_component is BaseJsonSerializable)
                         {
-                            (_component as BaseRendererElement)?.ObjectToParam(context, val);
+                            (_component as BaseJsonSerializable)?.ObjectToParam(context, val);
                         }
                         else if (_component is BaseRendererControl)
                         {

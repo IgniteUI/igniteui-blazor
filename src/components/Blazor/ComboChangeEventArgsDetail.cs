@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Describes a selection change of an <see cref="IgbCombo{T}"/>: the new value, the items it affected and the kind of change.
     /// </summary>
-    public partial class IgbComboChangeEventArgsDetail : BaseRendererElement
+    public partial class IgbComboChangeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComboChangeEventArgsDetail"; } }

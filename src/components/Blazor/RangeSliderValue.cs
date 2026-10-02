@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The pair of thumb values carried by the <see cref="IgbRangeSlider"/> value events.
     /// </summary>
-    public partial class IgbRangeSliderValue : BaseRendererElement
+    public partial class IgbRangeSliderValue : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRangeSliderValue"; } }

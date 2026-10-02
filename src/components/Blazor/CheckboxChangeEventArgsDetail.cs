@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The payload of the <c>Change</c> event of <see cref="IgbCheckbox"/> and <see cref="IgbSwitch"/>.
     /// </summary>
-    public partial class IgbCheckboxChangeEventArgsDetail : BaseRendererElement
+    public partial class IgbCheckboxChangeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCheckboxChangeEventArgsDetail"; } }

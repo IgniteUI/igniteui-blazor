@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for the <see cref="IgbSplitter.LayoutChanged"/> event.
     /// </summary>
-    public partial class IgbSplitterLayoutChangedEventArgs : BaseRendererElement
+    public partial class IgbSplitterLayoutChangedEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSplitterLayoutChangedEventArgs"; } }

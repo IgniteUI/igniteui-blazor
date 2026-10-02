@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for the <see cref="IgbCombo{T}.Change"/> event.
     /// </summary>
-    public partial class IgbComboChangeEventArgs : BaseRendererElement
+    public partial class IgbComboChangeEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComboChangeEventArgs"; } }

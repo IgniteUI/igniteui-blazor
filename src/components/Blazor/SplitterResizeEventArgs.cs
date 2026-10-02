@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for the <see cref="IgbSplitter"/> resize events.
     /// </summary>
-    public partial class IgbSplitterResizeEventArgs : BaseRendererElement
+    public partial class IgbSplitterResizeEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSplitterResizeEventArgs"; } }
