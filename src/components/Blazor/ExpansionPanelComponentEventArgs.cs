@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbExpansionPanelComponentEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebExpansionPanelComponentEventArgs"; } }
+        internal override string RendererType { get { return "WebExpansionPanelComponentEventArgs"; } }
 
         private IgbExpansionPanel _detail = new IgbExpansionPanel();
 

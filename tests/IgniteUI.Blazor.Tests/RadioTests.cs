@@ -50,7 +50,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     public void Radio_TypeMetadata_IsCorrect()
     {
         var radio = new IgbRadio();
-        Assert.Equal("WebRadio", radio.Type);
+        Assert.Equal("WebRadio", radio.RendererType);
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
     public void RadioGroup_TypeMetadata_IsCorrect()
     {
         var group = new IgbRadioGroup();
-        Assert.Equal("WebRadioGroup", group.Type);
+        Assert.Equal("WebRadioGroup", group.RendererType);
     }
 
     [Fact]

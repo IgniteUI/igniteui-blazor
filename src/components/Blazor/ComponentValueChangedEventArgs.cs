@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbComponentValueChangedEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebComponentValueChangedEventArgs"; } }
+        internal override string RendererType { get { return "WebComponentValueChangedEventArgs"; } }
 
         private string? _detail = "";
 

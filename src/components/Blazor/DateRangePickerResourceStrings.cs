@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDateRangePickerResourceStrings : IgbCalendarResourceStrings
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDateRangePickerResourceStrings"; } }
+        internal override string RendererType { get { return "WebDateRangePickerResourceStrings"; } }
 
         private string? _separator;
         /// <summary>

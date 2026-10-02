@@ -17,6 +17,8 @@ public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker>
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: "#ff0000")
         .Prop(c => c.Value, "#ff0000")
         .Prop(c => c.Label, "Background")
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.Format, ColorFormat.Hsl, wire: "hsl")
         .Prop(c => c.HideFormats, true)
         .Prop(c => c.ShowAlpha, true)
@@ -64,7 +66,7 @@ public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker>
     public void ColorPicker_TypeMetadata_IsCorrect()
     {
         var colorPicker = new IgbColorPicker();
-        Assert.Equal("WebColorPicker", colorPicker.Type);
+        Assert.Equal("WebColorPicker", colorPicker.RendererType);
     }
 
     /// <summary>

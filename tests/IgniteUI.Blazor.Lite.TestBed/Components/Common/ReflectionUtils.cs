@@ -24,8 +24,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             List<string> basePropNames = (typeof(BaseRendererControl)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
             // exclude readonly, broken component specific props, dependant props, props from the base renderer, templates and events
-            // exlude Name as it is used as unique identifier, we don't want to dynamically set it
-            .Where(x => x.CanWrite && x.Name != "Name" && !excludedProps.Contains(x.Name) && !dependantProps.Contains(x.Name) && !basePropNames.Contains(x.Name) && !x.Name.EndsWith("Script") &&
+            .Where(x => x.CanWrite && !excludedProps.Contains(x.Name) && !dependantProps.Contains(x.Name) && !basePropNames.Contains(x.Name) && !x.Name.EndsWith("Script") &&
             !IsEventCallback(x) && !IsRenderFragment(x)).ToList();
             return props;
         }

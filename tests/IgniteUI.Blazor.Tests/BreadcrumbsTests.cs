@@ -17,7 +17,7 @@ public class BreadcrumbsTests : BlazorComponentTestBase
     public void Breadcrumbs_TypeMetadata_IsCorrect()
     {
         var breadcrumbs = new IgbBreadcrumbs();
-        Assert.Equal("WebBreadcrumbs", breadcrumbs.Type);
+        Assert.Equal("WebBreadcrumbs", breadcrumbs.RendererType);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class BreadcrumbTests : BlazorComponentTestBase
     public void Breadcrumb_TypeMetadata_IsCorrect()
     {
         var breadcrumb = new IgbBreadcrumb();
-        Assert.Equal("WebBreadcrumb", breadcrumb.Type);
+        Assert.Equal("WebBreadcrumb", breadcrumb.RendererType);
     }
 
     [Fact]

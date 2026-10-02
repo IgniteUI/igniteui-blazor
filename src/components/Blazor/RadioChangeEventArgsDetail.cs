@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRadioChangeEventArgsDetail : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRadioChangeEventArgsDetail"; } }
+        internal override string RendererType { get { return "WebRadioChangeEventArgsDetail"; } }
 
         private bool _checked = false;
 

@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCalendarFormatOptions : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "CalendarFormatOptions"; } }
+        internal override string RendererType { get { return "CalendarFormatOptions"; } }
 
         private string? _weekday;
 

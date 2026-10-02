@@ -146,7 +146,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     public void Dropdown_TypeMetadata_IsCorrect()
     {
         var dropdown = new IgbDropdown();
-        Assert.Equal("WebDropdown", dropdown.Type);
+        Assert.Equal("WebDropdown", dropdown.RendererType);
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     public void DropdownItem_TypeMetadata_IsCorrect()
     {
         var item = new IgbDropdownItem();
-        Assert.Equal("WebDropdownItem", item.Type);
+        Assert.Equal("WebDropdownItem", item.RendererType);
     }
 
     [Fact]

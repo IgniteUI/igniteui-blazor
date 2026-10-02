@@ -30,7 +30,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     public void Dialog_TypeMetadata_IsCorrect()
     {
         var dialog = new IgbDialog();
-        Assert.Equal("WebDialog", dialog.Type);
+        Assert.Equal("WebDialog", dialog.RendererType);
     }
 
     [Fact]

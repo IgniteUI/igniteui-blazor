@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbComponentDateValueChangedEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebComponentDateValueChangedEventArgs"; } }
+        internal override string RendererType { get { return "WebComponentDateValueChangedEventArgs"; } }
 
         private DateTime _detail = DateTime.MinValue;
 
