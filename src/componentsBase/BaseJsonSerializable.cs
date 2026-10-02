@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -6,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Shared internal Json serializable handling.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public partial class BaseJsonSerializable : JsonSerializable
     {
         internal bool IsComponentRooted
