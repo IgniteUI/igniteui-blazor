@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbColorPicker : IgbBaseComboBox
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebColorPicker"; } }
+        internal override string RendererType { get { return "WebColorPicker"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

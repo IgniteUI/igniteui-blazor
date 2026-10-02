@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- **Infrastructure:** the `EventBehavior` parameter, the `ControlEventBehavior` enum and the `Type` property are no longer public. Each component keeps the event dispatch it always defaulted to; the per-instance override was never set by any sample, doc or test. `Type` returned the internal name the client renderer uses for the component, not a type users could act on.
+
 ## 0.4.0 - 2026-09-30
 
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.4.1 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.1) with highlights noted below:

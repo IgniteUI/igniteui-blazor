@@ -74,6 +74,6 @@ public class ToggleButtonTests : ComponentWithContractTestBase<IgbToggleButton>
     public void ToggleButton_TypeMetadata()
     {
         var btn = new IgbToggleButton();
-        Assert.Equal("WebToggleButton", btn.Type);
+        Assert.Equal("WebToggleButton", btn.RendererType);
     }
 }

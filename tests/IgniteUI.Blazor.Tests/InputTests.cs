@@ -49,7 +49,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
     public void Input_TypeMetadata_IsCorrect()
     {
         var input = new IgbInput();
-        Assert.Equal("WebInput", input.Type);
+        Assert.Equal("WebInput", input.RendererType);
     }
 
     [Fact]

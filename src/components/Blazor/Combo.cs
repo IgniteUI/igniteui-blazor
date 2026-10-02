@@ -15,7 +15,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCombo<T> : IgbBaseComboBox, IDataSourceNotifications
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCombo"; } }
+        internal override string RendererType { get { return "WebCombo"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

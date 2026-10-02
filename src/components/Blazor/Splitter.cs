@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSplitter : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSplitter"; } }
+        internal override string RendererType { get { return "WebSplitter"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -57,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

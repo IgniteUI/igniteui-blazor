@@ -44,7 +44,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     public void Textarea_TypeMetadata_IsCorrect()
     {
         var textarea = new IgbTextarea();
-        Assert.Equal("WebTextarea", textarea.Type);
+        Assert.Equal("WebTextarea", textarea.RendererType);
     }
 
     [Fact]

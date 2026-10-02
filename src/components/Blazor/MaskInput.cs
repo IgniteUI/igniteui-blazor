@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbMaskInput : IgbInputBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebMaskInput"; } }
+        internal override string RendererType { get { return "WebMaskInput"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

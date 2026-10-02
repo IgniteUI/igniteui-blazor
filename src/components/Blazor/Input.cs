@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbInput : IgbInputBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebInput"; } }
+        internal override string RendererType { get { return "WebInput"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

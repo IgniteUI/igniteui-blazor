@@ -64,7 +64,7 @@ public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker>
     public void ColorPicker_TypeMetadata_IsCorrect()
     {
         var colorPicker = new IgbColorPicker();
-        Assert.Equal("WebColorPicker", colorPicker.Type);
+        Assert.Equal("WebColorPicker", colorPicker.RendererType);
     }
 
     /// <summary>

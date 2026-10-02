@@ -36,7 +36,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
     public void Icon_TypeMetadata_IsCorrect()
     {
         var icon = new IgbIcon();
-        Assert.Equal("WebIcon", icon.Type);
+        Assert.Equal("WebIcon", icon.RendererType);
     }
 
     [Fact]

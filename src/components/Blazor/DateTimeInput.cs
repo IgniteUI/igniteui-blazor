@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDateTimeInput : IgbDateTimeInputBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDateTimeInput"; } }
+        internal override string RendererType { get { return "WebDateTimeInput"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

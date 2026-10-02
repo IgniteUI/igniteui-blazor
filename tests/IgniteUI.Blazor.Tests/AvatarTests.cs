@@ -16,7 +16,7 @@ public class AvatarTests : BlazorComponentTestBase
     public void Avatar_TypeMetadata_IsCorrect()
     {
         var avatar = new IgbAvatar();
-        Assert.Equal("WebAvatar", avatar.Type);
+        Assert.Equal("WebAvatar", avatar.RendererType);
     }
 
     [Fact]

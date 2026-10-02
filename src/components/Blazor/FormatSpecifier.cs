@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbFormatSpecifier : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "FormatSpecifier"; } }
+        internal override string RendererType { get { return "FormatSpecifier"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

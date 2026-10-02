@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRatingSymbol : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRatingSymbol"; } }
+        internal override string RendererType { get { return "WebRatingSymbol"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -51,7 +51,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

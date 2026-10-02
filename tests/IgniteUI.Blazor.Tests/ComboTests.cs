@@ -167,7 +167,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     public void Combo_TypeMetadata()
     {
         var combo = new IgbCombo<object>();
-        Assert.Equal("WebCombo", combo.Type);
+        Assert.Equal("WebCombo", combo.RendererType);
     }
 
     [Fact]

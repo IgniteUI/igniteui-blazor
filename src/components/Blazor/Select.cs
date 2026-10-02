@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSelect : IgbComboBoxBaseLike
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSelect"; } }
+        internal override string RendererType { get { return "WebSelect"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

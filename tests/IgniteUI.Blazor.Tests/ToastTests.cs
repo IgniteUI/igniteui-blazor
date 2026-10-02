@@ -25,7 +25,7 @@ public class ToastTests : ComponentWithContractTestBase<IgbToast>
     public void Toast_TypeMetadata_IsCorrect()
     {
         var toast = new IgbToast();
-        Assert.Equal("WebToast", toast.Type);
+        Assert.Equal("WebToast", toast.RendererType);
     }
 
     [Fact]

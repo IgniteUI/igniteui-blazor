@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbChip : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChip"; } }
+        internal override string RendererType { get { return "WebChip"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -53,7 +53,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

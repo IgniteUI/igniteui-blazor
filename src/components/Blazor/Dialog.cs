@@ -17,7 +17,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDialog : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDialog"; } }
+        internal override string RendererType { get { return "WebDialog"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -62,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

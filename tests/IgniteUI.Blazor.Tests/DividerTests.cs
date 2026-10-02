@@ -16,7 +16,7 @@ public class DividerTests : BlazorComponentTestBase
     public void Divider_TypeMetadata_IsCorrect()
     {
         var divider = new IgbDivider();
-        Assert.Equal("WebDivider", divider.Type);
+        Assert.Equal("WebDivider", divider.RendererType);
     }
 
     [Fact]

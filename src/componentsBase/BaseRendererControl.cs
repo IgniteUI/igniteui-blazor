@@ -15,7 +15,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Determines the behavior of events as they are fired at the JavaScript level and bubbled up to the Blazor level.
     /// </summary>
-    public enum ControlEventBehavior
+    internal enum ControlEventBehavior
     {
         /// <summary>
         /// The behavior is automatically determined by the component.
@@ -135,29 +135,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Gets or sets how events are bubbled up from JavaScript to Blazor.
-        /// </summary>
-        [Parameter]
-        public ControlEventBehavior EventBehavior { get; set; } = ControlEventBehavior.Auto;
-
-        /// <summary>
         /// Gets the components default event behavior.
         /// </summary>
-        protected virtual ControlEventBehavior DefaultEventBehavior
+        private protected virtual ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
-        }
-
-        /// <summary>
-        /// Resolves the components event behavior if Auto is selected.
-        /// </summary>
-        protected ControlEventBehavior ResolveEventBehavior()
-        {
-            if (EventBehavior == ControlEventBehavior.Auto)
-            {
-                return DefaultEventBehavior;
-            }
-            return EventBehavior;
         }
 
         /// <summary>The content rendered inside the component.</summary>
@@ -495,7 +477,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            string? spinalName = ToSpinal(this.Type);
+            string? spinalName = ToSpinal(this.RendererType);
             string className = "igb-" + spinalName;
             if (Class != null)
             {
@@ -956,7 +938,7 @@ namespace IgniteUI.Blazor.Controls
         private String _cachedSerializedContent = "";
 
         /// <summary>The type name of this component.</summary>
-        public virtual string? Type
+        internal virtual string? RendererType
         {
             get
             {
@@ -974,7 +956,7 @@ namespace IgniteUI.Blazor.Controls
         internal void Serialize(SerializationContext context, string? propertyName = null)
         {
             RendererSerializer ser = new RendererSerializer(context, this, Name);
-            ser.Type = Type;
+            ser.Type = RendererType;
             ser.Start(propertyName);
             SerializeCore(ser);
             ser.End();
@@ -1699,7 +1681,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (m.Type == "refChanged")
             {
-                m.SetData("eventBehavior", "\"" + ResolveEventBehavior().ToString().ToLower() + "\"");
+                m.SetData("eventBehavior", "\"" + DefaultEventBehavior.ToString().ToLower() + "\"");
             }
             string json = m.ToJson();
             //Console.WriteLine("message");
@@ -1722,7 +1704,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (m.Type == "refChanged")
             {
-                m.SetData("eventBehavior", "\"" + ResolveEventBehavior().ToString().ToLower() + "\"");
+                m.SetData("eventBehavior", "\"" + DefaultEventBehavior.ToString().ToLower() + "\"");
             }
             string json = m.ToJson();
             SendJsonSync(json, m.NativeElements);
@@ -2478,11 +2460,11 @@ namespace IgniteUI.Blazor.Controls
 
                 if (val is BaseRendererControl)
                 {
-                    typeName = ((BaseRendererControl)val).Type;
+                    typeName = ((BaseRendererControl)val).RendererType;
                 }
                 else if (val is BaseRendererElement)
                 {
-                    typeName = ((BaseRendererElement)val).Type;
+                    typeName = ((BaseRendererElement)val).RendererType;
                 }
                 else
                 {
@@ -2560,11 +2542,11 @@ namespace IgniteUI.Blazor.Controls
 
                 if (val is BaseRendererControl)
                 {
-                    typeName = ((BaseRendererControl)val).Type ?? "";
+                    typeName = ((BaseRendererControl)val).RendererType ?? "";
                 }
                 else if (val is BaseRendererElement)
                 {
-                    typeName = ((BaseRendererElement)val).Type;
+                    typeName = ((BaseRendererElement)val).RendererType;
                 }
                 else
                 {

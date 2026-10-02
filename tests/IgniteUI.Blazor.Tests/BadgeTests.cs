@@ -16,7 +16,7 @@ public class BadgeTests : BlazorComponentTestBase
     public void Badge_TypeMetadata_IsCorrect()
     {
         var badge = new IgbBadge();
-        Assert.Equal("WebBadge", badge.Type);
+        Assert.Equal("WebBadge", badge.RendererType);
     }
 
     [Fact]

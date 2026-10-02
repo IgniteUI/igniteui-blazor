@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRangeSliderValue : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRangeSliderValue"; } }
+        internal override string RendererType { get { return "WebRangeSliderValue"; } }
 
         private double _lower = 0;
 

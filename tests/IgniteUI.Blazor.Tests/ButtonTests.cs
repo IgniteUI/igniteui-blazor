@@ -115,7 +115,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     public void Button_TypeMetadata_IsCorrect()
     {
         var button = new IgbButton();
-        Assert.Equal("WebButton", button.Type);
+        Assert.Equal("WebButton", button.RendererType);
     }
 
     [Fact]

@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDropdownItemComponentEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDropdownItemComponentEventArgs"; } }
+        internal override string RendererType { get { return "WebDropdownItemComponentEventArgs"; } }
 
         private IgbDropdownItem _detail = new IgbDropdownItem();
 

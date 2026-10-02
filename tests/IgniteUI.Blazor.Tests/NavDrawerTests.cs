@@ -30,7 +30,7 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
     public void NavDrawer_TypeMetadata_IsCorrect()
     {
         var drawer = new IgbNavDrawer();
-        Assert.Equal("WebNavDrawer", drawer.Type);
+        Assert.Equal("WebNavDrawer", drawer.RendererType);
     }
 
     [Fact]
