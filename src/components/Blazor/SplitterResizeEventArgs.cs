@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current sizes of the panes adjacent to the resized splitter bar.
         /// </summary>
-        [Parameter]
         public IgbSplitterResizeEventArgsDetail Detail
         {
             get { return this._detail; }

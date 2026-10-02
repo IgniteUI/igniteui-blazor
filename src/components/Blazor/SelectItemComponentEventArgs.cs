@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The select item that became selected.
         /// </summary>
-        [Parameter]
         public IgbSelectItem Detail
         {
             get { return this._detail; }

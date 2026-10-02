@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The first date of the range.
         /// </summary>
-        [Parameter]
         public DateTime Start
         {
             get { return this._start; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The last date of the range.
         /// </summary>
-        [Parameter]
         public DateTime End
         {
             get { return this._end; }

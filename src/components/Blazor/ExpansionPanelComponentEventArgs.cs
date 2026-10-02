@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -18,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The expansion panel the event was raised for.
         /// </summary>
-        [Parameter]
         public IgbExpansionPanel Detail
         {
             get { return this._detail; }

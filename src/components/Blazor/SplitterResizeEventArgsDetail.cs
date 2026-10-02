@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current size of the start panel in pixels.
         /// </summary>
-        [Parameter]
         public double StartPanelSize
         {
             get { return this._startPanelSize; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current size of the end panel in pixels.
         /// </summary>
-        [Parameter]
         public double EndPanelSize
         {
             get { return this._endPanelSize; }
@@ -55,7 +51,6 @@ namespace IgniteUI.Blazor.Controls
         /// The change in size since the resize operation started. Only set for
         /// <see cref="IgbSplitter.Resizing"/> and <see cref="IgbSplitter.ResizeEnd"/>.
         /// </summary>
-        [Parameter]
         public double Delta
         {
             get { return this._delta; }

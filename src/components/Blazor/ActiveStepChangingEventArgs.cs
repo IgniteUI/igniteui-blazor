@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// The payload of the event, carrying the index of the currently active step and the index of
         /// the step that is about to become active.
         /// </summary>
-        [Parameter]
         public IgbActiveStepChangingEventArgsDetail Detail
         {
             get { return this._detail; }

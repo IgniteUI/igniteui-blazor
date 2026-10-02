@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// The numeric payload of the event. Its meaning depends on the event that carries it, for
         /// example the new value of the control or the index of the affected item.
         /// </summary>
-        [Parameter]
         public double Detail
         {
             get { return this._detail; }

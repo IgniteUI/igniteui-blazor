@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The date range carried by the event.
         /// </summary>
-        [Parameter]
         public IgbDateRangeValueDetail Detail
         {
             get { return this._detail; }

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The lower and upper thumb values of the range slider.
         /// </summary>
-        [Parameter]
         public IgbRangeSliderValue Detail
         {
             get { return this._detail; }

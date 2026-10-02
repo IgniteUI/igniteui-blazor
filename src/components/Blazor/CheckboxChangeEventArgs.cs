@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the control.
         /// </summary>
-        [Parameter]
         public IgbCheckboxChangeEventArgsDetail Detail
         {
             get { return this._detail; }

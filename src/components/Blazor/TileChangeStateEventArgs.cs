@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The affected tile and the state it is changing to.
         /// </summary>
-        [Parameter]
         public IgbTileChangeStateEventArgsDetail Detail
         {
             get { return this._detail; }
