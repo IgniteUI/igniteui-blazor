@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
-
-- **Infrastructure:** the `EventBehavior` parameter, the `ControlEventBehavior` enum and the `Type` property are no longer public. Each component keeps the event dispatch it always defaulted to; the per-instance override was never set by any sample, doc or test. `Type` returned the internal name the client renderer uses for the component, not a type users could act on. `Name` is gone from the non-component types such as event details and value objects, except `IgbIconMeta` and `IgbChatMessageAttachment`, as it did nothing for the rest. The form components now declare `Name` as a parameter; it used to pass through as a plain attribute, so markup is unchanged.
-
 ### Fixed
 
 - **Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** the component no longer takes the internal id `mainControl` as its form-field name, so these fields no longer submit under that name or collide with each other in the same form.
@@ -18,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
+- **Infrastructure:** the `EventBehavior` component parameter was removed and `ControlEventBehavior` was made internal, so code that sets the parameter or references the enum no longer compiles. The public renderer `Type` property was replaced with the internal `RendererType`, so code that reads or overrides `Type` no longer compiles. These changes do not alter default event dispatch, renderer keys or the wire format. `Name` is no longer public on non-component types other than `IgbIconMeta` and `IgbChatMessageAttachment`, so code using those properties must be updated. Form components now expose `Name` as a parameter; markup is unchanged.
 - **`Width` and `Height` removed:** size a component with CSS, like any other element. Usually the layout decides it: a flex or grid container sizes and aligns the components in it. For an explicit size, give the component a `class` and target it from your stylesheet, or from the [isolated CSS](https://learn.microsoft.com/aspnet/core/blazor/components/css-isolation) of the component that renders it, through `::deep`.
 - **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** render their element directly, like every other component, instead of inside an `inline-block` wrapper `div`. In normal flow all but the Color Picker now fill their row, and sizing the Date Picker with `width` also needs a `display`, as its element is inline. CSS that reached the element through the wrapper, such as `.my-picker igc-date-picker`, now targets it directly: `igc-date-picker.my-picker`.
 
