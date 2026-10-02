@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
 
     internal partial class RendererSerializer
     {
-        public RendererSerializer(SerializationContext context, ComponentBase component, string name)
+        public RendererSerializer(SerializationContext context, JsonSerializable component, string name)
         {
             _name = name;
             _context = context;
@@ -16,7 +15,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private string? _name;
-        private ComponentBase? _component;
+        private readonly JsonSerializable? _component;
 
         private SerializationContext _context;
 

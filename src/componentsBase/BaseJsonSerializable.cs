@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -7,34 +6,8 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Shared internal Json serializable handling.
     /// </summary>
-    public partial class BaseJsonSerializable : ComponentBase, JsonSerializable
+    public partial class BaseJsonSerializable : JsonSerializable
     {
-        private IIgniteUIBlazor? _igBlazor;
-        /// <summary>The injected <see cref="IIgniteUIBlazor"/> service; pass it to a module's <c>Register</c> from <see cref="EnsureModulesLoaded"/>.</summary>
-        [Inject]
-        protected IIgniteUIBlazor IgBlazor
-        {
-            get
-            {
-                return _igBlazor ?? throw new InvalidOperationException("IgBlazor accessed before dependency injection completed.");
-            }
-            set
-            {
-                _igBlazor = value;
-                // if (_igBlazor is IJSInProcessRuntime)
-                // {
-                //     this.JsInProcessRuntime = (IJSInProcessRuntime)_igBlazor;
-                // }
-
-                EnsureModulesLoaded();
-            }
-        }
-        /// <summary>Requests the client modules this element needs; override to register more through <see cref="IgBlazor"/>.</summary>
-        protected virtual void EnsureModulesLoaded()
-        {
-            //Console.WriteLine("ensuring element modules loaded");
-        }
-
         internal bool IsComponentRooted
         {
             get
@@ -78,81 +51,6 @@ namespace IgniteUI.Blazor.Controls
             if (child.Parent == this)
             {
                 child.Parent = null;
-            }
-        }
-
-        private protected virtual string? ParentTypeName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        private protected virtual bool UseDirectRender
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>The child elements declared inside this element.</summary>
-        [Parameter] public RenderFragment? ChildContent { get; set; }
-
-        private protected virtual bool SupportsVisualChildren
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            if (ParentTypeName != null)
-            {
-                if (!SupportsVisualChildren)
-                {
-                    builder.OpenComponent<CascadingValue<BaseJsonSerializable>>(0);
-                    builder.AddAttribute(1, "Value", this);
-                    builder.AddAttribute(2, "Name", ParentTypeName);
-                    builder.AddAttribute(3, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
-                    {
-                        builder2.AddMarkupContent(4, "\r\n        ");
-                        builder2.AddContent(5, ChildContent);
-                        builder2.AddMarkupContent(6, "\r\n    ");
-                    });
-                    builder.CloseComponent();
-                }
-
-                if (SupportsVisualChildren && Parent != null)
-                {
-                    var currParent = Parent;
-                    while (currParent != null && !(currParent is BaseRendererControl))
-                    {
-                        currParent = ((BaseJsonSerializable)currParent).Parent;
-                    }
-                    if (currParent != null)
-                    {
-                        var parentId = ((BaseRendererControl)currParent).ContainerId;
-                        builder.OpenComponent<CascadingValue<BaseJsonSerializable>>(10);
-                        builder.AddAttribute(1, "Value", this);
-                        builder.AddAttribute(2, "Name", ParentTypeName);
-                        builder.AddAttribute(3, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
-                        {
-                            builder2.AddMarkupContent(4, "\r\n        ");
-                            builder2.OpenElement(5, "igc-portal-entrance");
-                            builder2.AddAttribute(6, "portal-id", "portal-" + parentId + "/" + RendererName);
-                            builder2.AddAttribute(7, "move-once-mode", "true");
-                            builder2.AddContent(8, ChildContent);
-                            builder2.CloseElement();
-                            builder2.AddMarkupContent(9, "\r\n    ");
-                        });
-                        builder.CloseComponent();
-                    }
-                }
             }
         }
 
@@ -319,58 +217,6 @@ namespace IgniteUI.Blazor.Controls
                 {
                     ((BaseJsonSerializable)_parent).ChildDirty(this);
                 }
-            }
-        }
-
-        private protected virtual string MethodTarget
-        {
-            get
-            {
-                return RendererName;
-            }
-        }
-
-        /// <summary>Calls <paramref name="methodName"/> on the client-side element with <paramref name="arguments"/> and returns its result.</summary>
-        protected async Task<object?> InvokeMethod(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
-        {
-            return await InvokeMethodHelper(MethodTarget, methodName, arguments, types, nativeElements);
-        }
-
-        /// <summary>Calls <paramref name="methodName"/> on the client-side element and returns its result synchronously; only available where .NET runs in the browser.</summary>
-        protected object? InvokeMethodSync(string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements = null)
-        {
-            return InvokeMethodHelperSync(MethodTarget, methodName, arguments, types, nativeElements);
-        }
-
-        private async Task<object?> InvokeMethodHelper(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
-        {
-            if (CurrParent == null)
-            {
-                throw new InvalidOperationException("cannot invoke method if not attached to parent.");
-            }
-            if (CurrParent is BaseJsonSerializable)
-            {
-                return await ((BaseJsonSerializable)CurrParent).InvokeMethodHelper(target, methodName, arguments, types, nativeElements);
-            }
-            else
-            {
-                return await ((BaseRendererControl)CurrParent).InvokeMethodHelper(target, methodName, arguments, types, nativeElements);
-            }
-        }
-
-        private object? InvokeMethodHelperSync(string target, string methodName, object[] arguments, string[] types, ElementReference[]? nativeElements)
-        {
-            if (CurrParent == null)
-            {
-                throw new InvalidOperationException("cannot invoke method if not attached to parent.");
-            }
-            if (CurrParent is BaseJsonSerializable)
-            {
-                return ((BaseJsonSerializable)CurrParent).InvokeMethodHelperSync(target, methodName, arguments, types, nativeElements);
-            }
-            else
-            {
-                return ((BaseRendererControl)CurrParent).InvokeMethodHelperSync(target, methodName, arguments, types, nativeElements);
             }
         }
 

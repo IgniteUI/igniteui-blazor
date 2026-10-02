@@ -20,7 +20,7 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
             c => c.SelectAsync(_selectValue), c => c.Select(_selectValue), "select",
             // TODO: "WebDateRangeValue" not in MarshalByValueFactory, so ObjectToParam
             // does not serialize as {start, end} during serialization; it falls through to
-            // BaseJsonSerializable branch and sends an "reference" instead (to nothing):
+            // BaseJsonSerializable branch and sends a "reference" instead (to nothing):
             //args: [new JsonSubset("""{"start": "2026-03-01T00:00:00.0000000Z", "end": "2026-03-10T00:00:00.0000000Z"}""")], types: ["Json"]),
             args: [new RawJson($$"""{"refType": "name", "id": "{{_selectValue.RendererName}}"}""")],
             types: ["Json"])
