@@ -31,6 +31,20 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
             }
         },
+        {
+            // Intl.NumberFormat throws on values outside each option's range, and the comparison
+            // includes every value-type option, so those are all set.
+            "IgbNumberFormatOptions", new IgbNumberFormatOptions()
+            {
+                Style = "percent",
+                UseGrouping = true,
+                MinimumIntegerDigits = 1,
+                MinimumFractionDigits = 0,
+                MaximumFractionDigits = 1,
+                MinimumSignificantDigits = 1,
+                MaximumSignificantDigits = 3,
+            }
+        },
         };
 
         public static readonly Dictionary<string, object[]> PredefinedMethodArgs = new Dictionary<string, object[]>

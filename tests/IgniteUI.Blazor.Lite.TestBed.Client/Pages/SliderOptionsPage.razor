@@ -1,0 +1,13 @@
+@page "/slider-options"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+@* Slider values formatted through options objects, which reach the element only as properties. *@
+
+<IgbSlider id="percent" Value="50" ValueFormatOptions="@_percent"
+           PrimaryTicks="3" TickLabelRotation="SliderTickLabelRotation.Ninety" />
+<IgbRangeSlider id="currency" Lower="20" Upper="80" ValueFormat="from {0}" ValueFormatOptions="@_currency" />
+
+@code {
+    private readonly IgbNumberFormatOptions _percent = new() { Style = "unit", Unit = "percent" };
+    private readonly IgbNumberFormatOptions _currency = new() { Style = "currency", Currency = "EUR" };
+}
