@@ -13,8 +13,11 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         private static readonly string[] WrappedTags =
         [
             "igc-color-picker", "igc-combo", "igc-date-picker",
-            "igc-date-range-picker", "igc-date-time-input", "igc-mask-input",
+            "igc-date-range-picker", "igc-date-time-input", "igc-mask-input", "igc-slider",
         ];
+
+        // The slider has no label; its Max shows the client renderer has applied its properties.
+        private const string Applied = "t => t === 'igc-slider' ? document.querySelector('#unnamed ' + t)?.max === 7 : document.querySelector('#unnamed ' + t)?.label";
 
         // Tag -> selector of that component in the named form. "#named > igc-radio" is the standalone
         // radio, a direct child of the form; the grouped one sits inside igc-radio-group.
@@ -35,7 +38,7 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         {
             await Page.GotoAsync("http://localhost:5249/form-names");
             await Page.WaitForFunctionAsync(
-                "tags => tags.every(t => document.querySelector('#unnamed ' + t)?.label)", WrappedTags);
+                "tags => tags.every(" + Applied + ")", WrappedTags);
 
             var observed = await Page.EvaluateAsync<JsonElement>(
                 "tags => ({ names: Object.fromEntries(tags.map(t => [t, document.querySelector('#unnamed ' + t).getAttribute('name')])),"

@@ -29,6 +29,14 @@ export class WebSliderDescription extends WebSliderBaseDescription {
 		this._defaultValue = value;
 		this.markDirty("DefaultValue");
 	}
+	private _formName: string = null;
+	get formName(): string {
+		return this._formName;
+	}
+	set formName(value: string) {
+		this._formName = value;
+		this.markDirty("FormName");
+	}
 	private _invalid: boolean = false;
 	get invalid(): boolean {
 		return this._invalid;

@@ -26,24 +26,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        private protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-slider-base";
-            }
-        }
-
-        /// <inheritdoc />
         private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }

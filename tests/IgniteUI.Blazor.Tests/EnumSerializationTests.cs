@@ -172,17 +172,6 @@ public class EnumSerializationTests : BlazorComponentTestBase
         Assert.Equal(expected, cut.Find("igc-tabs").GetAttribute("activation"));
     }
 
-    // SliderTickOrientation
-    [Theory]
-    [InlineData(SliderTickOrientation.Start, "start")]
-    [InlineData(SliderTickOrientation.End, "end")]
-    [InlineData(SliderTickOrientation.Mirror, "mirror")]
-    public void SliderTickOrientation_Serialization(SliderTickOrientation orient, string expected)
-    {
-        var cut = Render<IgbSlider>(p => p.Add(x => x.TickOrientation, orient));
-        Assert.Equal(expected, cut.Find("igc-slider").GetAttribute("tick-orientation"));
-    }
-
     // StepperOrientation
     [Theory]
     [InlineData(StepperOrientation.Horizontal, "horizontal")]

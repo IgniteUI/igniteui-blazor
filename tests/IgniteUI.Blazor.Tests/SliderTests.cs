@@ -6,7 +6,6 @@ namespace IgniteUI.Blazor.Tests;
 
 public class SliderTests : ComponentWithContractTestBase<IgbSlider>
 {
-    // TODO: ValueFormatOptions/ValueFormat — Slider is direct-render BUG 35189
     protected override ComponentContract<IgbSlider> InteropContract { get; } = new ComponentContract<IgbSlider>()
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: 42.0)
         .Method(c => c.StepUpAsync(2), c => c.StepUp(2), "stepUp", args: [2.0], types: ["Number"])
@@ -22,7 +21,36 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
             argsJson: """{"detail": 5}""",
             assert: args => Assert.Equal(5, args.Detail))
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
-            argsJson: """{"detail": 5}""", expect: 5.0);
+            argsJson: """{"detail": 5}""", expect: 5.0)
+        .Prop(c => c.Value, 50.0)
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
+        .Prop(c => c.Invalid, true)
+        .Prop(c => c.Min, 10.0)
+        .Prop(c => c.Max, 200.0)
+        .Prop(c => c.LowerBound, 20.0)
+        .Prop(c => c.UpperBound, 80.0)
+        .Prop(c => c.Step, 5.0)
+        .Prop(c => c.Disabled, true)
+        .Prop(c => c.DiscreteTrack, true)
+        .Prop(c => c.HideTooltip, true)
+        .Prop(c => c.PrimaryTicks, 5.0)
+        .Prop(c => c.SecondaryTicks, 3.0)
+        .Prop(c => c.HidePrimaryLabels, true)
+        .Prop(c => c.HideSecondaryLabels, true)
+        .Prop(c => c.TickOrientation, SliderTickOrientation.Start, wire: "start")
+        .Prop(c => c.TickOrientation, SliderTickOrientation.End, wire: "end")
+        .Prop(c => c.TickOrientation, SliderTickOrientation.Mirror, wire: "mirror")
+        .Prop(c => c.TickLabelRotation, SliderTickLabelRotation.Ninety, wire: "90")
+        .Prop(c => c.Locale, "en-US")
+        .Prop(c => c.ValueFormat, "{0} pts")
+        .Prop(c => c.ValueFormatOptions,
+            new IgbNumberFormatOptions
+            {
+                Style = "percent",
+                MaximumFractionDigits = 1,
+            },
+            wire: new JsonSubset("""{"style": "percent", "maximumFractionDigits": 1}"""));
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
@@ -34,10 +62,24 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
     public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
+    public void Props_FollowContract() => VerifyPropContract();
+
+    [Fact]
     public void Slider_RendersCorrectElement()
     {
         var cut = Render<IgbSlider>();
         Assert.NotNull(cut.Find("igc-slider"));
+    }
+
+    /// <summary>
+    /// Without it, the labels would render outside the slider element, which reads them from its own children.
+    /// </summary>
+    [Fact]
+    public void Slider_Labels_RenderInsideTheElement()
+    {
+        var cut = Render<IgbSlider>(p => p.AddChildContent<IgbSliderLabel>(l => l.AddChildContent("Low")));
+
+        Assert.Contains("Low", cut.Find("igc-slider > igc-slider-label").TextContent);
     }
 
     [Fact]
@@ -51,193 +93,6 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
     public void Slider_InheritsFromSliderBase()
     {
         Assert.True(typeof(IgbSlider).IsSubclassOf(typeof(IgbSliderBase)));
-    }
-
-    [Fact]
-    public void Slider_Value_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.Value, 50.0));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(50.0, cut.Instance.Value);
-        Assert.Equal("50", element.GetAttribute("value"));
-    }
-
-    [Fact]
-    public void Slider_Min_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.Min, 10.0));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(10.0, cut.Instance.Min);
-        Assert.Equal("10", element.GetAttribute("min"));
-    }
-
-    [Fact]
-    public void Slider_Max_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.Max, 100.0));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(100.0, cut.Instance.Max);
-        Assert.Equal("100", element.GetAttribute("max"));
-    }
-
-    [Fact]
-    public void Slider_Step_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.Step, 5.0));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(5.0, cut.Instance.Step);
-        Assert.Equal("5", element.GetAttribute("step"));
-    }
-
-    [Fact]
-    public void Slider_Disabled_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.Disabled, true));
-
-        var element = cut.Find("igc-slider");
-        Assert.True(cut.Instance.Disabled);
-        Assert.NotNull(element.GetAttribute("disabled"));
-    }
-
-    [Fact]
-    public void Slider_DiscreteTrack_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.DiscreteTrack, true));
-
-        var element = cut.Find("igc-slider");
-        Assert.True(cut.Instance.DiscreteTrack);
-        Assert.NotNull(element.GetAttribute("discrete-track"));
-    }
-
-    [Fact]
-    public void Slider_HideTooltip_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.HideTooltip, true));
-
-        var element = cut.Find("igc-slider");
-        Assert.True(cut.Instance.HideTooltip);
-        Assert.NotNull(element.GetAttribute("hide-tooltip"));
-    }
-
-    [Fact]
-    public void Slider_LowerBound_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.LowerBound, 20.0));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(20.0, cut.Instance.LowerBound);
-        Assert.Equal("20", element.GetAttribute("lower-bound"));
-    }
-
-    [Fact]
-    public void Slider_UpperBound_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.UpperBound, 80.0));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(80.0, cut.Instance.UpperBound);
-        Assert.Equal("80", element.GetAttribute("upper-bound"));
-    }
-
-    [Fact]
-    public void Slider_PrimaryTicks_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.PrimaryTicks, 5));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(5.0, cut.Instance.PrimaryTicks);
-        Assert.Equal("5", element.GetAttribute("primary-ticks"));
-    }
-
-    [Fact]
-    public void Slider_SecondaryTicks_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.SecondaryTicks, 3));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(3.0, cut.Instance.SecondaryTicks);
-        Assert.Equal("3", element.GetAttribute("secondary-ticks"));
-    }
-
-    [Fact]
-    public void Slider_HidePrimaryLabels_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.HidePrimaryLabels, true));
-
-        var element = cut.Find("igc-slider");
-        Assert.True(cut.Instance.HidePrimaryLabels);
-        Assert.NotNull(element.GetAttribute("hide-primary-labels"));
-    }
-
-    [Fact]
-    public void Slider_HideSecondaryLabels_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.HideSecondaryLabels, true));
-
-        var element = cut.Find("igc-slider");
-        Assert.True(cut.Instance.HideSecondaryLabels);
-        Assert.NotNull(element.GetAttribute("hide-secondary-labels"));
-    }
-
-    [Fact]
-    public void Slider_TickOrientation_Mirror()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.TickOrientation, SliderTickOrientation.Mirror));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal(SliderTickOrientation.Mirror, cut.Instance.TickOrientation);
-        Assert.Equal("mirror", element.GetAttribute("tick-orientation"));
-    }
-
-    [Fact]
-    public void Slider_Locale_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.Locale, "en-US"));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal("en-US", cut.Instance.Locale);
-        Assert.Equal("en-US", element.GetAttribute("locale"));
-    }
-
-    [Fact]
-    public void Slider_ValueFormat_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.ValueFormat, "{0}%"));
-
-        var element = cut.Find("igc-slider");
-        Assert.Equal("{0}%", cut.Instance.ValueFormat);
-        Assert.Equal("{0}%", element.GetAttribute("value-format"));
-    }
-
-    [Fact]
-    public void Slider_Invalid_RendersAttribute()
-    {
-        var cut = Render<IgbSlider>(parameters =>
-            parameters.Add(p => p.Invalid, true));
-
-        var element = cut.Find("igc-slider");
-        Assert.True(cut.Instance.Invalid);
-        Assert.NotNull(element.GetAttribute("invalid"));
     }
 }
 

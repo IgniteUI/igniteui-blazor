@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** the component no longer takes the internal id `mainControl` as its form-field name, so these fields no longer submit under that name or collide with each other in the same form.
 - **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** a `style` attribute no longer overrides the component's own layout ([#477](https://github.com/IgniteUI/igniteui-blazor/issues/477)), an `id` attribute is no longer duplicated on an extra element, an attribute removed from the markup no longer stays with `"null"` value, and the Chat no longer collapses to no width outside a layout that stretches it.
+- **Slider, Range Slider:** `ValueFormatOptions` now reaches the element, so the thumb and tick labels show the formatted values. All their properties now reach the element through the client renderer, as the date pickers' do, so prerendered markup no longer carries them.
 
 ### Breaking Changes
 
