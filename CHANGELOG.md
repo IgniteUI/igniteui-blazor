@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Infrastructure:** the `EventBehavior` parameter, the `ControlEventBehavior` enum and the `Type` property are no longer public. Each component keeps the event dispatch it always defaulted to; the per-instance override was never set by any sample, doc or test. `Type` returned the internal name the client renderer uses for the component, not a type users could act on.
+- **Infrastructure:** the `EventBehavior` parameter, the `ControlEventBehavior` enum and the `Type` property are no longer public. Each component keeps the event dispatch it always defaulted to; the per-instance override was never set by any sample, doc or test. `Type` returned the internal name the client renderer uses for the component, not a type users could act on. `Name` is gone from the non-component types such as event details and value objects, except `IgbIconMeta` and `IgbChatMessageAttachment`, as it did nothing for the rest. The form components now declare `Name` as a parameter; it used to pass through as a plain attribute, so markup is unchanged.
+
+### Fixed
+
+- **Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** the component no longer takes the internal id `mainControl` as its form-field name, so these fields no longer submit under that name or collide with each other in the same form.
 
 ## 0.4.0 - 2026-09-30
 

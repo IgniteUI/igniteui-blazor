@@ -442,7 +442,15 @@ namespace IgniteUI.Blazor.Controls
 
                 if (isParam)
                 {
-                    info.AddSequence(Camelize(prop.Name), wcName, wcEnumTransform);
+                    var key = Camelize(prop.Name);
+                    // "name" in the serialized description is the renderer's id for the component, so a Name
+                    // parameter is serialized as "formName" and rendered back as the element's name attribute.
+                    if (key == "name")
+                    {
+                        key = "formName";
+                        wcName ??= "name";
+                    }
+                    info.AddSequence(key, wcName, wcEnumTransform);
                 }
             }
 
@@ -955,7 +963,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal void Serialize(SerializationContext context, string? propertyName = null)
         {
-            RendererSerializer ser = new RendererSerializer(context, this, Name);
+            RendererSerializer ser = new RendererSerializer(context, this, RendererName);
             ser.Type = RendererType;
             ser.Start(propertyName);
             SerializeCore(ser);
@@ -1341,7 +1349,7 @@ namespace IgniteUI.Blazor.Controls
                         }
                         if (newValue is BaseRendererElement)
                         {
-                            refId = _containerId + "/" + ((BaseRendererElement)newValue).Name;
+                            refId = _containerId + "/" + ((BaseRendererElement)newValue).RendererName;
                             ((BaseRendererElement)newValue).Parent = this;
                         }
                         else
@@ -2391,7 +2399,7 @@ namespace IgniteUI.Blazor.Controls
                 if (val is BaseRendererElement)
                 {
                     //TODO: this should be the parent component's _Container id.... but maybe we don't need elements here.
-                    refId = _containerId + "/" + ((BaseRendererElement)val).Name;
+                    refId = _containerId + "/" + ((BaseRendererElement)val).RendererName;
                     //((BaseRendererElement)val).Parent = this;
                 }
                 else
@@ -2487,14 +2495,14 @@ namespace IgniteUI.Blazor.Controls
             {
                 w.WriteStartObject();
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererElement)val).Name);
+                w.WriteString("id", ((BaseRendererElement)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is BaseRendererControl)
             {
                 w.WriteStartObject();
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererControl)val).Name);
+                w.WriteString("id", ((BaseRendererControl)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is double)
@@ -2569,14 +2577,14 @@ namespace IgniteUI.Blazor.Controls
             {
                 w.WriteStartObject(propertyName);
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererElement)val).Name);
+                w.WriteString("id", ((BaseRendererElement)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is BaseRendererControl)
             {
                 w.WriteStartObject(propertyName);
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererControl)val).Name);
+                w.WriteString("id", ((BaseRendererControl)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is double)
@@ -2976,7 +2984,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string Name
+        /// <summary>The name the client renderer resolves this component by.</summary>
+        internal string RendererName
         {
             get
             {

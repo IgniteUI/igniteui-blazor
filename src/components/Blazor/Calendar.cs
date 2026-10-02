@@ -397,7 +397,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(DateTime);
 
@@ -413,7 +413,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             var newValueValues = default(DateTime[]);
@@ -430,7 +430,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._values = newValueValues;
                                 }
-                                OnPropertyPropagatedOut(Name, "Values");
+                                OnPropertyPropagatedOut(RendererName, "Values");
                             }
 
                             if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
@@ -456,7 +456,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

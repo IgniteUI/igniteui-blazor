@@ -333,7 +333,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbTabComponentEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             SyncSelectedTab(args);
                         });
@@ -347,7 +347,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbTabComponentEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

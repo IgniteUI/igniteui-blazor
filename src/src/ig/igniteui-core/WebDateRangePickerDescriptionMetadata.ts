@@ -51,6 +51,7 @@ export class WebDateRangePickerDescriptionMetadata extends Base {
 		metadata.item("NonEditable", "Boolean");
 		metadata.item("Outlined", "Boolean");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("LabelStart", "String");
 		metadata.item("LabelEnd", "String");
 		metadata.item("Placeholder", "String");
@@ -80,7 +81,6 @@ export class WebDateRangePickerDescriptionMetadata extends Base {
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");
 		metadata.item("OpeningRef", "EventRef:VoidHandler:opening");
 		metadata.item("OpeningRef@args", "VoidEventArgs");

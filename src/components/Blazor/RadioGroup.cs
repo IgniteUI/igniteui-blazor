@@ -97,6 +97,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name applied to all radio buttons in the group.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
 
         /// <summary>
         /// Gets the current value of the group.
@@ -201,7 +220,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbRadioChangeEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(string);
 
@@ -216,7 +235,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             if (!EventCallback<string>.Empty.Equals(ValueChanged))
@@ -236,7 +255,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbRadioChangeEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -262,6 +281,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddEnumProp("alignment", this._alignment); }
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("ChangeRef"))
             { ser.AddStringProp("changeRef", this._changeRef); }
 
