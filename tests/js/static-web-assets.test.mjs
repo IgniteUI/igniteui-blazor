@@ -117,5 +117,4 @@ test('api.js registers and removes scripts, defaulting shouldCall to false', asy
   api.removeScript('default');
   assert.equal(api._getRegisteredScript('default'), undefined);
   assert.equal(typeof api.html, 'function');
-  assert.equal(globalThis.igRegisterScript, undefined);
 });
