@@ -91,7 +91,7 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 - Mirror the web component contract on data and option types: a field the `.d.ts` declares required is non-nullable (`required` when only user code constructs the type); a field declared optional or `| null` is `T?`; a definite-assignment attribute (`name!: string`) that the template renders with `ifDefined` is optional too, so check the render when the `.d.ts` shows a bare attribute string
 - All public types live in `namespace IgniteUI.Blazor.Controls`
 - Use PascalCase for public members; camelCase for private fields
-- Prefix interfaces with `I` (e.g., `IExample`)
+- Prefix interfaces with `I` (e.g., `IIgniteUIBlazor`)
 - Prefer `var` when type is obvious; avoid `dynamic`
 - Use `[Parameter]` for component inputs exposed to consumers
 - Prefer `EventCallback<T>` over `Action<T>` for event parameters to integrate with the Blazor render pipeline
