@@ -120,7 +120,7 @@ public partial class IgbButton : IgbButtonBase
     }
 
     // 3. Renders the underlying web component element
-    protected override string DirectRenderElementName => "igc-button";
+    private protected override string DirectRenderElementName => "igc-button";
 
     // 4. Parameters exposed to Blazor consumers
     [Parameter]
