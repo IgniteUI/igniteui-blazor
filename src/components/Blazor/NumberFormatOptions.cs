@@ -1,8 +1,8 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The options used to format the thumb and tick label values of the sliders, mirroring the browser
-    /// <c>Intl.NumberFormatOptions</c>. Set through <see cref="IgbSliderBase.ValueFormatOptions"/>.
+    /// The options used to format numbers, mirroring the browser <c>Intl.NumberFormatOptions</c>.
+    /// Currently used for the thumb and tick label values of <see cref="IgbSlider"/> and <see cref="IgbRangeSlider"/>.
     /// </summary>
     public partial class IgbNumberFormatOptions : BaseRendererElement
     {
