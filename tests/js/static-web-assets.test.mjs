@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import vm from 'node:vm';
 
 const wwwroot = 'src/wwwroot';
 const read = (name) => readFileSync(join(wwwroot, name), 'utf8');
@@ -64,13 +63,18 @@ test('lit-html.js is the real lit-html module', async () => {
   );
 });
 
-test('no window state beyond the legacy queue', () => {
-  const windowState = /\b__ig(?!Queue\b)[A-Z]/;
+test('no Ignite UI window state', () => {
+  const windowState = /\b__ig[A-Z]/;
   assert.match('w.__igLoaded = 1', windowState);
-  assert.doesNotMatch('w.__igQueue = []', windowState);
   for (const f of jsFiles) {
     assert.doesNotMatch(read(f), windowState, f);
   }
+});
+
+test('legacy script globals and compatibility bundle are not emitted', () => {
+  assert.equal(existsSync(join(wwwroot, 'app.bundle.js')), false);
+  const emitted = jsFiles.map(read).join('\n');
+  assert.doesNotMatch(emitted, /igRegisterScript|igRemoveScript|igTemplating/);
 });
 
 test('no free `global` references (webpack polyfilled it; ESM does not)', () => {
@@ -100,53 +104,17 @@ test('legal notices survive: in-source ones inline, dependencies via the license
   walk('src/src');
 });
 
-test('api.js replays the stub queue, replaces the globals, and keeps the two shouldCall defaults', async () => {
-  // Without these the module and lit-html.js fail at import: api.js installs the deprecated globals on window,
+test('api.js registers and removes scripts, defaulting shouldCall to false', async () => {
   // lit-html touches document at module scope.
-  globalThis.window = globalThis;
-  globalThis.document = { createTreeWalker: () => ({}), createComment: () => ({}), createElement: () => ({}) };
-  new vm.Script(read('app.bundle.js')).runInThisContext(); // the legacy tag, parsed before Blazor starts
-  const stubRegister = window.igRegisterScript;
-  const queued = () => 'queued';
-  window.igRegisterScript('Queued', queued, false);
-  window.igRegisterScript('Gone', queued, false);
-  window.igRemoveScript('Gone');
-  const warnings = [];
-  const warn = console.warn;
-  console.warn = (...args) => warnings.push(args.join(' '));
-  try {
-    const api = await import(new URL(`../../${wwwroot}/api.js`, import.meta.url));
-    assert.equal(api._getRegisteredScript('Queued').func, queued);
-    assert.equal(api._getRegisteredScript('Gone'), undefined);
-    assert.notEqual(window.igRegisterScript, stubRegister, 'stub was not replaced');
-    assert.equal(window.igRegisterScript.__igQueue, undefined);
-    const fn = () => 'value';
-    api.registerScript('module-default', fn);
-    window.igRegisterScript('global-default', fn);
-    assert.equal(api._getRegisteredScript('module-default').shouldCall, false);
-    assert.equal(api._getRegisteredScript('global-default').shouldCall, true);
-    assert.equal(warnings.length, 2, 'one deprecation notice each for igRegisterScript and igRemoveScript');
-  } finally {
-    console.warn = warn;
-  }
-});
-
-test('app.bundle.js is a classic script that only queues legacy calls', () => {
-  const stub = new vm.Script(read('app.bundle.js')); // throws on module syntax
-  const window = {};
-  stub.runInNewContext({ window });
-  const fn = () => {};
-  window.igRegisterScript('Late', fn, false);
-  window.igRemoveScript('Gone');
-  // Queue entries are vm-realm objects (foreign prototypes), so read fields instead of deepEqual-ing them.
-  const [registered] = window.igRegisterScript.__igQueue;
-  assert.equal(window.igRegisterScript.__igQueue.length, 1);
-  assert.equal(registered.name, 'Late');
-  assert.equal(registered.func, fn);
-  assert.equal(registered.shouldCall, false);
-  assert.deepEqual([...window.igRemoveScript.__igQueue], ['Gone']);
-  assert.throws(() => window.igTemplating.html`x`, /not loaded/);
-  const before = window.igRegisterScript;
-  stub.runInNewContext({ window }); // second load yields to whoever installed the API first
-  assert.equal(window.igRegisterScript, before);
+  globalThis.document ??= { createTreeWalker: () => ({}), createComment: () => ({}), createElement: () => ({}) };
+  const api = await import(new URL(`../../${wwwroot}/api.js`, import.meta.url));
+  const fn = () => 'value';
+  api.registerScript('default', fn);
+  api.registerScript('factory', fn, true);
+  assert.equal(api._getRegisteredScript('default').func, fn);
+  assert.equal(api._getRegisteredScript('default').shouldCall, false);
+  assert.equal(api._getRegisteredScript('factory').shouldCall, true);
+  api.removeScript('default');
+  assert.equal(api._getRegisteredScript('default'), undefined);
+  assert.equal(typeof api.html, 'function');
 });
