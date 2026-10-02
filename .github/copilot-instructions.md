@@ -129,7 +129,6 @@ public partial class IgbButton : IgbButtonBase
 ```
 
 Each component has a corresponding `*Module.cs` that calls `ModuleLoader.Load(runtime, "WebXxxModule")` and registers dependencies.
-`RendererType` and `ControlEventBehavior` are internal renderer implementation details, not public component APIs. Components may set their default event dispatch through the `private protected` `DefaultEventBehavior` hook; do not expose it as an `EventBehavior` parameter.
 
 ## Key Guidelines for Contributors
 
