@@ -116,15 +116,15 @@ test('api.js replays the stub queue, replaces the globals, and keeps the two sho
   console.warn = (...args) => warnings.push(args.join(' '));
   try {
     const api = await import(new URL(`../../${wwwroot}/api.js`, import.meta.url));
-    assert.equal(api.getRegisteredScript('Queued').func, queued);
-    assert.equal(api.getRegisteredScript('Gone'), undefined);
+    assert.equal(api._getRegisteredScript('Queued').func, queued);
+    assert.equal(api._getRegisteredScript('Gone'), undefined);
     assert.notEqual(window.igRegisterScript, stubRegister, 'stub was not replaced');
     assert.equal(window.igRegisterScript.__igQueue, undefined);
     const fn = () => 'value';
     api.registerScript('module-default', fn);
     window.igRegisterScript('global-default', fn);
-    assert.equal(api.getRegisteredScript('module-default').shouldCall, false);
-    assert.equal(api.getRegisteredScript('global-default').shouldCall, true);
+    assert.equal(api._getRegisteredScript('module-default').shouldCall, false);
+    assert.equal(api._getRegisteredScript('global-default').shouldCall, true);
     assert.equal(warnings.length, 2, 'one deprecation notice each for igRegisterScript and igRemoveScript');
   } finally {
     console.warn = warn;
