@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbSplitter.LayoutChanged"/> event.
     /// </summary>
-    public partial class IgbSplitterLayoutChangedEventArgs : BaseRendererElement
+    public partial class IgbSplitterLayoutChangedEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSplitterLayoutChangedEventArgs"; } }
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// A full snapshot of the current layout (pane sizes and collapsed states).
         /// </summary>
-        [Parameter]
         public IgbSplitterLayoutChangedEventArgsDetail Detail
         {
             get { return this._detail; }
