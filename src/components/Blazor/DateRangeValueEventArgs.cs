@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for the <see cref="IgbDateRangePicker"/> events that carry a date range payload.
     /// </summary>
-    public partial class IgbDateRangeValueEventArgs : BaseRendererElement
+    public partial class IgbDateRangeValueEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateRangeValueEventArgs"; } }

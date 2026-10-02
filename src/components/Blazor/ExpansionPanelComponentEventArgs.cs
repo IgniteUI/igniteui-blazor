@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     /// Raised by <see cref="IgbExpansionPanel"/> for itself and by <see cref="IgbAccordion"/> for its
     /// child panels.
     /// </summary>
-    public partial class IgbExpansionPanelComponentEventArgs : BaseRendererElement
+    public partial class IgbExpansionPanelComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebExpansionPanelComponentEventArgs"; } }

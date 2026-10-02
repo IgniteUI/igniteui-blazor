@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The payload carried by the tile state events, identifying the tile and the state it is changing to.
     /// </summary>
-    public partial class IgbTileChangeStateEventArgsDetail : BaseRendererElement
+    public partial class IgbTileChangeStateEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTileChangeStateEventArgsDetail"; } }

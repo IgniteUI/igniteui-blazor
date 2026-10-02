@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTileManager"/>, such as <see cref="IgbTile.TileFullscreen"/> and
     /// <see cref="IgbTile.TileMaximize"/>.
     /// </summary>
-    public partial class IgbTileChangeStateEventArgs : BaseRendererElement
+    public partial class IgbTileChangeStateEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTileChangeStateEventArgs"; } }

@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for the <see cref="IgbSelect.Change"/> event, carrying the
     /// <see cref="IgbSelectItem"/> instance the event applies to.
     /// </summary>
-    public partial class IgbSelectItemComponentEventArgs : BaseRendererElement
+    public partial class IgbSelectItemComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelectItemComponentEventArgs"; } }

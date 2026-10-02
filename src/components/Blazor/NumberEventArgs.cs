@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for component events whose payload is a single number.
     /// </summary>
-    public partial class IgbNumberEventArgs : BaseRendererElement
+    public partial class IgbNumberEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebNumberEventArgs"; } }

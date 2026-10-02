@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Identifies a registered icon by its name and the collection it belongs to.
     /// </summary>
-    public partial class IgbIconMeta : BaseRendererElement
+    public partial class IgbIconMeta : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebIconMeta"; } }

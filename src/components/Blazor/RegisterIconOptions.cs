@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Options controlling how an icon is registered, passed to the
     /// <c>RegisterIcon</c> and <c>RegisterIconFromText</c> methods of <see cref="IgbIcon"/>.
     /// </summary>
-    public partial class IgbRegisterIconOptions : BaseRendererElement
+    public partial class IgbRegisterIconOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRegisterIconOptions"; } }

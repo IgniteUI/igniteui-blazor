@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for the <see cref="IgbTabs.Change"/> event, carrying the <see cref="IgbTab"/>
     /// instance the event applies to.
     /// </summary>
-    public partial class IgbTabComponentEventArgs : BaseRendererElement
+    public partial class IgbTabComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTabComponentEventArgs"; } }

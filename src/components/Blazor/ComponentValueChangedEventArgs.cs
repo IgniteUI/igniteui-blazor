@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for component events that carry a string payload.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
-    public partial class IgbComponentValueChangedEventArgs : BaseRendererElement
+    public partial class IgbComponentValueChangedEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComponentValueChangedEventArgs"; } }

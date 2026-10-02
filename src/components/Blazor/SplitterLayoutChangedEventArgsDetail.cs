@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// The payload of the <see cref="IgbSplitter.LayoutChanged"/> event:
     /// a full snapshot of the current layout (pane sizes and collapsed states).
     /// </summary>
-    public partial class IgbSplitterLayoutChangedEventArgsDetail : BaseRendererElement
+    public partial class IgbSplitterLayoutChangedEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSplitterLayoutChangedEventArgsDetail"; } }

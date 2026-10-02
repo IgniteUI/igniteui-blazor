@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for <see cref="IgbTree.SelectionChanged"/>.
     /// </summary>
-    public partial class IgbTreeSelectionEventArgs : BaseRendererElement
+    public partial class IgbTreeSelectionEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTreeSelectionEventArgs"; } }

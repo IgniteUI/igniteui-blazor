@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for the <see cref="IgbStepper.ActiveStepChanging"/> event, raised before the
     /// active step changes.
     /// </summary>
-    public partial class IgbActiveStepChangingEventArgs : BaseRendererElement
+    public partial class IgbActiveStepChangingEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebActiveStepChangingEventArgs"; } }

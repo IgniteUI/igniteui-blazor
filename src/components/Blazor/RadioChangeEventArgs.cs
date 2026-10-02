@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for the <see cref="IgbRadio.Change"/> and <see cref="IgbRadioGroup.Change"/>
     /// events, raised when the checked state of a radio button changes.
     /// </summary>
-    public partial class IgbRadioChangeEventArgs : BaseRendererElement
+    public partial class IgbRadioChangeEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRadioChangeEventArgs"; } }
