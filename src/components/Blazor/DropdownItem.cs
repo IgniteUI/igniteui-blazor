@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDropdownItem : IgbBaseOptionLike
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDropdownItem"; } }
+        internal override string RendererType { get { return "WebDropdownItem"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

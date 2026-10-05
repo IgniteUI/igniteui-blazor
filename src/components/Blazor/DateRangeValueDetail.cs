@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDateRangeValueDetail : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDateRangeValueDetail"; } }
+        internal override string RendererType { get { return "WebDateRangeValueDetail"; } }
 
         private DateTime _start = DateTime.MinValue;
 

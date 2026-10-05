@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCalendar : IgbCalendarBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCalendar"; } }
+        internal override string RendererType { get { return "WebCalendar"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,17 +21,20 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
         private protected override bool SupportsVisualChildren
         {
             get
             {
                 return true;
+            }
+        }
+
+        /// <inheritdoc />
+        private protected override string DirectRenderElementName
+        {
+            get
+            {
+                return "igc-calendar";
             }
         }
 
@@ -397,7 +400,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(DateTime);
 
@@ -413,7 +416,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             var newValueValues = default(DateTime[]);
@@ -430,7 +433,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._values = newValueValues;
                                 }
-                                OnPropertyPropagatedOut(Name, "Values");
+                                OnPropertyPropagatedOut(RendererName, "Values");
                             }
 
                             if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
@@ -456,7 +459,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

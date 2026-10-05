@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbButtonGroup : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebButtonGroup"; } }
+        internal override string RendererType { get { return "WebButtonGroup"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -188,7 +188,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_select))
                     {
                         _select = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", value);
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Select", value);
                         this.OnRefChanged("Select", null, "event:::Select", true, false, (refName, oldValue, newValue) =>
                         {
                             this._selectRef = refName;
@@ -199,7 +199,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _select = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Select", null);
                     this.OnRefChanged("Select", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._selectRef = null;
@@ -261,7 +261,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_deselect))
                     {
                         _deselect = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", value);
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Deselect", value);
                         this.OnRefChanged("Deselect", null, "event:::Deselect", true, false, (refName, oldValue, newValue) =>
                         {
                             this._deselectRef = refName;
@@ -272,7 +272,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _deselect = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Deselect", null);
                     this.OnRefChanged("Deselect", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._deselectRef = null;

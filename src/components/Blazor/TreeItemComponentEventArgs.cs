@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTreeItemComponentEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTreeItemComponentEventArgs"; } }
+        internal override string RendererType { get { return "WebTreeItemComponentEventArgs"; } }
 
         private IgbTreeItem _detail = new IgbTreeItem();
 

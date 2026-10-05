@@ -39,6 +39,8 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         .Prop(c => c.KeepOpenOnSelect, true)
         .Prop(c => c.KeepOpenOnOutsideClick, true)
         .Prop(c => c.Label, "Pick a date")
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.Mode, PickerMode.Dialog, wire: "dialog")
         .Prop(c => c.NonEditable, true)
         .Prop(c => c.ReadOnly, true)
@@ -102,7 +104,7 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
     public void DatePicker_TypeMetadata()
     {
         var picker = new IgbDatePicker();
-        Assert.Equal("WebDatePicker", picker.Type);
+        Assert.Equal("WebDatePicker", picker.RendererType);
     }
 
     /// <summary>

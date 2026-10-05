@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbButton : IgbButtonBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebButton"; } }
+        internal override string RendererType { get { return "WebButton"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

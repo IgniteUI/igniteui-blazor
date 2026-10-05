@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbFilteringOptions : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebFilteringOptions"; } }
+        internal override string RendererType { get { return "WebFilteringOptions"; } }
 
         private string? _filterKey;
 

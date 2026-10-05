@@ -127,7 +127,7 @@ public class BaseControlTests : BlazorComponentTestBase
     public void AllComponents_HaveCorrectType(System.Type componentType, string expectedType)
     {
         var instance = (BaseRendererControl)Activator.CreateInstance(componentType)!;
-        Assert.Equal(expectedType, instance.Type);
+        Assert.Equal(expectedType, instance.RendererType);
     }
 
     [Theory]

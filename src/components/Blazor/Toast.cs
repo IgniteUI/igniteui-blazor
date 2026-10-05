@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbToast : IgbBaseAlertLike
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebToast"; } }
+        internal override string RendererType { get { return "WebToast"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

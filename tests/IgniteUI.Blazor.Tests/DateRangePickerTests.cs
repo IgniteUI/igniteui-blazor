@@ -22,7 +22,7 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
             // does not serialize as {start, end} during serialization; it falls through to
             // BaseRendererElement branch and sends an "reference" instead (to nothing):
             //args: [new JsonSubset("""{"start": "2026-03-01T00:00:00.0000000Z", "end": "2026-03-10T00:00:00.0000000Z"}""")], types: ["Json"]),
-            args: [new RawJson($$"""{"refType": "name", "id": "{{_selectValue.Name}}"}""")],
+            args: [new RawJson($$"""{"refType": "name", "id": "{{_selectValue.RendererName}}"}""")],
             types: ["Json"])
         // TODO: Same "WebDateRangeValue" not in MarshalByValueFactory issue:
         //.Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
@@ -105,6 +105,8 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
         .Prop(c => c.NonEditable, true)
         .Prop(c => c.Outlined, true)
         .Prop(c => c.Label, "Date range")
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.LabelStart, "From")
         .Prop(c => c.LabelEnd, "To")
         .Prop(c => c.Placeholder, "mm/dd/yyyy - mm/dd/yyyy")

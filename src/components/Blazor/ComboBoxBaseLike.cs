@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbComboBoxBaseLike : IgbBaseComboBox
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebComboBoxBaseLike"; } }
+        internal override string RendererType { get { return "WebComboBoxBaseLike"; } }
 
         /// <inheritdoc />
         private protected override string ResolveDisplay()

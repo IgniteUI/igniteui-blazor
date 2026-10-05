@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- `*Script` parameters for client templates and events now also support resolving late once `registerScript` is called even after the client component is created.
+
+### Fixed
+
+- **Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** the component no longer takes the internal id `mainControl` as its form-field name, so these fields no longer submit under that name or collide with each other in the same form.
+- **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** a `style` attribute no longer overrides the component's own layout ([#477](https://github.com/IgniteUI/igniteui-blazor/issues/477)), an `id` attribute is no longer duplicated on an extra element, an attribute removed from the markup no longer stays with `"null"` value, and the Chat no longer collapses to no width outside a layout that stretches it.
+
+### Breaking Changes
+
+- **Client scripts:** the deprecated `window.igRegisterScript`, `window.igRemoveScript`, and `window.igTemplating.html` globals have been removed from `IgniteUI.Blazor.Lite`, along with its legacy `app.bundle.js` queue shim. Remove any `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag from Lite apps, since it now returns 404. Import `registerScript`, `removeScript`, and `html` from `./_content/IgniteUI.Blazor/api.js` instead. `registerScript` defaults `shouldCall` to `false`; pass `true` only for parameters whose registered function produces a value, such as `DataScript`.
+- **Infrastructure:** the `EventBehavior` component parameter was removed and `ControlEventBehavior` was made internal, so code that sets the parameter or references the enum no longer compiles. The public renderer `Type` property was replaced with the internal `RendererType`, so code that reads or overrides `Type` no longer compiles. These changes do not alter default event dispatch, renderer keys or the wire format. `Name` is no longer public on non-component types other than `IgbIconMeta` and `IgbChatMessageAttachment`, so code using those properties must be updated. Form components now expose `Name` as a parameter; markup is unchanged.
+- **`Width` and `Height` removed:** size a component with CSS, like any other element. Usually the layout decides it: a flex or grid container sizes and aligns the components in it. For an explicit size, give the component a `class` and target it from your stylesheet, or from the [isolated CSS](https://learn.microsoft.com/aspnet/core/blazor/components/css-isolation) of the component that renders it, through `::deep`.
+- **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** render their element directly, like every other component, instead of inside an `inline-block` wrapper `div`. In normal flow all but the Color Picker now fill their row, and sizing the Date Picker with `width` also needs a `display`, as its element is inline. CSS that reached the element through the wrapper, such as `.my-picker igc-date-picker`, now targets it directly: `igc-date-picker.my-picker`.
+
+## 0.4.0 - 2026-09-30
+
 This release updates Ignite UI for Blazor to the latest [igniteui-webcomponents@7.4.1 release](https://github.com/IgniteUI/igniteui-webcomponents/releases/tag/7.4.1) with highlights noted below:
 
 ### Added

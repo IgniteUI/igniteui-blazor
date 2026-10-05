@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSplitterLayoutChangedEventArgsDetail : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSplitterLayoutChangedEventArgsDetail"; } }
+        internal override string RendererType { get { return "WebSplitterLayoutChangedEventArgsDetail"; } }
 
         private string? _startSize;
 

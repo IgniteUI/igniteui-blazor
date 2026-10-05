@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbProgressBase : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebProgressBase"; } }
+        internal override string RendererType { get { return "WebProgressBase"; } }
 
         /// <inheritdoc />
         private protected override string ResolveDisplay()
@@ -44,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

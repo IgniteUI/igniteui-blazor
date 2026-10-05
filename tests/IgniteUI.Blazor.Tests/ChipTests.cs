@@ -35,7 +35,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
     public void Chip_TypeMetadata_IsCorrect()
     {
         var chip = new IgbChip();
-        Assert.Equal("WebChip", chip.Type);
+        Assert.Equal("WebChip", chip.RendererType);
     }
 
     [Fact]

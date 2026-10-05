@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDatePartDeltas : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "DatePartDeltas"; } }
+        internal override string RendererType { get { return "DatePartDeltas"; } }
 
         private double _date = 0;
 

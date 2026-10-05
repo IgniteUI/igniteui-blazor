@@ -29,7 +29,7 @@ public class SnackbarTests : ComponentWithContractTestBase<IgbSnackbar>
     public void Snackbar_TypeMetadata_IsCorrect()
     {
         var snackbar = new IgbSnackbar();
-        Assert.Equal("WebSnackbar", snackbar.Type);
+        Assert.Equal("WebSnackbar", snackbar.RendererType);
     }
 
     [Fact]

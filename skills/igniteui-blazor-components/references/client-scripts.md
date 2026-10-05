@@ -2,12 +2,12 @@
 
 Every component parameter ending in `Script` takes the **name** of a JavaScript function registered on the client, not code. Two kinds exist:
 
-**Package scope.** The `api.js` module ships with `IgniteUI.Blazor.Lite`. The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`, grids, charts, Dock Manager) does not ship it yet: register there through the `igRegisterScript(name, fn, shouldCall)` window global, which its `app.bundle.js` script tag installs. Its `shouldCall` defaults to `true`, so pass `false` for handlers and templates.
-
 | Kind | Examples | Function receives | Returns |
 |---|---|---|---|
 | Template | `ItemTemplateScript`, `GroupHeaderTemplateScript`, `MessageHeaderScript`, … | a context object | an `html` template result, a string, a primitive — anything lit can render |
 | Event handler | `ChangeScript`, `ClosingScript`, `FocusScript`, … — one per C# event | the DOM `CustomEvent` | nothing |
+
+**Package scope.** On `IgniteUI.Blazor.Lite`, register through the `api.js` module below; the `igRegisterScript` / `igRemoveScript` / `igTemplating` window globals no longer exist there. The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`, grids, charts, Dock Manager) does not ship `api.js` yet: register there through the `igRegisterScript(name, fn, shouldCall)` window global, which its `app.bundle.js` script tag installs. Its `shouldCall` defaults to `true`, so pass `false` for handlers and templates.
 
 ## Registering
 
@@ -29,11 +29,10 @@ registerScript('OnDialogClosing', (evt) => {
 ```
 
 - The specifier is relative to the importing script's own URL: `./_content/…` from a script at the wwwroot root, `../_content/…` from a subfolder. A classic script's `import()` resolves it against the document base.
-- **Register at the top level of a `type="module"` script, or any time before Blazor starts.** Module scripts run once the page is parsed, while Blazor still has to fetch the component bundle before it can render, so registrations from a page-level module script are in place in time. If a registration ever lands after a component rendered, the library logs a console warning naming the script (late registration is not retried yet). For a hard guarantee, register from the app's own JS initializer (`beforeWebStart`).
-- The registered function is the script. For the few parameters that take a *value* rather than a function (e.g. `DataScript`), pass `true` as the third argument (`shouldCall`): the function is then called once when the parameter resolves and its result is used. The deprecated `igRegisterScript` global defaults that argument to `true` instead.
+- **Register at the top level of a `type="module"` script, or any time before Blazor starts.** Module scripts run once the page is parsed, while Blazor still has to fetch the component bundle before it can render, so registrations from a page-level module script are in place in time. If a registration lands after a component rendered, the library applies it as soon as it is registered. For a hard guarantee, register from the app's own JS initializer (`beforeWebStart`).
+- The registered function is the script. For the few parameters that take a *value* rather than a function (e.g. `DataScript`), pass `true` as the third argument (`shouldCall`): the function is then called once when the parameter resolves and its result is used.
 - Other exports: `removeScript(name)`, and `html` — the lit-html template tag, the same instance the components render with. Typings ship at `_content/IgniteUI.Blazor/api.d.ts`.
 - From a classic (non-module) script use a dynamic import (no top-level `await` there): `import('./_content/IgniteUI.Blazor/api.js').then(({ registerScript, html }) => { /* register */ });`
-- The `igRegisterScript` / `igRemoveScript` / `igTemplating.html` window globals still work with the same signatures once the library has loaded, but are deprecated and warn in the console. A classic script that calls them while the page parses (before Blazor starts) needs the `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag, which queues those calls until `api.js` loads; without the tag, move the call to a module script.
 
 ## Templates
 
