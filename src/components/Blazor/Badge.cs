@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbBadge : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBadge"; } }
+        internal override string RendererType { get { return "WebBadge"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

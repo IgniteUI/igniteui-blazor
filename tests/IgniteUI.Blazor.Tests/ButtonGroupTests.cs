@@ -85,6 +85,6 @@ public class ButtonGroupTests : ComponentWithContractTestBase<IgbButtonGroup>
     public void ButtonGroup_TypeMetadata()
     {
         var bg = new IgbButtonGroup();
-        Assert.Equal("WebButtonGroup", bg.Type);
+        Assert.Equal("WebButtonGroup", bg.RendererType);
     }
 }

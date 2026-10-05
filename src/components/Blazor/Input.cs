@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbInput : IgbInputBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebInput"; } }
+        internal override string RendererType { get { return "WebInput"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -442,7 +442,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(string);
 
@@ -457,7 +457,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             if (!EventCallback<string>.Empty.Equals(ValueChanged))
@@ -477,7 +477,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

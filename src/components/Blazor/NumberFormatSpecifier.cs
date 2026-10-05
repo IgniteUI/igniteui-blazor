@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbNumberFormatSpecifier : IgbFormatSpecifier
     {
         /// <inheritdoc />
-        public override string Type { get { return "NumberFormatSpecifier"; } }
+        internal override string RendererType { get { return "NumberFormatSpecifier"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

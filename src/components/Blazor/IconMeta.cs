@@ -6,7 +6,14 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbIconMeta : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebIconMeta"; } }
+        internal override string RendererType { get { return "WebIconMeta"; } }
+
+        /// <summary>The name identifier of the icon in the collection.</summary>
+        public string Name
+        {
+            get { return RendererName; }
+            set { RendererName = value; }
+        }
 
         private string _collection = string.Empty;
 
@@ -55,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("name", out var nameObj))
-            { this.Name = ReturnToString(nameObj); }
+            { this.RendererName = ReturnToString(nameObj); }
             if (args != null && args.TryGetValue("collection", out var collectionObj))
             { this.Collection = ReturnToString(collectionObj); }
 

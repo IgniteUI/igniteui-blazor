@@ -149,7 +149,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             builder2.AddMarkupContent(4, "\r\n        ");
                             builder2.OpenElement(5, "igc-portal-entrance");
-                            builder2.AddAttribute(6, "portal-id", "portal-" + parentId + "/" + Name);
+                            builder2.AddAttribute(6, "portal-id", "portal-" + parentId + "/" + RendererName);
                             builder2.AddAttribute(7, "move-once-mode", "true");
                             ContentChildHost.AddChildContent(builder2, 8, this, ChildContent);
                             builder2.CloseElement();
@@ -168,8 +168,8 @@ namespace IgniteUI.Blazor.Controls
 
         private protected string _name = Guid.NewGuid().ToString();
 
-        /// <summary>The name of this element.</summary>
-        public string Name
+        /// <summary>The name the client renderer resolves this element by; generated unless set.</summary>
+        internal string RendererName
         {
             set
             {
@@ -331,7 +331,7 @@ namespace IgniteUI.Blazor.Controls
         {
             get
             {
-                return Name;
+                return RendererName;
             }
         }
 
@@ -506,7 +506,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (!_checkedByVal)
                 {
-                    _mustSerializeByValue = MarshalByValueFactory.MustMarshalByValue(this.Type);
+                    _mustSerializeByValue = MarshalByValueFactory.MustMarshalByValue(this.RendererType);
                     _checkedByVal = true;
                 }
                 return _mustSerializeByValue;
@@ -525,7 +525,7 @@ namespace IgniteUI.Blazor.Controls
         private String _cachedSerializedContent = "";
 
         /// <summary>The type name of this element.</summary>
-        public virtual string Type
+        internal virtual string RendererType
         {
             get
             {
@@ -542,8 +542,8 @@ namespace IgniteUI.Blazor.Controls
 
         internal void Serialize(SerializationContext context, string? propertyName = null)
         {
-            RendererSerializer ser = new RendererSerializer(context, this, Name);
-            ser.Type = Type;
+            RendererSerializer ser = new RendererSerializer(context, this, RendererName);
+            ser.Type = RendererType;
             ser.Start(propertyName);
             SerializeCore(ser);
             ser.End();

@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCarousel : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCarousel"; } }
+        internal override string RendererType { get { return "WebCarousel"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -498,7 +498,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_slideChanged))
                     {
                         _slideChanged = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value);
+                        this.SetHandler<IgbNumberEventArgs>(this.RendererName, "SlideChanged", value);
                         this.OnRefChanged("SlideChanged", null, "event:::SlideChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._slideChangedRef = refName;
@@ -509,7 +509,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _slideChanged = null;
-                    this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", null);
+                    this.SetHandler<IgbNumberEventArgs>(this.RendererName, "SlideChanged", null);
                     this.OnRefChanged("SlideChanged", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._slideChangedRef = null;
@@ -571,7 +571,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_playing))
                     {
                         _playing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Playing", value);
                         this.OnRefChanged("Playing", null, "event:::Playing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._playingRef = refName;
@@ -582,7 +582,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _playing = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Playing", null);
                     this.OnRefChanged("Playing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._playingRef = null;
@@ -644,7 +644,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_paused))
                     {
                         _paused = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Paused", value);
                         this.OnRefChanged("Paused", null, "event:::Paused", true, false, (refName, oldValue, newValue) =>
                         {
                             this._pausedRef = refName;
@@ -655,7 +655,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _paused = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Paused", null);
                     this.OnRefChanged("Paused", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._pausedRef = null;

@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbDateRangeValueEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDateRangeValueEventArgs"; } }
+        internal override string RendererType { get { return "WebDateRangeValueEventArgs"; } }
 
         private IgbDateRangeValueDetail _detail = new IgbDateRangeValueDetail();
 

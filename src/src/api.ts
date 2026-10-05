@@ -11,7 +11,7 @@ export type TemplateTag = (strings: TemplateStringsArray, ...values: unknown[]) 
 /** lit-html's template tag — use to build client html templates with */
 export const html: TemplateTag = litHtml;
 
-/** Registry record; only the bundle and the legacy queue plumbing use it. @internal */
+/** Registry record; only the bundle uses it. @internal */
 export interface RegisteredScript {
   /** `true` = the function is a factory invoked for the value; `false` = the function *is* the value. */
   readonly shouldCall: boolean;
@@ -19,6 +19,8 @@ export interface RegisteredScript {
 }
 
 const scripts = new Map<string, RegisteredScript>();
+/** Dispatches `registered` (detail: the script name) after each `registerScript` call. Underscore-prefixed like every export the bundle uses but the typings hide. @internal */
+export const _scriptRegistryEvents = new EventTarget();
 
 /**
  * Registers a script usable from a `*Script` component parameter.
@@ -28,6 +30,7 @@ const scripts = new Map<string, RegisteredScript>();
  */
 export function registerScript(name: string, func: Function, shouldCall = false): void {
   scripts.set(name, { shouldCall, func });
+  _scriptRegistryEvents.dispatchEvent(new CustomEvent('registered', { detail: name }));
 }
 
 /** Removes a previously registered script. */
@@ -35,83 +38,7 @@ export function removeScript(name: string): void {
   scripts.delete(name);
 }
 
-/**
- * Gets a previously registered script, if any.
- *
- * Contract with the other Ignite UI packages (the full IgniteUI.Blazor): their client runtime resolves `*Script`
- * parameters through this function, so there is one registry for both packages. Kept under this name and
- * signature; see docs/PACKAGE-CONTRACT.md. Not an application API. @internal
- */
-export function getRegisteredScript(name: string): RegisteredScript | undefined {
+/** Gets a previously registered script, if any. @internal */
+export function _getRegisteredScript(name: string): RegisteredScript | undefined {
   return scripts.get(name);
-}
-
-const warned = new Set<string>();
-
-function deprecated(api: string, replacement: string): void {
-  if (warned.has(api)) {
-    return;
-  }
-  warned.add(api);
-  console.warn(`${api} is deprecated — import { ${replacement} } from './_content/IgniteUI.Blazor/api.js' instead.`);
-}
-
-function registerScriptShim(name: string, fn: Function, shouldCall: boolean = true): void {
-  deprecated('igRegisterScript', 'registerScript');
-  registerScript(name, fn, shouldCall);
-}
-
-function removeScriptShim(name: string): void {
-  deprecated('igRemoveScript', 'removeScript');
-  removeScript(name);
-}
-
-const templatingShim = {
-  get html() {
-    deprecated('igTemplating.html', 'html');
-    return html;
-  },
-};
-
-/** Type for the `app.bundle.js` stub buffered calls. @internal */
-export type LegacyRegisterQueue = (RegisteredScript & { name: string })[];
-/** @internal */
-export type LegacyRemoveQueue = string[];
-/** Deprecated global API, including the stub's queue internals. @internal */
-export type LegacyWindow = {
-  igRegisterScript?: Window['igRegisterScript'] & { __igQueue?: LegacyRegisterQueue };
-  igRemoveScript?: Window['igRemoveScript'] & { __igQueue?: LegacyRemoveQueue };
-  igTemplating?: Window['igTemplating'];
-};
-
-const w = window as unknown as LegacyWindow;
-const stubQueue = w.igRegisterScript?.__igQueue;
-
-if (stubQueue) {
-  // Replay through the shims so queued legacy calls get the deprecation notice too.
-  for (const { name, func, shouldCall } of stubQueue) {
-    registerScriptShim(name, func, shouldCall);
-  }
-  for (const name of w.igRemoveScript?.__igQueue ?? []) {
-    removeScriptShim(name);
-  }
-  // The stub's shims only queue — they have to be replaced, not preserved.
-  w.igRegisterScript = registerScriptShim;
-  w.igRemoveScript = removeScriptShim;
-  w.igTemplating = templatingShim;
-} else {
-  w.igRegisterScript ??= registerScriptShim;
-  w.igRemoveScript ??= removeScriptShim;
-  w.igTemplating ??= templatingShim;
-}
-
-declare global {
-  interface Window {
-    /** @deprecated use `import { registerScript } from './_content/IgniteUI.Blazor/api.js'` */
-    igRegisterScript(name: string, fn: Function, shouldCall?: boolean): void;
-    /** @deprecated use `import { removeScript } from './_content/IgniteUI.Blazor/api.js'` */
-    igRemoveScript(name: string): void;
-    /** @deprecated use `import { html } from './_content/IgniteUI.Blazor/api.js'` */
-    igTemplating: { readonly html: TemplateTag };
-  }
 }

@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbChatDraftMessage : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatDraftMessage"; } }
+        internal override string RendererType { get { return "WebChatDraftMessage"; } }
 
         private string _text = string.Empty;
 

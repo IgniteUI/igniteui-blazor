@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRegisterIconOptions : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRegisterIconOptions"; } }
+        internal override string RendererType { get { return "WebRegisterIconOptions"; } }
 
         private string? _collection;
 

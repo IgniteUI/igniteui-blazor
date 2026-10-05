@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCircularProgress : IgbProgressBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCircularProgress"; } }
+        internal override string RendererType { get { return "WebCircularProgress"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

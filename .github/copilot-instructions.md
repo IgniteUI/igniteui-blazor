@@ -109,8 +109,8 @@ Every library component follows this pattern:
 ```csharp
 public partial class IgbButton : IgbButtonBase
 {
-    // 1. Type identifier for the JS interop layer
-    public override string Type => "WebButton";
+    // 1. Internal renderer key for the JS interop layer
+    internal override string RendererType { get { return "WebButton"; } }
 
     // 2. Module registration
     protected override void EnsureModulesLoaded()
@@ -120,7 +120,7 @@ public partial class IgbButton : IgbButtonBase
     }
 
     // 3. Renders the underlying web component element
-    protected override string DirectRenderElementName => "igc-button";
+    private protected override string DirectRenderElementName => "igc-button";
 
     // 4. Parameters exposed to Blazor consumers
     [Parameter]

@@ -16,7 +16,7 @@ public class CircularProgressTests : BlazorComponentTestBase
     public void CircularProgress_TypeMetadata_IsCorrect()
     {
         var progress = new IgbCircularProgress();
-        Assert.Equal("WebCircularProgress", progress.Type);
+        Assert.Equal("WebCircularProgress", progress.RendererType);
     }
 
     [Fact]

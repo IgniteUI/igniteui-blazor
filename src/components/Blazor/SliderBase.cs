@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSliderBase : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSliderBase"; } }
+        internal override string RendererType { get { return "WebSliderBase"; } }
 
         /// <inheritdoc />
         private protected override string ResolveDisplay()
@@ -44,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbVoidEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "VoidEventArgs"; } }
+        internal override string RendererType { get { return "VoidEventArgs"; } }
 
         /// <inheritdoc />
         internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)

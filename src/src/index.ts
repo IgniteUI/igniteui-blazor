@@ -6,7 +6,7 @@ import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
 import { IgcPortalModule } from 'igniteui-core/igc-portal';
 import { refValues, itemMaps } from './refs-state';
-import { getRegisteredScript } from './api';
+import { _getRegisteredScript, _scriptRegistryEvents } from './api';
 
 IgcPortalModule.register();
 
@@ -19,19 +19,53 @@ let containers: Map<string, HTMLElement> = new Map<string, HTMLElement>();
 let containersDirect: Map<string, boolean> = new Map<string, boolean>();
 let containersPendingRefs: Map<string, (() => void)[]> = new Map<string, (() => void)[]>();
 let containersPendingDataRefs: Map<string, (() => void)[]> = new Map<string, (() => void)[]>();
+/** A name and partial payload for a `*Script` ref pending register. */
+type PendingScriptRef = { name: string; json: string };
+/** Keyed by container, then ref */
+const containersPendingScriptRefs = new Map<string, Map<string, PendingScriptRef>>();
+_scriptRegistryEvents.addEventListener('registered', (e) => {
+  // "replay" refChanged to resolve again against the now registered script
+  const name = (e as CustomEvent<string>).detail;
+  // collect first, refChanged re-enters the code that edits this map.
+  const ready: [string, string][] = [];
+  for (const [containerId, refs] of containersPendingScriptRefs) {
+    for (const [refName, pending] of refs) {
+      if (pending.name === name) {
+        ready.push([containerId, pending.json]);
+        refs.delete(refName);
+      }
+    }
+    if (refs.size === 0) containersPendingScriptRefs.delete(containerId);
+  }
+  for (const [containerId, json] of ready) {
+    (window as any).igSendMessage(containerId, json, null /* webCallback not used */, [] /* nativeElements not used */);
+  }
+});
 function getContainer(id: string): HTMLElement {
   let cont = containers.get(id);
   if (!cont) {
     return null;
   }
   if (!containersDirect.has(id)) {
-    if (cont.tagName.toUpperCase() == 'IGC-COMPONENT-RENDERER-CONTAINER') {
-      containersDirect.set(id, false);
-    } else {
-      containersDirect.set(id, true);
-    }
+    // A data-ig-root element is the component too, but driven by the renderer like a container.
+    containersDirect.set(id, !isRendererContainer(cont) && !cont.hasAttribute('data-ig-root'));
   }
   return cont;
+}
+function isRendererContainer(cont: Element): boolean {
+  return cont.tagName.toUpperCase() == 'IGC-COMPONENT-RENDERER-CONTAINER';
+}
+/** The component element for a container: the container's child, or the element itself when Blazor rendered it. */
+function targetOf(cont: Element): any {
+  if (!cont) {
+    return null;
+  }
+  return isRendererContainer(cont) ? cont.children[0] : cont;
+}
+/** Blazor renders the template holder next to a renderer container, and inside a data-ig-root element. */
+function dynamicContentHolderOf(cont: Element): Element {
+  const scope = isRendererContainer(cont) ? cont.parentElement : cont;
+  return scope.querySelector(':scope > .ig-dynamic-content-holder');
 }
 function getContainerId(container) {
   // return container.id;
@@ -71,7 +105,7 @@ cr.addReferenceLookupListener((container, refType, value) => {
     });
     return retVal;
   } else {
-    findByName(container.children[0], value);
+    findByName(targetOf(container), value);
   }
 });
 
@@ -132,13 +166,7 @@ function isContainerDirectRender(): boolean {
 }
 
 function getMainTarget() {
-  let cont = currentContainer();
-
-  if (!containersDirect.get(currentContainerName)) {
-    return cont.children[0];
-  } else {
-    return cont;
-  }
+  return targetOf(currentContainer());
 }
 
 function copyProperties(target: any, source: any) {
@@ -733,6 +761,8 @@ export const sendMessage = function sendMessage(
         if (eventBehaviors.has(containerId)) {
           eventBehaviors.delete(containerId);
         }
+
+        containersPendingScriptRefs.delete(containerId);
       }
       break;
     case 'descriptionDelta':
@@ -763,6 +793,7 @@ export const sendMessage = function sendMessage(
         let refName = m.refName;
         const originalRefVal = m.refValue;
         let refValue = m.refValue;
+        containersPendingScriptRefs.get(containerId)?.delete(refName);
 
         if (typeof refValue == 'string' && refValue.indexOf('json:::') == 0) {
           refValue = refValue.substring('json:::'.length);
@@ -781,8 +812,8 @@ export const sendMessage = function sendMessage(
         } else {
           if (typeof refValue == 'string' && refValue.indexOf('containerId:::') == 0) {
             refValue = refValue.substring('containerId:::'.length);
-            if (containers.has(refValue) && containers.get(refValue).children.length > 0) {
-              refValue = containers.get(refValue).children[0];
+            if (containers.has(refValue) && targetOf(containers.get(refValue)) != null) {
+              refValue = targetOf(containers.get(refValue));
             } else {
               if (!containersPendingRefs.has(refValue)) {
                 containersPendingRefs.set(refValue, []);
@@ -790,7 +821,7 @@ export const sendMessage = function sendMessage(
               let arr = containersPendingRefs.get(refValue);
               let cc = currentContainer();
               arr.push(() => {
-                refValue = containers.get(refValue).children[0];
+                refValue = targetOf(containers.get(refValue));
                 cr.provideRefValue(cc, refName, refValue);
                 refValues.set(refName, refValue);
               });
@@ -812,11 +843,14 @@ export const sendMessage = function sendMessage(
           if (typeof refValue == 'string' && refValue.indexOf('script:::') == 0) {
             refValue = refValue.substring('script:::'.length);
             let scriptRef = refValue;
-            var f = getRegisteredScript(refValue);
+            var f = _getRegisteredScript(refValue);
             if (!f) {
-              console.warn(
-                `[Ignite UI] script '${refValue}' is not registered — call registerScript('${refValue}', ...) (from './_content/IgniteUI.Blazor/api.js') before the component renders.`,
+              console.debug(
+                `[Ignite UI] script '${scriptRef}' is not registered yet; it will be applied once registerScript('${scriptRef}', ...) runs.`,
               );
+              let refs = containersPendingScriptRefs.get(containerId);
+              if (!refs) containersPendingScriptRefs.set(containerId, (refs = new Map()));
+              refs.set(refName, { name: scriptRef, json });
               return;
             }
             if (f.shouldCall && typeof f.func == 'function') {
@@ -998,7 +1032,7 @@ export const sendMessage = function sendMessage(
                 mut.observe(templateContent, {
                   childList: true,
                 });
-                var dynCont = template.___container.parentElement.querySelector('.ig-dynamic-content-holder');
+                var dynCont = dynamicContentHolderOf(template.___container);
                 let mut2 = createMutationObserver((list) => {
                   for (var mutation of list) {
                     if (mutation.type == 'childList') {
@@ -1158,11 +1192,7 @@ export const sendMessage = function sendMessage(
               if (args[i].indexOf('containerId:::') == 0) {
                 args[i] = args[i].substring('containerId:::'.length);
                 if (containers.has(args[i])) {
-                  if (containersDirect.has(args[i])) {
-                    args[i] = containers.get(args[i]);
-                  } else {
-                    args[i] = containers.get(args[i]).children[0];
-                  }
+                  args[i] = targetOf(containers.get(args[i]));
                 } else {
                   var ele = getContainerByIgIdAttribute(args[i]);
                   if (ele) {

@@ -88,7 +88,7 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
     public void Calendar_TypeMetadata()
     {
         var cal = new IgbCalendar();
-        Assert.Equal("WebCalendar", cal.Type);
+        Assert.Equal("WebCalendar", cal.RendererType);
     }
 
     [Fact]

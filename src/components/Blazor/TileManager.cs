@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbTileManager : BaseRendererControl
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTileManager"; } }
+        internal override string RendererType { get { return "WebTileManager"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -53,7 +53,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -215,7 +215,7 @@ namespace IgniteUI.Blazor.Controls
 
             foreach (var item in ContentItems)
             {
-                if (item.Name == name || item.ContainerId == name)
+                if (item.RendererName == name || item.ContainerId == name)
                 {
                     return item;
                 }
@@ -308,7 +308,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_tileFullscreen))
                     {
                         _tileFullscreen = value;
-                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileFullscreen", value);
+                        this.SetHandler<IgbTileChangeStateEventArgs>(this.RendererName, "TileFullscreen", value);
                         this.OnRefChanged("TileFullscreen", null, "event:::TileFullscreen", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileFullscreenRef = refName;
@@ -319,7 +319,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _tileFullscreen = null;
-                    this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileFullscreen", null);
+                    this.SetHandler<IgbTileChangeStateEventArgs>(this.RendererName, "TileFullscreen", null);
                     this.OnRefChanged("TileFullscreen", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._tileFullscreenRef = null;
@@ -381,7 +381,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_tileMaximize))
                     {
                         _tileMaximize = value;
-                        this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileMaximize", value);
+                        this.SetHandler<IgbTileChangeStateEventArgs>(this.RendererName, "TileMaximize", value);
                         this.OnRefChanged("TileMaximize", null, "event:::TileMaximize", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileMaximizeRef = refName;
@@ -392,7 +392,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _tileMaximize = null;
-                    this.SetHandler<IgbTileChangeStateEventArgs>(this.Name, "TileMaximize", null);
+                    this.SetHandler<IgbTileChangeStateEventArgs>(this.RendererName, "TileMaximize", null);
                     this.OnRefChanged("TileMaximize", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._tileMaximizeRef = null;
@@ -454,7 +454,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_tileDragStart))
                     {
                         _tileDragStart = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragStart", value);
+                        this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileDragStart", value);
                         this.OnRefChanged("TileDragStart", null, "event:::TileDragStart", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragStartRef = refName;
@@ -465,7 +465,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _tileDragStart = null;
-                    this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragStart", null);
+                    this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileDragStart", null);
                     this.OnRefChanged("TileDragStart", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._tileDragStartRef = null;
@@ -527,7 +527,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_tileDragEnd))
                     {
                         _tileDragEnd = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragEnd", value);
+                        this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileDragEnd", value);
                         this.OnRefChanged("TileDragEnd", null, "event:::TileDragEnd", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragEndRef = refName;
@@ -538,7 +538,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _tileDragEnd = null;
-                    this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragEnd", null);
+                    this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileDragEnd", null);
                     this.OnRefChanged("TileDragEnd", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._tileDragEndRef = null;
@@ -600,7 +600,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_tileDragCancel))
                     {
                         _tileDragCancel = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragCancel", value);
+                        this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileDragCancel", value);
                         this.OnRefChanged("TileDragCancel", null, "event:::TileDragCancel", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileDragCancelRef = refName;
@@ -611,7 +611,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _tileDragCancel = null;
-                    this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileDragCancel", null);
+                    this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileDragCancel", null);
                     this.OnRefChanged("TileDragCancel", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._tileDragCancelRef = null;
@@ -673,7 +673,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_tileResizeStart))
                     {
                         _tileResizeStart = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeStart", value);
+                        this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileResizeStart", value);
                         this.OnRefChanged("TileResizeStart", null, "event:::TileResizeStart", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeStartRef = refName;
@@ -684,7 +684,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _tileResizeStart = null;
-                    this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeStart", null);
+                    this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileResizeStart", null);
                     this.OnRefChanged("TileResizeStart", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._tileResizeStartRef = null;
@@ -746,7 +746,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_tileResizeEnd))
                     {
                         _tileResizeEnd = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeEnd", value);
+                        this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileResizeEnd", value);
                         this.OnRefChanged("TileResizeEnd", null, "event:::TileResizeEnd", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeEndRef = refName;
@@ -757,7 +757,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _tileResizeEnd = null;
-                    this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeEnd", null);
+                    this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileResizeEnd", null);
                     this.OnRefChanged("TileResizeEnd", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._tileResizeEndRef = null;
@@ -819,7 +819,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_tileResizeCancel))
                     {
                         _tileResizeCancel = value;
-                        this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeCancel", value);
+                        this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileResizeCancel", value);
                         this.OnRefChanged("TileResizeCancel", null, "event:::TileResizeCancel", true, false, (refName, oldValue, newValue) =>
                         {
                             this._tileResizeCancelRef = refName;
@@ -830,7 +830,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _tileResizeCancel = null;
-                    this.SetHandler<IgbTileComponentEventArgs>(this.Name, "TileResizeCancel", null);
+                    this.SetHandler<IgbTileComponentEventArgs>(this.RendererName, "TileResizeCancel", null);
                     this.OnRefChanged("TileResizeCancel", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._tileResizeCancelRef = null;

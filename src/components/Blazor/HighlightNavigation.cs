@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbHighlightNavigation : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebHighlightNavigation"; } }
+        internal override string RendererType { get { return "WebHighlightNavigation"; } }
 
         private bool _preventScroll = false;
 

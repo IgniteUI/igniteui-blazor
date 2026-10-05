@@ -30,7 +30,7 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
     public void QrCode_TypeMetadata_IsCorrect()
     {
         var qrCode = new IgbQrCode();
-        Assert.Equal("WebQrCode", qrCode.Type);
+        Assert.Equal("WebQrCode", qrCode.RendererType);
     }
 
     [Fact]

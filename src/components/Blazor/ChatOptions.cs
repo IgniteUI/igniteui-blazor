@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbChatOptions : BaseRendererElement
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatOptions"; } }
+        internal override string RendererType { get { return "WebChatOptions"; } }
 
         private string? _currentUserId;
 

@@ -16,7 +16,7 @@ public class NavbarTests : BlazorComponentTestBase
     public void Navbar_TypeMetadata_IsCorrect()
     {
         var navbar = new IgbNavbar();
-        Assert.Equal("WebNavbar", navbar.Type);
+        Assert.Equal("WebNavbar", navbar.RendererType);
     }
 
     [Fact]

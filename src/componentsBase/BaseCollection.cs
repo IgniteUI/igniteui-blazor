@@ -238,12 +238,12 @@ namespace IgniteUI.Blazor.Controls
                 var item = this[i];
                 if (item is BaseRendererElement ele)
                 {
-                    if (name == ele.Name)
+                    if (name == ele.RendererName)
                     {
                         return item;
                     }
                     var subEle = ele.FindByName(name);
-                    if (subEle is BaseRendererElement childElement && name == childElement.Name)
+                    if (subEle is BaseRendererElement childElement && name == childElement.RendererName)
                     {
                         return childElement;
                     }
@@ -270,12 +270,12 @@ namespace IgniteUI.Blazor.Controls
                 var item = this[i];
                 if (item is BaseRendererElement ele)
                 {
-                    if (name == ele.Name)
+                    if (name == ele.RendererName)
                     {
                         return true;
                     }
                     var subEle = ele.FindByName(name);
-                    if (subEle is BaseRendererElement childElement && name == childElement.Name)
+                    if (subEle is BaseRendererElement childElement && name == childElement.RendererName)
                     {
                         return true;
                     }

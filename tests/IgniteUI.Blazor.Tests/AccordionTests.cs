@@ -55,7 +55,7 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
     public void Accordion_TypeMetadata_IsCorrect()
     {
         var accordion = new IgbAccordion();
-        Assert.Equal("WebAccordion", accordion.Type);
+        Assert.Equal("WebAccordion", accordion.RendererType);
     }
 
     [Fact]
