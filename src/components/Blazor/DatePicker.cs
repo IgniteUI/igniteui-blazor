@@ -1228,13 +1228,13 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("ReadOnly"))
             { ser.AddBooleanProp("readOnly", this._readOnly); }
             if (IsPropDirty("Value"))
-            { ser.AddDateTimeProp("value", this._value); }
+            { AddDateProp(ser, "value", this._value, this._valueAsDateOnly, this._valueAsDateTimeOffset); }
             if (IsPropDirty("ActiveDate"))
-            { ser.AddDateTimeProp("activeDate", this._activeDate); }
+            { AddDateProp(ser, "activeDate", this._activeDate, this._activeDateAsDateOnly, null); }
             if (IsPropDirty("Min"))
-            { ser.AddDateTimeProp("min", this._min); }
+            { AddDateProp(ser, "min", this._min, this._minAsDateOnly, this._minAsDateTimeOffset); }
             if (IsPropDirty("Max"))
-            { ser.AddDateTimeProp("max", this._max); }
+            { AddDateProp(ser, "max", this._max, this._maxAsDateOnly, this._maxAsDateTimeOffset); }
             if (IsPropDirty("HeaderOrientation"))
             { ser.AddEnumProp("headerOrientation", this._headerOrientation); }
             if (IsPropDirty("Orientation"))

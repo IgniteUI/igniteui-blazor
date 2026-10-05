@@ -50,9 +50,9 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Start"))
-            { ser.AddDateTimeProp("start", this._start); }
+            { BaseRendererControl.AddDateProp(ser, "start", this._start, this._startAsDateOnly, null); }
             if (IsPropDirty("End"))
-            { ser.AddDateTimeProp("end", this._end); }
+            { BaseRendererControl.AddDateProp(ser, "end", this._end, this._endAsDateOnly, null); }
 
         }
 

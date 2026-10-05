@@ -468,7 +468,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddDateTimeProp("value", this._value); }
+            { AddDateProp(ser, "value", this._value, null, this._valueAsDateTimeOffset); }
             if (IsPropDirty("InputOcurredRef"))
             { ser.AddStringProp("inputOcurredRef", this._inputOcurredRef); }
             if (IsPropDirty("ChangeRef"))

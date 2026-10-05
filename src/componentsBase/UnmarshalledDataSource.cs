@@ -346,15 +346,11 @@ namespace IgniteUI.Blazor.Controls
                     if (valueGetter != null && typeof(Func<object, DateTime>).IsAssignableFrom(valueGetter.GetType()))
                     {
                         dateTimeGetter = (Func<object, DateTime>)valueGetter;
-                        stringGetter = (o) => ((DateTime)dateTimeGetter(o)).ToString("o");
+                        stringGetter = (o) => DateTimeWireFormat.ToWireString(dateTimeGetter(o));
                     }
                     else
                     {
-                        stringGetter = (o) =>
-                        {
-                            var val = (DateTime?)untypedGetter?.Invoke(o);
-                            return val == null ? null : val.Value.ToString("o");
-                        };
+                        stringGetter = (o) => DateTimeWireFormat.ToWireString(untypedGetter?.Invoke(o));
                     }
                     break;
                 case JSDataSourceSchemaType.ObjectValue:
@@ -423,16 +419,12 @@ namespace IgniteUI.Blazor.Controls
                         stringGetter = (o) =>
                         {
                             var val = nullableDateTimeGetter(o);
-                            return val == null ? null : val.Value.ToString("o");
+                            return DateTimeWireFormat.ToWireString(val);
                         };
                     }
                     else
                     {
-                        stringGetter = (o) =>
-                        {
-                            var val = (DateTime?)untypedGetter?.Invoke(o);
-                            return val == null ? null : val.Value.ToString("o");
-                        };
+                        stringGetter = (o) => DateTimeWireFormat.ToWireString(untypedGetter?.Invoke(o));
                     }
                     break;
             }
@@ -897,7 +889,7 @@ namespace IgniteUI.Blazor.Controls
                                             primcol.StringValues = new string[primcol.ActualCount];
                                             foreach (var v in ((IEnumerable)objVal))
                                             {
-                                                primcol.StringValues[i] = ((DateTime)v).ToString("o");
+                                                primcol.StringValues[i] = DateTimeWireFormat.ToWireString(v) ?? string.Empty;
                                                 i++;
                                             }
                                             break;
@@ -1256,7 +1248,7 @@ namespace IgniteUI.Blazor.Controls
                                             primcol.StringValues = new string[primcol.ActualCount];
                                             foreach (var v in ((IEnumerable)objVal))
                                             {
-                                                primcol.StringValues[i] = ((DateTime)v).ToString("o");
+                                                primcol.StringValues[i] = DateTimeWireFormat.ToWireString(v) ?? string.Empty;
                                                 i++;
                                             }
                                             break;

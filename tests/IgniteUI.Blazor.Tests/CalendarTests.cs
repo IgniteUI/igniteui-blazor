@@ -7,37 +7,37 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
 {
     protected override ComponentContract<IgbCalendar> InteropContract { get; } = new ComponentContract<IgbCalendar>()
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
-            returns: new DateTime(2026, 3, 15, 0, 0, 0, DateTimeKind.Utc))
+            returns: new DateTime(2026, 3, 15, 0, 0, 0))
         .Getter(c => c.GetCurrentValuesAsync(), c => c.GetCurrentValues(), "Values",
             arrange: _ => { },
-            returns: FromRender.Of((interop, cut) => InteropReturn.Array("""["2026-01-02T03:04:05.000Z", "2026-03-16T12:30:00.000Z"]""")),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array("""["2026-01-02T03:04:05.000", "2026-03-16T12:30:00.000"]""")),
             assert: (cut, result) =>
             {
                 Assert.Equal(2, result.Length);
-                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), result[0]);
-                Assert.Equal(DateTimeKind.Utc, result[0].Kind);
-                Assert.Equal(new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc), result[1]);
-                Assert.Equal(DateTimeKind.Utc, result[1].Kind);
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5), result[0]);
+                Assert.Equal(DateTimeKind.Unspecified, result[0].Kind);
+                Assert.Equal(new DateTime(2026, 3, 16, 12, 30, 0), result[1]);
+                Assert.Equal(DateTimeKind.Unspecified, result[1].Kind);
             })
         .Event(c => c.Change,
-            argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
+            argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000"}}""",
             assert: args =>
             {
                 var detail = Assert.IsType<DateTime>(args.Detail);
-                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), detail);
-                Assert.Equal(DateTimeKind.Utc, detail.Kind);
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5), detail);
+                Assert.Equal(DateTimeKind.Unspecified, detail.Kind);
             })
         // Single selection:
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
-            argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
-            expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
+            argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000"}}""",
+            expect: new DateTime(2026, 1, 2, 3, 4, 5))
         // Multiple selection:
         .Bind(c => c.Values, c => c.ValuesChanged, via: c => c.Change,
             arrange: ps => ps.Add(c => c.Selection, CalendarSelection.Multiple),
-            argsJson: """{"detail": {"retType": "Array", "type": "", "value": [{"retType": "date", "value": "2026-01-02T03:04:05.000Z"}, {"retType": "date", "value": "2026-01-03T03:04:05.000Z"}]}}""",
+            argsJson: """{"detail": {"retType": "Array", "type": "", "value": [{"retType": "date", "value": "2026-01-02T03:04:05.000"}, {"retType": "date", "value": "2026-01-03T03:04:05.000"}]}}""",
             expect: [
-                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
-                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc),
+                new DateTime(2026, 1, 2, 3, 4, 5),
+                new DateTime(2026, 1, 3, 3, 4, 5),
             ])
         .Prop(c => c.Selection, CalendarSelection.Range, wire: "range")
         .Prop(c => c.ShowWeekNumbers, true)

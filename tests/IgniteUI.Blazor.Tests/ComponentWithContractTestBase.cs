@@ -685,20 +685,15 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     }
 
     /// <summary>
-    /// One decoded date: stated by the spec as the UTC instant that crossed the wire, and required
-    /// to arrive with the same reading and <see cref="DateTimeKind.Utc"/>. Asserting the kind pins
-    /// the conversion even when a plain value comparison would not distinguish UTC from local.
+    /// One decoded date. The wire contract is a wall clock one: the client sends the reading the
+    /// user sees, with no timezone designator, so the value arrives with the same reading it had on
+    /// the client and with <see cref="DateTimeKind.Unspecified"/>. Asserting the kind pins the
+    /// absence of any timezone conversion, which a plain value comparison would not catch.
     /// </summary>
     private static void AssertDecodedDate(DateTime expectedInstant, object? actual)
     {
-        if (expectedInstant.Kind != DateTimeKind.Utc)
-        {
-            throw new XunitException(
-                $"expected date {expectedInstant:o} has Kind={expectedInstant.Kind} — state the instant " +
-                "explicitly with DateTimeKind.Utc");
-        }
         var actualDate = Assert.IsType<DateTime>(actual);
-        Assert.Equal(expectedInstant, actualDate);
-        Assert.Equal(DateTimeKind.Utc, actualDate.Kind);
+        Assert.Equal(expectedInstant.Ticks, actualDate.Ticks);
+        Assert.Equal(DateTimeKind.Unspecified, actualDate.Kind);
     }
 }

@@ -1,8 +1,8 @@
 import { ComponentRenderer } from 'igniteui-core/ComponentRenderer';
 import { TypeRegistrar, createMutationObserver } from 'igniteui-core/type';
 import { fromSpinal, getAllPropertyNames } from 'igniteui-core/componentUtil';
-import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
+import { toLocalISOStringWithOffset } from './dateInterop';
 import { html, noChange } from 'lit-html';
 import { IgcPortalModule } from 'igniteui-core/igc-portal';
 import { refValues, itemMaps } from './refs-state';
@@ -270,10 +270,7 @@ let convertReturnValue = function (retVal: any): any {
   } else if (typeof retVal == 'boolean') {
     return JSON.stringify({ retType: 'boolean', value: retVal });
   } else if (retVal instanceof Date) {
-    if (retVal.getTime() === dateMinValue().getTime()) {
-      retVal = '0001-01-01T00:00:00.000Z';
-    }
-    return JSON.stringify({ retType: 'date', value: retVal });
+    return JSON.stringify({ retType: 'date', value: toLocalISOStringWithOffset(retVal) });
   }
 
   if (retVal == null) {
@@ -291,7 +288,7 @@ let toReturn = function (retVal: any): any {
   } else if (typeof retVal == 'boolean') {
     return { retType: 'boolean', value: retVal };
   } else if (retVal instanceof Date) {
-    return { retType: 'date', value: retVal };
+    return { retType: 'date', value: toLocalISOStringWithOffset(retVal) };
   }
 
   if (retVal == null) {

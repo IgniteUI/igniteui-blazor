@@ -215,6 +215,14 @@ export function dateToStringFormat(value: Date, format: string, provider?: Cultu
 }
 
 export function dateTryParse(s: string, result?: Date): { p1: Date, ret: boolean } {
+    // A bare "yyyy-MM-dd" is a calendar date, not an instant. `new Date(s)` would parse it as UTC
+    // per the ECMAScript spec and land on the previous day for every browser west of Greenwich,
+    // so it is built from the local components instead.
+    var dateOnly = /^\s*(\d{4})-(\d{2})-(\d{2})\s*$/.exec(s);
+    if (dateOnly) {
+        return { p1: new Date(+dateOnly[ 1 ], +dateOnly[ 2 ] - 1, +dateOnly[ 3 ]), ret: true };
+    }
+
     var date = new Date(s);
     if (date == null || isNaN(+date)) {
 

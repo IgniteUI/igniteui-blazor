@@ -99,7 +99,15 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (val is DateTime)
             {
-                _context.Writer.WriteStringValue("@d:" + ((DateTime)val).ToString("o"));
+                _context.Writer.WriteStringValue("@d:" + DateTimeWireFormat.ToWireString((DateTime)val));
+            }
+            else if (val is DateOnly)
+            {
+                _context.Writer.WriteStringValue("@d:" + DateTimeWireFormat.ToWireString((DateOnly)val));
+            }
+            else if (val is DateTimeOffset)
+            {
+                _context.Writer.WriteStringValue("@d:" + DateTimeWireFormat.ToWireString((DateTimeOffset)val));
             }
             else if (val is string)
             {
@@ -162,7 +170,15 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (val is DateTime)
             {
-                _context.Writer.WriteString(propertyName, "@d:" + ((DateTime)val).ToString("o"));
+                _context.Writer.WriteString(propertyName, "@d:" + DateTimeWireFormat.ToWireString((DateTime)val));
+            }
+            else if (val is DateOnly)
+            {
+                _context.Writer.WriteString(propertyName, "@d:" + DateTimeWireFormat.ToWireString((DateOnly)val));
+            }
+            else if (val is DateTimeOffset)
+            {
+                _context.Writer.WriteString(propertyName, "@d:" + DateTimeWireFormat.ToWireString((DateTimeOffset)val));
             }
             else if (val is string)
             {
@@ -252,7 +268,7 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else if (val is DateTime)
                     {
-                        context.Writer.WriteStringValue(((DateTime)val).ToString("o"));
+                        context.Writer.WriteStringValue(DateTimeWireFormat.ToWireString((DateTime)val));
                     }
                     else if (val is string)
                     {
@@ -352,8 +368,31 @@ namespace IgniteUI.Blazor.Controls
                     return;
                 }
             }
-            _context.Writer.WriteString(propertyName, value != null ? value.Value.ToString("o") : null);
-            //_properties.Add("\"" + propertyName + "\"" + ": \"" + value.ToString("o") + "\"");
+            _context.Writer.WriteString(propertyName, DateTimeWireFormat.ToWireString(value));
+        }
+
+        public void AddDateOnlyProp(String propertyName, DateOnly? value)
+        {
+            if (_context.Filter != null)
+            {
+                if (!_context.Filter(_name, propertyName))
+                {
+                    return;
+                }
+            }
+            _context.Writer.WriteString(propertyName, DateTimeWireFormat.ToWireString(value));
+        }
+
+        public void AddDateTimeOffsetProp(String propertyName, DateTimeOffset? value)
+        {
+            if (_context.Filter != null)
+            {
+                if (!_context.Filter(_name, propertyName))
+                {
+                    return;
+                }
+            }
+            _context.Writer.WriteString(propertyName, DateTimeWireFormat.ToWireString(value));
         }
 
         public void Start(string? propertyName = null)
@@ -489,13 +528,37 @@ namespace IgniteUI.Blazor.Controls
             for (int i = 0; i < parts.Length; i++)
             {
                 DateTime val = parts[i];
-                _context.Writer.WriteStringValue(val.ToString("o"));
+                _context.Writer.WriteStringValue(DateTimeWireFormat.ToWireString(val));
             }
             _context.Writer.WriteEndArray();
 
             // var arrayParts = string.Join(", ", strValues);
             // //Console.WriteLine("arrayParts: " + arrayParts);
             // _properties.Add("\"" + propertyName + "\"" + ": [" + arrayParts + " ]");
+        }
+
+        public void AddDateOnlyArrayProp(String propertyName, DateOnly[]? values)
+        {
+            if (_context.Filter != null)
+            {
+                if (!_context.Filter(_name, propertyName))
+                {
+                    return;
+                }
+            }
+
+            if (values == null)
+            {
+                _context.Writer.WriteNull(propertyName);
+                return;
+            }
+
+            _context.Writer.WriteStartArray(propertyName);
+            for (int i = 0; i < values.Length; i++)
+            {
+                _context.Writer.WriteStringValue(DateTimeWireFormat.ToWireString(values[i]));
+            }
+            _context.Writer.WriteEndArray();
         }
 
         private Regex _colorSplitRegex = new Regex("[\\s,]+(?![^(]*\\))");

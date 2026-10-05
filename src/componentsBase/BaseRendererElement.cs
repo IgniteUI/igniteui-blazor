@@ -651,16 +651,49 @@ namespace IgniteUI.Blazor.Controls
 
         internal DateTime ReturnToDate(Object? val)
         {
+            return ReturnToDate(val, DateTimeKind.Unspecified);
+        }
+
+        internal DateTime ReturnToDate(Object? val, DateTimeKind kind)
+        {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
             {
-                return ((BaseRendererElement)CurrParent).ReturnToDate(val);
+                return ((BaseRendererElement)CurrParent).ReturnToDate(val, kind);
             }
             else if (CurrParent is BaseRendererControl)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToDate(val);
+                return ((BaseRendererControl)CurrParent).ReturnToDate(val, kind);
             }
             return default(DateTime);
+        }
+
+        internal DateOnly ReturnToDateOnly(Object? val)
+        {
+            EnsureValid();
+            if (CurrParent is BaseRendererElement)
+            {
+                return ((BaseRendererElement)CurrParent).ReturnToDateOnly(val);
+            }
+            else if (CurrParent is BaseRendererControl)
+            {
+                return ((BaseRendererControl)CurrParent).ReturnToDateOnly(val);
+            }
+            return default(DateOnly);
+        }
+
+        internal DateTimeOffset ReturnToDateTimeOffset(Object? val)
+        {
+            EnsureValid();
+            if (CurrParent is BaseRendererElement)
+            {
+                return ((BaseRendererElement)CurrParent).ReturnToDateTimeOffset(val);
+            }
+            else if (CurrParent is BaseRendererControl)
+            {
+                return ((BaseRendererControl)CurrParent).ReturnToDateTimeOffset(val);
+            }
+            return default(DateTimeOffset);
         }
 
         internal String? ComponentToJson(object val, int index)

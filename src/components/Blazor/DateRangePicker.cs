@@ -1390,9 +1390,9 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("InputFormat"))
             { ser.AddStringProp("inputFormat", this._inputFormat); }
             if (IsPropDirty("Min"))
-            { ser.AddDateTimeProp("min", this._min); }
+            { AddDateProp(ser, "min", this._min, this._minAsDateOnly, this._minAsDateTimeOffset); }
             if (IsPropDirty("Max"))
-            { ser.AddDateTimeProp("max", this._max); }
+            { AddDateProp(ser, "max", this._max, this._maxAsDateOnly, this._maxAsDateTimeOffset); }
             if (IsPropDirty("DisabledDates"))
             { ser.AddSerializableArrayProp("disabledDates", this._disabledDates); }
             if (IsPropDirty("VisibleMonths"))
@@ -1404,7 +1404,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("HideHeader"))
             { ser.AddBooleanProp("hideHeader", this._hideHeader); }
             if (IsPropDirty("ActiveDate"))
-            { ser.AddDateTimeProp("activeDate", this._activeDate); }
+            { AddDateProp(ser, "activeDate", this._activeDate, this._activeDateAsDateOnly, null); }
             if (IsPropDirty("ShowWeekNumbers"))
             { ser.AddBooleanProp("showWeekNumbers", this._showWeekNumbers); }
             if (IsPropDirty("HideOutsideDays"))

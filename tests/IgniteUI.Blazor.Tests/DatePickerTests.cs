@@ -20,27 +20,27 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         .Method(c => c.SetCustomValidityAsync("Please choose a valid date"), c => c.SetCustomValidity("Please choose a valid date"),
             "setCustomValidity", args: ["Please choose a valid date"], types: ["String"])
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
-            returns: new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc))
+            returns: new DateTime(2026, 3, 15, 9, 30, 0))
         .Event(c => c.Opening)
         .Event(c => c.Opened)
         .Event(c => c.Closing)
         .Event(c => c.Closed)
         .Event(c => c.Change,
-            argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+            argsJson: """{"detail": "2026-01-02T03:04:05.000"}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail);
-                Assert.Equal(DateTimeKind.Utc, args.Detail.Kind);
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5), args.Detail);
+                Assert.Equal(DateTimeKind.Unspecified, args.Detail.Kind);
             })
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
-            argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
+            argsJson: """{"detail": "2026-01-02T03:04:05.000"}""",
+            expect: new DateTime(2026, 1, 2, 3, 4, 5))
         .Event(c => c.Input,
-            argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+            argsJson: """{"detail": "2026-01-02T03:04:05.000"}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail);
-                Assert.Equal(DateTimeKind.Utc, args.Detail.Kind);
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5), args.Detail);
+                Assert.Equal(DateTimeKind.Unspecified, args.Detail.Kind);
             })
         .Prop(c => c.Open, true)
         .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
@@ -66,10 +66,10 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
                 new IgbDateRangeDescriptor
                 {
                     RangeType = DateRangeType.Specific,
-                    DateRange = new DateTime(2026, 12, 25, 0, 0, 0, DateTimeKind.Utc),
+                    DateRange = new DateTime(2026, 12, 25),
                 },
             ],
-            wire: new JsonSubset("""[{"rangeType": "weekends"}, {"rangeType": "specific", "dateRange": "@d:2026-12-25T00:00:00.0000000Z"}]"""))
+            wire: new JsonSubset("""[{"rangeType": "weekends"}, {"rangeType": "specific", "dateRange": "@d:2026-12-25T00:00:00.0000000"}]"""))
         .Prop(c => c.SpecialDates,
             [
                 new IgbDateRangeDescriptor { RangeType = DateRangeType.Weekdays },

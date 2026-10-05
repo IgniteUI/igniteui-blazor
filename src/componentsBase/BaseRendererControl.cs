@@ -1166,9 +1166,9 @@ namespace IgniteUI.Blazor.Controls
             }
             if (type == "Date")
             {
-                if (argument is DateTime)
+                if (argument is DateTime || argument is DateOnly || argument is DateTimeOffset)
                 {
-                    argument = DateToString((DateTime)argument);
+                    argument = DateTimeWireFormat.ToWireString(argument)!;
                 }
                 return "\"" + argument.ToString() + "\"";
             }
@@ -1383,7 +1383,47 @@ namespace IgniteUI.Blazor.Controls
 
         internal string DateToString(DateTime val)
         {
-            return val.ToString("o");
+            return DateTimeWireFormat.ToWireString(val);
+        }
+
+        /// <summary>
+        /// Writes a date property in the shape of whichever type the consumer set it through:
+        /// a calendar date, an instant, or a <see cref="DateTime"/>.
+        /// </summary>
+        /// <remarks>
+        /// A component exposes the same underlying property as sibling parameters (for example
+        /// <c>Value</c>, <c>ValueAsDateOnly</c> and <c>ValueAsDateTimeOffset</c>). Only one of them is
+        /// authoritative at a time, and this picks it so the wire keeps the consumer's intent.
+        /// </remarks>
+        internal static void AddDateProp(
+            RendererSerializer ser,
+            string propertyName,
+            DateTime? dateTime,
+            DateOnly? dateOnly,
+            DateTimeOffset? dateTimeOffset)
+        {
+            if (dateOnly.HasValue)
+            {
+                ser.AddDateOnlyProp(propertyName, dateOnly);
+            }
+            else if (dateTimeOffset.HasValue)
+            {
+                ser.AddDateTimeOffsetProp(propertyName, dateTimeOffset);
+            }
+            else
+            {
+                ser.AddDateTimeProp(propertyName, dateTime);
+            }
+        }
+
+        internal string DateToString(DateOnly val)
+        {
+            return DateTimeWireFormat.ToWireString(val);
+        }
+
+        internal string DateToString(DateTimeOffset val)
+        {
+            return DateTimeWireFormat.ToWireString(val);
         }
 
         void RefSink.OnRefChanged(string refName, object? refValue) => OnRefChanged(refName, refValue);
@@ -2263,6 +2303,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal DateTime[] ReturnToDateArray(object? val)
         {
+            return ReturnToDateArray(val, DateTimeKind.Unspecified);
+        }
+
+        internal DateTime[] ReturnToDateArray(object? val, DateTimeKind kind)
+        {
             if (val == null)
             {
                 return Array.Empty<DateTime>();
@@ -2288,7 +2333,7 @@ namespace IgniteUI.Blazor.Controls
                 for (int i = 0; i < arr.Length; i++)
                 {
                     Object ele = arr[i];
-                    ele = ReturnToDate(ele);
+                    ele = ReturnToDate(ele, kind);
                     ret[i] = (DateTime)ele;
                 }
                 return ret;
@@ -2301,11 +2346,66 @@ namespace IgniteUI.Blazor.Controls
 
         internal DateTime ReturnToDate(object? val, bool tryConvertValue = true)
         {
+            return ReturnToDate(val, DateTimeKind.Unspecified, tryConvertValue);
+        }
+
+        /// <summary>
+        /// Decodes a date coming back from the client as a calendar date. The reading is taken at
+        /// face value, so a date can never move to the neighbouring day.
+        /// </summary>
+        internal DateOnly ReturnToDateOnly(object? val, bool tryConvertValue = true)
+        {
+            var date = ReturnToDate(val, DateTimeKind.Unspecified, tryConvertValue);
+            return DateOnly.FromDateTime(date);
+        }
+
+        /// <summary>
+        /// Decodes a date coming back from the client as an instant, keeping the offset the client
+        /// reported. A payload with no offset is read in the .NET process's own zone.
+        /// </summary>
+        internal DateTimeOffset ReturnToDateTimeOffset(object? val, bool tryConvertValue = true)
+        {
+            if (val == null)
+            {
+                return DateTimeOffset.MinValue;
+            }
+            if (tryConvertValue)
+            {
+                val = ConvertReturnValue(val);
+            }
+
+            var dateString = val?.ToString();
+            if (dateString == null)
+            {
+                return DateTimeOffset.MinValue;
+            }
+
+            if (DateTimeWireFormat.IsDateOnlyPayload(dateString))
+            {
+                var dateOnly = DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.None);
+                return new DateTimeOffset(dateOnly, TimeSpan.Zero);
+            }
+
+            return DateTimeOffset.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+        }
+
+        /// <summary>
+        /// Decodes a date coming back from the client and re-expresses it in <paramref name="kind"/>,
+        /// which is the kind the component last sent out for that value.
+        /// </summary>
+        /// <remarks>
+        /// The client sends the reading the user sees plus its own UTC offset, so both readings are
+        /// available here: <see cref="DateTimeKind.Unspecified"/> keeps the wall clock verbatim, while
+        /// <see cref="DateTimeKind.Utc"/> and <see cref="DateTimeKind.Local"/> rebuild the instant the
+        /// offset describes. An older client that omits the offset still works: the value is then read
+        /// as a wall clock one and only converted when an instant was asked for.
+        /// </remarks>
+        internal DateTime ReturnToDate(object? val, DateTimeKind kind, bool tryConvertValue = true)
+        {
             if (val == null)
             {
                 return DateTime.MinValue;
             }
-            //Console.WriteLine("converting return");
             if (tryConvertValue)
             {
                 val = ConvertReturnValue(val);
@@ -2314,26 +2414,83 @@ namespace IgniteUI.Blazor.Controls
             {
                 return DateTime.MinValue;
             }
-            //Console.WriteLine(val);
-            if (val is String)
+            if (val is DateTime alreadyDate)
             {
-                return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                return ToKind(alreadyDate, kind);
             }
-            else if (val is IConvertible)
+            if (val is string || !(val is IConvertible))
             {
-                //Console.WriteLine(val);
-                return ((IConvertible)val).ToDateTime(CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                //Console.WriteLine(val);
                 var dateString = val.ToString();
                 if (dateString == null)
                 {
                     return DateTime.MinValue;
                 }
+                return ParseDate(dateString, kind);
+            }
 
-                return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            return ToKind(((IConvertible)val).ToDateTime(CultureInfo.InvariantCulture), kind);
+        }
+
+        private static DateTime ParseDate(string dateString, DateTimeKind kind)
+        {
+            if (DateTimeWireFormat.IsDateOnlyPayload(dateString))
+            {
+                // A calendar date has no instant to convert; it is taken at face value.
+                return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.None);
+            }
+
+            // An offset-carrying payload is read as an offset, never as a DateTime: DateTime.Parse
+            // would convert it into the .NET process's own zone, which is precisely the drift this
+            // avoids (the server's zone has nothing to do with the user's).
+            if (DateTimeOffset.TryParse(
+                    dateString,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.RoundtripKind,
+                    out var offsetValue)
+                && HasDesignator(dateString))
+            {
+                switch (kind)
+                {
+                    case DateTimeKind.Utc:
+                        return offsetValue.UtcDateTime;
+                    case DateTimeKind.Local:
+                        return offsetValue.LocalDateTime;
+                    default:
+                        // The wall clock the user saw, whatever offset the client reported with it.
+                        return offsetValue.DateTime;
+                }
+            }
+
+            var parsed = DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            return ToKind(parsed, kind);
+        }
+
+        /// <summary>Tells whether a date payload carries a timezone designator (<c>Z</c> or <c>±HH:mm</c>).</summary>
+        private static bool HasDesignator(string dateString)
+        {
+            var timeStart = dateString.IndexOf('T');
+            if (timeStart < 0)
+            {
+                return false;
+            }
+            var time = dateString.Substring(timeStart);
+            return time.IndexOf('Z') >= 0 || time.IndexOf('+') >= 0 || time.IndexOf('-') >= 0;
+        }
+
+        private static DateTime ToKind(DateTime value, DateTimeKind kind)
+        {
+            switch (kind)
+            {
+                case DateTimeKind.Utc:
+                    return value.Kind == DateTimeKind.Unspecified
+                        ? DateTime.SpecifyKind(value, DateTimeKind.Utc)
+                        : value.ToUniversalTime();
+                case DateTimeKind.Local:
+                    return value.Kind == DateTimeKind.Unspecified
+                        ? DateTime.SpecifyKind(value, DateTimeKind.Local)
+                        : value.ToLocalTime();
+                default:
+                    return DateTime.SpecifyKind(value, DateTimeKind.Unspecified);
             }
         }
 
@@ -2499,7 +2656,15 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (val is DateTime)
             {
-                w.WriteStringValue(((DateTime)val).ToString("o"));
+                w.WriteStringValue(DateTimeWireFormat.ToWireString((DateTime)val));
+            }
+            else if (val is DateOnly)
+            {
+                w.WriteStringValue(DateTimeWireFormat.ToWireString((DateOnly)val));
+            }
+            else if (val is DateTimeOffset)
+            {
+                w.WriteStringValue(DateTimeWireFormat.ToWireString((DateTimeOffset)val));
             }
             else
             {
@@ -2581,7 +2746,15 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (val is DateTime)
             {
-                w.WriteString(propertyName, ((DateTime)val).ToString("o"));
+                w.WriteString(propertyName, DateTimeWireFormat.ToWireString((DateTime)val));
+            }
+            else if (val is DateOnly)
+            {
+                w.WriteString(propertyName, DateTimeWireFormat.ToWireString((DateOnly)val));
+            }
+            else if (val is DateTimeOffset)
+            {
+                w.WriteString(propertyName, DateTimeWireFormat.ToWireString((DateTimeOffset)val));
             }
             else
             {

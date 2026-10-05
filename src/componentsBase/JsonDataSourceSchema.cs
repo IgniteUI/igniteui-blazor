@@ -489,7 +489,17 @@ namespace IgniteUI.Blazor.Controls
         {
             if (value is DateTime)
             {
-                return "@d:" + ((DateTime)value).ToString("o");
+                return "@d:" + DateTimeWireFormat.ToWireString((DateTime)value);
+            }
+
+            if (value is DateOnly)
+            {
+                return "@d:" + DateTimeWireFormat.ToWireString((DateOnly)value);
+            }
+
+            if (value is DateTimeOffset)
+            {
+                return "@d:" + DateTimeWireFormat.ToWireString((DateTimeOffset)value);
             }
 
             return "null";
@@ -604,6 +614,11 @@ namespace IgniteUI.Blazor.Controls
             }
             if (type == typeof(DateTime) || typeof(DateTime).IsAssignableFrom(type))
             {
+                return JSDataSourceSchemaType.DateTimeValue;
+            }
+            if (type == typeof(DateOnly) || type == typeof(DateTimeOffset))
+            {
+                // Both travel through the date column; the wire format keeps them apart.
                 return JSDataSourceSchemaType.DateTimeValue;
             }
             if (type.IsEnum)

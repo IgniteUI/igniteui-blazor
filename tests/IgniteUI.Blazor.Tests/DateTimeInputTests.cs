@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Tests;
 public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput>
 {
     protected override ComponentContract<IgbDateTimeInput> InteropContract { get; } = new ComponentContract<IgbDateTimeInput>()
-        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: new DateTime(2026, 7, 4, 12, 30, 0, DateTimeKind.Utc))
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: new DateTime(2026, 7, 4, 12, 30, 0))
         .Method(c => c.StepUpAsync(DatePart.Month, 2), c => c.StepUp(DatePart.Month, 2), "stepUp", args: ["month", 2.0], types: ["Json", "Number"])
         .Method(c => c.StepDownAsync(DatePart.Hours, 3), c => c.StepDown(DatePart.Hours, 3), "stepDown", args: ["hours", 3.0], types: ["Json", "Number"])
         .Method(c => c.ClearAsync(), c => c.Clear(), "clear")
@@ -24,15 +24,15 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
         .Method(c => c.SetCustomValidityAsync("custom message"), c => c.SetCustomValidity("custom message"), "setCustomValidity",
             args: ["custom message"], types: ["String"])
         .Event(c => c.Change,
-            argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+            argsJson: """{"detail": "2026-01-02T03:04:05.000"}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail);
-                Assert.Equal(DateTimeKind.Utc, args.Detail.Kind);
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5), args.Detail);
+                Assert.Equal(DateTimeKind.Unspecified, args.Detail.Kind);
             })
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
-            argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
+            argsJson: """{"detail": "2026-01-02T03:04:05.000"}""",
+            expect: new DateTime(2026, 1, 2, 3, 4, 5))
         .Event(c => c.InputOcurred,
             argsJson: """{"detail": "typed text"}""", assert: args => Assert.Equal("typed text", args.Detail))
         .Event(c => c.Focus)
@@ -43,8 +43,8 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
         // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
         .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.InputFormat, "dd/MM/yyyy")
-        .Prop(c => c.Min, new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc))
-        .Prop(c => c.Max, new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+        .Prop(c => c.Min, new DateTime(2020, 1, 1))
+        .Prop(c => c.Max, new DateTime(2030, 1, 1))
         .Prop(c => c.DisplayFormat, "MMMM dd, yyyy")
         .Prop(c => c.SpinDelta, new IgbDatePartDeltas { Hours = 2, Minutes = 5 },
             wire: new JsonSubset("""{"hours": 2, "minutes": 5}"""))
@@ -56,7 +56,7 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
         .Prop(c => c.Disabled, true)
         .Prop(c => c.Required, true)
         .Prop(c => c.Invalid, true)
-        .Prop(c => c.Value, new DateTime(2026, 3, 4, 8, 0, 0, DateTimeKind.Utc));
+        .Prop(c => c.Value, new DateTime(2026, 3, 4, 8, 0, 0));
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();

@@ -8,8 +8,37 @@
             <Arg For="_ => _!.SpinLoop" Value="true" />
         </Arguments>
         <Template>
-            <IgbDateTimeInput @attributes="context.Args" />
+            <IgbDateTimeInput @attributes="context.Args" Name="abc" style="width:100px;" />
+        </Template>
+    </Story>
+
+    <Story Name="Two-way Binding">
+        <Template>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <IgbDateTimeInput @ref="_input" Label="Date/Time" @bind-Value="_boundValue" style="width: 220px;" InputFormat="yyyy-MM-dd HH:mm:ss" DisplayFormat="yyyy-MM-dd HH:mm:ss" />
+                <IgbDateTimeInput Label="Date/Time 2" @bind-Value="_boundValue" style="width: 220px;" />
+                <span style="font-family: ui-monospace, monospace;">@(_boundValue?.ToString("yyyy-MM-dd HH:mm:ss") ?? "(null)")</span>
+                <IgbButton @onclick="CheckValueAsync">Check value</IgbButton>
+                <span style="font-family: ui-monospace, monospace;">@_checkedValue</span>
+            </div>
         </Template>
     </Story>
 
 </Stories>
+
+@code {
+    private DateTime? _boundValue = DateTime.Now;
+    private IgbDateTimeInput? _input;
+    private string _checkedValue = "(not checked)";
+
+    private async Task CheckValueAsync()
+    {
+        if (_input is null)
+        {
+            return;
+        }
+
+        var current = await _input.GetCurrentValueAsync();
+        _checkedValue = current?.ToString("yyyy-MM-dd HH:mm:ss") ?? "(null)";
+    }
+}

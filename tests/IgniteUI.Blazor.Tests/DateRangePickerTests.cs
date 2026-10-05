@@ -45,38 +45,38 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
         .Event(c => c.Closing)
         .Event(c => c.Closed)
         .Event(c => c.Change,
-            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000", "end": "2026-03-10T00:00:00.000"}}}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start);
-                Assert.Equal(DateTimeKind.Utc, args.Detail.Start.Kind);
-                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End);
-                Assert.Equal(DateTimeKind.Utc, args.Detail.End.Kind);
+                Assert.Equal(new DateTime(2026, 3, 1), args.Detail.Start);
+                Assert.Equal(DateTimeKind.Unspecified, args.Detail.Start.Kind);
+                Assert.Equal(new DateTime(2026, 3, 10), args.Detail.End);
+                Assert.Equal(DateTimeKind.Unspecified, args.Detail.End.Kind);
             })
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
-            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000", "end": "2026-03-10T00:00:00.000"}}}""",
             expect: new IgbDateRangeValue
             {
-                Start = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc),
-                End = new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc),
+                Start = new DateTime(2026, 3, 1),
+                End = new DateTime(2026, 3, 10),
             },
             assert: value =>
             {
                 // IgbDateRangeValue has no value equality, so the pushed value is checked field-wise:
                 Assert.NotNull(value);
-                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), value.Start);
-                Assert.Equal(DateTimeKind.Utc, value.Start.Kind);
-                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), value.End);
-                Assert.Equal(DateTimeKind.Utc, value.End.Kind);
+                Assert.Equal(new DateTime(2026, 3, 1), value.Start);
+                Assert.Equal(DateTimeKind.Unspecified, value.Start.Kind);
+                Assert.Equal(new DateTime(2026, 3, 10), value.End);
+                Assert.Equal(DateTimeKind.Unspecified, value.End.Kind);
             })
         .Event(c => c.Input,
-            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
+            argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000", "end": "2026-03-10T00:00:00.000"}}}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start);
-                Assert.Equal(DateTimeKind.Utc, args.Detail.Start.Kind);
-                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End);
-                Assert.Equal(DateTimeKind.Utc, args.Detail.End.Kind);
+                Assert.Equal(new DateTime(2026, 3, 1), args.Detail.Start);
+                Assert.Equal(DateTimeKind.Unspecified, args.Detail.Start.Kind);
+                Assert.Equal(new DateTime(2026, 3, 10), args.Detail.End);
+                Assert.Equal(DateTimeKind.Unspecified, args.Detail.End.Kind);
             })
         .Prop(c => c.Open, true)
         .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
@@ -85,10 +85,10 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
         .Prop(c => c.Value,
             new IgbDateRangeValue
             {
-                Start = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc),
-                End = new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc),
+                Start = new DateTime(2026, 3, 1),
+                End = new DateTime(2026, 3, 10),
             },
-            wire: new JsonSubset("""{"start": "2026-03-01T00:00:00.0000000Z", "end": "2026-03-10T00:00:00.0000000Z"}"""))
+            wire: new JsonSubset("""{"start": "2026-03-01T00:00:00.0000000", "end": "2026-03-10T00:00:00.0000000"}"""))
         .Prop(c => c.CustomRanges,
             [
                 new IgbCustomDateRange
@@ -96,12 +96,12 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
                     Label = "This week",
                     DateRange = new IgbDateRangeValue
                     {
-                        Start = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc),
-                        End = new DateTime(2026, 3, 7, 0, 0, 0, DateTimeKind.Utc),
+                        Start = new DateTime(2026, 3, 1),
+                        End = new DateTime(2026, 3, 7),
                     },
                 },
             ],
-            wire: new JsonSubset("""[{"label": "This week", "dateRange": {"start": "2026-03-01T00:00:00.0000000Z", "end": "2026-03-07T00:00:00.0000000Z"}}]"""))
+            wire: new JsonSubset("""[{"label": "This week", "dateRange": {"start": "2026-03-01T00:00:00.0000000", "end": "2026-03-07T00:00:00.0000000"}}]"""))
         .Prop(c => c.Mode, PickerMode.Dialog, wire: "dialog")
         .Prop(c => c.UseTwoInputs, true)
         .Prop(c => c.UsePredefinedRanges, true)

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using Bunit;
@@ -584,7 +585,12 @@ public sealed class RendererMessageInteropHarness : InteropHarness
                     break;
                 case InteropReturnKind.Date:
                     w.WriteString("retType", "date");
-                    w.WriteString("value", ((DateTime)result.Value!).ToString("o"));
+                    // Mirrors the client: the reading the user sees plus the browser's own offset,
+                    // which lets .NET keep the wall clock or rebuild the instant, as the property asks.
+                    w.WriteString("value", new DateTimeOffset(
+                        DateTime.SpecifyKind((DateTime)result.Value!, DateTimeKind.Unspecified),
+                        TimeZoneInfo.Local.GetUtcOffset((DateTime)result.Value!))
+                        .ToString("yyyy-MM-ddTHH:mm:ss.fffzzz", CultureInfo.InvariantCulture));
                     break;
                 case InteropReturnKind.Deferred:
                     // This stack's spelling of a deferred reply: the client got a JS

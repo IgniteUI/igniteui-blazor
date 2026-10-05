@@ -482,11 +482,16 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddDateTimeProp("value", this._value); }
+            { AddDateProp(ser, "value", this._value, this._valueAsDateOnly, this._valueAsDateTimeOffset); }
             if (IsPropDirty("Values"))
-            { ser.AddDateArrayProp("values", this._values); }
+            {
+                if (this._valuesAsDateOnly != null)
+                { ser.AddDateOnlyArrayProp("values", this._valuesAsDateOnly); }
+                else
+                { ser.AddDateArrayProp("values", this._values); }
+            }
             if (IsPropDirty("ActiveDate"))
-            { ser.AddDateTimeProp("activeDate", this._activeDate); }
+            { AddDateProp(ser, "activeDate", this._activeDate, this._activeDateAsDateOnly, null); }
             if (IsPropDirty("HideOutsideDays"))
             { ser.AddBooleanProp("hideOutsideDays", this._hideOutsideDays); }
             if (IsPropDirty("HideHeader"))

@@ -2,10 +2,10 @@ import { TypeDescriptionContext } from 'igniteui-core/TypeDescriptionContext';
 import { ComponentRenderer } from 'igniteui-core/ComponentRenderer';
 import { ModuleManager } from 'igniteui-core/module-manager';
 import { Base } from 'igniteui-core/type';
-import { dateMinValue } from 'igniteui-core/date';
 import { getAllPropertyNames } from 'igniteui-core/componentUtil';
 import { TypeRegistrar } from 'igniteui-core/type';
 import { Localization } from 'igniteui-core/Localization';
+import { toLocalISOStringWithOffset } from './dateInterop';
 
 export interface LoadedModules {
   readonly componentModule: { register: () => void };
@@ -1009,36 +1009,11 @@ export class Loader {
   public static transformReturn(retVal: any, root: any, owner: any, key: string) {
     if (typeof retVal != 'object') {
       if (key && owner[key] && owner[key] instanceof Date) {
-        // TFS 273070 - Browsers don't seem to like older dates and will use weird timezone offsets for them. These dates
-        // are timezone dependent, for example in North American timezones dates before November 1883 will have weird offsets
-        // where as the UK has a cutoff date at 1847.  That is a really hard problem to solve and most people don't seem to
-        // be using old dates so for now we will just check if the date is a min date and then return the appropriate ISO string
-        // for it so .NET can parse it correctly.
-        var minDate = dateMinValue();
-        if (owner[key].getTime() === minDate.getTime()) {
-          function formatTens(num: number): string {
-            return num < 10 ? '0' + num.toString() : num.toString();
-          }
-          function formatThousands(num: number): string {
-            if (num < 10) {
-              return '000' + num;
-            }
-            if (num < 100) {
-              return '00' + num;
-            }
-            if (num < 1000) {
-              return '0' + num;
-            }
-            return num.toString();
-          }
-          retVal =
-            formatThousands(minDate.getFullYear()) +
-            '-' +
-            formatTens(minDate.getMonth() + 1) +
-            '-' +
-            formatTens(minDate.getDate()) +
-            'T00:00:00.000';
-        }
+        // JSON.stringify runs Date.prototype.toJSON before the replacer, which converts to UTC and
+        // loses the browser's own offset. Re-serialize from the local components plus that offset so
+        // .NET can both read the wall clock and reconstruct the instant. This also avoids the weird
+        // historical timezone offsets browsers apply to very old dates (TFS 273070).
+        retVal = toLocalISOStringWithOffset(owner[key]);
         retVal = {
           __bounce: true,
           retType: 'date',
@@ -1250,7 +1225,7 @@ export class Loader {
       //console.log(value);
 
       if (value instanceof Date) {
-        return value;
+        return toLocalISOStringWithOffset(value);
       }
 
       var inVal = value;
