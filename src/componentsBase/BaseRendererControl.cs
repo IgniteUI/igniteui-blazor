@@ -158,12 +158,6 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<string, Action<object?, object?>> _handlers = new Dictionary<string, Action<object?, object?>>();
         private bool _updateQueued = false;
 
-        /// <summary>
-        /// Gets or sets what type of date conversion to make when round tripping dates.
-        /// </summary>
-        [Parameter]
-        public RoundTripDateConversion RoundTripDateConversion { get; set; } = RoundTripDateConversion.Auto;
-
         private DotNetObjectReference<WebCallback>? _objRef;
 
         private DotNetObjectReference<WebCallback> GetObjectRef()
@@ -2323,15 +2317,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine(val);
             if (val is String)
             {
-                switch (RoundTripDateConversion)
-                {
-                    case RoundTripDateConversion.UTC:
-                        return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    case RoundTripDateConversion.Auto:
-                    case RoundTripDateConversion.Local:
-                    default:
-                        return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).ToLocalTime();
-                }
+                return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             }
             else if (val is IConvertible)
             {
@@ -2347,15 +2333,7 @@ namespace IgniteUI.Blazor.Controls
                     return DateTime.MinValue;
                 }
 
-                switch (RoundTripDateConversion)
-                {
-                    case RoundTripDateConversion.UTC:
-                        return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    case RoundTripDateConversion.Auto:
-                    case RoundTripDateConversion.Local:
-                    default:
-                        return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).ToLocalTime();
-                }
+                return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             }
         }
 
