@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbButton"/> and <see cref="IgbIconButton"/>.
     /// </summary>
-    public partial class IgbButtonBase : BaseRendererControl
+    public partial class IgbButtonBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebButtonBase"; } }

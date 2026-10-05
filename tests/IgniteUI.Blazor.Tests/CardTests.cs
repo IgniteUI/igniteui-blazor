@@ -41,7 +41,7 @@ public class CardTests : BlazorComponentTestBase
     [Fact]
     public void Card_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbCard).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbCard).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }
 

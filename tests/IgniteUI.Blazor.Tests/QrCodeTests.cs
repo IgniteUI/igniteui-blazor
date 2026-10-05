@@ -145,6 +145,6 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
     [Fact]
     public void QrCode_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbQrCode).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbQrCode).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

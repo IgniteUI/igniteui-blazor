@@ -87,9 +87,9 @@
         app.StateHasChanged();
         await Task.Delay(1);
 
-        if (app.dc?.Instance is not BaseRendererControl renderer)
+        if (app.dc?.Instance is not IgbComponentBase renderer)
         {
-            return ComponentRunSummary.Failed(type, "the rendered component is not a BaseRendererControl");
+            return ComponentRunSummary.Failed(type, "the rendered component is not a IgbComponentBase");
         }
 
         await renderer.EnsureReady();

@@ -31,6 +31,6 @@ public class NavbarTests : BlazorComponentTestBase
     [Fact]
     public void Navbar_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbNavbar).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbNavbar).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

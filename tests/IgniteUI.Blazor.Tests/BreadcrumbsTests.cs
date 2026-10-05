@@ -55,7 +55,7 @@ public class BreadcrumbsTests : BlazorComponentTestBase
     [Fact]
     public void Breadcrumbs_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbBreadcrumbs).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbBreadcrumbs).IsSubclassOf(typeof(IgbComponentBase)));
     }
 
     private static RenderFragment BreadcrumbsWith(params string[] labels) => builder =>
@@ -117,6 +117,6 @@ public class BreadcrumbTests : BlazorComponentTestBase
     [Fact]
     public void Breadcrumb_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbBreadcrumb).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbBreadcrumb).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

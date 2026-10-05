@@ -21,7 +21,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         // gets the full list of valid properties for type
         public static List<PropertyInfo> GetValidProps(Type type)
         {
-            List<string> basePropNames = (typeof(BaseRendererControl)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
+            List<string> basePropNames = (typeof(IgbComponentBase)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
             // exclude readonly, broken component specific props, dependant props, props from the base renderer, templates and events
             .Where(x => x.CanWrite && !excludedProps.Contains(x.Name) && !dependantProps.Contains(x.Name) && !basePropNames.Contains(x.Name) && !x.Name.EndsWith("Script") &&
@@ -32,9 +32,9 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         public static List<MethodInfo> GetValidMethods(Type componentType)
         {
             var baseRendererMethodNames = new HashSet<string>();
-            if (componentType.IsAssignableTo(typeof(BaseRendererControl)))
+            if (componentType.IsAssignableTo(typeof(IgbComponentBase)))
             {
-                baseRendererMethodNames = [.. typeof(BaseRendererControl)
+                baseRendererMethodNames = [.. typeof(IgbComponentBase)
                     .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                     .Where(m => !m.IsSpecialName)
                     .Select(m => m.Name)];
@@ -70,7 +70,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             var classes = asm.GetTypes().Where(p =>
                  p.Namespace == "IgniteUI.Blazor.Controls" &&
                   p.Name.StartsWith("Igb") &&
-                  p.IsSubclassOf(typeof(BaseRendererControl))
+                  p.IsSubclassOf(typeof(IgbComponentBase))
             ).ToList();
 
             // The names come from TestUtil.GetComponentsForTesting and already carry the
@@ -92,7 +92,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         public static List<string> IgnoredProps()
         {
             List<string> all = new List<string>();
-            List<string> baseRenderedControlPropNames = (typeof(BaseRendererControl)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
+            List<string> baseRenderedControlPropNames = (typeof(IgbComponentBase)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
             List<string> baseRendererElementPropNames = (typeof(BaseRendererElement)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
             all = all.Concat(baseRenderedControlPropNames).ToList();
             all = all.Concat(baseRendererElementPropNames).ToList();

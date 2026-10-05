@@ -103,7 +103,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     [Fact]
     public void Tabs_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbTabs).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbTabs).IsSubclassOf(typeof(IgbComponentBase)));
     }
 
     #region Child collection lifecycle

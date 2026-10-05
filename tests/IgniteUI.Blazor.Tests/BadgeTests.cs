@@ -112,6 +112,6 @@ public class BadgeTests : BlazorComponentTestBase
     [Fact]
     public void Badge_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbBadge).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbBadge).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

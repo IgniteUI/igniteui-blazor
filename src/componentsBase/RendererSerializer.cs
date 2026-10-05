@@ -112,9 +112,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     (_component as BaseRendererElement)?.ObjectToParam(_context, val);
                 }
-                else if (_component is BaseRendererControl)
+                else if (_component is IgbComponentBase)
                 {
-                    (_component as BaseRendererControl)?.ObjectToParam(_context, val);
+                    (_component as IgbComponentBase)?.ObjectToParam(_context, val);
                 }
             }
         }
@@ -175,9 +175,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     (_component as BaseRendererElement)?.ObjectToParam(_context, propertyName, val);
                 }
-                else if (_component is BaseRendererControl)
+                else if (_component is IgbComponentBase)
                 {
-                    (_component as BaseRendererControl)?.ObjectToParam(_context, propertyName, val);
+                    (_component as IgbComponentBase)?.ObjectToParam(_context, propertyName, val);
                 }
             }
         }
@@ -190,7 +190,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 foreach (var val in items)
                 {
-                    if (val is BaseRendererControl || val is BaseRendererElement)
+                    if (val is IgbComponentBase || val is BaseRendererElement)
                     {
                         containsSub = true;
                         break;
@@ -264,9 +264,9 @@ namespace IgniteUI.Blazor.Controls
                         {
                             (_component as BaseRendererElement)?.ObjectToParam(context, val);
                         }
-                        else if (_component is BaseRendererControl)
+                        else if (_component is IgbComponentBase)
                         {
-                            (_component as BaseRendererControl)?.ObjectToParam(context, val);
+                            (_component as IgbComponentBase)?.ObjectToParam(context, val);
                         }
                     }
                 }

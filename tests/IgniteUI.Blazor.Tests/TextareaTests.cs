@@ -224,7 +224,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     [Fact]
     public void Textarea_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbTextarea).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbTextarea).IsSubclassOf(typeof(IgbComponentBase)));
     }
 
     /// <summary>

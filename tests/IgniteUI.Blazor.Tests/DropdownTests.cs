@@ -183,7 +183,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     [Fact]
     public void Dropdown_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbDropdown).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbDropdown).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }
 

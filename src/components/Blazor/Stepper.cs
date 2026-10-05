@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A stepper component that provides a wizard-like workflow by dividing content into logical steps.
     /// </summary>
-    public partial class IgbStepper : BaseRendererControl
+    public partial class IgbStepper : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebStepper"; } }

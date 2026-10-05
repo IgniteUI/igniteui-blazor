@@ -218,7 +218,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     [Fact]
     public void Select_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbSelect).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbSelect).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }
 

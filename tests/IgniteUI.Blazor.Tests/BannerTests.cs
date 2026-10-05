@@ -65,6 +65,6 @@ public class BannerTests : ComponentWithContractTestBase<IgbBanner>
     [Fact]
     public void Banner_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbBanner).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbBanner).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

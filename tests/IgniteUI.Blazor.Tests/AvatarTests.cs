@@ -95,6 +95,6 @@ public class AvatarTests : BlazorComponentTestBase
     [Fact]
     public void Avatar_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbAvatar).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbAvatar).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

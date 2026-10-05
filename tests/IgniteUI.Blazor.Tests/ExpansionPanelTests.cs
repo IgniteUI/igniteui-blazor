@@ -90,6 +90,6 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
     [Fact]
     public void ExpansionPanel_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbExpansionPanel).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbExpansionPanel).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

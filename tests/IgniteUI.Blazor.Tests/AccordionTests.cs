@@ -90,7 +90,7 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
     [Fact]
     public void Accordion_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbAccordion).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbAccordion).IsSubclassOf(typeof(IgbComponentBase)));
     }
 
     #region Child collection lifecycle

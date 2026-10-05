@@ -84,6 +84,6 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
     [Fact]
     public void Icon_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbIcon).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbIcon).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

@@ -88,7 +88,7 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
     [Fact]
     public void Stepper_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbStepper).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbStepper).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }
 

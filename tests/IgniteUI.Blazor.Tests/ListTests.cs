@@ -31,7 +31,7 @@ public class ListTests : BlazorComponentTestBase
     [Fact]
     public void List_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbList).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbList).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }
 

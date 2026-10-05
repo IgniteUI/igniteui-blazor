@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// useful when you want to allow users to enter a sizeable amount of free-form text,
     /// for example a comment on a review or feedback form.
     /// </summary>
-    public partial class IgbTextarea : BaseRendererControl
+    public partial class IgbTextarea : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTextarea"; } }

@@ -111,6 +111,6 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     [Fact]
     public void Dialog_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbDialog).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbDialog).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

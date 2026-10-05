@@ -126,7 +126,7 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbAccordion), "WebAccordion")]
     public void AllComponents_HaveCorrectType(System.Type componentType, string expectedType)
     {
-        var instance = (BaseRendererControl)Activator.CreateInstance(componentType)!;
+        var instance = (IgbComponentBase)Activator.CreateInstance(componentType)!;
         Assert.Equal(expectedType, instance.RendererType);
     }
 
@@ -153,6 +153,6 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbTextarea))]
     public void AllComponents_InheritFromBaseRendererControl(System.Type componentType)
     {
-        Assert.True(typeof(BaseRendererControl).IsAssignableFrom(componentType));
+        Assert.True(typeof(IgbComponentBase).IsAssignableFrom(componentType));
     }
 }

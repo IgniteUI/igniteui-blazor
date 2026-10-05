@@ -20,10 +20,10 @@ public sealed class DisposalCollection
 }
 
 /// <summary>
-/// Tests around <see cref="BaseRendererControl.DisposeAsync"/> — the async disposal
+/// Tests around <see cref="IgbComponentBase.DisposeAsync"/> — the async disposal
 /// path must be resilient to JS interop failures, since disposal typically runs
 /// while the Blazor circuit / JS runtime is being torn down and any interop call
-/// can legitimately throw. <see cref="BaseRendererControl"/> intentionally does
+/// can legitimately throw. <see cref="IgbComponentBase"/> intentionally does
 /// not implement <see cref="IDisposable"/> per Blazor guidance
 /// (https://learn.microsoft.com/aspnet/core/blazor/components/component-disposal):
 /// when both are implemented the framework only invokes the async overload.

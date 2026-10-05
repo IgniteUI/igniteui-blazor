@@ -152,6 +152,6 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
     [Fact]
     public void Chip_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbChip).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbChip).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

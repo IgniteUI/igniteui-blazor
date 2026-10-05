@@ -131,7 +131,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     [Fact]
     public void Radio_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbRadio).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbRadio).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }
 
@@ -197,7 +197,7 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
     [Fact]
     public void RadioGroup_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbRadioGroup).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbRadioGroup).IsSubclassOf(typeof(IgbComponentBase)));
     }
 
     /// <summary>

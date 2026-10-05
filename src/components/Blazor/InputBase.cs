@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbInputBase : BaseRendererControl
+    public partial class IgbInputBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebInputBase"; } }

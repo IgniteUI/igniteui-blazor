@@ -84,7 +84,7 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
     [Fact]
     public void NavDrawer_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbNavDrawer).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbNavDrawer).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }
 
