@@ -20,6 +20,11 @@ that package, so coordinate it with the package's maintainers.
   brushes) as extension methods.
 - `MarshalByValueFactory.AddProvider`: the full package registers its by-value types (chart and grid value objects).
 - `FindByName` is `internal virtual` on both base classes, so the full package's generated types override it the same way.
+- `BaseRendererElement.Name` has no `[Parameter]` (see `#436`): it also backs non-rendered `MarshalByValueAttribute`
+  types (e.g. `IgbIconMeta`), where `[Parameter]` trips analyzer BL0005 on ordinary object-initializer usage. The
+  full package renders several `BaseRendererElement`-derived types (chart axes, series, gauges) as components with
+  a `Name` markup attribute (e.g. `<IgbCategoryXAxis Name="xAxis" />`); its generator shadows `Name` with `new` and
+  `[Parameter]` on exactly those root, non-MarshalByValue types instead of asking for it here.
 
 ## Static web assets (`_content/IgniteUI.Blazor/`)
 
