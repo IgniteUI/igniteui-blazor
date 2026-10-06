@@ -126,7 +126,7 @@ namespace IgniteUI.Blazor.Controls
                     builder.AddAttribute(3, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
                     {
                         builder2.AddMarkupContent(4, "\r\n        ");
-                        ContentChildHost.AddChildContent(builder2, 5, this, ChildContent);
+                        builder2.AddContent(5, ChildContent);
                         builder2.AddMarkupContent(6, "\r\n    ");
                     });
                     builder.CloseComponent();
@@ -151,7 +151,7 @@ namespace IgniteUI.Blazor.Controls
                             builder2.OpenElement(5, "igc-portal-entrance");
                             builder2.AddAttribute(6, "portal-id", "portal-" + parentId + "/" + RendererName);
                             builder2.AddAttribute(7, "move-once-mode", "true");
-                            ContentChildHost.AddChildContent(builder2, 8, this, ChildContent);
+                            builder2.AddContent(8, ChildContent);
                             builder2.CloseElement();
                             builder2.AddMarkupContent(9, "\r\n    ");
                         });

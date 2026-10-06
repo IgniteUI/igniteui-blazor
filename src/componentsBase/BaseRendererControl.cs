@@ -68,14 +68,7 @@ namespace IgniteUI.Blazor.Controls
         private InteropModule? _interop;
 
         /// <summary>The client interop module this component talks to.</summary>
-        internal InteropModule Interop => _interop ??= Runtime.GetInteropModule(InteropModulePath);
-
-        /// <summary>
-        /// The path of the client interop module that renders this component. Components of another Ignite UI package
-        /// (the full IgniteUI.Blazor) override it with their own module, so each package's client runtime handles its
-        /// own components and the two never share window state.
-        /// </summary>
-        private protected virtual string InteropModulePath => InteropModule.LitePath;
+        internal InteropModule Interop => _interop ??= Runtime.GetInteropModule(InteropModule.LitePath);
 
         /// <summary>Requests the client modules this component needs; override to register more through <see cref="IgBlazor"/>.</summary>
         protected virtual void EnsureModulesLoaded()
@@ -531,7 +524,7 @@ namespace IgniteUI.Blazor.Controls
                 builder.AddAttribute(9 + 15 + Sequence.MaxSequence, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
                 {
                     //builder2.AddMarkupContent(10 + 15 + Sequence.MaxSequence, "\r\n        ");
-                    ContentChildHost.AddChildContent(builder2, 11 + 15 + Sequence.MaxSequence, this, ChildContent);
+                    builder2.AddContent(11 + 15 + Sequence.MaxSequence, ChildContent);
                     //builder2.AddMarkupContent(12 + 15 + Sequence.MaxSequence, "\r\n    ");
                 });
                 builder.CloseComponent();
@@ -622,7 +615,7 @@ namespace IgniteUI.Blazor.Controls
                 builder.AddAttribute(17, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
                 {
                     builder2.AddMarkupContent(18, "\r\n        ");
-                    ContentChildHost.AddChildContent(builder2, 19, this, ChildContent);
+                    builder2.AddContent(19, ChildContent);
                     builder2.AddMarkupContent(20, "\r\n    ");
                 });
                 builder.CloseComponent();
@@ -641,7 +634,7 @@ namespace IgniteUI.Blazor.Controls
                     builder2.OpenElement(26, "igc-portal-entrance");
                     builder2.AddAttribute(27, "portal-id", "portal-" + _containerId);
                     builder2.AddAttribute(28, "move-once-mode", "true");
-                    ContentChildHost.AddChildContent(builder2, 29, this, ChildContent);
+                    builder2.AddContent(29, ChildContent);
                     builder2.CloseElement();
                     builder2.AddMarkupContent(30, "\r\n    ");
                 });
@@ -2176,7 +2169,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
-        internal virtual object? FindByName(string name)
+        private protected virtual object? FindByName(string name)
         {
             if ("mainControl".Equals(name))
             {
@@ -3394,7 +3387,7 @@ namespace IgniteUI.Blazor.Controls
             return await Interop.InvokeAsync<object>("setResourceString", new object[] { "register", grouping, "", json });
         }
 
-        internal void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
+        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
         {
             System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
             if (type == null)
@@ -3448,7 +3441,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "Creates the property's own array PropertyType, which is present in metadata whenever the property exists.")]
-        internal void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
+        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
         {
             System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
             if (type == null)
@@ -3690,19 +3683,15 @@ namespace IgniteUI.Blazor.Controls
         public WebCallback WebCallback { get; private set; }
 
         private ConcurrentDictionary<string, bool> _loadedCache = new ConcurrentDictionary<string, bool>();
-        public void RequestLoad(string moduleName, string interopModulePath = InteropModule.LitePath)
+        public void RequestLoad(string moduleName)
         {
-            var key = LoadKey(moduleName, interopModulePath);
-            if (!IsRuntimeValid() || _loadedCache.ContainsKey(key))
+            if (!IsRuntimeValid() || _loadedCache.ContainsKey(moduleName))
             {
                 return;
             }
-            _loadedCache.AddOrUpdate(key, true, (name, oldValue) => true);
-            GetInteropModule(interopModulePath).Post(module => _ = module.InvokeVoidAsync("requestLoad", moduleName));
+            _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
+            GetInteropModule(InteropModule.LitePath).Post(module => _ = module.InvokeVoidAsync("requestLoad", moduleName));
         }
-
-        private static string LoadKey(string moduleName, string interopModulePath) =>
-            interopModulePath == InteropModule.LitePath ? moduleName : interopModulePath + "|" + moduleName;
 
         private readonly ConcurrentDictionary<string, InteropModule> _interopModules = new ConcurrentDictionary<string, InteropModule>();
 
@@ -3729,19 +3718,22 @@ namespace IgniteUI.Blazor.Controls
             }
             _interopModules.Clear();
         }
-        public bool IsLoadRequested(string moduleName, string interopModulePath = InteropModule.LitePath)
+        public bool IsLoadRequested(string moduleName)
         {
-            return _loadedCache.ContainsKey(LoadKey(moduleName, interopModulePath));
+            if (_loadedCache.ContainsKey(moduleName))
+            {
+                return true;
+            }
+            return false;
         }
 
-        public void MarkIsLoadRequested(string moduleName, string interopModulePath = InteropModule.LitePath)
+        public void MarkIsLoadRequested(string moduleName)
         {
-            var key = LoadKey(moduleName, interopModulePath);
-            if (!IsRuntimeValid() || _loadedCache.ContainsKey(key))
+            if (!IsRuntimeValid() || _loadedCache.ContainsKey(moduleName))
             {
                 return;
             }
-            _loadedCache.AddOrUpdate(key, true, (name, oldValue) => true);
+            _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
         }
 
         [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the optional RemoteJSRuntime.IsInitialized, which does not exist in supported trim targets (WASM, WebView); a string DynamicDependency is not an option — it fails with IL2035 where the Server assembly is absent.")]
@@ -3884,25 +3876,9 @@ namespace IgniteUI.Blazor.Controls
             runtime.AsRuntime().RequestLoad(moduleName);
         }
 
-        /// <summary>Requests <paramref name="moduleName"/> from the interop module of another Ignite UI package.</summary>
-        internal static void Load(IIgniteUIBlazor runtime, string moduleName, string interopModulePath)
-        {
-            runtime.AsRuntime().RequestLoad(moduleName, interopModulePath);
-        }
-
         internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
         {
             runtime.AsRuntime().MarkIsLoadRequested(moduleName);
-        }
-
-        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName, string interopModulePath)
-        {
-            runtime.AsRuntime().MarkIsLoadRequested(moduleName, interopModulePath);
-        }
-
-        internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName, string interopModulePath)
-        {
-            return runtime.AsRuntime().IsLoadRequested(moduleName, interopModulePath);
         }
 
         internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)

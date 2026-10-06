@@ -89,13 +89,6 @@ test('interop.js exports the client interop the components import', () => {
   ]);
 });
 
-test('package contract: fixed file names and the registry export the full package imports', () => {
-  // docs/PACKAGE-CONTRACT.md - the full IgniteUI.Blazor package imports these by name.
-  for (const f of ['api.js', 'interop.js', 'lit-html.js', 'IgniteUI.Blazor.Lite.lib.module.js']) {
-    assert.ok(jsFiles.includes(f), `missing ${f}`);
-  }
-  assert.ok(exportsOf(read('api.js')).includes('getRegisteredScript'), 'api.js no longer exports getRegisteredScript');
-});
 test('no interop functions on window', () => {
   // The interop is reached through interop.js (JS isolation); a second Ignite UI package brings its own module.
   const interopGlobal =
@@ -105,6 +98,8 @@ test('no interop functions on window', () => {
   for (const f of jsFiles) {
     assert.doesNotMatch(read(f), interopGlobal, f);
   }
+});
+
 test('legacy script globals and compatibility bundle are not emitted', () => {
   assert.equal(existsSync(join(wwwroot, 'app.bundle.js')), false);
   const emitted = jsFiles.map(read).join('\n');

@@ -13,7 +13,7 @@ export class IgcTemplateContainerComponent extends IgcTemplateContentComponent {
         if (!IgcTemplateContainerComponent._registered) {
             IgcTemplateContainerComponent._registered = true;
             if (window.customElements) {
-                if (!window.customElements.get(IgcTemplateContainerComponent.htmlTagName)) { window.customElements.define(IgcTemplateContainerComponent.htmlTagName, IgcTemplateContainerComponent); }
+                window.customElements.define(IgcTemplateContainerComponent.htmlTagName, IgcTemplateContainerComponent);
             } else {
                 (<any>document).registerElement(IgcTemplateContainerComponent.htmlTagName, IgcTemplateContainerComponent);
             }

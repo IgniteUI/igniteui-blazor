@@ -12,7 +12,6 @@ const entries = { app: 'src/src/index.ts', api: 'src/src/api.ts', interop: 'src/
 /**
  * Emits the Blazor JS initializer as a flat list of static imports.
  * Blazor awaits the import, so no startup hooks required for that.
- * api.js included for the deprecated window globals before Blazor starts.
  * interop.js included so the module the components import is already evaluated: their import() of it resolves to
  * this instance without another fetch, and nothing about startup depends on window.
  */

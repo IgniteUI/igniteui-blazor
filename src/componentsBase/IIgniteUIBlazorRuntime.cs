@@ -11,10 +11,9 @@ namespace IgniteUI.Blazor.Controls
         IJSRuntime JsRuntime { get; }
         IIgniteUIBlazorSettings? Settings { get; }
         WebCallback WebCallback { get; }
-        // Load requests are tracked per interop module: each Ignite UI package loads its client modules through its own.
-        void RequestLoad(string moduleName, string interopModulePath = InteropModule.LitePath);
-        bool IsLoadRequested(string moduleName, string interopModulePath = InteropModule.LitePath);
-        void MarkIsLoadRequested(string moduleName, string interopModulePath = InteropModule.LitePath);
+        void RequestLoad(string moduleName);
+        bool IsLoadRequested(string moduleName);
+        void MarkIsLoadRequested(string moduleName);
         bool IsRuntimeValid(bool reevaluate = false);
 
         /// <summary>The client interop module at <paramref name="path"/>, shared by the components of the runtime.</summary>

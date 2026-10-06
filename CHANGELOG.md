@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Infrastructure:** the package can now be extended by the full `IgniteUI.Blazor` package, which takes a dependency on it for the components listed here and builds its charts, grids and Dock Manager on the same runtime. Its infrastructure access is granted only to the Infragistics-signed `IgniteUI.Blazor` assembly. Format specifiers (`IgbNumberFormatSpecifier`) declared inside a component of the full package attach to it as content children. The full package's components use their own client interop module next to this package's, and load their client modules through it. What the full package relies on is listed in [docs/PACKAGE-CONTRACT.md](docs/PACKAGE-CONTRACT.md). The shared client elements (portals, template containers) are defined only once when both packages' client runtimes load on a page.
 - **Interop:** the components reach their client code through the `_content/IgniteUI.Blazor/interop.js` module (JS isolation) instead of functions on `window`. The internal `window.igSendMessage`, `igCheckReady`, `igWaitForLoaded`, `igRequestLoad`, `igSetResourceString`, `igConvertReturnValue` and `igUnmarshalledDataSource*` functions, the unused `igSendMessages` and the `raisingEvent` flag no longer exist. They were never a supported API. On .NET 8 WebAssembly, unmarshalled data now travels on the same path as on .NET 9+. [#255](https://github.com/IgniteUI/igniteui-blazor/issues/255)
 ### Added
 

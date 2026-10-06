@@ -38,7 +38,7 @@ _scriptRegistryEvents.addEventListener('registered', (e) => {
     if (refs.size === 0) containersPendingScriptRefs.delete(containerId);
   }
   for (const [containerId, json] of ready) {
-    (window as any).igSendMessage(containerId, json, null /* webCallback not used */, [] /* nativeElements not used */);
+    sendMessage(containerId, json, null /* webCallback not used */, [] /* nativeElements not used */);
   }
 });
 function getContainer(id: string): HTMLElement {

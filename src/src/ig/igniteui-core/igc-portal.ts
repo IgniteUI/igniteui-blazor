@@ -345,8 +345,8 @@ class PortalMessage {
 
 export class IgcPortalModule {
     public static register() {
-        if (!window.customElements.get("igc-portal-entrance")) { window.customElements.define("igc-portal-entrance", IgcPortalEntranceComponent); }
-        if (!window.customElements.get("igc-portal-exit")) { window.customElements.define("igc-portal-exit", IgcPortalExitComponent); }
-        if (!window.customElements.get("igc-portal-item")) { window.customElements.define("igc-portal-item", IgcPortalItemComponent); }
+        window.customElements.define("igc-portal-entrance", IgcPortalEntranceComponent);
+        window.customElements.define("igc-portal-exit", IgcPortalExitComponent);
+        window.customElements.define("igc-portal-item", IgcPortalItemComponent);
     }
 }
