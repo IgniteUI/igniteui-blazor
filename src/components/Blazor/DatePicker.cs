@@ -11,7 +11,7 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDatePicker"; } }
 
-        private Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+        private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <summary>
         /// Constructs an instance of <see cref="IgbDatePicker{TValue}"/>
