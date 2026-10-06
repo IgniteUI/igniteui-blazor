@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents an attachment associated with a chat message.
     /// </summary>
-    public partial class IgbChatMessageAttachment : BaseRendererElement
+    public partial class IgbChatMessageAttachment : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChatMessageAttachment"; } }

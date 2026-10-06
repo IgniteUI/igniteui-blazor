@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbTabs.Change"/> event, carrying the <see cref="IgbTab"/>
     /// instance the event applies to.
     /// </summary>
-    public partial class IgbTabComponentEventArgs : BaseRendererElement
+    public partial class IgbTabComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTabComponentEventArgs"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tab that became selected.
         /// </summary>
-        [Parameter]
         public IgbTab Detail
         {
             get { return this._detail; }

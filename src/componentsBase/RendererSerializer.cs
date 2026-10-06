@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
 
     internal partial class RendererSerializer
     {
-        public RendererSerializer(SerializationContext context, ComponentBase component, string name)
+        public RendererSerializer(SerializationContext context, JsonSerializable component, string name)
         {
             _name = name;
             _context = context;
@@ -16,7 +15,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private string? _name;
-        private ComponentBase? _component;
+        private readonly JsonSerializable? _component;
 
         private SerializationContext _context;
 
@@ -108,9 +107,9 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 // ObjectToParam this thing
-                if (_component is BaseRendererElement)
+                if (_component is BaseJsonSerializable)
                 {
-                    (_component as BaseRendererElement)?.ObjectToParam(_context, val);
+                    (_component as BaseJsonSerializable)?.ObjectToParam(_context, val);
                 }
                 else if (_component is IgbComponentBase)
                 {
@@ -171,9 +170,9 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 // ObjectToParam this thing
-                if (_component is BaseRendererElement)
+                if (_component is BaseJsonSerializable)
                 {
-                    (_component as BaseRendererElement)?.ObjectToParam(_context, propertyName, val);
+                    (_component as BaseJsonSerializable)?.ObjectToParam(_context, propertyName, val);
                 }
                 else if (_component is IgbComponentBase)
                 {
@@ -190,7 +189,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 foreach (var val in items)
                 {
-                    if (val is IgbComponentBase || val is BaseRendererElement)
+                    if (val is IgbComponentBase || val is BaseJsonSerializable)
                     {
                         containsSub = true;
                         break;
@@ -260,9 +259,9 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
-                        if (_component is BaseRendererElement)
+                        if (_component is BaseJsonSerializable)
                         {
-                            (_component as BaseRendererElement)?.ObjectToParam(context, val);
+                            (_component as BaseJsonSerializable)?.ObjectToParam(context, val);
                         }
                         else if (_component is IgbComponentBase)
                         {

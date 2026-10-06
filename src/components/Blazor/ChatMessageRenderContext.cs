@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The context object for renderers that deal with a specific chat message.
     /// </summary>
-    public partial class IgbChatMessageRenderContext : BaseRendererElement
+    public partial class IgbChatMessageRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChatMessageRenderContext"; } }

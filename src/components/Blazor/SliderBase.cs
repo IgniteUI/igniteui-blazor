@@ -367,13 +367,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbNumberFormatSpecifier? _valueFormatOptions;
+        private IgbNumberFormatOptions? _valueFormatOptions;
 
         /// <summary>
         /// Number format options used for the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public IgbNumberFormatSpecifier? ValueFormatOptions
+        public IgbNumberFormatOptions? ValueFormatOptions
         {
             get { return this._valueFormatOptions; }
             set

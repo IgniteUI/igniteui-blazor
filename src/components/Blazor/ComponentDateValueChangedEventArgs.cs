@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for component events that carry a date payload.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
-    public partial class IgbComponentDateValueChangedEventArgs : BaseRendererElement
+    public partial class IgbComponentDateValueChangedEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComponentDateValueChangedEventArgs"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The date value carried by the event.
         /// </summary>
-        [Parameter]
         public DateTime Detail
         {
             get { return this._detail; }

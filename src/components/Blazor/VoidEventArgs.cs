@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// notifications of the input controls or the opening, opened, closing and closed notifications
     /// of the components that show an overlay.
     /// </summary>
-    public partial class IgbVoidEventArgs : BaseRendererElement
+    public partial class IgbVoidEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "VoidEventArgs"; } }

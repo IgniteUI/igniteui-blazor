@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -8,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Raised by <see cref="IgbExpansionPanel"/> for itself and by <see cref="IgbAccordion"/> for its
     /// child panels.
     /// </summary>
-    public partial class IgbExpansionPanelComponentEventArgs : BaseRendererElement
+    public partial class IgbExpansionPanelComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebExpansionPanelComponentEventArgs"; } }
@@ -18,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The expansion panel the event was raised for.
         /// </summary>
-        [Parameter]
         public IgbExpansionPanel Detail
         {
             get { return this._detail; }

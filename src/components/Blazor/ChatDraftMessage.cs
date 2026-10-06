@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A message being composed by the user but not yet sent, including its text and attachments.
     /// </summary>
-    public partial class IgbChatDraftMessage : BaseRendererElement
+    public partial class IgbChatDraftMessage : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChatDraftMessage"; } }

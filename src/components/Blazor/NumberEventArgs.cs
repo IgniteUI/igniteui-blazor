@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for component events whose payload is a single number.
     /// </summary>
-    public partial class IgbNumberEventArgs : BaseRendererElement
+    public partial class IgbNumberEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebNumberEventArgs"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// The numeric payload of the event. Its meaning depends on the event that carries it, for
         /// example the new value of the control or the index of the affected item.
         /// </summary>
-        [Parameter]
         public double Detail
         {
             get { return this._detail; }

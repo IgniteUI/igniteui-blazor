@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -7,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTileManager"/>, such as <see cref="IgbTile.TileFullscreen"/> and
     /// <see cref="IgbTile.TileMaximize"/>.
     /// </summary>
-    public partial class IgbTileChangeStateEventArgs : BaseRendererElement
+    public partial class IgbTileChangeStateEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTileChangeStateEventArgs"; } }
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The affected tile and the state it is changing to.
         /// </summary>
-        [Parameter]
         public IgbTileChangeStateEventArgsDetail Detail
         {
             get { return this._detail; }

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -7,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTileManager"/>, such as <see cref="IgbTile.TileDragStart"/> and
     /// <see cref="IgbTile.TileResizeEnd"/>.
     /// </summary>
-    public partial class IgbTileComponentEventArgs : BaseRendererElement
+    public partial class IgbTileComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTileComponentEventArgs"; } }
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tile the operation applies to.
         /// </summary>
-        [Parameter]
         public IgbTile Detail
         {
             get { return this._detail; }
