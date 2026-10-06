@@ -89,7 +89,7 @@
 
         if (app.dc?.Instance is not IgbComponentBase renderer)
         {
-            return ComponentRunSummary.Failed(type, "the rendered component is not a IgbComponentBase");
+            return ComponentRunSummary.Failed(type, "the rendered component is not an IgbComponentBase");
         }
 
         await renderer.EnsureReady();
