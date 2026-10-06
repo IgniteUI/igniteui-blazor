@@ -70,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private Dictionary<string, WeakReference<IgbComponentBase>> _controlsMap = new Dictionary<string, WeakReference<IgbComponentBase>>();
+        private readonly Dictionary<string, WeakReference<IgbComponentBase>> _controlsMap = new Dictionary<string, WeakReference<IgbComponentBase>>();
         public void Register(IgbComponentBase control)
         {
             _controlsMap.Add(control.ContainerId, new WeakReference<IgbComponentBase>(control));
