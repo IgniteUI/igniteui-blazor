@@ -51,10 +51,10 @@ The render scope handed to the lambda is the cut for an arranged spec and the wh
 
 ### Dates
 
-Decoding converts to local time (`ReturnToDate`, default `RoundTripDateConversion.Auto`), so a decoded date is `Kind=Local` with a shifted reading. Rules:
+Decoded dates preserve the UTC instant and arrive with the same reading and `Kind=Utc`. Rules:
 
-- State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares against its local rendering and asserts the kind; an `Unspecified` expectation throws.
-- Never write `.ToLocalTime()` in a spec to make a comparison pass. If one seems needed, the assertion helper is missing a case — add it there. The one exception is an author-written `assert:` lambda, where you do the comparing: use `…Utc).ToLocalTime()` (see `DateRangePickerTests`' bind assert).
+- State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares the decoded date directly and asserts its kind; an `Unspecified` expectation throws.
+- Never write `.ToLocalTime()` in a spec or an author-written `assert:` lambda to make a comparison pass. If one seems needed, the assertion helper is missing a case — add it there.
 - Outbound dates (`.Prop` values, method args) are not decoded and keep the kind the spec wrote, so their wire expectation is a plain literal — `DateTimeKind.Utc` serializes with `Z`.
 
 Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in an object), `DatePickerTests`/`DateTimeInputTests` (nullable, with a `// TODO:` for the cleared case crossing as `MinValue`).
@@ -69,7 +69,7 @@ Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in a
   | Return kind | Contract form |
   |---|---|
   | none | omit — void overload |
-  | scalar (bool/number/string/date) | just the value: `returns: true` / `5.0` / a UTC `DateTime` — the wire return kind is derived from the value's type, and the decoded .NET return must round-trip back to it (dates: see the rule above — stated as the UTC instant, asserted as its local rendering) |
+  | scalar (bool/number/string/date) | just the value: `returns: true` / `5.0` / a UTC `DateTime` — the wire return kind is derived from the value's type, and the decoded .NET return must round-trip back to it (dates: see the rule above — stated as the UTC instant, asserted unchanged as `DateTimeKind.Utc`) |
   | single serialized object | arranged `Getter` overload with `InteropReturn.Object(...)` + value-level `assert:` — see `ChatTests.cs` `DraftMessage` |
   | array of component/data-item references | arranged `Getter` overload with `InteropReturn.Array` of refs, `Assert.Same` against arranged instances — see `TileManagerTests.cs` `Tiles`, `ComboTests.cs` `Value` |
   | single bound-object reference | arranged `Getter` overload with `InteropReturn.Ref(...)`, `Assert.Same` against the arranged child — see `SelectTests.cs`/`DropdownTests.cs` `SelectedItem` |
