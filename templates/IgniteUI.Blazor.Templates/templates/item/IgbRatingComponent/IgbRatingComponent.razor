@@ -9,7 +9,7 @@
     <div class="control">
         <label>Max: @Max</label>
         <div class="control-box">
-            <IgbSlider class="max-slider" @bind-Value="Max" Min="3" Max="10" Step="1" />
+            <IgbSlider TValue="double" class="max-slider" @bind-Value="Max" Min="3" Max="10" Step="1" />
         </div>
     </div>
 
@@ -26,7 +26,7 @@
 </div>
 
 <div class="component-host">
-    <IgbRating @bind-Value="Value"
+            <IgbRating TValue="double" @bind-Value="Value"
                Label="Rate your experience"
                Max="Max"
                Step="Step"

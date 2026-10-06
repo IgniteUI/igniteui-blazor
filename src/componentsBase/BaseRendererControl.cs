@@ -1190,7 +1190,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             str += ",";
                         }
-                        str += values[i].ToString();
+                        str += values[i].ToString(CultureInfo.InvariantCulture);
                     }
                 }
                 if (argument is double[])
@@ -1202,7 +1202,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             str += ",";
                         }
-                        str += values[i].ToString();
+                        str += values[i].ToString(CultureInfo.InvariantCulture);
                     }
                 }
                 str += "]";
@@ -1993,7 +1993,7 @@ namespace IgniteUI.Blazor.Controls
                             }
                             else
                             {
-                                returnValue = (Object)double.Parse(((JsonElement)obj["value"]).ToString());
+                                returnValue = (Object)double.Parse(((JsonElement)obj["value"]).ToString(), CultureInfo.InvariantCulture);
                             }
                         }
                         else if ("string".Equals(retType))
@@ -2222,7 +2222,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine(val);
             if (val is String)
             {
-                return double.Parse((String)val);
+                return double.Parse((String)val, CultureInfo.InvariantCulture);
             }
             else if (val is IConvertible)
             {
@@ -2233,7 +2233,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 //Console.WriteLine(val);
                 var stringVal = val.ToString();
-                return stringVal != null ? Double.Parse(stringVal) : double.NaN;
+                return stringVal != null ? Double.Parse(stringVal, CultureInfo.InvariantCulture) : double.NaN;
             }
         }
 
@@ -2252,7 +2252,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine(val);
             if (val is String)
             {
-                return (long)double.Parse((String)val);
+                return (long)double.Parse((String)val, CultureInfo.InvariantCulture);
             }
             else if (val is IConvertible)
             {
@@ -2263,7 +2263,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 var stringVal = val.ToString();
                 //Console.WriteLine(val);
-                return stringVal != null ? (long)Double.Parse(stringVal) : Int64.MinValue;
+                return stringVal != null ? (long)Double.Parse(stringVal, CultureInfo.InvariantCulture) : Int64.MinValue;
             }
         }
 
@@ -2515,6 +2515,34 @@ namespace IgniteUI.Blazor.Controls
             {
                 w.WriteNumberValue((long)val);
             }
+            else if (val is byte byteValue)
+            {
+                w.WriteNumberValue(byteValue);
+            }
+            else if (val is sbyte sbyteValue)
+            {
+                w.WriteNumberValue(sbyteValue);
+            }
+            else if (val is ushort ushortValue)
+            {
+                w.WriteNumberValue(ushortValue);
+            }
+            else if (val is uint uintValue)
+            {
+                w.WriteNumberValue(uintValue);
+            }
+            else if (val is ulong ulongValue)
+            {
+                w.WriteNumberValue(ulongValue);
+            }
+            else if (val is float floatValue)
+            {
+                w.WriteNumberValue(floatValue);
+            }
+            else if (val is decimal decimalValue)
+            {
+                w.WriteNumberValue(decimalValue);
+            }
             else if (val is bool)
             {
                 w.WriteBooleanValue((bool)val);
@@ -2596,6 +2624,34 @@ namespace IgniteUI.Blazor.Controls
             else if (val is short)
             {
                 w.WriteNumber(propertyName, (long)val);
+            }
+            else if (val is byte byteValue)
+            {
+                w.WriteNumber(propertyName, byteValue);
+            }
+            else if (val is sbyte sbyteValue)
+            {
+                w.WriteNumber(propertyName, sbyteValue);
+            }
+            else if (val is ushort ushortValue)
+            {
+                w.WriteNumber(propertyName, ushortValue);
+            }
+            else if (val is uint uintValue)
+            {
+                w.WriteNumber(propertyName, uintValue);
+            }
+            else if (val is ulong ulongValue)
+            {
+                w.WriteNumber(propertyName, ulongValue);
+            }
+            else if (val is float floatValue)
+            {
+                w.WriteNumber(propertyName, floatValue);
+            }
+            else if (val is decimal decimalValue)
+            {
+                w.WriteNumber(propertyName, decimalValue);
             }
             else if (val is bool)
             {
@@ -2948,6 +3004,38 @@ namespace IgniteUI.Blazor.Controls
             {
                 return null;
             }
+        }
+
+        internal static Type GetNumericType<TValue>()
+        {
+            var type = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+            if (type != typeof(int) &&
+                type != typeof(long) &&
+                type != typeof(short) &&
+                type != typeof(float) &&
+                type != typeof(double) &&
+                type != typeof(decimal))
+            {
+                throw new InvalidOperationException($"The type '{type}' is not a supported numeric type.");
+            }
+
+            return type;
+        }
+
+        internal TValue? ConvertToNumericValue<TValue>(object? value, Type numericType)
+        {
+            if (value is null)
+            {
+                return default;
+            }
+
+            value = ConvertReturnValue(value) ?? value;
+            return (TValue?)Convert.ChangeType(value, numericType, CultureInfo.InvariantCulture);
+        }
+
+        internal void AddNumericValue<TValue>(RendererSerializer serializer, string propertyName, TValue? value)
+        {
+            serializer.AddPrimitiveProp(propertyName, value);
         }
 
         internal int[]? ReturnToIntArray(object? val)

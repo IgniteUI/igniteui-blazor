@@ -136,7 +136,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Slider_RendersAllAttributes()
     {
-        var cut = Render<IgbSlider>(p => p
+        var cut = Render<IgbSlider<double>>(p => p
             .Add(x => x.Value, 50)
             .Add(x => x.Min, 0)
             .Add(x => x.Max, 100)
@@ -182,7 +182,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Rating_RendersAllAttributes()
     {
-        var cut = Render<IgbRating>(p => p
+        var cut = Render<IgbRating<double>>(p => p
             .Add(x => x.Value, 4)
             .Add(x => x.Max, 10)
             .Add(x => x.ReadOnly, true)
