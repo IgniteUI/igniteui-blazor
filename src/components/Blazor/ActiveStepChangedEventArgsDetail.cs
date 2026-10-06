@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload of the <see cref="IgbStepper.ActiveStepChanged"/> event.
     /// </summary>
-    public partial class IgbActiveStepChangedEventArgsDetail : BaseRendererElement
+    public partial class IgbActiveStepChangedEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebActiveStepChangedEventArgsDetail"; } }
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The index of the step that became active.
         /// </summary>
-        [Parameter]
         public double Index
         {
             get { return this._index; }
