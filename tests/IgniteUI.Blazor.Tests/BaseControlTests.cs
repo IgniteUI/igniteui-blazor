@@ -101,6 +101,24 @@ public class BaseControlTests : BlazorComponentTestBase
         Assert.Equal("igb-web-slider", element.GetAttribute("class"));
     }
 
+    [Fact]
+    public void ReturnToDate_TimezoneLessValue_IsUtc()
+    {
+        var result = Render<IgbCalendar>().Instance.ReturnToDate("0001-01-01T00:00:00.0000000");
+
+        Assert.Equal(DateTime.MinValue, result);
+        Assert.Equal(DateTimeKind.Utc, result.Kind);
+    }
+
+    [Fact]
+    public void ReturnToDate_OffsetBearingValue_IsNormalizedToUtc()
+    {
+        var result = Render<IgbCalendar>().Instance.ReturnToDate(new DateStringValue("2026-01-02T03:04:05+02:00"));
+
+        Assert.Equal(new DateTime(2026, 1, 2, 1, 4, 5, DateTimeKind.Utc), result);
+        Assert.Equal(DateTimeKind.Utc, result.Kind);
+    }
+
     [Theory]
     [InlineData(typeof(IgbButton), "WebButton")]
     [InlineData(typeof(IgbCheckbox), "WebCheckbox")]
@@ -128,6 +146,11 @@ public class BaseControlTests : BlazorComponentTestBase
     {
         var instance = (BaseRendererControl)Activator.CreateInstance(componentType)!;
         Assert.Equal(expectedType, instance.RendererType);
+    }
+
+    private sealed class DateStringValue(string value)
+    {
+        public override string ToString() => value;
     }
 
     [Theory]

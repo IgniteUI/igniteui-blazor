@@ -2317,7 +2317,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine(val);
             if (val is String)
             {
-                return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
             else if (val is IConvertible)
             {
@@ -2333,7 +2333,7 @@ namespace IgniteUI.Blazor.Controls
                     return DateTime.MinValue;
                 }
 
-                return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
         }
 
