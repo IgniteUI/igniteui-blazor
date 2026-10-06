@@ -4,25 +4,33 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for component events that carry a date payload.
+    /// The meaning of Detail depends on the event that raises it.
+    /// </summary>
+    public partial class IgbComponentDateValueChangedEventArgs : IgbComponentDateValueChangedEventArgs<DateTime>
+    {
+    }
+
+    /// <summary>
+    /// Event arguments for component events that carry a date payload.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
-    public partial class IgbComponentDateValueChangedEventArgs : BaseRendererElement
+    public partial class IgbComponentDateValueChangedEventArgs<T> : BaseRendererElement
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComponentDateValueChangedEventArgs"; } }
 
-        private DateTime _detail = DateTime.MinValue;
+        private protected T _detail = default!;
 
         /// <summary>
         /// The date value carried by the event.
         /// </summary>
         [Parameter]
-        public DateTime Detail
+        public T Detail
         {
             get { return this._detail; }
             set
             {
-                if (this._detail != value || !IsPropDirty("Detail"))
+                if (!EqualityComparer<T>.Default.Equals(this._detail, value) || !IsPropDirty("Detail"))
                 {
                     MarkPropDirty("Detail");
                 }
@@ -36,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Detail"))
-            { ser.AddDateTimeProp("detail", this._detail); }
+            { ser.AddPrimitiveProp("detail", this._detail); }
 
         }
 
@@ -46,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
             base.ToEventJson(control, args);
 
             if (IsPropDirty("Detail"))
-            { args["detail"] = DateToString(this._detail); }
+            { args["detail"] = ReturnToString(this._detail); }
 
         }
 
@@ -57,7 +65,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("detail", out var detailObj))
-            { this.Detail = ReturnToDate(detailObj); }
+            { this.Detail = (T)Convert.ChangeType(ConvertReturnValue(detailObj)!, typeof(T)); }
 
             this.SuppressParentNotify = false;
         }

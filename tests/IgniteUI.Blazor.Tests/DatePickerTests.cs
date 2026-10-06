@@ -3,9 +3,18 @@ using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
+public abstract class DatePickerTests<TValue> : ComponentWithContractTestBase<IgbDatePicker<TValue>>
 {
-    protected override ComponentContract<IgbDatePicker> InteropContract { get; } = new ComponentContract<IgbDatePicker>()
+    protected DatePickerTests(
+        TValue currentValue,
+        TValue changedValue,
+        Action<TValue?> assertChangedValue,
+        TValue value,
+        TValue activeDate,
+        TValue min,
+        TValue max)
+    {
+        InteropContract = new ComponentContract<IgbDatePicker<TValue>>()
         .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
         .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
         .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
@@ -20,20 +29,20 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         .Method(c => c.SetCustomValidityAsync("Please choose a valid date"), c => c.SetCustomValidity("Please choose a valid date"),
             "setCustomValidity", args: ["Please choose a valid date"], types: ["String"])
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
-            returns: new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc))
+            returns: currentValue)
         .Event(c => c.Opening)
         .Event(c => c.Opened)
         .Event(c => c.Closing)
         .Event(c => c.Closed)
         .Event(c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
+            assert: args => assertChangedValue(args.Detail))
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
+            expect: changedValue)
         .Event(c => c.Input,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
+            assert: args => assertChangedValue(args.Detail))
         .Prop(c => c.Open, true)
         .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Prop(c => c.KeepOpenOnSelect, true)
@@ -44,10 +53,10 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         .Prop(c => c.Mode, PickerMode.Dialog, wire: "dialog")
         .Prop(c => c.NonEditable, true)
         .Prop(c => c.ReadOnly, true)
-        .Prop(c => c.Value, new DateTime(2026, 3, 15, 9, 30, 0))
-        .Prop(c => c.ActiveDate, new DateTime(2026, 4, 1))
-        .Prop(c => c.Min, new DateTime(2026, 1, 1))
-        .Prop(c => c.Max, new DateTime(2026, 12, 31))
+        .Prop(c => c.Value, value)
+        .Prop(c => c.ActiveDate, activeDate)
+        .Prop(c => c.Min, min)
+        .Prop(c => c.Max, max)
         .Prop(c => c.HeaderOrientation, CalendarHeaderOrientation.Vertical, wire: "vertical")
         .Prop(c => c.Orientation, ContentOrientation.Vertical, wire: "vertical")
         .Prop(c => c.HideHeader, true)
@@ -87,6 +96,9 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         .Prop(c => c.Disabled, true)
         .Prop(c => c.Required, true)
         .Prop(c => c.Invalid, true);
+    }
+
+    protected override ComponentContract<IgbDatePicker<TValue>> InteropContract { get; }
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
@@ -103,19 +115,49 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
     [Fact]
     public void DatePicker_TypeMetadata()
     {
-        var picker = new IgbDatePicker();
+        var picker = new IgbDatePicker<TValue>();
         Assert.Equal("WebDatePicker", picker.RendererType);
     }
 
     /// <summary>
-    /// The wrapper must report the same initial values as <c>IgbDatePicker</c>'s web component,
+    /// The wrapper must report the same initial values as <c>IgbDatePicker{TValue}</c>'s web component,
     /// so reading a property that was never assigned does not lie about the rendered state.
     /// </summary>
     [Fact]
     public void DatePicker_DefaultValues_MatchWebComponent()
     {
-        var picker = new IgbDatePicker();
+        var picker = new IgbDatePicker<TValue>();
 
         Assert.Equal(1, picker.VisibleMonths);
+    }
+}
+
+public sealed class DatePickerDateTimeTests : DatePickerTests<DateTime>
+{
+    public DatePickerDateTimeTests()
+        : base(
+            new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc),
+            new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+            actual => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual.ToUniversalTime()),
+            new DateTime(2026, 3, 15, 9, 30, 0),
+            new DateTime(2026, 4, 1),
+            new DateTime(2026, 1, 1),
+            new DateTime(2026, 12, 31))
+    {
+    }
+}
+
+public sealed class DatePickerStringTests : DatePickerTests<string>
+{
+    public DatePickerStringTests()
+        : base(
+            "2026-03-15T09:30:00.000Z",
+            "2026-01-02T03:04:05.000Z",
+            actual => Assert.Equal("2026-01-02T03:04:05.000Z", actual),
+            "2026-03-15",
+            "2026-04-01",
+            "2026-01-01",
+            "2026-12-31")
+    {
     }
 }
