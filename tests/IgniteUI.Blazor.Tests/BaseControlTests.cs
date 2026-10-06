@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Bunit;
 using IgniteUI.Blazor.Controls;
 
@@ -99,6 +100,26 @@ public class BaseControlTests : BlazorComponentTestBase
         var cut = Render<IgbSlider>();
         var element = cut.Find("igc-slider");
         Assert.Equal("igb-web-slider", element.GetAttribute("class"));
+    }
+
+    [Fact]
+    public void ReturnToDate_TimezoneLessValue_IsUtc()
+    {
+        var result = Render<IgbCalendar>().Instance.ReturnToDate("0001-01-01T00:00:00.0000000");
+
+        Assert.Equal(DateTime.MinValue, result);
+        Assert.Equal(DateTimeKind.Utc, result.Kind);
+    }
+
+    [Fact]
+    public void ReturnToDate_OffsetBearingValue_IsNormalizedToUtc()
+    {
+        // A boxed JsonElement is what the deserialized event payload hands to ReturnToDate.
+        var value = JsonDocument.Parse("\"2026-01-02T03:04:05+02:00\"").RootElement;
+        var result = Render<IgbCalendar>().Instance.ReturnToDate(value);
+
+        Assert.Equal(new DateTime(2026, 1, 2, 1, 4, 5, DateTimeKind.Utc), result);
+        Assert.Equal(DateTimeKind.Utc, result.Kind);
     }
 
     [Theory]
