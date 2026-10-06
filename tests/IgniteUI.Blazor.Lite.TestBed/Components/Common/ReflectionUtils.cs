@@ -93,7 +93,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         {
             List<string> all = new List<string>();
             List<string> baseRenderedControlPropNames = (typeof(BaseRendererControl)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
-            List<string> baseRendererElementPropNames = (typeof(BaseRendererElement)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
+            List<string> baseRendererElementPropNames = (typeof(BaseJsonSerializable)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
             all = all.Concat(baseRenderedControlPropNames).ToList();
             all = all.Concat(baseRendererElementPropNames).ToList();
             all = all.Concat(excludedProps).ToList();

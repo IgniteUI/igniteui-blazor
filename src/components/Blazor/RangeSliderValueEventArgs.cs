@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbRangeSlider"/> value events, such as
     /// <see cref="IgbRangeSlider.Input"/> and <see cref="IgbRangeSlider.Change"/>.
     /// </summary>
-    public partial class IgbRangeSliderValueEventArgs : BaseRendererElement
+    public partial class IgbRangeSliderValueEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRangeSliderValueEventArgs"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The lower and upper thumb values of the range slider.
         /// </summary>
-        [Parameter]
         public IgbRangeSliderValue Detail
         {
             get { return this._detail; }

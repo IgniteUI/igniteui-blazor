@@ -1306,7 +1306,7 @@ namespace IgniteUI.Blazor.Controls
 
             if (!isElement && !isScript)
             {
-                if (newValue is BaseRendererControl || newValue is BaseRendererElement)
+                if (newValue is BaseRendererControl || newValue is BaseJsonSerializable)
                 {
                     isElement = true;
                 }
@@ -1331,14 +1331,14 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
-                        if (oldValue is BaseRendererElement)
+                        if (oldValue is BaseJsonSerializable)
                         {
-                            ((BaseRendererElement)oldValue).Parent = null;
+                            ((BaseJsonSerializable)oldValue).Parent = null;
                         }
-                        if (newValue is BaseRendererElement)
+                        if (newValue is BaseJsonSerializable)
                         {
-                            refId = _containerId + "/" + ((BaseRendererElement)newValue).RendererName;
-                            ((BaseRendererElement)newValue).Parent = this;
+                            refId = _containerId + "/" + ((BaseJsonSerializable)newValue).RendererName;
+                            ((BaseJsonSerializable)newValue).Parent = this;
                         }
                         else
                         {
@@ -1783,7 +1783,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void AttachChild(BaseRendererElement child)
+        internal void AttachChild(BaseJsonSerializable child)
         {
             if (child == null)
             {
@@ -1805,15 +1805,15 @@ namespace IgniteUI.Blazor.Controls
                 for (var i = 0; i < child.Count; i++)
                 {
                     var subChild = child[i];
-                    if (subChild is BaseRendererElement)
+                    if (subChild is BaseJsonSerializable)
                     {
-                        AttachChild((BaseRendererElement)(object)subChild);
+                        AttachChild((BaseJsonSerializable)(object)subChild);
                     }
                 }
             }
         }
 
-        internal void DetachChild(BaseRendererElement child)
+        internal void DetachChild(BaseJsonSerializable child)
         {
             if (child == null)
             {
@@ -2054,9 +2054,9 @@ namespace IgniteUI.Blazor.Controls
                                 }
                                 if (o != null)
                                 {
-                                    if (o is BaseRendererElement)
+                                    if (o is BaseJsonSerializable)
                                     {
-                                        ((BaseRendererElement)o).TempParent = this;
+                                        ((BaseJsonSerializable)o).TempParent = this;
                                         var v = ((JsonElement)obj["value"]);
                                         var str = v.ToString();
                                         //Console.WriteLine(str);
@@ -2070,7 +2070,7 @@ namespace IgniteUI.Blazor.Controls
                                                 eventArgs[item.Key] = item.Value;
                                             }
                                         }
-                                        ((BaseRendererElement)o).FromEventJson(this, eventArgs);
+                                        ((BaseJsonSerializable)o).FromEventJson(this, eventArgs);
                                         returnValue = o;
                                     }
                                     // else if (o is BaseRendererControl)
@@ -2365,14 +2365,13 @@ namespace IgniteUI.Blazor.Controls
 
         internal string? ComponentToJson(object val, int index)
         {
-            if (val is BaseRendererControl || val is BaseRendererElement)
+            if (val is BaseRendererControl || val is BaseJsonSerializable)
             {
                 string refId;
-                if (val is BaseRendererElement)
+                if (val is BaseJsonSerializable)
                 {
                     //TODO: this should be the parent component's _Container id.... but maybe we don't need elements here.
-                    refId = _containerId + "/" + ((BaseRendererElement)val).RendererName;
-                    //((BaseRendererElement)val).Parent = this;
+                    refId = _containerId + "/" + ((BaseJsonSerializable)val).RendererName;
                 }
                 else
                 {
@@ -2442,9 +2441,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     typeName = ((BaseRendererControl)val).RendererType;
                 }
-                else if (val is BaseRendererElement)
+                else if (val is BaseJsonSerializable)
                 {
-                    typeName = ((BaseRendererElement)val).RendererType;
+                    typeName = ((BaseJsonSerializable)val).RendererType;
                 }
                 else
                 {
@@ -2463,11 +2462,11 @@ namespace IgniteUI.Blazor.Controls
             {
                 ((JsonSerializable)(val)).Serialize(context);
             }
-            else if (val is BaseRendererElement)
+            else if (val is BaseJsonSerializable)
             {
                 w.WriteStartObject();
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererElement)val).RendererName);
+                w.WriteString("id", ((BaseJsonSerializable)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is BaseRendererControl)
@@ -2524,9 +2523,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     typeName = ((BaseRendererControl)val).RendererType ?? "";
                 }
-                else if (val is BaseRendererElement)
+                else if (val is BaseJsonSerializable)
                 {
-                    typeName = ((BaseRendererElement)val).RendererType;
+                    typeName = ((BaseJsonSerializable)val).RendererType;
                 }
                 else
                 {
@@ -2545,11 +2544,11 @@ namespace IgniteUI.Blazor.Controls
             {
                 ((JsonSerializable)(val)).Serialize(c);
             }
-            else if (val is BaseRendererElement)
+            else if (val is BaseJsonSerializable)
             {
                 w.WriteStartObject(propertyName);
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererElement)val).RendererName);
+                w.WriteString("id", ((BaseJsonSerializable)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is BaseRendererControl)
@@ -2965,7 +2964,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
+        internal void OnElementNameChanged(BaseJsonSerializable element, string oldName, string newName)
         {
             List<string> toRename = new List<string>();
             foreach (var key in _handlers.Keys)
@@ -3018,7 +3017,7 @@ namespace IgniteUI.Blazor.Controls
             System.Threading.Tasks.TaskScheduler.Default);
         }
 
-        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
+        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T>? onArgs = null) where T : BaseJsonSerializable, new()
         {
             if (!handler.HasValue)
             {
@@ -3038,7 +3037,7 @@ namespace IgniteUI.Blazor.Controls
                 var eventArgs = args as Dictionary<string, object?>;
 
                 T a = new T();
-                BaseRendererElement ele = (BaseRendererElement)a;
+                BaseJsonSerializable ele = (BaseJsonSerializable)a;
                 ele.Parent = this;
                 ele.FromEventJson(this, eventArgs);
                 //Console.WriteLine("invoking async");
@@ -3084,7 +3083,7 @@ namespace IgniteUI.Blazor.Controls
             _handlers[name + "/" + propertyName] = inner;
         }
 
-        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
+        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T>? onArgs = null) where T : BaseJsonSerializable, new()
         {
             if (handler == null)
             {
@@ -3103,7 +3102,7 @@ namespace IgniteUI.Blazor.Controls
                 var eventArgs = args as Dictionary<string, object?>;
 
                 T a = new T();
-                BaseRendererElement ele = (BaseRendererElement)a;
+                BaseJsonSerializable ele = (BaseJsonSerializable)a;
                 ele.Parent = this;
                 ele.FromEventJson(this, eventArgs);
                 //Console.WriteLine("invoking async");
@@ -3177,9 +3176,9 @@ namespace IgniteUI.Blazor.Controls
                     }
 
                     senderObj = ConvertReturnValue(sender);
-                    if (senderObj is BaseRendererElement)
+                    if (senderObj is BaseJsonSerializable)
                     {
-                        var ele = (BaseRendererElement)senderObj;
+                        var ele = (BaseJsonSerializable)senderObj;
                         if (ele.Parent == null)
                         {
                             ele.TempParent = this;
@@ -3232,9 +3231,9 @@ namespace IgniteUI.Blazor.Controls
                 }
                 finally
                 {
-                    if (senderObj is BaseRendererElement)
+                    if (senderObj is BaseJsonSerializable)
                     {
-                        var ele = (BaseRendererElement)senderObj;
+                        var ele = (BaseJsonSerializable)senderObj;
                         if (ele.Parent == null)
                         {
                             ele.TempParent = null;

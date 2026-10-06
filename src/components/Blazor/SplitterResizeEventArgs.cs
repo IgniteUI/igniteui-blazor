@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbSplitter"/> resize events.
     /// </summary>
-    public partial class IgbSplitterResizeEventArgs : BaseRendererElement
+    public partial class IgbSplitterResizeEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSplitterResizeEventArgs"; } }
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current sizes of the panes adjacent to the resized splitter bar.
         /// </summary>
-        [Parameter]
         public IgbSplitterResizeEventArgsDetail Detail
         {
             get { return this._detail; }
