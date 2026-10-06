@@ -3840,25 +3840,5 @@ namespace IgniteUI.Blazor.Controls
             return runtime.AsRuntime().IsLoadRequested(moduleName);
         }
     }
-    /// <summary>
-    /// Enum defining different round trip date conversions.
-    /// </summary>
-    public enum RoundTripDateConversion
-    {
-        /// <summary>
-        /// The component will decide how to convert round tripped dates.
-        /// </summary>
-        Auto,
-
-        /// <summary>
-        /// The component will convert round tripped dates to UTC.
-        /// </summary>
-        UTC,
-
-        /// <summary>
-        /// The component will convert round tripped dates to local time.
-        /// </summary>
-        Local
-    }
 
 }
