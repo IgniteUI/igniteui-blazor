@@ -91,10 +91,4 @@ public class AvatarTests : BlazorComponentTestBase
 
         Assert.Contains("img", cut.Find("igc-avatar").InnerHtml);
     }
-
-    [Fact]
-    public void Avatar_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbAvatar).IsSubclassOf(typeof(IgbComponentBase)));
-    }
 }

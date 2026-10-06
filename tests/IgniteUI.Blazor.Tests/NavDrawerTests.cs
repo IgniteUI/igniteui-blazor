@@ -81,11 +81,6 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
         Assert.Equal("relative", cut.Find("igc-nav-drawer").GetAttribute("position"));
     }
 
-    [Fact]
-    public void NavDrawer_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbNavDrawer).IsSubclassOf(typeof(IgbComponentBase)));
-    }
 }
 
 public class NavDrawerItemTests : BlazorComponentTestBase

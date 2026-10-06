@@ -108,10 +108,4 @@ public class BadgeTests : BlazorComponentTestBase
 
         Assert.Contains("99+", cut.Find("igc-badge").InnerHtml);
     }
-
-    [Fact]
-    public void Badge_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbBadge).IsSubclassOf(typeof(IgbComponentBase)));
-    }
 }

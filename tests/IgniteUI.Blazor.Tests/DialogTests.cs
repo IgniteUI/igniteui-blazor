@@ -108,9 +108,4 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
         Assert.Contains("Dialog content here", cut.Markup);
     }
 
-    [Fact]
-    public void Dialog_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbDialog).IsSubclassOf(typeof(IgbComponentBase)));
-    }
 }

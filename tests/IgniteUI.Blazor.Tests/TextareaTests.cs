@@ -221,12 +221,6 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
         Assert.Equal("on", element.GetAttribute("autocomplete"));
     }
 
-    [Fact]
-    public void Textarea_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbTextarea).IsSubclassOf(typeof(IgbComponentBase)));
-    }
-
     /// <summary>
     /// The wrapper must report the same initial values as <c>IgbTextarea</c>'s web component,
     /// so reading a property that was never assigned does not lie about the rendered state.

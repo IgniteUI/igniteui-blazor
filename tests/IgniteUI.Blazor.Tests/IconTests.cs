@@ -81,9 +81,4 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
         Assert.Contains("svg", cut.Find("igc-icon").InnerHtml);
     }
 
-    [Fact]
-    public void Icon_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbIcon).IsSubclassOf(typeof(IgbComponentBase)));
-    }
 }

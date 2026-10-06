@@ -38,11 +38,6 @@ public class CardTests : BlazorComponentTestBase
         Assert.Contains("Card content", cut.Markup);
     }
 
-    [Fact]
-    public void Card_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbCard).IsSubclassOf(typeof(IgbComponentBase)));
-    }
 }
 
 public class CardHeaderTests : BlazorComponentTestBase

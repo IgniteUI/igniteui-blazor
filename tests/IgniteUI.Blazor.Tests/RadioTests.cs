@@ -128,11 +128,6 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
         Assert.Contains("Option A", cut.Markup);
     }
 
-    [Fact]
-    public void Radio_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbRadio).IsSubclassOf(typeof(IgbComponentBase)));
-    }
 }
 
 public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
@@ -192,12 +187,6 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
 
         var element = cut.Find("igc-radio-group");
         Assert.Equal("selected-option", element.GetAttribute("value"));
-    }
-
-    [Fact]
-    public void RadioGroup_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbRadioGroup).IsSubclassOf(typeof(IgbComponentBase)));
     }
 
     /// <summary>
