@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The options used to format the months and the weekdays in the calendar views.
-    /// Set through <see cref="IgbCalendar.FormatOptions"/>.
+    /// Set through <see cref="IgbCalendar{TValue}.FormatOptions"/>.
     /// </summary>
     public partial class IgbCalendarFormatOptions : BaseRendererElement
     {

@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// The localized strings used by the calendar views, exposed through the <c>ResourceStrings</c>
-    /// property of <see cref="IgbCalendar"/> and <see cref="IgbDatePicker{TValue}"/>.
+    /// property of <see cref="IgbCalendar{TValue}"/> and <see cref="IgbDatePicker{TValue}"/>.
     /// </summary>
     public partial class IgbCalendarResourceStrings : BaseRendererElement
     {

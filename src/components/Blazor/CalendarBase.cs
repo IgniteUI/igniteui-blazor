@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class for <see cref="IgbCalendar"/>.
+    /// Base class for <see cref="IgbCalendar{TValue}"/>.
     /// </summary>
     public partial class IgbCalendarBase : BaseRendererControl
     {

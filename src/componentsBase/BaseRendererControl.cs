@@ -2998,10 +2998,53 @@ namespace IgniteUI.Blazor.Controls
             }
             else if (genericType == typeof(string))
             {
+                if (value is DateTime dateTime)
+                {
+                    return (TValue)(object)dateTime.ToString("o", CultureInfo.InvariantCulture);
+                }
+
                 return (TValue)(object)ReturnToString(value);
             }
 
             return default!;
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string array conversion.
+        /// </summary>
+        internal TValue[] ConvertToGenericValueArray<TValue>(object? value, Type genericType)
+        {
+            if (value == null)
+            {
+                return [];
+            }
+            else if (genericType == typeof(DateTime))
+            {
+                if (value is System.Collections.IEnumerable values &&
+                    value is not string &&
+                    value is not System.Collections.IDictionary)
+                {
+                    return values.Cast<object?>()
+                        .Select(item => ConvertToGenericValue<TValue>(item, genericType))
+                        .ToArray();
+                }
+
+                return ReturnToDateArray(value).Select(date => (TValue)(object)date).ToArray();
+            }
+            else if (genericType == typeof(string))
+            {
+                value = ConvertReturnValue(value) ?? value;
+                if (value is System.Collections.IEnumerable values && value is not string)
+                {
+                    return values.Cast<object?>()
+                        .Select(item => ConvertToGenericValue<TValue>(item, genericType))
+                        .ToArray();
+                }
+
+                return (ReturnToStringArray(value) ?? []).Select(item => (TValue)(object)item).ToArray();
+            }
+
+            return [];
         }
 
         /// <summary>
@@ -3024,6 +3067,25 @@ namespace IgniteUI.Blazor.Controls
             else if (value is string dateString)
             {
                 ser.AddStringProp(propName, dateString);
+            }
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string array conversion.
+        /// </summary>
+        internal void AddGenericValueArray<TValue>(RendererSerializer ser, string propName, TValue[]? values, Type genericType)
+        {
+            if (values is null)
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (genericType == typeof(DateTime))
+            {
+                ser.AddDateArrayProp(propName, values.Select(value => (DateTime)(object)value!).ToArray());
+            }
+            else if (genericType == typeof(string))
+            {
+                ser.AddStringArrayProp(propName, values.Select(value => (string)(object)value!).ToArray());
             }
         }
 
