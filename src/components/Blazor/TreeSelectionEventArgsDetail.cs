@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload carried by <see cref="IgbTree.SelectionChanged"/>, holding the selection
     /// the tree is about to apply.
     /// </summary>
-    public partial class IgbTreeSelectionEventArgsDetail : BaseRendererElement
+    public partial class IgbTreeSelectionEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTreeSelectionEventArgsDetail"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tree items that will make up the new selection.
         /// </summary>
-        [Parameter]
         public IgbTreeItem[] NewSelection
         {
             get { return this._newSelection; }

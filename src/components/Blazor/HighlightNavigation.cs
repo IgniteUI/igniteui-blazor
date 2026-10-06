@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Options for controlling navigation behavior when moving the active highlight.
     /// </summary>
-    public partial class IgbHighlightNavigation : BaseRendererElement
+    public partial class IgbHighlightNavigation : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebHighlightNavigation"; } }

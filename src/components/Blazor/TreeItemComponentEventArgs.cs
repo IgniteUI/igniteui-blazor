@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -7,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTree.ItemExpanding"/>, <see cref="IgbTree.ItemCollapsed"/> and
     /// <see cref="IgbTree.ActiveItem"/>.
     /// </summary>
-    public partial class IgbTreeItemComponentEventArgs : BaseRendererElement
+    public partial class IgbTreeItemComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTreeItemComponentEventArgs"; } }
@@ -17,7 +15,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tree item the event applies to.
         /// </summary>
-        [Parameter]
         public IgbTreeItem Detail
         {
             get { return this._detail; }

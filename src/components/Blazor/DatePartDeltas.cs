@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// in a date-time input. Set through the <c>SpinDelta</c> property of
     /// <see cref="IgbDateTimeInput"/>; every part defaults to <c>1</c>.
     /// </summary>
-    public partial class IgbDatePartDeltas : BaseRendererElement
+    public partial class IgbDatePartDeltas : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "DatePartDeltas"; } }
