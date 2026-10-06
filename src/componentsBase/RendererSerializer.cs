@@ -111,9 +111,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     (_component as BaseJsonSerializable)?.ObjectToParam(_context, val);
                 }
-                else if (_component is BaseRendererControl)
+                else if (_component is IgbComponentBase)
                 {
-                    (_component as BaseRendererControl)?.ObjectToParam(_context, val);
+                    (_component as IgbComponentBase)?.ObjectToParam(_context, val);
                 }
             }
         }
@@ -174,9 +174,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     (_component as BaseJsonSerializable)?.ObjectToParam(_context, propertyName, val);
                 }
-                else if (_component is BaseRendererControl)
+                else if (_component is IgbComponentBase)
                 {
-                    (_component as BaseRendererControl)?.ObjectToParam(_context, propertyName, val);
+                    (_component as IgbComponentBase)?.ObjectToParam(_context, propertyName, val);
                 }
             }
         }
@@ -189,7 +189,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 foreach (var val in items)
                 {
-                    if (val is BaseRendererControl || val is BaseJsonSerializable)
+                    if (val is IgbComponentBase || val is BaseJsonSerializable)
                     {
                         containsSub = true;
                         break;
@@ -263,9 +263,9 @@ namespace IgniteUI.Blazor.Controls
                         {
                             (_component as BaseJsonSerializable)?.ObjectToParam(context, val);
                         }
-                        else if (_component is BaseRendererControl)
+                        else if (_component is IgbComponentBase)
                         {
-                            (_component as BaseRendererControl)?.ObjectToParam(context, val);
+                            (_component as IgbComponentBase)?.ObjectToParam(context, val);
                         }
                     }
                 }

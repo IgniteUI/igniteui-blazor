@@ -142,9 +142,4 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
         Assert.Equal(QrCornerSquareStyle.Square, qrCode.SquareStyle);
     }
 
-    [Fact]
-    public void QrCode_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbQrCode).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

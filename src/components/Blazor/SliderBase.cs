@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbRangeSlider"/> and <see cref="IgbSlider"/>.
     /// </summary>
-    public partial class IgbSliderBase : BaseRendererControl
+    public partial class IgbSliderBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSliderBase"; } }

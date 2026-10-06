@@ -149,9 +149,4 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
         Assert.Contains("Tag Label", cut.Markup);
     }
 
-    [Fact]
-    public void Chip_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbChip).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

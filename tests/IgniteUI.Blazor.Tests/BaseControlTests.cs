@@ -5,7 +5,7 @@ using IgniteUI.Blazor.Controls;
 namespace IgniteUI.Blazor.Tests;
 
 /// <summary>
-/// Tests verifying common BaseRendererControl functionality across all components.
+/// Tests verifying common IgbComponentBase functionality across all components.
 /// </summary>
 public class BaseControlTests : BlazorComponentTestBase
 {
@@ -147,7 +147,7 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbAccordion), "WebAccordion")]
     public void AllComponents_HaveCorrectType(System.Type componentType, string expectedType)
     {
-        var instance = (BaseRendererControl)Activator.CreateInstance(componentType)!;
+        var instance = (IgbComponentBase)Activator.CreateInstance(componentType)!;
         Assert.Equal(expectedType, instance.RendererType);
     }
 
@@ -172,8 +172,8 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbCard))]
     [InlineData(typeof(IgbSelect))]
     [InlineData(typeof(IgbTextarea))]
-    public void AllComponents_InheritFromBaseRendererControl(System.Type componentType)
+    public void AllComponents_InheritFromIgbComponentBase(System.Type componentType)
     {
-        Assert.True(typeof(BaseRendererControl).IsAssignableFrom(componentType));
+        Assert.True(typeof(IgbComponentBase).IsAssignableFrom(componentType));
     }
 }

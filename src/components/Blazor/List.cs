@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Displays a collection of data items in a templatable list format.
     /// </summary>
-    public partial class IgbList : BaseRendererControl
+    public partial class IgbList : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebList"; } }

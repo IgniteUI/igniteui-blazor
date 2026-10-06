@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Allows formatting the values of the slider as string values.
     /// The text content of the slider labels is used for thumb and tick labels.
     /// </summary>
-    public partial class IgbSliderLabel : BaseRendererControl
+    public partial class IgbSliderLabel : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSliderLabel"; } }
