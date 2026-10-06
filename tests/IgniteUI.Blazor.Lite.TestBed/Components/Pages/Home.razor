@@ -29,7 +29,7 @@
     private string eventMessage = string.Empty;
     private ComponentRunSummary summary = new();
 
-    // BaseRendererControl.QueueUpdate flushes to the client on a queued, fire-and-forget pass
+    // IgbComponentBase.QueueUpdate flushes to the client on a queued, fire-and-forget pass
     // timed by the thread pool, so wait for results to show up, not for a fixed delay.
     private const int PropagationTimeoutMs = 1000;
     private const int PollIntervalMs = 20;

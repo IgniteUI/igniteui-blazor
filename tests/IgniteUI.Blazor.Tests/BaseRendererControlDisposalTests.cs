@@ -29,7 +29,7 @@ public sealed class DisposalCollection
 /// when both are implemented the framework only invokes the async overload.
 /// </summary>
 [Collection(DisposalCollection.Name)]
-public class BaseRendererControlDisposalTests : BlazorComponentTestBase
+public class IgbComponentBaseDisposalTests : BlazorComponentTestBase
 {
     [Fact]
     public async Task DisposeAsync_WhenInteropThrowsJSException_DoesNotThrow()

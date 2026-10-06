@@ -151,7 +151,7 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbCard))]
     [InlineData(typeof(IgbSelect))]
     [InlineData(typeof(IgbTextarea))]
-    public void AllComponents_InheritFromBaseRendererControl(System.Type componentType)
+    public void AllComponents_InheritFromIgbComponentBase(System.Type componentType)
     {
         Assert.True(typeof(IgbComponentBase).IsAssignableFrom(componentType));
     }

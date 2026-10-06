@@ -110,7 +110,7 @@ namespace IgniteUI.Blazor.Controls
         {
             get
             {
-                return "BaseRenderControlParent";
+                return "IgbComponentBaseParent";
             }
         }
 
