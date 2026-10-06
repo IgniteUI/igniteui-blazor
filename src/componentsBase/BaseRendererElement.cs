@@ -538,6 +538,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        internal virtual Type? GenericType => null;
+
         void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
 
         internal void Serialize(SerializationContext context, string? propertyName = null)
@@ -1142,6 +1144,22 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// Converts event json values to the specified type. Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="detailObj"></param>
+        /// <param name="genericType"></param>
+        /// <returns></returns>
+        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj, Type genericType)
+        {
+            var value = ConvertReturnValue(detailObj);
+            if (value is null)
+            {
+                return default;
     }
 
+            return (TValue)Convert.ChangeType(value, genericType);
+        }
+    }
 }
