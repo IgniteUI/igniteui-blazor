@@ -5,10 +5,21 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The Date Range Picker includes a text input and a calendar pop-up, allowing users to easily select start and end dates.
     /// </summary>
-    public partial class IgbDateRangePicker : IgbComboBoxBaseLike
+    public partial class IgbDateRangePicker<TValue> : IgbComboBoxBaseLike
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateRangePicker"; } }
+
+        internal override Type? GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
+        /// <summary>
+        /// Constructs an instance of <see cref="IgbDateRangePicker{TValue}"/>.
+        /// </summary>
+        public IgbDateRangePicker()
+        {
+            if (GenericType != typeof(DateTime) && GenericType != typeof(string))
+            { throw new InvalidOperationException($"Unsupported {GetType()} type param '{GenericType}'."); }
+        }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -37,13 +48,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private IgbDateRangeValue? _value;
+        private IgbDateRangeValue<TValue>? _value;
 
         /// <summary>
         /// The value of the picker.
         /// </summary>
         [Parameter]
-        public IgbDateRangeValue? Value
+        public IgbDateRangeValue<TValue>? Value
         {
             get { return this._value; }
             set
@@ -65,49 +76,51 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the picker.
         /// </summary>
-        public async Task<IgbDateRangeValue?> GetCurrentValueAsync()
+        public async Task<IgbDateRangeValue<TValue>?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbDateRangeValue);
-            }
-            var retVal = (IgbDateRangeValue?)ConvertReturnValue(iv);
-            if (retVal == null)
-            {
-                return default(IgbDateRangeValue);
-            }
-            return retVal;
-
+            var iv = await InvokeMethod("p:Value", [], []);
+            return ConvertRangeValue(iv);
         }
 
         /// <summary>
         /// Returns the current value of the picker.
         /// </summary>
-        public IgbDateRangeValue? GetCurrentValue()
+        public IgbDateRangeValue<TValue>? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-
-            if (iv == null)
-            {
-                return default(IgbDateRangeValue);
-            }
-            var retVal = (IgbDateRangeValue?)ConvertReturnValue(iv);
-            if (retVal == null)
-            {
-                return default(IgbDateRangeValue);
-            }
-            return retVal;
-
+            var iv = InvokeMethodSync("p:Value", [], []);
+            return ConvertRangeValue(iv);
         }
-        private IgbCustomDateRange[] _customRanges = Array.Empty<IgbCustomDateRange>();
+
+        private IgbDateRangeValue<TValue>? ConvertRangeValue(object? value)
+        {
+            if (value is null)
+            {
+                return null;
+            }
+
+            var converted = ConvertReturnValue(value);
+            if (converted is IgbDateRangeValue<TValue> typed)
+            {
+                return typed;
+            }
+            if (converted is IgbDateRangeValue<DateTime> dateRange)
+            {
+                return new IgbDateRangeValue<TValue>
+                {
+                    Start = ConvertToGenericValue<TValue>(dateRange.Start),
+                    End = ConvertToGenericValue<TValue>(dateRange.End!),
+                };
+            }
+
+            return null;
+        }
+        private IgbCustomDateRange<TValue>[] _customRanges = [];
 
         /// <summary>
         /// Renders chips with custom ranges based on the elements of the array.
         /// </summary>
         [Parameter]
-        public IgbCustomDateRange[] CustomRanges
+        public IgbCustomDateRange<TValue>[] CustomRanges
         {
             get { return this._customRanges; }
             set
@@ -470,18 +483,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _min = DateTime.MinValue;
+        private TValue? _min = default!;
 
         /// <summary>
         /// The minimum value required for the date range picker to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Min
+        public TValue? Min
         {
             get { return this._min; }
             set
             {
-                if (this._min != value || !IsPropDirty("Min"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._min, value) || !IsPropDirty("Min"))
                 {
                     MarkPropDirty("Min");
                 }
@@ -489,18 +502,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _max = DateTime.MinValue;
+        private TValue? _max = default!;
 
         /// <summary>
         /// The maximum value required for the date range picker to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Max
+        public TValue? Max
         {
             get { return this._max; }
             set
             {
-                if (this._max != value || !IsPropDirty("Max"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._max, value) || !IsPropDirty("Max"))
                 {
                     MarkPropDirty("Max");
                 }
@@ -603,19 +616,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime _activeDate = DateTime.MinValue;
+        private TValue? _activeDate = default!;
 
         /// <summary>
         /// Gets/Sets the date which is shown in the calendar picker and is highlighted.
         /// By default it is the current date.
         /// </summary>
         [Parameter]
-        public DateTime ActiveDate
+        public TValue? ActiveDate
         {
             get { return this._activeDate; }
             set
             {
-                if (this._activeDate != value || !IsPropDirty("ActiveDate"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._activeDate, value) || !IsPropDirty("ActiveDate"))
                 {
                     MarkPropDirty("ActiveDate");
                 }
@@ -775,7 +788,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Selects a date range value in the picker.
         /// </summary>
-        public async Task SelectAsync(IgbDateRangeValue value)
+        public async Task SelectAsync(IgbDateRangeValue<TValue> value)
         {
             await InvokeMethod("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
         }
@@ -783,7 +796,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Selects a date range value in the picker.
         /// </summary>
-        public void Select(IgbDateRangeValue value)
+        public void Select(IgbDateRangeValue<TValue> value)
         {
             InvokeMethodSync("select", new object?[] { ObjectToParam(value) }, new string[] { "Json" });
         }
@@ -839,18 +852,18 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
-        private EventCallback<IgbDateRangeValue?>? _valueChanged = null;
+        private EventCallback<IgbDateRangeValue<TValue>?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbDateRangeValue?> ValueChanged
+        public EventCallback<IgbDateRangeValue<TValue>?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<IgbDateRangeValue?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<IgbDateRangeValue<TValue>?>.Empty;
             }
             set
             {
@@ -1195,17 +1208,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbDateRangeValueEventArgs>? _change = null;
+        private EventCallback<IgbDateRangeValueEventArgs<TValue>>? _change = null;
 
         /// <summary>
         /// Emitted when the user modifies and commits the value of the component.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbDateRangeValueEventArgs> Change
+        public EventCallback<IgbDateRangeValueEventArgs<TValue>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbDateRangeValueEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbDateRangeValueEventArgs<TValue>>.Empty;
             }
             set
             {
@@ -1214,12 +1227,12 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbDateRangeValueEventArgs>(this.RendererName, "Change", value, (args) =>
+                        this.SetHandler<IgbDateRangeValueEventArgs<TValue>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(IgbDateRangeValue?);
+                            IgbDateRangeValue<TValue>? newValueValue;
 
                             {
-                                newValueValue = args.Detail == null ? null : new IgbDateRangeValue { Start = args.Detail.Start, End = args.Detail.End };
+                                newValueValue = args.Detail == null ? null : new IgbDateRangeValue<TValue> { Start = args.Detail.Start, End = args.Detail.End };
 
                                 if (newValueValue != null)
                                 {
@@ -1237,7 +1250,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<IgbDateRangeValue?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<IgbDateRangeValue<TValue>?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 ObserveHandlerTask(task);
@@ -1254,7 +1267,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbDateRangeValueEventArgs>(this.RendererName, "Change", null);
+                    this.SetHandler<IgbDateRangeValueEventArgs<TValue>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -1265,9 +1278,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbDateRangeValueEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbDateRangeValueEventArgs<TValue>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbDateRangeValueEventArgs>(null, (Action<IgbDateRangeValueEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbDateRangeValueEventArgs<TValue>>(null, (Action<IgbDateRangeValueEventArgs<TValue>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -1305,17 +1318,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbDateRangeValueEventArgs>? _input = null;
+        private EventCallback<IgbDateRangeValueEventArgs<TValue>>? _input = null;
 
         /// <summary>
         /// Emitted when the user types in the component.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbDateRangeValueEventArgs> Input
+        public EventCallback<IgbDateRangeValueEventArgs<TValue>> Input
         {
             get
             {
-                return this._input != null ? this._input.Value : EventCallback<IgbDateRangeValueEventArgs>.Empty;
+                return this._input != null ? this._input.Value : EventCallback<IgbDateRangeValueEventArgs<TValue>>.Empty;
             }
             set
             {
@@ -1324,7 +1337,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_input))
                     {
                         _input = value;
-                        this.SetHandler<IgbDateRangeValueEventArgs>(this.RendererName, "Input", value);
+                        this.SetHandler<IgbDateRangeValueEventArgs<TValue>>(this.RendererName, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -1335,7 +1348,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _input = null;
-                    this.SetHandler<IgbDateRangeValueEventArgs>(this.RendererName, "Input", null);
+                    this.SetHandler<IgbDateRangeValueEventArgs<TValue>>(this.RendererName, "Input", null);
                     this.OnRefChanged("Input", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._inputRef = null;
@@ -1390,9 +1403,9 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("InputFormat"))
             { ser.AddStringProp("inputFormat", this._inputFormat); }
             if (IsPropDirty("Min"))
-            { ser.AddDateTimeProp("min", this._min); }
+            { AddGenericValue(ser, "min", this._min); }
             if (IsPropDirty("Max"))
-            { ser.AddDateTimeProp("max", this._max); }
+            { AddGenericValue(ser, "max", this._max); }
             if (IsPropDirty("DisabledDates"))
             { ser.AddSerializableArrayProp("disabledDates", this._disabledDates); }
             if (IsPropDirty("VisibleMonths"))
@@ -1404,7 +1417,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("HideHeader"))
             { ser.AddBooleanProp("hideHeader", this._hideHeader); }
             if (IsPropDirty("ActiveDate"))
-            { ser.AddDateTimeProp("activeDate", this._activeDate); }
+            { AddGenericValue(ser, "activeDate", this._activeDate); }
             if (IsPropDirty("ShowWeekNumbers"))
             { ser.AddBooleanProp("showWeekNumbers", this._showWeekNumbers); }
             if (IsPropDirty("HideOutsideDays"))

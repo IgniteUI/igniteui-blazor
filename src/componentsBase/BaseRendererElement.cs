@@ -538,8 +538,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal virtual Type? GenericType => null;
-
         void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
 
         internal void Serialize(SerializationContext context, string? propertyName = null)
@@ -1145,6 +1143,52 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ser"></param>
+        /// <param name="propName"></param>
+        /// <param name="value"></param>
+        internal void AddGenericValue<TValue>(RendererSerializer ser, string propName, TValue? value)
+        {
+            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (value is DateTime dateTime)
+            {
+                ser.AddDateTimeProp(propName, dateTime);
+            }
+            else if (value is string dateString)
+            {
+                ser.AddStringProp(propName, dateString);
+            }
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        internal string? GenericValueString<TValue>(TValue? value)
+        {
+            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            {
+                return null;
+            }
+            else if (value is DateTime dateTime)
+            {
+                return DateToString(dateTime);
+            }
+            else if (value is string dateString)
+            {
+                return dateString;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Converts event json values to the specified type. Currently used for DateTime/string conversion.
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
@@ -1157,7 +1201,7 @@ namespace IgniteUI.Blazor.Controls
             if (value is null)
             {
                 return default;
-    }
+            }
 
             return (TValue)Convert.ChangeType(value, genericType);
         }

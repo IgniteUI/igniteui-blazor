@@ -3,20 +3,20 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbDateRangePicker"/> events that carry a date range payload.
+    /// Event arguments for the <see cref="IgbDateRangePicker{TValue}"/> events that carry a date range payload.
     /// </summary>
-    public partial class IgbDateRangeValueEventArgs : BaseRendererElement
+    public partial class IgbDateRangeValueEventArgs<TValue> : BaseRendererElement
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateRangeValueEventArgs"; } }
 
-        private IgbDateRangeValueDetail _detail = new IgbDateRangeValueDetail();
+        private IgbDateRangeValueDetail<TValue> _detail = new();
 
         /// <summary>
         /// The date range carried by the event.
         /// </summary>
         [Parameter]
-        public IgbDateRangeValueDetail Detail
+        public IgbDateRangeValueDetail<TValue> Detail
         {
             get { return this._detail; }
             set
@@ -60,8 +60,12 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "DateRangeValueDetail", true) is IgbDateRangeValueDetail detail)
-            { this.Detail = detail; }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj) is Dictionary<string, object?> detailArgs)
+            {
+                var detail = new IgbDateRangeValueDetail<TValue> { Parent = this };
+                detail.FromEventJson(control, detailArgs);
+                this.Detail = detail;
+            }
 
             this.SuppressParentNotify = false;
         }

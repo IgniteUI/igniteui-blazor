@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class shared by <see cref="IgbDatePicker{TValue}"/>, <see cref="IgbDateRangePicker"/>, <see cref="IgbDropdown"/>
+    /// Base class shared by <see cref="IgbDatePicker{TValue}"/>, <see cref="IgbDateRangePicker{TValue}"/>, <see cref="IgbDropdown"/>
     /// and <see cref="IgbSelect"/>.
     /// </summary>
     public partial class IgbComboBoxBaseLike : IgbBaseComboBox

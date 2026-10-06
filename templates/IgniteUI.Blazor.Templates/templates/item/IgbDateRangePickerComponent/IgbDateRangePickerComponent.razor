@@ -26,7 +26,8 @@
 </div>
 
 <div class="component-host">
-    <IgbDateRangePicker class="demo-input"
+    <IgbDateRangePicker TValue="DateTime"
+                        class="demo-input"
                         @bind-Value="Range"
                         Mode="Mode"
                         UseTwoInputs="UseTwoInputs"
@@ -54,7 +55,7 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private IgbDateRangeValue? Range { get; set; }
+    private IgbDateRangeValue<DateTime>? Range { get; set; }
 
     private string ModeName { get; set; } = "Dropdown";
     private PickerMode Mode => Enum.Parse<PickerMode>(ModeName);

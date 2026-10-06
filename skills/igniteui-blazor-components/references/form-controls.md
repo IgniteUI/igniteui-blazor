@@ -67,8 +67,8 @@ The generic parameter is **`T`**, not `TValue` — set it to the data item type.
 | Component | Value type | Use for |
 |---|---|---|
 | `IgbDatePicker` | `DateTime?` | Input + dropdown calendar |
-| `IgbDateRangePicker` | `IgbDateRangeValue?` | Start/end range; `UseTwoInputs`, `UsePredefinedRanges` |
-| `IgbCalendar<TValue>` | `TValue` / `TValue[]` | Always-visible calendar surface; `DateTime`, `DateTime?`, or `string` |
+| `IgbDateRangePicker<TValue>` | `IgbDateRangeValue<TValue>?` | Start/end range; `UseTwoInputs`, `UsePredefinedRanges` |
+| `IgbCalendar<TValue>` | `TValue` / `TValue[]` | Always-visible calendar surface; |
 | `IgbDateTimeInput` | `DateTime?` | Masked date/time entry, no dropdown |
 
 ```razor
