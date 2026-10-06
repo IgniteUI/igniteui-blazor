@@ -125,7 +125,7 @@ One dispatch pins: the driving event's registration crossed, the callback member
 ## Current-stack cheat-sheet (legacy `RendererMessage` pipeline)
 
 > Everything in this section is specific to components still on the legacy
-> `BaseRendererControl`/`RendererMessage` stack.
+> `IgbComponentBase`/`RendererMessage` stack.
 
 **Surface markers** in the component's source:
 - `InvokeMethod("...", args, types)` inside `public async Task...` wrappers → methods/getters;

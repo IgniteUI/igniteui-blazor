@@ -2079,10 +2079,10 @@ namespace IgniteUI.Blazor.Controls
                                         ((BaseRendererElement)o).FromEventJson(this, eventArgs);
                                         returnValue = o;
                                     }
-                                    // else if (o is BaseRendererControl)
+                                    // else if (o is IgbComponentBase)
                                     // {
                                     //     var ev = JsonSerializer.Deserialize<Dictionary<string, string>>(((JsonElement)obj["value"]).GetString());
-                                    //     ((BaseRendererControl)o).FromEventJson(this, ev);
+                                    //     ((IgbComponentBase)o).FromEventJson(this, ev);
                                     // }
                                     else
                                     {

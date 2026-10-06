@@ -44,7 +44,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             var validMethods = methodInfos
             // only async in this env.
             .Where(x => x.Name.EndsWith("Async"))
-            // exclude methods coming from BaseRendererControl.
+            // exclude methods coming from IgbComponentBase.
             .Where(x => !baseRendererMethodNames.Contains(x.Name))
             // this is not user settable but exist in all classes.
             .Where(x => x.Name != "SetParametersAsync")

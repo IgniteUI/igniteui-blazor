@@ -22,7 +22,7 @@ changes; if they disagree with this file, they win.
 
 - `src/components/Blazor/`: one C# wrapper per component (`<Name>.cs`, `<Name>Module.cs`, enums).
   Classes are `partial`; hand-written extensions live in `src/componentsBase/WebInputs/`
-- `src/componentsBase/`: base classes (`BaseRendererControl`), DI (`AddIgniteUIBlazor`),
+- `src/componentsBase/`: base classes (`IgbComponentBase`), DI (`AddIgniteUIBlazor`),
   serialization (`IgbJsonContext`, `MarshalByValueFactory`), data adapters and interop plumbing
 - `src/src/`: TypeScript interop (`index.ts`, `Loader.ts`, `api.ts`); `src/src/ig/` holds the
   per-component description and metadata sources (generator style: tab-indented, prettier-exempt)

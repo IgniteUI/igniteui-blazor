@@ -4,7 +4,7 @@ using IgniteUI.Blazor.Controls;
 namespace IgniteUI.Blazor.Tests;
 
 /// <summary>
-/// Tests verifying common BaseRendererControl functionality across all components.
+/// Tests verifying common IgbComponentBase functionality across all components.
 /// </summary>
 public class BaseControlTests : BlazorComponentTestBase
 {
