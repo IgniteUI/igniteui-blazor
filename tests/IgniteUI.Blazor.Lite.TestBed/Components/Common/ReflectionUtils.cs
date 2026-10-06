@@ -83,7 +83,10 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             if (match is not null && match.IsGenericTypeDefinition)
             {
                 var typeArgs = match.GetGenericArguments();
-                var concreteArgs = typeArgs.Select(_ => typeof(object)).ToArray();
+                var valueType = type is "IgbDatePicker"
+                    ? typeof(DateTime)
+                    : typeof(object);
+                var concreteArgs = typeArgs.Select(_ => valueType).ToArray();
                 match = match.MakeGenericType(concreteArgs);
             }
             return match;
