@@ -53,7 +53,7 @@ The render scope handed to the lambda is the cut for an arranged spec and the wh
 
 Decoded dates preserve the UTC instant and arrive with the same reading and `Kind=Utc`. Rules:
 
-- State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares the decoded date directly and asserts its kind; an `Unspecified` expectation throws.
+- State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares the decoded date directly and asserts its kind; an expectation with any other kind (`Unspecified` or `Local`) throws.
 - Never write `.ToLocalTime()` in a spec or an author-written `assert:` lambda to make a comparison pass. If one seems needed, the assertion helper is missing a case — add it there.
 - Outbound dates (`.Prop` values, method args) are not decoded and keep the kind the spec wrote, so their wire expectation is a plain literal — `DateTimeKind.Utc` serializes with `Z`.
 
