@@ -1249,7 +1249,11 @@ namespace IgniteUI.Blazor.Controls
 
         private void ConvertTValueToString(RendererSerializer ser, string propName, TValue? value)
         {
-            if (value is DateTime dateTime)
+            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (value is DateTime dateTime)
             {
                 ser.AddDateTimeProp(propName, dateTime);
             }

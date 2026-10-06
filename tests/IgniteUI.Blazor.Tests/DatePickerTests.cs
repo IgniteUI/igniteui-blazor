@@ -1,5 +1,6 @@
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
+using System;
 
 namespace IgniteUI.Blazor.Tests;
 
@@ -9,6 +10,7 @@ public abstract class DatePickerTests<TValue> : ComponentWithContractTestBase<Ig
         TValue currentValue,
         TValue changedValue,
         Action<TValue?> assertChangedValue,
+        Action<TValue?> assertClearedValue,
         TValue value,
         TValue activeDate,
         TValue min,
@@ -37,12 +39,18 @@ public abstract class DatePickerTests<TValue> : ComponentWithContractTestBase<Ig
         .Event(c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             assert: args => assertChangedValue(args.Detail))
+        .Event(c => c.Change,
+            argsJson: """{"detail": null}""",
+            assert: args => assertClearedValue(args.Detail))
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             expect: changedValue)
         .Event(c => c.Input,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             assert: args => assertChangedValue(args.Detail))
+        .Event(c => c.Input,
+            argsJson: """{"detail": null}""",
+            assert: args => assertClearedValue(args.Detail))
         .Prop(c => c.Open, true)
         .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Prop(c => c.KeepOpenOnSelect, true)
@@ -95,7 +103,8 @@ public abstract class DatePickerTests<TValue> : ComponentWithContractTestBase<Ig
         .Prop(c => c.WeekStart, WeekDays.Monday, wire: "monday")
         .Prop(c => c.Disabled, true)
         .Prop(c => c.Required, true)
-        .Prop(c => c.Invalid, true);
+        .Prop(c => c.Invalid, true)
+        .Prop(c => c.Value, default(TValue?), wire: null);
     }
 
     protected override ComponentContract<IgbDatePicker<TValue>> InteropContract { get; }
@@ -139,6 +148,23 @@ public sealed class DatePickerDateTimeTests : DatePickerTests<DateTime>
             new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc),
             new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
             actual => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual.ToUniversalTime()),
+            actual => Assert.Equal(default, actual),
+            new DateTime(2026, 3, 15, 9, 30, 0),
+            new DateTime(2026, 4, 1),
+            new DateTime(2026, 1, 1),
+            new DateTime(2026, 12, 31))
+    {
+    }
+}
+
+public sealed class DatePickerNullableDateTimeTests : DatePickerTests<DateTime?>
+{
+    public DatePickerNullableDateTimeTests()
+        : base(
+            new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc),
+            new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+            actual => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual?.ToUniversalTime()),
+            Assert.Null,
             new DateTime(2026, 3, 15, 9, 30, 0),
             new DateTime(2026, 4, 1),
             new DateTime(2026, 1, 1),
@@ -154,6 +180,7 @@ public sealed class DatePickerStringTests : DatePickerTests<string>
             "2026-03-15T09:30:00.000Z",
             "2026-01-02T03:04:05.000Z",
             actual => Assert.Equal("2026-01-02T03:04:05.000Z", actual),
+            Assert.Null,
             "2026-03-15",
             "2026-04-01",
             "2026-01-01",
@@ -161,3 +188,4 @@ public sealed class DatePickerStringTests : DatePickerTests<string>
     {
     }
 }
+
