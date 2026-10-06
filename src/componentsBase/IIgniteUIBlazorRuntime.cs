@@ -15,6 +15,9 @@ namespace IgniteUI.Blazor.Controls
         bool IsLoadRequested(string moduleName);
         void MarkIsLoadRequested(string moduleName);
         bool IsRuntimeValid(bool reevaluate = false);
+
+        /// <summary>The client interop module at <paramref name="path"/>, shared by the components of the runtime.</summary>
+        InteropModule GetInteropModule(string path);
     }
 
     internal static class IgniteUIBlazorRuntimeExtensions

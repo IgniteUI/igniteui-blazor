@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- **Interop:** the components reach their client code through the `_content/IgniteUI.Blazor/interop.js` module (JS isolation) instead of functions on `window`. The internal `window.igSendMessage`, `igCheckReady`, `igWaitForLoaded`, `igRequestLoad`, `igSetResourceString`, `igConvertReturnValue` and `igUnmarshalledDataSource*` functions, the unused `igSendMessages` and the `raisingEvent` flag no longer exist. They were never a supported API. On .NET 8 WebAssembly, unmarshalled data now travels on the same path as on .NET 9+. [#255](https://github.com/IgniteUI/igniteui-blazor/issues/255)
 ### Added
 
 - `*Script` parameters for client templates and events now also support resolving late once `registerScript` is called even after the client component is created.
