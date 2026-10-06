@@ -34,7 +34,12 @@ public class ScriptPropTests : BlazorComponentTestBase
             {
                 continue;
             }
-            var closed = type.IsGenericTypeDefinition ? type.MakeGenericType(typeof(object)) : type;
+            var genericArgument = type == typeof(IgbSlider<>) || type == typeof(IgbRating<>)
+                ? typeof(double)
+                : type == typeof(IgbDatePicker<>)
+                    ? typeof(DateTime)
+                    : typeof(object);
+            var closed = type.IsGenericTypeDefinition ? type.MakeGenericType(genericArgument) : type;
             if (ScriptPropsOf(closed).Any())
             {
                 data.Add(closed);
