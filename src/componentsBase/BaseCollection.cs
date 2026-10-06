@@ -1,16 +1,9 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace IgniteUI.Blazor.Controls
 {
 
-    /// <summary>
-    /// Base of the collections that hold a component's child objects and report changes to the component that owns them.
-    /// Infrastructure for Ignite UI component libraries built on this package; not intended for application code.
-    /// </summary>
-    /// <typeparam name="T">The type of the items.</typeparam>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class BaseCollection<T> : ObservableCollection<T>
+    internal class BaseCollection<T> : ObservableCollection<T>
     {
         private bool _suppressNotify = false;
 
@@ -41,8 +34,6 @@ namespace IgniteUI.Blazor.Controls
             return this;
         }
 
-        /// <summary>Copies the items to a new array.</summary>
-        /// <returns>An array with the items, in order.</returns>
         public T[] ToArray()
         {
             var array = new T[Count];
@@ -110,9 +101,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        /// <summary>Creates a collection owned by <paramref name="parent"/>, reported to it as the <paramref name="propertyName"/> property.</summary>
-        /// <param name="parent">The component or element that owns the collection, or <see langword="null"/>.</param>
-        /// <param name="propertyName">The name of the owner's property that holds the collection.</param>
         public BaseCollection(object? parent, string? propertyName)
         {
             _parent = parent;
@@ -154,9 +142,6 @@ namespace IgniteUI.Blazor.Controls
             NotifyParent();
         }
 
-        /// <summary>Writes the items as a JSON array into the description sent to the client renderer.</summary>
-        /// <param name="context">The serialization context to write to.</param>
-        /// <param name="propertyName">The property name to write the array under, or <see langword="null"/> to write a bare array.</param>
         public void Serialize(SerializationContext context, string? propertyName = null)
         {
             //var vals = new List<string>();
@@ -227,9 +212,6 @@ namespace IgniteUI.Blazor.Controls
             //return "[" + string.Join(", \n", vals) + "]";
         }
 
-        /// <summary>Finds the item, or a descendant of an item, with the given renderer name.</summary>
-        /// <param name="name">The renderer name to look for.</param>
-        /// <returns>The matching object, or <see langword="null"/>.</returns>
         public object? FindByName(string name)
         {
             //TODO: hash map
@@ -259,9 +241,6 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        /// <summary>Determines whether an item, or a descendant of an item, has the given renderer name.</summary>
-        /// <param name="name">The renderer name to look for.</param>
-        /// <returns><see langword="true"/> when a match exists; otherwise <see langword="false"/>.</returns>
         public bool HasName(string name)
         {
             //TODO: hash map

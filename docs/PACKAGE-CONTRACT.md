@@ -9,8 +9,7 @@ that package, so coordinate it with the package's maintainers.
 
 - `InternalsVisibleTo("IgniteUI.Blazor")`, pinned to the Infragistics public key (`eng/IG.publickey.hex`). The full
   package overrides and calls the base classes' `internal` / `private protected` infrastructure members.
-- Public, but `[EditorBrowsable(Never)]`, because public types of the full package derive from them:
-  `BaseCollection<T>`, `JsonSerializable`, `SerializationContext`, `SerializationFilter`, `IDataIntentAttribute`.
+- `BaseCollection<T>`, `JsonSerializable`, `SerializationContext`, `SerializationFilter`, `IDataIntentAttribute` and `DataIntentAttribute` stay `internal`; the full package reaches them through the friend assembly.
 - `IContentChildHost`: components that implement it cascade themselves to their child content, and elements of
   this package that the full package's components hold as content children (`IgbFormatSpecifier` and derived)
   attach to the nearest host.
