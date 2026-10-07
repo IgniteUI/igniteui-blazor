@@ -1041,22 +1041,19 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="detailObj"></param>
-        /// <param name="genericType"></param>
         /// <returns></returns>
-        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj, Type genericType)
+        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj)
         {
-            var value = ConvertReturnValue<TValue>(detailObj);
-            if (value is null)
+            EnsureValid();
+            if (CurrParent is BaseJsonSerializable)
             {
-                return default;
+                return ((BaseJsonSerializable)CurrParent).GenericValueFromEventJson<TValue>(detailObj);
             }
-
-            if (genericType == typeof(string) && value is DateTime dateTimeValue)
+            else if (CurrParent is IgbComponentBase)
             {
-                return (TValue)(object)dateTimeValue.ToString("o");
+                return ((IgbComponentBase)CurrParent).GenericValueFromEventJson<TValue>(detailObj);
             }
-
-            return (TValue)Convert.ChangeType(value, genericType);
+            return default;
         }
     }
 }

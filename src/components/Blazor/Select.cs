@@ -11,6 +11,8 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelect"; } }
 
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
         {
@@ -55,31 +57,6 @@ namespace IgniteUI.Blazor.Controls
 
         private TValue? _value;
 
-        private TValue? ConvertToSelectValue(object? value)
-        {
-            if (value is null)
-            {
-                return default;
-            }
-
-            if (value is TValue typedValue)
-            {
-                return typedValue;
-            }
-
-            if (value is string stringValue && (Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue)) == typeof(string))
-            {
-                return (TValue)(object)stringValue;
-            }
-
-            if (value is not string)
-            {
-                value = ConvertReturnValue(value) ?? value;
-            }
-
-            return (TValue?)Convert.ChangeType(value, Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue), System.Globalization.CultureInfo.InvariantCulture);
-        }
-
         /// <summary>
         /// The value of the control.
         /// </summary>
@@ -104,7 +81,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ConvertToSelectValue(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
@@ -113,7 +90,7 @@ namespace IgniteUI.Blazor.Controls
         public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ConvertToSelectValue(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
         private bool _outlined = false;
 
@@ -613,7 +590,7 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbSelectItemComponentEventArgs<TValue>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = ConvertToSelectValue(args.Detail.Value);
+                            var newValueValue = GenericValueFromEventJson<TValue>(args.Detail.Value);
 
                             {
                                 if (UseDirectRender)

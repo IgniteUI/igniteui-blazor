@@ -77,11 +77,11 @@ namespace IgniteUI.Blazor.Controls
 
             if (args != null && args.TryGetValue("start", out var startObj))
             {
-                this.Start = GenericValueFromEventJson<TValue>(startObj, control.GenericType!);
+                this.Start = GenericValueFromEventJson<TValue>(startObj);
             }
             if (args != null && args.TryGetValue("end", out var endObj))
             {
-                this.End = GenericValueFromEventJson<TValue>(endObj, control.GenericType!);
+                this.End = GenericValueFromEventJson<TValue>(endObj);
             }
 
             this.SuppressParentNotify = false;

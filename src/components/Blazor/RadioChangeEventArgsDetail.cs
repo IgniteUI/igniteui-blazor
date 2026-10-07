@@ -77,7 +77,7 @@ namespace IgniteUI.Blazor.Controls
             if (args != null && args.TryGetValue("checked", out var checkedObj))
             { this.Checked = ReturnToBoolean(checkedObj); }
             if (args != null && args.TryGetValue("value", out var valueObj))
-            { this.Value = GenericValueFromEventJson<TValue>(valueObj, control.GenericType!); }
+            { this.Value = GenericValueFromEventJson<TValue>(valueObj); }
 
             this.SuppressParentNotify = false;
         }

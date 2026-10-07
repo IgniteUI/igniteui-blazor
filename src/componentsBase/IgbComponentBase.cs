@@ -3065,6 +3065,43 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
+        /// Converts event json/invoke values to the specified type. Currently used mainly for DateTime/string conversion.
+        /// Note: If you are using this method you probably have a generic type component.
+        /// Make sure to have defined the <see cref="IgbComponentBase.GenericType"/>
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="detailObj"></param>
+        /// <returns></returns>
+        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj)
+        {
+            if (detailObj is null)
+            {
+                return default;
+            }
+
+            if (detailObj is TValue typedValue)
+            {
+                return typedValue;
+            }
+            if (detailObj.GetType() == GenericType)
+            {
+                return (TValue)detailObj;
+            }
+            if (GenericType == typeof(DateTime))
+            {
+                return (TValue)(object)ReturnToDate(detailObj);
+            }
+
+            var value = ConvertReturnValue<TValue>(detailObj);
+            if (value is null)
+            {
+                return default;
+            }
+
+            return (TValue)Convert.ChangeType(value, GenericType ?? typeof(TValue), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
         /// Currently used for DateTime/string array conversion.
         /// </summary>
         internal TValue[] ConvertToGenericValueArray<TValue>(object? value)
