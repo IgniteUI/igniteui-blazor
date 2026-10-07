@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/Rating")]
 
-<Stories TComponent="IgbRating">
+<Stories TComponent="IgbRating<double>">
 
     <Story Name="Default">
         <Arguments>
@@ -14,7 +14,7 @@
             <Arg For="_ => _!.Label" Value='"Rate this"' />
         </Arguments>
         <Template>
-            <IgbRating @attributes="context.Args" />
+            <IgbRating TValue="double" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -25,7 +25,7 @@
             <Arg For="_ => _!.ReadOnly" Value="true" />
         </Arguments>
         <Template>
-            <IgbRating @attributes="context.Args" />
+            <IgbRating TValue="double" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -36,7 +36,7 @@
             <Arg For="_ => _!.Single" Value="true" />
         </Arguments>
         <Template>
-            <IgbRating @attributes="context.Args" />
+            <IgbRating TValue="double" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -47,7 +47,7 @@
             <Arg For="_ => _!.Disabled" Value="true" />
         </Arguments>
         <Template>
-            <IgbRating @attributes="context.Args" />
+            <IgbRating TValue="double" @attributes="context.Args" />
         </Template>
     </Story>
 

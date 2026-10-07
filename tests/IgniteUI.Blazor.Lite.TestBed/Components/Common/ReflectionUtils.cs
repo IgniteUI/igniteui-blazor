@@ -87,7 +87,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 {
                     "IgbCalendar" or "IgbDatePicker" or "IgbDateRangePicker" or "IgbDateTimeInput" => typeof(DateTime),
                     "IgbSlider" or "IgbRating" => typeof(double),
-                    "IgbSelect" => typeof(object),
+                    "IgbSelect" => typeof(string),
                     _ => typeof(object)
                 };
                 var concreteArgs = typeArgs.Select(_ => valueType).ToArray();
