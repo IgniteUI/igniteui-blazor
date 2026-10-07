@@ -1898,6 +1898,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal object? ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
+            return ConvertReturnValue<object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+
+        internal object? ConvertReturnValue<TValue>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
             try
             {
                 //Console.WriteLine(returnValue.GetType().ToString());
@@ -2023,7 +2028,7 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < arr.GetArrayLength(); i++)
                                 {
                                     var item = arr[i];
-                                    var cItem = ConvertReturnValue(item);
+                                    var cItem = ConvertReturnValue<TValue>(item);
                                     ret[i] = cItem;
                                 }
                                 return ret;
@@ -2058,7 +2063,7 @@ namespace IgniteUI.Blazor.Controls
                                 object? o = null;
                                 if (type != null)
                                 {
-                                    o = MarshalByValueFactory.CreateInstance(type);
+                                    o = MarshalByValueFactory.CreateInstance<TValue>(type);
                                 }
                                 if (o != null)
                                 {
@@ -3068,6 +3073,10 @@ namespace IgniteUI.Blazor.Controls
             else if (value is string dateString)
             {
                 ser.AddStringProp(propName, dateString);
+            }
+            else
+            {
+                ser.AddStringProp(propName, value.ToString());
             }
         }
 

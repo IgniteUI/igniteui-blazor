@@ -60,10 +60,8 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj) is Dictionary<string, object?> detailArgs)
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<TValue>(detailObj, "DateRangeValueDetail", true) is IgbDateRangeValueDetail<TValue> detail)
             {
-                var detail = new IgbDateRangeValueDetail<TValue> { Parent = this };
-                detail.FromEventJson(control, detailArgs);
                 this.Detail = detail;
             }
 

@@ -98,7 +98,7 @@ namespace IgniteUI.Blazor.Controls
                 return null;
             }
 
-            var converted = ConvertReturnValue(value);
+            var converted = ConvertReturnValue<TValue>(value);
             if (converted is IgbDateRangeValue<TValue> typed)
             {
                 return typed;
