@@ -407,15 +407,6 @@ export class Loader {
         break;
       }
 
-      case 'FormatSpecifierModule':
-        let { IgcFormatSpecifierModule } = await import('igniteui-core/igc-format-specifier-module');
-        let { FormatSpecifierDescriptionModule } = await import('igniteui-core/FormatSpecifierDescriptionModule');
-        this._loadingSet.delete(module);
-        ModuleManager.register(IgcFormatSpecifierModule);
-        FormatSpecifierDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-
       case 'WebHighlightModule': {
         let { IgcHighlightComponent } = await import('igniteui-webcomponents');
         let { WebHighlightDescriptionModule } = await import('igniteui-core/WebHighlightDescriptionModule');
@@ -541,16 +532,6 @@ export class Loader {
         this.checkDone();
         break;
       }
-
-      case 'NumberFormatSpecifierModule':
-        let { IgcNumberFormatSpecifierModule } = await import('igniteui-core/igc-number-format-specifier-module');
-        let { NumberFormatSpecifierDescriptionModule } =
-          await import('igniteui-core/NumberFormatSpecifierDescriptionModule');
-        this._loadingSet.delete(module);
-        ModuleManager.register(IgcNumberFormatSpecifierModule);
-        NumberFormatSpecifierDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
 
       case 'WebQrCodeModule': {
         let { IgcQrCodeComponent } = await import('igniteui-webcomponents');
@@ -879,8 +860,7 @@ export class Loader {
       //@@MarshalByValue
       Loader.marshalByValueSet.add('CalendarFormatOptions');
       Loader.marshalByValueSet.add('WebFocusOptions');
-      Loader.marshalByValueSet.add('FormatSpecifier');
-      Loader.marshalByValueSet.add('NumberFormatSpecifier');
+      Loader.marshalByValueSet.add('NumberFormatOptions');
       Loader.marshalByValueSet.add('QrCodeExportOptions');
       Loader.marshalByValueSet.add('WebQrCodeExportOptions');
       Loader.marshalByValueSet.add('RegisterIconOptions');

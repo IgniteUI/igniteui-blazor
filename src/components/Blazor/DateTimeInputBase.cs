@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class for <see cref="IgbDateTimeInput{TValue}"/>.
     /// </summary>
-    public partial class IgbDateTimeInputBase<TValue> : BaseRendererControl
+    public partial class IgbDateTimeInputBase<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateTimeInputBase"; } }

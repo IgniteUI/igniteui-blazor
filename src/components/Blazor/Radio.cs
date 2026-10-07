@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The radio component allows the user to select a single option from an available set of options that are listed side by side.
     /// </summary>
-    public partial class IgbRadio<TValue> : BaseRendererControl
+    public partial class IgbRadio<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRadio"; } }

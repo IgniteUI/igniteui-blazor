@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbRangeSlider"/> and <see cref="IgbSlider{TValue}"/>.
     /// </summary>
-    public partial class IgbSliderBase : BaseRendererControl
+    public partial class IgbSliderBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSliderBase"; } }
@@ -367,13 +367,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbNumberFormatSpecifier? _valueFormatOptions;
+        private IgbNumberFormatOptions? _valueFormatOptions;
 
         /// <summary>
         /// Number format options used for the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public IgbNumberFormatSpecifier? ValueFormatOptions
+        public IgbNumberFormatOptions? ValueFormatOptions
         {
             get { return this._valueFormatOptions; }
             set

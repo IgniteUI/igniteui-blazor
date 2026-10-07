@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A predefined date range with label for <see cref="IgbDateRangePicker{TValue}.CustomRanges"/>.
     /// </summary>
-    public partial class IgbCustomDateRange<TValue> : BaseRendererElement
+    public partial class IgbCustomDateRange<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCustomDateRange"; } }

@@ -11,16 +11,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseCollection<BaseRendererControl>? _contentItems = null;
+        private BaseCollection<IgbComponentBase>? _contentItems = null;
 
-        internal BaseCollection<BaseRendererControl> ContentItems
+        internal BaseCollection<IgbComponentBase> ContentItems
         {
 
             get
             {
                 if (this._contentItems == null)
                 {
-                    this._contentItems = new BaseCollection<BaseRendererControl>(this, "Items");
+                    this._contentItems = new BaseCollection<IgbComponentBase>(this, "Items");
                 }
                 return this._contentItems;
             }

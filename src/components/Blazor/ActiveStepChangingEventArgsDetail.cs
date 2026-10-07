@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload of the <see cref="IgbStepper.ActiveStepChanging"/> event.
     /// </summary>
-    public partial class IgbActiveStepChangingEventArgsDetail : BaseRendererElement
+    public partial class IgbActiveStepChangingEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebActiveStepChangingEventArgsDetail"; } }
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The index of the step that is currently active.
         /// </summary>
-        [Parameter]
         public double OldIndex
         {
             get { return this._oldIndex; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The index of the step that is about to become active.
         /// </summary>
-        [Parameter]
         public double NewIndex
         {
             get { return this._newIndex; }
@@ -61,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -73,7 +69,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

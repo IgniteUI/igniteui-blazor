@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbDropdownItem"/> and <see cref="IgbSelectItem{TValue}"/>.
     /// </summary>
-    public partial class IgbBaseOptionLike<TValue> : BaseRendererControl
+    public partial class IgbBaseOptionLike<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebBaseOptionLike"; } }

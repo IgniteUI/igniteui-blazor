@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="Color"/>, <see cref="Offset"/> and <see cref="Opacity"/> are applied as the
     /// <c>stop-color</c>, <c>offset</c> and <c>stop-opacity</c> of that stop without further validation.
     /// </summary>
-    public partial class IgbCircularGradient : BaseRendererControl
+    public partial class IgbCircularGradient : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCircularGradient"; } }

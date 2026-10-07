@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for component events that carry an arbitrary data payload.
     /// The type and meaning of <see cref="Detail"/> depend on the event that raises it.
     /// </summary>
-    public partial class IgbComponentDataValueChangedEventArgs : BaseRendererElement
+    public partial class IgbComponentDataValueChangedEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComponentDataValueChangedEventArgs"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The value carried by the event.
         /// </summary>
-        [Parameter]
         public object Detail
         {
             get { return this._detail; }
@@ -41,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -51,7 +48,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

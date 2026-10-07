@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Describes a set of dates by combining a range type with the dates it applies to.
     /// </summary>
-    public partial class IgbDateRangeDescriptor : BaseRendererElement
+    public partial class IgbDateRangeDescriptor : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "DateRangeDescriptor"; } }

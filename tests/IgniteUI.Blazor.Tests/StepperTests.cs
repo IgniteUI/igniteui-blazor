@@ -85,11 +85,6 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
         Assert.NotNull(element.GetAttribute("content-top"));
     }
 
-    [Fact]
-    public void Stepper_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbStepper).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class StepTests : BlazorComponentTestBase

@@ -160,7 +160,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating<double>>
     [Fact]
     public void Rating_InheritsFromBaseRendererControl()
     {
-        Assert.True(typeof(IgbRating<double>).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbRating<double>).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }
 

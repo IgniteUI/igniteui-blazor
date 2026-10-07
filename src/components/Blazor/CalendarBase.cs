@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class for <see cref="IgbCalendar{TValue}"/>.
     /// </summary>
-    public partial class IgbCalendarBase : BaseRendererControl
+    public partial class IgbCalendarBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCalendarBase"; } }

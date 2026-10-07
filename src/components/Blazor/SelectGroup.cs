@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// A container for a group of select items.
     /// </summary>
     [CascadingTypeParameter(nameof(TValue))]
-    public partial class IgbSelectGroup<TValue> : BaseRendererControl
+    public partial class IgbSelectGroup<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelectGroup"; } }

@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents a single chat message in an <see cref="IgbChat"/> conversation.
     /// </summary>
-    public partial class IgbChatMessage : BaseRendererElement
+    public partial class IgbChatMessage : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChatMessage"; } }
@@ -138,7 +138,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -158,7 +158,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbSelect{TValue}.Change"/> event, carrying the
     /// <see cref="IgbSelectItem{TValue}"/> instance the event applies to.
     /// </summary>
-    public partial class IgbSelectItemComponentEventArgs<TValue> : BaseRendererElement
+    public partial class IgbSelectItemComponentEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelectItemComponentEventArgs"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The select item that became selected.
         /// </summary>
-        [Parameter]
         public IgbSelectItem<TValue> Detail
         {
             get { return this._detail; }
@@ -41,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -51,7 +48,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

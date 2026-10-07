@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Presents a set of <see cref="IgbCarouselSlide"/> components by sequentially displaying
     /// a subset of one or more slides.
     /// </summary>
-    public partial class IgbCarousel : BaseRendererControl
+    public partial class IgbCarousel : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCarousel"; } }
