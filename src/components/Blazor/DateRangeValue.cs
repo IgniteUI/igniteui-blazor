@@ -3,22 +3,22 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A date range defined by a start and an end date.
     /// </summary>
-    public partial class IgbDateRangeValue : BaseRendererElement
+    public partial class IgbDateRangeValue<TValue> : BaseRendererElement
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateRangeValue"; } }
 
-        private DateTime _start = DateTime.MinValue;
+        private TValue? _start = default!;
 
         /// <summary>
         /// The first date of the range.
         /// </summary>
-        public DateTime Start
+        public TValue? Start
         {
             get { return this._start; }
             set
             {
-                if (this._start != value || !IsPropDirty("Start"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._start, value) || !IsPropDirty("Start"))
                 {
                     MarkPropDirty("Start");
                 }
@@ -26,17 +26,17 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime _end = DateTime.MinValue;
+        private TValue? _end = default!;
 
         /// <summary>
         /// The last date of the range.
         /// </summary>
-        public DateTime End
+        public TValue? End
         {
             get { return this._end; }
             set
             {
-                if (this._end != value || !IsPropDirty("End"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._end, value) || !IsPropDirty("End"))
                 {
                     MarkPropDirty("End");
                 }
@@ -50,11 +50,10 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Start"))
-            { ser.AddDateTimeProp("start", this._start); }
+            { AddGenericValue(ser, "start", this._start); }
             if (IsPropDirty("End"))
-            { ser.AddDateTimeProp("end", this._end); }
+            { AddGenericValue(ser, "end", this._end); }
 
         }
-
     }
 }

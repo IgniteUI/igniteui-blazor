@@ -3,21 +3,21 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbRadio.Change"/> and <see cref="IgbRadioGroup.Change"/>
+    /// Event arguments for the <see cref="IgbRadio{TValue}.Change"/> and <see cref="IgbRadioGroup{TValue}.Change"/>
     /// events, raised when the checked state of a radio button changes.
     /// </summary>
-    public partial class IgbRadioChangeEventArgs : BaseRendererElement
+    public partial class IgbRadioChangeEventArgs<TValue> : BaseRendererElement
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRadioChangeEventArgs"; } }
 
-        private IgbRadioChangeEventArgsDetail _detail = new IgbRadioChangeEventArgsDetail();
+        private IgbRadioChangeEventArgsDetail<TValue> _detail = new IgbRadioChangeEventArgsDetail<TValue>();
 
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the radio button.
         /// </summary>
         [Parameter]
-        public IgbRadioChangeEventArgsDetail Detail
+        public IgbRadioChangeEventArgsDetail<TValue> Detail
         {
             get { return this._detail; }
             set
@@ -61,7 +61,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "RadioChangeEventArgsDetail", true) is IgbRadioChangeEventArgsDetail detail)
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<TValue>(detailObj, "RadioChangeEventArgsDetail", true) is IgbRadioChangeEventArgsDetail<TValue> detail)
             { this.Detail = detail; }
 
             this.SuppressParentNotify = false;

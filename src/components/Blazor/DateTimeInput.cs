@@ -11,17 +11,17 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateTimeInput"; } }
 
-        private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <summary>
         /// Constructs an instance of <see cref="IgbDateTimeInput{TValue}"/>.
         /// </summary>
         public IgbDateTimeInput()
         {
-            if (genericType != typeof(DateTime) &&
-                genericType != typeof(string))
+            if (GenericType != typeof(DateTime) &&
+                GenericType != typeof(string))
             {
-                throw new InvalidOperationException($"Unsupported {GetType()} type param '{genericType}'.");
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{GenericType}'.");
             }
         }
 
@@ -78,7 +78,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", [], []);
-            return ConvertToGenericValue<TValue>(iv, genericType);
+            return ConvertToGenericValue<TValue>(iv);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
         public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", [], []);
-            return ConvertToGenericValue<TValue>(iv, genericType);
+            return ConvertToGenericValue<TValue>(iv);
         }
 
         /// <summary>

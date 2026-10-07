@@ -953,6 +953,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        internal virtual Type? GenericType => null;
+
         void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
 
         internal void Serialize(SerializationContext context, string? propertyName = null)
@@ -1894,7 +1896,12 @@ namespace IgniteUI.Blazor.Controls
             return (T[])val;
         }
 
-        internal object? ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false, Type? genericArgument = null)
+        internal object? ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            return ConvertReturnValue<object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+
+        internal object? ConvertReturnValue<TValue>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             try
             {
@@ -2021,7 +2028,7 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < arr.GetArrayLength(); i++)
                                 {
                                     var item = arr[i];
-                                    var cItem = ConvertReturnValue(item);
+                                    var cItem = ConvertReturnValue<TValue>(item);
                                     ret[i] = cItem;
                                 }
                                 return ret;
@@ -2056,7 +2063,7 @@ namespace IgniteUI.Blazor.Controls
                                 object? o = null;
                                 if (type != null)
                                 {
-                                    o = MarshalByValueFactory.CreateInstance(type, genericArgument);
+                                    o = MarshalByValueFactory.CreateInstance<TValue>(type);
                                 }
                                 if (o != null)
                                 {
@@ -2983,24 +2990,23 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <param name="value">The value to convert.</param>
-        /// <param name="genericType">Pass the generic evaluated type. Purely for performance optimization instead of getting it from TValue.</param>
         /// <returns></returns>
-        internal TValue ConvertToGenericValue<TValue>(object? value, Type genericType)
+        internal TValue ConvertToGenericValue<TValue>(object? value)
         {
             if (value == null)
             {
                 return default!;
             }
-            else if (genericType == typeof(DateTime))
+            else if (GenericType == typeof(DateTime))
             {
                 // No need to check for DateTime?, since the genericType will be the underlying type.
                 return (TValue)(object)ReturnToDate(value);
             }
-            else if (genericType == typeof(string))
+            else if (GenericType == typeof(string))
             {
                 if (value is DateTime dateTime)
                 {
-                    return (TValue)(object)dateTime.ToString("o", CultureInfo.InvariantCulture);
+                    return (TValue)(object)DateToString(dateTime);
                 }
 
                 return (TValue)(object)ReturnToString(value);
@@ -3012,32 +3018,32 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Currently used for DateTime/string array conversion.
         /// </summary>
-        internal TValue[] ConvertToGenericValueArray<TValue>(object? value, Type genericType)
+        internal TValue[] ConvertToGenericValueArray<TValue>(object? value)
         {
             if (value == null)
             {
                 return [];
             }
-            else if (genericType == typeof(DateTime))
+            else if (GenericType == typeof(DateTime))
             {
                 if (value is System.Collections.IEnumerable values &&
                     value is not string &&
                     value is not System.Collections.IDictionary)
                 {
                     return values.Cast<object?>()
-                        .Select(item => ConvertToGenericValue<TValue>(item, genericType))
+                        .Select(item => ConvertToGenericValue<TValue>(item))
                         .ToArray();
                 }
 
                 return ReturnToDateArray(value).Select(date => (TValue)(object)date).ToArray();
             }
-            else if (genericType == typeof(string))
+            else if (GenericType == typeof(string))
             {
                 value = ConvertReturnValue(value) ?? value;
                 if (value is System.Collections.IEnumerable values && value is not string)
                 {
                     return values.Cast<object?>()
-                        .Select(item => ConvertToGenericValue<TValue>(item, genericType))
+                        .Select(item => ConvertToGenericValue<TValue>(item))
                         .ToArray();
                 }
 
@@ -3068,22 +3074,26 @@ namespace IgniteUI.Blazor.Controls
             {
                 ser.AddStringProp(propName, dateString);
             }
+            else
+            {
+                ser.AddStringProp(propName, value.ToString());
+            }
         }
 
         /// <summary>
         /// Currently used for DateTime/string array conversion.
         /// </summary>
-        internal void AddGenericValueArray<TValue>(RendererSerializer ser, string propName, TValue[]? values, Type genericType)
+        internal void AddGenericValueArray<TValue>(RendererSerializer ser, string propName, TValue[]? values)
         {
             if (values is null)
             {
                 ser.AddStringProp(propName, null);
             }
-            else if (genericType == typeof(DateTime))
+            else if (GenericType == typeof(DateTime))
             {
                 ser.AddDateArrayProp(propName, values.Select(value => (DateTime)(object)value!).ToArray());
             }
-            else if (genericType == typeof(string))
+            else if (GenericType == typeof(string))
             {
                 ser.AddStringArrayProp(propName, values.Select(value => (string)(object)value!).ToArray());
             }
