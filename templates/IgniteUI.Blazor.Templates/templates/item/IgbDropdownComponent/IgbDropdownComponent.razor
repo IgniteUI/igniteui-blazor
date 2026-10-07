@@ -8,7 +8,7 @@
 <div class="controls">
     <div class="control">
         <label>Placement</label>
-        <IgbSelect @bind-Value="PlacementName">
+        <IgbSelect TValue="string" @bind-Value="PlacementName">
             @foreach (var placement in Placements)
             {
                 <IgbSelectItem Value="@placement.ToString()">@placement.ToString()</IgbSelectItem>

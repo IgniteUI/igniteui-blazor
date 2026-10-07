@@ -3,21 +3,21 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbSelect.Change"/> event, carrying the
-    /// <see cref="IgbSelectItem"/> instance the event applies to.
+    /// Event arguments for the <see cref="IgbSelect{TValue}.Change"/> event, carrying the
+    /// <see cref="IgbSelectItem{TValue}"/> instance the event applies to.
     /// </summary>
-    public partial class IgbSelectItemComponentEventArgs : BaseRendererElement
+    public partial class IgbSelectItemComponentEventArgs<TValue> : BaseRendererElement
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelectItemComponentEventArgs"; } }
 
-        private IgbSelectItem _detail = new IgbSelectItem();
+        private IgbSelectItem<TValue> _detail = new IgbSelectItem<TValue>();
 
         /// <summary>
         /// The select item that became selected.
         /// </summary>
         [Parameter]
-        public IgbSelectItem Detail
+        public IgbSelectItem<TValue> Detail
         {
             get { return this._detail; }
             set
@@ -56,7 +56,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "SelectItem", true) is IgbSelectItem detail)
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<TValue>(detailObj, "SelectItem", true) is IgbSelectItem<TValue> detail)
             { this.Detail = detail; }
 
             this.SuppressParentNotify = false;

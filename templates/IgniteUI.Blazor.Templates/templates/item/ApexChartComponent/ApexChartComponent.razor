@@ -10,7 +10,7 @@
 <div class="controls">
     <div class="control">
         <label>Chart type</label>
-        <IgbSelect @bind-Value="KindName">
+        <IgbSelect TValue="string" @bind-Value="KindName">
             @foreach (var kind in ChartKinds)
             {
                 <IgbSelectItem Value="@kind.ToString()">@kind.ToString()</IgbSelectItem>

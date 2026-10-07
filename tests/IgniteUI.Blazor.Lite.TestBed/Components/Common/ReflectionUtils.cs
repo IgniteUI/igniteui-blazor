@@ -85,8 +85,9 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 var typeArgs = match.GetGenericArguments();
                 var valueType = type switch
                 {
-                    "IgbSlider" or "IgbRating" => typeof(double),
                     "IgbCalendar" or "IgbDatePicker" or "IgbDateRangePicker" or "IgbDateTimeInput" => typeof(DateTime),
+                    "IgbSlider" or "IgbRating" => typeof(double),
+                    "IgbSelect" => typeof(string),
                     _ => typeof(object)
                 };
                 var concreteArgs = typeArgs.Select(_ => valueType).ToArray();

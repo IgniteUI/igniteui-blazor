@@ -149,7 +149,7 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbRadioGroup<string>))]
     [InlineData(typeof(IgbInput))]
     [InlineData(typeof(IgbCard))]
-    [InlineData(typeof(IgbSelect))]
+    [InlineData(typeof(IgbSelect<string>))]
     [InlineData(typeof(IgbTextarea))]
     public void AllComponents_InheritFromBaseRendererControl(System.Type componentType)
     {

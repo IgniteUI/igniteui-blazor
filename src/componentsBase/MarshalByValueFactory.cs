@@ -147,11 +147,6 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        internal static object? CreateInstance(string typeName)
-        {
-            return CreateInstance<object>(typeName);
-        }
-
         internal static object? CreateInstance<TValue>(string typeName)
         {
             switch (typeName)
@@ -260,7 +255,7 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbRangeSliderValue();
                 case "SelectItemComponentEventArgs":
                 case "WebSelectItemComponentEventArgs":
-                    return new IgbSelectItemComponentEventArgs();
+                    return new IgbSelectItemComponentEventArgs<TValue>();
                 case "SplitterLayoutChangedEventArgs":
                 case "WebSplitterLayoutChangedEventArgs":
                     return new IgbSplitterLayoutChangedEventArgs();

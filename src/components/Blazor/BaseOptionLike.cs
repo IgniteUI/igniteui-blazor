@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class shared by <see cref="IgbDropdownItem"/> and <see cref="IgbSelectItem"/>.
+    /// Base class shared by <see cref="IgbDropdownItem"/> and <see cref="IgbSelectItem{TValue}"/>.
     /// </summary>
-    public partial class IgbBaseOptionLike : BaseRendererControl
+    public partial class IgbBaseOptionLike<TValue> : BaseRendererControl
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebBaseOptionLike"; } }
@@ -106,19 +106,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string? _value;
+        private TValue? _value;
 
         /// <summary>
         /// The current value of the item.
         /// If not specified, the text content of the item is used.
         /// </summary>
         [Parameter]
-        public string? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -138,7 +138,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Selected"))
             { ser.AddBooleanProp("selected", this._selected); }
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", this._value); }
+            { ser.AddPrimitiveProp("value", this._value); }
 
         }
 
