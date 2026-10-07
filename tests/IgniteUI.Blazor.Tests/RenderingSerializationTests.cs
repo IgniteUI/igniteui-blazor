@@ -577,7 +577,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void DateTimeInput_RendersAllAttributes()
     {
-        var cut = Render<IgbDateTimeInput>(p => p
+        var cut = Render<IgbDateTimeInput<DateTime>>(p => p
             .Add(x => x.InputFormat, "dd/MM/yyyy")
             .Add(x => x.Label, "Date")
             .Add(x => x.Placeholder, "Enter date")

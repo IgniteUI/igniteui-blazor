@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 var valueType = type switch
                 {
                     "IgbSlider" or "IgbRating" => typeof(double),
-                    "IgbDatePicker" or "IgbDateTimeInput" => typeof(DateTime),
+                    "IgbCalendar" or "IgbDatePicker" or "IgbDateTimeInput" => typeof(DateTime),
                     _ => typeof(object)
                 };
                 var concreteArgs = typeArgs.Select(_ => valueType).ToArray();
@@ -155,7 +155,8 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             }
 
             // TODO: Calendar detail type is Object, but it actually casts to DateTime, so we need to handle that case specifically.
-            if (detailType == typeof(object) && componentType == typeof(IgbCalendar))
+            if (detailType == typeof(object) && componentType.IsGenericType &&
+                componentType.GetGenericTypeDefinition() == typeof(IgbCalendar<>))
             {
                 return typeof(DateTime);
             }

@@ -175,7 +175,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", [], []);
-            return ConvertStringToTValue(iv);
+            return ConvertToGenericValue<TValue>(iv, genericType);
         }
 
         /// <summary>
@@ -184,21 +184,21 @@ namespace IgniteUI.Blazor.Controls
         public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", [], []);
-            return ConvertStringToTValue(iv);
+            return ConvertToGenericValue<TValue>(iv, genericType);
         }
-        private TValue _activeDate = default!;
+        private TValue? _activeDate = default!;
 
         /// <summary>
         /// Gets/Sets the date which is shown in the calendar picker and is highlighted.
         /// By default it is the current date.
         /// </summary>
         [Parameter]
-        public TValue ActiveDate
+        public TValue? ActiveDate
         {
             get { return this._activeDate; }
             set
             {
-                if (!EqualityComparer<TValue>.Default.Equals(this._activeDate, value) || !IsPropDirty("ActiveDate"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._activeDate, value) || !IsPropDirty("ActiveDate"))
                 {
                     MarkPropDirty("ActiveDate");
                 }
@@ -1229,36 +1229,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private TValue ConvertStringToTValue(object? value)
-        {
-            if (value == null)
-            {
-                return default!;
-            }
-            else if (genericType == typeof(DateTime))
-            {
-                return (TValue)(object)ReturnToDate(value);
-            }
-            else if (genericType == typeof(string))
-            {
-                return (TValue)(object)ReturnToString(value);
-            }
-
-            return default!;
-        }
-
-        private void ConvertTValueToString(RendererSerializer ser, string propName, TValue? value)
-        {
-            if (value is DateTime dateTime)
-            {
-                ser.AddDateTimeProp(propName, dateTime);
-            }
-            else if (value is string dateString)
-            {
-                ser.AddStringProp(propName, dateString);
-            }
-        }
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -1274,13 +1244,13 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("ReadOnly"))
             { ser.AddBooleanProp("readOnly", this._readOnly); }
             if (IsPropDirty("Value"))
-            { ConvertTValueToString(ser, "value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
             if (IsPropDirty("ActiveDate"))
-            { ConvertTValueToString(ser, "activeDate", this._activeDate); }
+            { AddGenericValue(ser, "activeDate", this._activeDate); }
             if (IsPropDirty("Min"))
-            { ConvertTValueToString(ser, "min", this._min); }
+            { AddGenericValue(ser, "min", this._min); }
             if (IsPropDirty("Max"))
-            { ConvertTValueToString(ser, "max", this._max); }
+            { AddGenericValue(ser, "max", this._max); }
             if (IsPropDirty("HeaderOrientation"))
             { ser.AddEnumProp("headerOrientation", this._headerOrientation); }
             if (IsPropDirty("Orientation"))

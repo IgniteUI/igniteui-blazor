@@ -61,7 +61,7 @@ Only pick a grid when the content is genuinely tabular. A list of records with r
 | Contextual action menu | `IgbDropdown` | trigger in `slot="target"` — not for form values |
 | Date picker | `IgbDatePicker` (`DateTime?`) | |
 | Date range | `IgbDateRangePicker` | |
-| Always-visible calendar | `IgbCalendar` (`DateTime`, non-nullable) | `Selection`, `VisibleMonths` |
+| Always-visible calendar | `IgbCalendar<TValue>` (`DateTime`, `DateTime?`, or `string`) | `Selection`, `VisibleMonths` |
 | Masked entry (phone, postal) | `IgbMaskInput` | `Mask`: `0` digit, `L` letter, `A` alphanumeric |
 | Checkbox / switch | `IgbCheckbox` / `IgbSwitch` | `@bind-Checked` |
 | Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group |

@@ -3,42 +3,43 @@ using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
+public abstract class CalendarTests<TValue> : ComponentWithContractTestBase<IgbCalendar<TValue>>
 {
-    protected override ComponentContract<IgbCalendar> InteropContract { get; } = new ComponentContract<IgbCalendar>()
+    protected CalendarTests(
+        TValue currentValue,
+        TValue changedValue,
+        TValue[] currentValues,
+        TValue[] changedValues,
+        TValue value,
+        TValue[] values,
+        TValue activeDate)
+    {
+        InteropContract = new ComponentContract<IgbCalendar<TValue>>()
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
-            returns: new DateTime(2026, 3, 15, 0, 0, 0, DateTimeKind.Utc))
+            returns: currentValue)
         .Getter(c => c.GetCurrentValuesAsync(), c => c.GetCurrentValues(), "Values",
             arrange: _ => { },
             returns: FromRender.Of((interop, cut) => InteropReturn.Array("""["2026-01-02T03:04:05.000Z", "2026-03-16T12:30:00.000Z"]""")),
-            assert: (cut, result) =>
-            {
-                Assert.Equal(2, result.Length);
-                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), result[0].ToUniversalTime());
-                Assert.Equal(new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc), result[1].ToUniversalTime());
-            })
+            assert: (cut, result) => Assert.Equal(currentValues, result))
         .Event(c => c.Change,
             argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
             assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), ((DateTime)args.Detail).ToUniversalTime()))
         // Single selection:
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
-            expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
+            expect: changedValue)
         // Multiple selection:
         .Bind(c => c.Values, c => c.ValuesChanged, via: c => c.Change,
             arrange: ps => ps.Add(c => c.Selection, CalendarSelection.Multiple),
             argsJson: """{"detail": {"retType": "Array", "type": "", "value": [{"retType": "date", "value": "2026-01-02T03:04:05.000Z"}, {"retType": "date", "value": "2026-01-03T03:04:05.000Z"}]}}""",
-            expect: [
-                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
-                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc),
-            ])
+            expect: changedValues)
         .Prop(c => c.Selection, CalendarSelection.Range, wire: "range")
         .Prop(c => c.ShowWeekNumbers, true)
         .Prop(c => c.WeekStart, WeekDays.Monday, wire: "monday")
         .Prop(c => c.Locale, "en-US")
-        .Prop(c => c.Value, new DateTime(2026, 3, 15))
+        .Prop(c => c.Value, value)
         .Prop(c => c.Values,
-            [new DateTime(2026, 3, 15), new DateTime(2026, 3, 16)],
+            values,
             wire: new RawJson("""["2026-03-15T00:00:00.0000000", "2026-03-16T00:00:00.0000000"]"""))
         .Prop(c => c.SpecialDates,
             [new IgbDateRangeDescriptor { RangeType = DateRangeType.Specific, DateRange = new DateTime(2026, 1, 1) }],
@@ -49,7 +50,7 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
                 new IgbDateRangeDescriptor { RangeType = DateRangeType.Weekdays },
             ],
             wire: new JsonSubset("""[{"rangeType": "before", "dateRange": "@d:2025-12-31T00:00:00.0000000"}, {"rangeType": "weekdays"}]"""))
-        .Prop(c => c.ActiveDate, new DateTime(2026, 4, 1))
+        .Prop(c => c.ActiveDate, activeDate)
         .Prop(c => c.HideOutsideDays, true)
         .Prop(c => c.HideHeader, true)
         .Prop(c => c.HeaderOrientation, CalendarHeaderOrientation.Vertical, wire: "vertical")
@@ -70,7 +71,11 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
                 SelectYear = "Choose year",
                 WeekLabel = "Wk",
             },
-            wire: new JsonSubset("""{"selectMonth": "Choose month", "selectYear": "Choose year", "weekLabel": "Wk"}"""));
+            wire: new JsonSubset("""{"selectMonth": "Choose month", "selectYear": "Choose year", "weekLabel": "Wk"}"""))
+        .Prop(c => c.Value, default(TValue?), wire: null);
+    }
+
+    protected override ComponentContract<IgbCalendar<TValue>> InteropContract { get; }
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
@@ -87,25 +92,85 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
     [Fact]
     public void Calendar_TypeMetadata()
     {
-        var cal = new IgbCalendar();
+        var cal = new IgbCalendar<TValue>();
         Assert.Equal("WebCalendar", cal.RendererType);
     }
 
     [Fact]
     public void Calendar_InheritsFromCalendarBase()
     {
-        Assert.True(typeof(IgbCalendar).IsSubclassOf(typeof(IgbCalendarBase)));
+        Assert.True(typeof(IgbCalendar<TValue>).IsSubclassOf(typeof(IgbCalendarBase)));
     }
 
     /// <summary>
-    /// The wrapper must report the same initial values as <c>IgbCalendar</c>'s web component,
+    /// The wrapper must report the same initial values as <c>IgbCalendar{TValue}</c>'s web component,
     /// so reading a property that was never assigned does not lie about the rendered state.
     /// </summary>
     [Fact]
     public void Calendar_DefaultValues_MatchWebComponent()
     {
-        var calendar = new IgbCalendar();
+        var calendar = new IgbCalendar<TValue>();
 
         Assert.Equal(1, calendar.VisibleMonths);
+    }
+}
+
+public sealed class CalendarDateTimeTests : CalendarTests<DateTime>
+{
+    public CalendarDateTimeTests()
+        : base(
+            new DateTime(2026, 3, 15, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+            [
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
+                new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc).ToLocalTime(),
+            ],
+            [
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
+                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
+            ],
+            new DateTime(2026, 3, 15),
+            [new DateTime(2026, 3, 15), new DateTime(2026, 3, 16)],
+            new DateTime(2026, 4, 1))
+    {
+    }
+}
+
+public sealed class CalendarNullableDateTimeTests : CalendarTests<DateTime?>
+{
+    public CalendarNullableDateTimeTests()
+        : base(
+            new DateTime(2026, 3, 15, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+            [
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
+                new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc).ToLocalTime(),
+            ],
+            [
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
+                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
+            ],
+            new DateTime(2026, 3, 15),
+            [new DateTime(2026, 3, 15), new DateTime(2026, 3, 16)],
+            new DateTime(2026, 4, 1))
+    {
+    }
+}
+
+public sealed class CalendarStringTests : CalendarTests<string>
+{
+    public CalendarStringTests()
+        : base(
+            "2026-03-15T00:00:00.000Z",
+            new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime().ToString("o"),
+            ["2026-01-02T03:04:05.000Z", "2026-03-16T12:30:00.000Z"],
+            [
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime().ToString("o"),
+                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc).ToLocalTime().ToString("o"),
+            ],
+            "2026-03-15T00:00:00.0000000",
+            ["2026-03-15T00:00:00.0000000", "2026-03-16T00:00:00.0000000"],
+            "2026-04-01T00:00:00.0000000")
+    {
     }
 }

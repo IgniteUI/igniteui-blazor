@@ -65,7 +65,18 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("detail", out var detailObj))
-            { this.Detail = (T)Convert.ChangeType(ConvertReturnValue(detailObj)!, typeof(T)); }
+            {
+                var value = ConvertReturnValue(detailObj);
+                if (value is null)
+                {
+                    this.Detail = default!;
+                }
+                else
+                {
+                    var targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+                    this.Detail = (T)Convert.ChangeType(value, targetType);
+                }
+            }
 
             this.SuppressParentNotify = false;
         }

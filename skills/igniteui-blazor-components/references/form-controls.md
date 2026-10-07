@@ -68,25 +68,25 @@ The generic parameter is **`T`**, not `TValue` — set it to the data item type.
 |---|---|---|
 | `IgbDatePicker` | `DateTime?` | Input + dropdown calendar |
 | `IgbDateRangePicker` | `IgbDateRangeValue?` | Start/end range; `UseTwoInputs`, `UsePredefinedRanges` |
-| `IgbCalendar` | `DateTime` | Always-visible calendar surface |
+| `IgbCalendar<TValue>` | `TValue` / `TValue[]` | Always-visible calendar surface; `DateTime`, `DateTime?`, or `string` |
 | `IgbDateTimeInput` | `DateTime?` | Masked date/time entry, no dropdown |
 
 ```razor
 <IgbDatePicker @bind-Value="SelectedDate" Label="Start date" Min="@MinDate" Max="@MaxDate" />
 
-<IgbCalendar @bind-Value="CalendarValue" Selection="CalendarSelection.Single"
+<IgbCalendar TValue="DateTime" @bind-Value="CalendarValue" Selection="CalendarSelection.Single"
              VisibleMonths="2" ShowWeekNumbers="true" WeekStart="WeekDays.Monday" />
 
 <IgbDateTimeInput @bind-Value="SelectedDateTime" InputFormat="MM/dd/yyyy HH:mm" SpinLoop="true" />
 
 @code {
     DateTime? SelectedDate { get; set; }        // picker / date-time input are nullable
-    DateTime CalendarValue { get; set; } = DateTime.Today;   // IgbCalendar.Value is non-nullable
+    DateTime CalendarValue { get; set; } = DateTime.Today;
     DateTime? SelectedDateTime { get; set; } = DateTime.Now;
 }
 ```
 
-`IgbCalendar.Value` is a non-nullable `DateTime`; the pickers are nullable. Multi and range calendar selection come from `Selection` (`CalendarSelection.Single | Multiple | Range`).
+Set `IgbCalendar<TValue>` to `DateTime`, `DateTime?`, or `string`. Multi and range selection use `Values` (`TValue[]`) and come from `Selection` (`CalendarSelection.Single | Multiple | Range`).
 
 ## Checkbox, Switch, Radio
 

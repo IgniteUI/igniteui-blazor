@@ -3066,6 +3066,117 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value">The value to convert.</param>
+        /// <param name="genericType">Pass the generic evaluated type. Purely for performance optimization instead of getting it from TValue.</param>
+        /// <returns></returns>
+        internal TValue ConvertToGenericValue<TValue>(object? value, Type genericType)
+        {
+            if (value == null)
+            {
+                return default!;
+            }
+            else if (genericType == typeof(DateTime))
+            {
+                // No need to check for DateTime?, since the genericType will be the underlying type.
+                return (TValue)(object)ReturnToDate(value);
+            }
+            else if (genericType == typeof(string))
+            {
+                if (value is DateTime dateTime)
+                {
+                    return (TValue)(object)dateTime.ToString("o", CultureInfo.InvariantCulture);
+                }
+
+                return (TValue)(object)ReturnToString(value);
+            }
+
+            return default!;
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string array conversion.
+        /// </summary>
+        internal TValue[] ConvertToGenericValueArray<TValue>(object? value, Type genericType)
+        {
+            if (value == null)
+            {
+                return [];
+            }
+            else if (genericType == typeof(DateTime))
+            {
+                if (value is System.Collections.IEnumerable values &&
+                    value is not string &&
+                    value is not System.Collections.IDictionary)
+                {
+                    return values.Cast<object?>()
+                        .Select(item => ConvertToGenericValue<TValue>(item, genericType))
+                        .ToArray();
+                }
+
+                return ReturnToDateArray(value).Select(date => (TValue)(object)date).ToArray();
+            }
+            else if (genericType == typeof(string))
+            {
+                value = ConvertReturnValue(value) ?? value;
+                if (value is System.Collections.IEnumerable values && value is not string)
+                {
+                    return values.Cast<object?>()
+                        .Select(item => ConvertToGenericValue<TValue>(item, genericType))
+                        .ToArray();
+                }
+
+                return (ReturnToStringArray(value) ?? []).Select(item => (TValue)(object)item).ToArray();
+            }
+
+            return [];
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ser"></param>
+        /// <param name="propName"></param>
+        /// <param name="value"></param>
+        internal void AddGenericValue<TValue>(RendererSerializer ser, string propName, TValue? value)
+        {
+            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (value is DateTime dateTime)
+            {
+                ser.AddDateTimeProp(propName, dateTime);
+            }
+            else if (value is string dateString)
+            {
+                ser.AddStringProp(propName, dateString);
+            }
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string array conversion.
+        /// </summary>
+        internal void AddGenericValueArray<TValue>(RendererSerializer ser, string propName, TValue[]? values, Type genericType)
+        {
+            if (values is null)
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (genericType == typeof(DateTime))
+            {
+                ser.AddDateArrayProp(propName, values.Select(value => (DateTime)(object)value!).ToArray());
+            }
+            else if (genericType == typeof(string))
+            {
+                ser.AddStringArrayProp(propName, values.Select(value => (string)(object)value!).ToArray());
+            }
+        }
+
         /// <summary>The name the client renderer resolves this component by.</summary>
         internal string RendererName
         {

@@ -6,10 +6,23 @@ namespace IgniteUI.Blazor.Controls
     /// Represents a calendar that lets users
     /// to select a date value in a variety of different ways.
     /// </summary>
-    public partial class IgbCalendar : IgbCalendarBase
+    public partial class IgbCalendar<TValue> : IgbCalendarBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCalendar"; } }
+
+        private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
+        /// <summary>
+        /// Constructs an instance of <see cref="IgbCalendar{TValue}"/>.
+        /// </summary>
+        public IgbCalendar()
+        {
+            if (genericType != typeof(DateTime) && genericType != typeof(string))
+            {
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{genericType}'.");
+            }
+        }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -38,19 +51,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private DateTime _value = DateTime.MinValue;
+        private TValue? _value = default!;
 
         /// <summary>
         /// The current value of the calendar.
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Single"/>.
         /// </summary>
         [Parameter]
-        public DateTime Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -63,22 +76,22 @@ namespace IgniteUI.Blazor.Controls
         /// Get the current value of the calendar.
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Single"/>.
         /// </summary>
-        public async Task<DateTime> GetCurrentValueAsync()
+        public async Task<TValue?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ReturnToDate(iv);
+            var iv = await InvokeMethod("p:Value", [], []);
+            return ConvertToGenericValue<TValue>(iv, genericType);
         }
 
         /// <summary>
         /// Get the current value of the calendar.
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Single"/>.
         /// </summary>
-        public DateTime GetCurrentValue()
+        public TValue? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ReturnToDate(iv);
+            var iv = InvokeMethodSync("p:Value", [], []);
+            return ConvertToGenericValue<TValue>(iv, genericType);
         }
-        private DateTime[] _values = Array.Empty<DateTime>();
+        private TValue[] _values = [];
 
         /// <summary>
         /// The current values of the calendar.
@@ -86,12 +99,12 @@ namespace IgniteUI.Blazor.Controls
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
         [Parameter]
-        public DateTime[] Values
+        public TValue[] Values
         {
             get { return this._values; }
             set
             {
-                if (this._values != value || !IsPropDirty("Values"))
+                if (!EqualityComparer<TValue[]>.Default.Equals(this._values, value) || !IsPropDirty("Values"))
                 {
                     MarkPropDirty("Values");
                 }
@@ -105,10 +118,10 @@ namespace IgniteUI.Blazor.Controls
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
-        public async Task<DateTime[]> GetCurrentValuesAsync()
+        public async Task<TValue[]> GetCurrentValuesAsync()
         {
-            var iv = await InvokeMethod("p:Values", new object?[] { }, new string[] { });
-            return ReturnToDateArray(iv);
+            var iv = await InvokeMethod("p:Values", [], []);
+            return ConvertToGenericValueArray<TValue>(iv, genericType);
         }
 
         /// <summary>
@@ -116,23 +129,23 @@ namespace IgniteUI.Blazor.Controls
         /// Used when <see cref="IgbCalendarBase.Selection"/> is set to <see cref="CalendarSelection.Multiple"/>
         /// or <see cref="CalendarSelection.Range"/>.
         /// </summary>
-        public DateTime[] GetCurrentValues()
+        public TValue[] GetCurrentValues()
         {
-            var iv = InvokeMethodSync("p:Values", new object?[] { }, new string[] { });
-            return ReturnToDateArray(iv);
+            var iv = InvokeMethodSync("p:Values", [], []);
+            return ConvertToGenericValueArray<TValue>(iv, genericType);
         }
-        private DateTime _activeDate = DateTime.MinValue;
+        private TValue? _activeDate = default!;
 
         /// <summary>
         /// Sets the date which is shown in view and is highlighted. By default it is the current date.
         /// </summary>
         [Parameter]
-        public DateTime ActiveDate
+        public TValue? ActiveDate
         {
             get { return this._activeDate; }
             set
             {
-                if (this._activeDate != value || !IsPropDirty("ActiveDate"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._activeDate, value) || !IsPropDirty("ActiveDate"))
                 {
                     MarkPropDirty("ActiveDate");
                 }
@@ -286,18 +299,18 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private EventCallback<DateTime>? _valueChanged = null;
+        private EventCallback<TValue?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime> ValueChanged
+        public EventCallback<TValue?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue?>.Empty;
             }
             set
             {
@@ -317,18 +330,18 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<DateTime[]>? _valuesChanged = null;
+        private EventCallback<TValue[]>? _valuesChanged = null;
 
         /// <summary>
         /// Emitted when the Values property changes.
         /// Enables two-way binding through <c>@bind-Values</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime[]> ValuesChanged
+        public EventCallback<TValue[]> ValuesChanged
         {
             get
             {
-                return this._valuesChanged != null ? this._valuesChanged.Value : EventCallback<DateTime[]>.Empty;
+                return this._valuesChanged != null ? this._valuesChanged.Value : EventCallback<TValue[]>.Empty;
             }
             set
             {
@@ -402,11 +415,11 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentDataValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(DateTime);
+                            var newValueValue = default(TValue);
 
                             if (this.Selection == CalendarSelection.Single)
                             {
-                                newValueValue = (DateTime)(args.Detail);
+                                newValueValue = ConvertToGenericValue<TValue>(args.Detail, genericType);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -419,11 +432,11 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            var newValueValues = default(DateTime[]);
+                            var newValueValues = Array.Empty<TValue>();
 
                             if (this.Selection != CalendarSelection.Single)
                             {
-                                newValueValues = (DateTime[])(DowncastArray<DateTime>(args.Detail));
+                                newValueValues = ConvertToGenericValueArray<TValue>(args.Detail, genericType);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -436,13 +449,13 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(RendererName, "Values");
                             }
 
-                            if (!EventCallback<DateTime>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 ObserveHandlerTask(task);
                             }
 
-                            if (!EventCallback<DateTime[]>.Empty.Equals(ValuesChanged))
+                            if (!EventCallback<TValue[]>.Empty.Equals(ValuesChanged))
                             {
                                 var task = ValuesChanged.InvokeAsync(newValueValues);
                                 ObserveHandlerTask(task);
@@ -482,11 +495,11 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddDateTimeProp("value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
             if (IsPropDirty("Values"))
-            { ser.AddDateArrayProp("values", this._values); }
+            { AddGenericValueArray(ser, "values", this._values, genericType); }
             if (IsPropDirty("ActiveDate"))
-            { ser.AddDateTimeProp("activeDate", this._activeDate); }
+            { AddGenericValue(ser, "activeDate", this._activeDate); }
             if (IsPropDirty("HideOutsideDays"))
             { ser.AddBooleanProp("hideOutsideDays", this._hideOutsideDays); }
             if (IsPropDirty("HideHeader"))
