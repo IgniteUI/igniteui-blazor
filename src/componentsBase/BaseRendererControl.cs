@@ -1894,7 +1894,7 @@ namespace IgniteUI.Blazor.Controls
             return (T[])val;
         }
 
-        internal object? ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object? ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false, Type? genericArgument = null)
         {
             try
             {
@@ -2056,7 +2056,7 @@ namespace IgniteUI.Blazor.Controls
                                 object? o = null;
                                 if (type != null)
                                 {
-                                    o = MarshalByValueFactory.CreateInstance(type);
+                                    o = MarshalByValueFactory.CreateInstance(type, genericArgument);
                                 }
                                 if (o != null)
                                 {

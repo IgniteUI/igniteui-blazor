@@ -83,9 +83,13 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             if (match is not null && match.IsGenericTypeDefinition)
             {
                 var typeArgs = match.GetGenericArguments();
-                var valueType = type is "IgbCalendar" or "IgbDatePicker" or "IgbDateTimeInput"
-                    ? typeof(DateTime)
-                    : typeof(object);
+                var valueType = type switch
+                {
+                    "IgbCalendar" or "IgbDatePicker" or "IgbDateTimeInput" => typeof(DateTime),
+                    "IgbSlider" or "IgbRating" => typeof(double),
+                    "IgbSelect" => typeof(object),
+                    _ => typeof(object)
+                };
                 var concreteArgs = typeArgs.Select(_ => valueType).ToArray();
                 match = match.MakeGenericType(concreteArgs);
             }

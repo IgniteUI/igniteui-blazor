@@ -903,16 +903,16 @@ namespace IgniteUI.Blazor.Controls
             return default;
         }
 
-        internal object? ConvertReturnValue(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object? ConvertReturnValue(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false, Type? genericArgument = null)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
             {
-                return ((BaseRendererElement)CurrParent).ConvertReturnValue(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((BaseRendererElement)CurrParent).ConvertReturnValue(val, typeGuess, acceptsNullIfMarshalDoesNotExist, genericArgument);
             }
             else if (CurrParent is BaseRendererControl)
             {
-                return ((BaseRendererControl)CurrParent).ConvertReturnValue(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((BaseRendererControl)CurrParent).ConvertReturnValue(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist, genericArgument);
             }
             return null;
         }

@@ -3,7 +3,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The Combo component is similar to <see cref="IgbSelect"/> in that it provides a list of options
+    /// The Combo component is similar to <see cref="IgbSelect{TValue}"/> in that it provides a list of options
     /// from which the user can make a selection.
     /// In contrast to the Select component, the Combo component displays all options in a virtualized
     /// list of items, meaning the combo box can simultaneously show thousands of options, where one or

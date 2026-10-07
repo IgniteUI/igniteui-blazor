@@ -147,7 +147,8 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        internal static object? CreateInstance(string typeName)
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The generic argument is the TValue of the statically referenced generic component and its event args.")]
+        internal static object? CreateInstance(string typeName, Type? genericArgument = null)
         {
             switch (typeName)
             {
@@ -252,7 +253,7 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbRangeSliderValue();
                 case "SelectItemComponentEventArgs":
                 case "WebSelectItemComponentEventArgs":
-                    return new IgbSelectItemComponentEventArgs();
+                    return genericArgument is null ? null : Activator.CreateInstance(typeof(IgbSelectItemComponentEventArgs<>).MakeGenericType(genericArgument));
                 case "SplitterLayoutChangedEventArgs":
                 case "WebSplitterLayoutChangedEventArgs":
                     return new IgbSplitterLayoutChangedEventArgs();

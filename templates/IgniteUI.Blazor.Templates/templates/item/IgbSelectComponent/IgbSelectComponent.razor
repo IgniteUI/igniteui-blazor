@@ -26,17 +26,17 @@
 </div>
 
 <div class="component-host">
-    <IgbSelect @ref="_select"
+    <IgbSelect TValue="string" @ref="_select"
                class="demo-select"
                @bind-Value="Selected"
                Placement="Placement"
                Outlined="Outlined"
                Disabled="Disabled"
                Label="Fruit">
-        <IgbSelectItem Value="orange">Orange</IgbSelectItem>
-        <IgbSelectItem Value="apple">Apple</IgbSelectItem>
-        <IgbSelectItem Value="banana">Banana</IgbSelectItem>
-        <IgbSelectItem Value="grape" Disabled="true">Grape (out of stock)</IgbSelectItem>
+        <IgbSelectItem Value="@(\"orange\")">Orange</IgbSelectItem>
+        <IgbSelectItem Value="@(\"apple\")">Apple</IgbSelectItem>
+        <IgbSelectItem Value="@(\"banana\")">Banana</IgbSelectItem>
+        <IgbSelectItem Value="@(\"grape\")" Disabled="true">Grape (out of stock)</IgbSelectItem>
     </IgbSelect>
 
     <div class="actions">
@@ -64,7 +64,7 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private IgbSelect _select = default!;
+    private IgbSelect<string> _select = default!;
 
     private string? Selected { get; set; }
 

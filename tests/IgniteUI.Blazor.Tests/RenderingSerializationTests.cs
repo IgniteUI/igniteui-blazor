@@ -557,7 +557,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Select_RendersAllAttributes()
     {
-        var cut = Render<IgbSelect>(p => p
+        var cut = Render<IgbSelect<string>>(p => p
             .Add(x => x.Label, "Choose")
             .Add(x => x.Placeholder, "Select...")
             .Add(x => x.Disabled, true)

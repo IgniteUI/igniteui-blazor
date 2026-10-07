@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/Select")]
 
-<Stories TComponent="IgbSelect">
+<Stories TComponent="IgbSelect<string>">
 
     <ArgType For="_ => _!.Placement" Control="ControlType.Select" />
     <ArgType For="_ => _!.ScrollStrategy" Control="ControlType.Radio" />
@@ -13,12 +13,12 @@
             <Arg For="_ => _!.Disabled" Value="false" />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args">
-                <IgbSelectItem Value="us">United States</IgbSelectItem>
-                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
-                <IgbSelectItem Value="de">Germany</IgbSelectItem>
-                <IgbSelectItem Value="fr">France</IgbSelectItem>
-                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            <IgbSelect TValue="string" @attributes="context.Args">
+                <IgbSelectItem Value="@("us")">United States</IgbSelectItem>
+                <IgbSelectItem Value="@("uk")">United Kingdom</IgbSelectItem>
+                <IgbSelectItem Value="@("de")">Germany</IgbSelectItem>
+                <IgbSelectItem Value="@("fr")">France</IgbSelectItem>
+                <IgbSelectItem Value="@("jp")">Japan</IgbSelectItem>
             </IgbSelect>
         </Template>
     </Story>
@@ -29,12 +29,12 @@
             <Arg For="_ => _!.Outlined" Value="true" />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args">
-                <IgbSelectItem Value="us">United States</IgbSelectItem>
-                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
-                <IgbSelectItem Value="de">Germany</IgbSelectItem>
-                <IgbSelectItem Value="fr">France</IgbSelectItem>
-                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            <IgbSelect TValue="string" @attributes="context.Args">
+                <IgbSelectItem Value="@("us")">United States</IgbSelectItem>
+                <IgbSelectItem Value="@("uk")">United Kingdom</IgbSelectItem>
+                <IgbSelectItem Value="@("de")">Germany</IgbSelectItem>
+                <IgbSelectItem Value="@("fr")">France</IgbSelectItem>
+                <IgbSelectItem Value="@("jp")">Japan</IgbSelectItem>
             </IgbSelect>
         </Template>
     </Story>
@@ -45,12 +45,12 @@
             <Arg For="_ => _!.Label" Value='"Disabled"' />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args">
-                <IgbSelectItem Value="us">United States</IgbSelectItem>
-                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
-                <IgbSelectItem Value="de">Germany</IgbSelectItem>
-                <IgbSelectItem Value="fr">France</IgbSelectItem>
-                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            <IgbSelect TValue="string" @attributes="context.Args">
+                <IgbSelectItem Value="@("us")">United States</IgbSelectItem>
+                <IgbSelectItem Value="@("uk")">United Kingdom</IgbSelectItem>
+                <IgbSelectItem Value="@("de")">Germany</IgbSelectItem>
+                <IgbSelectItem Value="@("fr")">France</IgbSelectItem>
+                <IgbSelectItem Value="@("jp")">Japan</IgbSelectItem>
             </IgbSelect>
         </Template>
     </Story>

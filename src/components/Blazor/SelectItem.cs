@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Components;
+
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Represents an item in a select list.
     /// </summary>
-    public partial class IgbSelectItem : IgbBaseOptionLike
+    [CascadingTypeParameter(nameof(TValue))]
+    public partial class IgbSelectItem<TValue> : IgbBaseOptionLike<TValue>
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelectItem"; } }
