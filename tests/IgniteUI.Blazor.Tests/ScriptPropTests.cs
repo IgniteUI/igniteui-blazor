@@ -34,7 +34,15 @@ public class ScriptPropTests : BlazorComponentTestBase
             {
                 continue;
             }
-            var closed = type.IsGenericTypeDefinition ? type.MakeGenericType(typeof(object)) : type;
+            var closed = type.IsGenericTypeDefinition
+                ? type.MakeGenericType(type.Name[..type.Name.IndexOf('`')] switch
+                {
+                    "IgbCalendar" or "IgbDatePicker" or "IgbDateTimeInput" => typeof(DateTime),
+                    "IgbSlider" or "IgbRating" => typeof(double),
+                    "IgbColorPicker" or "IgbSelect" => typeof(string),
+                    _ => typeof(object)
+                })
+                : type;
             if (ScriptPropsOf(closed).Any())
             {
                 data.Add(closed);

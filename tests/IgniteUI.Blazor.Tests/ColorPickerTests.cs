@@ -1,12 +1,13 @@
 using Bunit;
+using System.Drawing;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker>
+public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker<string>>
 {
-    protected override ComponentContract<IgbColorPicker> InteropContract { get; } = new ComponentContract<IgbColorPicker>()
+    protected override ComponentContract<IgbColorPicker<string>> InteropContract { get; } = new ComponentContract<IgbColorPicker<string>>()
         .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
         .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: true)
         .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
@@ -58,14 +59,14 @@ public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker>
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void ColorPicker_RendersCorrectElement()
     {
-        var cut = Render<IgbColorPicker>();
+        var cut = Render<IgbColorPicker<string>>();
         cut.Find("igc-color-picker").Should_Exist();
     }
 
     [Fact]
     public void ColorPicker_TypeMetadata_IsCorrect()
     {
-        var colorPicker = new IgbColorPicker();
+        var colorPicker = new IgbColorPicker<string>();
         Assert.Equal("WebColorPicker", colorPicker.RendererType);
     }
 
@@ -76,7 +77,7 @@ public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker>
     [Fact]
     public void ColorPicker_DefaultValues_MatchWebComponent()
     {
-        var colorPicker = new IgbColorPicker();
+        var colorPicker = new IgbColorPicker<string>();
 
         Assert.Equal(ColorFormat.Hex, colorPicker.Format);
         Assert.Equal(ColorPickerMode.Default, colorPicker.Mode);
@@ -88,6 +89,47 @@ public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker>
     [Fact]
     public void ColorPicker_InheritsFromBaseComboBox()
     {
-        Assert.True(typeof(IgbColorPicker).IsSubclassOf(typeof(IgbBaseComboBox)));
+        Assert.True(typeof(IgbColorPicker<string>).IsSubclassOf(typeof(IgbBaseComboBox)));
+    }
+}
+
+public class ColorPickerColorTests : ComponentWithContractTestBase<IgbColorPicker<Color>>
+{
+    private static readonly Color SemiTransparentNavy = Color.FromArgb(0x80, 0x11, 0x22, 0x33);
+
+    protected override ComponentContract<IgbColorPicker<Color>> InteropContract { get; } = new ComponentContract<IgbColorPicker<Color>>()
+        .Prop(c => c.Value, SemiTransparentNavy, wire: "#11223380")
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": "rgb(255 0 0 / 0.5)"}""",
+            expect: Color.FromArgb(128, 255, 0, 0));
+
+    [Fact]
+    public void Props_FollowContract() => VerifyPropContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
+
+    [Fact]
+    public void ColorValue_UsesColorType()
+    {
+        Assert.Equal(typeof(Color), typeof(IgbColorPicker<Color>).GetProperty(nameof(IgbColorPicker<Color>.Value))!.PropertyType);
+        Assert.Equal(typeof(Color), typeof(IgbColorPicker<Color>).GetProperty(nameof(IgbColorPicker<Color>.ValueChanged))!.PropertyType.GetGenericArguments()[0]);
+    }
+
+    [Theory]
+    [InlineData("#11223380", 0x80, 0x11, 0x22, 0x33)]
+    [InlineData("rgb(255 0 0 / 0.5)", 0x80, 0xFF, 0x00, 0x00)]
+    [InlineData("hsl(0 100% 50%)", 0xFF, 0xFF, 0x00, 0x00)]
+    public void CssColorValues_ConvertToColor(string value, int alpha, int red, int green, int blue)
+    {
+        var color = ColorPickerColorConverter.Parse(value);
+
+        Assert.Equal(Color.FromArgb(alpha, red, green, blue).ToArgb(), color.ToArgb());
+    }
+
+    [Fact]
+    public void Color_ConvertsToCssRgbaHex()
+    {
+        Assert.Equal("#11223380", ColorPickerColorConverter.ToCssColor(Color.FromArgb(0x80, 0x11, 0x22, 0x33)));
     }
 }

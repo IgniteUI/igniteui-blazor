@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// How an <see cref="IgbColorPicker"/> presents the anchor that opens it.
+    /// How an <see cref="IgbColorPicker{TValue}"/> presents the anchor that opens it.
     /// </summary>
     public enum ColorPickerMode
     {

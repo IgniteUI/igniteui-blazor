@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using System.Drawing;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -9,8 +10,18 @@ namespace IgniteUI.Blazor.Controls
     /// or a named CSS color. Supports pre-defined swatches and the native EyeDropper
     /// API, where the browser provides one.
     /// </summary>
-    public partial class IgbColorPicker : IgbBaseComboBox
+    public partial class IgbColorPicker<TValue> : IgbBaseComboBox
     {
+        private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
+        /// <summary>Constructs a color picker for string or <see cref="Color"/> values.</summary>
+        public IgbColorPicker()
+        {
+            if (genericType != typeof(string) && genericType != typeof(Color))
+            {
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{genericType}'.");
+            }
+        }
         /// <inheritdoc />
         internal override string RendererType { get { return "WebColorPicker"; } }
 
@@ -41,19 +52,61 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string? _value;
+        private TValue? _value;
+
+        private TValue? ConvertToColorValue(object? value)
+        {
+            var colorValue = value as string ?? ReturnToString(value);
+            if (string.IsNullOrWhiteSpace(colorValue))
+            {
+                if (Nullable.GetUnderlyingType(typeof(TValue)) is not null)
+                {
+                    return default;
+                }
+
+                throw new FormatException("The color picker returned an empty value for a non-nullable color.");
+            }
+
+            if (genericType == typeof(string))
+            {
+                return (TValue)(object)colorValue;
+            }
+
+            return (TValue)(object)ColorPickerColorConverter.Parse(colorValue);
+        }
+
+        private string? ConvertToCssColor(TValue? value)
+        {
+            return value switch
+            {
+                null => null,
+                string colorString => colorString,
+                Color color => ColorPickerColorConverter.ToCssColor(color),
+                _ => throw new InvalidOperationException($"Unsupported {GetType()} value type '{value.GetType()}'.")
+            };
+        }
+
+        private static bool ColorValuesEqual(TValue? left, TValue? right)
+        {
+            if (left is Color leftColor && right is Color rightColor)
+            {
+                return leftColor.ToArgb() == rightColor.ToArgb();
+            }
+
+            return EqualityComparer<TValue?>.Default.Equals(left, right);
+        }
 
         /// <summary>
         /// The value of the component as a CSS color string. Accepts hex, rgb(a),
         /// hsl(a) and named colors. An empty, whitespace-only or invalid string clears the value.
         /// </summary>
         [Parameter]
-        public string? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!ColorValuesEqual(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -65,19 +118,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the component.
         /// </summary>
-        public async Task<string?> GetCurrentValueAsync()
+        public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ConvertToColorValue(iv);
         }
 
         /// <summary>
         /// Returns the current value of the component.
         /// </summary>
-        public string? GetCurrentValue()
+        public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ConvertToColorValue(iv);
         }
         private string? _label;
 
@@ -329,18 +382,18 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
-        private EventCallback<string?>? _valueChanged = null;
+        private EventCallback<TValue?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the <see cref="Value"/> property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<string?> ValueChanged
+        public EventCallback<TValue?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<string?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue?>.Empty;
             }
             set
             {
@@ -414,10 +467,9 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(string?);
+                            var newValueValue = ConvertToColorValue(args.Detail);
 
                             {
-                                newValueValue = (string?)(args.Detail);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -430,7 +482,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<string?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 if (task.Exception != null)
@@ -838,7 +890,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", this._value); }
+            { ser.AddStringProp("value", ConvertToCssColor(this._value)); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
             if (IsPropDirty("Name"))
