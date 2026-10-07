@@ -1,6 +1,7 @@
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Tests;
 
@@ -266,5 +267,133 @@ public sealed class RadioGroupStringTests : RadioGroupTests<string>
     public RadioGroupStringTests()
         : base("selected-option")
     {
+    }
+}
+
+/// <summary>
+/// <see cref="IgbRadioGroup{TValue}"/> declares <c>[CascadingTypeParameter(nameof(TValue))]</c> so Razor can
+/// infer a nested <c>&lt;IgbRadio&gt;</c>'s own <c>TValue</c> from its group when the element has no local
+/// hint to infer from instead (e.g. no literal assigned to <see cref="IgbRadio{TValue}.Value"/>). The radio
+/// itself does not receive or validate any runtime cascading value from the group, so an explicitly
+/// mismatched <c>TValue</c> is accepted at render time without error.
+/// </summary>
+public class RadioGroupCascadingTValueTests : BlazorComponentTestBase
+{
+    [Fact]
+    public void Radio_TValueMatchesGroup_String_RendersSuccessfully()
+    {
+        var cut = Render<IgbRadioGroup<string>>(ps =>
+            ps.AddChildContent<IgbRadio<string>>(child =>
+                child.Add(c => c.Value, "option1")));
+
+        Assert.NotNull(cut.Find("igc-radio-group"));
+        Assert.NotNull(cut.Find("igc-radio"));
+    }
+
+    [Fact]
+    public void Radio_TValueMatchesGroup_Int_RendersSuccessfully()
+    {
+        var cut = Render<IgbRadioGroup<int>>(ps =>
+            ps.AddChildContent<IgbRadio<int>>(child =>
+                child.Add(c => c.Value, 1)));
+
+        Assert.NotNull(cut.Find("igc-radio-group"));
+        Assert.NotNull(cut.Find("igc-radio"));
+    }
+
+    [Fact]
+    public void Radio_TValueMatchesGroup_NullableDateTime_RendersSuccessfully()
+    {
+        var cut = Render<IgbRadioGroup<DateTime?>>(ps =>
+            ps.AddChildContent<IgbRadio<DateTime?>>(child =>
+                child.Add(c => c.Value, new DateTime(2026, 1, 1))));
+
+        Assert.NotNull(cut.Find("igc-radio-group"));
+        Assert.NotNull(cut.Find("igc-radio"));
+    }
+
+    [Fact]
+    public void Radio_NoGroup_StandaloneRadio_RendersSuccessfully()
+    {
+        var cut = Render<IgbRadio<string>>(parameters =>
+            parameters.Add(p => p.Value, "a"));
+
+        Assert.NotNull(cut.Find("igc-radio"));
+    }
+
+    /// <summary>
+    /// An explicitly mismatched <c>TValue</c> (as if Razor's own inference picked a different type than
+    /// the group's) is not validated at runtime: the radio renders using its own <c>TValue</c>, independent
+    /// of the containing group.
+    /// </summary>
+    [Fact]
+    public void Radio_TValueMismatch_StringGroup_IntRadio_RendersWithoutError()
+    {
+        var cut = Render<IgbRadioGroup<string>>(ps =>
+            ps.AddChildContent<IgbRadio<int>>(child =>
+                child.Add(c => c.Value, 1)));
+
+        Assert.NotNull(cut.Find("igc-radio-group"));
+        var radio = cut.Find("igc-radio");
+        Assert.Equal("1", radio.GetAttribute("value"));
+    }
+
+    [Fact]
+    public void Radio_TValueMismatch_IntGroup_StringRadio_RendersWithoutError()
+    {
+        var cut = Render<IgbRadioGroup<int>>(ps =>
+            ps.AddChildContent<IgbRadio<string>>(child =>
+                child.Add(c => c.Value, "a")));
+
+        Assert.NotNull(cut.Find("igc-radio-group"));
+        var radio = cut.Find("igc-radio");
+        Assert.Equal("a", radio.GetAttribute("value"));
+    }
+
+    [Fact]
+    public void Radio_TValueMismatch_StringGroup_DateTimeRadio_RendersWithoutError()
+    {
+        var cut = Render<IgbRadioGroup<string>>(ps =>
+            ps.AddChildContent<IgbRadio<DateTime>>(child =>
+                child.Add(c => c.Value, new DateTime(2026, 1, 1))));
+
+        Assert.NotNull(cut.Find("igc-radio-group"));
+        Assert.NotNull(cut.Find("igc-radio"));
+    }
+
+    [Fact]
+    public void Radio_MultipleRadiosInSameGroup_AllMatchingTValue_RendersSuccessfully()
+    {
+        var cut = Render<IgbRadioGroup<string>>(ps =>
+            ps.AddChildContent(builder =>
+            {
+                builder.OpenComponent<IgbRadio<string>>(0);
+                builder.AddAttribute(1, "Value", "a");
+                builder.CloseComponent();
+
+                builder.OpenComponent<IgbRadio<string>>(2);
+                builder.AddAttribute(3, "Value", "b");
+                builder.CloseComponent();
+            }));
+
+        Assert.Equal(2, cut.FindAll("igc-radio").Count);
+    }
+
+    [Fact]
+    public void Radio_MultipleRadiosInSameGroup_OneMismatchedTValue_RendersWithoutError()
+    {
+        var cut = Render<IgbRadioGroup<string>>(ps =>
+            ps.AddChildContent(builder =>
+            {
+                builder.OpenComponent<IgbRadio<string>>(0);
+                builder.AddAttribute(1, "Value", "a");
+                builder.CloseComponent();
+
+                builder.OpenComponent<IgbRadio<int>>(2);
+                builder.AddAttribute(3, "Value", 1);
+                builder.CloseComponent();
+            }));
+
+        Assert.Equal(2, cut.FindAll("igc-radio").Count);
     }
 }
