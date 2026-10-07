@@ -14,23 +14,23 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for component events that carry a date payload.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
-    public partial class IgbComponentDateValueChangedEventArgs<T> : BaseRendererElement
+    public partial class IgbComponentDateValueChangedEventArgs<TValue> : BaseRendererElement
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComponentDateValueChangedEventArgs"; } }
 
-        private protected T _detail = default!;
+        private protected TValue? _detail = default!;
 
         /// <summary>
         /// The date value carried by the event.
         /// </summary>
         [Parameter]
-        public T Detail
+        public TValue? Detail
         {
             get { return this._detail; }
             set
             {
-                if (!EqualityComparer<T>.Default.Equals(this._detail, value) || !IsPropDirty("Detail"))
+                if (!EqualityComparer<TValue>.Default.Equals(this._detail, value) || !IsPropDirty("Detail"))
                 {
                     MarkPropDirty("Detail");
                 }
@@ -66,16 +66,7 @@ namespace IgniteUI.Blazor.Controls
 
             if (args != null && args.TryGetValue("detail", out var detailObj))
             {
-                var value = ConvertReturnValue(detailObj);
-                if (value is null)
-                {
-                    this.Detail = default!;
-                }
-                else
-                {
-                    var targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
-                    this.Detail = (T)Convert.ChangeType(value, targetType);
-                }
+                this.Detail = GenericValueFromEventJson<TValue>(detailObj, control.GenericType!);
             }
 
             this.SuppressParentNotify = false;

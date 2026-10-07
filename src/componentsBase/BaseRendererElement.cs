@@ -905,14 +905,19 @@ namespace IgniteUI.Blazor.Controls
 
         internal object? ConvertReturnValue(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
+            return ConvertReturnValue<object>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+
+        internal object? ConvertReturnValue<TValue>(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
             {
-                return ((BaseRendererElement)CurrParent).ConvertReturnValue(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((BaseRendererElement)CurrParent).ConvertReturnValue<TValue>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
             else if (CurrParent is BaseRendererControl)
             {
-                return ((BaseRendererControl)CurrParent).ConvertReturnValue(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((BaseRendererControl)CurrParent).ConvertReturnValue<TValue>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
             return null;
         }
@@ -1142,6 +1147,73 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-    }
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ser"></param>
+        /// <param name="propName"></param>
+        /// <param name="value"></param>
+        internal void AddGenericValue<TValue>(RendererSerializer ser, string propName, TValue? value)
+        {
+            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (value is DateTime dateTime)
+            {
+                ser.AddDateTimeProp(propName, dateTime);
+            }
+            else if (value is string dateString)
+            {
+                ser.AddStringProp(propName, dateString);
+            }
+        }
 
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        internal string? GenericValueString<TValue>(TValue? value)
+        {
+            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            {
+                return null;
+            }
+            else if (value is DateTime dateTime)
+            {
+                return DateToString(dateTime);
+            }
+            else if (value is string dateString)
+            {
+                return dateString;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Converts event json values to the specified type. Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="detailObj"></param>
+        /// <param name="genericType"></param>
+        /// <returns></returns>
+        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj, Type genericType)
+        {
+            var value = ConvertReturnValue<TValue>(detailObj);
+            if (value is null)
+            {
+                return default;
+            }
+
+            if (genericType == typeof(string) && value is DateTime dateTimeValue)
+            {
+                return (TValue)(object)dateTimeValue.ToString("o");
+            }
+
+            return (TValue)Convert.ChangeType(value, genericType);
+        }
+    }
 }

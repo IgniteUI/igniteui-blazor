@@ -11,16 +11,16 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCalendar"; } }
 
-        private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <summary>
         /// Constructs an instance of <see cref="IgbCalendar{TValue}"/>.
         /// </summary>
         public IgbCalendar()
         {
-            if (genericType != typeof(DateTime) && genericType != typeof(string))
+            if (GenericType != typeof(DateTime) && GenericType != typeof(string))
             {
-                throw new InvalidOperationException($"Unsupported {GetType()} type param '{genericType}'.");
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{GenericType}'.");
             }
         }
 
@@ -79,7 +79,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", [], []);
-            return ConvertToGenericValue<TValue>(iv, genericType);
+            return ConvertToGenericValue<TValue>(iv);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace IgniteUI.Blazor.Controls
         public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", [], []);
-            return ConvertToGenericValue<TValue>(iv, genericType);
+            return ConvertToGenericValue<TValue>(iv);
         }
         private TValue[] _values = [];
 
@@ -121,7 +121,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<TValue[]> GetCurrentValuesAsync()
         {
             var iv = await InvokeMethod("p:Values", [], []);
-            return ConvertToGenericValueArray<TValue>(iv, genericType);
+            return ConvertToGenericValueArray<TValue>(iv);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace IgniteUI.Blazor.Controls
         public TValue[] GetCurrentValues()
         {
             var iv = InvokeMethodSync("p:Values", [], []);
-            return ConvertToGenericValueArray<TValue>(iv, genericType);
+            return ConvertToGenericValueArray<TValue>(iv);
         }
         private TValue? _activeDate = default!;
 
@@ -419,7 +419,7 @@ namespace IgniteUI.Blazor.Controls
 
                             if (this.Selection == CalendarSelection.Single)
                             {
-                                newValueValue = ConvertToGenericValue<TValue>(args.Detail, genericType);
+                                newValueValue = ConvertToGenericValue<TValue>(args.Detail);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -436,7 +436,7 @@ namespace IgniteUI.Blazor.Controls
 
                             if (this.Selection != CalendarSelection.Single)
                             {
-                                newValueValues = ConvertToGenericValueArray<TValue>(args.Detail, genericType);
+                                newValueValues = ConvertToGenericValueArray<TValue>(args.Detail);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -497,7 +497,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Value"))
             { AddGenericValue(ser, "value", this._value); }
             if (IsPropDirty("Values"))
-            { AddGenericValueArray(ser, "values", this._values, genericType); }
+            { AddGenericValueArray(ser, "values", this._values); }
             if (IsPropDirty("ActiveDate"))
             { AddGenericValue(ser, "activeDate", this._activeDate); }
             if (IsPropDirty("HideOutsideDays"))

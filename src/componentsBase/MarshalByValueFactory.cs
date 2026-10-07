@@ -149,6 +149,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal static object? CreateInstance(string typeName)
         {
+            return CreateInstance<object>(typeName);
+        }
+
+        internal static object? CreateInstance<TValue>(string typeName)
+        {
             switch (typeName)
             {
                 //@@MarshalByValue
@@ -222,10 +227,13 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbComponentValueChangedEventArgs();
                 case "DateRangeValueDetail":
                 case "WebDateRangeValueDetail":
-                    return new IgbDateRangeValueDetail();
+                    return new IgbDateRangeValueDetail<TValue>();
                 case "DateRangeValueEventArgs":
                 case "WebDateRangeValueEventArgs":
-                    return new IgbDateRangeValueEventArgs();
+                    return new IgbDateRangeValueEventArgs<TValue>();
+                case "DateRangeValue":
+                case "WebDateRangeValue":
+                    return new IgbDateRangeValue<TValue>();
                 case "DropdownItemComponentEventArgs":
                 case "WebDropdownItemComponentEventArgs":
                     return new IgbDropdownItemComponentEventArgs();
@@ -243,10 +251,10 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbNumberEventArgs();
                 case "RadioChangeEventArgs":
                 case "WebRadioChangeEventArgs":
-                    return new IgbRadioChangeEventArgs();
+                    return new IgbRadioChangeEventArgs<TValue>();
                 case "RadioChangeEventArgsDetail":
                 case "WebRadioChangeEventArgsDetail":
-                    return new IgbRadioChangeEventArgsDetail();
+                    return new IgbRadioChangeEventArgsDetail<TValue>();
                 case "RangeSliderValue":
                 case "WebRangeSliderValue":
                     return new IgbRangeSliderValue();

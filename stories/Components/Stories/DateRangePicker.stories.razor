@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/DateRangePicker")]
 
-<Stories TComponent="IgbDateRangePicker">
+<Stories TComponent="IgbDateRangePicker<DateTime>">
 
     <ArgType For="_ => _!.Mode" Control="ControlType.Radio" />
     <ArgType For="_ => _!.ScrollStrategy" Control="ControlType.Radio" />
@@ -12,7 +12,7 @@
             <Arg For="_ => _!.Outlined" Value="false" />
         </Arguments>
         <Template>
-            <IgbDateRangePicker @attributes="context.Args" />
+            <IgbDateRangePicker TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -23,7 +23,7 @@
             <Arg For="_ => _!.UseTwoInputs" Value="true" />
         </Arguments>
         <Template>
-            <IgbDateRangePicker @attributes="context.Args" />
+            <IgbDateRangePicker TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -33,7 +33,7 @@
             <Arg For="_ => _!.Mode" Value="PickerMode.Dialog" />
         </Arguments>
         <Template>
-            <IgbDateRangePicker @attributes="context.Args" />
+            <IgbDateRangePicker TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
