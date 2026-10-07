@@ -118,7 +118,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Radio_RendersAllAttributes()
     {
-        var cut = Render<IgbRadio>(p => p
+        var cut = Render<IgbRadio<string>>(p => p
             .Add(x => x.Value, "option-a")
             .Add(x => x.Checked, true)
             .Add(x => x.Disabled, true)

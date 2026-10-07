@@ -251,10 +251,10 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbNumberEventArgs();
                 case "RadioChangeEventArgs":
                 case "WebRadioChangeEventArgs":
-                    return new IgbRadioChangeEventArgs();
+                    return new IgbRadioChangeEventArgs<TValue>();
                 case "RadioChangeEventArgsDetail":
                 case "WebRadioChangeEventArgsDetail":
-                    return new IgbRadioChangeEventArgsDetail();
+                    return new IgbRadioChangeEventArgsDetail<TValue>();
                 case "RangeSliderValue":
                 case "WebRangeSliderValue":
                     return new IgbRangeSliderValue();

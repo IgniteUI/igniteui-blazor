@@ -5,10 +5,12 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The radio component allows the user to select a single option from an available set of options that are listed side by side.
     /// </summary>
-    public partial class IgbRadio : BaseRendererControl
+    public partial class IgbRadio<TValue> : BaseRendererControl
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRadio"; } }
+
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -77,18 +79,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string? _value;
+        private TValue? _value;
 
         /// <summary>
         /// The value of the control.
         /// </summary>
         [Parameter]
-        public string? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -377,17 +379,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbRadioChangeEventArgs>? _change = null;
+        private EventCallback<IgbRadioChangeEventArgs<TValue>>? _change = null;
 
         /// <summary>
         /// Emitted when the control's checked state changes.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbRadioChangeEventArgs> Change
+        public EventCallback<IgbRadioChangeEventArgs<TValue>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbRadioChangeEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbRadioChangeEventArgs<TValue>>.Empty;
             }
             set
             {
@@ -396,7 +398,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRadioChangeEventArgs>(this.RendererName, "Change", value, (args) =>
+                        this.SetHandler<IgbRadioChangeEventArgs<TValue>>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueChecked = default(bool);
 
@@ -431,7 +433,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbRadioChangeEventArgs>(this.RendererName, "Change", null);
+                    this.SetHandler<IgbRadioChangeEventArgs<TValue>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -442,9 +444,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbRadioChangeEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbRadioChangeEventArgs<TValue>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbRadioChangeEventArgs>(null, (Action<IgbRadioChangeEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbRadioChangeEventArgs<TValue>>(null, (Action<IgbRadioChangeEventArgs<TValue>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -602,7 +604,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Required"))
             { ser.AddBooleanProp("required", this._required); }
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
             if (IsPropDirty("Name"))
             { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Checked"))
