@@ -34,11 +34,13 @@ public class ScriptPropTests : BlazorComponentTestBase
             {
                 continue;
             }
-            var genericArgument = type == typeof(IgbSlider<>) || type == typeof(IgbRating<>)
-                ? typeof(double)
-                : type == typeof(IgbDatePicker<>)
-                    ? typeof(DateTime)
-                    : typeof(object);
+            var genericArgument = type switch
+            {
+                var s when s == typeof(IgbSelect<>) => typeof(string),
+                var d when d == typeof(IgbSlider<>) || d == typeof(IgbRating<>) => typeof(double),
+                var t when t == typeof(IgbDatePicker<>) || t == typeof(IgbDateTimeInput<>) || t == typeof(IgbDateRangePicker<>) || t == typeof(IgbCalendar<>) => typeof(DateTime),
+                _ => typeof(object)
+            };
             var closed = type.IsGenericTypeDefinition ? type.MakeGenericType(genericArgument) : type;
             if (ScriptPropsOf(closed).Any())
             {
