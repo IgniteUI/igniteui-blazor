@@ -156,6 +156,34 @@ namespace IgniteUI.Blazor.Controls
             {
                 _context.Writer.WriteNumber(propertyName, (short)val);
             }
+            else if (val is byte)
+            {
+                _context.Writer.WriteNumber(propertyName, (byte)val);
+            }
+            else if (val is sbyte)
+            {
+                _context.Writer.WriteNumber(propertyName, (sbyte)val);
+            }
+            else if (val is ushort)
+            {
+                _context.Writer.WriteNumber(propertyName, (ushort)val);
+            }
+            else if (val is uint)
+            {
+                _context.Writer.WriteNumber(propertyName, (uint)val);
+            }
+            else if (val is ulong)
+            {
+                _context.Writer.WriteNumber(propertyName, (ulong)val);
+            }
+            else if (val is float)
+            {
+                _context.Writer.WriteNumber(propertyName, (float)val);
+            }
+            else if (val is decimal)
+            {
+                _context.Writer.WriteNumber(propertyName, (decimal)val);
+            }
             else if (val is bool)
             {
                 _context.Writer.WriteBoolean(propertyName, (bool)val);

@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Tests;
 /// <summary>
 /// Tests enum serialization rules:
 /// - Single word → lowercase
-/// - Multi-word without WCEnumName → camelCase  
+/// - Multi-word without WCEnumName → camelCase
 /// - With WCEnumName → specified string
 /// </summary>
 public class EnumSerializationTests : BlazorComponentTestBase
@@ -179,7 +179,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(SliderTickOrientation.Mirror, "mirror")]
     public void SliderTickOrientation_Serialization(SliderTickOrientation orient, string expected)
     {
-        var cut = Render<IgbSlider>(p => p.Add(x => x.TickOrientation, orient));
+        var cut = Render<IgbSlider<double>>(p => p.Add(x => x.TickOrientation, orient));
         Assert.Equal(expected, cut.Find("igc-slider").GetAttribute("tick-orientation"));
     }
 
