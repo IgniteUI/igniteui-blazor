@@ -3013,22 +3013,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal static Type GetNumericType<TValue>()
-        {
-            var type = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
-            if (type != typeof(int) &&
-                type != typeof(long) &&
-                type != typeof(short) &&
-                type != typeof(float) &&
-                type != typeof(double) &&
-                type != typeof(decimal))
-            {
-                throw new InvalidOperationException($"The type '{type}' is not a supported numeric type.");
-            }
-
-            return type;
-        }
-
         internal TValue? ConvertToNumericValue<TValue>(object? value, Type numericType)
         {
             if (value is null)
