@@ -66,10 +66,10 @@ The generic parameter is **`T`**, not `TValue` — set it to the data item type.
 
 | Component | Value type | Use for |
 |---|---|---|
-| `IgbDatePicker` | `DateTime?` | Input + dropdown calendar |
-| `IgbDateRangePicker<TValue>` | `IgbDateRangeValue<TValue>?` | Start/end range; `UseTwoInputs`, `UsePredefinedRanges` |
-| `IgbCalendar<TValue>` | `TValue` / `TValue[]` | Always-visible calendar surface; |
-| `IgbDateTimeInput` | `DateTime?` | Masked date/time entry, no dropdown |
+| `IgbDatePicker<TValue>` | `DateTime`, `DateTime?`, or `string` | Input + dropdown calendar |
+| `IgbDateRangePicker<TValue>` | `IgbDateRangeValue<TValue>?`, where `TValue` can be `DateTime`, `DateTime?`, or `string` | Start/end range; `UseTwoInputs`, `UsePredefinedRanges` |
+| `IgbCalendar<TValue>` | `DateTime`, `DateTime?`, or `string` | Always-visible calendar surface; |
+| `IgbDateTimeInput<TValue>` | `DateTime`, `DateTime?`, or `string` | Masked date/time entry, no dropdown |
 
 ```razor
 <IgbDatePicker @bind-Value="SelectedDate" Label="Start date" Min="@MinDate" Max="@MaxDate" />
