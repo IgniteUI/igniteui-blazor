@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// A highly customizable single-line text field for entering and editing data,
     /// with support for prefix/suffix content, helper text, form integration, and built-in validation.
     /// </summary>
-    public partial class IgbInput : IgbInputBase
+    public partial class IgbInput : IgbInputBase<string>
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebInput"; } }

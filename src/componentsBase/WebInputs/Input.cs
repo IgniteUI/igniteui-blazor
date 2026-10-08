@@ -6,10 +6,11 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class for <see cref="IgbInput" /> and <see cref="IgbMaskInput" />.
     /// </summary>
-    public partial class IgbInputBase : IgbComponentBase
+    /// <typeparam name="TValue">The value type; <c>string</c> for <see cref="IgbInput" /> and <see cref="IgbMaskInput" />.</typeparam>
+    public partial class IgbInputBase<TValue> : IgbComponentBase
     {
         [Inject]
-        internal ILogger<IgbInputBase>? Logger { get; set; }
+        internal ILogger<IgbInputBase<TValue>>? Logger { get; set; }
 
         private void EnsureInputOcurredHandled()
         {
@@ -22,24 +23,24 @@ namespace IgniteUI.Blazor.Controls
 
         private void RaiseValueChanging(IgbComponentValueChangedEventArgs args)
         {
-            if (!EventCallback<string>.Empty.Equals(ValueChanging))
+            if (!EventCallback<TValue?>.Empty.Equals(ValueChanging))
             {
-                ValueChanging.InvokeAsync(args.Detail);
+                ValueChanging.InvokeAsync(GenericValueFromEventJson<TValue>(args.Detail));
             }
         }
 
-        private EventCallback<string>? _valueChanging = null;
+        private EventCallback<TValue?>? _valueChanging = null;
 
         /// <summary>
-        /// Emitted as the user types, carrying the current text of the input.
+        /// Emitted as the user types, carrying the current value of the input.
         /// Raised alongside <see cref="InputOcurred"/>, whose payload it unwraps.
         /// </summary>
         [Parameter]
-        public EventCallback<string> ValueChanging
+        public EventCallback<TValue?> ValueChanging
         {
             get
             {
-                return this._valueChanging != null ? this._valueChanging.Value : EventCallback<string>.Empty;
+                return this._valueChanging != null ? this._valueChanging.Value : EventCallback<TValue?>.Empty;
             }
             set
             {
