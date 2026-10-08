@@ -141,7 +141,9 @@ public class ColorPickerColorTests : ComponentWithContractTestBase<IgbColorPicke
     [Theory]
     [InlineData("#11223380", 0x80, 0x11, 0x22, 0x33)]
     [InlineData("rgb(255 0 0 / 0.5)", 0x80, 0xFF, 0x00, 0x00)]
+    [InlineData("rgba(255, 0, 0, 0.5)", 0x80, 0xFF, 0x00, 0x00)]
     [InlineData("hsl(0 100% 50%)", 0xFF, 0xFF, 0x00, 0x00)]
+    [InlineData("hsla(0, 100%, 50%, 0.5)", 0x80, 0xFF, 0x00, 0x00)]
     // The HSL arithmetic gives green and blue as -8.7e-18 here.
     [InlineData("hsl(0 100% 1%)", 0xFF, 0x05, 0x00, 0x00)]
     public void CssColorValues_ConvertToColor(string value, int alpha, int red, int green, int blue)

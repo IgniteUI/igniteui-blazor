@@ -126,7 +126,10 @@ namespace IgniteUI.Blazor.Controls
         private static string[] GetFunctionParts(string value, string name)
         {
             var openIndex = value.IndexOf('(');
-            if (openIndex != name.Length || !value.EndsWith(')'))
+            if ((openIndex != name.Length && openIndex != name.Length + 1)
+                || !value.EndsWith(')')
+                || !value[..openIndex].Equals(name, StringComparison.OrdinalIgnoreCase)
+                    && !value[..openIndex].Equals($"{name}a", StringComparison.OrdinalIgnoreCase))
             {
                 throw new FormatException($"'{value}' is not a valid CSS {name} color.");
             }
