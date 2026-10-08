@@ -416,17 +416,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
+        private EventCallback<IgbColorPickerValueEventArgs<TValue?>>? _change = null;
 
         /// <summary>
         /// Emitted when the value of the component is committed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentValueChangedEventArgs> Change
+        public EventCallback<IgbColorPickerValueEventArgs<TValue?>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbComponentValueChangedEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbColorPickerValueEventArgs<TValue?>>.Empty;
             }
             set
             {
@@ -435,9 +435,9 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
+                        this.SetHandler<IgbColorPickerValueEventArgs<TValue?>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = ColorPickerColorConverter.FromCss<TValue>(args.Detail);
+                            var newValueValue = args.Detail;
 
                             {
                                 if (UseDirectRender)
@@ -472,7 +472,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", null);
+                    this.SetHandler<IgbColorPickerValueEventArgs<TValue?>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -483,9 +483,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbComponentValueChangedEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbColorPickerValueEventArgs<TValue?>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbComponentValueChangedEventArgs>(null, (Action<IgbComponentValueChangedEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbColorPickerValueEventArgs<TValue?>>(null, (Action<IgbColorPickerValueEventArgs<TValue?>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -523,17 +523,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentValueChangedEventArgs>? _input = null;
+        private EventCallback<IgbColorPickerValueEventArgs<TValue?>>? _input = null;
 
         /// <summary>
         /// Emitted when the value of the component is changed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentValueChangedEventArgs> Input
+        public EventCallback<IgbColorPickerValueEventArgs<TValue?>> Input
         {
             get
             {
-                return this._input != null ? this._input.Value : EventCallback<IgbComponentValueChangedEventArgs>.Empty;
+                return this._input != null ? this._input.Value : EventCallback<IgbColorPickerValueEventArgs<TValue?>>.Empty;
             }
             set
             {
@@ -542,7 +542,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_input))
                     {
                         _input = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Input", value);
+                        this.SetHandler<IgbColorPickerValueEventArgs<TValue?>>(this.RendererName, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -553,7 +553,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _input = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Input", null);
+                    this.SetHandler<IgbColorPickerValueEventArgs<TValue?>>(this.RendererName, "Input", null);
                     this.OnRefChanged("Input", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._inputRef = null;

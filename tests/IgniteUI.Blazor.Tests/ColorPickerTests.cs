@@ -108,6 +108,12 @@ public class ColorPickerColorTests : ComponentWithContractTestBase<IgbColorPicke
         .Prop(c => c.Value, SemiTransparentNavy, wire: "#11223380")
         // Without this the element shows transparent black for an unset Color.
         .Prop(c => c.Value, Color.Empty, wire: null)
+        .Event(c => c.Input,
+            argsJson: """{"detail": "hsl(0 100% 50%)"}""",
+            assert: args => Assert.Equal(Color.Red.ToArgb(), args.Detail.ToArgb()))
+        .Event(c => c.Change,
+            argsJson: """{"detail": "#11223380"}""",
+            assert: args => Assert.Equal(SemiTransparentNavy.ToArgb(), args.Detail.ToArgb()))
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": "rgb(255 0 0 / 0.5)"}""",
             expect: Color.FromArgb(128, 255, 0, 0))
@@ -118,6 +124,9 @@ public class ColorPickerColorTests : ComponentWithContractTestBase<IgbColorPicke
 
     [Fact]
     public void Props_FollowContract() => VerifyPropContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
 
     [Fact]
     public void Binds_FollowContract() => VerifyBindContract();
