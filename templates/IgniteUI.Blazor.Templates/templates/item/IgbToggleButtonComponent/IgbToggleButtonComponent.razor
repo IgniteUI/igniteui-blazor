@@ -10,9 +10,9 @@
         <label>Group selection</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
-                <IgbRadio Value="Single">Single</IgbRadio>
-                <IgbRadio Value="SingleRequired">SingleRequired</IgbRadio>
-                <IgbRadio Value="Multiple">Multiple</IgbRadio>
+                <IgbRadio Value="@("Single")">Single</IgbRadio>
+                <IgbRadio Value="@("SingleRequired")">SingleRequired</IgbRadio>
+                <IgbRadio Value="@("Multiple")">Multiple</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

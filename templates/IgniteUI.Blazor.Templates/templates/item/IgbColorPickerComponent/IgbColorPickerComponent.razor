@@ -10,9 +10,9 @@
         <label>Format</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="FormatName">
-                <IgbRadio Value="Hex">Hex</IgbRadio>
-                <IgbRadio Value="Rgb">Rgb</IgbRadio>
-                <IgbRadio Value="Hsl">Hsl</IgbRadio>
+                <IgbRadio Value="@("Hex")">Hex</IgbRadio>
+                <IgbRadio Value="@("Rgb")">Rgb</IgbRadio>
+                <IgbRadio Value="@("Hsl")">Hsl</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -21,8 +21,8 @@
         <label>Mode</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ModeName">
-                <IgbRadio Value="Default">Default</IgbRadio>
-                <IgbRadio Value="Input">Input</IgbRadio>
+                <IgbRadio Value="@("Default")">Default</IgbRadio>
+                <IgbRadio Value="@("Input")">Input</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

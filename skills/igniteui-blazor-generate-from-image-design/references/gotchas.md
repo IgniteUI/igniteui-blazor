@@ -29,6 +29,15 @@ Mixing literal text with `@(...)` in one attribute on a component fails the buil
 @code { void NavigateToDashboard() => NavigationManager.NavigateTo("/dashboard"); }
 ```
 
+### CS0103 — a bare string `Value` on `IgbSelectItem` / `IgbRadio`
+
+In `IgniteUI.Blazor.Lite` their `Value` is generic (`TValue`, taken from the parent `IgbSelect` / `IgbRadioGroup`), so the attribute is a C# expression and `Value="apple"` reads as an identifier.
+
+```razor
+@* ❌ *@ <IgbSelectItem Value="apple">Apple</IgbSelectItem>
+@* ✅ *@ <IgbSelectItem Value="@("apple")">Apple</IgbSelectItem>
+```
+
 ### BL0005 — setting parameters through `@ref`
 
 Assigning component parameters from `OnAfterRenderAsync` (`chart.Brushes = "…"`) raises *"Component parameter should not be set outside of its component"*. Pass them as inline markup attributes instead.

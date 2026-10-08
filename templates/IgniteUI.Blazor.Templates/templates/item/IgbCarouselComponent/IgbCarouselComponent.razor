@@ -10,8 +10,8 @@
         <label>Indicators orientation</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorsOrientationName">
-                <IgbRadio Value="Start">Start</IgbRadio>
-                <IgbRadio Value="End">End</IgbRadio>
+                <IgbRadio Value="@("Start")">Start</IgbRadio>
+                <IgbRadio Value="@("End")">End</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

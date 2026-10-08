@@ -10,9 +10,9 @@
         <label>Mask</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="MaskName">
-                <IgbRadio Value="Phone">Phone</IgbRadio>
-                <IgbRadio Value="SSN">SSN</IgbRadio>
-                <IgbRadio Value="Date">Date</IgbRadio>
+                <IgbRadio Value="@("Phone")">Phone</IgbRadio>
+                <IgbRadio Value="@("SSN")">SSN</IgbRadio>
+                <IgbRadio Value="@("Date")">Date</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -21,8 +21,8 @@
         <label>Value mode</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ValueModeName">
-                <IgbRadio Value="Raw">Raw</IgbRadio>
-                <IgbRadio Value="WithFormatting">WithFormatting</IgbRadio>
+                <IgbRadio Value="@("Raw")">Raw</IgbRadio>
+                <IgbRadio Value="@("WithFormatting")">WithFormatting</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

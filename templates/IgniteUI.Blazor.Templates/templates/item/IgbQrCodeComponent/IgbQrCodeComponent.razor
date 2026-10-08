@@ -10,10 +10,10 @@
         <label>Error level</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ErrorLevelName">
-                <IgbRadio Value="Low">L</IgbRadio>
-                <IgbRadio Value="Medium">M</IgbRadio>
-                <IgbRadio Value="Quartile">Q</IgbRadio>
-                <IgbRadio Value="High">H</IgbRadio>
+                <IgbRadio Value="@("Low")">L</IgbRadio>
+                <IgbRadio Value="@("Medium")">M</IgbRadio>
+                <IgbRadio Value="@("Quartile")">Q</IgbRadio>
+                <IgbRadio Value="@("High")">H</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -22,9 +22,9 @@
         <label>Dot style</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DotStyleName">
-                <IgbRadio Value="Square">Square</IgbRadio>
-                <IgbRadio Value="Circle">Circle</IgbRadio>
-                <IgbRadio Value="Rounded">Rounded</IgbRadio>
+                <IgbRadio Value="@("Square")">Square</IgbRadio>
+                <IgbRadio Value="@("Circle")">Circle</IgbRadio>
+                <IgbRadio Value="@("Rounded")">Rounded</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

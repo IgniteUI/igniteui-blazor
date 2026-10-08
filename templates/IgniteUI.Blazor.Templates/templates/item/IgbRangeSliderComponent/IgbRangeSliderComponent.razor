@@ -10,9 +10,9 @@
         <label>Tick orientation</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TickOrientationName">
-                <IgbRadio Value="Start">Start</IgbRadio>
-                <IgbRadio Value="End">End</IgbRadio>
-                <IgbRadio Value="Mirror">Mirror</IgbRadio>
+                <IgbRadio Value="@("Start")">Start</IgbRadio>
+                <IgbRadio Value="@("End")">End</IgbRadio>
+                <IgbRadio Value="@("Mirror")">Mirror</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

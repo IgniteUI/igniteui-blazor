@@ -10,10 +10,10 @@
         <label>Placement</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PlacementName">
-                <IgbRadio Value="Top">Top</IgbRadio>
-                <IgbRadio Value="Bottom">Bottom</IgbRadio>
-                <IgbRadio Value="Left">Left</IgbRadio>
-                <IgbRadio Value="Right">Right</IgbRadio>
+                <IgbRadio Value="@("Top")">Top</IgbRadio>
+                <IgbRadio Value="@("Bottom")">Bottom</IgbRadio>
+                <IgbRadio Value="@("Left")">Left</IgbRadio>
+                <IgbRadio Value="@("Right")">Right</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

@@ -17,9 +17,9 @@
         <label>Resize mode</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ResizeModeName">
-                <IgbRadio Value="None">None</IgbRadio>
-                <IgbRadio Value="Hover">Hover</IgbRadio>
-                <IgbRadio Value="Always">Always</IgbRadio>
+                <IgbRadio Value="@("None")">None</IgbRadio>
+                <IgbRadio Value="@("Hover")">Hover</IgbRadio>
+                <IgbRadio Value="@("Always")">Always</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -28,9 +28,9 @@
         <label>Drag mode</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DragModeName">
-                <IgbRadio Value="None">None</IgbRadio>
-                <IgbRadio Value="TileHeader">TileHeader</IgbRadio>
-                <IgbRadio Value="Tile">Tile</IgbRadio>
+                <IgbRadio Value="@("None")">None</IgbRadio>
+                <IgbRadio Value="@("TileHeader")">TileHeader</IgbRadio>
+                <IgbRadio Value="@("Tile")">Tile</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

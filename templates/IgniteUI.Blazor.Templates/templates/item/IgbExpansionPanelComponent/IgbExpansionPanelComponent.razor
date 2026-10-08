@@ -10,9 +10,9 @@
         <label>Indicator position</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorPositionName">
-                <IgbRadio Value="Start">Start</IgbRadio>
-                <IgbRadio Value="End">End</IgbRadio>
-                <IgbRadio Value="None">None</IgbRadio>
+                <IgbRadio Value="@("Start")">Start</IgbRadio>
+                <IgbRadio Value="@("End")">End</IgbRadio>
+                <IgbRadio Value="@("None")">None</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

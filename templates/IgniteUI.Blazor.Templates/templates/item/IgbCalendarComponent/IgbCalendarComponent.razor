@@ -10,9 +10,9 @@
         <label>Selection</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
-                <IgbRadio Value="Single">Single</IgbRadio>
-                <IgbRadio Value="Multiple">Multiple</IgbRadio>
-                <IgbRadio Value="Range">Range</IgbRadio>
+                <IgbRadio Value="@("Single")">Single</IgbRadio>
+                <IgbRadio Value="@("Multiple")">Multiple</IgbRadio>
+                <IgbRadio Value="@("Range")">Range</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -21,9 +21,9 @@
         <label>Active view</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActiveViewName">
-                <IgbRadio Value="Days">Days</IgbRadio>
-                <IgbRadio Value="Months">Months</IgbRadio>
-                <IgbRadio Value="Years">Years</IgbRadio>
+                <IgbRadio Value="@("Days")">Days</IgbRadio>
+                <IgbRadio Value="@("Months")">Months</IgbRadio>
+                <IgbRadio Value="@("Years")">Years</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

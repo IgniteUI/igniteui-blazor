@@ -10,10 +10,10 @@
         <label>Alignment</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="AlignmentName">
-                <IgbRadio Value="Start">Start</IgbRadio>
-                <IgbRadio Value="End">End</IgbRadio>
-                <IgbRadio Value="Center">Center</IgbRadio>
-                <IgbRadio Value="Justify">Justify</IgbRadio>
+                <IgbRadio Value="@("Start")">Start</IgbRadio>
+                <IgbRadio Value="@("End")">End</IgbRadio>
+                <IgbRadio Value="@("Center")">Center</IgbRadio>
+                <IgbRadio Value="@("Justify")">Justify</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -22,8 +22,8 @@
         <label>Activation</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActivationName">
-                <IgbRadio Value="Auto">Auto</IgbRadio>
-                <IgbRadio Value="Manual">Manual</IgbRadio>
+                <IgbRadio Value="@("Auto")">Auto</IgbRadio>
+                <IgbRadio Value="@("Manual")">Manual</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

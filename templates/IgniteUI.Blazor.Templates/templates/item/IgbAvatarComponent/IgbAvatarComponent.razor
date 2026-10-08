@@ -10,9 +10,9 @@
         <label>Shape</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ShapeName">
-                <IgbRadio Value="Circle">Circle</IgbRadio>
-                <IgbRadio Value="Rounded">Rounded</IgbRadio>
-                <IgbRadio Value="Square">Square</IgbRadio>
+                <IgbRadio Value="@("Circle")">Circle</IgbRadio>
+                <IgbRadio Value="@("Rounded")">Rounded</IgbRadio>
+                <IgbRadio Value="@("Square")">Square</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -21,9 +21,9 @@
         <label>Size</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Size">
-                <IgbRadio Value="small">Small</IgbRadio>
-                <IgbRadio Value="medium">Medium</IgbRadio>
-                <IgbRadio Value="large">Large</IgbRadio>
+                <IgbRadio Value="@("small")">Small</IgbRadio>
+                <IgbRadio Value="@("medium")">Medium</IgbRadio>
+                <IgbRadio Value="@("large")">Large</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -32,9 +32,9 @@
         <label>Content</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ContentKind">
-                <IgbRadio Value="Image">Image</IgbRadio>
-                <IgbRadio Value="Initials">Initials</IgbRadio>
-                <IgbRadio Value="Icon">Icon</IgbRadio>
+                <IgbRadio Value="@("Image")">Image</IgbRadio>
+                <IgbRadio Value="@("Initials")">Initials</IgbRadio>
+                <IgbRadio Value="@("Icon")">Icon</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

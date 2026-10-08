@@ -59,7 +59,7 @@ Only pick a grid when the content is genuinely tabular. A list of records with r
 | Dropdown selecting a value | `IgbSelect` + `IgbSelectItem` | |
 | Searchable / multi-select picker | `IgbCombo` | generic parameter is `T`; `Data`, `DisplayKey`, `ValueKey` |
 | Contextual action menu | `IgbDropdown` | trigger in `slot="target"` — not for form values |
-| Date picker | `IgbDatePicker` (`DateTime?`) | |
+| Date picker | `IgbDatePicker<TValue>` (`DateTime`, `DateTime?`, or `string`) | |
 | Date range | `IgbDateRangePicker<TValue>` (`DateTime`, `DateTime?`, or `string`) | |
 | Always-visible calendar | `IgbCalendar<TValue>` (`DateTime`, `DateTime?`, or `string`) | `Selection`, `VisibleMonths` |
 | Masked entry (phone, postal) | `IgbMaskInput` | `Mask`: `0` digit, `L` letter, `A` alphanumeric |

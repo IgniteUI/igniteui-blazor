@@ -10,8 +10,8 @@
         <label>Alignment</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="AlignmentName">
-                <IgbRadio Value="Horizontal">Horizontal</IgbRadio>
-                <IgbRadio Value="Vertical">Vertical</IgbRadio>
+                <IgbRadio Value="@("Horizontal")">Horizontal</IgbRadio>
+                <IgbRadio Value="@("Vertical")">Vertical</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -26,9 +26,9 @@
 
 <div class="component-host">
     <IgbRadioGroup Alignment="Alignment" @bind-Value="Selected">
-        <IgbRadio Value="standard">Standard</IgbRadio>
-        <IgbRadio Value="express" Disabled="DisableExpress">Express</IgbRadio>
-        <IgbRadio Value="overnight">Overnight</IgbRadio>
+        <IgbRadio Value="@("standard")">Standard</IgbRadio>
+        <IgbRadio Value="@("express")" Disabled="DisableExpress">Express</IgbRadio>
+        <IgbRadio Value="@("overnight")">Overnight</IgbRadio>
     </IgbRadioGroup>
 </div>
 

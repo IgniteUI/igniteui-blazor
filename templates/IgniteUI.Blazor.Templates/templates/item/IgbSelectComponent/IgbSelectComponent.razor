@@ -10,8 +10,8 @@
         <label>Placement</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PlacementName">
-                <IgbRadio Value="Bottom">Bottom</IgbRadio>
-                <IgbRadio Value="Top">Top</IgbRadio>
+                <IgbRadio Value="@("Bottom")">Bottom</IgbRadio>
+                <IgbRadio Value="@("Top")">Top</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -33,10 +33,10 @@
                Outlined="Outlined"
                Disabled="Disabled"
                Label="Fruit">
-        <IgbSelectItem Value="@(\"orange\")">Orange</IgbSelectItem>
-        <IgbSelectItem Value="@(\"apple\")">Apple</IgbSelectItem>
-        <IgbSelectItem Value="@(\"banana\")">Banana</IgbSelectItem>
-        <IgbSelectItem Value="@(\"grape\")" Disabled="true">Grape (out of stock)</IgbSelectItem>
+        <IgbSelectItem Value="@("orange")">Orange</IgbSelectItem>
+        <IgbSelectItem Value="@("apple")">Apple</IgbSelectItem>
+        <IgbSelectItem Value="@("banana")">Banana</IgbSelectItem>
+        <IgbSelectItem Value="@("grape")" Disabled="true">Grape (out of stock)</IgbSelectItem>
     </IgbSelect>
 
     <div class="actions">

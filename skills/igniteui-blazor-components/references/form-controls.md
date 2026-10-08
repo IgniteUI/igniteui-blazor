@@ -55,12 +55,14 @@ The generic parameter is **`T`**, not `TValue` — set it to the data item type.
 
 ```razor
 <IgbSelect @bind-Value="Fruit" Label="Fruit" Placeholder="Choose a fruit">
-    <IgbSelectItem Value="apple">Apple</IgbSelectItem>
-    <IgbSelectItem Value="orange">Orange</IgbSelectItem>
+    <IgbSelectItem Value="@("apple")">Apple</IgbSelectItem>
+    <IgbSelectItem Value="@("orange")">Orange</IgbSelectItem>
 </IgbSelect>
 ```
 
-`Value` is `string?`. `Change` carries `IgbSelectItemComponentEventArgs`. `IgbSelectHeader` and `IgbSelectGroup` add section headings and grouping.
+`IgbSelect<TValue>` takes `string`, `char`, or a numeric type, each optionally nullable; `@bind-Value` infers it and the items take it from the select, so a select with nothing to infer from needs `TValue` set. `Value` is `TValue?`. `Change` carries `IgbSelectItemComponentEventArgs<TValue>`, whose `Detail` is the selected `IgbSelectItem<TValue>`. `IgbSelectHeader` and `IgbSelectGroup` add section headings and grouping.
+
+An item's `Value` is a C# expression, so a bare `Value="apple"` reads as the identifier `apple` and does not compile. Write string values as `Value="@("apple")"` or `Value='"apple"'`.
 
 ## Date and time
 
@@ -68,7 +70,7 @@ The generic parameter is **`T`**, not `TValue` — set it to the data item type.
 |---|---|---|
 | `IgbDatePicker<TValue>` | `DateTime`, `DateTime?`, or `string` | Input + dropdown calendar |
 | `IgbDateRangePicker<TValue>` | `IgbDateRangeValue<TValue>?`, where `TValue` can be `DateTime`, `DateTime?`, or `string` | Start/end range; `UseTwoInputs`, `UsePredefinedRanges` |
-| `IgbCalendar<TValue>` | `DateTime`, `DateTime?`, or `string` | Always-visible calendar surface; |
+| `IgbCalendar<TValue>` | `DateTime`, `DateTime?`, or `string` | Always-visible calendar surface |
 | `IgbDateTimeInput<TValue>` | `DateTime`, `DateTime?`, or `string` | Masked date/time entry, no dropdown |
 
 ```razor
@@ -80,11 +82,15 @@ The generic parameter is **`T`**, not `TValue` — set it to the data item type.
 <IgbDateTimeInput @bind-Value="SelectedDateTime" InputFormat="MM/dd/yyyy HH:mm" SpinLoop="true" />
 
 @code {
-    DateTime? SelectedDate { get; set; }        // picker / date-time input are nullable
+    DateTime? SelectedDate { get; set; }
+    DateTime? MinDate { get; set; } = DateTime.Today;
+    DateTime? MaxDate { get; set; } = DateTime.Today.AddYears(1);
     DateTime CalendarValue { get; set; } = DateTime.Today;
     DateTime? SelectedDateTime { get; set; } = DateTime.Now;
 }
 ```
+
+`TValue` is inferred from `@bind-Value`; `Min`, `Max` and `ActiveDate` take the same `TValue`. Dates the component reports back are UTC (`Kind = Utc`), and `string` values come back in round-trip `"o"` form (e.g. `2026-01-02T03:04:05.0000000Z`). A cleared `DateTime?` or `string` value is `null`; a cleared `DateTime` is `default` (`DateTime.MinValue`).
 
 Set `IgbCalendar<TValue>` to `DateTime`, `DateTime?`, or `string`. Multi and range selection use `Values` (`TValue[]`) and come from `Selection` (`CalendarSelection.Single | Multiple | Range`).
 
@@ -97,13 +103,13 @@ Set `IgbCalendar<TValue>` to `DateTime`, `DateTime?`, or `string`. Multi and ran
 <IgbSwitch @bind-Checked="IsDarkMode">Dark Mode</IgbSwitch>
 
 <IgbRadioGroup @bind-Value="Plan" Alignment="ContentOrientation.Vertical">
-    <IgbRadio Value="basic">Basic</IgbRadio>
-    <IgbRadio Value="pro">Pro</IgbRadio>
-    <IgbRadio Value="enterprise">Enterprise</IgbRadio>
+    <IgbRadio Value="@("basic")">Basic</IgbRadio>
+    <IgbRadio Value="@("pro")">Pro</IgbRadio>
+    <IgbRadio Value="@("enterprise")">Enterprise</IgbRadio>
 </IgbRadioGroup>
 ```
 
-Radios are grouped by being children of `IgbRadioGroup`, and the selected option is the group's `Value`. Do **not** set `Name` to group them — `Name` is the framework's element identity, not the HTML radio name.
+Radios are grouped by being children of `IgbRadioGroup`, and the selected option is the group's `Value`. `IgbRadioGroup<TValue>` takes `string`, `char`, `bool`, or a numeric type, each optionally nullable; the radios take `TValue` from the group, and string values are written as for `IgbSelectItem`. `Change` carries `IgbRadioChangeEventArgs<TValue>`. Do **not** set `Name` to group them — `Name` is the framework's element identity, not the HTML radio name.
 
 ## Slider, Range Slider, Rating
 
@@ -116,13 +122,13 @@ Radios are grouped by being children of `IgbRadioGroup`, and the selected option
     double Volume { get; set; } = 40;
     double StarRating { get; set; } = 3;
 
-    void OnSliderChange(IgbNumberEventArgs e) => Console.WriteLine(e.Detail);
+    void OnSliderChange(IgbNumberEventArgs<double> e) => Console.WriteLine(e.Detail);
     void OnRangeChange(IgbRangeSliderValueEventArgs e)
         => Console.WriteLine($"{e.Detail.Lower}-{e.Detail.Upper}");
 }
 ```
 
-`Min`, `Max`, `Step`, `LowerBound`, `UpperBound`, `PrimaryTicks`, `SecondaryTicks`, `DiscreteTrack` and the label/tooltip options come from the shared slider base and apply to both sliders. `IgbRangeSlider` uses `Lower` / `Upper` instead of `Value`. `IgbRating.Value` and `IgbSlider.Value` are `double`.
+`Min`, `Max`, `Step`, `LowerBound`, `UpperBound`, `PrimaryTicks`, `SecondaryTicks`, `DiscreteTrack` and the label/tooltip options come from the shared slider base and apply to both sliders. `IgbRangeSlider` uses `Lower` / `Upper` instead of `Value`. `IgbSlider<TValue>` and `IgbRating<TValue>` take `int`, `long`, `short`, `float`, `double`, or `decimal`, inferred from `@bind-Value`; the slider's `Input` / `Change` and the rating's `Change` / `Hover` carry `IgbNumberEventArgs<TValue>`.
 
 ## Color Picker
 
@@ -153,8 +159,8 @@ An HSV canvas with hue and alpha sliders, an editable color string, preset swatc
 <IgbInput @bind-Value="Model.Name" Label="Name" Required="true" Invalid="@(!IsNameValid)" />
 <IgbCheckbox @bind-Checked="Model.Agreed">I agree to the terms</IgbCheckbox>
 <IgbSelect @bind-Value="Model.Country" Label="Country">
-    <IgbSelectItem Value="us">United States</IgbSelectItem>
-    <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
+    <IgbSelectItem Value="@("us")">United States</IgbSelectItem>
+    <IgbSelectItem Value="@("uk")">United Kingdom</IgbSelectItem>
 </IgbSelect>
 ```
 
