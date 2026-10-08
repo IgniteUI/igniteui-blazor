@@ -7,6 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// It supports fractional values, hover previews, keyboard navigation, single-selection mode,
     /// and integrates with forms as a number input.
     /// </summary>
+    /// <typeparam name="TValue"><c>int</c>, <c>long</c>, <c>short</c>, <c>float</c>, <c>double</c> or <c>decimal</c>.</typeparam>
     public partial class IgbRating<TValue> : IgbComponentBase
     {
         private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);

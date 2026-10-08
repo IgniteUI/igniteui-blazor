@@ -6,6 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Represents a calendar that lets users
     /// to select a date value in a variety of different ways.
     /// </summary>
+    /// <typeparam name="TValue"><see cref="DateTime"/>, <c>DateTime?</c> or an ISO 8601 <c>string</c>.</typeparam>
     public partial class IgbCalendar<TValue> : IgbCalendarBase
     {
         /// <inheritdoc />

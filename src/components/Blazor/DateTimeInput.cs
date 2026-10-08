@@ -6,6 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// A date time input is an input field that lets you set and edit the date and time in a chosen input element
     /// using customizable display and input formats.
     /// </summary>
+    /// <typeparam name="TValue"><see cref="DateTime"/>, <c>DateTime?</c> or an ISO 8601 <c>string</c>.</typeparam>
     public partial class IgbDateTimeInput<TValue> : IgbDateTimeInputBase<TValue>
     {
         /// <inheritdoc />

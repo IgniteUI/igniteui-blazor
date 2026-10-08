@@ -5,6 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The Date Range Picker includes a text input and a calendar pop-up, allowing users to easily select start and end dates.
     /// </summary>
+    /// <typeparam name="TValue">The type of the range's start and end: <see cref="DateTime"/>, <c>DateTime?</c> or an ISO 8601 <c>string</c>.</typeparam>
     public partial class IgbDateRangePicker<TValue> : IgbComboBoxBaseLike
     {
         /// <inheritdoc />

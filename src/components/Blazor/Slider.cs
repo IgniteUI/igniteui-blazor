@@ -5,6 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A slider component used to select numeric value within a range.
     /// </summary>
+    /// <typeparam name="TValue"><c>int</c>, <c>long</c>, <c>short</c>, <c>float</c>, <c>double</c> or <c>decimal</c>.</typeparam>
     public partial class IgbSlider<TValue> : IgbSliderBase
     {
         private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);

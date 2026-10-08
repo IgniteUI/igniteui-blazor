@@ -3,6 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A date range defined by a start and an end date.
     /// </summary>
+    /// <typeparam name="TValue"><see cref="DateTime"/>, <c>DateTime?</c> or an ISO 8601 <c>string</c>.</typeparam>
     public partial class IgbDateRangeValue<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />

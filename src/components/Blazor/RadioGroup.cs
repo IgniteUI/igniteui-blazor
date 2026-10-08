@@ -5,6 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Unifies one or more <see cref="IgbRadio{TValue}"/> components into a single group.
     /// </summary>
+    /// <typeparam name="TValue"><c>string</c>, <c>char</c>, <c>bool</c> or a numeric type such as <c>int</c> or <c>double</c>, or their nullable forms. Enums, <see cref="Guid"/> and dates are not converted back from the element.</typeparam>
     [CascadingTypeParameter(nameof(TValue))]
     public partial class IgbRadioGroup<TValue> : IgbComponentBase
     {
