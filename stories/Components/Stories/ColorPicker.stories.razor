@@ -70,6 +70,20 @@
         </Template>
     </Story>
 
+    <Story Name="Color Binding">
+        <Template>
+            <div style="padding: 60px 60px 420px;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <IgbColorPicker Label="Highlight" ShowAlpha="true" @bind-Value="_boundSystemColor" />
+                    <div style="@($"width: 48px; height: 48px; border-radius: 8px; border: 1px solid gainsboro; background: {ToCss(_boundSystemColor)};")"></div>
+                    <span style="font-family: ui-monospace, monospace;">
+                        @(_boundSystemColor is { } c ? $"System.Drawing.Color A={c.A} R={c.R} G={c.G} B={c.B}" : "null")
+                    </span>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
     <Story Name="Disabled">
         <Arguments>
             <Arg For="_ => _!.Label" Value='"Color"' />
@@ -91,4 +105,11 @@
     ];
 
     private string _boundColor = "#875fc4";
+
+    private System.Drawing.Color? _boundSystemColor = System.Drawing.Color.FromArgb(0x87, 0x5f, 0xc4);
+
+    private static string ToCss(System.Drawing.Color? color)
+        => color is { } c
+            ? $"rgb({c.R} {c.G} {c.B} / {(c.A / 255d).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)})"
+            : "transparent";
 }
