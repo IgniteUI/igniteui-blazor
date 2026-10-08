@@ -35,7 +35,7 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
     public void Chip_TypeMetadata_IsCorrect()
     {
         var chip = new IgbChip();
-        Assert.Equal("WebChip", chip.Type);
+        Assert.Equal("WebChip", chip.RendererType);
     }
 
     [Fact]
@@ -149,9 +149,4 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
         Assert.Contains("Tag Label", cut.Markup);
     }
 
-    [Fact]
-    public void Chip_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbChip).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

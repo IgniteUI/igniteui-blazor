@@ -140,7 +140,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public BaseRendererControl? Owner { get; internal set; }
+        public IgbComponentBase? Owner { get; internal set; }
 
         protected virtual void OnComponentChanged(object? oldValue, object? component)
         {

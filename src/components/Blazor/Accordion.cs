@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// The Accordion is a container-based component that can house multiple expansion panels
     /// and offers keyboard navigation.
     /// </summary>
-    public partial class IgbAccordion : BaseRendererControl
+    public partial class IgbAccordion : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebAccordion"; } }
+        internal override string RendererType { get { return "WebAccordion"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -90,7 +90,7 @@ namespace IgniteUI.Blazor.Controls
 
             foreach (var item in ContentItems)
             {
-                if (item.Name == name || item.ContainerId == name)
+                if (item.RendererName == name || item.ContainerId == name)
                 {
                     return item;
                 }
@@ -181,7 +181,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", value);
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -192,7 +192,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opening = null;
-                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", null);
+                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Opening", null);
                     this.OnRefChanged("Opening", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openingRef = null;
@@ -254,7 +254,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", value);
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -265,7 +265,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opened = null;
-                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", null);
+                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Opened", null);
                     this.OnRefChanged("Opened", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openedRef = null;
@@ -327,7 +327,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", value);
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -338,7 +338,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closing = null;
-                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", null);
+                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Closing", null);
                     this.OnRefChanged("Closing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closingRef = null;
@@ -400,7 +400,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", value);
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -411,7 +411,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closed = null;
-                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", null);
+                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Closed", null);
                     this.OnRefChanged("Closed", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closedRef = null;

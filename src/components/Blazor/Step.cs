@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// A step component used within an <see cref="IgbStepper"/> to represent an individual step
     /// in a wizard-like workflow.
     /// </summary>
-    public partial class IgbStep : BaseRendererControl
+    public partial class IgbStep : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebStep"; } }
+        internal override string RendererType { get { return "WebStep"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

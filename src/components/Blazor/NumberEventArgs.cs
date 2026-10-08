@@ -1,14 +1,12 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for component events whose payload is a single number.
     /// </summary>
-    public partial class IgbNumberEventArgs : BaseRendererElement
+    public partial class IgbNumberEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebNumberEventArgs"; } }
+        internal override string RendererType { get { return "WebNumberEventArgs"; } }
 
         private double _detail = 0;
 
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// The numeric payload of the event. Its meaning depends on the event that carries it, for
         /// example the new value of the control or the index of the affected item.
         /// </summary>
-        [Parameter]
         public double Detail
         {
             get { return this._detail; }
@@ -41,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -51,7 +48,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

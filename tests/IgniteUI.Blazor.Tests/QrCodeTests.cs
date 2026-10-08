@@ -30,7 +30,7 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
     public void QrCode_TypeMetadata_IsCorrect()
     {
         var qrCode = new IgbQrCode();
-        Assert.Equal("WebQrCode", qrCode.Type);
+        Assert.Equal("WebQrCode", qrCode.RendererType);
     }
 
     [Fact]
@@ -142,9 +142,4 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
         Assert.Equal(QrCornerSquareStyle.Square, qrCode.SquareStyle);
     }
 
-    [Fact]
-    public void QrCode_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbQrCode).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

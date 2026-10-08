@@ -68,7 +68,7 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 
 ## Repository Architecture
 
-- **`components/Blazor/`** - Auto-generated and hand-maintained C# component wrappers (e.g., `IgbButton`, `IgbGrid`). Each component extends `BaseRendererControl` and renders an underlying web component (`igc-*` custom element) via `DirectRenderElementName`.
+- **`components/Blazor/`** - Auto-generated and hand-maintained C# component wrappers (e.g., `IgbButton`, `IgbGrid`). Each component extends `IgbComponentBase` and renders an underlying web component (`igc-*` custom element) via `DirectRenderElementName`.
 - **`componentsBase/`** - Shared base classes, DI extensions (`AddIgniteUIBlazor`), serialization, data adapters, and JS interop plumbing.
 - **`src/`** - TypeScript interop layer (vite, native ESM). Manages component mounting, property sync, event bridging, and module loading between Blazor and the `igniteui-webcomponents` package.
 - **`skills/`** - AI agent skill files that teach LLMs how to *use* this library. These are shipped in the package for downstream consumers.
@@ -109,8 +109,8 @@ Every library component follows this pattern:
 ```csharp
 public partial class IgbButton : IgbButtonBase
 {
-    // 1. Type identifier for the JS interop layer
-    public override string Type => "WebButton";
+    // 1. Internal renderer key for the JS interop layer
+    internal override string RendererType { get { return "WebButton"; } }
 
     // 2. Module registration
     protected override void EnsureModulesLoaded()
@@ -120,7 +120,7 @@ public partial class IgbButton : IgbButtonBase
     }
 
     // 3. Renders the underlying web component element
-    protected override string DirectRenderElementName => "igc-button";
+    private protected override string DirectRenderElementName => "igc-button";
 
     // 4. Parameters exposed to Blazor consumers
     [Parameter]

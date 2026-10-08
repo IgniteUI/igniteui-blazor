@@ -16,7 +16,7 @@ public class ListTests : BlazorComponentTestBase
     public void List_TypeMetadata_IsCorrect()
     {
         var list = new IgbList();
-        Assert.Equal("WebList", list.Type);
+        Assert.Equal("WebList", list.RendererType);
     }
 
     [Fact]
@@ -28,11 +28,6 @@ public class ListTests : BlazorComponentTestBase
         Assert.Contains("List items", cut.Markup);
     }
 
-    [Fact]
-    public void List_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbList).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class ListItemTests : BlazorComponentTestBase
@@ -48,7 +43,7 @@ public class ListItemTests : BlazorComponentTestBase
     public void ListItem_TypeMetadata_IsCorrect()
     {
         var item = new IgbListItem();
-        Assert.Equal("WebListItem", item.Type);
+        Assert.Equal("WebListItem", item.RendererType);
     }
 
     [Fact]
@@ -74,7 +69,7 @@ public class ListHeaderTests : BlazorComponentTestBase
     public void ListHeader_TypeMetadata_IsCorrect()
     {
         var header = new IgbListHeader();
-        Assert.Equal("WebListHeader", header.Type);
+        Assert.Equal("WebListHeader", header.RendererType);
     }
 
     [Fact]

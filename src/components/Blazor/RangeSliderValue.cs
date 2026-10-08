@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The pair of thumb values carried by the <see cref="IgbRangeSlider"/> value events.
     /// </summary>
-    public partial class IgbRangeSliderValue : BaseRendererElement
+    public partial class IgbRangeSliderValue : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRangeSliderValue"; } }
+        internal override string RendererType { get { return "WebRangeSliderValue"; } }
 
         private double _lower = 0;
 
@@ -57,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -69,7 +69,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

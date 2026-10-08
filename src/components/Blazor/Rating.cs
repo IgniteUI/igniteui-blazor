@@ -7,10 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// It supports fractional values, hover previews, keyboard navigation, single-selection mode,
     /// and integrates with forms as a number input.
     /// </summary>
-    public partial class IgbRating : BaseRendererControl
+    public partial class IgbRating : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRating"; } }
+        internal override string RendererType { get { return "WebRating"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -55,7 +55,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -117,6 +117,25 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Label");
                 }
                 this._label = value;
+
+            }
+        }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
 
             }
         }
@@ -463,7 +482,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbNumberEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(double);
 
@@ -478,7 +497,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             if (!EventCallback<double>.Empty.Equals(ValueChanged))
@@ -498,7 +517,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbNumberEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbNumberEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -568,7 +587,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_hover))
                     {
                         _hover = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", value);
+                        this.SetHandler<IgbNumberEventArgs>(this.RendererName, "Hover", value);
                         this.OnRefChanged("Hover", null, "event:::Hover", true, false, (refName, oldValue, newValue) =>
                         {
                             this._hoverRef = refName;
@@ -579,7 +598,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _hover = null;
-                    this.SetHandler<IgbNumberEventArgs>(this.Name, "Hover", null);
+                    this.SetHandler<IgbNumberEventArgs>(this.RendererName, "Hover", null);
                     this.OnRefChanged("Hover", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._hoverRef = null;
@@ -599,6 +618,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddNumberProp("step", this._step); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("ValueFormat"))
             { ser.AddStringProp("valueFormat", this._valueFormat); }
             if (IsPropDirty("Value"))

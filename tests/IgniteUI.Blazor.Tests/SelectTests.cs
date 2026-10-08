@@ -102,7 +102,7 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
     public void Select_TypeMetadata_IsCorrect()
     {
         var select = new IgbSelect();
-        Assert.Equal("WebSelect", select.Type);
+        Assert.Equal("WebSelect", select.RendererType);
     }
 
     [Fact]
@@ -215,11 +215,6 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect>
         Assert.Equal("close", element.GetAttribute("scroll-strategy"));
     }
 
-    [Fact]
-    public void Select_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbSelect).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class SelectItemTests : BlazorComponentTestBase
@@ -235,7 +230,7 @@ public class SelectItemTests : BlazorComponentTestBase
     public void SelectItem_TypeMetadata_IsCorrect()
     {
         var item = new IgbSelectItem();
-        Assert.Equal("WebSelectItem", item.Type);
+        Assert.Equal("WebSelectItem", item.RendererType);
     }
 
     [Fact]

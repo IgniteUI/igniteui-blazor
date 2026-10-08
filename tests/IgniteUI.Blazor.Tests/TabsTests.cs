@@ -66,7 +66,7 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
     public void Tabs_TypeMetadata_IsCorrect()
     {
         var tabs = new IgbTabs();
-        Assert.Equal("WebTabs", tabs.Type);
+        Assert.Equal("WebTabs", tabs.RendererType);
     }
 
     [Fact]
@@ -98,12 +98,6 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
             parameters.AddChildContent("<igc-tab>First</igc-tab>"));
 
         Assert.Contains("First", cut.Find("igc-tabs").InnerHtml);
-    }
-
-    [Fact]
-    public void Tabs_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbTabs).IsSubclassOf(typeof(BaseRendererControl)));
     }
 
     #region Child collection lifecycle
@@ -186,7 +180,7 @@ public class TabTests : BlazorComponentTestBase
     public void Tab_TypeMetadata_IsCorrect()
     {
         var tab = new IgbTab();
-        Assert.Equal("WebTab", tab.Type);
+        Assert.Equal("WebTab", tab.RendererType);
     }
 
     [Fact]

@@ -44,7 +44,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     public void Textarea_TypeMetadata_IsCorrect()
     {
         var textarea = new IgbTextarea();
-        Assert.Equal("WebTextarea", textarea.Type);
+        Assert.Equal("WebTextarea", textarea.RendererType);
     }
 
     [Fact]
@@ -219,12 +219,6 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
         var element = cut.Find("igc-textarea");
         Assert.Equal("on", cut.Instance.Autocomplete);
         Assert.Equal("on", element.GetAttribute("autocomplete"));
-    }
-
-    [Fact]
-    public void Textarea_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbTextarea).IsSubclassOf(typeof(BaseRendererControl)));
     }
 
     /// <summary>

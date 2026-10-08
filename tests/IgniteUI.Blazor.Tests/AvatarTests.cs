@@ -16,7 +16,7 @@ public class AvatarTests : BlazorComponentTestBase
     public void Avatar_TypeMetadata_IsCorrect()
     {
         var avatar = new IgbAvatar();
-        Assert.Equal("WebAvatar", avatar.Type);
+        Assert.Equal("WebAvatar", avatar.RendererType);
     }
 
     [Fact]
@@ -90,11 +90,5 @@ public class AvatarTests : BlazorComponentTestBase
             parameters.AddChildContent("<img src=\"avatar.png\" />"));
 
         Assert.Contains("img", cut.Find("igc-avatar").InnerHtml);
-    }
-
-    [Fact]
-    public void Avatar_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbAvatar).IsSubclassOf(typeof(BaseRendererControl)));
     }
 }

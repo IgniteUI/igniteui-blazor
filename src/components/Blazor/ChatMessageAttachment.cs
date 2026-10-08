@@ -3,10 +3,17 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents an attachment associated with a chat message.
     /// </summary>
-    public partial class IgbChatMessageAttachment : BaseRendererElement
+    public partial class IgbChatMessageAttachment : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatMessageAttachment"; } }
+        internal override string RendererType { get { return "WebChatMessageAttachment"; } }
+
+        /// <summary>The display name of the attachment, for example its file name.</summary>
+        public string Name
+        {
+            get { return RendererName; }
+            set { RendererName = value; }
+        }
 
         private string _id = string.Empty;
 
@@ -99,7 +106,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -117,7 +124,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
@@ -125,7 +132,7 @@ namespace IgniteUI.Blazor.Controls
             if (args != null && args.TryGetValue("id", out var idObj))
             { this.Id = ReturnToString(idObj); }
             if (args != null && args.TryGetValue("name", out var nameObj))
-            { this.Name = ReturnToString(nameObj); }
+            { this.RendererName = ReturnToString(nameObj); }
             if (args != null && args.TryGetValue("url", out var urlObj))
             { this.Url = ReturnToString(urlObj); }
             if (args != null && args.TryGetValue("attachmentType", out var attachmentTypeObj))

@@ -49,7 +49,7 @@ public class CheckboxTests : ComponentWithContractTestBase<IgbCheckbox>
     public void Checkbox_TypeMetadata_IsCorrect()
     {
         var checkbox = new IgbCheckbox();
-        Assert.Equal("WebCheckbox", checkbox.Type);
+        Assert.Equal("WebCheckbox", checkbox.RendererType);
     }
 
     [Fact]

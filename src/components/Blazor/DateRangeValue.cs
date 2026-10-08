@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A date range defined by a start and an end date.
     /// </summary>
-    public partial class IgbDateRangeValue : BaseRendererElement
+    public partial class IgbDateRangeValue : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDateRangeValue"; } }
+        internal override string RendererType { get { return "WebDateRangeValue"; } }
 
         private DateTime _start = DateTime.MinValue;
 

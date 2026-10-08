@@ -30,7 +30,7 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
     public void NavDrawer_TypeMetadata_IsCorrect()
     {
         var drawer = new IgbNavDrawer();
-        Assert.Equal("WebNavDrawer", drawer.Type);
+        Assert.Equal("WebNavDrawer", drawer.RendererType);
     }
 
     [Fact]
@@ -81,11 +81,6 @@ public class NavDrawerTests : ComponentWithContractTestBase<IgbNavDrawer>
         Assert.Equal("relative", cut.Find("igc-nav-drawer").GetAttribute("position"));
     }
 
-    [Fact]
-    public void NavDrawer_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbNavDrawer).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class NavDrawerItemTests : BlazorComponentTestBase

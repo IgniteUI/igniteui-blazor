@@ -42,7 +42,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
     public void ExpansionPanel_TypeMetadata_IsCorrect()
     {
         var panel = new IgbExpansionPanel();
-        Assert.Equal("WebExpansionPanel", panel.Type);
+        Assert.Equal("WebExpansionPanel", panel.RendererType);
     }
 
     [Fact]
@@ -87,9 +87,4 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
         Assert.Contains("Panel content", cut.Markup);
     }
 
-    [Fact]
-    public void ExpansionPanel_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbExpansionPanel).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

@@ -49,7 +49,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
     public void Input_TypeMetadata_IsCorrect()
     {
         var input = new IgbInput();
-        Assert.Equal("WebInput", input.Type);
+        Assert.Equal("WebInput", input.RendererType);
     }
 
     [Fact]
@@ -181,6 +181,18 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
         var element = cut.Find("igc-input");
         Assert.Equal("Username", cut.Instance.Label);
         Assert.Equal("Username", element.GetAttribute("label"));
+    }
+
+    [Fact]
+    public void Input_Name_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Name, "field"));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("field", cut.Instance.Name);
+        Assert.Equal("field", Assert.Single(element.Attributes, a => a.Name == "name").Value);
+        Assert.Null(element.GetAttribute("form-name"));
     }
 
     [Fact]

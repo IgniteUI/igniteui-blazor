@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A tab nested in an <see cref="IgbTabs"/> component.
     /// </summary>
-    public partial class IgbTab : BaseRendererControl
+    public partial class IgbTab : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTab"; } }
+        internal override string RendererType { get { return "WebTab"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -53,7 +53,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -62,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
         /// The owning <see cref="IgbTabs"/>, supplied as a cascading parameter.
         /// </summary>
         [CascadingParameter(Name = "TabsParent")]
-        private protected BaseRendererControl? TabsParent
+        private protected IgbComponentBase? TabsParent
         {
             get; set;
         }

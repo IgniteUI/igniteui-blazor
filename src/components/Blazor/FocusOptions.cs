@@ -4,10 +4,10 @@ namespace IgniteUI.Blazor.Controls
     /// Options controlling how a component is focused, passed to the <c>FocusComponent</c> methods.
     /// Mirrors the browser focus options.
     /// </summary>
-    public partial class IgbFocusOptions : BaseRendererElement
+    public partial class IgbFocusOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebFocusOptions"; } }
+        internal override string RendererType { get { return "WebFocusOptions"; } }
 
         private bool _preventScroll = false;
 

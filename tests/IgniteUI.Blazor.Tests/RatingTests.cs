@@ -43,7 +43,7 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
     public void Rating_TypeMetadata_IsCorrect()
     {
         var rating = new IgbRating();
-        Assert.Equal("WebRating", rating.Type);
+        Assert.Equal("WebRating", rating.RendererType);
     }
 
     [Fact]
@@ -154,11 +154,6 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
         Assert.Contains("igc-rating-symbol", cut.Find("igc-rating").InnerHtml);
     }
 
-    [Fact]
-    public void Rating_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbRating).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class RatingSymbolTests : BlazorComponentTestBase

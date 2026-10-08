@@ -1,22 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbDropdown.Change"/> event, carrying the
     /// <see cref="IgbDropdownItem"/> instance the event applies to.
     /// </summary>
-    public partial class IgbDropdownItemComponentEventArgs : BaseRendererElement
+    public partial class IgbDropdownItemComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDropdownItemComponentEventArgs"; } }
+        internal override string RendererType { get { return "WebDropdownItemComponentEventArgs"; } }
 
         private IgbDropdownItem _detail = new IgbDropdownItem();
 
         /// <summary>
         /// The dropdown item that became selected.
         /// </summary>
-        [Parameter]
         public IgbDropdownItem Detail
         {
             get { return this._detail; }
@@ -41,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -51,7 +48,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

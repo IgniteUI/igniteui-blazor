@@ -79,7 +79,7 @@ For `IgniteUI.Blazor.Lite` the theme stylesheet is the only required tag — wit
 <script src="_framework/blazor.web.js"></script>
 ```
 
-On the full product, **never wrap that tag in `@Assets[...]`** — fingerprinting it breaks loading and the app renders blank ([#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)). On `IgniteUI.Blazor.Lite`, an existing tag — fingerprinted or not — is a harmless no-op kept for compatibility.
+On the full product, **never wrap that tag in `@Assets[...]`** — fingerprinting it breaks loading and the app renders blank ([#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)). `IgniteUI.Blazor.Lite` no longer ships `app.bundle.js`; remove any existing tag, which would otherwise return 404.
 
 Theme files under `_content/IgniteUI.Blazor/themes/` are `{light|dark}/{bootstrap|material|fluent|indigo}.css` — link exactly one.
 

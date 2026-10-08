@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbLinearProgress : IgbProgressBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebLinearProgress"; } }
+        internal override string RendererType { get { return "WebLinearProgress"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()

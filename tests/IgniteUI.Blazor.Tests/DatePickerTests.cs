@@ -27,18 +27,28 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
         .Event(c => c.Closed)
         .Event(c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
+            assert: args =>
+            {
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail);
+                Assert.Equal(DateTimeKind.Utc, args.Detail.Kind);
+            })
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
         .Event(c => c.Input,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
+            assert: args =>
+            {
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail);
+                Assert.Equal(DateTimeKind.Utc, args.Detail.Kind);
+            })
         .Prop(c => c.Open, true)
         .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Prop(c => c.KeepOpenOnSelect, true)
         .Prop(c => c.KeepOpenOnOutsideClick, true)
         .Prop(c => c.Label, "Pick a date")
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.Mode, PickerMode.Dialog, wire: "dialog")
         .Prop(c => c.NonEditable, true)
         .Prop(c => c.ReadOnly, true)
@@ -102,7 +112,7 @@ public class DatePickerTests : ComponentWithContractTestBase<IgbDatePicker>
     public void DatePicker_TypeMetadata()
     {
         var picker = new IgbDatePicker();
-        Assert.Equal("WebDatePicker", picker.Type);
+        Assert.Equal("WebDatePicker", picker.RendererType);
     }
 
     /// <summary>

@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbCombo{T}"/> and <see cref="IgbComboBoxBaseLike"/>.
     /// </summary>
-    public partial class IgbBaseComboBox : BaseRendererControl
+    public partial class IgbBaseComboBox : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBaseComboBox"; } }
+        internal override string RendererType { get { return "WebBaseComboBox"; } }
 
         /// <inheritdoc />
         private protected override string ResolveDisplay()
@@ -17,7 +17,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }

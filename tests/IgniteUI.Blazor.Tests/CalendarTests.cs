@@ -14,12 +14,19 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
             assert: (cut, result) =>
             {
                 Assert.Equal(2, result.Length);
-                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), result[0].ToUniversalTime());
-                Assert.Equal(new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc), result[1].ToUniversalTime());
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), result[0]);
+                Assert.Equal(DateTimeKind.Utc, result[0].Kind);
+                Assert.Equal(new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc), result[1]);
+                Assert.Equal(DateTimeKind.Utc, result[1].Kind);
             })
         .Event(c => c.Change,
             argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
-            assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), ((DateTime)args.Detail).ToUniversalTime()))
+            assert: args =>
+            {
+                var detail = Assert.IsType<DateTime>(args.Detail);
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), detail);
+                Assert.Equal(DateTimeKind.Utc, detail.Kind);
+            })
         // Single selection:
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
@@ -88,7 +95,7 @@ public class CalendarTests : ComponentWithContractTestBase<IgbCalendar>
     public void Calendar_TypeMetadata()
     {
         var cal = new IgbCalendar();
-        Assert.Equal("WebCalendar", cal.Type);
+        Assert.Equal("WebCalendar", cal.RendererType);
     }
 
     [Fact]

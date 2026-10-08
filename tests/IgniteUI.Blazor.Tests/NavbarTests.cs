@@ -16,7 +16,7 @@ public class NavbarTests : BlazorComponentTestBase
     public void Navbar_TypeMetadata_IsCorrect()
     {
         var navbar = new IgbNavbar();
-        Assert.Equal("WebNavbar", navbar.Type);
+        Assert.Equal("WebNavbar", navbar.RendererType);
     }
 
     [Fact]
@@ -28,9 +28,4 @@ public class NavbarTests : BlazorComponentTestBase
         Assert.Contains("Navigation Title", cut.Markup);
     }
 
-    [Fact]
-    public void Navbar_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbNavbar).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

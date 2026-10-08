@@ -17,7 +17,7 @@ public class BreadcrumbsTests : BlazorComponentTestBase
     public void Breadcrumbs_TypeMetadata_IsCorrect()
     {
         var breadcrumbs = new IgbBreadcrumbs();
-        Assert.Equal("WebBreadcrumbs", breadcrumbs.Type);
+        Assert.Equal("WebBreadcrumbs", breadcrumbs.RendererType);
     }
 
     [Fact]
@@ -52,12 +52,6 @@ public class BreadcrumbsTests : BlazorComponentTestBase
         Assert.Equal(new[] { "Home", "Products", "Laptop" }, items.Select(i => i.TextContent));
     }
 
-    [Fact]
-    public void Breadcrumbs_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbBreadcrumbs).IsSubclassOf(typeof(BaseRendererControl)));
-    }
-
     private static RenderFragment BreadcrumbsWith(params string[] labels) => builder =>
     {
         foreach (var label in labels)
@@ -82,7 +76,7 @@ public class BreadcrumbTests : BlazorComponentTestBase
     public void Breadcrumb_TypeMetadata_IsCorrect()
     {
         var breadcrumb = new IgbBreadcrumb();
-        Assert.Equal("WebBreadcrumb", breadcrumb.Type);
+        Assert.Equal("WebBreadcrumb", breadcrumb.RendererType);
     }
 
     [Fact]
@@ -114,9 +108,4 @@ public class BreadcrumbTests : BlazorComponentTestBase
         Assert.NotNull(cut.Find("igc-breadcrumb").GetAttribute("disabled"));
     }
 
-    [Fact]
-    public void Breadcrumb_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbBreadcrumb).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

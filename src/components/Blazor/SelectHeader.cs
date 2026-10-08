@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents a header item in an <see cref="IgbSelect"/> component.
     /// </summary>
-    public partial class IgbSelectHeader : BaseRendererControl
+    public partial class IgbSelectHeader : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSelectHeader"; } }
+        internal override string RendererType { get { return "WebSelectHeader"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -51,7 +51,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

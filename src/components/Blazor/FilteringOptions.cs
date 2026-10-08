@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Filtering options for the <see cref="IgbCombo{T}"/> component.
     /// </summary>
-    public partial class IgbFilteringOptions : BaseRendererElement
+    public partial class IgbFilteringOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebFilteringOptions"; } }
+        internal override string RendererType { get { return "WebFilteringOptions"; } }
 
         private string? _filterKey;
 

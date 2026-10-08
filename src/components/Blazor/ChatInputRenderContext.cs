@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The context object for renderers that deal with the chat input area.
     /// </summary>
-    public partial class IgbChatInputRenderContext : BaseRendererElement
+    public partial class IgbChatInputRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatInputRenderContext"; } }
+        internal override string RendererType { get { return "WebChatInputRenderContext"; } }
 
         private string _value = string.Empty;
 

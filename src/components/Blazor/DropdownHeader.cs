@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents a header item in a dropdown list.
     /// </summary>
-    public partial class IgbDropdownHeader : BaseRendererControl
+    public partial class IgbDropdownHeader : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDropdownHeader"; } }
+        internal override string RendererType { get { return "WebDropdownHeader"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -51,7 +51,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

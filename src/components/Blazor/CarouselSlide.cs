@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A single content container within a set of containers nested in an <see cref="IgbCarousel"/>.
     /// </summary>
-    public partial class IgbCarouselSlide : BaseRendererControl
+    public partial class IgbCarouselSlide : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCarouselSlide"; } }
+        internal override string RendererType { get { return "WebCarouselSlide"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -53,7 +53,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

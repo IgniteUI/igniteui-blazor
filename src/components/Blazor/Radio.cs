@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The radio component allows the user to select a single option from an available set of options that are listed side by side.
     /// </summary>
-    public partial class IgbRadio : BaseRendererControl
+    public partial class IgbRadio : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRadio"; } }
+        internal override string RendererType { get { return "WebRadio"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -53,7 +53,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -93,6 +93,25 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Value");
                 }
                 this._value = value;
+
+            }
+        }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name. Radios with the same name form one group, of which one can be checked.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
 
             }
         }
@@ -377,7 +396,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbRadioChangeEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueChecked = default(bool);
 
@@ -392,7 +411,7 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._checked = newValueChecked;
                                 }
-                                OnPropertyPropagatedOut(Name, "Checked");
+                                OnPropertyPropagatedOut(RendererName, "Checked");
                             }
 
                             if (!EventCallback<bool>.Empty.Equals(CheckedChanged))
@@ -412,7 +431,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbRadioChangeEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -482,7 +501,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -493,7 +512,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _focus = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", null);
                     this.OnRefChanged("Focus", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._focusRef = null;
@@ -555,7 +574,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -566,7 +585,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _blur = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", null);
                     this.OnRefChanged("Blur", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._blurRef = null;
@@ -584,6 +603,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddBooleanProp("required", this._required); }
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Checked"))
             { ser.AddBooleanProp("checked", this._checked); }
             if (IsPropDirty("LabelPosition"))

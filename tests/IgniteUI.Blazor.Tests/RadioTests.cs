@@ -50,7 +50,7 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
     public void Radio_TypeMetadata_IsCorrect()
     {
         var radio = new IgbRadio();
-        Assert.Equal("WebRadio", radio.Type);
+        Assert.Equal("WebRadio", radio.RendererType);
     }
 
     [Fact]
@@ -128,11 +128,6 @@ public class RadioTests : ComponentWithContractTestBase<IgbRadio>
         Assert.Contains("Option A", cut.Markup);
     }
 
-    [Fact]
-    public void Radio_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbRadio).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
@@ -171,7 +166,7 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
     public void RadioGroup_TypeMetadata_IsCorrect()
     {
         var group = new IgbRadioGroup();
-        Assert.Equal("WebRadioGroup", group.Type);
+        Assert.Equal("WebRadioGroup", group.RendererType);
     }
 
     [Fact]
@@ -192,12 +187,6 @@ public class RadioGroupTests : ComponentWithContractTestBase<IgbRadioGroup>
 
         var element = cut.Find("igc-radio-group");
         Assert.Equal("selected-option", element.GetAttribute("value"));
-    }
-
-    [Fact]
-    public void RadioGroup_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbRadioGroup).IsSubclassOf(typeof(BaseRendererControl)));
     }
 
     /// <summary>

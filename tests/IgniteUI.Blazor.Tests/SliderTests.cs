@@ -44,7 +44,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
     public void Slider_TypeMetadata_IsCorrect()
     {
         var slider = new IgbSlider();
-        Assert.Equal("WebSlider", slider.Type);
+        Assert.Equal("WebSlider", slider.RendererType);
     }
 
     [Fact]

@@ -25,7 +25,11 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
             args: ["custom message"], types: ["String"])
         .Event(c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
+            assert: args =>
+            {
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail);
+                Assert.Equal(DateTimeKind.Utc, args.Detail.Kind);
+            })
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))
@@ -36,6 +40,8 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
         .Prop(c => c.Outlined, true)
         .Prop(c => c.Placeholder, "Enter date")
         .Prop(c => c.Label, "Date")
+        // The description's "name" is the renderer's id for the component, so Name crosses as "formName".
+        .Prop(c => c.Name, "field", wire: "field", wireName: "formName")
         .Prop(c => c.InputFormat, "dd/MM/yyyy")
         .Prop(c => c.Min, new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc))
         .Prop(c => c.Max, new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc))

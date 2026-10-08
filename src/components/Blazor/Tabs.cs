@@ -9,10 +9,10 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTab"/> children.
     /// It supports keyboard navigation and provides API methods to control the selected tab.
     /// </summary>
-    public partial class IgbTabs : BaseRendererControl
+    public partial class IgbTabs : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTabs"; } }
+        internal override string RendererType { get { return "WebTabs"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -57,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -333,7 +333,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbTabComponentEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             SyncSelectedTab(args);
                         });
@@ -347,7 +347,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbTabComponentEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

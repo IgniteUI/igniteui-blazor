@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRangeSlider : IgbSliderBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRangeSlider"; } }
+        internal override string RendererType { get { return "WebRangeSlider"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -181,7 +181,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_input))
                     {
                         _input = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", value);
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -192,7 +192,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _input = null;
-                    this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", null);
+                    this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Input", null);
                     this.OnRefChanged("Input", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._inputRef = null;
@@ -254,7 +254,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", value);
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Change", value);
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {
                             this._changeRef = refName;
@@ -265,7 +265,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

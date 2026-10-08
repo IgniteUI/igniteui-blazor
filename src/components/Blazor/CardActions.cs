@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// A container component for card action items such as buttons or icon buttons.
     /// Actions can be positioned at the start, center, or end of the container.
     /// </summary>
-    public partial class IgbCardActions : BaseRendererControl
+    public partial class IgbCardActions : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCardActions"; } }
+        internal override string RendererType { get { return "WebCardActions"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -54,7 +54,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

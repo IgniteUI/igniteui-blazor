@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Configuration options for customizing the behavior and appearance of <see cref="IgbChat"/>.
     /// </summary>
-    public partial class IgbChatOptions : BaseRendererElement
+    public partial class IgbChatOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatOptions"; } }
+        internal override string RendererType { get { return "WebChatOptions"; } }
 
         private string? _currentUserId;
 

@@ -1,22 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload of the <see cref="IgbSplitter.ResizeStart"/>, <see cref="IgbSplitter.Resizing"/>
     /// and <see cref="IgbSplitter.ResizeEnd"/> events.
     /// </summary>
-    public partial class IgbSplitterResizeEventArgsDetail : BaseRendererElement
+    public partial class IgbSplitterResizeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSplitterResizeEventArgsDetail"; } }
+        internal override string RendererType { get { return "WebSplitterResizeEventArgsDetail"; } }
 
         private double _startPanelSize = 0;
 
         /// <summary>
         /// The current size of the start panel in pixels.
         /// </summary>
-        [Parameter]
         public double StartPanelSize
         {
             get { return this._startPanelSize; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current size of the end panel in pixels.
         /// </summary>
-        [Parameter]
         public double EndPanelSize
         {
             get { return this._endPanelSize; }
@@ -55,7 +51,6 @@ namespace IgniteUI.Blazor.Controls
         /// The change in size since the resize operation started. Only set for
         /// <see cref="IgbSplitter.Resizing"/> and <see cref="IgbSplitter.ResizeEnd"/>.
         /// </summary>
-        [Parameter]
         public double Delta
         {
             get { return this._delta; }
@@ -84,7 +79,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -98,7 +93,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

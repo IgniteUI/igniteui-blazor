@@ -30,7 +30,7 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
     public void Dialog_TypeMetadata_IsCorrect()
     {
         var dialog = new IgbDialog();
-        Assert.Equal("WebDialog", dialog.Type);
+        Assert.Equal("WebDialog", dialog.RendererType);
     }
 
     [Fact]
@@ -108,9 +108,4 @@ public class DialogTests : ComponentWithContractTestBase<IgbDialog>
         Assert.Contains("Dialog content here", cut.Markup);
     }
 
-    [Fact]
-    public void Dialog_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbDialog).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

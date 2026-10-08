@@ -16,7 +16,7 @@ public class BadgeTests : BlazorComponentTestBase
     public void Badge_TypeMetadata_IsCorrect()
     {
         var badge = new IgbBadge();
-        Assert.Equal("WebBadge", badge.Type);
+        Assert.Equal("WebBadge", badge.RendererType);
     }
 
     [Fact]
@@ -107,11 +107,5 @@ public class BadgeTests : BlazorComponentTestBase
             parameters.AddChildContent("99+"));
 
         Assert.Contains("99+", cut.Find("igc-badge").InnerHtml);
-    }
-
-    [Fact]
-    public void Badge_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbBadge).IsSubclassOf(typeof(BaseRendererControl)));
     }
 }

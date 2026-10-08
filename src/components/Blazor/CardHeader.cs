@@ -4,10 +4,10 @@ namespace IgniteUI.Blazor.Controls
     /// A container component for the card's header section.
     /// Displays header content including an optional thumbnail, title, subtitle, and additional content.
     /// </summary>
-    public partial class IgbCardHeader : BaseRendererControl
+    public partial class IgbCardHeader : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCardHeader"; } }
+        internal override string RendererType { get { return "WebCardHeader"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -52,7 +52,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

@@ -36,7 +36,7 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
     public void Icon_TypeMetadata_IsCorrect()
     {
         var icon = new IgbIcon();
-        Assert.Equal("WebIcon", icon.Type);
+        Assert.Equal("WebIcon", icon.RendererType);
     }
 
     [Fact]
@@ -81,9 +81,4 @@ public class IconTests : ComponentWithContractTestBase<IgbIcon>
         Assert.Contains("svg", cut.Find("igc-icon").InnerHtml);
     }
 
-    [Fact]
-    public void Icon_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbIcon).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

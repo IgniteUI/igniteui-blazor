@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The icon component allows visualizing collections of pre-registered SVG icons.
     /// </summary>
-    public partial class IgbIcon : BaseRendererControl
+    public partial class IgbIcon : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebIcon"; } }
+        internal override string RendererType { get { return "WebIcon"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -53,7 +53,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

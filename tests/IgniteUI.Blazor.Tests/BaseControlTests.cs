@@ -1,10 +1,11 @@
+using System.Text.Json;
 using Bunit;
 using IgniteUI.Blazor.Controls;
 
 namespace IgniteUI.Blazor.Tests;
 
 /// <summary>
-/// Tests verifying common BaseRendererControl functionality across all components.
+/// Tests verifying common IgbComponentBase functionality across all components.
 /// </summary>
 public class BaseControlTests : BlazorComponentTestBase
 {
@@ -101,6 +102,26 @@ public class BaseControlTests : BlazorComponentTestBase
         Assert.Equal("igb-web-slider", element.GetAttribute("class"));
     }
 
+    [Fact]
+    public void ReturnToDate_TimezoneLessValue_IsUtc()
+    {
+        var result = Render<IgbCalendar>().Instance.ReturnToDate("0001-01-01T00:00:00.0000000");
+
+        Assert.Equal(DateTime.MinValue, result);
+        Assert.Equal(DateTimeKind.Utc, result.Kind);
+    }
+
+    [Fact]
+    public void ReturnToDate_OffsetBearingValue_IsNormalizedToUtc()
+    {
+        // A boxed JsonElement is what the deserialized event payload hands to ReturnToDate.
+        var value = JsonDocument.Parse("\"2026-01-02T03:04:05+02:00\"").RootElement;
+        var result = Render<IgbCalendar>().Instance.ReturnToDate(value);
+
+        Assert.Equal(new DateTime(2026, 1, 2, 1, 4, 5, DateTimeKind.Utc), result);
+        Assert.Equal(DateTimeKind.Utc, result.Kind);
+    }
+
     [Theory]
     [InlineData(typeof(IgbButton), "WebButton")]
     [InlineData(typeof(IgbCheckbox), "WebCheckbox")]
@@ -126,8 +147,8 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbAccordion), "WebAccordion")]
     public void AllComponents_HaveCorrectType(System.Type componentType, string expectedType)
     {
-        var instance = (BaseRendererControl)Activator.CreateInstance(componentType)!;
-        Assert.Equal(expectedType, instance.Type);
+        var instance = (IgbComponentBase)Activator.CreateInstance(componentType)!;
+        Assert.Equal(expectedType, instance.RendererType);
     }
 
     [Theory]
@@ -151,8 +172,8 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbCard))]
     [InlineData(typeof(IgbSelect))]
     [InlineData(typeof(IgbTextarea))]
-    public void AllComponents_InheritFromBaseRendererControl(System.Type componentType)
+    public void AllComponents_InheritFromIgbComponentBase(System.Type componentType)
     {
-        Assert.True(typeof(BaseRendererControl).IsAssignableFrom(componentType));
+        Assert.True(typeof(IgbComponentBase).IsAssignableFrom(componentType));
     }
 }

@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class for <see cref="IgbDateTimeInput"/>.
     /// </summary>
-    public partial class IgbDateTimeInputBase : BaseRendererControl
+    public partial class IgbDateTimeInputBase : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDateTimeInputBase"; } }
+        internal override string RendererType { get { return "WebDateTimeInputBase"; } }
 
         /// <inheritdoc />
         private protected override string ResolveDisplay()
@@ -26,7 +26,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
@@ -85,6 +85,25 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Label");
                 }
                 this._label = value;
+
+            }
+        }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
 
             }
         }
@@ -504,6 +523,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddStringProp("placeholder", this._placeholder); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("InputFormat"))
             { ser.AddStringProp("inputFormat", this._inputFormat); }
             if (IsPropDirty("Min"))

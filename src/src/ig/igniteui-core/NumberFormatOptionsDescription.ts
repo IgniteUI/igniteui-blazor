@@ -1,27 +1,21 @@
-import { FormatSpecifierDescription } from "./FormatSpecifierDescription";
 import { Description } from "./Description";
 import { Base, Type, markType } from "./type";
 
 /**
- * @hidden 
+ * @hidden
  */
-export class NumberFormatSpecifierDescription extends FormatSpecifierDescription {
-	static $t: Type = markType(NumberFormatSpecifierDescription, 'NumberFormatSpecifierDescription', (<any>FormatSpecifierDescription).$type);
+export class NumberFormatOptionsDescription extends Description {
+	static $t: Type = markType(NumberFormatOptionsDescription, 'NumberFormatOptionsDescription', (<any>Description).$type);
 	protected get_type(): string {
-		return "NumberFormatSpecifier";
+		return "NumberFormatOptions";
 	}
-	private static __marshalByValue1: boolean = true;
-	private static __marshalByValueAlias1: string = "NumberFormatSpecifier";
+	get type(): string {
+		return this.get_type();
+	}
+	private static __marshalByValue: boolean = true;
+	private static __marshalByValueAlias: string = "NumberFormatOptions";
 	constructor() {
 		super();
-	}
-	private _locale: string = null;
-	get locale(): string {
-		return this._locale;
-	}
-	set locale(value: string) {
-		this._locale = value;
-		this.markDirty("Locale");
 	}
 	private _compactDisplay: string = null;
 	get compactDisplay(): string {
@@ -54,14 +48,6 @@ export class NumberFormatSpecifierDescription extends FormatSpecifierDescription
 	set currencySign(value: string) {
 		this._currencySign = value;
 		this.markDirty("CurrencySign");
-	}
-	private _currencyCode: string = null;
-	get currencyCode(): string {
-		return this._currencyCode;
-	}
-	set currencyCode(value: string) {
-		this._currencyCode = value;
-		this.markDirty("CurrencyCode");
 	}
 	private _localeMatcher: string = null;
 	get localeMatcher(): string {
