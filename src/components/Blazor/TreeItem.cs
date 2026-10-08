@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The tree-item component represents a child item of the tree component or another tree item.
     /// </summary>
-    public partial class IgbTreeItem : BaseRendererControl
+    public partial class IgbTreeItem : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTreeItem"; } }

@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// maintaining parent-child relationships, as well as to define static tree-view structure
     /// without a corresponding data model.
     /// </summary>
-    public partial class IgbTree : BaseRendererControl
+    public partial class IgbTree : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTree"; } }

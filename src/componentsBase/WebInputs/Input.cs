@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class for <see cref="IgbInput" /> and <see cref="IgbMaskInput" />.
     /// </summary>
-    public partial class IgbInputBase : BaseRendererControl
+    public partial class IgbInputBase : IgbComponentBase
     {
         [Inject]
         internal ILogger<IgbInputBase>? Logger { get; set; }

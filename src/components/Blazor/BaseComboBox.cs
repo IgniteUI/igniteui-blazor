@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbCombo{TValue, TItem}"/> and <see cref="IgbComboBoxBaseLike"/>.
     /// </summary>
-    public partial class IgbBaseComboBox : BaseRendererControl
+    public partial class IgbBaseComboBox : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebBaseComboBox"; } }

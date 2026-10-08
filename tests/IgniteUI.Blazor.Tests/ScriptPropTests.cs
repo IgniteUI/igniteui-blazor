@@ -30,7 +30,7 @@ public class ScriptPropTests : BlazorComponentTestBase
         var data = new TheoryData<Type>();
         foreach (var type in typeof(IgbBanner).Assembly.GetTypes())
         {
-            if (type.IsAbstract || !typeof(BaseRendererControl).IsAssignableFrom(type))
+            if (type.IsAbstract || !typeof(IgbComponentBase).IsAssignableFrom(type))
             {
                 continue;
             }

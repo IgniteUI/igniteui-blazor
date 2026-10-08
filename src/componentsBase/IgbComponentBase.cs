@@ -36,7 +36,7 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     // PublicProperties: required by the BuildSequenceInfo parameter walk; rendered components already keep All via OpenComponent<T>.
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
-    public partial class BaseRendererControl : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
+    public partial class IgbComponentBase : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
     {
         private IIgniteUIBlazor? _igBlazor;
         private IIgniteUIBlazorRuntime? _runtime;
@@ -110,7 +110,7 @@ namespace IgniteUI.Blazor.Controls
         {
             get
             {
-                return "BaseRenderControlParent";
+                return "IgbComponentBaseParent";
             }
         }
 
@@ -158,12 +158,6 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<string, Action<object?, object?>> _handlers = new Dictionary<string, Action<object?, object?>>();
         private bool _updateQueued = false;
 
-        /// <summary>
-        /// Gets or sets what type of date conversion to make when round tripping dates.
-        /// </summary>
-        [Parameter]
-        public RoundTripDateConversion RoundTripDateConversion { get; set; } = RoundTripDateConversion.Auto;
-
         private DotNetObjectReference<WebCallback>? _objRef;
 
         private DotNetObjectReference<WebCallback> GetObjectRef()
@@ -177,7 +171,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>Creates the component.</summary>
-        public BaseRendererControl() : base()
+        public IgbComponentBase() : base()
         {
             //Console.WriteLine("constructed: " + this.GetType().Name);
             //_dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime));
@@ -513,7 +507,7 @@ namespace IgniteUI.Blazor.Controls
                 });
 
                 //builder.AddMarkupContent(6 + 15 + Sequence.MaxSequence, "\r\n    ");
-                builder.OpenComponent<CascadingValue<BaseRendererControl>>(6); // TODO: This '6' here might be a bug because it doesn't seem to match the other line sequence numbers
+                builder.OpenComponent<CascadingValue<IgbComponentBase>>(6); // TODO: This '6' here might be a bug because it doesn't seem to match the other line sequence numbers
                 builder.AddAttribute(7 + 15 + Sequence.MaxSequence, "Value", this);
                 builder.AddAttribute(8 + 15 + Sequence.MaxSequence, "Name", ParentTypeName);
                 builder.AddAttribute(9 + 15 + Sequence.MaxSequence, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
@@ -541,7 +535,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     contEle = value;
                 });
-                builder.OpenComponent<CascadingValue<BaseRendererControl>>(6);
+                builder.OpenComponent<CascadingValue<IgbComponentBase>>(6);
                 builder.AddAttribute(7, "Value", this);
                 builder.AddAttribute(8, "Name", ParentTypeName);
                 builder.AddAttribute(9, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
@@ -604,7 +598,7 @@ namespace IgniteUI.Blazor.Controls
                 builder.AddAttribute(12, "class", "ig-hidden-content");
                 builder.AddAttribute(13, "style", "display: none");
                 builder.AddMarkupContent(14, "\r\n");
-                builder.OpenComponent<CascadingValue<BaseRendererControl>>(10);
+                builder.OpenComponent<CascadingValue<IgbComponentBase>>(10);
                 builder.AddAttribute(15, "Value", this);
                 builder.AddAttribute(16, "Name", ParentTypeName);
                 builder.AddAttribute(17, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
@@ -620,7 +614,7 @@ namespace IgniteUI.Blazor.Controls
 
             if (SupportsVisualChildren)
             {
-                builder.OpenComponent<CascadingValue<BaseRendererControl>>(10);
+                builder.OpenComponent<CascadingValue<IgbComponentBase>>(10);
                 builder.AddAttribute(22, "Value", this);
                 builder.AddAttribute(23, "Name", ParentTypeName);
                 builder.AddAttribute(24, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
@@ -1312,7 +1306,7 @@ namespace IgniteUI.Blazor.Controls
 
             if (!isElement && !isScript)
             {
-                if (newValue is BaseRendererControl || newValue is BaseRendererElement)
+                if (newValue is IgbComponentBase || newValue is BaseJsonSerializable)
                 {
                     isElement = true;
                 }
@@ -1337,20 +1331,20 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
-                        if (oldValue is BaseRendererElement)
+                        if (oldValue is BaseJsonSerializable)
                         {
-                            ((BaseRendererElement)oldValue).Parent = null;
+                            ((BaseJsonSerializable)oldValue).Parent = null;
                         }
-                        if (newValue is BaseRendererElement)
+                        if (newValue is BaseJsonSerializable)
                         {
-                            refId = _containerId + "/" + ((BaseRendererElement)newValue).RendererName;
-                            ((BaseRendererElement)newValue).Parent = this;
+                            refId = _containerId + "/" + ((BaseJsonSerializable)newValue).RendererName;
+                            ((BaseJsonSerializable)newValue).Parent = this;
                         }
                         else
                         {
-                            if (!((BaseRendererControl)newValue).disposedValue)
+                            if (!((IgbComponentBase)newValue).disposedValue)
                             {
-                                refId = ((BaseRendererControl)newValue)._containerId;
+                                refId = ((IgbComponentBase)newValue)._containerId;
                                 newValue = "containerId:::" + refId;
                                 OnRefChanged(refId, "\"" + newValue + "\"");
                             }
@@ -1789,7 +1783,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void AttachChild(BaseRendererElement child)
+        internal void AttachChild(BaseJsonSerializable child)
         {
             if (child == null)
             {
@@ -1811,15 +1805,15 @@ namespace IgniteUI.Blazor.Controls
                 for (var i = 0; i < child.Count; i++)
                 {
                     var subChild = child[i];
-                    if (subChild is BaseRendererElement)
+                    if (subChild is BaseJsonSerializable)
                     {
-                        AttachChild((BaseRendererElement)(object)subChild);
+                        AttachChild((BaseJsonSerializable)(object)subChild);
                     }
                 }
             }
         }
 
-        internal void DetachChild(BaseRendererElement child)
+        internal void DetachChild(BaseJsonSerializable child)
         {
             if (child == null)
             {
@@ -2070,9 +2064,9 @@ namespace IgniteUI.Blazor.Controls
                                 }
                                 if (o != null)
                                 {
-                                    if (o is BaseRendererElement)
+                                    if (o is BaseJsonSerializable)
                                     {
-                                        ((BaseRendererElement)o).TempParent = this;
+                                        ((BaseJsonSerializable)o).TempParent = this;
                                         var v = ((JsonElement)obj["value"]);
                                         var str = v.ToString();
                                         //Console.WriteLine(str);
@@ -2086,13 +2080,13 @@ namespace IgniteUI.Blazor.Controls
                                                 eventArgs[item.Key] = item.Value;
                                             }
                                         }
-                                        ((BaseRendererElement)o).FromEventJson(this, eventArgs);
+                                        ((BaseJsonSerializable)o).FromEventJson(this, eventArgs);
                                         returnValue = o;
                                     }
-                                    // else if (o is BaseRendererControl)
+                                    // else if (o is IgbComponentBase)
                                     // {
                                     //     var ev = JsonSerializer.Deserialize<Dictionary<string, string>>(((JsonElement)obj["value"]).GetString());
-                                    //     ((BaseRendererControl)o).FromEventJson(this, ev);
+                                    //     ((IgbComponentBase)o).FromEventJson(this, ev);
                                     // }
                                     else
                                     {
@@ -2333,15 +2327,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine(val);
             if (val is String)
             {
-                switch (RoundTripDateConversion)
-                {
-                    case RoundTripDateConversion.UTC:
-                        return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    case RoundTripDateConversion.Auto:
-                    case RoundTripDateConversion.Local:
-                    default:
-                        return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).ToLocalTime();
-                }
+                return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
             else if (val is IConvertible)
             {
@@ -2357,15 +2343,7 @@ namespace IgniteUI.Blazor.Controls
                     return DateTime.MinValue;
                 }
 
-                switch (RoundTripDateConversion)
-                {
-                    case RoundTripDateConversion.UTC:
-                        return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    case RoundTripDateConversion.Auto:
-                    case RoundTripDateConversion.Local:
-                    default:
-                        return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).ToLocalTime();
-                }
+                return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
         }
 
@@ -2397,18 +2375,17 @@ namespace IgniteUI.Blazor.Controls
 
         internal string? ComponentToJson(object val, int index)
         {
-            if (val is BaseRendererControl || val is BaseRendererElement)
+            if (val is IgbComponentBase || val is BaseJsonSerializable)
             {
                 string refId;
-                if (val is BaseRendererElement)
+                if (val is BaseJsonSerializable)
                 {
                     //TODO: this should be the parent component's _Container id.... but maybe we don't need elements here.
-                    refId = _containerId + "/" + ((BaseRendererElement)val).RendererName;
-                    //((BaseRendererElement)val).Parent = this;
+                    refId = _containerId + "/" + ((BaseJsonSerializable)val).RendererName;
                 }
                 else
                 {
-                    refId = ((BaseRendererControl)val)._containerId;
+                    refId = ((IgbComponentBase)val)._containerId;
                     val = "containerId:::" + refId;
                     //OnRefChanged(refId, "\"" + val + "\"");
                 }
@@ -2470,13 +2447,13 @@ namespace IgniteUI.Blazor.Controls
             if (val is JsonSerializable)
             {
 
-                if (val is BaseRendererControl)
+                if (val is IgbComponentBase)
                 {
-                    typeName = ((BaseRendererControl)val).RendererType;
+                    typeName = ((IgbComponentBase)val).RendererType;
                 }
-                else if (val is BaseRendererElement)
+                else if (val is BaseJsonSerializable)
                 {
-                    typeName = ((BaseRendererElement)val).RendererType;
+                    typeName = ((BaseJsonSerializable)val).RendererType;
                 }
                 else
                 {
@@ -2495,18 +2472,18 @@ namespace IgniteUI.Blazor.Controls
             {
                 ((JsonSerializable)(val)).Serialize(context);
             }
-            else if (val is BaseRendererElement)
+            else if (val is BaseJsonSerializable)
             {
                 w.WriteStartObject();
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererElement)val).RendererName);
+                w.WriteString("id", ((BaseJsonSerializable)val).RendererName);
                 w.WriteEndObject();
             }
-            else if (val is BaseRendererControl)
+            else if (val is IgbComponentBase)
             {
                 w.WriteStartObject();
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererControl)val).RendererName);
+                w.WriteString("id", ((IgbComponentBase)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is double)
@@ -2552,13 +2529,13 @@ namespace IgniteUI.Blazor.Controls
             if (val is JsonSerializable)
             {
 
-                if (val is BaseRendererControl)
+                if (val is IgbComponentBase)
                 {
-                    typeName = ((BaseRendererControl)val).RendererType ?? "";
+                    typeName = ((IgbComponentBase)val).RendererType ?? "";
                 }
-                else if (val is BaseRendererElement)
+                else if (val is BaseJsonSerializable)
                 {
-                    typeName = ((BaseRendererElement)val).RendererType;
+                    typeName = ((BaseJsonSerializable)val).RendererType;
                 }
                 else
                 {
@@ -2577,18 +2554,18 @@ namespace IgniteUI.Blazor.Controls
             {
                 ((JsonSerializable)(val)).Serialize(c);
             }
-            else if (val is BaseRendererElement)
+            else if (val is BaseJsonSerializable)
             {
                 w.WriteStartObject(propertyName);
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererElement)val).RendererName);
+                w.WriteString("id", ((BaseJsonSerializable)val).RendererName);
                 w.WriteEndObject();
             }
-            else if (val is BaseRendererControl)
+            else if (val is IgbComponentBase)
             {
                 w.WriteStartObject(propertyName);
                 w.WriteString("refType", "name");
-                w.WriteString("id", ((BaseRendererControl)val).RendererName);
+                w.WriteString("id", ((IgbComponentBase)val).RendererName);
                 w.WriteEndObject();
             }
             else if (val is double)
@@ -3013,7 +2990,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void OnElementNameChanged(BaseRendererElement element, string oldName, string newName)
+        internal void OnElementNameChanged(BaseJsonSerializable element, string oldName, string newName)
         {
             List<string> toRename = new List<string>();
             foreach (var key in _handlers.Keys)
@@ -3066,7 +3043,7 @@ namespace IgniteUI.Blazor.Controls
             System.Threading.Tasks.TaskScheduler.Default);
         }
 
-        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
+        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T>? onArgs = null) where T : BaseJsonSerializable, new()
         {
             if (!handler.HasValue)
             {
@@ -3086,7 +3063,7 @@ namespace IgniteUI.Blazor.Controls
                 var eventArgs = args as Dictionary<string, object?>;
 
                 T a = new T();
-                BaseRendererElement ele = (BaseRendererElement)a;
+                BaseJsonSerializable ele = (BaseJsonSerializable)a;
                 ele.Parent = this;
                 ele.FromEventJson(this, eventArgs);
                 //Console.WriteLine("invoking async");
@@ -3132,7 +3109,7 @@ namespace IgniteUI.Blazor.Controls
             _handlers[name + "/" + propertyName] = inner;
         }
 
-        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T>? onArgs = null) where T : BaseRendererElement, new()
+        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T>? onArgs = null) where T : BaseJsonSerializable, new()
         {
             if (handler == null)
             {
@@ -3151,7 +3128,7 @@ namespace IgniteUI.Blazor.Controls
                 var eventArgs = args as Dictionary<string, object?>;
 
                 T a = new T();
-                BaseRendererElement ele = (BaseRendererElement)a;
+                BaseJsonSerializable ele = (BaseJsonSerializable)a;
                 ele.Parent = this;
                 ele.FromEventJson(this, eventArgs);
                 //Console.WriteLine("invoking async");
@@ -3225,9 +3202,9 @@ namespace IgniteUI.Blazor.Controls
                     }
 
                     senderObj = ConvertReturnValue(sender);
-                    if (senderObj is BaseRendererElement)
+                    if (senderObj is BaseJsonSerializable)
                     {
-                        var ele = (BaseRendererElement)senderObj;
+                        var ele = (BaseJsonSerializable)senderObj;
                         if (ele.Parent == null)
                         {
                             ele.TempParent = this;
@@ -3280,9 +3257,9 @@ namespace IgniteUI.Blazor.Controls
                 }
                 finally
                 {
-                    if (senderObj is BaseRendererElement)
+                    if (senderObj is BaseJsonSerializable)
                     {
-                        var ele = (BaseRendererElement)senderObj;
+                        var ele = (BaseJsonSerializable)senderObj;
                         if (ele.Parent == null)
                         {
                             ele.TempParent = null;
@@ -3888,26 +3865,6 @@ namespace IgniteUI.Blazor.Controls
         {
             return runtime.AsRuntime().IsLoadRequested(moduleName);
         }
-    }
-    /// <summary>
-    /// Enum defining different round trip date conversions.
-    /// </summary>
-    public enum RoundTripDateConversion
-    {
-        /// <summary>
-        /// The component will decide how to convert round tripped dates.
-        /// </summary>
-        Auto,
-
-        /// <summary>
-        /// The component will convert round tripped dates to UTC.
-        /// </summary>
-        UTC,
-
-        /// <summary>
-        /// The component will convert round tripped dates to local time.
-        /// </summary>
-        Local
     }
 
 }

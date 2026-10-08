@@ -154,11 +154,6 @@ public class RatingTests : ComponentWithContractTestBase<IgbRating>
         Assert.Contains("igc-rating-symbol", cut.Find("igc-rating").InnerHtml);
     }
 
-    [Fact]
-    public void Rating_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbRating).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class RatingSymbolTests : BlazorComponentTestBase

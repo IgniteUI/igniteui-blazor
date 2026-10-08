@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents a navigation drawer item.
     /// </summary>
-    public partial class IgbNavDrawerItem : BaseRendererControl
+    public partial class IgbNavDrawerItem : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebNavDrawerItem"; } }

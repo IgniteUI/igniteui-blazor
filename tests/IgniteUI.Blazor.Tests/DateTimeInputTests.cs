@@ -25,7 +25,11 @@ public class DateTimeInputTests : ComponentWithContractTestBase<IgbDateTimeInput
             args: ["custom message"], types: ["String"])
         .Event(c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
-            assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail.ToUniversalTime()))
+            assert: args =>
+            {
+                Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), args.Detail);
+                Assert.Equal(DateTimeKind.Utc, args.Detail.Kind);
+            })
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
             expect: new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc))

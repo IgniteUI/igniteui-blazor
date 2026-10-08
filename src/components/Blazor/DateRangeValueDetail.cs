@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A date range defined by a start and an end date, carried as the payload of
     /// <see cref="IgbDateRangeValueEventArgs"/>.
     /// </summary>
-    public partial class IgbDateRangeValueDetail : BaseRendererElement
+    public partial class IgbDateRangeValueDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateRangeValueDetail"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The first date of the range.
         /// </summary>
-        [Parameter]
         public DateTime Start
         {
             get { return this._start; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The last date of the range.
         /// </summary>
-        [Parameter]
         public DateTime End
         {
             get { return this._end; }
@@ -62,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -74,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

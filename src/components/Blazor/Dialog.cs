@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
     /// <c>"--toggle"</c> and <c>commandfor</c> pointing to this element will call the corresponding
     /// method declaratively.
     /// </summary>
-    public partial class IgbDialog : BaseRendererControl
+    public partial class IgbDialog : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDialog"; } }

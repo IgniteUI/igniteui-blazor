@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Describes a selection change of an <see cref="IgbCombo{TValue, TItem}"/>: the new value, the items it affected and the kind of change.
     /// </summary>
-    public partial class IgbComboChangeEventArgsDetail<TValue, TItem> : BaseRendererElement
+    public partial class IgbComboChangeEventArgsDetail<TValue, TItem> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComboChangeEventArgsDetail"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The value of the combo after the change.
         /// </summary>
-        [Parameter]
         public TValue[] NewValue
         {
             get { return this._newValue; }
@@ -41,7 +38,6 @@ namespace IgniteUI.Blazor.Controls
         private string? _newValueScript;
 
         ///<summary>Provides a means of setting NewValue in the JavaScript environment.</summary>
-        [Parameter]
         public string? NewValueScript
         {
             get { return _newValueScript; }
@@ -67,7 +63,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The data items the change applies to.
         /// </summary>
-        [Parameter]
         public TItem[] Items
         {
             get { return this._items; }
@@ -92,7 +87,6 @@ namespace IgniteUI.Blazor.Controls
         private string? _itemsScript;
 
         ///<summary>Provides a means of setting Items in the JavaScript environment.</summary>
-        [Parameter]
         public string? ItemsScript
         {
             get { return _itemsScript; }
@@ -117,7 +111,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The kind of change.
         /// </summary>
-        [Parameter]
         [WCWidgetMemberName("Type")]
         public ComboChangeType ChangeType
         {
@@ -147,7 +140,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -161,7 +154,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

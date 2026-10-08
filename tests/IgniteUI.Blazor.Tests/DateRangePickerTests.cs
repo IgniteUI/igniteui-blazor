@@ -20,7 +20,7 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
             c => c.SelectAsync(_selectValue), c => c.Select(_selectValue), "select",
             // TODO: "WebDateRangeValue" not in MarshalByValueFactory, so ObjectToParam
             // does not serialize as {start, end} during serialization; it falls through to
-            // BaseRendererElement branch and sends an "reference" instead (to nothing):
+            // BaseJsonSerializable branch and sends a "reference" instead (to nothing):
             //args: [new JsonSubset("""{"start": "2026-03-01T00:00:00.0000000Z", "end": "2026-03-10T00:00:00.0000000Z"}""")], types: ["Json"]),
             args: [new RawJson($$"""{"refType": "name", "id": "{{_selectValue.RendererName}}"}""")],
             types: ["Json"])
@@ -31,8 +31,10 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
         //         """{"start": "2026-03-01T00:00:00.0000000Z", "end": "2026-03-10T00:00:00.0000000Z"}"""),
         //     assert: (cut, result) =>
         //     {
-        //         //Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), result.Start.ToUniversalTime());
-        //         //Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), result.End.ToUniversalTime());
+        //         //Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), result.Start);
+        //         //Assert.Equal(DateTimeKind.Utc, result.Start.Kind);
+        //         //Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), result.End);
+        //         //Assert.Equal(DateTimeKind.Utc, result.End.Kind);
         //     })
         .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
         .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
@@ -46,8 +48,10 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start.ToUniversalTime());
-                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End.ToUniversalTime());
+                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start);
+                Assert.Equal(DateTimeKind.Utc, args.Detail.Start.Kind);
+                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End);
+                Assert.Equal(DateTimeKind.Utc, args.Detail.End.Kind);
             })
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
@@ -60,15 +64,19 @@ public class DateRangePickerTests : ComponentWithContractTestBase<IgbDateRangePi
             {
                 // IgbDateRangeValue has no value equality, so the pushed value is checked field-wise:
                 Assert.NotNull(value);
-                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime(), value.Start);
-                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc).ToLocalTime(), value.End);
+                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), value.Start);
+                Assert.Equal(DateTimeKind.Utc, value.Start.Kind);
+                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), value.End);
+                Assert.Equal(DateTimeKind.Utc, value.End.Kind);
             })
         .Event(c => c.Input,
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"start": "2026-03-01T00:00:00.000Z", "end": "2026-03-10T00:00:00.000Z"}}}""",
             assert: args =>
             {
-                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start.ToUniversalTime());
-                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End.ToUniversalTime());
+                Assert.Equal(new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc), args.Detail.Start);
+                Assert.Equal(DateTimeKind.Utc, args.Detail.Start.Kind);
+                Assert.Equal(new DateTime(2026, 3, 10, 0, 0, 0, DateTimeKind.Utc), args.Detail.End);
+                Assert.Equal(DateTimeKind.Utc, args.Detail.End.Kind);
             })
         .Prop(c => c.Open, true)
         .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")

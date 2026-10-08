@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Chips help people enter information, make selections, filter content, or trigger actions.
     /// </summary>
-    public partial class IgbChip : BaseRendererControl
+    public partial class IgbChip : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChip"; } }

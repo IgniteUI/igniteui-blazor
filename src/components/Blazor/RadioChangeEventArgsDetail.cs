@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload of the <see cref="IgbRadio.Change"/> and <see cref="IgbRadioGroup.Change"/> events.
     /// </summary>
-    public partial class IgbRadioChangeEventArgsDetail : BaseRendererElement
+    public partial class IgbRadioChangeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRadioChangeEventArgsDetail"; } }
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The checked state of the radio button after the change.
         /// </summary>
-        [Parameter]
         public bool Checked
         {
             get { return this._checked; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The value of the radio button.
         /// </summary>
-        [Parameter]
         public string? Value
         {
             get { return this._value; }
@@ -61,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -73,7 +69,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
