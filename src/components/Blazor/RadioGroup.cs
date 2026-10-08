@@ -124,20 +124,20 @@ namespace IgniteUI.Blazor.Controls
         /// Gets the current value of the group.
         /// </summary>
         /// <returns>The value of the checked <see cref="IgbRadio{TValue}"/>.</returns>
-        public async Task<TValue> GetCurrentValueAsync()
+        public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ConvertToGenericValue<TValue>(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
         /// Gets the current value of the group.
         /// </summary>
         /// <returns>The value of the checked <see cref="IgbRadio{TValue}"/>.</returns>
-        public TValue GetCurrentValue()
+        public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ConvertToGenericValue<TValue>(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         private EventCallback<TValue>? _valueChanged = null;

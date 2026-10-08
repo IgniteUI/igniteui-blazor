@@ -107,8 +107,8 @@ namespace IgniteUI.Blazor.Controls
             {
                 return new IgbDateRangeValue<TValue>
                 {
-                    Start = ConvertToGenericValue<TValue>(dateRange.Start),
-                    End = ConvertToGenericValue<TValue>(dateRange.End!),
+                    Start = GenericValueFromEventJson<TValue>(dateRange.Start),
+                    End = GenericValueFromEventJson<TValue>(dateRange.End!),
                 };
             }
 

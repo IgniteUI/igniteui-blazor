@@ -3035,36 +3035,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Currently used for DateTime/string conversion.
-        /// </summary>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="value">The value to convert.</param>
-        /// <returns></returns>
-        internal TValue ConvertToGenericValue<TValue>(object? value)
-        {
-            if (value == null)
-            {
-                return default!;
-            }
-            else if (GenericType == typeof(DateTime))
-            {
-                // No need to check for DateTime?, since the genericType will be the underlying type.
-                return (TValue)(object)ReturnToDate(value);
-            }
-            else if (GenericType == typeof(string))
-            {
-                if (value is DateTime dateTime)
-                {
-                    return (TValue)(object)DateToString(dateTime);
-                }
-
-                return (TValue)(object)ReturnToString(value);
-            }
-
-            return default!;
-        }
-
-        /// <summary>
         /// Converts event json/invoke values to the specified type. Currently used mainly for DateTime/string conversion.
         /// Note: If you are using this method you probably have a generic type component.
         /// Make sure to have defined the <see cref="IgbComponentBase.GenericType"/>
@@ -3090,6 +3060,15 @@ namespace IgniteUI.Blazor.Controls
             if (GenericType == typeof(DateTime))
             {
                 return (TValue)(object)ReturnToDate(detailObj);
+            }
+            if (GenericType == typeof(string))
+            {
+                if (detailObj is DateTime dateTime)
+                {
+                    return (TValue)(object)DateToString(dateTime);
+                }
+
+                return (TValue)(object)ReturnToString(detailObj);
             }
 
             var value = ConvertReturnValue<TValue>(detailObj);
@@ -3117,7 +3096,7 @@ namespace IgniteUI.Blazor.Controls
                     value is not System.Collections.IDictionary)
                 {
                     return values.Cast<object?>()
-                        .Select(item => ConvertToGenericValue<TValue>(item))
+                        .Select(item => GenericValueFromEventJson<TValue>(item) ?? default!)
                         .ToArray();
                 }
 
@@ -3129,7 +3108,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value is System.Collections.IEnumerable values && value is not string)
                 {
                     return values.Cast<object?>()
-                        .Select(item => ConvertToGenericValue<TValue>(item))
+                        .Select(item => GenericValueFromEventJson<TValue>(item) ?? default!)
                         .ToArray();
                 }
 

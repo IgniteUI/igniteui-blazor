@@ -79,7 +79,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", [], []);
-            return ConvertToGenericValue<TValue>(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace IgniteUI.Blazor.Controls
         public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", [], []);
-            return ConvertToGenericValue<TValue>(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
         private TValue[] _values = [];
 
@@ -419,7 +419,7 @@ namespace IgniteUI.Blazor.Controls
 
                             if (this.Selection == CalendarSelection.Single)
                             {
-                                newValueValue = ConvertToGenericValue<TValue>(args.Detail);
+                                newValueValue = GenericValueFromEventJson<TValue>(args.Detail);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

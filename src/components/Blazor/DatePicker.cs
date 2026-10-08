@@ -175,7 +175,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", [], []);
-            return ConvertToGenericValue<TValue>(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace IgniteUI.Blazor.Controls
         public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", [], []);
-            return ConvertToGenericValue<TValue>(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
         private TValue? _activeDate = default!;
 
