@@ -2,6 +2,7 @@ using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 using Microsoft.AspNetCore.Components;
+using System.Globalization;
 
 namespace IgniteUI.Blazor.Tests;
 
@@ -180,6 +181,47 @@ public sealed class RadioIntTests : RadioTests<int>
 /// A value type's default is a real option value: without these, the first option of a 0-based list or the
 /// "No" of a yes/no group reaches the element with no value and cannot be pre-selected.
 /// </summary>
+public class RadioNumberCultureTests : BlazorComponentTestBase
+{
+    /// <summary>
+    /// Without this a comma-decimal culture sends "1,5", which the invariant parse on the way back reads as 15.
+    /// </summary>
+    [Fact]
+    public void Radio_Value_Fractional_IsInvariant()
+    {
+        var culture = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+        try
+        {
+            var cut = Render<IgbRadio<double>>(parameters =>
+                parameters.Add(p => p.Value, 1.5));
+
+            Assert.Equal("1.5", cut.Find("igc-radio").GetAttribute("value"));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = culture;
+        }
+    }
+
+    [Fact]
+    public void RadioChangeDetail_Value_Fractional_IsInvariant()
+    {
+        var culture = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+        try
+        {
+            var detail = new IgbRadioChangeEventArgsDetail<double> { Value = 1.5 };
+
+            Assert.Contains("\"value\":\"1.5\"", detail.Serialize());
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = culture;
+        }
+    }
+}
+
 public class RadioDefaultValueTests : BlazorComponentTestBase
 {
     [Fact]

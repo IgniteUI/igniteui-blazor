@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -1014,7 +1015,8 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                ser.AddStringProp(propName, value.ToString());
+                // Invariant, as GenericValueFromEventJson parses the value back.
+                ser.AddStringProp(propName, value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value.ToString());
             }
         }
 

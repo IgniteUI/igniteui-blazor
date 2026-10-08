@@ -3063,12 +3063,15 @@ namespace IgniteUI.Blazor.Controls
             }
             if (GenericType == typeof(string))
             {
-                if (detailObj is DateTime dateTime)
+                // A date crosses the wire wrapped as {retType: 'date'}; unwrap it first, or ToString formats it in the
+                // current culture.
+                var unwrapped = detailObj is DateTime ? detailObj : ConvertReturnValue(detailObj);
+                if (unwrapped is DateTime dateTime)
                 {
                     return (TValue)(object)DateToString(dateTime);
                 }
 
-                return (TValue)(object)ReturnToString(detailObj);
+                return (TValue)(object)(unwrapped?.ToString() ?? string.Empty);
             }
 
             var value = ConvertReturnValue<TValue>(detailObj);
@@ -3142,7 +3145,8 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                ser.AddStringProp(propName, value.ToString());
+                // Invariant, as GenericValueFromEventJson parses the value back.
+                ser.AddStringProp(propName, value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value.ToString());
             }
         }
 

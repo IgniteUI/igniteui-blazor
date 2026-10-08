@@ -32,23 +32,25 @@ public static class DatePickerTests
             .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
             .Method(c => c.SetCustomValidityAsync("Please choose a valid date"), c => c.SetCustomValidity("Please choose a valid date"),
                 "setCustomValidity", args: ["Please choose a valid date"], types: ["String"])
+            // Dates arrive wrapped as {retType: 'date'}, both returned and as event details. A plain string here would
+            // pass through a string TValue untouched and hide a culture-formatted read.
             .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
-                returns: currentValue)
+                returns: InteropReturn.Date(new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc)), expect: currentValue)
             .Event(c => c.Opening)
             .Event(c => c.Opened)
             .Event(c => c.Closing)
             .Event(c => c.Closed)
             .Event(c => c.Change,
-                argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+                argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
                 assert: args => assertChangedValue(args.Detail))
             .Event(c => c.Change,
                 argsJson: """{"detail": null}""",
                 assert: args => assertClearedValue(args.Detail))
             .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
-                argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+                argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
                 expect: changedValue)
             .Event(c => c.Input,
-                argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+                argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
                 assert: args => assertChangedValue(args.Detail))
             .Event(c => c.Input,
                 argsJson: """{"detail": null}""",
@@ -189,11 +191,11 @@ public static class DatePickerTests
     {
         public DatePickerStringTests()
             : base(
-                "2026-03-15T09:30:00.000Z",
-                "2026-01-02T03:04:05.000Z",
+                new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc).ToString("o"),
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToString("o"),
                 actual =>
                 {
-                    Assert.Equal("2026-01-02T03:04:05.000Z", actual);
+                    Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToString("o"), actual);
                 },
                 Assert.Null,
                 "2026-03-15",
