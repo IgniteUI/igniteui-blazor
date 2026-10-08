@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Unifies one or more <see cref="IgbRadio{TValue}"/> components into a single group.
     /// </summary>
     [CascadingTypeParameter(nameof(TValue))]
-    public partial class IgbRadioGroup<TValue> : BaseRendererControl
+    public partial class IgbRadioGroup<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRadioGroup"; } }

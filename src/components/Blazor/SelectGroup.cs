@@ -5,7 +5,8 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A container for a group of select items.
     /// </summary>
-    public partial class IgbSelectGroup : BaseRendererControl
+    [CascadingTypeParameter(nameof(TValue))]
+    public partial class IgbSelectGroup<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelectGroup"; } }
@@ -58,13 +59,13 @@ namespace IgniteUI.Blazor.Controls
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private IgbSelectItem[] _items = Array.Empty<IgbSelectItem>();
+        private IgbSelectItem<TValue>[] _items = Array.Empty<IgbSelectItem<TValue>>();
 
         /// <summary>
-        /// All child <see cref="IgbSelectItem"/> components.
+        /// All child <see cref="IgbSelectItem{TValue}"/> components.
         /// </summary>
         [Parameter]
-        public IgbSelectItem[] Items
+        public IgbSelectItem<TValue>[] Items
         {
             get { return this._items; }
             set

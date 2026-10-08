@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload carried by the tile state events, identifying the tile and the state it is changing to.
     /// </summary>
-    public partial class IgbTileChangeStateEventArgsDetail : BaseRendererElement
+    public partial class IgbTileChangeStateEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTileChangeStateEventArgsDetail"; } }
@@ -15,7 +13,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The tile whose state is changing.
         /// </summary>
-        [Parameter]
         public IgbTile Tile
         {
             get { return this._tile; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// The state the tile is changing to; <see langword="true"/> when it is being maximized or
         /// put in fullscreen, and <see langword="false"/> when it is being restored.
         /// </summary>
-        [Parameter]
         public bool State
         {
             get { return this._state; }
@@ -62,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -74,7 +70,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

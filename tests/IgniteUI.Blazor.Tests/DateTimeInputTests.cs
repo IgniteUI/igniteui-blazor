@@ -182,7 +182,11 @@ public static class DateTimeInputTests
             : base(
                 new DateTime(2026, 7, 4, 12, 30, 0, DateTimeKind.Utc),
                 new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
-                actual => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual.ToUniversalTime()),
+                actual =>
+                {
+                    Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual.ToUniversalTime());
+                    Assert.Equal(DateTimeKind.Utc, actual.Kind);
+                },
                 actual => Assert.Equal(default, actual),
                 new DateTime(2026, 3, 4, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -197,7 +201,11 @@ public static class DateTimeInputTests
             : base(
                 new DateTime(2026, 7, 4, 12, 30, 0, DateTimeKind.Utc),
                 new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
-                actual => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual?.ToUniversalTime()),
+                actual =>
+                {
+                    Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual?.ToUniversalTime());
+                    Assert.Equal(DateTimeKind.Utc, actual?.Kind);
+                },
                 Assert.Null,
                 new DateTime(2026, 3, 4, 8, 0, 0, DateTimeKind.Utc),
                 new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -212,7 +220,10 @@ public static class DateTimeInputTests
             : base(
                 "2026-07-04T12:30:00.000Z",
                 "2026-01-02T03:04:05.000Z",
-                actual => Assert.Equal("2026-01-02T03:04:05.000Z", actual),
+                actual =>
+                {
+                    Assert.Equal("2026-01-02T03:04:05.000Z", actual);
+                },
                 Assert.Null,
                 "2026-03-04T08:00:00.000Z",
                 "2020-01-01T00:00:00.000Z",

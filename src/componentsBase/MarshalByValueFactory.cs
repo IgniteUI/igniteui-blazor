@@ -11,15 +11,13 @@ namespace IgniteUI.Blazor.Controls
                     return true;
                 case "WebFocusOptions":
                     return true;
-                case "FormatSpecifier":
+                case "NumberFormatOptions":
                     return true;
                 case "QrCodeExportOptions":
                 case "WebQrCodeExportOptions":
                     return true;
                 case "RegisterIconOptions":
                 case "WebRegisterIconOptions":
-                    return true;
-                case "NumberFormatSpecifier":
                     return true;
                 case "ActiveStepChangedEventArgs":
                 case "WebActiveStepChangedEventArgs":
@@ -147,11 +145,6 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        internal static object? CreateInstance(string typeName)
-        {
-            return CreateInstance<object>(typeName);
-        }
-
         internal static object? CreateInstance<TValue>(string typeName)
         {
             switch (typeName)
@@ -161,16 +154,14 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbCalendarFormatOptions();
                 case "WebFocusOptions":
                     return new IgbFocusOptions();
-                case "FormatSpecifier":
-                    return new IgbFormatSpecifier();
+                case "NumberFormatOptions":
+                    return new IgbNumberFormatOptions();
                 case "QrCodeExportOptions":
                 case "WebQrCodeExportOptions":
                     return new IgbQrCodeExportOptions();
                 case "RegisterIconOptions":
                 case "WebRegisterIconOptions":
                     return new IgbRegisterIconOptions();
-                case "NumberFormatSpecifier":
-                    return new IgbNumberFormatSpecifier();
                 case "ActiveStepChangedEventArgs":
                 case "WebActiveStepChangedEventArgs":
                     return new IgbActiveStepChangedEventArgs();
@@ -260,7 +251,7 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbRangeSliderValue();
                 case "SelectItemComponentEventArgs":
                 case "WebSelectItemComponentEventArgs":
-                    return new IgbSelectItemComponentEventArgs();
+                    return new IgbSelectItemComponentEventArgs<TValue>();
                 case "SplitterLayoutChangedEventArgs":
                 case "WebSplitterLayoutChangedEventArgs":
                     return new IgbSplitterLayoutChangedEventArgs();

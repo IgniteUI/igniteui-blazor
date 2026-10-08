@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// The card component provides a flexible container for organizing content such as headers,
     /// media, text content, and actions.
     /// </summary>
-    public partial class IgbCard : BaseRendererControl
+    public partial class IgbCard : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCard"; } }

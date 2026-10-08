@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A date range defined by a start and an end date.
     /// </summary>
-    public partial class IgbDateRangeValue<TValue> : BaseRendererElement
+    public partial class IgbDateRangeValue<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateRangeValue"; } }

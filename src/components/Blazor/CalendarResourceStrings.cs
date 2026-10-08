@@ -4,7 +4,7 @@
     /// The localized strings used by the calendar views, exposed through the <c>ResourceStrings</c>
     /// property of <see cref="IgbCalendar{TValue}"/> and <see cref="IgbDatePicker{TValue}"/>.
     /// </summary>
-    public partial class IgbCalendarResourceStrings : BaseRendererElement
+    public partial class IgbCalendarResourceStrings : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCalendarResourceStrings"; } }

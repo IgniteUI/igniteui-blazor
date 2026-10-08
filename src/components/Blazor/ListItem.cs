@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// The list-item component is a container
     /// intended for row items in the list component.
     /// </summary>
-    public partial class IgbListItem : BaseRendererControl
+    public partial class IgbListItem : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebListItem"; } }

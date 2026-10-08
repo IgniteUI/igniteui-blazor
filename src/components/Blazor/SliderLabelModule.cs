@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Provides the module for the <see cref="IgbSliderLabel"/> child component of <see cref="IgbSlider"/> or <see cref="IgbRangeSlider"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// Provides the module for the <see cref="IgbSliderLabel"/> child component of <see cref="IgbSlider{TValue}"/> or <see cref="IgbRangeSlider"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbSliderLabelModule is no longer required, has no effect and can be safely removed.")]
     [IgbModule<IgbSliderLabelModule>]

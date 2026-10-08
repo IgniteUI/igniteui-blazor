@@ -149,7 +149,11 @@ public static class DatePickerTests
             : base(
                 new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc),
                 new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
-                actual => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual.ToUniversalTime()),
+                actual =>
+                {
+                    Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual.ToUniversalTime());
+                    Assert.Equal(DateTimeKind.Utc, actual.Kind);
+                },
                 actual => Assert.Equal(default, actual),
                 new DateTime(2026, 3, 15, 9, 30, 0),
                 new DateTime(2026, 4, 1),
@@ -165,7 +169,11 @@ public static class DatePickerTests
             : base(
                 new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc),
                 new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
-                actual => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual?.ToUniversalTime()),
+                actual =>
+                {
+                    Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), actual?.ToUniversalTime());
+                    Assert.Equal(DateTimeKind.Utc, actual?.Kind);
+                },
                 Assert.Null,
                 new DateTime(2026, 3, 15, 9, 30, 0),
                 new DateTime(2026, 4, 1),
@@ -181,7 +189,10 @@ public static class DatePickerTests
             : base(
                 "2026-03-15T09:30:00.000Z",
                 "2026-01-02T03:04:05.000Z",
-                actual => Assert.Equal("2026-01-02T03:04:05.000Z", actual),
+                actual =>
+                {
+                    Assert.Equal("2026-01-02T03:04:05.000Z", actual);
+                },
                 Assert.Null,
                 "2026-03-15",
                 "2026-04-01",

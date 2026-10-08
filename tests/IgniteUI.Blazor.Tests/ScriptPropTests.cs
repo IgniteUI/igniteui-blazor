@@ -30,14 +30,14 @@ public class ScriptPropTests : BlazorComponentTestBase
         var data = new TheoryData<Type>();
         foreach (var type in typeof(IgbBanner).Assembly.GetTypes())
         {
-            if (type.IsAbstract || !typeof(BaseRendererControl).IsAssignableFrom(type))
+            if (type.IsAbstract || !typeof(IgbComponentBase).IsAssignableFrom(type))
             {
                 continue;
             }
             var closed = type.IsGenericTypeDefinition
                 ? type.MakeGenericType(type.Name[..type.Name.IndexOf('`')] switch
                 {
-                    "IgbCalendar" or "IgbDatePicker" or "IgbDateTimeInput" => typeof(DateTime),
+                    "IgbCalendar" or "IgbDatePicker" or "IgbDateTimeInput" or "IgbDateRangePicker" => typeof(DateTime),
                     "IgbSlider" or "IgbRating" => typeof(double),
                     "IgbColorPicker" or "IgbSelect" => typeof(string),
                     _ => typeof(object)

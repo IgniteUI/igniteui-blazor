@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// A date range defined by a start and an end date, carried as the payload of
     /// <see cref="IgbDateRangeValueEventArgs{TValue}"/>.
     /// </summary>
-    public partial class IgbDateRangeValueDetail<TValue> : BaseRendererElement
+    public partial class IgbDateRangeValueDetail<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateRangeValueDetail"; } }
@@ -16,7 +14,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The first date of the range.
         /// </summary>
-        [Parameter]
         public TValue? Start
         {
             get { return this._start; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The last date of the range.
         /// </summary>
-        [Parameter]
         public TValue? End
         {
             get { return this._end; }
@@ -62,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -74,18 +70,18 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("start", out var startObj))
             {
-                this.Start = GenericValueFromEventJson<TValue>(startObj, control.GenericType!);
+                this.Start = GenericValueFromEventJson<TValue>(startObj);
             }
             if (args != null && args.TryGetValue("end", out var endObj))
             {
-                this.End = GenericValueFromEventJson<TValue>(endObj, control.GenericType!);
+                this.End = GenericValueFromEventJson<TValue>(endObj);
             }
 
             this.SuppressParentNotify = false;

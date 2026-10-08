@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Options controlling how a QR code is exported to an image file,
     /// passed to the <c>ToImage</c> methods of <see cref="IgbQrCode"/>.
     /// </summary>
-    public partial class IgbQrCodeExportOptions : BaseRendererElement
+    public partial class IgbQrCodeExportOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebQrCodeExportOptions"; } }

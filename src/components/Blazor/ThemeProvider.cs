@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// All library components within this provider will use the specified theme
     /// instead of the global theme.
     /// </summary>
-    public partial class IgbThemeProvider : BaseRendererControl
+    public partial class IgbThemeProvider : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebThemeProvider"; } }

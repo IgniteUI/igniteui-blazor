@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbCheckbox"/> and <see cref="IgbSwitch"/>.
     /// </summary>
-    public partial class IgbCheckboxBase : BaseRendererControl
+    public partial class IgbCheckboxBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCheckboxBase"; } }

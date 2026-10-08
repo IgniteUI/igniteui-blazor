@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// The component renders an SVG representation of the QR code, which can be
     /// customized using various properties.
     /// </summary>
-    public partial class IgbQrCode : BaseRendererControl
+    public partial class IgbQrCode : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebQrCode"; } }

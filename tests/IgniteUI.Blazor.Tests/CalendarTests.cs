@@ -11,6 +11,7 @@ public static class CalendarTests
             TValue currentValue,
             TValue changedValue,
             TValue[] currentValues,
+            DateTimeKind[] currentValuesKind,
             TValue[] changedValues,
             TValue value,
             TValue[] values,
@@ -22,7 +23,14 @@ public static class CalendarTests
             .Getter(c => c.GetCurrentValuesAsync(), c => c.GetCurrentValues(), "Values",
                 arrange: _ => { },
                 returns: FromRender.Of((interop, cut) => InteropReturn.Array("""["2026-01-02T03:04:05.000Z", "2026-03-16T12:30:00.000Z"]""")),
-                assert: (cut, result) => Assert.Equal(currentValues, result))
+                assert: (cut, result) =>
+                {
+                    Assert.Equal(currentValues, result);
+                    if (result.Any(r => r is DateTime))
+                    {
+                        Assert.Equal(currentValuesKind, result.Select(r => r is DateTime dt ? dt.Kind : DateTimeKind.Unspecified));
+                    }
+                })
             .Event(c => c.Change,
                 argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
                 assert: args => Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc), ((DateTime)args.Detail).ToUniversalTime()))
@@ -124,12 +132,16 @@ public static class CalendarTests
                 new DateTime(2026, 3, 15, 0, 0, 0, DateTimeKind.Utc),
                 new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
                 [
-                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
-                new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc).ToLocalTime(),
+                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+                    new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc),
                 ],
                 [
-                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
-                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
+                    DateTimeKind.Utc,
+                    DateTimeKind.Utc
+                ],
+                [
+                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc),
                 ],
                 new DateTime(2026, 3, 15),
                 [new DateTime(2026, 3, 15), new DateTime(2026, 3, 16)],
@@ -145,12 +157,16 @@ public static class CalendarTests
                 new DateTime(2026, 3, 15, 0, 0, 0, DateTimeKind.Utc),
                 new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
                 [
-                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
-                new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc).ToLocalTime(),
+                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+                new DateTime(2026, 3, 16, 12, 30, 0, DateTimeKind.Utc),
                 ],
                 [
-                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
-                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc).ToLocalTime(),
+                    DateTimeKind.Utc,
+                    DateTimeKind.Utc
+                ],
+                [
+                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc),
+                new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc),
                 ],
                 new DateTime(2026, 3, 15),
                 [new DateTime(2026, 3, 15), new DateTime(2026, 3, 16)],
@@ -164,11 +180,15 @@ public static class CalendarTests
         public StringTests()
             : base(
                 "2026-03-15T00:00:00.000Z",
-                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime().ToString("o"),
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToString("o"),
                 ["2026-01-02T03:04:05.000Z", "2026-03-16T12:30:00.000Z"],
                 [
-                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToLocalTime().ToString("o"),
-                    new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc).ToLocalTime().ToString("o"),
+                    DateTimeKind.Utc,
+                    DateTimeKind.Utc
+                ],
+                [
+                    new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToString("o"),
+                    new DateTime(2026, 1, 3, 3, 4, 5, DateTimeKind.Utc).ToString("o"),
                 ],
                 "2026-03-15T00:00:00.0000000",
                 ["2026-03-15T00:00:00.0000000", "2026-03-16T00:00:00.0000000"],

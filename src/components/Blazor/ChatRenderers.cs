@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Optional render templates that replace the default rendering of parts of the <see cref="IgbChat"/> UI.
     /// </summary>
-    public partial class IgbChatRenderers : BaseRendererElement
+    public partial class IgbChatRenderers : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChatRenderers"; } }
