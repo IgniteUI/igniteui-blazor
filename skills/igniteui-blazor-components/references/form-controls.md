@@ -133,16 +133,19 @@ Radios are grouped by being children of `IgbRadioGroup`, and the selected option
                 Mode="ColorPickerMode.Input" Format="ColorFormat.Rgb"
                 ShowAlpha="true" Swatches="Palette" />
 
+<IgbColorPicker @bind-Value="Highlight" Label="Highlight" />
+
 @code {
     string? Background { get; set; } = "#875fc4";
     string? Accent { get; set; }
+    System.Drawing.Color? Highlight { get; set; }
     static readonly string[] Palette = ["#e91e63", "#3f51b5", "#009688"];
 }
 ```
 
-An HSV canvas with hue and alpha sliders, an editable color string, preset swatches, and the native EyeDropper where the browser has one. `Value` is a CSS color string (hex, `rgb(a)`, `hsl(a)`, or a named color); an empty or invalid string clears it. `Format` (`Hex | Rgb | Hsl`) changes only the notation, not the color, and `HideFormats` drops the format switcher. `Mode` is `Default` (trigger button) or `Input` (editable text field with a swatch prefix).
+An HSV canvas with hue and alpha sliders, an editable color string, preset swatches, and the native EyeDropper where the browser has one. `IgbColorPicker<TValue>` takes `string` or `System.Drawing.Color`, either nullable; `@bind-Value` infers it, a picker without a value needs `TValue` set. As a `string`, `Value` is a CSS color string (hex, `rgb(a)`, `hsl(a)`, or a named color); an empty or invalid string clears it, and a cleared picker reports `""`. As a `Color`, `null` or `Color.Empty` clears it and a cleared picker reports the same; in `Hsl` format the color is rounded to whole-number hue, saturation and lightness. `Format` (`Hex | Rgb | Hsl`) changes only the notation, not the color, and `HideFormats` drops the format switcher. `Mode` is `Default` (trigger button) or `Input` (editable text field with a swatch prefix).
 
-`Input` fires on every color change while `Change` fires on commit and drives `@bind-Value`; `Opening` / `Opened` / `Closing` / `Closed` track the picker surface. `Required`, `Disabled`, `Invalid` plus `CheckValidityAsync()` / `ReportValidityAsync()` / `SetCustomValidityAsync(message)` behave as on the other form controls.
+`Input` fires on every color change while `Change` fires on commit and drives `@bind-Value`; both carry an `IgbColorPickerValueEventArgs<TValue>` whose `Detail` is the color as `TValue`. `Opening` / `Opened` / `Closing` / `Closed` track the picker surface. `Required`, `Disabled`, `Invalid` plus `CheckValidityAsync()` / `ReportValidityAsync()` / `SetCustomValidityAsync(message)` behave as on the other form controls.
 
 ## Binding and validation
 

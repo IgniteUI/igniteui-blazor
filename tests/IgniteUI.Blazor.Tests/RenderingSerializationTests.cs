@@ -689,7 +689,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void ColorPicker_RendersAllAttributes()
     {
-        var cut = Render<IgbColorPicker>(p => p
+        var cut = Render<IgbColorPicker<string>>(p => p
             .Add(x => x.Value, "#ff0000")
             .Add(x => x.Label, "Background")
             .Add(x => x.Format, ColorFormat.Rgb)
