@@ -67,7 +67,7 @@ Only pick a grid when the content is genuinely tabular. A list of records with r
 | Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group |
 | Slider / range slider | `IgbSlider` / `IgbRangeSlider` | range uses `Lower` / `Upper` |
 | Star rating | `IgbRating` | |
-| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |
+| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color `string` or `System.Drawing.Color`), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |
 | Primary action button | `IgbButton` | `Variant`: `Contained`/`Outlined`/`Flat`/`Fab` |
 | Segmented / toggle control | `IgbButtonGroup` + `IgbToggleButton` | |
 | Icon-only button | `IgbIconButton` | |

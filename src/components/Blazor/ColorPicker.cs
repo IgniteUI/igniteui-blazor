@@ -10,16 +10,17 @@ namespace IgniteUI.Blazor.Controls
     /// or a named CSS color. Supports pre-defined swatches and the native EyeDropper
     /// API, where the browser provides one.
     /// </summary>
+    /// <typeparam name="TValue"><c>string</c> or <see cref="Color"/>, either nullable.</typeparam>
     public partial class IgbColorPicker<TValue> : IgbBaseComboBox
     {
-        private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <summary>Constructs a color picker for string or <see cref="Color"/> values.</summary>
         public IgbColorPicker()
         {
-            if (genericType != typeof(string) && genericType != typeof(Color))
+            if (GenericType != typeof(string) && GenericType != typeof(Color))
             {
-                throw new InvalidOperationException($"Unsupported {GetType()} type param '{genericType}'.");
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{GenericType}'.");
             }
         }
         /// <inheritdoc />
@@ -67,8 +68,12 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// The value of the component as a CSS color string. Accepts hex, rgb(a),
-        /// hsl(a) and named colors. An empty, whitespace-only or invalid string clears the value.
+        /// The selected color.
+        /// As a <c>string</c>, a CSS color: hex, rgb(a), hsl(a) or a named color. An empty or invalid string clears the
+        /// picker, which reports its color in the <see cref="Format"/> notation, or <c>""</c> when cleared.
+        /// As a <see cref="Color"/>, <c>null</c> or <see cref="Color.Empty"/> clears the picker, which reports the same
+        /// when cleared. In <see cref="ColorFormat.Hsl"/> the picker reports whole-number hue, saturation and lightness,
+        /// so the <see cref="Color"/> can be a unit or two per channel off the picked color.
         /// </summary>
         [Parameter]
         public TValue? Value
