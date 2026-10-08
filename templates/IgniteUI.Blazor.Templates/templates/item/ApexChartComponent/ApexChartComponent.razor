@@ -222,7 +222,7 @@
         // Build a fresh options object per render. The chart mutates the instance it is given, so
         // sharing one long-lived field across renders corrupts later ones (radar shows off-center).
         Chart = new Chart { Background = Dark ? "#1e1e1e" : "transparent" },
-        Theme = new Theme { Mode = Dark ? Mode.Dark : Mode.Light },
+        Theme = new ApexCharts.Theme { Mode = Dark ? ApexCharts.Mode.Dark : ApexCharts.Mode.Light },
         PlotOptions = new PlotOptions
         {
             Bar = Kind == ChartKind.Funnel
