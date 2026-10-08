@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class shared by <see cref="IgbCombo{T}"/> and <see cref="IgbComboBoxBaseLike"/>.
+    /// Base class shared by <see cref="IgbCombo{TValue, TItem}"/> and <see cref="IgbComboBoxBaseLike"/>.
     /// </summary>
     public partial class IgbBaseComboBox : BaseRendererControl
     {

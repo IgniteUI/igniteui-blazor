@@ -12,7 +12,7 @@ public class ComboItem
     public string? StringId { get; set; }
 }
 
-public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
+public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, ComboItem>>
 {
     private static readonly ComboItem _valueItem1 = new() { Id = 1, Text = "First" };
     private static readonly ComboItem _valueItem2 = new() { Id = 2, Text = "Second" };
@@ -37,7 +37,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     internal static string ChangeDetail(string newValues, string items, string type = "selection") =>
         $$$$"""{"detail": {"retType": "object", "type": "WebComboChangeEventArgsDetail", "value": {"newValue": {"retType": "Array", "type": "", "value": [{{{{newValues}}}}]}, "items": {"retType": "Array", "type": "", "value": [{{{{items}}}}]}, "type": "{{{{type}}}}"}}}""";
 
-    protected override ComponentContract<IgbCombo<ComboItem>> InteropContract { get; } = new ComponentContract<IgbCombo<ComboItem>>()
+    protected override ComponentContract<IgbCombo<ComboItem, ComboItem>> InteropContract { get; } = new ComponentContract<IgbCombo<ComboItem, ComboItem>>()
         .Method(c => c.ShowAsync(), c => c.Show(), "show", returns: true)
         .Method(c => c.HideAsync(), c => c.Hide(), "hide", returns: false)
         .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
@@ -169,7 +169,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     [Fact]
     public void Combo_TypeMetadata()
     {
-        var combo = new IgbCombo<object>();
+        var combo = new IgbCombo<object, object>();
         Assert.Equal("WebCombo", combo.RendererType);
     }
 
@@ -177,10 +177,10 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     public void Combo_Change_SelectionEvent_HasSelectionChangeType()
     {
         Interop.PrimeReady();
-        IgbComboChangeEventArgs? received = null;
-        var cut = Render<IgbCombo<ComboItem>>(ps => ps
+        IgbComboChangeEventArgs<ComboItem, ComboItem>? received = null;
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
             .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
-            .Add(c => c.Change, (IgbComboChangeEventArgs<ComboItem> args) => received = args));
+            .Add(c => c.Change, (IgbComboChangeEventArgs<ComboItem, ComboItem> args) => received = args));
 
         var argsJson = ChangeDetail(UuidRef(Interop, cut, 0), UuidRef(Interop, cut, 0));
         Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", argsJson);
@@ -193,11 +193,11 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
     public void Combo_Change_DeselectionEvent_HasDeselectionChangeType()
     {
         Interop.PrimeReady();
-        IgbComboChangeEventArgs? received = null;
-        var cut = Render<IgbCombo<ComboItem>>(ps => ps
+        IgbComboChangeEventArgs<ComboItem, ComboItem>? received = null;
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
             .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
             .Add(c => c.Value, new[] { _valueItem1 })
-            .Add(c => c.Change, (IgbComboChangeEventArgs<ComboItem> args) => received = args));
+            .Add(c => c.Change, (IgbComboChangeEventArgs<ComboItem, ComboItem> args) => received = args));
 
         var argsJson = ChangeDetail("", UuidRef(Interop, cut, 0), "deselection");
         Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", argsJson);
@@ -205,31 +205,48 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem>>
         Assert.NotNull(received);
         Assert.Equal(ComboChangeType.Deselection, received.Detail.ChangeType);
     }
+
+    [Fact]
+    public void Combo_SelectAsync_ObjectOverload_And_ItemOverload_SendSameWireCall()
+    {
+        // Covers the TValue/TItem split: object[] (key/reference) and TItem[] (actual data item)
+        // overloads of SelectAsync/Select must both resolve to the same "select" wire invocation.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+
+        cut.Instance.Select(new[] { _valueItem1 });
+
+        var call = Interop.RequireCall("select", Interop.ContainerIdOf(cut));
+        var sentItem = Assert.Single(call.Arguments[0].EnumerateArray());
+        Assert.Equal("uuid", sentItem.GetProperty("refType").GetString());
+        Assert.Equal(DataItemId(Interop, cut, 0), sentItem.GetProperty("id").GetString());
+    }
 }
 
-public abstract class ComboValueKeyTestsBase<T> : ComponentWithContractTestBase<IgbCombo<T>>
-    where T : notnull
+public abstract class ComboValueKeyTestsBase<TValue> : ComponentWithContractTestBase<IgbCombo<TValue, ComboItem>>
+    where TValue : notnull
 {
     protected static readonly ComboItem Item1 = new() { Id = 1, StringId = "UK01", Text = "First" };
     protected static readonly ComboItem Item2 = new() { Id = 2, StringId = "UK02", Text = "Second" };
 
-    protected virtual Action<ComponentParameterCollectionBuilder<IgbCombo<T>>> Arrange =>
+    protected virtual Action<ComponentParameterCollectionBuilder<IgbCombo<TValue, ComboItem>>> Arrange =>
         ps => ps
             .Add(c => c.Data, new[] { Item1, Item2 })
             .Add(c => c.ValueKey, "Id");
 
     protected abstract string EventKeyValue { get; }
 
-    protected abstract T ExpectedKeyValue { get; }
+    protected abstract TValue ExpectedKeyValue { get; }
 
-    protected abstract T[] PropValues { get; }
+    protected abstract TValue[] PropValues { get; }
 
     protected abstract string ExpectedValue { get; }
 
-    protected override ComponentContract<IgbCombo<T>> InteropContract => BuildContract();
+    protected override ComponentContract<IgbCombo<TValue, ComboItem>> InteropContract => BuildContract();
 
-    private ComponentContract<IgbCombo<T>> BuildContract() =>
-        new ComponentContract<IgbCombo<T>>()
+    private ComponentContract<IgbCombo<TValue, ComboItem>> BuildContract() =>
+        new ComponentContract<IgbCombo<TValue, ComboItem>>()
             .Event(c => c.Change,
                 Arrange,
                 argsJson: FromRender.Of((interop, cut) => ComboTests.ChangeDetail(EventKeyValue, ComboTests.UuidRef(interop, cut, 1))),
@@ -273,7 +290,7 @@ public class ComboValueKeyDoubleTests : ComboValueKeyTestsBase<double>
 
 public class ComboValueKeyStringTests : ComboValueKeyTestsBase<string>
 {
-    protected override Action<ComponentParameterCollectionBuilder<IgbCombo<string>>> Arrange =>
+    protected override Action<ComponentParameterCollectionBuilder<IgbCombo<string, ComboItem>>> Arrange =>
     ps => ps
         .Add(c => c.Data, new[] { Item1, Item2 })
         .Add(c => c.ValueKey, "StringId");

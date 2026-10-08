@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Controls
     /// The Combo component features case-sensitive filtering, grouping, complex data binding,
     /// dynamic addition of values and more.
     /// </summary>
-    public partial class IgbCombo<T> : IgbBaseComboBox, IDataSourceNotifications
+    public partial class IgbCombo<TValue, TItem> : IgbBaseComboBox, IDataSourceNotifications
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCombo"; } }
@@ -45,13 +45,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private string? _dataRef;
-        private Object? _data;
+        private IEnumerable<TItem>? _data;
 
         /// <summary>
         /// The data source used to generate the list of options.
         /// </summary>
         [Parameter]
-        public Object? Data
+        public IEnumerable<TItem>? Data
         {
             get { return this._data; }
 
@@ -423,7 +423,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private T[] _value = Array.Empty<T>();
+        private TValue[] _value = Array.Empty<TValue>();
 
         /// <summary>
         /// The value of the control, that is the currently selected items.
@@ -432,7 +432,7 @@ namespace IgniteUI.Blazor.Controls
         /// of <see cref="ValueKey"/>.
         /// </summary>
         [Parameter]
-        public T[] Value
+        public TValue[] Value
         {
             get { return this._value; }
             set
@@ -450,40 +450,40 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current value of the combo.
         /// </summary>
         /// <returns>The selected values, represented by <see cref="ValueKey"/> when provided.</returns>
-        public async Task<T[]> GetCurrentValueAsync()
+        public async Task<TValue[]> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv).Cast<T>().ToArray();
+            return ReturnToObjectArray<TValue>(iv);
         }
 
         /// <summary>
         /// Returns the current value of the combo.
         /// </summary>
         /// <returns>The selected values, represented by <see cref="ValueKey"/> when provided.</returns>
-        public T[] GetCurrentValue()
+        public TValue[] GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv).Cast<T>().ToArray();
+            return ReturnToObjectArray<TValue>(iv);
         }
 
         /// <summary>
         /// Returns the current selection of the combo.
         /// </summary>
         /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
-        public async Task<object[]> GetSelectionAsync()
+        public async Task<TItem[]> GetSelectionAsync()
         {
             var iv = await InvokeMethod("p:Selection", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv);
+            return ReturnToObjectArray<TItem>(iv);
         }
 
         /// <summary>
         /// Returns the current selection of the combo.
         /// </summary>
         /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
-        public object[] GetSelection()
+        public TItem[] GetSelection()
         {
             var iv = InvokeMethodSync("p:Selection", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv);
+            return ReturnToObjectArray<TItem>(iv);
         }
         private bool _disabled = false;
 
@@ -543,13 +543,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _itemTemplateRef;
-        private RenderFragment<object>? _itemTemplate;
+        private RenderFragment<TItem>? _itemTemplate;
 
         /// <summary>
         /// The template used for the content of each combo item.
         /// </summary>
         [Parameter]
-        public RenderFragment<object>? ItemTemplate
+        public RenderFragment<TItem>? ItemTemplate
         {
             get { return this._itemTemplate; }
 
@@ -561,7 +561,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("ItemTemplate");
                     this._itemTemplate = value;
                     this._itemTemplateTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._itemTemplateTemplateId, this._itemTemplate, typeof(object));
+                    this.UpdateTemplate(this._itemTemplateTemplateId, this._itemTemplate, typeof(TItem));
                     this.OnRefChanged("ItemTemplate", null, "template:::" + this._itemTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemTemplateRef = refName;
@@ -603,13 +603,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _groupHeaderTemplateRef;
-        private RenderFragment<object>? _groupHeaderTemplate;
+        private RenderFragment<TItem>? _groupHeaderTemplate;
 
         /// <summary>
         /// The template used for the content of each combo group header.
         /// </summary>
         [Parameter]
-        public RenderFragment<object>? GroupHeaderTemplate
+        public RenderFragment<TItem>? GroupHeaderTemplate
         {
             get { return this._groupHeaderTemplate; }
 
@@ -621,7 +621,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("GroupHeaderTemplate");
                     this._groupHeaderTemplate = value;
                     this._groupHeaderTemplateTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate, typeof(object));
+                    this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate, typeof(TItem));
                     this.OnRefChanged("GroupHeaderTemplate", null, "template:::" + this._groupHeaderTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._groupHeaderTemplateRef = refName;
@@ -717,7 +717,29 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
         /// the corresponding value should be used in place of the item reference.</param>
+        public async Task SelectAsync(TItem[] items)
+        {
+            await InvokeMethod("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+        }
+
+        /// <summary>
+        /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
+        /// If no items are provided all items are selected.
+        /// </summary>
+        /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
+        /// the corresponding value should be used in place of the item reference.</param>
         public void Select(object[] items)
+        {
+            InvokeMethodSync("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+        }
+
+        /// <summary>
+        /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
+        /// If no items are provided all items are selected.
+        /// </summary>
+        /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
+        /// the corresponding value should be used in place of the item reference.</param>
+        public void Select(TItem[] items)
         {
             InvokeMethodSync("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
@@ -739,10 +761,33 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
         /// the corresponding value should be used in place of the item reference.</param>
+        public async Task DeselectAsync(TItem[] items)
+        {
+            await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+        }
+
+        /// <summary>
+        /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
+        /// If no items are provided all items are deselected.
+        /// </summary>
+        /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
+        /// the corresponding value should be used in place of the item reference.</param>
         public void Deselect(object[] items)
         {
             InvokeMethodSync("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
+
+        /// <summary>
+        /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
+        /// If no items are provided all items are deselected.
+        /// </summary>
+        /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
+        /// the corresponding value should be used in place of the item reference.</param>
+        public void Deselect(TItem[] items)
+        {
+            InvokeMethodSync("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+        }
+
         /// <summary>
         /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
@@ -795,18 +840,18 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
-        private EventCallback<T[]>? _valueChanged = null;
+        private EventCallback<TValue[]>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<T[]> ValueChanged
+        public EventCallback<TValue[]> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<T[]>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue[]>.Empty;
             }
             set
             {
@@ -859,17 +904,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComboChangeEventArgs<T>>? _change = null;
+        private EventCallback<IgbComboChangeEventArgs<TValue, TItem>>? _change = null;
 
         /// <summary>
         /// Emitted when the control's selection has changed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComboChangeEventArgs<T>> Change
+        public EventCallback<IgbComboChangeEventArgs<TValue, TItem>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbComboChangeEventArgs<T>>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbComboChangeEventArgs<TValue, TItem>>.Empty;
             }
             set
             {
@@ -878,12 +923,12 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComboChangeEventArgs<T>>(this.RendererName, "Change", value, (args) =>
+                        this.SetHandler<IgbComboChangeEventArgs<TValue, TItem>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(T[]);
+                            var newValueValue = default(TValue[]);
 
                             {
-                                newValueValue = (T[])(DowncastArray<T>(args.Detail.NewValue));
+                                newValueValue = (TValue[])(DowncastArray<TValue>(args.Detail.NewValue));
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -896,7 +941,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<T[]>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue[]>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 ObserveHandlerTask(task);
@@ -913,7 +958,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComboChangeEventArgs<T>>(this.RendererName, "Change", null);
+                    this.SetHandler<IgbComboChangeEventArgs<TValue, TItem>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -924,9 +969,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbComboChangeEventArgs<T>>.Empty.Equals(this.Change))
+            if (EventCallback<IgbComboChangeEventArgs<TValue, TItem>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbComboChangeEventArgs<T>>(null, (Action<IgbComboChangeEventArgs<T>>)((e) => { }));
+                this.Change = new EventCallback<IgbComboChangeEventArgs<TValue, TItem>>(null, (Action<IgbComboChangeEventArgs<TValue, TItem>>)((e) => { }));
                 this._change = null;
             }
         }

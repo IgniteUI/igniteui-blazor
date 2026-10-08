@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/Combo")]
 
-<Stories TComponent="IgbCombo<string>">
+<Stories TComponent="IgbCombo<string, City>">
 
     <ArgType For="_ => _!.GroupSorting" Control="ControlType.Radio" />
     <ArgType For="_ => _!.ScrollStrategy" Control="ControlType.Radio" />
@@ -16,7 +16,7 @@
             <Arg For="_ => _!.Disabled" Value="false" />
         </Arguments>
         <Template>
-            <IgbCombo T="string" Data="_cities" @attributes="context.Args" />
+            <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -29,7 +29,7 @@
             <Arg For="_ => _!.SingleSelect" Value="true" />
         </Arguments>
         <Template>
-            <IgbCombo T="string" Data="_cities" @attributes="context.Args" />
+            <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -42,7 +42,7 @@
             <Arg For="_ => _!.Outlined" Value="true" />
         </Arguments>
         <Template>
-            <IgbCombo T="string" Data="_cities" @attributes="context.Args" />
+            <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -54,7 +54,7 @@
             <Arg For="_ => _!.Value" Value="_selectedCities" />
         </Arguments>
         <Template>
-            <IgbCombo T="string" Data="_cities" @attributes="context.Args" />
+            <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -66,7 +66,7 @@
             <Arg For="_ => _!.Disabled" Value="true" />
         </Arguments>
         <Template>
-            <IgbCombo T="string" Data="_cities" @attributes="context.Args" />
+            <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args" />
         </Template>
     </Story>
 

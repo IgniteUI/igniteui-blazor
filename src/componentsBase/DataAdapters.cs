@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A value that is already JSON text, for a data parameter such as <see cref="IgbCombo{T}.Data"/>.
+    /// A value that is already JSON text, for a data parameter such as <see cref="IgbCombo{TValue, TItem}.Data"/>.
     /// The text reaches the client as it is, with no deserialization on the .NET side.
     /// Change notifications do not apply; assign a new instance to update.
     /// </summary>
@@ -30,7 +30,7 @@ namespace IgniteUI.Blazor.Controls
     }
 
     /// <summary>
-    /// A value the client fetches itself as JSON from a URL, for a data parameter such as <see cref="IgbCombo{T}.Data"/>.
+    /// A value the client fetches itself as JSON from a URL, for a data parameter such as <see cref="IgbCombo{TValue, TItem}.Data"/>.
     /// The data never passes through the .NET side, so the URL must be reachable from the browser.
     /// Change notifications do not apply; assign a new instance to reload.
     /// </summary>

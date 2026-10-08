@@ -149,10 +149,10 @@ namespace IgniteUI.Blazor.Controls
 
         internal static object? CreateInstance(string typeName)
         {
-            return CreateInstance<object>(typeName);
+            return CreateInstance<object, object>(typeName);
         }
 
-        internal static object? CreateInstance<T>(string typeName)
+        internal static object? CreateInstance<TValue, TItem>(string typeName)
         {
             switch (typeName)
             {
@@ -212,10 +212,10 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbCheckboxChangeEventArgsDetail();
                 case "ComboChangeEventArgs":
                 case "WebComboChangeEventArgs":
-                    return new IgbComboChangeEventArgs<T>();
+                    return new IgbComboChangeEventArgs<TValue, TItem>();
                 case "ComboChangeEventArgsDetail":
                 case "WebComboChangeEventArgsDetail":
-                    return new IgbComboChangeEventArgsDetail<T>();
+                    return new IgbComboChangeEventArgsDetail<TValue, TItem>();
                 case "ComponentBoolValueChangedEventArgs":
                 case "WebComponentBoolValueChangedEventArgs":
                     return new IgbComponentBoolValueChangedEventArgs();

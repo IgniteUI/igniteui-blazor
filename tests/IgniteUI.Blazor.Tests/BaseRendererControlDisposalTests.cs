@@ -167,7 +167,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
     {
         Interop.PrimeReady();
         var data = new ObservableCollection<Row>();
-        var cut = Render<IgbCombo<Row>>(ps => ps.Add(c => c.Data, data));
+        var cut = Render<IgbCombo<Row, Row>>(ps => ps.Add(c => c.Data, data));
         var id = Interop.ContainerIdOf(cut);
 
         // The flush is posted through a thread-pool work item, so holding the pool leaves one
@@ -198,7 +198,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
     {
         Interop.PrimeReady();
         var data = new ObservableCollection<Row>();
-        var cut = Render<IgbCombo<Row>>(ps => ps.Add(c => c.Data, data));
+        var cut = Render<IgbCombo<Row, Row>>(ps => ps.Add(c => c.Data, data));
         var id = Interop.ContainerIdOf(cut);
 
         // A producer that does not know the component is going away, so it keeps reaching the

@@ -913,16 +913,30 @@ namespace IgniteUI.Blazor.Controls
             return ConvertReturnValue<object>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
         }
 
-        internal object? ConvertReturnValue<T>(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        internal object? ConvertReturnValue<TValue>(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             EnsureValid();
             if (CurrParent is BaseRendererElement)
             {
-                return ((BaseRendererElement)CurrParent).ConvertReturnValue<T>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((BaseRendererElement)CurrParent).ConvertReturnValue<TValue, object>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
             else if (CurrParent is BaseRendererControl)
             {
-                return ((BaseRendererControl)CurrParent).ConvertReturnValue<T>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((BaseRendererControl)CurrParent).ConvertReturnValue<TValue, object>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+            }
+            return null;
+        }
+
+        internal object? ConvertReturnValue<TValue, TItem>(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            EnsureValid();
+            if (CurrParent is BaseRendererElement)
+            {
+                return ((BaseRendererElement)CurrParent).ConvertReturnValue<TValue, TItem>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+            }
+            else if (CurrParent is BaseRendererControl)
+            {
+                return ((BaseRendererControl)CurrParent).ConvertReturnValue<TValue, TItem>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
             return null;
         }

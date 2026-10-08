@@ -34,7 +34,9 @@ public class ScriptPropTests : BlazorComponentTestBase
             {
                 continue;
             }
-            var closed = type.IsGenericTypeDefinition ? type.MakeGenericType(typeof(object)) : type;
+            var closed = type.IsGenericTypeDefinition
+                ? type.MakeGenericType([.. Enumerable.Repeat(typeof(object), type.GetGenericArguments().Length)])
+                : type;
             if (ScriptPropsOf(closed).Any())
             {
                 data.Add(closed);

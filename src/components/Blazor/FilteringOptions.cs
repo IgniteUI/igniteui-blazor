@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Filtering options for the <see cref="IgbCombo{T}"/> component.
+    /// Filtering options for the <see cref="IgbCombo{TValue, TItem}"/> component.
     /// </summary>
     public partial class IgbFilteringOptions : BaseRendererElement
     {

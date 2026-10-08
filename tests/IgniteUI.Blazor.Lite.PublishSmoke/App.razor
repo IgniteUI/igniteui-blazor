@@ -29,7 +29,7 @@
 @* Data source path: reflects over SmokeDataItem, which is preserved via the
    documented DynamicallyAccessedMembers pattern from docs/TRIMMING.md. *@
 <section id="combo-section">
-    <IgbCombo T="SmokeDataItem" Data="_items" ValueKey="Id" DisplayKey="Name" Label="Smoke combo"></IgbCombo>
+    <IgbCombo TValue="string" TItem="SmokeDataItem" Data="@_items" ValueKey="Id" DisplayKey="Name" Label="Smoke combo"></IgbCombo>
 </section>
 
 @* Event payload path: Change materializes IgbDateRangeValue from the event detail. *@

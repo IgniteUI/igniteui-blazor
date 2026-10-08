@@ -3,20 +3,20 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbCombo{T}.Change"/> event.
+    /// Event arguments for the <see cref="IgbCombo{TValue, TItem}.Change"/> event.
     /// </summary>
     public partial class IgbComboChangeEventArgs : BaseRendererElement
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComboChangeEventArgs"; } }
 
-        private IgbComboChangeEventArgsDetail<object> _detail = new();
+        private IgbComboChangeEventArgsDetail<object, object> _detail = new();
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
         /// </summary>
         [Parameter]
-        public IgbComboChangeEventArgsDetail<object> Detail
+        public IgbComboChangeEventArgsDetail<object, object> Detail
         {
             get { return this._detail; }
             set
@@ -59,7 +59,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<object>(detailObj, "ComboChangeEventArgsDetail", true) is IgbComboChangeEventArgsDetail<object> detail)
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<object>(detailObj, "ComboChangeEventArgsDetail", true) is IgbComboChangeEventArgsDetail<object, object> detail)
             { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
@@ -67,17 +67,17 @@ namespace IgniteUI.Blazor.Controls
     }
 
     /// <summary>
-    /// Event arguments for the <see cref="IgbCombo{T}.Change"/> event.
+    /// Event arguments for the <see cref="IgbCombo{TValue, TItem}.Change"/> event.
     /// </summary>
-    public partial class IgbComboChangeEventArgs<T> : IgbComboChangeEventArgs
+    public partial class IgbComboChangeEventArgs<TValue, TItem> : IgbComboChangeEventArgs
     {
-        private IgbComboChangeEventArgsDetail<T> _detail = new();
+        private IgbComboChangeEventArgsDetail<TValue, TItem> _detail = new();
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
         /// </summary>
         [Parameter]
-        public new IgbComboChangeEventArgsDetail<T> Detail
+        public new IgbComboChangeEventArgsDetail<TValue, TItem> Detail
         {
             get { return this._detail; }
             set
@@ -102,7 +102,7 @@ namespace IgniteUI.Blazor.Controls
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<T>(detailObj, "ComboChangeEventArgsDetail", true) is IgbComboChangeEventArgsDetail<T> detail)
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<TValue, TItem>(detailObj, "ComboChangeEventArgsDetail", true) is IgbComboChangeEventArgsDetail<TValue, TItem> detail)
             { this.Detail = detail; }
 
             this.SuppressParentNotify = false;

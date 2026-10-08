@@ -1898,7 +1898,13 @@ namespace IgniteUI.Blazor.Controls
         {
             return ConvertReturnValue<object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
         }
-        internal object? ConvertReturnValue<T>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+
+        internal object? ConvertReturnValue<TValue>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            return ConvertReturnValue<TValue, object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+
+        internal object? ConvertReturnValue<TValue, TItem>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             try
             {
@@ -2025,7 +2031,7 @@ namespace IgniteUI.Blazor.Controls
                                 for (var i = 0; i < arr.GetArrayLength(); i++)
                                 {
                                     var item = arr[i];
-                                    var cItem = ConvertReturnValue<T>(item);
+                                    var cItem = ConvertReturnValue<TValue>(item);
                                     ret[i] = cItem;
                                 }
                                 return ret;
@@ -2060,7 +2066,7 @@ namespace IgniteUI.Blazor.Controls
                                 object? o = null;
                                 if (type != null)
                                 {
-                                    o = MarshalByValueFactory.CreateInstance<T>(type);
+                                    o = MarshalByValueFactory.CreateInstance<TValue, TItem>(type);
                                 }
                                 if (o != null)
                                 {
@@ -2848,12 +2854,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T[]? ReturnToObjectArray<T>(object? val)
+        internal T[] ReturnToObjectArray<T>(object? val)
         {
             return ReturnToObjectArray<T>(val, null);
         }
 
-        internal T[]? ReturnToObjectArray<T>(object? val, string? typeGuess)
+        internal T[] ReturnToObjectArray<T>(object? val, string? typeGuess)
         {
             // Use transformArrays=true so that array elements with uuid/name refs are resolved
             // to their actual data-source objects before we attempt to cast them.
@@ -2861,7 +2867,7 @@ namespace IgniteUI.Blazor.Controls
 
             if (val == null)
             {
-                return null;
+                return Array.Empty<T>();
             }
             if (val is T[] tArr)
             {
@@ -2877,12 +2883,12 @@ namespace IgniteUI.Blazor.Controls
                 var stringVal = val.ToString();
                 if (stringVal == null)
                 {
-                    return null;
+                    return Array.Empty<T>();
                 }
                 var arr = JsonSerializer.Deserialize(stringVal, SerializerContext.DictionaryStringObjectArray);
                 if (arr == null)
                 {
-                    return null;
+                    return Array.Empty<T>();
                 }
                 T[] ret = new T[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
@@ -2900,7 +2906,7 @@ namespace IgniteUI.Blazor.Controls
             }
             catch (Exception)
             {
-                return null;
+                return Array.Empty<T>();
             }
         }
 

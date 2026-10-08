@@ -21,7 +21,7 @@ public class InteropThreadingTests : BlazorComponentTestBase
     {
         Interop.PrimeReady();
         var data = new ObservableCollection<Row>();
-        var cut = Render<IgbCombo<Row>>(ps => ps.Add(c => c.Data, data));
+        var cut = Render<IgbCombo<Row, Row>>(ps => ps.Add(c => c.Data, data));
 
         // One writer, so the collection itself is never used concurrently: only the component's
         // queue sees two threads - these change notifications and the renderer's flush. Filling
