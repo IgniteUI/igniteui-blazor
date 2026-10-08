@@ -18,7 +18,10 @@ public static class DateTimeInputTests
             TValue max)
         {
             InteropContract = new ComponentContract<IgbDateTimeInput<TValue>>()
-            .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: currentValue)
+            // Dates arrive wrapped as {retType: 'date'} and null as {retType: 'object', value: null}, both returned and
+            // as event details. Bare values here would skip the unwrapping and hide a culture-formatted or MinValue read.
+            .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+                returns: InteropReturn.Date(new DateTime(2026, 7, 4, 12, 30, 0, DateTimeKind.Utc)), expect: currentValue)
             .Method(c => c.StepUpAsync(DatePart.Month, 2), c => c.StepUp(DatePart.Month, 2), "stepUp", args: ["month", 2.0], types: ["Json", "Number"])
             .Method(c => c.StepDownAsync(DatePart.Hours, 3), c => c.StepDown(DatePart.Hours, 3), "stepDown", args: ["hours", 3.0], types: ["Json", "Number"])
             .Method(c => c.ClearAsync(), c => c.Clear(), "clear")
@@ -35,13 +38,13 @@ public static class DateTimeInputTests
             .Method(c => c.SetCustomValidityAsync("custom message"), c => c.SetCustomValidity("custom message"), "setCustomValidity",
                 args: ["custom message"], types: ["String"])
             .Event(c => c.Change,
-                argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+                argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
                 assert: args => assertChangedValue(args.Detail))
             .Event(c => c.Change,
-                argsJson: """{"detail": null}""",
+                argsJson: """{"detail": {"retType": "object", "type": "", "value": null}}""",
                 assert: args => assertClearedValue(args.Detail))
             .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
-                argsJson: """{"detail": "2026-01-02T03:04:05.000Z"}""",
+                argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
                 expect: changedValue)
             .Event(c => c.InputOcurred,
                 argsJson: """{"detail": "typed text"}""", assert: args => Assert.Equal("typed text", args.Detail))
@@ -211,6 +214,9 @@ public static class DateTimeInputTests
                 new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 new DateTime(2030, 1, 1, 0, 0, 0, DateTimeKind.Utc))
         {
+            // A cleared input returns null wrapped as {retType: 'object', value: null}.
+            InteropContract.Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+                returns: InteropReturn.Object("", "null"), expect: null);
         }
     }
 
@@ -218,17 +224,20 @@ public static class DateTimeInputTests
     {
         public DateTimeInputStringTests()
             : base(
-                "2026-07-04T12:30:00.000Z",
-                "2026-01-02T03:04:05.000Z",
+                new DateTime(2026, 7, 4, 12, 30, 0, DateTimeKind.Utc).ToString("o"),
+                new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToString("o"),
                 actual =>
                 {
-                    Assert.Equal("2026-01-02T03:04:05.000Z", actual);
+                    Assert.Equal(new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).ToString("o"), actual);
                 },
                 Assert.Null,
                 "2026-03-04T08:00:00.000Z",
                 "2020-01-01T00:00:00.000Z",
                 "2030-01-01T00:00:00.000Z")
         {
+            // A cleared input returns null wrapped as {retType: 'object', value: null}.
+            InteropContract.Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+                returns: InteropReturn.Object("", "null"), expect: null);
         }
     }
 }

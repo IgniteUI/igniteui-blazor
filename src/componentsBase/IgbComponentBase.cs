@@ -3059,19 +3059,26 @@ namespace IgniteUI.Blazor.Controls
             }
             if (GenericType == typeof(DateTime))
             {
-                return (TValue)(object)ReturnToDate(detailObj);
+                // A cleared value crosses as {retType: 'object', value: null}, which unwraps to null; ReturnToDate would
+                // read that as MinValue, the empty state of a non-nullable date only.
+                var unwrappedDate = ConvertReturnValue(detailObj);
+                return unwrappedDate is null ? default : (TValue)(object)ReturnToDate(unwrappedDate, tryConvertValue: false);
             }
             if (GenericType == typeof(string))
             {
                 // A date crosses the wire wrapped as {retType: 'date'}; unwrap it first, or ToString formats it in the
                 // current culture.
                 var unwrapped = detailObj is DateTime ? detailObj : ConvertReturnValue(detailObj);
+                if (unwrapped is null)
+                {
+                    return default;
+                }
                 if (unwrapped is DateTime dateTime)
                 {
                     return (TValue)(object)DateToString(dateTime);
                 }
 
-                return (TValue)(object)(unwrapped?.ToString() ?? string.Empty);
+                return (TValue)(object)(unwrapped.ToString() ?? string.Empty);
             }
 
             var value = ConvertReturnValue<TValue>(detailObj);

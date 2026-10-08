@@ -32,8 +32,8 @@ public static class DatePickerTests
             .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
             .Method(c => c.SetCustomValidityAsync("Please choose a valid date"), c => c.SetCustomValidity("Please choose a valid date"),
                 "setCustomValidity", args: ["Please choose a valid date"], types: ["String"])
-            // Dates arrive wrapped as {retType: 'date'}, both returned and as event details. A plain string here would
-            // pass through a string TValue untouched and hide a culture-formatted read.
+            // Dates arrive wrapped as {retType: 'date'} and null as {retType: 'object', value: null}, both returned and
+            // as event details. Bare values here would skip the unwrapping and hide a culture-formatted or MinValue read.
             .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
                 returns: InteropReturn.Date(new DateTime(2026, 3, 15, 9, 30, 0, DateTimeKind.Utc)), expect: currentValue)
             .Event(c => c.Opening)
@@ -44,7 +44,7 @@ public static class DatePickerTests
                 argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
                 assert: args => assertChangedValue(args.Detail))
             .Event(c => c.Change,
-                argsJson: """{"detail": null}""",
+                argsJson: """{"detail": {"retType": "object", "type": "", "value": null}}""",
                 assert: args => assertClearedValue(args.Detail))
             .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
                 argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
@@ -53,7 +53,7 @@ public static class DatePickerTests
                 argsJson: """{"detail": {"retType": "date", "value": "2026-01-02T03:04:05.000Z"}}""",
                 assert: args => assertChangedValue(args.Detail))
             .Event(c => c.Input,
-                argsJson: """{"detail": null}""",
+                argsJson: """{"detail": {"retType": "object", "type": "", "value": null}}""",
                 assert: args => assertClearedValue(args.Detail))
             .Prop(c => c.Open, true)
             .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
@@ -184,6 +184,9 @@ public static class DatePickerTests
         {
             // A nullable date's empty state is null, so MinValue is sent as a date like any other.
             InteropContract.Prop(c => c.Value, DateTime.MinValue);
+            // A cleared picker returns null wrapped as {retType: 'object', value: null}.
+            InteropContract.Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+                returns: InteropReturn.Object("", "null"), expect: null);
         }
     }
 
@@ -203,6 +206,9 @@ public static class DatePickerTests
                 "2026-01-01",
                 "2026-12-31")
         {
+            // A cleared picker returns null wrapped as {retType: 'object', value: null}.
+            InteropContract.Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+                returns: InteropReturn.Object("", "null"), expect: null);
         }
     }
 }
