@@ -180,6 +180,8 @@ public static class DatePickerTests
                 new DateTime(2026, 1, 1),
                 new DateTime(2026, 12, 31))
         {
+            // A nullable date's empty state is null, so MinValue is sent as a date like any other.
+            InteropContract.Prop(c => c.Value, DateTime.MinValue);
         }
     }
 

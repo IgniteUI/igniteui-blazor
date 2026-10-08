@@ -184,6 +184,11 @@ public static class DateRangePickerTests
                 c => c.Value,
                 new IgbDateRangeValue<DateTime?> { Start = null, End = null },
                 wire: new JsonSubset("""{"start": null, "end": null}"""));
+            // A nullable date's empty state is null, so MinValue is sent as a date like any other.
+            InteropContract.Prop(
+                c => c.Value,
+                new IgbDateRangeValue<DateTime?> { Start = DateTime.MinValue, End = null },
+                wire: new JsonSubset("""{"start": "0001-01-01T00:00:00.0000000", "end": null}"""));
         }
 
         [Fact]

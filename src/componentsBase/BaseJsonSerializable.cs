@@ -999,7 +999,8 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="value"></param>
         internal void AddGenericValue<TValue>(RendererSerializer ser, string propName, TValue? value)
         {
-            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            // Only a non-nullable date has a non-null empty state, its default DateTime.MinValue; 0 or false is a real radio value.
+            if (value is null || (value is DateTime && EqualityComparer<TValue>.Default.Equals(value, default)))
             {
                 ser.AddStringProp(propName, null);
             }
@@ -1010,6 +1011,10 @@ namespace IgniteUI.Blazor.Controls
             else if (value is string dateString)
             {
                 ser.AddStringProp(propName, dateString);
+            }
+            else
+            {
+                ser.AddStringProp(propName, value.ToString());
             }
         }
 

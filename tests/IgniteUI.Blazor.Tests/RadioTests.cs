@@ -176,6 +176,48 @@ public sealed class RadioIntTests : RadioTests<int>
     }
 }
 
+/// <summary>
+/// A value type's default is a real option value: without these, the first option of a 0-based list or the
+/// "No" of a yes/no group reaches the element with no value and cannot be pre-selected.
+/// </summary>
+public class RadioDefaultValueTests : BlazorComponentTestBase
+{
+    [Fact]
+    public void Radio_Value_Zero_IsStringified()
+    {
+        var cut = Render<IgbRadio<int>>(parameters =>
+            parameters.Add(p => p.Value, 0));
+
+        Assert.Equal("0", cut.Find("igc-radio").GetAttribute("value"));
+    }
+
+    [Fact]
+    public void Radio_Value_False_IsStringified()
+    {
+        var cut = Render<IgbRadio<bool>>(parameters =>
+            parameters.Add(p => p.Value, false));
+
+        Assert.Equal("False", cut.Find("igc-radio").GetAttribute("value"));
+    }
+
+    [Fact]
+    public void RadioGroup_Value_Zero_RendersAttribute()
+    {
+        var cut = Render<IgbRadioGroup<int>>(parameters =>
+            parameters.Add(p => p.Value, 0));
+
+        Assert.Equal("0", cut.Find("igc-radio-group").GetAttribute("value"));
+    }
+
+    [Fact]
+    public void RadioChangeDetail_Value_Zero_IsSerialized()
+    {
+        var detail = new IgbRadioChangeEventArgsDetail<int> { Value = 0 };
+
+        Assert.Contains("\"value\":\"0\"", detail.Serialize());
+    }
+}
+
 public abstract class RadioGroupTests<TValue> : ComponentWithContractTestBase<IgbRadioGroup<TValue>>
 {
     private readonly TValue _value;
