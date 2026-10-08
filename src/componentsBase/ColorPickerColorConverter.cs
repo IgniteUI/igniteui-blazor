@@ -5,6 +5,37 @@ namespace IgniteUI.Blazor.Controls
 {
     internal static class ColorPickerColorConverter
     {
+        /// <summary>
+        /// Converts the element's value to <typeparamref name="TValue"/>. A string passes through unchanged, so a
+        /// cleared picker reports <c>""</c> as the element does; for a color, an empty value is <c>null</c> or
+        /// <see cref="Color.Empty"/>.
+        /// </summary>
+        internal static TValue? FromCss<TValue>(string? value)
+        {
+            if (typeof(TValue) == typeof(string))
+            {
+                return (TValue?)(object?)value;
+            }
+
+            return string.IsNullOrWhiteSpace(value) ? default : (TValue)(object)Parse(value);
+        }
+
+        /// <summary>
+        /// Converts <typeparamref name="TValue"/> to the element's value. <see cref="Color.Empty"/> clears the element,
+        /// mirroring <see cref="FromCss{TValue}"/>.
+        /// </summary>
+        internal static string? ToCss<TValue>(TValue? value)
+        {
+            return value switch
+            {
+                null => null,
+                string colorString => colorString,
+                Color { IsEmpty: true } => null,
+                Color color => ToCssColor(color),
+                _ => throw new InvalidOperationException($"Unsupported color value type '{value.GetType()}'.")
+            };
+        }
+
         internal static string ToCssColor(Color color)
         {
             return $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
@@ -86,7 +117,10 @@ namespace IgniteUI.Blazor.Controls
                 _ => (chroma, 0d, secondary)
             };
 
-            return Color.FromArgb(ParseAlpha(parts, 3), ToByte(red + match), ToByte(green + match), ToByte(blue + match));
+            return Color.FromArgb(ParseAlpha(parts, 3), Channel(red + match), Channel(green + match), Channel(blue + match));
+
+            // The arithmetic can land a hair outside [0, 1], e.g. -8.7e-18 for hsl(0 100% 1%).
+            static byte Channel(double value) => ToByte(Math.Clamp(value, 0d, 1d));
         }
 
         private static string[] GetFunctionParts(string value, string name)
@@ -148,7 +182,7 @@ namespace IgniteUI.Blazor.Controls
         {
             if (value < 0d || value > 1d)
             {
-                throw new FormatException($"'{value}' is outside the alpha range.");
+                throw new FormatException($"'{value}' is outside the [0, 1] range.");
             }
 
             return (byte)Math.Round(value * byte.MaxValue, MidpointRounding.AwayFromZero);

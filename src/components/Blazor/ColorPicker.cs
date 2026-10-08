@@ -54,43 +54,13 @@ namespace IgniteUI.Blazor.Controls
 
         private TValue? _value;
 
-        private TValue? ConvertToColorValue(object? value)
-        {
-            var colorValue = value as string ?? ReturnToString(value);
-            if (string.IsNullOrWhiteSpace(colorValue))
-            {
-                if (Nullable.GetUnderlyingType(typeof(TValue)) is not null)
-                {
-                    return default;
-                }
-
-                throw new FormatException("The color picker returned an empty value for a non-nullable color.");
-            }
-
-            if (genericType == typeof(string))
-            {
-                return (TValue)(object)colorValue;
-            }
-
-            return (TValue)(object)ColorPickerColorConverter.Parse(colorValue);
-        }
-
-        private string? ConvertToCssColor(TValue? value)
-        {
-            return value switch
-            {
-                null => null,
-                string colorString => colorString,
-                Color color => ColorPickerColorConverter.ToCssColor(color),
-                _ => throw new InvalidOperationException($"Unsupported {GetType()} value type '{value.GetType()}'.")
-            };
-        }
-
         private static bool ColorValuesEqual(TValue? left, TValue? right)
         {
             if (left is Color leftColor && right is Color rightColor)
             {
-                return leftColor.ToArgb() == rightColor.ToArgb();
+                // Color's own equality also compares names, so Color.Red would differ from red parsed back from the
+                // element. ToArgb alone cannot tell Color.Empty, which clears the element, from transparent black.
+                return leftColor.IsEmpty == rightColor.IsEmpty && leftColor.ToArgb() == rightColor.ToArgb();
             }
 
             return EqualityComparer<TValue?>.Default.Equals(left, right);
@@ -121,7 +91,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
-            return ConvertToColorValue(iv);
+            return ColorPickerColorConverter.FromCss<TValue>(ReturnToString(iv));
         }
 
         /// <summary>
@@ -130,7 +100,7 @@ namespace IgniteUI.Blazor.Controls
         public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
-            return ConvertToColorValue(iv);
+            return ColorPickerColorConverter.FromCss<TValue>(ReturnToString(iv));
         }
         private string? _label;
 
@@ -467,7 +437,7 @@ namespace IgniteUI.Blazor.Controls
                         _change = value;
                         this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = ConvertToColorValue(args.Detail);
+                            var newValueValue = ColorPickerColorConverter.FromCss<TValue>(args.Detail);
 
                             {
                                 if (UseDirectRender)
@@ -890,7 +860,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", ConvertToCssColor(this._value)); }
+            { ser.AddStringProp("value", ColorPickerColorConverter.ToCss(this._value)); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
             if (IsPropDirty("Name"))
