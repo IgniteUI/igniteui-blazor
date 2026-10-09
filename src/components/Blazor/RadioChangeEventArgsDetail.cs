@@ -3,6 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The payload of the <see cref="IgbRadio{TValue}.Change"/> and <see cref="IgbRadioGroup{TValue}.Change"/> events.
     /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the radio or radio group that raises the event.</typeparam>
     public partial class IgbRadioChangeEventArgsDetail<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />

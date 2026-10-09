@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for <see cref="IgbColorPicker{TValue}"/> events that carry a color.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbColorPicker{TValue}"/> that raises the event.</typeparam>
     public partial class IgbColorPickerValueEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />

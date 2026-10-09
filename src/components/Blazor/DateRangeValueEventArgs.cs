@@ -3,6 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for the <see cref="IgbDateRangePicker{TValue}"/> events that carry a date range payload.
     /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbDateRangePicker{TValue}"/> that raises the event.</typeparam>
     public partial class IgbDateRangeValueEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />

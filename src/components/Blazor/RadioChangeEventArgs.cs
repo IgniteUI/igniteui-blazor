@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for the <see cref="IgbRadio{TValue}.Change"/> and <see cref="IgbRadioGroup{TValue}.Change"/>
     /// events, raised when the checked state of a radio button changes.
     /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the radio or radio group that raises the event.</typeparam>
     public partial class IgbRadioChangeEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />

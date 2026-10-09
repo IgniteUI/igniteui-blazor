@@ -12,6 +12,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for component events that carry a date payload.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the date component that raises the event.</typeparam>
     public partial class IgbComponentDateValueChangedEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />

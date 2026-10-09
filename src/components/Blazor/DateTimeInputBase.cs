@@ -5,6 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class for <see cref="IgbDateTimeInput{TValue}"/>.
     /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbDateTimeInput{TValue}"/>.</typeparam>
     public partial class IgbDateTimeInputBase<TValue> : IgbComponentBase
     {
         /// <inheritdoc />

@@ -12,6 +12,7 @@ namespace IgniteUI.Blazor.Controls
     /// The Combo component features case-sensitive filtering, grouping, complex data binding,
     /// dynamic addition of values and more.
     /// </summary>
+    /// <typeparam name="T">The type of the selected values: the <c>ValueKey</c> field of the data items, or the items themselves when <c>ValueKey</c> is not set.</typeparam>
     public partial class IgbCombo<T> : IgbBaseComboBox, IDataSourceNotifications
     {
         /// <inheritdoc />

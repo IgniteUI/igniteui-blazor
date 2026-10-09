@@ -8,6 +8,7 @@ namespace IgniteUI.Blazor.Controls
     }
 
     /// <summary>Event arguments carrying a typed numeric payload.</summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the component that raises the event.</typeparam>
     public partial class IgbNumberEventArgs<TValue> : BaseJsonSerializable
     {
         private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);

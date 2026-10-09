@@ -5,6 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A container for a group of select items.
     /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the containing <see cref="IgbSelect{TValue}"/>, from which it is inferred.</typeparam>
     [CascadingTypeParameter(nameof(TValue))]
     public partial class IgbSelectGroup<TValue> : IgbComponentBase
     {

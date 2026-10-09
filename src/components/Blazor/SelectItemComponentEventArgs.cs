@@ -4,6 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for the <see cref="IgbSelect{TValue}.Change"/> event, carrying the
     /// <see cref="IgbSelectItem{TValue}"/> instance the event applies to.
     /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbSelect{TValue}"/> that raises the event.</typeparam>
     public partial class IgbSelectItemComponentEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
