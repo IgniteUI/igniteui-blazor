@@ -4,31 +4,22 @@ namespace IgniteUI.Blazor.Controls
     /// Event arguments for component events that carry a date payload.
     /// The meaning of Detail depends on the event that raises it.
     /// </summary>
-    public partial class IgbComponentDateValueChangedEventArgs : IgbComponentDateValueChangedEventArgs<DateTime>
-    {
-    }
-
-    /// <summary>
-    /// Event arguments for component events that carry a date payload.
-    /// The meaning of <see cref="Detail"/> depends on the event that raises it.
-    /// </summary>
-    /// <typeparam name="TValue">The <c>TValue</c> of the date component that raises the event.</typeparam>
-    public partial class IgbComponentDateValueChangedEventArgs<TValue> : BaseJsonSerializable
+    public partial class IgbComponentDateValueChangedEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComponentDateValueChangedEventArgs"; } }
 
-        private protected TValue? _detail = default!;
+        private DateTime? _detail = default!;
 
         /// <summary>
         /// The date value carried by the event.
         /// </summary>
-        public TValue? Detail
+        public DateTime? Detail
         {
             get { return this._detail; }
             set
             {
-                if (!EqualityComparer<TValue>.Default.Equals(this._detail, value) || !IsPropDirty("Detail"))
+                if (!EqualityComparer<DateTime?>.Default.Equals(this._detail, value) || !IsPropDirty("Detail"))
                 {
                     MarkPropDirty("Detail");
                 }
@@ -64,11 +55,52 @@ namespace IgniteUI.Blazor.Controls
 
             if (args != null && args.TryGetValue("detail", out var detailObj))
             {
+                this.Detail = GenericValueFromEventJson<DateTime>(detailObj);
+            }
+
+            this.SuppressParentNotify = false;
+        }
+    }
+
+    /// <summary>
+    /// Event arguments for component events that carry a date payload.
+    /// The meaning of <see cref="Detail"/> depends on the event that raises it.
+    /// </summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the date component that raises the event.</typeparam>
+    public partial class IgbComponentDateValueChangedEventArgs<TValue> : IgbComponentDateValueChangedEventArgs
+    {
+
+        private protected TValue? _detail = default!;
+
+        /// <summary>
+        /// The date value carried by the event.
+        /// </summary>
+        public new TValue? Detail
+        {
+            get { return this._detail; }
+            set
+            {
+                if (!EqualityComparer<TValue>.Default.Equals(this._detail, value) || !IsPropDirty("Detail"))
+                {
+                    MarkPropDirty("Detail");
+                }
+                this._detail = value;
+
+            }
+        }
+
+        /// <inheritdoc />
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args != null && args.TryGetValue("detail", out var detailObj))
+            {
                 this.Detail = GenericValueFromEventJson<TValue>(detailObj);
             }
 
             this.SuppressParentNotify = false;
         }
-
     }
 }
