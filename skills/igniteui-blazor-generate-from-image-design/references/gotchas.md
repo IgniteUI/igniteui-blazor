@@ -29,6 +29,25 @@ Mixing literal text with `@(...)` in one attribute on a component fails the buil
 @code { void NavigateToDashboard() => NavigationManager.NavigateTo("/dashboard"); }
 ```
 
+### CS0103 — a bare string `Value` on `IgbSelectItem` / `IgbRadio`
+
+In `IgniteUI.Blazor.Lite` their `Value` is generic (`TValue`, which must match the parent `IgbSelect` / `IgbRadioGroup`), so the attribute is a C# expression and `Value="apple"` reads as an identifier. Enum members, numbers and loop variables (`Value="Plan.Pro"`, `Value="1"`, `Value="item.Id"`) need no quoting; only a fixed string does.
+
+```razor
+@* ❌ *@ <IgbSelectItem Value="apple">Apple</IgbSelectItem>
+@* ✅ *@ <IgbSelectItem Value="@("apple")">Apple</IgbSelectItem>
+```
+
+### CS1503 / RZ10001 — `TValue` on a value control's event handler
+
+In `IgniteUI.Blazor.Lite` the value controls (Calendar, Color Picker, Date Picker, Date Range Picker, Date Time Input, Radio Group, Rating, Select, Slider) are generic over `TValue`. Razor infers it from `@bind-Value` or `Value`, but not through a method group, so a method handling a value event fails even next to `@bind-Value`, and a control with no value cannot infer it at all. Set `TValue`, or react with `@bind-Value:after`, which works in both packages.
+
+```razor
+@* ❌ *@ <IgbSlider @bind-Value="Volume" Change="OnVolumeChange" />
+@* ✅ *@ <IgbSlider TValue="double" @bind-Value="Volume" Change="OnVolumeChange" />
+@* ✅ *@ <IgbSlider @bind-Value="Volume" @bind-Value:after="OnVolumeChanged" />
+```
+
 ### BL0005 — setting parameters through `@ref`
 
 Assigning component parameters from `OnAfterRenderAsync` (`chart.Brushes = "…"`) raises *"Component parameter should not be set outside of its component"*. Pass them as inline markup attributes instead.
@@ -195,9 +214,9 @@ A font-icon `<span>` is `display: inline`, so `vertical-align` is ignored by the
 
 The parameter is `IconName`; `Name` is the framework's element identity on every component. Register the icon in `OnAfterRenderAsync(firstRender)` after `await EnsureReady()`, or nothing renders.
 
-### `Name` never groups or names a form field
+### Grouping radios: lowercase `name`
 
-`<IgbRadioGroup Name="plan">` does not group radios — being children of the group does, and the selection is the group's `@bind-Value`.
+Radios are mutually exclusive only when they share an HTML `name`: give every `IgbRadio` in a group the same lowercase `name`, and read the selection from the group's `@bind-Value`. In the full product `Name` is the framework's element identity and does not group them. In `IgniteUI.Blazor.Lite`, `Name` on `IgbRadioGroup` passes the name to its radios.
 
 ### `IgbAvatar` uses `Shape`
 

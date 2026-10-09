@@ -34,7 +34,16 @@ public class ScriptPropTests : BlazorComponentTestBase
             {
                 continue;
             }
-            var closed = type.IsGenericTypeDefinition ? type.MakeGenericType(typeof(object)) : type;
+            var closed = type.IsGenericTypeDefinition
+                ? type.MakeGenericType(type.Name[..type.Name.IndexOf('`')] switch
+                {
+                    // TODO: generic object fallback due to nameof(T<>) being C# 14 / .NET 10 only
+                    nameof(IgbCalendar<object>) or nameof(IgbDatePicker<object>) or nameof(IgbDateTimeInput<object>) or nameof(IgbDateRangePicker<object>) => typeof(DateTime),
+                    nameof(IgbSlider<object>) or nameof(IgbRating<object>) => typeof(double),
+                    nameof(IgbColorPicker<object>) or nameof(IgbSelect<object>) => typeof(string),
+                    _ => typeof(object)
+                })
+                : type;
             if (ScriptPropsOf(closed).Any())
             {
                 data.Add(closed);

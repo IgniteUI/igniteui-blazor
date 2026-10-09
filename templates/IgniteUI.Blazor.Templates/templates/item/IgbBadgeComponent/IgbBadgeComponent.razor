@@ -9,12 +9,12 @@
     <div class="control">
         <label>Variant</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
-                <IgbRadio Value="Primary">Primary</IgbRadio>
-                <IgbRadio Value="Info">Info</IgbRadio>
-                <IgbRadio Value="Success">Success</IgbRadio>
-                <IgbRadio Value="Warning">Warning</IgbRadio>
-                <IgbRadio Value="Danger">Danger</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Variant">
+                <IgbRadio Value="StyleVariant.Primary">Primary</IgbRadio>
+                <IgbRadio Value="StyleVariant.Info">Info</IgbRadio>
+                <IgbRadio Value="StyleVariant.Success">Success</IgbRadio>
+                <IgbRadio Value="StyleVariant.Warning">Warning</IgbRadio>
+                <IgbRadio Value="StyleVariant.Danger">Danger</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -22,9 +22,9 @@
     <div class="control">
         <label>Shape</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ShapeName">
-                <IgbRadio Value="Rounded">Rounded</IgbRadio>
-                <IgbRadio Value="Square">Square</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Shape">
+                <IgbRadio Value="BadgeShape.Rounded">Rounded</IgbRadio>
+                <IgbRadio Value="BadgeShape.Square">Square</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -46,7 +46,7 @@
     <IgbBadge Variant="Variant" Shape="Shape" Outlined="Outlined">NEW</IgbBadge>
 </div>
 
-<div class="state">Variant: @VariantName &nbsp;|&nbsp; Shape: @ShapeName &nbsp;|&nbsp; Outlined: @Outlined</div>
+<div class="state">Variant: @Variant &nbsp;|&nbsp; Shape: @Shape &nbsp;|&nbsp; Outlined: @Outlined</div>
 
 @code {
     /*
@@ -66,11 +66,9 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string VariantName { get; set; } = "Primary";
-    private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
+    private StyleVariant Variant { get; set; } = StyleVariant.Primary;
 
-    private string ShapeName { get; set; } = "Rounded";
-    private BadgeShape Shape => Enum.Parse<BadgeShape>(ShapeName);
+    private BadgeShape Shape { get; set; } = BadgeShape.Rounded;
 
     private bool Outlined { get; set; }
 }

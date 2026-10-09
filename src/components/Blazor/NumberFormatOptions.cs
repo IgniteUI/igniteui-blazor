@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The options used to format numbers, mirroring the browser <c>Intl.NumberFormatOptions</c>.
-    /// Currently used for the thumb and tick label values of <see cref="IgbSlider"/> and <see cref="IgbRangeSlider"/>.
+    /// Currently used for the thumb and tick label values of <see cref="IgbSlider{TValue}"/> and <see cref="IgbRangeSlider"/>.
     /// </summary>
     public partial class IgbNumberFormatOptions : BaseJsonSerializable
     {

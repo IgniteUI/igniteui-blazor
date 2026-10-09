@@ -9,10 +9,10 @@
     <div class="control">
         <label>Tick orientation</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TickOrientationName">
-                <IgbRadio Value="Start">Start</IgbRadio>
-                <IgbRadio Value="End">End</IgbRadio>
-                <IgbRadio Value="Mirror">Mirror</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TickOrientation">
+                <IgbRadio Value="SliderTickOrientation.Start">Start</IgbRadio>
+                <IgbRadio Value="SliderTickOrientation.End">End</IgbRadio>
+                <IgbRadio Value="SliderTickOrientation.Mirror">Mirror</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -64,8 +64,7 @@
     private double Lower { get; set; } = 20;
     private double Upper { get; set; } = 70;
 
-    private string TickOrientationName { get; set; } = "End";
-    private SliderTickOrientation TickOrientation => Enum.Parse<SliderTickOrientation>(TickOrientationName);
+    private SliderTickOrientation TickOrientation { get; set; } = SliderTickOrientation.End;
 
     private bool DiscreteTrack { get; set; }
     private bool HideTooltip { get; set; }

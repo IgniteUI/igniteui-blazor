@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 namespace IgniteUI.Blazor.Controls
 {
 
-    public partial class IgbRating
+    public partial class IgbRating<TValue>
     {
         [Inject]
-        private ILogger<IgbRating>? Logger { get; set; }
+        private ILogger<IgbRating<TValue>>? Logger { get; set; }
 
         /// <inheritdoc />
         public override Task SetParametersAsync(ParameterView parameters)

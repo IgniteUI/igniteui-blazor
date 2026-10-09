@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Provides the module for the <see cref="IgbSelectGroup"/> child component of <see cref="IgbSelect"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
+    /// Provides the module for the <see cref="IgbSelectGroup{TValue}"/> child component of <see cref="IgbSelect{TValue}"/>. The parent handles its resources, so registering this module has no effect and is no longer required.
     /// </summary>
     [Obsolete("Registering IgbSelectGroupModule is no longer required, has no effect and can be safely removed.")]
     [IgbModule<IgbSelectGroupModule>]
