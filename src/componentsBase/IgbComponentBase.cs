@@ -947,6 +947,8 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        internal virtual Type? GenericType => null;
+
         void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
 
         internal void Serialize(SerializationContext context, string? propertyName = null)
@@ -1184,7 +1186,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             str += ",";
                         }
-                        str += values[i].ToString();
+                        str += values[i].ToString(CultureInfo.InvariantCulture);
                     }
                 }
                 if (argument is double[])
@@ -1196,7 +1198,7 @@ namespace IgniteUI.Blazor.Controls
                         {
                             str += ",";
                         }
-                        str += values[i].ToString();
+                        str += values[i].ToString(CultureInfo.InvariantCulture);
                     }
                 }
                 str += "]";
@@ -1999,7 +2001,7 @@ namespace IgniteUI.Blazor.Controls
                             }
                             else
                             {
-                                returnValue = (Object)double.Parse(((JsonElement)obj["value"]).ToString());
+                                returnValue = (Object)double.Parse(((JsonElement)obj["value"]).ToString(), CultureInfo.InvariantCulture);
                             }
                         }
                         else if ("string".Equals(retType))
@@ -2228,7 +2230,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine(val);
             if (val is String)
             {
-                return double.Parse((String)val);
+                return double.Parse((String)val, CultureInfo.InvariantCulture);
             }
             else if (val is IConvertible)
             {
@@ -2239,7 +2241,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 //Console.WriteLine(val);
                 var stringVal = val.ToString();
-                return stringVal != null ? Double.Parse(stringVal) : double.NaN;
+                return stringVal != null ? Double.Parse(stringVal, CultureInfo.InvariantCulture) : double.NaN;
             }
         }
 
@@ -2258,7 +2260,7 @@ namespace IgniteUI.Blazor.Controls
             //Console.WriteLine(val);
             if (val is String)
             {
-                return (long)double.Parse((String)val);
+                return (long)double.Parse((String)val, CultureInfo.InvariantCulture);
             }
             else if (val is IConvertible)
             {
@@ -2269,7 +2271,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 var stringVal = val.ToString();
                 //Console.WriteLine(val);
-                return stringVal != null ? (long)Double.Parse(stringVal) : Int64.MinValue;
+                return stringVal != null ? (long)Double.Parse(stringVal, CultureInfo.InvariantCulture) : Int64.MinValue;
             }
         }
 
@@ -2504,6 +2506,34 @@ namespace IgniteUI.Blazor.Controls
             {
                 w.WriteNumberValue((long)val);
             }
+            else if (val is byte byteValue)
+            {
+                w.WriteNumberValue(byteValue);
+            }
+            else if (val is sbyte sbyteValue)
+            {
+                w.WriteNumberValue(sbyteValue);
+            }
+            else if (val is ushort ushortValue)
+            {
+                w.WriteNumberValue(ushortValue);
+            }
+            else if (val is uint uintValue)
+            {
+                w.WriteNumberValue(uintValue);
+            }
+            else if (val is ulong ulongValue)
+            {
+                w.WriteNumberValue(ulongValue);
+            }
+            else if (val is float floatValue)
+            {
+                w.WriteNumberValue(floatValue);
+            }
+            else if (val is decimal decimalValue)
+            {
+                w.WriteNumberValue(decimalValue);
+            }
             else if (val is bool)
             {
                 w.WriteBooleanValue((bool)val);
@@ -2585,6 +2615,34 @@ namespace IgniteUI.Blazor.Controls
             else if (val is short)
             {
                 w.WriteNumber(propertyName, (long)val);
+            }
+            else if (val is byte byteValue)
+            {
+                w.WriteNumber(propertyName, byteValue);
+            }
+            else if (val is sbyte sbyteValue)
+            {
+                w.WriteNumber(propertyName, sbyteValue);
+            }
+            else if (val is ushort ushortValue)
+            {
+                w.WriteNumber(propertyName, ushortValue);
+            }
+            else if (val is uint uintValue)
+            {
+                w.WriteNumber(propertyName, uintValue);
+            }
+            else if (val is ulong ulongValue)
+            {
+                w.WriteNumber(propertyName, ulongValue);
+            }
+            else if (val is float floatValue)
+            {
+                w.WriteNumber(propertyName, floatValue);
+            }
+            else if (val is decimal decimalValue)
+            {
+                w.WriteNumber(propertyName, decimalValue);
             }
             else if (val is bool)
             {
@@ -2955,6 +3013,22 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        internal TValue? ConvertToNumericValue<TValue>(object? value, Type numericType)
+        {
+            if (value is null)
+            {
+                return default;
+            }
+
+            value = ConvertReturnValue(value) ?? value;
+            return (TValue?)Convert.ChangeType(value, numericType, CultureInfo.InvariantCulture);
+        }
+
+        internal void AddNumericValue<TValue>(RendererSerializer serializer, string propertyName, TValue? value)
+        {
+            serializer.AddPrimitiveProp(propertyName, value);
+        }
+
         internal int[]? ReturnToIntArray(object? val)
         {
             val = ConvertReturnValue(val);
@@ -2980,6 +3054,153 @@ namespace IgniteUI.Blazor.Controls
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Converts event json/invoke values to the specified type. Currently used mainly for DateTime/string conversion.
+        /// Note: If you are using this method you probably have a generic type component.
+        /// Make sure to have defined the <see cref="IgbComponentBase.GenericType"/>
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="detailObj"></param>
+        /// <returns></returns>
+        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj)
+        {
+            if (detailObj is null)
+            {
+                return default;
+            }
+
+            if (detailObj is TValue typedValue)
+            {
+                return typedValue;
+            }
+            if (detailObj.GetType() == GenericType)
+            {
+                return (TValue)detailObj;
+            }
+            if (GenericType == typeof(DateTime))
+            {
+                // A cleared value crosses as {retType: 'object', value: null}, which unwraps to null; ReturnToDate would
+                // read that as MinValue, the empty state of a non-nullable date only.
+                var unwrappedDate = ConvertReturnValue(detailObj);
+                return unwrappedDate is null ? default : (TValue)(object)ReturnToDate(unwrappedDate, tryConvertValue: false);
+            }
+            if (GenericType == typeof(string))
+            {
+                // A date crosses the wire wrapped as {retType: 'date'}; unwrap it first, or ToString formats it in the
+                // current culture.
+                var unwrapped = detailObj is DateTime ? detailObj : ConvertReturnValue(detailObj);
+                if (unwrapped is null)
+                {
+                    return default;
+                }
+                if (unwrapped is DateTime dateTime)
+                {
+                    return (TValue)(object)DateToString(dateTime);
+                }
+
+                return (TValue)(object)(unwrapped.ToString() ?? string.Empty);
+            }
+
+            var value = ConvertReturnValue<TValue>(detailObj);
+            if (value is null)
+            {
+                return default;
+            }
+            // An enum crosses as its name, which Convert.ChangeType cannot convert.
+            if (GenericType is { IsEnum: true } enumType)
+            {
+                return (TValue)Enum.Parse(enumType, Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty);
+            }
+
+            return (TValue)Convert.ChangeType(value, GenericType ?? typeof(TValue), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string array conversion.
+        /// </summary>
+        internal TValue[] ConvertToGenericValueArray<TValue>(object? value)
+        {
+            if (value == null)
+            {
+                return [];
+            }
+            else if (GenericType == typeof(DateTime))
+            {
+                if (value is System.Collections.IEnumerable values &&
+                    value is not string &&
+                    value is not System.Collections.IDictionary)
+                {
+                    return values.Cast<object?>()
+                        .Select(item => GenericValueFromEventJson<TValue>(item) ?? default!)
+                        .ToArray();
+                }
+
+                return ReturnToDateArray(value).Select(date => (TValue)(object)date).ToArray();
+            }
+            else if (GenericType == typeof(string))
+            {
+                value = ConvertReturnValue(value) ?? value;
+                if (value is System.Collections.IEnumerable values && value is not string)
+                {
+                    return values.Cast<object?>()
+                        .Select(item => GenericValueFromEventJson<TValue>(item) ?? default!)
+                        .ToArray();
+                }
+
+                return (ReturnToStringArray(value) ?? []).Select(item => (TValue)(object)item).ToArray();
+            }
+
+            return [];
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ser"></param>
+        /// <param name="propName"></param>
+        /// <param name="value"></param>
+        internal void AddGenericValue<TValue>(RendererSerializer ser, string propName, TValue? value)
+        {
+            // Only a non-nullable date has a non-null empty state, its default DateTime.MinValue; 0 or false is a real radio value.
+            if (value is null || (value is DateTime && EqualityComparer<TValue>.Default.Equals(value, default)))
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (value is DateTime dateTime)
+            {
+                ser.AddDateTimeProp(propName, dateTime);
+            }
+            else if (value is string dateString)
+            {
+                ser.AddStringProp(propName, dateString);
+            }
+            else
+            {
+                // Invariant, as GenericValueFromEventJson parses the value back.
+                ser.AddStringProp(propName, value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string array conversion.
+        /// </summary>
+        internal void AddGenericValueArray<TValue>(RendererSerializer ser, string propName, TValue[]? values)
+        {
+            if (values is null)
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (GenericType == typeof(DateTime))
+            {
+                ser.AddDateArrayProp(propName, values.Select(value => (DateTime)(object)value!).ToArray());
+            }
+            else if (GenericType == typeof(string))
+            {
+                ser.AddStringArrayProp(propName, values.Select(value => (string)(object)value!).ToArray());
             }
         }
 

@@ -9,10 +9,10 @@
     <div class="control">
         <label>Type</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="TypeName">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DisplayType">
                 @foreach (var type in Types)
                 {
-                    <IgbRadio Value="@type.ToString()">@type.ToString()</IgbRadio>
+                    <IgbRadio Value="type">@type</IgbRadio>
                 }
             </IgbRadioGroup>
         </div>
@@ -29,7 +29,7 @@
 </div>
 
 <div class="component-host">
-    <IgbInput @key="TypeName"
+    <IgbInput @key="DisplayType"
               class="demo-input"
               @bind-Value="Value"
               DisplayType="DisplayType"
@@ -77,18 +77,17 @@
 
     private string Value { get; set; } = string.Empty;
 
-    private string _typeName = "Text";
-    private string TypeName
+    private InputType _displayType = InputType.Text;
+    private InputType DisplayType
     {
-        get => _typeName;
+        get => _displayType;
         set
         {
-            if (_typeName == value) return;
-            _typeName = value;
+            if (_displayType == value) return;
+            _displayType = value;
             Value = string.Empty; // reset value; @key recreates the input, clearing validation state
         }
     }
-    private InputType DisplayType => Enum.Parse<InputType>(TypeName);
 
     private bool Outlined { get; set; }
     private bool Required { get; set; }

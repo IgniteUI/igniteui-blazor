@@ -97,7 +97,7 @@ public class BaseControlTests : BlazorComponentTestBase
     [Fact]
     public void Component_DefaultClass_Slider()
     {
-        var cut = Render<IgbSlider>();
+        var cut = Render<IgbSlider<double>>();
         var element = cut.Find("igc-slider");
         Assert.Equal("igb-web-slider", element.GetAttribute("class"));
     }
@@ -105,7 +105,7 @@ public class BaseControlTests : BlazorComponentTestBase
     [Fact]
     public void ReturnToDate_TimezoneLessValue_IsUtc()
     {
-        var result = Render<IgbCalendar>().Instance.ReturnToDate("0001-01-01T00:00:00.0000000");
+        var result = Render<IgbCalendar<DateTime>>().Instance.ReturnToDate("0001-01-01T00:00:00.0000000");
 
         Assert.Equal(DateTime.MinValue, result);
         Assert.Equal(DateTimeKind.Utc, result.Kind);
@@ -116,7 +116,7 @@ public class BaseControlTests : BlazorComponentTestBase
     {
         // A boxed JsonElement is what the deserialized event payload hands to ReturnToDate.
         var value = JsonDocument.Parse("\"2026-01-02T03:04:05+02:00\"").RootElement;
-        var result = Render<IgbCalendar>().Instance.ReturnToDate(value);
+        var result = Render<IgbCalendar<DateTime>>().Instance.ReturnToDate(value);
 
         Assert.Equal(new DateTime(2026, 1, 2, 1, 4, 5, DateTimeKind.Utc), result);
         Assert.Equal(DateTimeKind.Utc, result.Kind);
@@ -130,15 +130,15 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbBadge), "WebBadge")]
     [InlineData(typeof(IgbIcon), "WebIcon")]
     [InlineData(typeof(IgbChip), "WebChip")]
-    [InlineData(typeof(IgbRating), "WebRating")]
+    [InlineData(typeof(IgbRating<double>), "WebRating")]
     [InlineData(typeof(IgbDialog), "WebDialog")]
-    [InlineData(typeof(IgbSlider), "WebSlider")]
+    [InlineData(typeof(IgbSlider<double>), "WebSlider")]
     [InlineData(typeof(IgbLinearProgress), "WebLinearProgress")]
     [InlineData(typeof(IgbCircularProgress), "WebCircularProgress")]
     [InlineData(typeof(IgbSnackbar), "WebSnackbar")]
     [InlineData(typeof(IgbToast), "WebToast")]
-    [InlineData(typeof(IgbRadio), "WebRadio")]
-    [InlineData(typeof(IgbRadioGroup), "WebRadioGroup")]
+    [InlineData(typeof(IgbRadio<string>), "WebRadio")]
+    [InlineData(typeof(IgbRadioGroup<string>), "WebRadioGroup")]
     [InlineData(typeof(IgbInput), "WebInput")]
     [InlineData(typeof(IgbCard), "WebCard")]
     [InlineData(typeof(IgbTabs), "WebTabs")]
@@ -159,18 +159,18 @@ public class BaseControlTests : BlazorComponentTestBase
     [InlineData(typeof(IgbBadge))]
     [InlineData(typeof(IgbIcon))]
     [InlineData(typeof(IgbChip))]
-    [InlineData(typeof(IgbRating))]
+    [InlineData(typeof(IgbRating<double>))]
     [InlineData(typeof(IgbDialog))]
-    [InlineData(typeof(IgbSlider))]
+    [InlineData(typeof(IgbSlider<double>))]
     [InlineData(typeof(IgbLinearProgress))]
     [InlineData(typeof(IgbCircularProgress))]
     [InlineData(typeof(IgbSnackbar))]
     [InlineData(typeof(IgbToast))]
-    [InlineData(typeof(IgbRadio))]
-    [InlineData(typeof(IgbRadioGroup))]
+    [InlineData(typeof(IgbRadio<string>))]
+    [InlineData(typeof(IgbRadioGroup<string>))]
     [InlineData(typeof(IgbInput))]
     [InlineData(typeof(IgbCard))]
-    [InlineData(typeof(IgbSelect))]
+    [InlineData(typeof(IgbSelect<string>))]
     [InlineData(typeof(IgbTextarea))]
     public void AllComponents_InheritFromIgbComponentBase(System.Type componentType)
     {

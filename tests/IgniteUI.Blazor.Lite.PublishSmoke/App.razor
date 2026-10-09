@@ -34,7 +34,7 @@
 
 @* Event payload path: Change materializes IgbDateRangeValue from the event detail. *@
 <section id="daterange-section">
-    <IgbDateRangePicker Change="OnRangeChanged"></IgbDateRangePicker>
+    <IgbDateRangePicker TValue="DateTime" Change="OnRangeChanged"></IgbDateRangePicker>
     <p id="range-result">@_rangeResult</p>
 </section>
 
@@ -54,7 +54,7 @@
         new SmokeDataItem { Id = 3, Name = "Gamma" },
     };
 
-    private void OnRangeChanged(IgbDateRangeValueEventArgs args)
+    private void OnRangeChanged(IgbDateRangeValueEventArgs<DateTime> args)
     {
         var value = args.Detail;
         _rangeResult = value == null ? "no range selected" : $"{value.Start:d} - {value.End:d}";

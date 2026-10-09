@@ -10,12 +10,12 @@
         <div class="radio-group">
             <label>Title position</label>
             <div class="radio-group-container">
-                <IgbRadioGroup Alignment="ContentOrientation.Horizontal">
-                    <IgbRadio name="alignment" Value="top" Change="onTitlePositionChange">Top</IgbRadio>
-                    <IgbRadio name="alignment" Value="bottom" Change="onTitlePositionChange">Bottom</IgbRadio>
-                    <IgbRadio name="alignment" Value="start" Change="onTitlePositionChange">Start</IgbRadio>
-                    <IgbRadio name="alignment" Value="end" Change="onTitlePositionChange">End</IgbRadio>
-                    <IgbRadio name="alignment" Value="" Checked="true" Change="onTitlePositionChange">Default</IgbRadio>
+                <IgbRadioGroup TValue="string" Alignment="ContentOrientation.Horizontal">
+                    <IgbRadio TValue="string" name="alignment" Value="@("top")" Change="onTitlePositionChange">Top</IgbRadio>
+                    <IgbRadio TValue="string" name="alignment" Value="@("bottom")" Change="onTitlePositionChange">Bottom</IgbRadio>
+                    <IgbRadio TValue="string" name="alignment" Value="@("start")" Change="onTitlePositionChange">Start</IgbRadio>
+                    <IgbRadio TValue="string" name="alignment" Value="@("end")" Change="onTitlePositionChange">End</IgbRadio>
+                    <IgbRadio TValue="string" name="alignment" Value="@("")" Checked="true" Change="onTitlePositionChange">Default</IgbRadio>
                 </IgbRadioGroup>
             </div>
         </div>
@@ -23,9 +23,9 @@
         <div class="radio-group">
             <label>Orientation</label>
             <div class="radio-group-container">
-                <IgbRadioGroup Alignment="ContentOrientation.Horizontal">
-                    <IgbRadio name="orientation" Value="horizontal" Checked="true" Change="onOrientationChange">Horizontal</IgbRadio>
-                    <IgbRadio name="orientation" Value="vertical" Change="onOrientationChange">Vertical</IgbRadio>
+                <IgbRadioGroup TValue="string" Alignment="ContentOrientation.Horizontal">
+                    <IgbRadio TValue="string" name="orientation" Value="@("horizontal")" Checked="true" Change="onOrientationChange">Horizontal</IgbRadio>
+                    <IgbRadio TValue="string" name="orientation" Value="@("vertical")" Change="onOrientationChange">Vertical</IgbRadio>
                 </IgbRadioGroup>
             </div>
         </div>
@@ -74,11 +74,11 @@
 
     private bool IsDefaultTitlePosition;
 
-    public void onTitlePositionChange(IgbRadioChangeEventArgs args)
+    public void onTitlePositionChange(IgbRadioChangeEventArgs<string> args)
     {
         if(args.Detail.Checked)
         {
-            var value = (args.Parent as IgbRadio)?.Value?.ToString();
+            var value = args.Detail.Value;
             if (String.IsNullOrEmpty(value))
             {
                 IsDefaultTitlePosition = true;
@@ -92,11 +92,11 @@
         }
     }
 
-    public void onOrientationChange(IgbRadioChangeEventArgs args)
+    public void onOrientationChange(IgbRadioChangeEventArgs<string> args)
     {
         if(args.Detail.Checked)
         {
-            var value = (args.Parent as IgbRadio)?.Value?.ToString();
+            var value = args.Detail.Value;
             if (!String.IsNullOrEmpty(value))
             {
                 Orientation = (StepperOrientation)System.Enum.Parse(typeof(StepperOrientation), value, true);

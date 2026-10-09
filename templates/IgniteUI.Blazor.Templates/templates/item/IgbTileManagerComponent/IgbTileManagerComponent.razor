@@ -16,10 +16,10 @@
     <div class="control">
         <label>Resize mode</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ResizeModeName">
-                <IgbRadio Value="None">None</IgbRadio>
-                <IgbRadio Value="Hover">Hover</IgbRadio>
-                <IgbRadio Value="Always">Always</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ResizeMode">
+                <IgbRadio Value="TileManagerResizeMode.None">None</IgbRadio>
+                <IgbRadio Value="TileManagerResizeMode.Hover">Hover</IgbRadio>
+                <IgbRadio Value="TileManagerResizeMode.Always">Always</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -27,10 +27,10 @@
     <div class="control">
         <label>Drag mode</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DragModeName">
-                <IgbRadio Value="None">None</IgbRadio>
-                <IgbRadio Value="TileHeader">TileHeader</IgbRadio>
-                <IgbRadio Value="Tile">Tile</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DragMode">
+                <IgbRadio Value="TileManagerDragMode.None">None</IgbRadio>
+                <IgbRadio Value="TileManagerDragMode.TileHeader">TileHeader</IgbRadio>
+                <IgbRadio Value="TileManagerDragMode.Tile">Tile</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -91,11 +91,9 @@
 
     private double ColumnCount { get; set; } = 3;
 
-    private string ResizeModeName { get; set; } = "Hover";
-    private TileManagerResizeMode ResizeMode => Enum.Parse<TileManagerResizeMode>(ResizeModeName);
+    private TileManagerResizeMode ResizeMode { get; set; } = TileManagerResizeMode.Hover;
 
-    private string DragModeName { get; set; } = "TileHeader";
-    private TileManagerDragMode DragMode => Enum.Parse<TileManagerDragMode>(DragModeName);
+    private TileManagerDragMode DragMode { get; set; } = TileManagerDragMode.TileHeader;
 
     private string LayoutStatus { get; set; } = "No saved layout";
 

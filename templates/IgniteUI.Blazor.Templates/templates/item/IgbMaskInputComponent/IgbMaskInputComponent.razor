@@ -10,9 +10,9 @@
         <label>Mask</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="MaskName">
-                <IgbRadio Value="Phone">Phone</IgbRadio>
-                <IgbRadio Value="SSN">SSN</IgbRadio>
-                <IgbRadio Value="Date">Date</IgbRadio>
+                <IgbRadio Value="@("Phone")">Phone</IgbRadio>
+                <IgbRadio Value="@("SSN")">SSN</IgbRadio>
+                <IgbRadio Value="@("Date")">Date</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -20,9 +20,9 @@
     <div class="control">
         <label>Value mode</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ValueModeName">
-                <IgbRadio Value="Raw">Raw</IgbRadio>
-                <IgbRadio Value="WithFormatting">WithFormatting</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ValueMode">
+                <IgbRadio Value="MaskInputValueMode.Raw">Raw</IgbRadio>
+                <IgbRadio Value="MaskInputValueMode.WithFormatting">WithFormatting</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -38,7 +38,7 @@
     </IgbMaskInput>
 </div>
 
-<div class="state">Value (@ValueModeName): @(string.IsNullOrEmpty(Value) ? "(empty)" : Value)</div>
+<div class="state">Value (@ValueMode): @(string.IsNullOrEmpty(Value) ? "(empty)" : Value)</div>
 
 @code {
     /*
@@ -78,16 +78,15 @@
         _ => "(####) 000-0000"
     };
 
-    private string _valueModeName = "Raw";
-    private string ValueModeName
+    private MaskInputValueMode _valueMode = MaskInputValueMode.Raw;
+    private MaskInputValueMode ValueMode
     {
-        get => _valueModeName;
+        get => _valueMode;
         set
         {
-            if (_valueModeName == value) return;
-            _valueModeName = value;
+            if (_valueMode == value) return;
+            _valueMode = value;
             Value = string.Empty; // ValueMode only changes how Value is reported, not the stored value; clear it so the user enters fresh input
         }
     }
-    private MaskInputValueMode ValueMode => Enum.Parse<MaskInputValueMode>(ValueModeName);
 }

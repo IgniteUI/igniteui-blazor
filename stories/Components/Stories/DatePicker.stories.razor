@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/DatePicker")]
 
-<Stories TComponent="IgbDatePicker">
+<Stories TComponent="IgbDatePicker<DateTime>">
 
     <ArgType For="_ => _!.Mode" Control="ControlType.Radio" />
     <ArgType For="_ => _!.HeaderOrientation" Control="ControlType.Radio" />
@@ -14,7 +14,7 @@
             <Arg For="_ => _!.Disabled" Value="false" />
         </Arguments>
         <Template>
-            <IgbDatePicker @attributes="context.Args" />
+            <IgbDatePicker TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -24,7 +24,7 @@
             <Arg For="_ => _!.Mode" Value="PickerMode.Dialog" />
         </Arguments>
         <Template>
-            <IgbDatePicker @attributes="context.Args" />
+            <IgbDatePicker TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -34,7 +34,7 @@
             <Arg For="_ => _!.Outlined" Value="true" />
         </Arguments>
         <Template>
-            <IgbDatePicker @attributes="context.Args" />
+            <IgbDatePicker TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 

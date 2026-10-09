@@ -9,10 +9,10 @@
     <div class="control">
         <label>Selection</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
-                <IgbRadio Value="None">None</IgbRadio>
-                <IgbRadio Value="Multiple">Multiple</IgbRadio>
-                <IgbRadio Value="Cascade">Cascade</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Selection">
+                <IgbRadio Value="TreeSelection.None">None</IgbRadio>
+                <IgbRadio Value="TreeSelection.Multiple">Multiple</IgbRadio>
+                <IgbRadio Value="TreeSelection.Cascade">Cascade</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -69,8 +69,7 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string SelectionName { get; set; } = "Multiple";
-    private TreeSelection Selection => Enum.Parse<TreeSelection>(SelectionName);
+    private TreeSelection Selection { get; set; } = TreeSelection.Multiple;
 
     private bool SingleBranchExpand { get; set; }
     private bool ToggleNodeOnClick { get; set; }

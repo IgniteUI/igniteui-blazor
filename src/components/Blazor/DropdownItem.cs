@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents an item in a dropdown list.
     /// </summary>
-    public partial class IgbDropdownItem : IgbBaseOptionLike
+    public partial class IgbDropdownItem : IgbBaseOptionLike<string>
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDropdownItem"; } }

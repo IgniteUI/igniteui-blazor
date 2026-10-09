@@ -1,27 +1,20 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for component events that carry a date payload.
-    /// The meaning of Detail depends on the event that raises it.
-    /// </summary>
-    public partial class IgbComponentDateValueChangedEventArgs : IgbComponentDateValueChangedEventArgs<DateTime>
-    {
-    }
-
-    /// <summary>
-    /// Event arguments for component events that carry a date payload.
+    /// Event arguments for <see cref="IgbColorPicker{TValue}"/> events that carry a color.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
-    /// <typeparam name="TValue">The <c>TValue</c> of the date component that raises the event.</typeparam>
-    public partial class IgbComponentDateValueChangedEventArgs<TValue> : BaseJsonSerializable
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbColorPicker{TValue}"/> that raises the event.</typeparam>
+    public partial class IgbColorPickerValueEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
-        internal override string RendererType { get { return "WebComponentDateValueChangedEventArgs"; } }
+        // The element sends the same string payload as for IgbComponentValueChangedEventArgs; only the decoding differs.
+        internal override string RendererType { get { return "WebComponentValueChangedEventArgs"; } }
 
-        private protected TValue? _detail = default!;
+        private TValue? _detail;
 
         /// <summary>
-        /// The date value carried by the event.
+        /// The color carried by the event, in the picker's <typeparamref name="TValue"/>.
         /// </summary>
         public TValue? Detail
         {
@@ -42,7 +35,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Detail"))
-            { ser.AddPrimitiveProp("detail", this._detail); }
+            { ser.AddStringProp("detail", ColorPickerColorConverter.ToCss(this._detail)); }
 
         }
 
@@ -52,7 +45,7 @@ namespace IgniteUI.Blazor.Controls
             base.ToEventJson(control, args);
 
             if (IsPropDirty("Detail"))
-            { args["detail"] = GenericValueString(this._detail); }
+            { args["detail"] = ColorPickerColorConverter.ToCss(this._detail); }
 
         }
 
@@ -64,7 +57,7 @@ namespace IgniteUI.Blazor.Controls
 
             if (args != null && args.TryGetValue("detail", out var detailObj))
             {
-                this.Detail = GenericValueFromEventJson<TValue>(detailObj);
+                this.Detail = ColorPickerColorConverter.FromCss<TValue>(ReturnToString(detailObj));
             }
 
             this.SuppressParentNotify = false;

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class shared by <see cref="IgbRangeSlider"/> and <see cref="IgbSlider"/>.
+    /// Base class shared by <see cref="IgbRangeSlider"/> and <see cref="IgbSlider{TValue}"/>.
     /// </summary>
     public partial class IgbSliderBase : IgbComponentBase
     {
