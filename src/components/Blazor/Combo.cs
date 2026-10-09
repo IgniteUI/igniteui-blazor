@@ -735,7 +735,6 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
 
-
         /// <summary>
         /// Deselects one or more options in the list by <see cref="ValueKey"/>.
         /// If no items are provided all items are deselected.
