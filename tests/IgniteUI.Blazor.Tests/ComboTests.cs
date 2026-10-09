@@ -276,6 +276,27 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         var containerId = Interop.ContainerIdOf(cut);
         Assert.Contains($"refChanged {containerId}/Data", Interop.DescribeTraffic(containerId));
     }
+
+    [Fact]
+    public void Combo_DowncastArray_ElementsAlreadyOfTargetType_SkipsConvertChangeType()
+    {
+        // DowncastArray<T> (IgbComponentBase.cs): `objArr[i] is T item ? item : (T)Convert.ChangeType(...)`.
+        // ComboItem does not implement IConvertible, so without this same-type fast path,
+        // converting an object[] whose elements are already ComboItem instances - the normal
+        // case once a uuid/name ref has resolved against the data source - would throw. The
+        // fast path assigns the element directly, skipping Convert.ChangeType entirely.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+
+        object[] alreadyTyped = [_valueItem1, _valueItem2];
+
+        var result = cut.Instance.DowncastArray<ComboItem>(alreadyTyped);
+
+        Assert.Equal(2, result.Length);
+        Assert.Same(_valueItem1, result[0]);
+        Assert.Same(_valueItem2, result[1]);
+    }
 }
 
 public abstract class ComboValueKeyTestsBase<TValue> : ComponentWithContractTestBase<IgbCombo<TValue, ComboItem>>
