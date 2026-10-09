@@ -57,7 +57,7 @@ Only pick a grid when the content is genuinely tabular. A list of records with r
 | Text field, search box, inline editor | `IgbInput` | `Label`, `Placeholder`, `Outlined`, `@bind-Value` |
 | Multi-line text | `IgbTextarea` | `Rows`, `Resize` |
 | Dropdown selecting a value | `IgbSelect` + `IgbSelectItem` | |
-| Searchable / multi-select picker | `IgbCombo` | generic parameter is `T`; `Data`, `DisplayKey`, `ValueKey` |
+| Searchable / multi-select picker | `IgbCombo` | generic parameters `TValue`/`TItem`; `Data`, `DisplayKey`, `ValueKey` |
 | Contextual action menu | `IgbDropdown` | trigger in `slot="target"` — not for form values |
 | Date picker | `IgbDatePicker` | `DateTime?` in the full product; Lite: `<TValue>` is `DateTime`, `DateTime?` or `string` |
 | Date range | `IgbDateRangePicker` | |

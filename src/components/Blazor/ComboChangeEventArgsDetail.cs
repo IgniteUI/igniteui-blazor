@@ -1,20 +1,20 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Describes a selection change of an <see cref="IgbCombo{T}"/>: the new value, the items it affected and the kind of change.
+    /// Describes a selection change of an <see cref="IgbCombo{TValue, TItem}"/>: the new value, the items it affected and the kind of change.
     /// </summary>
-    public partial class IgbComboChangeEventArgsDetail : BaseJsonSerializable
+    public partial class IgbComboChangeEventArgsDetail<TValue, TItem> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComboChangeEventArgsDetail"; } }
 
         private string? _newValueRef;
-        private object[] _newValue = Array.Empty<object>();
+        private TValue[] _newValue = Array.Empty<TValue>();
 
         /// <summary>
         /// The value of the combo after the change.
         /// </summary>
-        public object[] NewValue
+        public TValue[] NewValue
         {
             get { return this._newValue; }
 
@@ -58,12 +58,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _itemsRef;
-        private object[] _items = Array.Empty<object>();
+        private TItem[] _items = Array.Empty<TItem>();
 
         /// <summary>
         /// The data items the change applies to.
         /// </summary>
-        public object[] Items
+        public TItem[] Items
         {
             get { return this._items; }
 
@@ -160,9 +160,9 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("newValue", out var newValueObj))
-            { this.NewValue = ReturnToObjectArray(newValueObj); }
+            { this.NewValue = ReturnToObjectArray<TValue>(newValueObj) ?? Array.Empty<TValue>(); }
             if (args != null && args.TryGetValue("items", out var itemsObj))
-            { this.Items = ReturnToObjectArray(itemsObj); }
+            { this.Items = ReturnToObjectArray<TItem>(itemsObj) ?? Array.Empty<TItem>(); }
             if (args != null && args.TryGetValue("type", out var typeObj))
             { this.ChangeType = StringToEnum<ComboChangeType>(typeObj); }
 

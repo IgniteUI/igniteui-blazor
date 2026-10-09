@@ -51,7 +51,7 @@ Icons in `prefix` / `suffix` slots must be `IgbIcon`. A `<span class="material-i
 ## Combo Box
 
 ```razor
-<IgbCombo T="City" Data="Cities" ValueKey="Id" DisplayKey="Name"
+<IgbCombo TValue="string" TItem="City" Data="Cities" ValueKey="Id" DisplayKey="Name"
           Label="Select Cities" Placeholder="Pick a city" />
 
 @code {
@@ -60,7 +60,7 @@ Icons in `prefix` / `suffix` slots must be `IgbIcon`. A `<span class="material-i
 }
 ```
 
-The generic parameter is **`T`**, not `TValue` — set it to the data item type. `IgbCombo` does not participate in a plain HTML `<form>`; bind its value explicitly.
+`IgbCombo` takes two generic parameters: `TValue` (the bound value/key type — here `City.Id`'s type, `string`) and `TItem` (the data item type, `City`). `IgbCombo` does not participate in a plain HTML `<form>`; bind its value explicitly.
 
 ## Select
 

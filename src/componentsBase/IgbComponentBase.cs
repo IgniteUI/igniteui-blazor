@@ -1260,13 +1260,9 @@ namespace IgniteUI.Blazor.Controls
             _serializeDirty = true;
             string? refId = _containerId + "/" + propertyName;
 
-            if (newValue is LocalJson)
+            if (newValue is IJsonData)
             {
-                newValue = ((LocalJson)newValue).ToRef();
-            }
-            if (newValue is RemoteJson)
-            {
-                newValue = ((RemoteJson)newValue).ToRef();
+                newValue = ((IJsonData)newValue).ToRef();
             }
 
             // Check if the incoming object has BlazorPlainObjectAttribute
@@ -1881,7 +1877,9 @@ namespace IgniteUI.Blazor.Controls
                 var ret = new T[objArr.Length];
                 for (var i = 0; i < objArr.Length; i++)
                 {
-                    ret[i] = (T)objArr[i];
+                    ret[i] = objArr[i] is T item
+                         ? item
+                         : (T)Convert.ChangeType(objArr[i], typeof(T));
                 }
 
                 return ret;
@@ -1896,6 +1894,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         internal object? ConvertReturnValue<TValue>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            return ConvertReturnValue<TValue, object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+
+        internal object? ConvertReturnValue<TValue, TItem>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
             try
             {
@@ -2057,7 +2060,7 @@ namespace IgniteUI.Blazor.Controls
                                 object? o = null;
                                 if (type != null)
                                 {
-                                    o = MarshalByValueFactory.CreateInstance<TValue>(type);
+                                    o = MarshalByValueFactory.CreateInstance<TValue, TItem>(type);
                                 }
                                 if (o != null)
                                 {
@@ -2745,6 +2748,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal string? ObjectArrayToParam(object[]? arr)
         {
+            return ObjectArrayToParam<object>(arr);
+        }
+
+        internal string? ObjectArrayToParam<T>(T[]? arr)
+        {
             if (arr == null)
             {
                 return null;
@@ -2879,30 +2887,41 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal T[]? ReturnToObjectArray<T>(object? val)
+        internal T[] ReturnToObjectArray<T>(object? val)
         {
             return ReturnToObjectArray<T>(val, null);
         }
 
-        internal T[]? ReturnToObjectArray<T>(object? val, string? typeGuess)
+        internal T[] ReturnToObjectArray<T>(object? val, string? typeGuess)
         {
-            val = ConvertReturnValue(val);
+            // Use transformArrays=true so that array elements with uuid/name refs are resolved
+            // to their actual data-source objects before we attempt to cast them.
+            val = ConvertReturnValue<T>(val, transformArrays: true);
 
             if (val == null)
             {
-                return null;
+                return Array.Empty<T>();
             }
+            if (val is T[] tArr)
+            {
+                return tArr;
+            }
+            if (val is object[])
+            {
+                return DowncastArray<T>(val);
+            }
+
             try
             {
                 var stringVal = val.ToString();
                 if (stringVal == null)
                 {
-                    return null;
+                    return Array.Empty<T>();
                 }
                 var arr = JsonSerializer.Deserialize(stringVal, SerializerContext.DictionaryStringObjectArray);
                 if (arr == null)
                 {
-                    return null;
+                    return Array.Empty<T>();
                 }
                 T[] ret = new T[arr.Length];
                 for (int i = 0; i < arr.Length; i++)
@@ -2920,7 +2939,7 @@ namespace IgniteUI.Blazor.Controls
             }
             catch (Exception)
             {
-                return null;
+                return Array.Empty<T>();
             }
         }
 

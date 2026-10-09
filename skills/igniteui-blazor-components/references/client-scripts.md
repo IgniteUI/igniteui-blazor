@@ -38,10 +38,10 @@ registerScript('OnDialogClosing', (evt) => {
 
 A template function receives one context object and returns an `html` template result, a string, a primitive value — anything lit can render. `html` is only needed for markup; plain text can be returned directly, and an empty string renders nothing.
 
-The context mirrors the component's .NET template context: the same data is exposed under the same names — the item for a list item, the message for a chat message — so start from the component's C# template context type when writing one.
+The context mirrors the component's .NET template context: the same data is exposed under the same names — the item for a list item, the message for a chat message — so start from the component's C# template context type when writing one. One exception: a Combo group header gets `{ item }`, a record holding the group's value under the `GroupKey` field, which the C# `IgbComboGroupHeaderContext` exposes as `Key`.
 
 ```razor
-<IgbCombo T="City" Data="Cities" ValueKey="Id" DisplayKey="Name" GroupKey="Country"
+<IgbCombo TValue="string" TItem="City" Data="Cities" ValueKey="Id" DisplayKey="Name" GroupKey="Country"
           ItemTemplateScript="CityItem" GroupHeaderTemplateScript="CountryHeader" />
 ```
 

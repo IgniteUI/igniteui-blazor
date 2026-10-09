@@ -222,9 +222,9 @@ Radios are mutually exclusive only when they share an HTML `name`: give every `I
 
 `AvatarShape.Circle | Rounded | Square`. There is no `RoundShape`.
 
-### `IgbCombo`'s generic parameter is `T`
+### `IgbCombo` takes two generic parameters
 
-`<IgbCombo T="Person" …>`, not `TValue`.
+`<IgbCombo TValue="int" TItem="Person" …>` — `TValue` is the bound value/key type, `TItem` is the data item type. Not a single `T`.
 
 ### `IgbCard` has no default width
 
