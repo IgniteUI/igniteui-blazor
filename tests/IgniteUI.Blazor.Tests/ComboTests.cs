@@ -224,6 +224,50 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
     }
 
     [Fact]
+    public async Task Combo_SelectAsyncAndDeselectAsync_ExplicitObjectArray_ResolveToObjectOverload()
+    {
+        // `new object[] { ... }` must bind to the object[] (key/reference) overload - not TItem[]
+        // (ComboItem[], since TItem here is ComboItem) - and pass each element through as-is,
+        // with no resolution against Data. Exercises both async methods directly (not through
+        // the generated ComponentContract machinery), since the contract's own object[] coverage
+        // relies on collection-expression target typing (`[...]`) rather than an explicit cast.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+
+        await cut.Instance.SelectAsync(new object[] { "item-1" });
+        var selectCall = Interop.RequireCall("select", Interop.ContainerIdOf(cut));
+        Assert.Equal("item-1", Assert.Single(selectCall.Arguments[0].EnumerateArray()).GetString());
+
+        await cut.Instance.DeselectAsync(new object[] { "item-1" });
+        var deselectCall = Interop.RequireCall("deselect", Interop.ContainerIdOf(cut));
+        Assert.Equal("item-1", Assert.Single(deselectCall.Arguments[0].EnumerateArray()).GetString());
+    }
+
+    [Fact]
+    public async Task Combo_SelectAsyncAndDeselectAsync_ExplicitComboItemArray_ResolveToItemOverload()
+    {
+        // `new ComboItem[] { ... }` must bind to the TItem[] (actual data item) overload - not
+        // object[] - and resolve each item against Data to the same uuid ref DataItemId
+        // identifies, rather than passing anything through as-is.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+
+        await cut.Instance.SelectAsync(new ComboItem[] { _valueItem1 });
+        var selectCall = Interop.RequireCall("select", Interop.ContainerIdOf(cut));
+        var selectedItem = Assert.Single(selectCall.Arguments[0].EnumerateArray());
+        Assert.Equal("uuid", selectedItem.GetProperty("refType").GetString());
+        Assert.Equal(DataItemId(Interop, cut, 0), selectedItem.GetProperty("id").GetString());
+
+        await cut.Instance.DeselectAsync(new ComboItem[] { _valueItem1 });
+        var deselectCall = Interop.RequireCall("deselect", Interop.ContainerIdOf(cut));
+        var deselectedItem = Assert.Single(deselectCall.Arguments[0].EnumerateArray());
+        Assert.Equal("uuid", deselectedItem.GetProperty("refType").GetString());
+        Assert.Equal(DataItemId(Interop, cut, 0), deselectedItem.GetProperty("id").GetString());
+    }
+
+    [Fact]
     public void Combo_Data_LocalJson_IsAssignableAndSendsLocalJsonRefTransfer()
     {
         // LocalJson<TItem> is directly assignable to Data (no cast needed, unlike the untyped
