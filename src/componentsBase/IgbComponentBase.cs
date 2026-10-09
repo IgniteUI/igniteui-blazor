@@ -1260,13 +1260,9 @@ namespace IgniteUI.Blazor.Controls
             _serializeDirty = true;
             string? refId = _containerId + "/" + propertyName;
 
-            if (newValue is LocalJson)
+            if (newValue is IJsonData)
             {
-                newValue = ((LocalJson)newValue).ToRef();
-            }
-            if (newValue is RemoteJson)
-            {
-                newValue = ((RemoteJson)newValue).ToRef();
+                newValue = ((IJsonData)newValue).ToRef();
             }
 
             // Check if the incoming object has BlazorPlainObjectAttribute

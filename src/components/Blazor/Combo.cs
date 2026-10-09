@@ -14,10 +14,10 @@ namespace IgniteUI.Blazor.Controls
     /// dynamic addition of values and more.
     /// </summary>
     /// <typeparam name="TValue">The type of the selected values: the <c>ValueKey</c> field of the data items, or the items themselves when <c>ValueKey</c> is not set.</typeparam>
-    /// <typeparam name="TItem">The type of the items in the data.</typeparam>
+    /// <typeparam name="TItem">The type of the items in the data; <c>object</c> with <see cref="DataJson"/>, whose items arrive as <see cref="System.Text.Json.JsonElement"/> values.</typeparam>
     public partial class IgbCombo<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TValue,
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TItem> : IgbBaseComboBox, IDataSourceNotifications
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TItem> : IgbBaseComboBox, IDataSourceNotifications, IJsonDataBinding
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCombo"; } }
@@ -54,6 +54,7 @@ namespace IgniteUI.Blazor.Controls
 
         /// <summary>
         /// The data source used to generate the list of options.
+        /// For data that is already JSON, or that the client fetches itself, see <see cref="DataJson"/>.
         /// </summary>
         [Parameter]
         public IEnumerable<TItem>? Data
@@ -93,6 +94,30 @@ namespace IgniteUI.Blazor.Controls
                     this._dataScript = value;
                     MarkPropDirty("Data");
                     this.OnRefChanged("Data", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
+                    {
+                        this._dataRef = refName;
+                        this.MarkPropDirty("DataRef");
+                    });
+                }
+            }
+        }
+
+        private IJsonData? _dataJson;
+
+        /// <inheritdoc />
+        [Parameter]
+        public IJsonData? DataJson
+        {
+            get { return _dataJson; }
+
+            set
+            {
+                var oldValue = this._dataJson;
+                if (oldValue != value || !IsPropDirty("Data"))
+                {
+                    this._dataJson = value;
+                    MarkPropDirty("Data");
+                    this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._dataRef = refName;
                         this.MarkPropDirty("DataRef");
