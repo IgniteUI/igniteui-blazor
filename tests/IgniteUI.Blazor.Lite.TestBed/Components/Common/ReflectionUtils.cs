@@ -143,7 +143,15 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static Type? GetOriginEventDetailType(Type eventArgsType, Type componentType)
         {
-            var detailProp = eventArgsType.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            // Some concrete event-argument types inherit Detail from a generic base class
+            // (for example, IgbNumberEventArgs from IgbNumberEventArgs<double>), while others
+            // hide a base Detail property. Look at each declaration level to avoid ambiguity.
+            PropertyInfo? detailProp = null;
+            for (var type = eventArgsType; type != null && detailProp == null; type = type.BaseType)
+            {
+                detailProp = type.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            }
+
             if (detailProp == null)
             {
                 return null;
