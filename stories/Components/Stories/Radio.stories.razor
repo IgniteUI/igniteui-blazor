@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/Radio")]
 
-<Stories TComponent="IgbRadioGroup<string>">
+<Stories TComponent="IgbRadioGroup<Plan>">
 
     <ArgType For="_ => _!.Alignment" Control="ControlType.Radio" />
 
@@ -9,10 +9,10 @@
             <Arg For="_ => _!.Alignment" Value="ContentOrientation.Vertical" />
         </Arguments>
         <Template>
-            <IgbRadioGroup TValue="string" @attributes="context.Args">
-                <IgbRadio Value='"option1"'>Option 1</IgbRadio>
-                <IgbRadio Value='"option2"'>Option 2</IgbRadio>
-                <IgbRadio Value='"option3"'>Option 3</IgbRadio>
+            <IgbRadioGroup TValue="Plan" @attributes="context.Args">
+                <IgbRadio Value="Plan.Basic">Basic</IgbRadio>
+                <IgbRadio Value="Plan.Pro">Pro</IgbRadio>
+                <IgbRadio Value="Plan.Enterprise">Enterprise</IgbRadio>
             </IgbRadioGroup>
         </Template>
     </Story>
@@ -22,12 +22,30 @@
             <Arg For="_ => _!.Alignment" Value="ContentOrientation.Horizontal" />
         </Arguments>
         <Template>
-            <IgbRadioGroup TValue="string" @attributes="context.Args">
-                <IgbRadio Value='"option1"'>Option 1</IgbRadio>
-                <IgbRadio Value='"option2"'>Option 2</IgbRadio>
-                <IgbRadio Value='"option3"'>Option 3</IgbRadio>
+            <IgbRadioGroup TValue="Plan" @attributes="context.Args">
+                <IgbRadio Value="Plan.Basic">Basic</IgbRadio>
+                <IgbRadio Value="Plan.Pro">Pro</IgbRadio>
+                <IgbRadio Value="Plan.Enterprise">Enterprise</IgbRadio>
             </IgbRadioGroup>
         </Template>
     </Story>
 
+    <Story Name="Two-way Binding">
+        <Template>
+            <IgbRadioGroup @bind-Value="_plan">
+                @foreach (var plan in Enum.GetValues<Plan>())
+                {
+                    <IgbRadio Value="plan">@plan</IgbRadio>
+                }
+            </IgbRadioGroup>
+            <p>Selected: @_plan</p>
+        </Template>
+    </Story>
+
 </Stories>
+
+@code {
+    public enum Plan { Basic, Pro, Enterprise }
+
+    private Plan _plan = Plan.Pro;
+}

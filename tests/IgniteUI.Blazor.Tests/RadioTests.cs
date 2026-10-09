@@ -13,7 +13,9 @@ public abstract class RadioTests<TValue> : ComponentWithContractTestBase<IgbRadi
     protected RadioTests(TValue value)
     {
         _value = value;
-        var wireValue = value is string ? $"\"{value}\"" : value!.ToString();
+        // The element's value is always a string on the wire, whatever the TValue.
+        var wireValue = $"\"{Convert.ToString(value, CultureInfo.InvariantCulture)}\"";
+        var changeArgs = """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": """ + wireValue + "}}}";
         InteropContract = new ComponentContract<IgbRadio<TValue>>()
             .Getter(c => c.GetCurrentCheckedAsync(), c => c.GetCurrentChecked(), "Checked", returns: true)
             .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }),
@@ -25,7 +27,7 @@ public abstract class RadioTests<TValue> : ComponentWithContractTestBase<IgbRadi
             .Method(c => c.SetCustomValidityAsync("Please select an option"), c => c.SetCustomValidity("Please select an option"),
                 "setCustomValidity", args: ["Please select an option"], types: ["String"])
             .Event(c => c.Change,
-                argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": """ + wireValue + "}}}",
+                argsJson: changeArgs,
                 assert: args =>
                 {
                     Assert.True(args.Detail.Checked);
@@ -33,7 +35,7 @@ public abstract class RadioTests<TValue> : ComponentWithContractTestBase<IgbRadi
                 })
             // The bound value uses checked:
             .Bind(c => c.Checked, c => c.CheckedChanged, via: c => c.Change,
-                argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": """ + wireValue + "}}}",
+                argsJson: changeArgs,
                 expect: true)
             .Event(c => c.Focus)
             .Event(c => c.Blur);
@@ -154,6 +156,14 @@ public sealed class RadioStringTests : RadioTests<string>
     }
 }
 
+public sealed class RadioEnumTests : RadioTests<DayOfWeek>
+{
+    public RadioEnumTests()
+        : base(DayOfWeek.Friday)
+    {
+    }
+}
+
 public sealed class RadioIntTests : RadioTests<int>
 {
     public RadioIntTests()
@@ -267,10 +277,14 @@ public abstract class RadioGroupTests<TValue> : ComponentWithContractTestBase<Ig
     protected RadioGroupTests(TValue value)
     {
         _value = value;
+        // The element's value is always a string on the wire, whatever the TValue.
+        var wireValue = Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty;
+        var changeArgs = """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": """ + $"\"{wireValue}\"" + "}}}";
         InteropContract = new ComponentContract<IgbRadioGroup<TValue>>()
-            .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: value)
+            .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+                returns: InteropReturn.String(wireValue), expect: value)
             .Event(c => c.Change,
-                argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "selected-option"}}}""",
+                argsJson: changeArgs,
                 assert: args =>
                 {
                     Assert.True(args.Detail.Checked);
@@ -278,7 +292,7 @@ public abstract class RadioGroupTests<TValue> : ComponentWithContractTestBase<Ig
                 })
             // The group binds the selected option's value:
             .Bind<TValue, IgbRadioChangeEventArgs<TValue>>(c => c.Value!, c => c.ValueChanged, via: c => c.Change,
-                argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": "selected-option"}}}""",
+                argsJson: changeArgs,
                 expect: value);
     }
 
@@ -350,6 +364,22 @@ public sealed class RadioGroupStringTests : RadioGroupTests<string>
 {
     public RadioGroupStringTests()
         : base("selected-option")
+    {
+    }
+}
+
+public sealed class RadioGroupEnumTests : RadioGroupTests<DayOfWeek>
+{
+    public RadioGroupEnumTests()
+        : base(DayOfWeek.Friday)
+    {
+    }
+}
+
+public sealed class RadioGroupNullableEnumTests : RadioGroupTests<DayOfWeek?>
+{
+    public RadioGroupNullableEnumTests()
+        : base(DayOfWeek.Friday)
     {
     }
 }

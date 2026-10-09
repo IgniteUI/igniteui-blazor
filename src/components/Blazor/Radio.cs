@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The radio component allows the user to select a single option from an available set of options that are listed side by side.
     /// </summary>
-    /// <typeparam name="TValue"><c>string</c>, <c>char</c>, <c>bool</c> or a numeric type such as <c>int</c> or <c>double</c>, or their nullable forms. Enums, <see cref="Guid"/> and dates are not converted back from the element.</typeparam>
+    /// <typeparam name="TValue"><c>string</c>, <c>char</c>, <c>bool</c>, an enum, or a numeric type such as <c>int</c> or <c>double</c>, or their nullable forms.</typeparam>
     public partial class IgbRadio<TValue> : IgbComponentBase
     {
         /// <inheritdoc />

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `*Script` parameters for client templates and events now also support resolving late once `registerScript` is called even after the client component is created.
 - **Color Picker:** `Value` binds a `System.Drawing.Color` or `Color?` as well as a CSS color `string`.
+- **Radio, Radio Group, Select:** `TValue` can be an enum, and options name its members directly: `<IgbRadio Value="Plan.Pro">`.
 
 ### Fixed
 

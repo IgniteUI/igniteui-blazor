@@ -3086,6 +3086,11 @@ namespace IgniteUI.Blazor.Controls
             {
                 return default;
             }
+            // An enum crosses as its name, which Convert.ChangeType cannot convert.
+            if (GenericType is { IsEnum: true } enumType)
+            {
+                return (TValue)Enum.Parse(enumType, Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty);
+            }
 
             return (TValue)Convert.ChangeType(value, GenericType ?? typeof(TValue), CultureInfo.InvariantCulture);
         }

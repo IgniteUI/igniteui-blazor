@@ -232,6 +232,35 @@ public class SelectTests : ComponentWithContractTestBase<IgbSelect<string>>
     }
 }
 
+public class SelectEnumTests : ComponentWithContractTestBase<IgbSelect<DayOfWeek>>
+{
+    // The element's value is the enum's name.
+    protected override ComponentContract<IgbSelect<DayOfWeek>> InteropContract { get; } = new ComponentContract<IgbSelect<DayOfWeek>>()
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+            returns: InteropReturn.String("Friday"), expect: DayOfWeek.Friday);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Select_Value_RendersAttribute()
+    {
+        var cut = Render<IgbSelect<DayOfWeek>>(parameters =>
+            parameters.Add(p => p.Value, DayOfWeek.Friday));
+
+        Assert.Equal("Friday", cut.Find("igc-select").GetAttribute("value"));
+    }
+
+    [Fact]
+    public void SelectItem_Value_RendersAttribute()
+    {
+        var cut = Render<IgbSelectItem<DayOfWeek>>(parameters =>
+            parameters.Add(p => p.Value, DayOfWeek.Friday));
+
+        Assert.Equal("Friday", cut.Find("igc-select-item").GetAttribute("value"));
+    }
+}
+
 public class SelectItemTests : BlazorComponentTestBase
 {
     [Fact]

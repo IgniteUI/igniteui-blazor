@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents a control that provides a menu of options.
     /// </summary>
-    /// <typeparam name="TValue"><c>string</c>, <c>char</c> or a numeric type such as <c>int</c> or <c>double</c>, or their nullable forms. <c>bool</c>, enums, <see cref="Guid"/> and dates are not converted back from the element.</typeparam>
+    /// <typeparam name="TValue"><c>string</c>, <c>char</c>, an enum, or a numeric type such as <c>int</c> or <c>double</c>, or their nullable forms.</typeparam>
     [CascadingTypeParameter(nameof(TValue))]
     public partial class IgbSelect<TValue> : IgbComboBoxBaseLike
     {
