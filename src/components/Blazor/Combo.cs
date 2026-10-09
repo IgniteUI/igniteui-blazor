@@ -706,17 +706,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are selected.
-        /// </summary>
-        /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
-        /// the corresponding value should be used in place of the item reference.</param>
-        public async Task SelectAsync(object[] items)
-        {
-            await InvokeMethod("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
-        }
-
-        /// <summary>
         /// Selects one or more options in the list by <see cref="ValueKey"/>.
         /// If no items are provided all items are selected.
         /// </summary>
@@ -724,17 +713,6 @@ namespace IgniteUI.Blazor.Controls
         public async Task SelectAsync(TValue[] items)
         {
             await InvokeMethod("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
-        }
-
-        /// <summary>
-        /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are selected.
-        /// </summary>
-        /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
-        /// the corresponding value should be used in place of the item reference.</param>
-        public void Select(object[] items)
-        {
-            InvokeMethodSync("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
 
         /// <summary>
@@ -748,17 +726,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are deselected.
-        /// </summary>
-        /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
-        /// the corresponding value should be used in place of the item reference.</param>
-        public async Task DeselectAsync(object[] items)
-        {
-            await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
-        }
-
-        /// <summary>
         /// Deselects one or more options in the list by <see cref="ValueKey"/>.
         /// If no items are provided all items are deselected.
         /// </summary>
@@ -768,16 +735,6 @@ namespace IgniteUI.Blazor.Controls
             await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
 
-        /// <summary>
-        /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are deselected.
-        /// </summary>
-        /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
-        /// the corresponding value should be used in place of the item reference.</param>
-        public void Deselect(object[] items)
-        {
-            InvokeMethodSync("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
-        }
 
         /// <summary>
         /// Deselects one or more options in the list by <see cref="ValueKey"/>.
