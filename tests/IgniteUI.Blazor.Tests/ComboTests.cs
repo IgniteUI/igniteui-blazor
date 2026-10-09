@@ -222,6 +222,60 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         Assert.Equal("uuid", sentItem.GetProperty("refType").GetString());
         Assert.Equal(DataItemId(Interop, cut, 0), sentItem.GetProperty("id").GetString());
     }
+
+    [Fact]
+    public void Combo_Data_LocalJson_IsAssignableAndSendsLocalJsonRefTransfer()
+    {
+        // LocalJson<TItem> is directly assignable to Data (no cast needed, unlike the untyped
+        // LocalJson) because it implements IEnumerable<TItem> as an empty sequence. The interop
+        // layer still recognizes it, via the non-generic LocalJson base class, and transmits the
+        // wrapped JSON as a dedicated localJson::: ref transfer instead of enumerating it.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, LocalJson<ComboItem>.From("""[{"Id":1,"Text":"First"}]""")));
+
+        var containerId = Interop.ContainerIdOf(cut);
+        Assert.Contains($"refChanged {containerId}/Data", Interop.DescribeTraffic(containerId));
+    }
+
+    [Fact]
+    public void Combo_Data_RemoteJson_IsAssignableAndSendsRemoteJsonRefTransfer()
+    {
+        // RemoteJson<TItem>: same as above, but the client fetches the data itself from a URL.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, RemoteJson<ComboItem>.From("https://example.test/items.json")));
+
+        var containerId = Interop.ContainerIdOf(cut);
+        Assert.Contains($"refChanged {containerId}/Data", Interop.DescribeTraffic(containerId));
+    }
+
+    [Fact]
+    public void Combo_Data_RemoteJson_DataGetterReturnsSameInstance()
+    {
+        // The setter stores the value as-is; Data round-trips to the exact RemoteJson<TItem>
+        // instance assigned, not a copy or an enumerated materialization of it.
+        Interop.PrimeReady();
+        var remoteJson = RemoteJson<ComboItem>.From("https://example.test/items.json");
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, remoteJson));
+
+        Assert.Same(remoteJson, cut.Instance.Data);
+    }
+
+    [Fact]
+    public void Combo_Data_RemoteJson_WorksWithKeyedTValue()
+    {
+        // RemoteJson<TItem> is assignable to Data regardless of what TValue is - the combo's
+        // keyed value type (here int, via ValueKey) is independent of how the data arrives.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.Data, RemoteJson<ComboItem>.From("https://example.test/items.json")));
+
+        var containerId = Interop.ContainerIdOf(cut);
+        Assert.Contains($"refChanged {containerId}/Data", Interop.DescribeTraffic(containerId));
+    }
 }
 
 public abstract class ComboValueKeyTestsBase<TValue> : ComponentWithContractTestBase<IgbCombo<TValue, ComboItem>>
