@@ -633,13 +633,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _groupHeaderTemplateRef;
-        private RenderFragment<TItem>? _groupHeaderTemplate;
+        private RenderFragment<IgbComboGroupHeaderContext>? _groupHeaderTemplate;
 
         /// <summary>
         /// The template used for the content of each combo group header.
         /// </summary>
         [Parameter]
-        public RenderFragment<TItem>? GroupHeaderTemplate
+        public RenderFragment<IgbComboGroupHeaderContext>? GroupHeaderTemplate
         {
             get { return this._groupHeaderTemplate; }
 
@@ -651,7 +651,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("GroupHeaderTemplate");
                     this._groupHeaderTemplate = value;
                     this._groupHeaderTemplateTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate, typeof(TItem));
+                    this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate, typeof(IgbComboGroupHeaderContext));
                     this.OnRefChanged("GroupHeaderTemplate", null, "template:::" + this._groupHeaderTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._groupHeaderTemplateRef = refName;
