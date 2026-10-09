@@ -52,7 +52,7 @@ namespace IgniteUI.Blazor.Controls
             base.ToEventJson(control, args);
 
             if (IsPropDirty("Detail"))
-            { args["detail"] = ReturnToString(this._detail); }
+            { args["detail"] = GenericValueString(this._detail); }
 
         }
 
