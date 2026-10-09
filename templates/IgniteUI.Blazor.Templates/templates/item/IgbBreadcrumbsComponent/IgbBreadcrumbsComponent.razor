@@ -8,7 +8,7 @@
 <div class="controls">
     <div class="control">
         <label>Separator</label>
-        <IgbSelect TValue="string" @bind-Value="Separator">
+        <IgbSelect @bind-Value="Separator">
             @foreach (var separator in Separators)
             {
                 <IgbSelectItem Value="@separator">@separator</IgbSelectItem>

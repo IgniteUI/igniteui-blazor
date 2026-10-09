@@ -64,6 +64,46 @@
         </Template>
     </Story>
 
+    <Story Name="With Groups">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Select a country"' />
+        </Arguments>
+        <Template>
+            <IgbSelect TValue="string" @attributes="context.Args">
+                @foreach (var continent in _groupedCountries.GroupBy(c => c.Continent))
+                {
+                    <IgbSelectGroup>
+                        <IgbSelectHeader slot="label">@continent.Key</IgbSelectHeader>
+                        @foreach (var country in continent)
+                        {
+                            <IgbSelectItem Value="country.Code" Disabled="country.Disabled">@country.Name</IgbSelectItem>
+                        }
+                    </IgbSelectGroup>
+                }
+                <span slot="helper-text">Choose a country.</span>
+            </IgbSelect>
+        </Template>
+    </Story>
+
+    <Story Name="Groups With Numeric Values">
+        <Template>
+            <IgbSelect @bind-Value="_countryId" Label="Country" Placeholder="Select a country">
+                @foreach (var continent in _groupedCountries.GroupBy(c => c.Continent))
+                {
+                    <IgbSelectGroup Disabled="@(continent.Key == "Asia")">
+                        <IgbSelectHeader slot="label">@continent.Key</IgbSelectHeader>
+                        @foreach (var country in continent)
+                        {
+                            <IgbSelectItem Value="country.Id" Disabled="country.Disabled">@country.Name</IgbSelectItem>
+                        }
+                    </IgbSelectGroup>
+                }
+                <span slot="helper-text">The Asia group is disabled.</span>
+            </IgbSelect>
+            <p>Selected id: @(_countryId == 0 ? "(none)" : _countryId.ToString())</p>
+        </Template>
+    </Story>
+
 </Stories>
 
 @code {
@@ -79,4 +119,18 @@
     ];
 
     private string? _code;
+
+    private record GroupedCountry(int Id, string Code, string Name, string Continent, bool Disabled = false);
+
+    private static readonly GroupedCountry[] _groupedCountries =
+    [
+        new(1, "bg", "Bulgaria", "Europe"),
+        new(2, "uk", "United Kingdom", "Europe", Disabled: true),
+        new(3, "us", "United States of America", "North America"),
+        new(4, "ca", "Canada", "North America"),
+        new(5, "jp", "Japan", "Asia"),
+        new(6, "in", "India", "Asia", Disabled: true),
+    ];
+
+    private int _countryId;
 }
