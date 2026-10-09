@@ -9,10 +9,10 @@
     <div class="control">
         <label>Format</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="FormatName">
-                <IgbRadio Value="@("Hex")">Hex</IgbRadio>
-                <IgbRadio Value="@("Rgb")">Rgb</IgbRadio>
-                <IgbRadio Value="@("Hsl")">Hsl</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Format">
+                <IgbRadio Value="ColorFormat.Hex">Hex</IgbRadio>
+                <IgbRadio Value="ColorFormat.Rgb">Rgb</IgbRadio>
+                <IgbRadio Value="ColorFormat.Hsl">Hsl</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -20,9 +20,9 @@
     <div class="control">
         <label>Mode</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ModeName">
-                <IgbRadio Value="@("Default")">Default</IgbRadio>
-                <IgbRadio Value="@("Input")">Input</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Mode">
+                <IgbRadio Value="ColorPickerMode.Default">Default</IgbRadio>
+                <IgbRadio Value="ColorPickerMode.Input">Input</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -50,7 +50,7 @@
     <span class="color-preview" style="@($"background: {Value};")"></span>
 </div>
 
-<div class="state">Value: @Value &nbsp;|&nbsp; Format: @FormatName &nbsp;|&nbsp; Mode: @ModeName</div>
+<div class="state">Value: @Value &nbsp;|&nbsp; Format: @Format &nbsp;|&nbsp; Mode: @Mode</div>
 
 @code {
     /*
@@ -70,11 +70,9 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string FormatName { get; set; } = "Hex";
-    private ColorFormat Format => Enum.Parse<ColorFormat>(FormatName);
+    private ColorFormat Format { get; set; } = ColorFormat.Hex;
 
-    private string ModeName { get; set; } = "Default";
-    private ColorPickerMode Mode => Enum.Parse<ColorPickerMode>(ModeName);
+    private ColorPickerMode Mode { get; set; } = ColorPickerMode.Default;
 
     private bool ShowAlpha { get; set; }
     private bool HideFormats { get; set; }

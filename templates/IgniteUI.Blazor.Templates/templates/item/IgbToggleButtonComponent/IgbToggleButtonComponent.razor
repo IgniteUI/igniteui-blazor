@@ -9,10 +9,10 @@
     <div class="control">
         <label>Group selection</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
-                <IgbRadio Value="@("Single")">Single</IgbRadio>
-                <IgbRadio Value="@("SingleRequired")">SingleRequired</IgbRadio>
-                <IgbRadio Value="@("Multiple")">Multiple</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Selection">
+                <IgbRadio Value="ButtonGroupSelection.Single">Single</IgbRadio>
+                <IgbRadio Value="ButtonGroupSelection.SingleRequired">SingleRequired</IgbRadio>
+                <IgbRadio Value="ButtonGroupSelection.Multiple">Multiple</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -54,8 +54,7 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string SelectionName { get; set; } = "Multiple";
-    private ButtonGroupSelection Selection => Enum.Parse<ButtonGroupSelection>(SelectionName);
+    private ButtonGroupSelection Selection { get; set; } = ButtonGroupSelection.Multiple;
 
     private bool Disabled { get; set; }
     private readonly HashSet<string> Selected = new();

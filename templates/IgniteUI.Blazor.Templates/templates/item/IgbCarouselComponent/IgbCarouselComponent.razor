@@ -9,9 +9,9 @@
     <div class="control">
         <label>Indicators orientation</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorsOrientationName">
-                <IgbRadio Value="@("Start")">Start</IgbRadio>
-                <IgbRadio Value="@("End")">End</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorsOrientation">
+                <IgbRadio Value="CarouselIndicatorsOrientation.Start">Start</IgbRadio>
+                <IgbRadio Value="CarouselIndicatorsOrientation.End">End</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -55,7 +55,7 @@
     </IgbCarousel>
 </div>
 
-<div class="state">Orientation: @IndicatorsOrientationName &nbsp;|&nbsp; Vertical: @Vertical</div>
+<div class="state">Orientation: @IndicatorsOrientation &nbsp;|&nbsp; Vertical: @Vertical</div>
 
 @code {
     /*
@@ -77,8 +77,7 @@
 
     private IgbCarousel _carousel = default!;
 
-    private string IndicatorsOrientationName { get; set; } = "End";
-    private CarouselIndicatorsOrientation IndicatorsOrientation => Enum.Parse<CarouselIndicatorsOrientation>(IndicatorsOrientationName);
+    private CarouselIndicatorsOrientation IndicatorsOrientation { get; set; } = CarouselIndicatorsOrientation.End;
 
     private bool Vertical { get; set; }
     private bool DisableLoop { get; set; }

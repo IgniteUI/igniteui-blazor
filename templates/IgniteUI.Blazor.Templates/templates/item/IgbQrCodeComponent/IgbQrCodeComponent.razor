@@ -9,11 +9,11 @@
     <div class="control">
         <label>Error level</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ErrorLevelName">
-                <IgbRadio Value="@("Low")">L</IgbRadio>
-                <IgbRadio Value="@("Medium")">M</IgbRadio>
-                <IgbRadio Value="@("Quartile")">Q</IgbRadio>
-                <IgbRadio Value="@("High")">H</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ErrorLevel">
+                <IgbRadio Value="QrErrorCorrectionLevel.Low">L</IgbRadio>
+                <IgbRadio Value="QrErrorCorrectionLevel.Medium">M</IgbRadio>
+                <IgbRadio Value="QrErrorCorrectionLevel.Quartile">Q</IgbRadio>
+                <IgbRadio Value="QrErrorCorrectionLevel.High">H</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -21,10 +21,10 @@
     <div class="control">
         <label>Dot style</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DotStyleName">
-                <IgbRadio Value="@("Square")">Square</IgbRadio>
-                <IgbRadio Value="@("Circle")">Circle</IgbRadio>
-                <IgbRadio Value="@("Rounded")">Rounded</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="DotStyle">
+                <IgbRadio Value="QrDotStyle.Square">Square</IgbRadio>
+                <IgbRadio Value="QrDotStyle.Circle">Circle</IgbRadio>
+                <IgbRadio Value="QrDotStyle.Rounded">Rounded</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -55,7 +55,7 @@
     <IgbButton Variant="ButtonVariant.Outlined" @onclick="DownloadPng">Download PNG</IgbButton>
 </div>
 
-<div class="state">Value: @Value &nbsp;|&nbsp; Error level: @ErrorLevelName &nbsp;|&nbsp; Size: @Size</div>
+<div class="state">Value: @Value &nbsp;|&nbsp; Error level: @ErrorLevel &nbsp;|&nbsp; Size: @Size</div>
 
 @code {
     /*
@@ -75,12 +75,10 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string ErrorLevelName { get; set; } = "Medium";
-    private QrErrorCorrectionLevel ErrorLevel => Enum.Parse<QrErrorCorrectionLevel>(ErrorLevelName);
+    private QrErrorCorrectionLevel ErrorLevel { get; set; } = QrErrorCorrectionLevel.Medium;
 
-    private string DotStyleName { get; set; } = "Square";
-    private QrDotStyle DotStyle => Enum.Parse<QrDotStyle>(DotStyleName);
-    private QrCornerSquareStyle SquareStyle => Enum.Parse<QrCornerSquareStyle>(DotStyleName);
+    private QrDotStyle DotStyle { get; set; } = QrDotStyle.Square;
+    private QrCornerSquareStyle SquareStyle => Enum.Parse<QrCornerSquareStyle>(DotStyle.ToString());
 
     private double Size { get; set; } = 192;
     private string Value { get; set; } = "https://www.infragistics.com";

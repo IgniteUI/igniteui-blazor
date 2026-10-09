@@ -31,7 +31,7 @@ Mixing literal text with `@(...)` in one attribute on a component fails the buil
 
 ### CS0103 — a bare string `Value` on `IgbSelectItem` / `IgbRadio`
 
-In `IgniteUI.Blazor.Lite` their `Value` is generic (`TValue`, taken from the parent `IgbSelect` / `IgbRadioGroup`), so the attribute is a C# expression and `Value="apple"` reads as an identifier.
+In `IgniteUI.Blazor.Lite` their `Value` is generic (`TValue`, which must match the parent `IgbSelect` / `IgbRadioGroup`), so the attribute is a C# expression and `Value="apple"` reads as an identifier. Enum members, numbers and loop variables (`Value="Plan.Pro"`, `Value="1"`, `Value="item.Id"`) need no quoting; only a fixed string does.
 
 ```razor
 @* ❌ *@ <IgbSelectItem Value="apple">Apple</IgbSelectItem>

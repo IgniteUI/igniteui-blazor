@@ -54,15 +54,23 @@ The generic parameter is **`T`**, not `TValue` — set it to the data item type.
 ## Select
 
 ```razor
-<IgbSelect @bind-Value="Fruit" Label="Fruit" Placeholder="Choose a fruit">
-    <IgbSelectItem Value="@("apple")">Apple</IgbSelectItem>
-    <IgbSelectItem Value="@("orange")">Orange</IgbSelectItem>
+<IgbSelect @bind-Value="CountryCode" Label="Country" Placeholder="Choose a country">
+    @foreach (var country in Countries)
+    {
+        <IgbSelectItem Value="@country.Code">@country.Name</IgbSelectItem>
+    }
 </IgbSelect>
+
+@code {
+    string? CountryCode { get; set; }
+    private List<Country> Countries = SampleData.Countries;
+    record Country(string Code, string Name);
+}
 ```
 
-`IgbSelect<TValue>` takes `string`, `char`, or a numeric type, each optionally nullable; `@bind-Value` infers it and the items take it from the select, so a select with nothing to infer from needs `TValue` set. `Value` is `TValue?`. `Change` carries `IgbSelectItemComponentEventArgs<TValue>`, whose `Detail` is the selected `IgbSelectItem<TValue>`. `IgbSelectHeader` and `IgbSelectGroup` add section headings and grouping.
+Write item values as C# expressions, `Value="@country.Code"` or `Value="@("us")"`, which works in both packages. Use `Placeholder` for the empty state rather than an empty item. `IgbSelectHeader` and `IgbSelectGroup` add section headings and grouping.
 
-An item's `Value` is a C# expression, so a bare `Value="apple"` reads as the identifier `apple` and does not compile. Write string values as `Value="@("apple")"` or `Value='"apple"'`.
+In `IgniteUI.Blazor.Lite`, `IgbSelect<TValue>` is generic: it takes `string`, `char`, an enum, or a numeric type, each optionally nullable, and `@bind-Value` infers it, so a select with nothing to infer from needs `TValue` set. Each item infers its own `TValue` from its `Value`, so item values must have the select's exact type: an `int?` select needs `int?` values, not `int`. A bare `Value="apple"` is a C# expression there, reads as the identifier `apple`, and does not compile. `Change` carries `IgbSelectItemComponentEventArgs<TValue>`, whose `Detail` is the selected `IgbSelectItem<TValue>`. In the full product `Value` is a `string`.
 
 ## Date and time
 
@@ -109,7 +117,16 @@ Set `IgbCalendar<TValue>` to `DateTime`, `DateTime?`, or `string`. Multi and ran
 </IgbRadioGroup>
 ```
 
-Radios are grouped by being children of `IgbRadioGroup`, and the selected option is the group's `Value`. `IgbRadioGroup<TValue>` takes `string`, `char`, `bool`, or a numeric type, each optionally nullable; the radios take `TValue` from the group, and string values are written as for `IgbSelectItem`. `Change` carries `IgbRadioChangeEventArgs<TValue>`. Do **not** set `Name` to group them — `Name` is the framework's element identity, not the HTML radio name.
+Radios are grouped by being children of `IgbRadioGroup`, and the selected option is the group's `Value`; radio values are written as for `IgbSelectItem`. Do **not** set `Name` to group them — `Name` is the framework's element identity, not the HTML radio name.
+
+In `IgniteUI.Blazor.Lite`, `IgbRadioGroup<TValue>` is generic: it takes `string`, `char`, `bool`, an enum, or a numeric type, each optionally nullable; each radio infers `TValue` from its own `Value`, which must have the group's type, and `Change` carries `IgbRadioChangeEventArgs<TValue>`. An enum binds its members directly:
+
+```razor
+<IgbRadioGroup @bind-Value="Tier">
+    <IgbRadio Value="PlanTier.Basic">Basic</IgbRadio>
+    <IgbRadio Value="PlanTier.Pro">Pro</IgbRadio>
+</IgbRadioGroup>
+```
 
 ## Slider, Range Slider, Rating
 

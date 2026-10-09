@@ -9,11 +9,11 @@
     <div class="control">
         <label>Alignment</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="AlignmentName">
-                <IgbRadio Value="@("Start")">Start</IgbRadio>
-                <IgbRadio Value="@("End")">End</IgbRadio>
-                <IgbRadio Value="@("Center")">Center</IgbRadio>
-                <IgbRadio Value="@("Justify")">Justify</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Alignment">
+                <IgbRadio Value="TabsAlignment.Start">Start</IgbRadio>
+                <IgbRadio Value="TabsAlignment.End">End</IgbRadio>
+                <IgbRadio Value="TabsAlignment.Center">Center</IgbRadio>
+                <IgbRadio Value="TabsAlignment.Justify">Justify</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -21,9 +21,9 @@
     <div class="control">
         <label>Activation</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActivationName">
-                <IgbRadio Value="@("Auto")">Auto</IgbRadio>
-                <IgbRadio Value="@("Manual")">Manual</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Activation">
+                <IgbRadio Value="TabsActivation.Auto">Auto</IgbRadio>
+                <IgbRadio Value="TabsActivation.Manual">Manual</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -63,11 +63,9 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string AlignmentName { get; set; } = "Start";
-    private TabsAlignment Alignment => Enum.Parse<TabsAlignment>(AlignmentName);
+    private TabsAlignment Alignment { get; set; } = TabsAlignment.Start;
 
-    private string ActivationName { get; set; } = "Auto";
-    private TabsActivation Activation => Enum.Parse<TabsActivation>(ActivationName);
+    private TabsActivation Activation { get; set; } = TabsActivation.Auto;
 
     private string SelectedTab { get; set; } = "Home";
 

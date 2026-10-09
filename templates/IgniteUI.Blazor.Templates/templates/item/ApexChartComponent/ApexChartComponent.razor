@@ -10,10 +10,10 @@
 <div class="controls">
     <div class="control">
         <label>Chart type</label>
-        <IgbSelect TValue="string" @bind-Value="KindName">
+        <IgbSelect @bind-Value="Kind">
             @foreach (var kind in ChartKinds)
             {
-                <IgbSelectItem Value="@kind.ToString()">@kind.ToString()</IgbSelectItem>
+                <IgbSelectItem Value="kind">@kind</IgbSelectItem>
             }
         </IgbSelect>
     </div>
@@ -35,7 +35,7 @@
 </div>
 
 <div class="chart-host">
-    <ApexChart @key="@($"{KindName}-{Dark}-{Show2025}-{Show2026}")"
+    <ApexChart @key="@($"{Kind}-{Dark}-{Show2025}-{Show2026}")"
                TItem="DataPoint"
                Title="Monthly revenue"
                Options="BuildOptions()">
@@ -146,7 +146,7 @@
     </ApexChart>
 </div>
 
-<div class="state">Type: @KindName &nbsp;|&nbsp; Theme: @(Dark ? "Dark" : "Light") &nbsp;|&nbsp; Series: @SeriesLabel</div>
+<div class="state">Type: @Kind &nbsp;|&nbsp; Theme: @(Dark ? "Dark" : "Light") &nbsp;|&nbsp; Series: @SeriesLabel</div>
 
 @code {
     /*
@@ -187,8 +187,7 @@
 
     private static readonly ChartKind[] ChartKinds = Enum.GetValues<ChartKind>();
 
-    private string KindName { get; set; } = ChartKind.Line.ToString();
-    private ChartKind Kind => Enum.Parse<ChartKind>(KindName);
+    private ChartKind Kind { get; set; } = ChartKind.Line;
 
     // Kinds drawn with ApexPointSeries (single Y value). Slope is a Line with a plot option.
     private bool IsPointKind => Kind is ChartKind.Line or ChartKind.Area or ChartKind.Bar

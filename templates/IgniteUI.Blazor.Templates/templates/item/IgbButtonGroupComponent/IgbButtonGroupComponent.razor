@@ -9,10 +9,10 @@
     <div class="control">
         <label>Selection</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
-                <IgbRadio Value="@("Single")">Single</IgbRadio>
-                <IgbRadio Value="@("SingleRequired")">SingleRequired</IgbRadio>
-                <IgbRadio Value="@("Multiple")">Multiple</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Selection">
+                <IgbRadio Value="ButtonGroupSelection.Single">Single</IgbRadio>
+                <IgbRadio Value="ButtonGroupSelection.SingleRequired">SingleRequired</IgbRadio>
+                <IgbRadio Value="ButtonGroupSelection.Multiple">Multiple</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -20,9 +20,9 @@
     <div class="control">
         <label>Alignment</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="AlignmentName">
-                <IgbRadio Value="@("Horizontal")">Horizontal</IgbRadio>
-                <IgbRadio Value="@("Vertical")">Vertical</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Alignment">
+                <IgbRadio Value="ContentOrientation.Horizontal">Horizontal</IgbRadio>
+                <IgbRadio Value="ContentOrientation.Vertical">Vertical</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -67,11 +67,9 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string SelectionName { get; set; } = "Single";
-    private ButtonGroupSelection Selection => Enum.Parse<ButtonGroupSelection>(SelectionName);
+    private ButtonGroupSelection Selection { get; set; } = ButtonGroupSelection.Single;
 
-    private string AlignmentName { get; set; } = "Horizontal";
-    private ContentOrientation Alignment => Enum.Parse<ContentOrientation>(AlignmentName);
+    private ContentOrientation Alignment { get; set; } = ContentOrientation.Horizontal;
 
     private bool Disabled { get; set; }
     private readonly HashSet<string> Selected = new() { "center" };

@@ -9,10 +9,10 @@
     <div class="control">
         <label>Shape</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ShapeName">
-                <IgbRadio Value="@("Circle")">Circle</IgbRadio>
-                <IgbRadio Value="@("Rounded")">Rounded</IgbRadio>
-                <IgbRadio Value="@("Square")">Square</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Shape">
+                <IgbRadio Value="AvatarShape.Circle">Circle</IgbRadio>
+                <IgbRadio Value="AvatarShape.Rounded">Rounded</IgbRadio>
+                <IgbRadio Value="AvatarShape.Square">Square</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -53,7 +53,7 @@
     </IgbAvatar>
 </div>
 
-<div class="state">Shape: @ShapeName &nbsp;|&nbsp; Size: @Size &nbsp;|&nbsp; Content: @ContentKind</div>
+<div class="state">Shape: @Shape &nbsp;|&nbsp; Size: @Size &nbsp;|&nbsp; Content: @ContentKind</div>
 
 @code {
     /*
@@ -80,8 +80,7 @@
     private IgbIcon _iconRef = default!;
     private bool _iconRegistered;
 
-    private string ShapeName { get; set; } = "Circle";
-    private AvatarShape Shape => Enum.Parse<AvatarShape>(ShapeName);
+    private AvatarShape Shape { get; set; } = AvatarShape.Circle;
 
     private string Size { get; set; } = "large";
     private string ContentKind { get; set; } = "Image";

@@ -16,12 +16,12 @@
     <div class="control">
         <label>Variant</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
-                <IgbRadio Value="@("Primary")">Primary</IgbRadio>
-                <IgbRadio Value="@("Info")">Info</IgbRadio>
-                <IgbRadio Value="@("Success")">Success</IgbRadio>
-                <IgbRadio Value="@("Warning")">Warning</IgbRadio>
-                <IgbRadio Value="@("Danger")">Danger</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Variant">
+                <IgbRadio Value="StyleVariant.Primary">Primary</IgbRadio>
+                <IgbRadio Value="StyleVariant.Info">Info</IgbRadio>
+                <IgbRadio Value="StyleVariant.Success">Success</IgbRadio>
+                <IgbRadio Value="StyleVariant.Warning">Warning</IgbRadio>
+                <IgbRadio Value="StyleVariant.Danger">Danger</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -43,7 +43,7 @@
                          HideLabel="HideLabel" />
 </div>
 
-<div class="state">Value: @Value% &nbsp;|&nbsp; Variant: @VariantName</div>
+<div class="state">Value: @Value% &nbsp;|&nbsp; Variant: @Variant</div>
 
 @code {
     /*
@@ -65,8 +65,7 @@
 
     private double Value { get; set; } = 75;
 
-    private string VariantName { get; set; } = "Primary";
-    private StyleVariant Variant => Enum.Parse<StyleVariant>(VariantName);
+    private StyleVariant Variant { get; set; } = StyleVariant.Primary;
 
     private bool Indeterminate { get; set; }
     private bool HideLabel { get; set; }

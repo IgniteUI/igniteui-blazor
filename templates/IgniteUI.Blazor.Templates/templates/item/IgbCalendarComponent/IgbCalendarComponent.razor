@@ -9,10 +9,10 @@
     <div class="control">
         <label>Selection</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="SelectionName">
-                <IgbRadio Value="@("Single")">Single</IgbRadio>
-                <IgbRadio Value="@("Multiple")">Multiple</IgbRadio>
-                <IgbRadio Value="@("Range")">Range</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Selection">
+                <IgbRadio Value="CalendarSelection.Single">Single</IgbRadio>
+                <IgbRadio Value="CalendarSelection.Multiple">Multiple</IgbRadio>
+                <IgbRadio Value="CalendarSelection.Range">Range</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -20,10 +20,10 @@
     <div class="control">
         <label>Active view</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActiveViewName">
-                <IgbRadio Value="@("Days")">Days</IgbRadio>
-                <IgbRadio Value="@("Months")">Months</IgbRadio>
-                <IgbRadio Value="@("Years")">Years</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ActiveView">
+                <IgbRadio Value="CalendarActiveView.Days">Days</IgbRadio>
+                <IgbRadio Value="CalendarActiveView.Months">Months</IgbRadio>
+                <IgbRadio Value="CalendarActiveView.Years">Years</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -68,11 +68,9 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string SelectionName { get; set; } = "Single";
-    private CalendarSelection Selection => Enum.Parse<CalendarSelection>(SelectionName);
+    private CalendarSelection Selection { get; set; } = CalendarSelection.Single;
 
-    private string ActiveViewName { get; set; } = "Days";
-    private CalendarActiveView ActiveView => Enum.Parse<CalendarActiveView>(ActiveViewName);
+    private CalendarActiveView ActiveView { get; set; } = CalendarActiveView.Days;
 
     private bool TwoMonths { get; set; }
     private bool ShowWeekNumbers { get; set; }

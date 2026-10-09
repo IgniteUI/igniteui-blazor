@@ -9,11 +9,11 @@
     <div class="control">
         <label>Variant</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
-                <IgbRadio Value="@("Contained")">Contained</IgbRadio>
-                <IgbRadio Value="@("Flat")">Flat</IgbRadio>
-                <IgbRadio Value="@("Outlined")">Outlined</IgbRadio>
-                <IgbRadio Value="@("Fab")">Fab</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Variant">
+                <IgbRadio Value="ButtonVariant.Contained">Contained</IgbRadio>
+                <IgbRadio Value="ButtonVariant.Flat">Flat</IgbRadio>
+                <IgbRadio Value="ButtonVariant.Outlined">Outlined</IgbRadio>
+                <IgbRadio Value="ButtonVariant.Fab">Fab</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -31,7 +31,7 @@
     <IgbButton Variant="ButtonVariant.Outlined" @onclick="SimulateClick">Simulate Click()</IgbButton>
 </div>
 
-<div class="state">Variant: @VariantName &nbsp;|&nbsp; Clicks: @Clicks</div>
+<div class="state">Variant: @Variant &nbsp;|&nbsp; Clicks: @Clicks</div>
 
 @code {
     /*
@@ -53,8 +53,7 @@
 
     private IgbButton button = default!;
 
-    private string VariantName { get; set; } = "Contained";
-    private ButtonVariant Variant => Enum.Parse<ButtonVariant>(VariantName);
+    private ButtonVariant Variant { get; set; } = ButtonVariant.Contained;
 
     private bool Disabled { get; set; }
     private string Label { get; set; } = "Click me";

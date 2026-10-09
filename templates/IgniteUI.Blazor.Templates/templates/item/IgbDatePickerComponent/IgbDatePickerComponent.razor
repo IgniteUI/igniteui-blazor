@@ -9,9 +9,9 @@
     <div class="control">
         <label>Mode</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ModeName">
-                <IgbRadio Value="@("Dropdown")">Dropdown</IgbRadio>
-                <IgbRadio Value="@("Dialog")">Dialog</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Mode">
+                <IgbRadio Value="PickerMode.Dropdown">Dropdown</IgbRadio>
+                <IgbRadio Value="PickerMode.Dialog">Dialog</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -58,8 +58,7 @@
 
     private DateTime? Value { get; set; }
 
-    private string ModeName { get; set; } = "Dropdown";
-    private PickerMode Mode => Enum.Parse<PickerMode>(ModeName);
+    private PickerMode Mode { get; set; } = PickerMode.Dropdown;
 
     private bool Outlined { get; set; }
     private bool ShowWeekNumbers { get; set; }
