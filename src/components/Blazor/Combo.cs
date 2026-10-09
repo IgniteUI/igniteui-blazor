@@ -739,7 +739,7 @@ namespace IgniteUI.Blazor.Controls
         /// Selects one or more options in the list by item reference.
         /// If no items are provided all items are selected.
         /// </summary>
-        /// <param name="items">One or more items to be selected.
+        /// <param name="items">One or more items to be selected.</param>
         public void Select(TItem[] items)
         {
             InvokeMethodSync("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
@@ -760,7 +760,7 @@ namespace IgniteUI.Blazor.Controls
         /// Deselects one or more options in the list by item reference.
         /// If no items are provided all items are deselected.
         /// </summary>
-        /// <param name="items">One or more items to be deselected.
+        /// <param name="items">One or more items to be deselected.</param>
         public async Task DeselectAsync(TItem[] items)
         {
             await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
@@ -781,7 +781,7 @@ namespace IgniteUI.Blazor.Controls
         /// Deselects one or more options in the list by item reference.
         /// If no items are provided all items are deselected.
         /// </summary>
-        /// <param name="items">One or more items to be deselected.
+        /// <param name="items">One or more items to be deselected.</param>
         public void Deselect(TItem[] items)
         {
             InvokeMethodSync("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
