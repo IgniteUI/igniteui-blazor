@@ -62,7 +62,7 @@
         <Template>
             <div style="padding: 60px 60px 360px;">
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                    <IgbColorPicker TValue="string" Label="Background" @bind-Value="_boundColor" />
+                    <IgbColorPicker Label="Background" @bind-Value="_boundColor" />
                     <div style="@($"width: 48px; height: 48px; border-radius: 8px; border: 1px solid gainsboro; background: {_boundColor};")"></div>
                     <span style="font-family: ui-monospace, monospace;">@_boundColor</span>
                 </div>
