@@ -3082,7 +3082,8 @@ namespace IgniteUI.Blazor.Controls
             }
 
             var value = ConvertReturnValue<TValue>(detailObj);
-            if (value is null)
+            // An empty string is the element's empty value, such as a Radio Group with nothing checked.
+            if (value is null or "")
             {
                 return default;
             }
