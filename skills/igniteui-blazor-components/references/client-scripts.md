@@ -41,7 +41,7 @@ A template function receives one context object and returns an `html` template r
 The context mirrors the component's .NET template context: the same data is exposed under the same names — the item for a list item, the message for a chat message — so start from the component's C# template context type when writing one.
 
 ```razor
-<IgbCombo T="City" Data="Cities" ValueKey="Id" DisplayKey="Name" GroupKey="Country"
+<IgbCombo TValue="string" TItem="City" Data="Cities" ValueKey="Id" DisplayKey="Name" GroupKey="Country"
           ItemTemplateScript="CityItem" GroupHeaderTemplateScript="CountryHeader" />
 ```
 
