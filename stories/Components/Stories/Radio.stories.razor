@@ -9,7 +9,7 @@
             <Arg For="_ => _!.Alignment" Value="ContentOrientation.Vertical" />
         </Arguments>
         <Template>
-            <IgbRadioGroup TValue="Plan" @attributes="context.Args">
+            <IgbRadioGroup TValue="Plan" Name="plan" @attributes="context.Args">
                 <IgbRadio Value="Plan.Basic">Basic</IgbRadio>
                 <IgbRadio Value="Plan.Pro">Pro</IgbRadio>
                 <IgbRadio Value="Plan.Enterprise">Enterprise</IgbRadio>
@@ -22,7 +22,7 @@
             <Arg For="_ => _!.Alignment" Value="ContentOrientation.Horizontal" />
         </Arguments>
         <Template>
-            <IgbRadioGroup TValue="Plan" @attributes="context.Args">
+            <IgbRadioGroup TValue="Plan" Name="plan-horizontal" @attributes="context.Args">
                 <IgbRadio Value="Plan.Basic">Basic</IgbRadio>
                 <IgbRadio Value="Plan.Pro">Pro</IgbRadio>
                 <IgbRadio Value="Plan.Enterprise">Enterprise</IgbRadio>
@@ -32,7 +32,7 @@
 
     <Story Name="Two-way Binding">
         <Template>
-            <IgbRadioGroup @bind-Value="_plan">
+            <IgbRadioGroup Name="plan-binding" @bind-Value="_plan">
                 @foreach (var plan in Enum.GetValues<Plan>())
                 {
                     <IgbRadio Value="plan">@plan</IgbRadio>

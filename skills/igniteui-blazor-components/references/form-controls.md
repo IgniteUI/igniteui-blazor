@@ -111,18 +111,18 @@ Set `IgbCalendar<TValue>` to `DateTime`, `DateTime?`, or `string`. Multi and ran
 <IgbSwitch @bind-Checked="IsDarkMode">Dark Mode</IgbSwitch>
 
 <IgbRadioGroup @bind-Value="Plan" Alignment="ContentOrientation.Vertical">
-    <IgbRadio Value="@("basic")">Basic</IgbRadio>
-    <IgbRadio Value="@("pro")">Pro</IgbRadio>
-    <IgbRadio Value="@("enterprise")">Enterprise</IgbRadio>
+    <IgbRadio name="plan" Value="@("basic")">Basic</IgbRadio>
+    <IgbRadio name="plan" Value="@("pro")">Pro</IgbRadio>
+    <IgbRadio name="plan" Value="@("enterprise")">Enterprise</IgbRadio>
 </IgbRadioGroup>
 ```
 
-Radios are grouped by being children of `IgbRadioGroup`, and the selected option is the group's `Value`; radio values are written as for `IgbSelectItem`. Do **not** set `Name` to group them — `Name` is the framework's element identity, not the HTML radio name.
+The selected option is the group's `Value`; radio values are written as for `IgbSelectItem`. The radios are only mutually exclusive when they share a `name`: give every radio in a group the same lowercase `name`, unique to that group, or an unbound group lets each radio stay checked. In the full product, do **not** set `Name` to group them — `Name` is the framework's element identity, not the HTML radio name.
 
-In `IgniteUI.Blazor.Lite`, `IgbRadioGroup<TValue>` is generic: it takes `string`, `char`, `bool`, an enum, or a numeric type, each optionally nullable; each radio infers `TValue` from its own `Value`, which must have the group's type, and `Change` carries `IgbRadioChangeEventArgs<TValue>`. An enum binds its members directly:
+In `IgniteUI.Blazor.Lite`, `IgbRadioGroup<TValue>` is generic: it takes `string`, `char`, `bool`, an enum, or a numeric type, each optionally nullable; each radio infers `TValue` from its own `Value`, which must have the group's type, and `Change` carries `IgbRadioChangeEventArgs<TValue>`. `Name` on `IgbRadioGroup` passes the name to each of its radios. An enum binds its members directly:
 
 ```razor
-<IgbRadioGroup @bind-Value="Tier">
+<IgbRadioGroup Name="tier" @bind-Value="Tier">
     <IgbRadio Value="PlanTier.Basic">Basic</IgbRadio>
     <IgbRadio Value="PlanTier.Pro">Pro</IgbRadio>
 </IgbRadioGroup>
