@@ -16,7 +16,7 @@ namespace IgniteUI.Blazor.Controls
     /// <typeparam name="TValue">The type of the selected values: the <c>ValueKey</c> field of the data items, or the items themselves when <c>ValueKey</c> is not set.</typeparam>
     /// <typeparam name="TItem">The type of the items in the data; <c>object</c> with <see cref="DataJson"/>, whose items arrive as <see cref="System.Text.Json.JsonElement"/> values.</typeparam>
     public partial class IgbCombo<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TValue,
+        TValue,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TItem> : IgbBaseComboBox, IDataSourceNotifications, IJsonDataBinding
     {
         /// <inheritdoc />

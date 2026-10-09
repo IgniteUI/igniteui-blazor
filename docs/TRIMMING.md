@@ -6,11 +6,9 @@ Some library features intrinsically depend on runtime type information. Applicat
 
 ## App-provided data types: when to preserve them
 
-Parameters that carry your application's own types — data sources such as **`IgbCombo.Data`**, and value-carrying parameters such as `IgbTreeItem.Value` — work off members of those types at runtime. For `IgbCombo<TValue, TItem>`, both generic arguments are annotated with `DynamicallyAccessedMemberTypes.All`, so the members of the types supplied as `TValue` and `TItem` are preserved automatically. No additional consumer annotation is required for those two generic arguments.
+Parameters that carry your application's own types — data sources such as **`IgbCombo.Data`**, and value-carrying parameters such as `IgbTreeItem.Value` — work off the public properties and fields of those types at runtime. The trimmer cannot detect this, so unused members of your types may be removed and silently disappear from the rendered output.
 
-Other runtime data boundaries, including untyped data sources and value-carrying parameters such as `IgbTreeItem.Value`, still require the application to preserve the types it supplies. The trimmer cannot detect those accesses, so unused members of those types may be removed and silently disappear from the rendered output.
-
-Preserve types used at those untyped/runtime data boundaries, either with a `DynamicDependency` attribute on any kept method (e.g. your root component or `Program.Main`):
+Preserve the item types you bind, either with a `DynamicDependency` attribute on any kept method (e.g. your root component or `Program.Main`):
 
 ```csharp
 [DynamicDependency(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields, typeof(MyDataItem))]
@@ -25,9 +23,11 @@ public class MyDataItem { ... }
 
 or with a [trimmer root descriptor](https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#root-descriptors) listing the types.
 
-> **Prefer the `DynamicDependency` form.** It is honored by every trim/AOT pipeline. Annotating the type itself works under Blazor WebAssembly's ILLink (verified in the trimmed browser smoke) but was found **insufficient under NativeAOT's ILC** (verified 2026-09-01 via the AotSmoke gate) — the class-level annotation only takes effect where a `Type` value flows through annotated locations. This limitation does not apply to `IgbCombo<TValue, TItem>`, whose generic parameters carry the preservation requirement directly.
+> **Prefer the `DynamicDependency` form.** It is honored by every trim/AOT pipeline. Annotating the type itself works under Blazor WebAssembly's ILLink (verified in the trimmed browser smoke) but was found **insufficient under NativeAOT's ILC** (verified 2026-09-01 via the AotSmoke gate) — the class-level annotation only takes effect where a `Type` value flows through annotated locations, and the data-source entry points deliberately take unannotated `Type`s.
 
 Preservation must cover **every complex type reachable from the item type**, not just the root: if `MyDataItem` has an `Address` property whose members the component renders, `Address` needs the same treatment — the schema builder reflects over nested object types as it encounters them.
+
+A component that takes its item type as a type parameter preserves that type's members itself: `IgbCombo`'s `TItem` carries `[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]`, as the framework's generic inputs do for their values. That covers only the declared item type. Nested types, and items whose runtime type differs from it (a derived type, or `TItem="object"`), still need the preservation above.
 
 ## Module preloading: trim-safe by design
 
