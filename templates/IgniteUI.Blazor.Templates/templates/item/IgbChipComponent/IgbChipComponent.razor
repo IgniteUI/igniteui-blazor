@@ -10,12 +10,12 @@
         <label>Variant</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
-                <IgbRadio Value="Default">Default</IgbRadio>
-                <IgbRadio Value="Primary">Primary</IgbRadio>
-                <IgbRadio Value="Info">Info</IgbRadio>
-                <IgbRadio Value="Success">Success</IgbRadio>
-                <IgbRadio Value="Warning">Warning</IgbRadio>
-                <IgbRadio Value="Danger">Danger</IgbRadio>
+                <IgbRadio Value="@("Default")">Default</IgbRadio>
+                <IgbRadio Value="@("Primary")">Primary</IgbRadio>
+                <IgbRadio Value="@("Info")">Info</IgbRadio>
+                <IgbRadio Value="@("Success")">Success</IgbRadio>
+                <IgbRadio Value="@("Warning")">Warning</IgbRadio>
+                <IgbRadio Value="@("Danger")">Danger</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

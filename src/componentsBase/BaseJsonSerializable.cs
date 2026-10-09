@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -1009,6 +1010,76 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-    }
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ser"></param>
+        /// <param name="propName"></param>
+        /// <param name="value"></param>
+        internal void AddGenericValue<TValue>(RendererSerializer ser, string propName, TValue? value)
+        {
+            // Only a non-nullable date has a non-null empty state, its default DateTime.MinValue; 0 or false is a real radio value.
+            if (value is null || (value is DateTime && EqualityComparer<TValue>.Default.Equals(value, default)))
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (value is DateTime dateTime)
+            {
+                ser.AddDateTimeProp(propName, dateTime);
+            }
+            else if (value is string dateString)
+            {
+                ser.AddStringProp(propName, dateString);
+            }
+            else
+            {
+                // Invariant, as GenericValueFromEventJson parses the value back.
+                ser.AddStringProp(propName, value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value.ToString());
+            }
+        }
 
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        internal string? GenericValueString<TValue>(TValue? value)
+        {
+            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            {
+                return null;
+            }
+            else if (value is DateTime dateTime)
+            {
+                return DateToString(dateTime);
+            }
+            else if (value is string dateString)
+            {
+                return dateString;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Converts event json values to the specified type. Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="detailObj"></param>
+        /// <returns></returns>
+        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj)
+        {
+            EnsureValid();
+            if (CurrParent is BaseJsonSerializable)
+            {
+                return ((BaseJsonSerializable)CurrParent).GenericValueFromEventJson<TValue>(detailObj);
+            }
+            else if (CurrParent is IgbComponentBase)
+            {
+                return ((IgbComponentBase)CurrParent).GenericValueFromEventJson<TValue>(detailObj);
+            }
+            return default;
+        }
+    }
 }

@@ -3,23 +3,31 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Event arguments for component events whose payload is a single number.
     /// </summary>
-    public partial class IgbNumberEventArgs : BaseJsonSerializable
+    public partial class IgbNumberEventArgs : IgbNumberEventArgs<double>
     {
+    }
+
+    /// <summary>Event arguments carrying a typed numeric payload.</summary>
+    /// <typeparam name="TValue">The <c>TValue</c> of the component that raises the event.</typeparam>
+    public partial class IgbNumberEventArgs<TValue> : BaseJsonSerializable
+    {
+        private readonly Type genericType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
         /// <inheritdoc />
         internal override string RendererType { get { return "WebNumberEventArgs"; } }
 
-        private double _detail = 0;
+        private TValue _detail = default!;
 
         /// <summary>
         /// The numeric payload of the event. Its meaning depends on the event that carries it, for
         /// example the new value of the control or the index of the affected item.
         /// </summary>
-        public double Detail
+        public TValue Detail
         {
             get { return this._detail; }
             set
             {
-                if (this._detail != value || !IsPropDirty("Detail"))
+                if (!EqualityComparer<TValue>.Default.Equals(this._detail, value) || !IsPropDirty("Detail"))
                 {
                     MarkPropDirty("Detail");
                 }
@@ -33,7 +41,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Detail"))
-            { ser.AddNumberProp("detail", this._detail); }
+            { ser.AddPrimitiveProp("detail", this._detail); }
 
         }
 
@@ -43,7 +51,7 @@ namespace IgniteUI.Blazor.Controls
             base.ToEventJson(control, args);
 
             if (IsPropDirty("Detail"))
-            { args["detail"] = (this._detail).ToString(); }
+            { args["detail"] = ReturnToString(this._detail); }
 
         }
 
@@ -54,7 +62,12 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("detail", out var detailObj))
-            { this.Detail = ReturnToDouble(detailObj); }
+            {
+                var value = ConvertReturnValue(detailObj);
+                this.Detail = value is null
+                    ? default!
+                    : (TValue)Convert.ChangeType(value, genericType, System.Globalization.CultureInfo.InvariantCulture);
+            }
 
             this.SuppressParentNotify = false;
         }

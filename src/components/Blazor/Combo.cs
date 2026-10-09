@@ -3,7 +3,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The Combo component is similar to <see cref="IgbSelect"/> in that it provides a list of options
+    /// The Combo component is similar to <see cref="IgbSelect{TValue}"/> in that it provides a list of options
     /// from which the user can make a selection.
     /// In contrast to the Select component, the Combo component displays all options in a virtualized
     /// list of items, meaning the combo box can simultaneously show thousands of options, where one or
@@ -12,6 +12,8 @@ namespace IgniteUI.Blazor.Controls
     /// The Combo component features case-sensitive filtering, grouping, complex data binding,
     /// dynamic addition of values and more.
     /// </summary>
+    /// <typeparam name="TValue">The type of the selected values: the <c>ValueKey</c> field of the data items, or the items themselves when <c>ValueKey</c> is not set.</typeparam>
+    /// <typeparam name="TItem">The type of the items in the data.</typeparam>
     public partial class IgbCombo<TValue, TItem> : IgbBaseComboBox, IDataSourceNotifications
     {
         /// <inheritdoc />

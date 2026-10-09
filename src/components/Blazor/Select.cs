@@ -5,10 +5,14 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents a control that provides a menu of options.
     /// </summary>
-    public partial class IgbSelect : IgbComboBoxBaseLike
+    /// <typeparam name="TValue"><c>string</c>, <c>char</c>, an enum, or a numeric type such as <c>int</c> or <c>double</c>, or their nullable forms.</typeparam>
+    [CascadingTypeParameter(nameof(TValue))]
+    public partial class IgbSelect<TValue> : IgbComboBoxBaseLike
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelect"; } }
+
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -52,18 +56,18 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string? _value;
+        private TValue? _value;
 
         /// <summary>
         /// The value of the control.
         /// </summary>
         [Parameter]
-        public string? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -75,19 +79,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the control.
         /// </summary>
-        public async Task<string?> GetCurrentValueAsync()
+        public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ReturnToString(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
         /// Returns the current value of the control.
         /// </summary>
-        public string? GetCurrentValue()
+        public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ReturnToString(iv);
+            return GenericValueFromEventJson<TValue>(iv);
         }
         private bool _outlined = false;
 
@@ -226,13 +230,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the items of the component.
         /// </summary>
-        public async Task<IgbSelectItem[]> GetItemsAsync()
+        public async Task<IgbSelectItem<TValue>[]> GetItemsAsync()
         {
             var iv = await InvokeMethod("p:Items", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbSelectItem>(iv);
+            var retVal = ReturnToObjectArray<IgbSelectItem<TValue>>(iv);
             if (retVal == null)
             {
-                return Array.Empty<IgbSelectItem>();
+                return Array.Empty<IgbSelectItem<TValue>>();
             }
             return retVal;
 
@@ -241,13 +245,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the items of the component.
         /// </summary>
-        public IgbSelectItem[] GetItems()
+        public IgbSelectItem<TValue>[] GetItems()
         {
             var iv = InvokeMethodSync("p:Items", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbSelectItem>(iv);
+            var retVal = ReturnToObjectArray<IgbSelectItem<TValue>>(iv);
             if (retVal == null)
             {
-                return Array.Empty<IgbSelectItem>();
+                return Array.Empty<IgbSelectItem<TValue>>();
             }
             return retVal;
 
@@ -256,13 +260,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the groups of the component.
         /// </summary>
-        public async Task<IgbSelectGroup[]> GetGroupsAsync()
+        public async Task<IgbSelectGroup<TValue>[]> GetGroupsAsync()
         {
             var iv = await InvokeMethod("p:Groups", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbSelectGroup>(iv);
+            var retVal = ReturnToObjectArray<IgbSelectGroup<TValue>>(iv);
             if (retVal == null)
             {
-                return Array.Empty<IgbSelectGroup>();
+                return Array.Empty<IgbSelectGroup<TValue>>();
             }
             return retVal;
 
@@ -271,13 +275,13 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the groups of the component.
         /// </summary>
-        public IgbSelectGroup[] GetGroups()
+        public IgbSelectGroup<TValue>[] GetGroups()
         {
             var iv = InvokeMethodSync("p:Groups", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbSelectGroup>(iv);
+            var retVal = ReturnToObjectArray<IgbSelectGroup<TValue>>(iv);
             if (retVal == null)
             {
-                return Array.Empty<IgbSelectGroup>();
+                return Array.Empty<IgbSelectGroup<TValue>>();
             }
             return retVal;
 
@@ -286,18 +290,18 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the selected item from the dropdown, or <see langword="null"/> when nothing is selected.
         /// </summary>
-        public async Task<IgbSelectItem?> GetSelectedItemAsync()
+        public async Task<IgbSelectItem<TValue>?> GetSelectedItemAsync()
         {
             var iv = await InvokeMethod("p:SelectedItem", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
-                return default(IgbSelectItem);
+                return default(IgbSelectItem<TValue>);
             }
-            var retVal = (IgbSelectItem?)ConvertReturnValue(iv);
+            var retVal = (IgbSelectItem<TValue>?)ConvertReturnValue(iv);
             if (retVal == null)
             {
-                return default(IgbSelectItem);
+                return default(IgbSelectItem<TValue>);
             }
             return retVal;
 
@@ -306,18 +310,18 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the selected item from the dropdown, or <see langword="null"/> when nothing is selected.
         /// </summary>
-        public IgbSelectItem? GetSelectedItem()
+        public IgbSelectItem<TValue>? GetSelectedItem()
         {
             var iv = InvokeMethodSync("p:SelectedItem", new object?[] { }, new string[] { });
 
             if (iv == null)
             {
-                return default(IgbSelectItem);
+                return default(IgbSelectItem<TValue>);
             }
-            var retVal = (IgbSelectItem?)ConvertReturnValue(iv);
+            var retVal = (IgbSelectItem<TValue>?)ConvertReturnValue(iv);
             if (retVal == null)
             {
-                return default(IgbSelectItem);
+                return default(IgbSelectItem<TValue>);
             }
             return retVal;
 
@@ -502,18 +506,18 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
-        private EventCallback<string?>? _valueChanged = null;
+        private EventCallback<TValue?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the <see cref="Value"/> property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<string?> ValueChanged
+        public EventCallback<TValue?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<string?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue?>.Empty;
             }
             set
             {
@@ -566,17 +570,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbSelectItemComponentEventArgs>? _change = null;
+        private EventCallback<IgbSelectItemComponentEventArgs<TValue>>? _change = null;
 
         /// <summary>
         /// Emitted when the selected item changes through user interaction.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbSelectItemComponentEventArgs> Change
+        public EventCallback<IgbSelectItemComponentEventArgs<TValue>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbSelectItemComponentEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbSelectItemComponentEventArgs<TValue>>.Empty;
             }
             set
             {
@@ -585,12 +589,11 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbSelectItemComponentEventArgs>(this.RendererName, "Change", value, (args) =>
+                        this.SetHandler<IgbSelectItemComponentEventArgs<TValue>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(string?);
+                            var newValueValue = GenericValueFromEventJson<TValue>(args.Detail.Value);
 
                             {
-                                newValueValue = (string?)(args.Detail.Value);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -603,7 +606,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<string?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 ObserveHandlerTask(task);
@@ -620,7 +623,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbSelectItemComponentEventArgs>(this.RendererName, "Change", null);
+                    this.SetHandler<IgbSelectItemComponentEventArgs<TValue>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -631,9 +634,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbSelectItemComponentEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbSelectItemComponentEventArgs<TValue>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbSelectItemComponentEventArgs>(null, (Action<IgbSelectItemComponentEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbSelectItemComponentEventArgs<TValue>>(null, (Action<IgbSelectItemComponentEventArgs<TValue>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -1081,7 +1084,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", this._value); }
+            { ser.AddPrimitiveProp("value", this._value); }
             if (IsPropDirty("Outlined"))
             { ser.AddBooleanProp("outlined", this._outlined); }
             if (IsPropDirty("Autofocus"))

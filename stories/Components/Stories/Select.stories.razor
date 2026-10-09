@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/Select")]
 
-<Stories TComponent="IgbSelect">
+<Stories TComponent="IgbSelect<string>">
 
     <ArgType For="_ => _!.Placement" Control="ControlType.Select" />
     <ArgType For="_ => _!.ScrollStrategy" Control="ControlType.Radio" />
@@ -13,12 +13,11 @@
             <Arg For="_ => _!.Disabled" Value="false" />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args">
-                <IgbSelectItem Value="us">United States</IgbSelectItem>
-                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
-                <IgbSelectItem Value="de">Germany</IgbSelectItem>
-                <IgbSelectItem Value="fr">France</IgbSelectItem>
-                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            <IgbSelect TValue="string" @attributes="context.Args">
+                @foreach (var country in _countries)
+                {
+                    <IgbSelectItem Value="country.Code">@country.Name</IgbSelectItem>
+                }
             </IgbSelect>
         </Template>
     </Story>
@@ -29,12 +28,11 @@
             <Arg For="_ => _!.Outlined" Value="true" />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args">
-                <IgbSelectItem Value="us">United States</IgbSelectItem>
-                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
-                <IgbSelectItem Value="de">Germany</IgbSelectItem>
-                <IgbSelectItem Value="fr">France</IgbSelectItem>
-                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            <IgbSelect TValue="string" @attributes="context.Args">
+                @foreach (var country in _countries)
+                {
+                    <IgbSelectItem Value="country.Code">@country.Name</IgbSelectItem>
+                }
             </IgbSelect>
         </Template>
     </Story>
@@ -45,14 +43,40 @@
             <Arg For="_ => _!.Label" Value='"Disabled"' />
         </Arguments>
         <Template>
-            <IgbSelect @attributes="context.Args">
-                <IgbSelectItem Value="us">United States</IgbSelectItem>
-                <IgbSelectItem Value="uk">United Kingdom</IgbSelectItem>
-                <IgbSelectItem Value="de">Germany</IgbSelectItem>
-                <IgbSelectItem Value="fr">France</IgbSelectItem>
-                <IgbSelectItem Value="jp">Japan</IgbSelectItem>
+            <IgbSelect TValue="string" @attributes="context.Args">
+                @foreach (var country in _countries)
+                {
+                    <IgbSelectItem Value="country.Code">@country.Name</IgbSelectItem>
+                }
             </IgbSelect>
         </Template>
     </Story>
 
+    <Story Name="Two-way Binding">
+        <Template>
+            <IgbSelect @bind-Value="_code" Label="Country" Placeholder="Select a country">
+                @foreach (var country in _countries)
+                {
+                    <IgbSelectItem Value="country.Code">@country.Name</IgbSelectItem>
+                }
+            </IgbSelect>
+            <p>Selected: @(_code ?? "(none)")</p>
+        </Template>
+    </Story>
+
 </Stories>
+
+@code {
+    private record Country(string Code, string Name);
+
+    private static readonly Country[] _countries =
+    [
+        new("us", "United States"),
+        new("uk", "United Kingdom"),
+        new("de", "Germany"),
+        new("fr", "France"),
+        new("jp", "Japan"),
+    ];
+
+    private string? _code;
+}
