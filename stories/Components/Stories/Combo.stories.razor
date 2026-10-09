@@ -69,27 +69,6 @@
             <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args" />
         </Template>
     </Story>
-
-    <Story Name="Numeric Value Key">
-        <Arguments>
-            <Arg For="_ => _!.Label" Value='"Cities"' />
-            <Arg For="_ => _!.Placeholder" Value='"Pick one or more cities"' />
-            <Arg For="_ => _!.PlaceholderSearch" Value='"Search"' />
-            <Arg For="_ => _!.Outlined" Value="false" />
-            <Arg For="_ => _!.Disabled" Value="false" />
-        </Arguments>
-        <Template>
-            @* Numeric (struct) value key - the combo value is an int[] matching the Id column. *@
-            <IgbCombo T="int"
-                      Data="_citiesWithNumericIds"
-                      ValueKey="Id"
-                      DisplayKey="Name"
-                      GroupKey="Country"
-                      @bind-Value="_selectedCityIds"
-                      @attributes="context.Args" />
-        </Template>
-    </Story>
-
 </Stories>
 
 @code {
@@ -109,22 +88,5 @@
         new("JP02", "Osaka", "Japan")
     ];
 
-    private readonly CityNumIds[] _citiesWithNumericIds =
-    [
-        new(1, "Sofia", "Bulgaria"),
-        new(2, "Plovdiv", "Bulgaria"),
-        new(3, "Varna", "Bulgaria"),
-        new(4, "New York", "United States"),
-        new(5, "San Francisco", "United States"),
-        new(6, "Seattle", "United States"),
-        new(7, "London", "United Kingdom"),
-        new(8, "Manchester", "United Kingdom"),
-        new(9, "Tokyo", "Japan"),
-        new(10, "Osaka", "Japan")
-    ];
-
-    private int[] _selectedCityIds = [1, 4];
-
     private record City(string Id, string Name, string Country);
-    private record CityNumIds(int Id, string Name, string Country);
 }
