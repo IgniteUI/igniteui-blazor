@@ -44,10 +44,12 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         .Method(c => c.BlurComponentAsync(), c => c.BlurComponent(), "blur")
         .Method(c => c.FocusComponentAsync(new IgbFocusOptions { PreventScroll = true }), c => c.FocusComponent(new IgbFocusOptions { PreventScroll = true }), "focus",
             args: [new JsonSubset("""{"preventScroll": true}""")], types: ["Json"])
-        .Method(c => c.SelectAsync(["item-1"]), c => c.Select(["item-1"]), "select",
-            args: [new RawJson("""["item-1"]""")], types: [""])
-        .Method(c => c.DeselectAsync(["item-1"]), c => c.Deselect(["item-1"]), "deselect",
-            args: [new RawJson("""["item-1"]""")], types: [""])
+        .Method(c => c.SelectAsync([_valueItem1]), c => c.Select([_valueItem1]), "select",
+            arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
+            args: [FromRender.Of<object?>((interop, cut) => new RawJson($"[{UuidRef(interop, cut, 0)}]"))], types: [""])
+        .Method(c => c.DeselectAsync([_valueItem1]), c => c.Deselect([_valueItem1]), "deselect",
+            arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
+            args: [FromRender.Of<object?>((interop, cut) => new RawJson($"[{UuidRef(interop, cut, 0)}]"))], types: [""])
         .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
         .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("invalid entry"), c => c.SetCustomValidity("invalid entry"), "setCustomValidity",
@@ -207,67 +209,6 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
     }
 
     [Fact]
-    public void Combo_SelectAsync_ObjectOverload_And_ItemOverload_SendSameWireCall()
-    {
-        // Covers the TValue/TItem split: object[] (key/reference) and TItem[] (actual data item)
-        // overloads of SelectAsync/Select must both resolve to the same "select" wire invocation.
-        Interop.PrimeReady();
-        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
-            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
-
-        cut.Instance.Select(new[] { _valueItem1 });
-
-        var call = Interop.RequireCall("select", Interop.ContainerIdOf(cut));
-        var sentItem = Assert.Single(call.Arguments[0].EnumerateArray());
-        Assert.Equal("uuid", sentItem.GetProperty("refType").GetString());
-        Assert.Equal(DataItemId(Interop, cut, 0), sentItem.GetProperty("id").GetString());
-    }
-
-    [Fact]
-    public async Task Combo_SelectAsyncAndDeselectAsync_ExplicitObjectArray_ResolveToObjectOverload()
-    {
-        // `new object[] { ... }` must bind to the object[] (key/reference) overload - not TItem[]
-        // (ComboItem[], since TItem here is ComboItem) - and pass each element through as-is,
-        // with no resolution against Data. Exercises both async methods directly (not through
-        // the generated ComponentContract machinery), since the contract's own object[] coverage
-        // relies on collection-expression target typing (`[...]`) rather than an explicit cast.
-        Interop.PrimeReady();
-        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
-            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
-
-        await cut.Instance.SelectAsync(new object[] { "item-1" });
-        var selectCall = Interop.RequireCall("select", Interop.ContainerIdOf(cut));
-        Assert.Equal("item-1", Assert.Single(selectCall.Arguments[0].EnumerateArray()).GetString());
-
-        await cut.Instance.DeselectAsync(new object[] { "item-1" });
-        var deselectCall = Interop.RequireCall("deselect", Interop.ContainerIdOf(cut));
-        Assert.Equal("item-1", Assert.Single(deselectCall.Arguments[0].EnumerateArray()).GetString());
-    }
-
-    [Fact]
-    public async Task Combo_SelectAsyncAndDeselectAsync_ExplicitComboItemArray_ResolveToItemOverload()
-    {
-        // `new ComboItem[] { ... }` must bind to the TItem[] (actual data item) overload - not
-        // object[] - and resolve each item against Data to the same uuid ref DataItemId
-        // identifies, rather than passing anything through as-is.
-        Interop.PrimeReady();
-        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
-            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
-
-        await cut.Instance.SelectAsync(new ComboItem[] { _valueItem1 });
-        var selectCall = Interop.RequireCall("select", Interop.ContainerIdOf(cut));
-        var selectedItem = Assert.Single(selectCall.Arguments[0].EnumerateArray());
-        Assert.Equal("uuid", selectedItem.GetProperty("refType").GetString());
-        Assert.Equal(DataItemId(Interop, cut, 0), selectedItem.GetProperty("id").GetString());
-
-        await cut.Instance.DeselectAsync(new ComboItem[] { _valueItem1 });
-        var deselectCall = Interop.RequireCall("deselect", Interop.ContainerIdOf(cut));
-        var deselectedItem = Assert.Single(deselectCall.Arguments[0].EnumerateArray());
-        Assert.Equal("uuid", deselectedItem.GetProperty("refType").GetString());
-        Assert.Equal(DataItemId(Interop, cut, 0), deselectedItem.GetProperty("id").GetString());
-    }
-
-    [Fact]
     public void Combo_Data_LocalJson_IsAssignableAndSendsLocalJsonRefTransfer()
     {
         // LocalJson<TItem> is directly assignable to Data (no cast needed, unlike the untyped
@@ -366,6 +307,13 @@ public abstract class ComboValueKeyTestsBase<TValue> : ComponentWithContractTest
 
     private ComponentContract<IgbCombo<TValue, ComboItem>> BuildContract() =>
         new ComponentContract<IgbCombo<TValue, ComboItem>>()
+            // A keyed combo selects by key, so the keys cross as they are, no data-source refs.
+            .Method(c => c.SelectAsync(PropValues), c => c.Select(PropValues), "select",
+                arrange: Arrange,
+                args: [new RawJson(ExpectedValue)], types: [""])
+            .Method(c => c.DeselectAsync(PropValues), c => c.Deselect(PropValues), "deselect",
+                arrange: Arrange,
+                args: [new RawJson(ExpectedValue)], types: [""])
             .Event(c => c.Change,
                 Arrange,
                 argsJson: FromRender.Of((interop, cut) => ComboTests.ChangeDetail(EventKeyValue, ComboTests.UuidRef(interop, cut, 1))),
@@ -383,6 +331,9 @@ public abstract class ComboValueKeyTestsBase<TValue> : ComponentWithContractTest
                 value: PropValues,
                 arrange: Arrange,
                 wire: new RawJson(ExpectedValue));
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
 
     [Fact]
     public void Props_FollowContract() => VerifyPropContract();
