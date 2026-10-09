@@ -34,6 +34,7 @@
     <PackageProjectUrl>https://www.infragistics.com/products/ignite-ui-blazor</PackageProjectUrl>
     <Description>Ignite UI for Blazor Lite is a library of UI components, giving you the ability to build modern web applications.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>nupkg-icon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/IgniteUI/igniteui-blazor</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -89,6 +90,11 @@
     <Compile Include="componentsBase\WebInputs\*.cs" />
 
     <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Remove="nupkg-icon.png" />
+    <None Include="nupkg-icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
