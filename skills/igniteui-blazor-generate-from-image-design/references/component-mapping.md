@@ -59,15 +59,15 @@ Only pick a grid when the content is genuinely tabular. A list of records with r
 | Dropdown selecting a value | `IgbSelect` + `IgbSelectItem` | |
 | Searchable / multi-select picker | `IgbCombo` | generic parameter is `T`; `Data`, `DisplayKey`, `ValueKey` |
 | Contextual action menu | `IgbDropdown` | trigger in `slot="target"` — not for form values |
-| Date picker | `IgbDatePicker<TValue>` (`DateTime`, `DateTime?`, or `string`) | |
-| Date range | `IgbDateRangePicker<TValue>` (`DateTime`, `DateTime?`, or `string`) | |
-| Always-visible calendar | `IgbCalendar<TValue>` (`DateTime`, `DateTime?`, or `string`) | `Selection`, `VisibleMonths` |
+| Date picker | `IgbDatePicker` | `DateTime?` in the full product; Lite: `<TValue>` is `DateTime`, `DateTime?` or `string` |
+| Date range | `IgbDateRangePicker` | |
+| Always-visible calendar | `IgbCalendar` | `Selection`, `VisibleMonths`; non-nullable `DateTime` in the full product, Lite takes `<TValue>` as the date picker does |
 | Masked entry (phone, postal) | `IgbMaskInput` | `Mask`: `0` digit, `L` letter, `A` alphanumeric |
 | Checkbox / switch | `IgbCheckbox` / `IgbSwitch` | `@bind-Checked` |
-| Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group |
+| Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group in the full product (give its radios the same lowercase `name`) |
 | Slider / range slider | `IgbSlider` / `IgbRangeSlider` | range uses `Lower` / `Upper` |
 | Star rating | `IgbRating` | |
-| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color `string` or `System.Drawing.Color`), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |
+| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string; Lite also `System.Drawing.Color`), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |
 | Primary action button | `IgbButton` | `Variant`: `Contained`/`Outlined`/`Flat`/`Fab` |
 | Segmented / toggle control | `IgbButtonGroup` + `IgbToggleButton` | |
 | Icon-only button | `IgbIconButton` | |
