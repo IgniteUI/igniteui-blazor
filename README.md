@@ -190,7 +190,7 @@ Any accessibility claim, ARIA pattern conformance, keyboard interaction behavior
 
 ### Publishing with trimming
 
-The library is trim-compatible. Applications publishing with `PublishTrimmed=true` (the Blazor WebAssembly default) should read [docs/TRIMMING.md](docs/TRIMMING.md) — mainly for preserving the data item types they bind.
+The library is trim-compatible. Applications publishing with `PublishTrimmed=true` (the Blazor WebAssembly default) should read [docs/TRIMMING.md](docs/TRIMMING.md) — in particular, for preserving types used at runtime data boundaries. `IgbCombo<TValue, TItem>` preserves all members of its two generic type arguments automatically.
 
 ### AI agent skills
 

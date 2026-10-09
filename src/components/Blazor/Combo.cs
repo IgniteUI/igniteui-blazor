@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -12,7 +13,9 @@ namespace IgniteUI.Blazor.Controls
     /// The Combo component features case-sensitive filtering, grouping, complex data binding,
     /// dynamic addition of values and more.
     /// </summary>
-    public partial class IgbCombo<TValue, TItem> : IgbBaseComboBox, IDataSourceNotifications
+    public partial class IgbCombo<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TValue,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TItem> : IgbBaseComboBox, IDataSourceNotifications
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCombo"; } }
