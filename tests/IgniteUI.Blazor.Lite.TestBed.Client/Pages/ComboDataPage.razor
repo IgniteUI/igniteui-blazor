@@ -15,7 +15,7 @@
 </div>
 
 @code {
-    private object[]? _data;
+    private IEnumerable<object>? _data;
     private string? _valueKey;
     private string? _displayKey;
     private ObservableCollection<ComboDataScenarios.Product>? _observable;
@@ -103,7 +103,7 @@
     private void Apply(string scenario)
     {
         var s = ComboDataScenarios.Get(scenario);
-        _data = s.Data.ToArray();
+        _data = s.Data;
         _valueKey = s.ValueKey;
         _displayKey = s.DisplayKey;
         _observable = s.Data as ObservableCollection<ComboDataScenarios.Product>;
