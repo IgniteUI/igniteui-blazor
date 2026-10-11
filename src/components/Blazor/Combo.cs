@@ -731,40 +731,40 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Selects one or more options in the list by <see cref="ValueKey"/>.
+        /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
         /// If no items are provided all items are selected.
         /// </summary>
-        /// <param name="items">One or more items to be selected. <see cref="ValueKey"/> should be specified, and the corresponding value should be used.</param>
+        /// <param name="items">One or more items to be selected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public async Task SelectAsync(TValue[] items)
         {
             await InvokeMethod("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
 
         /// <summary>
-        /// Selects one or more options in the list by <see cref="ValueKey"/>.
+        /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
         /// If no items are provided all items are selected.
         /// </summary>
-        /// <param name="items">One or more items to be selected. <see cref="ValueKey"/> should be specified, and the corresponding value should be used.</param>
+        /// <param name="items">One or more items to be selected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public void Select(TValue[] items)
         {
             InvokeMethodSync("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
 
         /// <summary>
-        /// Deselects one or more options in the list by <see cref="ValueKey"/>.
+        /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
         /// If no items are provided all items are deselected.
         /// </summary>
-        /// <param name="items">One or more items to be deselected. <see cref="ValueKey"/> should be specified, and the corresponding value should be used.</param>
+        /// <param name="items">One or more items to be deselected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public async Task DeselectAsync(TValue[] items)
         {
             await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
 
         /// <summary>
-        /// Deselects one or more options in the list by <see cref="ValueKey"/>.
+        /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
         /// If no items are provided all items are deselected.
         /// </summary>
-        /// <param name="items">One or more items to be deselected. <see cref="ValueKey"/> should be specified, and the corresponding value should be used.</param>
+        /// <param name="items">One or more items to be deselected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public void Deselect(TValue[] items)
         {
             InvokeMethodSync("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
