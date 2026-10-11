@@ -147,7 +147,7 @@ namespace IgniteUI.Blazor.Controls
 
         internal static object? CreateInstance<TValue>(string typeName)
         {
-            return CreateInstance<object, object>(typeName);
+            return CreateInstance<TValue, object>(typeName);
         }
 
         internal static object? CreateInstance<TValue, TItem>(string typeName)
