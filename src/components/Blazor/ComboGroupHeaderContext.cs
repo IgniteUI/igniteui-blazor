@@ -5,14 +5,9 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public class IgbComboGroupHeaderContext
     {
-        internal IgbComboGroupHeaderContext(object? key)
-        {
-            Key = key;
-        }
-
         /// <summary>
         /// The value the items in this group share for <see cref="IgbCombo{TValue, TItem}.GroupKey"/>.
         /// </summary>
-        public object? Key { get; }
+        public object? Key { get; internal set; }
     }
 }
