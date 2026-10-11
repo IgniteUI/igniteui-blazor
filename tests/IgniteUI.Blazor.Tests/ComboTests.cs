@@ -274,12 +274,11 @@ public abstract class ComboValueKeyTestsBase<TValue> : ComponentWithContractTest
                 {
                     Assert.Equal(ExpectedKeyValue, Assert.Single(args.Detail.NewValue));
                     Assert.Same(Item2, Assert.Single(args.Detail.Items));
-                    // Two-way Value propagation through the generated wrapper works when T
+                    // Two-way Value propagation through the generated wrapper works when TValue
                     // matches the key value type.
                     Assert.Equal(ExpectedKeyValue, Assert.Single(cut.Instance.Value));
                 })
-            // A value-type value array crosses as plain JSON numbers — the keys
-            // themselves, no data-source refs, since a keyed combo's value is the key.
+            // A keyed combo's value is the keys, so it crosses as they are too.
             .Prop(c => c.Value,
                 value: PropValues,
                 arrange: Arrange,
