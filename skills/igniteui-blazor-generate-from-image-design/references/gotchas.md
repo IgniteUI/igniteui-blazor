@@ -222,9 +222,9 @@ Radios are mutually exclusive only when they share an HTML `name`: give every `I
 
 `AvatarShape.Circle | Rounded | Square`. There is no `RoundShape`.
 
-### `IgbCombo`'s generic parameter is `T`
+### `IgbCombo`'s generic parameters differ per package
 
-`<IgbCombo T="Person" …>`, not `TValue`.
+`IgniteUI.Blazor.Lite`: `<IgbCombo TValue="int" TItem="Person" …>`. Full `IgniteUI.Blazor`: `<IgbCombo T="int" …>`. `TValue` / `T` is the value type: the `ValueKey` property's type, or the item type without a `ValueKey` — not the item type of a keyed combo. Razor infers them from `@bind-Value` and `Data`, but in Lite a `Change` handler needs both set explicitly.
 
 ### `IgbCard` has no default width
 

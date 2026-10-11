@@ -64,13 +64,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<IgbStep[]> GetStepsAsync()
         {
             var iv = await InvokeMethod("p:Steps", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbStep>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbStep>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbStep>(iv);
         }
 
         /// <summary>
@@ -79,13 +73,7 @@ namespace IgniteUI.Blazor.Controls
         public IgbStep[] GetSteps()
         {
             var iv = InvokeMethodSync("p:Steps", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbStep>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbStep>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbStep>(iv);
         }
         private StepperOrientation _orientation = StepperOrientation.Horizontal;
 

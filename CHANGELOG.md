@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** the component no longer takes the internal id `mainControl` as its form-field name, so these fields no longer submit under that name or collide with each other in the same form.
 - **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** a `style` attribute no longer overrides the component's own layout ([#477](https://github.com/IgniteUI/igniteui-blazor/issues/477)), an `id` attribute is no longer duplicated on an extra element, an attribute removed from the markup no longer stays with `"null"` value, and the Chat no longer collapses to no width outside a layout that stretches it.
+- **Combo:** with a numeric `ValueKey`, such as an `int` key, `Change`, `ValueChanged` and `@bind-Value` now fire on a selection change, instead of the event being dropped. [#364](https://github.com/IgniteUI/igniteui-blazor/issues/364)
+
+### Deprecated
+
+- **Combo:** the non-generic `IgbComboChangeEventArgs` and `IgbComboChangeEventArgsDetail`; use `IgbComboChangeEventArgs<TValue, TItem>`. A `Change` handler that takes `IgbComboChangeEventArgs` still binds, with an obsolete warning, and reads `Detail.NewValue` and `Detail.Items` as `object?[]`. `Detail` is read-only.
 
 ### Breaking Changes
 
@@ -28,6 +33,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Event args that carry the value are generic too, such as `IgbComponentDateValueChangedEventArgs<TValue>` and `IgbRadioChangeEventArgs<TValue>`, and the Color Picker's `Change` and `Input` now pass `IgbColorPickerValueEventArgs<TValue>` instead of `IgbComponentValueChangedEventArgs`.
 
   `IgbDateRangeValue` and `IgbCustomDateRange` take the picker's `TValue`, so a range built in code is written `new IgbDateRangeValue<DateTime> { Start = start, End = end }`. A cleared Date Picker or Date Time Input bound to `DateTime?` reports `null` instead of `DateTime.MinValue`.
+- **Combo:** `IgbCombo<T>` is now `IgbCombo<TValue, TItem>` ([#511](https://github.com/IgniteUI/igniteui-blazor/issues/511)). `TValue` is the value type, as `T` was: the `ValueKey` property's type, or the item type without a `ValueKey`. `TItem` is the data item type, so `Data` is an `IEnumerable<TItem>`.
+
+  Razor infers both from `@bind-Value` and `Data`, but not through a `Change` handler, so a combo that handles `Change`, or has nothing to infer them from, needs `TValue="..." TItem="..."`. Code that names the type needs both arguments too, such as `IgbCombo<int, City>`. `Change` passes `IgbComboChangeEventArgs<TValue, TItem>`, whose `Detail.NewValue` is a `TValue[]` and `Detail.Items` a `TItem[]`.
+
+  `LocalJson` and `RemoteJson` are set through the new `DataJson` parameter instead of `Data`. `Select`, `Deselect` and their async forms take a `TValue[]`. `ItemTemplate` is a `RenderFragment<TItem>`, and `GroupHeaderTemplate` a `RenderFragment<IgbComboGroupHeaderContext>`, whose `Key` is the group's value.
 - **Radio, Select Item:** `Value` is a `TValue`, so Razor reads it as C# rather than text, and each option's value must match the type of its Radio Group or Select. Enum, number and loop values need no conversion, such as `Value="Plan.Pro"`, `Value="1"`, or `@foreach (var plan in plans) { <IgbRadio Value="plan">@plan</IgbRadio> }`, where a non-string value previously needed `.ToString()`. A string literal no longer compiles as text and is written as `Value="@("basic")"`.
 - **`Width` and `Height` removed:** size a component with CSS, like any other element. Usually the layout decides it: a flex or grid container sizes and aligns the components in it. For an explicit size, give the component a `class` and target it from your stylesheet, or from the [isolated CSS](https://learn.microsoft.com/aspnet/core/blazor/components/css-isolation) of the component that renders it, through `::deep`.
 - **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** render their element directly, like every other component, instead of inside an `inline-block` wrapper `div`. In normal flow all but the Color Picker now fill their row, and sizing the Date Picker with `width` also needs a `display`, as its element is inline. CSS that reached the element through the wrapper, such as `.my-picker igc-date-picker`, now targets it directly: `igc-date-picker.my-picker`.
