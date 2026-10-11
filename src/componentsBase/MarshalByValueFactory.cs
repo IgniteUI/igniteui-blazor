@@ -212,7 +212,7 @@ namespace IgniteUI.Blazor.Controls
                     return new IgbComponentBoolValueChangedEventArgs();
                 case "ComponentDateValueChangedEventArgs":
                 case "WebComponentDateValueChangedEventArgs":
-                    return new IgbComponentDateValueChangedEventArgs();
+                    return new IgbComponentDateValueChangedEventArgs<TValue>();
                 case "ComponentValueChangedEventArgs":
                 case "WebComponentValueChangedEventArgs":
                     return new IgbComponentValueChangedEventArgs();
