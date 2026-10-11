@@ -134,10 +134,11 @@ Validate in `CellEdit` / `RowEdit` and set `args.Detail.Valid = false` to block 
 <IgbColumn Field="AssignedTo" Header="Assigned To" Editable="true">
     <InlineEditorTemplate>
         @{ var cell = (IgbCellTemplateContext)context; }
-        <IgbCombo TValue="int" TItem="Person" Data="people" ValueKey="Id" DisplayKey="Name"
-                  SingleSelect="true" @bind-Value="cell.Cell.EditValue" />
+        <IgbCombo T="int" Data="people" ValueKey="Id" DisplayKey="Name" SingleSelect="true"
+                  Value="@(cell.Cell.EditValue is int id ? new[] { id } : Array.Empty<int>())"
+                  ValueChanged="@((int[] ids) => cell.Cell.EditValue = ids.FirstOrDefault())" />
     </InlineEditorTemplate>
 </IgbColumn>
 ```
 
-`IgbCombo` takes two generic parameters: `TValue` (the bound value/key type, e.g. `Person.Id`'s type) and `TItem` (the data item type, e.g. `Person`). Set `TValue` to match `ValueKey`'s property type, or to the item type itself when no `ValueKey` is set.
+The grids ship in the full `IgniteUI.Blazor`, whose combo has one generic parameter `T`: the value type, here `Person.Id`'s `int`, or the item type when there is no `ValueKey`. `Value` is a `T[]` even with `SingleSelect`, so convert to and from the cell's `EditValue` instead of binding it directly.

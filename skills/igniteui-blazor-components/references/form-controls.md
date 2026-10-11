@@ -51,16 +51,17 @@ Icons in `prefix` / `suffix` slots must be `IgbIcon`. A `<span class="material-i
 ## Combo Box
 
 ```razor
-<IgbCombo TValue="string" TItem="City" Data="Cities" ValueKey="Id" DisplayKey="Name"
+<IgbCombo Data="Cities" ValueKey="Id" DisplayKey="Name" @bind-Value="SelectedCityIds"
           Label="Select Cities" Placeholder="Pick a city" />
 
 @code {
     private List<City> Cities = SampleData.Cities;
+    private string[] SelectedCityIds = [];
     record City(string Id, string Name, string Country);
 }
 ```
 
-`IgbCombo` takes two generic parameters: `TValue` (the bound value/key type — here `City.Id`'s type, `string`) and `TItem` (the data item type, `City`). `IgbCombo` does not participate in a plain HTML `<form>`; bind its value explicitly.
+The combo is generic over its value type: the `ValueKey` property's type (here `City.Id`, `string`), or the item type when there is no `ValueKey`. `Value` is an array of it, even with `SingleSelect`. The full `IgniteUI.Blazor` names it `T`; `IgniteUI.Blazor.Lite` names it `TValue` and adds `TItem`, the item type `Data` takes. Razor infers them from `@bind-Value` and `Data`, so the example sets neither. Set them when there is nothing to infer them from, and in Lite whenever the combo has a `Change` handler, as its args are `IgbComboChangeEventArgs<TValue, TItem>`: `<IgbCombo T="string" …>` in the full product, `<IgbCombo TValue="string" TItem="City" …>` in Lite. `IgbCombo` does not participate in a plain HTML `<form>`; bind its value explicitly.
 
 ## Select
 
