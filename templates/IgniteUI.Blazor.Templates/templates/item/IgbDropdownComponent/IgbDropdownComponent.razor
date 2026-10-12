@@ -8,10 +8,10 @@
 <div class="controls">
     <div class="control">
         <label>Placement</label>
-        <IgbSelect @bind-Value="PlacementName">
+        <IgbSelect @bind-Value="Placement">
             @foreach (var placement in Placements)
             {
-                <IgbSelectItem Value="@placement.ToString()">@placement.ToString()</IgbSelectItem>
+                <IgbSelectItem Value="placement">@placement</IgbSelectItem>
             }
         </IgbSelect>
     </div>
@@ -135,8 +135,7 @@
 
     private static readonly PopoverPlacement[] Placements = Enum.GetValues<PopoverPlacement>();
 
-    private string PlacementName { get; set; } = "BottomStart";
-    private PopoverPlacement Placement => Enum.Parse<PopoverPlacement>(PlacementName);
+    private PopoverPlacement Placement { get; set; } = PopoverPlacement.BottomStart;
 
     private bool Flip { get; set; }
     private bool SameWidth { get; set; }

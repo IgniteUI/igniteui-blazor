@@ -138,7 +138,7 @@ public class UnmarshalledDataChannelTests : BunitContext
     private UnmarshalledColumnMessage RenderScenario(ComboDataScenarios.Scenario scenario)
     {
         _interop.PrimeReady();
-        Render<IgbCombo<object>>(ps => ps
+        Render<IgbCombo<object, object>>(ps => ps
             .Add(c => c.Data, scenario.Data)
             .Add(c => c.ValueKey, scenario.ValueKey)
             .Add(c => c.DisplayKey, scenario.DisplayKey));

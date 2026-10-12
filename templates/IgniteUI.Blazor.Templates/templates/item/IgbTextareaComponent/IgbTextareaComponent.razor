@@ -9,7 +9,7 @@
     <div class="control">
         <label>Resize</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ResizeName">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Resize">
                 @foreach (var resize in Resizes)
                 {
                     <IgbRadio Value="@resize.ToString()">@resize.ToString()</IgbRadio>
@@ -21,7 +21,7 @@
     <div class="control">
         <label>Wrap</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="WrapName">
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Wrap">
                 @foreach (var wrap in Wraps)
                 {
                     <IgbRadio Value="@wrap.ToString()">@wrap.ToString()</IgbRadio>
@@ -68,7 +68,7 @@
     </IgbTextarea>
 </div>
 
-<div class="state">Resize: @ResizeName &nbsp;|&nbsp; Wrap: @WrapName &nbsp;|&nbsp; Rows: @Rows &nbsp;|&nbsp; Length: @Length</div>
+<div class="state">Resize: @Resize &nbsp;|&nbsp; Wrap: @Wrap &nbsp;|&nbsp; Rows: @Rows &nbsp;|&nbsp; Length: @Length</div>
 
 @code {
     /*
@@ -100,11 +100,9 @@
     private int Length { get; set; }
     private void OnInput(IgbComponentValueChangedEventArgs args) => Length = args.Detail?.Length ?? 0;
 
-    private string ResizeName { get; set; } = "Vertical";
-    private TextareaResize Resize => Enum.Parse<TextareaResize>(ResizeName);
+    private TextareaResize Resize { get; set; } = TextareaResize.Vertical;
 
-    private string WrapName { get; set; } = "Soft";
-    private TextareaWrap Wrap => Enum.Parse<TextareaWrap>(WrapName);
+    private TextareaWrap Wrap { get; set; } = TextareaWrap.Soft;
 
     private double Rows { get; set; } = 4;
 

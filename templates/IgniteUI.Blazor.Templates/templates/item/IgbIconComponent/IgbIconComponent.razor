@@ -10,10 +10,10 @@
         <label>Icon</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IconName">
-                <IgbRadio Value="home">home</IgbRadio>
-                <IgbRadio Value="favorite">favorite</IgbRadio>
-                <IgbRadio Value="star">star</IgbRadio>
-                <IgbRadio Value="login">login</IgbRadio>
+                <IgbRadio Value="@("home")">home</IgbRadio>
+                <IgbRadio Value="@("favorite")">favorite</IgbRadio>
+                <IgbRadio Value="@("star")">star</IgbRadio>
+                <IgbRadio Value="@("login")">login</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -22,9 +22,9 @@
         <label>Size</label>
         <div class="control-box">
             <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Size">
-                <IgbRadio Value="small">Small</IgbRadio>
-                <IgbRadio Value="medium">Medium</IgbRadio>
-                <IgbRadio Value="large">Large</IgbRadio>
+                <IgbRadio Value="@("small")">Small</IgbRadio>
+                <IgbRadio Value="@("medium")">Medium</IgbRadio>
+                <IgbRadio Value="@("large")">Large</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>

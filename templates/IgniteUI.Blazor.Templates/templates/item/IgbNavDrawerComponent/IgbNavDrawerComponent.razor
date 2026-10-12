@@ -9,12 +9,12 @@
     <div class="control">
         <label>Position</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PositionName">
-                <IgbRadio Value="Relative">Relative</IgbRadio>
-                <IgbRadio Value="Start">Start</IgbRadio>
-                <IgbRadio Value="End">End</IgbRadio>
-                <IgbRadio Value="Top">Top</IgbRadio>
-                <IgbRadio Value="Bottom">Bottom</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Position">
+                <IgbRadio Value="NavDrawerPosition.Relative">Relative</IgbRadio>
+                <IgbRadio Value="NavDrawerPosition.Start">Start</IgbRadio>
+                <IgbRadio Value="NavDrawerPosition.End">End</IgbRadio>
+                <IgbRadio Value="NavDrawerPosition.Top">Top</IgbRadio>
+                <IgbRadio Value="NavDrawerPosition.Bottom">Bottom</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -63,8 +63,7 @@
 
     private IgbNavDrawer _drawer = default!;
 
-    private string PositionName { get; set; } = "Relative";
-    private NavDrawerPosition Position => Enum.Parse<NavDrawerPosition>(PositionName);
+    private NavDrawerPosition Position { get; set; } = NavDrawerPosition.Relative;
 
     private string Selected { get; set; } = "Inbox";
 

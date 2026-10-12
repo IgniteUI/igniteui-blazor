@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbSelectItem
+    public partial class IgbSelectItem<TValue>
     {
         /// <summary>
-        /// The owning <see cref="IgbSelect"/>, supplied as a cascading parameter.
+        /// The owning <see cref="IgbSelect{TValue}"/>, supplied as a cascading parameter.
         /// </summary>
         [CascadingParameter(Name = "SelectParent")]
         private protected IgbComponentBase? SelectParent
@@ -18,8 +18,7 @@ namespace IgniteUI.Blazor.Controls
         {
             if (SelectParent != null)
             {
-                var sv = (IgbSelect)SelectParent;
-                sv.ContentItems.Remove(this);
+                ((IgbSelect<TValue>)SelectParent).ContentItems.Remove(this);
             }
             await base.DisposeAsync().ConfigureAwait(false);
         }
@@ -29,8 +28,7 @@ namespace IgniteUI.Blazor.Controls
         {
             if (SelectParent != null)
             {
-                var sv = (IgbSelect)SelectParent;
-                sv.ContentItems.Add(this);
+                ((IgbSelect<TValue>)SelectParent).ContentItems.Add(this);
             }
         }
     }

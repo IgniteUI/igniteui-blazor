@@ -9,9 +9,9 @@
     <div class="control">
         <label>Placement</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PlacementName">
-                <IgbRadio Value="Bottom">Bottom</IgbRadio>
-                <IgbRadio Value="Top">Top</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Placement">
+                <IgbRadio Value="PopoverPlacement.Bottom">Bottom</IgbRadio>
+                <IgbRadio Value="PopoverPlacement.Top">Top</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -28,15 +28,16 @@
 <div class="component-host">
     <IgbSelect @ref="_select"
                class="demo-select"
-               @bind-Value="Selected"
+               @bind-Value="SelectedId"
                Placement="Placement"
                Outlined="Outlined"
                Disabled="Disabled"
-               Label="Fruit">
-        <IgbSelectItem Value="orange">Orange</IgbSelectItem>
-        <IgbSelectItem Value="apple">Apple</IgbSelectItem>
-        <IgbSelectItem Value="banana">Banana</IgbSelectItem>
-        <IgbSelectItem Value="grape" Disabled="true">Grape (out of stock)</IgbSelectItem>
+               Label="Fruit"
+               Placeholder="Choose a fruit">
+        @foreach (var fruit in Fruits)
+        {
+            <IgbSelectItem Value="fruit.Id" Disabled="!fruit.InStock">@(fruit.InStock ? fruit.Name : $"{fruit.Name} (out of stock)")</IgbSelectItem>
+        }
     </IgbSelect>
 
     <div class="actions">
@@ -44,7 +45,7 @@
     </div>
 </div>
 
-<div class="state">Selected: @(Selected ?? "(none)")</div>
+<div class="state">Selected: @(Fruits.FirstOrDefault(f => f.Id == SelectedId)?.Name ?? "(none)")</div>
 
 @code {
     /*
@@ -64,15 +65,24 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private IgbSelect _select = default!;
+    private IgbSelect<int> _select = default!;
 
-    private string? Selected { get; set; }
+    private static readonly List<Fruit> Fruits = new()
+    {
+        new(1, "Orange", true),
+        new(2, "Apple", true),
+        new(3, "Banana", true),
+        new(4, "Grape", false)
+    };
 
-    private string PlacementName { get; set; } = "Bottom";
-    private PopoverPlacement Placement => Enum.Parse<PopoverPlacement>(PlacementName);
+    private int SelectedId { get; set; }
+
+    private PopoverPlacement Placement { get; set; } = PopoverPlacement.Bottom;
 
     private bool Outlined { get; set; }
     private bool Disabled { get; set; }
 
     private async Task OnClear() => await _select.ClearSelectionAsync();
+
+    private record Fruit(int Id, string Name, bool InStock);
 }
