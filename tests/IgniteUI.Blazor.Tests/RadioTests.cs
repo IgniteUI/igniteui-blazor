@@ -274,7 +274,7 @@ public abstract class RadioGroupTests<TValue> : ComponentWithContractTestBase<Ig
 {
     private readonly TValue _value;
 
-    protected RadioGroupTests(TValue value)
+    protected RadioGroupTests(TValue value, TValue? noneChecked)
     {
         _value = value;
         // The element's value is always a string on the wire, whatever the TValue.
@@ -283,6 +283,9 @@ public abstract class RadioGroupTests<TValue> : ComponentWithContractTestBase<Ig
         InteropContract = new ComponentContract<IgbRadioGroup<TValue>>()
             .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
                 returns: InteropReturn.String(wireValue), expect: value)
+            // With nothing checked the element reports an empty string, which no enum or number parses from:
+            .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+                returns: InteropReturn.String(string.Empty), expect: noneChecked)
             .Event(c => c.Change,
                 argsJson: changeArgs,
                 assert: args =>
@@ -290,6 +293,10 @@ public abstract class RadioGroupTests<TValue> : ComponentWithContractTestBase<Ig
                     Assert.True(args.Detail.Checked);
                     Assert.Equal(value, args.Detail.Value);
                 })
+            // Checked null-value radio reports either null or default for a non-nullable TValue:
+            .Event(c => c.Change,
+                argsJson: """{"detail": {"retType": "object", "type": "", "value": {"checked": true, "value": null}}}""",
+                assert: args => Assert.Equal(default, args.Detail.Value))
             // The group binds the selected option's value:
             .Bind<TValue, IgbRadioChangeEventArgs<TValue>>(c => c.Value!, c => c.ValueChanged, via: c => c.Change,
                 argsJson: changeArgs,
@@ -363,23 +370,42 @@ public abstract class RadioGroupTests<TValue> : ComponentWithContractTestBase<Ig
 public sealed class RadioGroupStringTests : RadioGroupTests<string>
 {
     public RadioGroupStringTests()
-        : base("selected-option")
+        : base("selected-option", noneChecked: string.Empty)
     {
     }
 }
 
+/// <summary> Nothing checked reads as <see langword="default"/> (<see cref="DayOfWeek.Sunday"/>). </summary>
 public sealed class RadioGroupEnumTests : RadioGroupTests<DayOfWeek>
 {
     public RadioGroupEnumTests()
-        : base(DayOfWeek.Friday)
+        : base(DayOfWeek.Friday, noneChecked: default)
     {
     }
 }
 
+/// <summary> A checked <see langword="default"/> (<see cref="DayOfWeek.Sunday"/>) reads as itself, not as nothing checked. </summary>
 public sealed class RadioGroupNullableEnumTests : RadioGroupTests<DayOfWeek?>
 {
     public RadioGroupNullableEnumTests()
-        : base(DayOfWeek.Friday)
+        : base(DayOfWeek.Sunday, noneChecked: null)
+    {
+    }
+}
+
+public sealed class RadioGroupIntTests : RadioGroupTests<int>
+{
+    public RadioGroupIntTests()
+        : base(42, noneChecked: 0)
+    {
+    }
+}
+
+/// <summary> A checked <see langword="default"/> (0) reads as itself, not as nothing checked. </summary>
+public sealed class RadioGroupNullableIntTests : RadioGroupTests<int?>
+{
+    public RadioGroupNullableIntTests()
+        : base(0, noneChecked: null)
     {
     }
 }
