@@ -108,7 +108,7 @@ namespace IgniteUI.Blazor.Controls
         /// if it is partially obscured or damaged.
         /// <see cref="QrErrorCorrectionLevel.Low"/> provides the lowest level of error correction
         /// and <see cref="QrErrorCorrectionLevel.High"/> provides the highest level.
-        /// When <c>null</c>, the code uses <see cref="QrErrorCorrectionLevel.Medium"/>, or the smallest level that holds the logo.
+        /// When <c>null</c>, the web component's default level applies.
         /// </summary>
         [Parameter]
         public QrErrorCorrectionLevel? ErrorLevel
