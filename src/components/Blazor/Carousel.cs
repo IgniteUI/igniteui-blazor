@@ -215,13 +215,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _interval = 0;
+        private double? _interval;
 
         /// <summary>
-        /// The duration in milliseconds between changing the active slide.
+        /// The duration in milliseconds between changing the active slide. When <c>null</c>, the carousel does not play automatically.
         /// </summary>
         [Parameter]
-        public double Interval
+        public double? Interval
         {
             get { return this._interval; }
             set

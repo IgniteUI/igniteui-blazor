@@ -105,6 +105,7 @@ public static class DatePickerTests
                 },
                 wire: new JsonSubset("""{"selectMonth": "Choose month", "selectYear": "Choose year", "weekLabel": "Wk"}"""))
             .Prop(c => c.WeekStart, WeekDays.Monday, wire: "monday")
+            .Prop(c => c.WeekStart, default(WeekDays?), wire: null)
             .Prop(c => c.Disabled, true)
             .Prop(c => c.Required, true)
             .Prop(c => c.Invalid, true)
@@ -142,6 +143,8 @@ public static class DatePickerTests
             var picker = new IgbDatePicker<TValue>();
 
             Assert.Equal(1, picker.VisibleMonths);
+            // Unset: the client takes the week start from the locale.
+            Assert.Null(picker.WeekStart);
         }
     }
 

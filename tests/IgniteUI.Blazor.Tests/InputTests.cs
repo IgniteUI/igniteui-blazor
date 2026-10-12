@@ -251,6 +251,25 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
     }
 
     [Fact]
+    public void Input_Constraints_Unset_RenderNoAttributes()
+    {
+        var cut = Render<IgbInput>();
+
+        // Unset: no constraint. 0 is a real min or length limit, so the wrapper must not report it here.
+        var element = cut.Find("igc-input");
+        Assert.Null(cut.Instance.MinLength);
+        Assert.Null(cut.Instance.MaxLength);
+        Assert.Null(cut.Instance.Min);
+        Assert.Null(cut.Instance.Max);
+        Assert.Null(cut.Instance.Step);
+        Assert.Null(element.GetAttribute("minlength"));
+        Assert.Null(element.GetAttribute("maxlength"));
+        Assert.Null(element.GetAttribute("min"));
+        Assert.Null(element.GetAttribute("max"));
+        Assert.Null(element.GetAttribute("step"));
+    }
+
+    [Fact]
     public void Input_Autocomplete_RendersAttribute()
     {
         var cut = Render<IgbInput>(parameters =>

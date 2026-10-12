@@ -120,7 +120,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private ButtonBaseTarget _target = ButtonBaseTarget._blank;
+        private ButtonBaseTarget _target = ButtonBaseTarget._self;
 
         /// <summary>
         /// Where to open the linked document. Only effective when <see cref="Href"/> is set.

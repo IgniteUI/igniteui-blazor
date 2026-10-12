@@ -171,7 +171,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _minLength = 0;
+        private double? _minLength;
 
         /// <summary>
         /// The minimum string length required by the control.
@@ -191,7 +191,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _maxLength = 0;
+        private double? _maxLength;
 
         /// <summary>
         /// The maximum string length of the control.
@@ -211,7 +211,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _min = 0;
+        private double? _min;
 
         /// <summary>
         /// The min attribute of the control.
@@ -249,7 +249,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double? _step = 0;
+        private double? _step;
 
         /// <summary>
         /// The step attribute of the control.

@@ -61,6 +61,17 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
     }
 
     [Fact]
+    public void QrCode_ErrorLevel_SetToNull_RemovesAttribute()
+    {
+        var cut = Render<IgbQrCode>(p =>
+            p.Add(x => x.ErrorLevel, QrErrorCorrectionLevel.High));
+
+        cut.Render(p => p.Add(x => x.ErrorLevel, (QrErrorCorrectionLevel?)null));
+
+        Assert.Null(cut.Find("igc-qr-code").GetAttribute("error-level"));
+    }
+
+    [Fact]
     public void QrCode_Size_RendersAttribute()
     {
         var cut = Render<IgbQrCode>(p =>
@@ -133,7 +144,8 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
         var qrCode = new IgbQrCode();
 
         Assert.Null(qrCode.Version);
-        Assert.Equal(QrErrorCorrectionLevel.Medium, qrCode.ErrorLevel);
+        // Unset: the client picks the level that holds the logo, so no single member is the default.
+        Assert.Null(qrCode.ErrorLevel);
         Assert.Equal(128, qrCode.Size);
         Assert.Equal(4, qrCode.Margin);
         Assert.Equal(0.4, qrCode.LogoSize);

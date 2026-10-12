@@ -157,6 +157,19 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     }
 
     [Fact]
+    public void Textarea_Lengths_Unset_RenderNoAttributes()
+    {
+        var cut = Render<IgbTextarea>();
+
+        // Unset: no length limit. 0 is a real limit, so the wrapper must not report it here.
+        var element = cut.Find("igc-textarea");
+        Assert.Null(cut.Instance.MaxLength);
+        Assert.Null(cut.Instance.MinLength);
+        Assert.Null(element.GetAttribute("maxlength"));
+        Assert.Null(element.GetAttribute("minlength"));
+    }
+
+    [Fact]
     public void Textarea_MinLength_RendersAttribute()
     {
         var cut = Render<IgbTextarea>(parameters =>

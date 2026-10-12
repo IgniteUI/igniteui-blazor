@@ -105,6 +105,27 @@ public class ChipTests : ComponentWithContractTestBase<IgbChip>
     }
 
     [Fact]
+    public void Chip_Variant_Unset_RendersNoAttribute()
+    {
+        var cut = Render<IgbChip>();
+
+        // Unset: the chip has no color variant, which no StyleVariant member matches.
+        Assert.Null(cut.Instance.Variant);
+        Assert.Null(cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
+    public void Chip_Variant_SetToNull_RemovesAttribute()
+    {
+        var cut = Render<IgbChip>(parameters =>
+            parameters.Add(p => p.Variant, StyleVariant.Info));
+
+        cut.Render(parameters => parameters.Add(p => p.Variant, (StyleVariant?)null));
+
+        Assert.Null(cut.Find("igc-chip").GetAttribute("variant"));
+    }
+
+    [Fact]
     public void Chip_Variant_Primary()
     {
         var cut = Render<IgbChip>(parameters =>

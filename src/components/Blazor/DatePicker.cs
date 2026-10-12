@@ -537,13 +537,13 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-        private WeekDays _weekStart = WeekDays.Sunday;
+        private WeekDays? _weekStart;
 
         /// <summary>
-        /// Sets the start day of the week for the calendar.
+        /// Sets the start day of the week for the calendar. When <c>null</c>, the week follows the locale: <see cref="Locale"/> if set, otherwise the client locale.
         /// </summary>
         [Parameter]
-        public WeekDays WeekStart
+        public WeekDays? WeekStart
         {
             get { return this._weekStart; }
             set
