@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Button, Icon Button:** an unset `Target` reports `_self`, where the link opens, instead of `_blank`.
+- **Input:** unset `Min`, `MinLength`, `MaxLength` and `Step` report `null`, no constraint, instead of `0`.
 
 ### Breaking Changes
 
