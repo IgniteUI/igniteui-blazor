@@ -8,10 +8,10 @@
 
     Also guards the two failure modes sbom-tool does not report: a manifest that ended up inside the
     component scan root and so describes itself, and a ClearlyDefined outage that silently replaces every
-    license with NOASSERTION. A partial gap is reported rather than fatal - NOASSERTION is a valid SPDX
+    license with NOASSERTION. License gaps are reported rather than fatal - NOASSERTION is a valid SPDX
     value and the upstream tool offers no way to require otherwise. Every package landing on NOASSERTION
-    is fatal instead: observed outages have been all-or-nothing (0 of N resolved), not a gradual
-    plateau, so a zero-license document is the outage signature rather than a coverage shortfall.
+    gets its own run annotation: observed outages have been all-or-nothing (0 of N resolved), not a
+    gradual plateau, so a zero-license document is the outage signature rather than a coverage shortfall.
 #>
 [CmdletBinding()]
 param(
@@ -199,12 +199,12 @@ Write-Host "SBOM covers $($packages.Count) packages and $(@($documents['SPDX 2.2
 Write-Host "License coverage: $($licensed.Count) of $($packages.Count) packages ($([math]::Round($coverage * 100))%)."
 
 # Zero is the outage signature (ClearlyDefined unreachable for the whole run), not a coverage shortfall -
-# New-Sbom.ps1's retry loop already tried to recover from this and gave up, so fail rather than ship it.
+# New-Sbom.ps1's retry loop already tried to recover from this and gave up. Annotated rather than fatal:
+# the outage is outside our control, and the CycloneDX SBOM reads licenses from each nuspec instead.
 if ($packages.Count -gt 0 -and $licensed.Count -eq 0) {
-    throw "No package in the SPDX document carries a resolved license (0 of $($packages.Count)). This is the ClearlyDefined-outage signature, not partial degradation - refusing to ship an SBOM with no license data."
+    Write-Host "::warning title=SPDX SBOM has no license data::No package in the SPDX document carries a resolved license (0 of $($packages.Count)). This is the ClearlyDefined-outage signature - every license is recorded as NOASSERTION. The CycloneDX SBOM carries license data from the package nuspecs."
 }
-
-if ($coverage -lt $MinimumLicenseCoverage) {
+elseif ($coverage -lt $MinimumLicenseCoverage) {
     $unlicensed = @($packages | Where-Object { -not $_.licenseConcluded -or $_.licenseConcluded -eq 'NOASSERTION' } | ForEach-Object { "$($_.name)@$($_.versionInfo)" })
     Write-Warning "Only $([math]::Round($coverage * 100))% of packages carry a resolved license (threshold $([math]::Round($MinimumLicenseCoverage * 100))%). Unresolved: $($unlicensed -join ', ')"
 }
