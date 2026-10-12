@@ -579,6 +579,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal string? ObjectArrayToParam(object[]? arr)
         {
+            return ObjectArrayToParam<object>(arr);
+        }
+
+        internal string? ObjectArrayToParam<T>(T[]? arr)
+        {
             EnsureValid();
             if (CurrParent is BaseJsonSerializable)
             {
@@ -757,11 +762,25 @@ namespace IgniteUI.Blazor.Controls
             EnsureValid();
             if (CurrParent is BaseJsonSerializable)
             {
-                return ((BaseJsonSerializable)CurrParent).ConvertReturnValue<TValue>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((BaseJsonSerializable)CurrParent).ConvertReturnValue<TValue, object>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
             else if (CurrParent is IgbComponentBase)
             {
-                return ((IgbComponentBase)CurrParent).ConvertReturnValue<TValue>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((IgbComponentBase)CurrParent).ConvertReturnValue<TValue, object>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+            }
+            return null;
+        }
+
+        internal object? ConvertReturnValue<TValue, TItem>(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            EnsureValid();
+            if (CurrParent is BaseJsonSerializable)
+            {
+                return ((BaseJsonSerializable)CurrParent).ConvertReturnValue<TValue, TItem>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+            }
+            else if (CurrParent is IgbComponentBase)
+            {
+                return ((IgbComponentBase)CurrParent).ConvertReturnValue<TValue, TItem>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
             return null;
         }

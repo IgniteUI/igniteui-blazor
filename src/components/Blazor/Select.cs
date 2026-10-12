@@ -233,13 +233,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<IgbSelectItem<TValue>[]> GetItemsAsync()
         {
             var iv = await InvokeMethod("p:Items", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbSelectItem<TValue>>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbSelectItem<TValue>>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbSelectItem<TValue>>(iv);
         }
 
         /// <summary>
@@ -248,13 +242,7 @@ namespace IgniteUI.Blazor.Controls
         public IgbSelectItem<TValue>[] GetItems()
         {
             var iv = InvokeMethodSync("p:Items", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbSelectItem<TValue>>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbSelectItem<TValue>>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbSelectItem<TValue>>(iv);
         }
 
         /// <summary>
@@ -263,13 +251,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<IgbSelectGroup<TValue>[]> GetGroupsAsync()
         {
             var iv = await InvokeMethod("p:Groups", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbSelectGroup<TValue>>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbSelectGroup<TValue>>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbSelectGroup<TValue>>(iv);
         }
 
         /// <summary>
@@ -278,13 +260,7 @@ namespace IgniteUI.Blazor.Controls
         public IgbSelectGroup<TValue>[] GetGroups()
         {
             var iv = InvokeMethodSync("p:Groups", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbSelectGroup<TValue>>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbSelectGroup<TValue>>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbSelectGroup<TValue>>(iv);
         }
 
         /// <summary>

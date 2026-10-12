@@ -2,7 +2,7 @@
 
 `IgniteUI.Blazor.Lite` is trim-compatible (`IsTrimmable=true`): the library builds warning-free under the .NET trim analyzer, and its own serialization uses source-generated `System.Text.Json` contexts and hand-written `Utf8JsonWriter` code that needs no reflection over your types.
 
-Two library features intrinsically depend on runtime type information that the trimmer cannot see. Applications published with `PublishTrimmed=true` (the default for Blazor WebAssembly publish) must follow the guidance below when using them.
+Some library features intrinsically depend on runtime type information. Applications published with `PublishTrimmed=true` (the default for Blazor WebAssembly publish) must follow the guidance below when using them.
 
 ## App-provided data types: when to preserve them
 
@@ -26,6 +26,8 @@ or with a [trimmer root descriptor](https://learn.microsoft.com/dotnet/core/depl
 > **Prefer the `DynamicDependency` form.** It is honored by every trim/AOT pipeline. Annotating the type itself works under Blazor WebAssembly's ILLink (verified in the trimmed browser smoke) but was found **insufficient under NativeAOT's ILC** (verified 2026-09-01 via the AotSmoke gate) — the class-level annotation only takes effect where a `Type` value flows through annotated locations, and the data-source entry points deliberately take unannotated `Type`s.
 
 Preservation must cover **every complex type reachable from the item type**, not just the root: if `MyDataItem` has an `Address` property whose members the component renders, `Address` needs the same treatment — the schema builder reflects over nested object types as it encounters them.
+
+A component that takes its item type as a type parameter preserves that type's members itself: `IgbCombo`'s `TItem` carries `[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]`, as the framework's generic inputs do for their values. That covers only the declared item type. Nested types, and items whose runtime type differs from it (a derived type, or `TItem="object"`), still need the preservation above.
 
 ## Module preloading: trim-safe by design
 
