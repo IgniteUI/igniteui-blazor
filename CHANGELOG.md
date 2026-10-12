@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 0.6.0 - 2026-10-12
+
 ### Fixed
 
+- **Radio Group:** with no radio checked, `GetCurrentValue` and `GetCurrentValueAsync` return `default`, such as `null` for an `int?` group, instead of throwing for a non-string `TValue`.
 - **Button, Icon Button:** an unset `Target` reports `_self`, where the link opens, instead of `_blank`.
 - **Input:** unset `Min`, `MinLength`, `MaxLength` and `Step` report `null`, no constraint, instead of `0`.
 - **Chat:** unset `IgbChatOptions` report the defaults the chat uses: `CurrentUserId` `"user"`, `SuggestionsPosition` `BelowMessages` and `StopTypingDelay` `3000`.
