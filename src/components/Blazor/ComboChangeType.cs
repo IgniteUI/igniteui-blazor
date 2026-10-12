@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Kind of change reported by an <see cref="IgbCombo{T}"/> change event.
+    /// Kind of change reported by an <see cref="IgbCombo{TValue, TItem}"/> change event.
     /// </summary>
     public enum ComboChangeType
     {

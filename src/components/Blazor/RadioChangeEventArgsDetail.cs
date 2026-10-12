@@ -1,9 +1,10 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The payload of the <see cref="IgbRadio.Change"/> and <see cref="IgbRadioGroup.Change"/> events.
+    /// The payload of the <see cref="IgbRadio{TValue}.Change"/> and <see cref="IgbRadioGroup{TValue}.Change"/> events.
     /// </summary>
-    public partial class IgbRadioChangeEventArgsDetail : BaseJsonSerializable
+    /// <typeparam name="TValue">The <c>TValue</c> of the radio or radio group that raises the event.</typeparam>
+    public partial class IgbRadioChangeEventArgsDetail<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRadioChangeEventArgsDetail"; } }
@@ -26,17 +27,17 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string? _value;
+        private TValue? _value;
 
         /// <summary>
         /// The value of the radio button.
         /// </summary>
-        public string? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -52,7 +53,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Checked"))
             { ser.AddBooleanProp("checked", this._checked); }
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
 
         }
 
@@ -77,7 +78,7 @@ namespace IgniteUI.Blazor.Controls
             if (args != null && args.TryGetValue("checked", out var checkedObj))
             { this.Checked = ReturnToBoolean(checkedObj); }
             if (args != null && args.TryGetValue("value", out var valueObj))
-            { this.Value = ReturnToString(valueObj); }
+            { this.Value = GenericValueFromEventJson<TValue>(valueObj); }
 
             this.SuppressParentNotify = false;
         }

@@ -9,11 +9,11 @@
     <div class="control">
         <label>Placement</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PlacementName">
-                <IgbRadio Value="Top">Top</IgbRadio>
-                <IgbRadio Value="Bottom">Bottom</IgbRadio>
-                <IgbRadio Value="Left">Left</IgbRadio>
-                <IgbRadio Value="Right">Right</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Placement">
+                <IgbRadio Value="PopoverPlacement.Top">Top</IgbRadio>
+                <IgbRadio Value="PopoverPlacement.Bottom">Bottom</IgbRadio>
+                <IgbRadio Value="PopoverPlacement.Left">Left</IgbRadio>
+                <IgbRadio Value="PopoverPlacement.Right">Right</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -47,7 +47,7 @@
     </IgbTooltip>
 </div>
 
-<div class="state">Placement: @PlacementName &nbsp;|&nbsp; Offset: @Offset</div>
+<div class="state">Placement: @Placement &nbsp;|&nbsp; Offset: @Offset</div>
 
 @code {
     /*
@@ -67,8 +67,7 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string PlacementName { get; set; } = "Top";
-    private PopoverPlacement Placement => Enum.Parse<PopoverPlacement>(PlacementName);
+    private PopoverPlacement Placement { get; set; } = PopoverPlacement.Top;
 
     private double Offset { get; set; } = 6;
     private bool ShowTip { get; set; } = true;

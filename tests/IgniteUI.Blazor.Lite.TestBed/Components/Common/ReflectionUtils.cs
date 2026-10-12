@@ -83,7 +83,14 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             if (match is not null && match.IsGenericTypeDefinition)
             {
                 var typeArgs = match.GetGenericArguments();
-                var concreteArgs = typeArgs.Select(_ => typeof(object)).ToArray();
+                var valueType = type switch
+                {
+                    "IgbCalendar" or "IgbDatePicker" or "IgbDateRangePicker" or "IgbDateTimeInput" => typeof(DateTime),
+                    "IgbSlider" or "IgbRating" => typeof(double),
+                    "IgbColorPicker" or "IgbRadioGroup" or "IgbRadio" or "IgbSelect" => typeof(string),
+                    _ => typeof(object)
+                };
+                var concreteArgs = typeArgs.Select(_ => valueType).ToArray();
                 match = match.MakeGenericType(concreteArgs);
             }
             return match;
@@ -136,7 +143,15 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static Type? GetOriginEventDetailType(Type eventArgsType, Type componentType)
         {
-            var detailProp = eventArgsType.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance);
+            // Some concrete event-argument types inherit Detail from a generic base class
+            // (for example, IgbNumberEventArgs from IgbNumberEventArgs<double>), while others
+            // hide a base Detail property. Look at each declaration level to avoid ambiguity.
+            PropertyInfo? detailProp = null;
+            for (var type = eventArgsType; type != null && detailProp == null; type = type.BaseType)
+            {
+                detailProp = type.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            }
+
             if (detailProp == null)
             {
                 return null;
@@ -149,7 +164,8 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             }
 
             // TODO: Calendar detail type is Object, but it actually casts to DateTime, so we need to handle that case specifically.
-            if (detailType == typeof(object) && componentType == typeof(IgbCalendar))
+            if (detailType == typeof(object) && componentType.IsGenericType &&
+                componentType.GetGenericTypeDefinition() == typeof(IgbCalendar<>))
             {
                 return typeof(DateTime);
             }

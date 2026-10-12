@@ -9,9 +9,9 @@
     <div class="control">
         <label>Mode</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="ModeName">
-                <IgbRadio Value="Dropdown">Dropdown</IgbRadio>
-                <IgbRadio Value="Dialog">Dialog</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Mode">
+                <IgbRadio Value="PickerMode.Dropdown">Dropdown</IgbRadio>
+                <IgbRadio Value="PickerMode.Dialog">Dialog</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -26,7 +26,8 @@
 </div>
 
 <div class="component-host">
-    <IgbDateRangePicker class="demo-input"
+    <IgbDateRangePicker TValue="DateTime"
+                        class="demo-input"
                         @bind-Value="Range"
                         Mode="Mode"
                         UseTwoInputs="UseTwoInputs"
@@ -54,10 +55,9 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private IgbDateRangeValue? Range { get; set; }
+    private IgbDateRangeValue<DateTime>? Range { get; set; }
 
-    private string ModeName { get; set; } = "Dropdown";
-    private PickerMode Mode => Enum.Parse<PickerMode>(ModeName);
+    private PickerMode Mode { get; set; } = PickerMode.Dropdown;
 
     private bool UseTwoInputs { get; set; } = true;
     private bool UsePredefinedRanges { get; set; }

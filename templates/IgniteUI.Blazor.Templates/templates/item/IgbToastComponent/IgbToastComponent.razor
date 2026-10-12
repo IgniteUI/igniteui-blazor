@@ -9,10 +9,10 @@
     <div class="control">
         <label>Position</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="PositionName">
-                <IgbRadio Value="Bottom">Bottom</IgbRadio>
-                <IgbRadio Value="Middle">Middle</IgbRadio>
-                <IgbRadio Value="Top">Top</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Position">
+                <IgbRadio Value="AbsolutePosition.Bottom">Bottom</IgbRadio>
+                <IgbRadio Value="AbsolutePosition.Middle">Middle</IgbRadio>
+                <IgbRadio Value="AbsolutePosition.Top">Top</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -45,7 +45,7 @@
     </IgbToast>
 </div>
 
-<div class="state">Position: @PositionName &nbsp;|&nbsp; Keep open: @KeepOpen</div>
+<div class="state">Position: @Position &nbsp;|&nbsp; Keep open: @KeepOpen</div>
 
 @code {
     /*
@@ -67,8 +67,7 @@
 
     private IgbToast _toast = default!;
 
-    private string PositionName { get; set; } = "Bottom";
-    private AbsolutePosition Position => Enum.Parse<AbsolutePosition>(PositionName);
+    private AbsolutePosition Position { get; set; } = AbsolutePosition.Bottom;
 
     private double DisplayTime { get; set; } = 4000;
     private bool KeepOpen { get; set; }

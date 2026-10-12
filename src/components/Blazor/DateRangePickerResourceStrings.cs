@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The localized strings used by the date range picker, exposed through
-    /// <see cref="IgbDateRangePicker.ResourceStrings"/>.
+    /// <see cref="IgbDateRangePicker{TValue}.ResourceStrings"/>.
     /// </summary>
     public partial class IgbDateRangePickerResourceStrings : IgbCalendarResourceStrings
     {

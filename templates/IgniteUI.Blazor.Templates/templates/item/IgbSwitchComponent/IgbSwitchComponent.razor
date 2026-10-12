@@ -9,9 +9,9 @@
     <div class="control">
         <label>Label position</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="LabelPositionName">
-                <IgbRadio Value="After">After</IgbRadio>
-                <IgbRadio Value="Before">Before</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="LabelPosition">
+                <IgbRadio Value="ToggleLabelPosition.After">After</IgbRadio>
+                <IgbRadio Value="ToggleLabelPosition.Before">Before</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -54,8 +54,7 @@
      * Do not mix IgniteUI.Blazor.Lite with the licensed IgniteUI.Blazor package.
      */
 
-    private string LabelPositionName { get; set; } = "After";
-    private ToggleLabelPosition LabelPosition => Enum.Parse<ToggleLabelPosition>(LabelPositionName);
+    private ToggleLabelPosition LabelPosition { get; set; } = ToggleLabelPosition.After;
 
     private bool Checked { get; set; } = true;
     private bool Disabled { get; set; }
