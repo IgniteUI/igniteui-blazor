@@ -144,7 +144,7 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
         var qrCode = new IgbQrCode();
 
         Assert.Null(qrCode.Version);
-        // Unset: the client picks the level that holds the logo, so no single member is the default.
+        // Unset: the web component's default level applies.
         Assert.Null(qrCode.ErrorLevel);
         Assert.Equal(128, qrCode.Size);
         Assert.Equal(4, qrCode.Margin);
