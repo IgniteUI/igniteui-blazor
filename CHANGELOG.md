@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking Changes
 
 - **Calendar, Date Picker, Date Range Picker:** `WeekStart` is now `WeekDays?` and defaults to `null`, which follows the locale: `Locale` if set, otherwise the client locale. It no longer reports `Sunday` for a calendar that follows the locale, and setting it back to `null` returns to the locale's day.
+- **QR Code:** `ErrorLevel` is now `QrErrorCorrectionLevel?` and defaults to `null`, which uses `Medium` or the smallest level that holds the logo. It no longer reports `Medium` for a code whose level was raised for its logo, and setting it back to `null` returns to that choice.
 - **Slider, Range Slider:** `LowerBound` and `UpperBound` are now `double?` and default to `null`, which bounds the value by `Min` and `Max`. `UpperBound` no longer reports `0` for a slider bounded by `Max`.
 - **Textarea:** `MaxLength` and `MinLength` are now `double?` and default to `null`, no limit. They no longer report `0`, which is a limit of its own.
 - **Chip:** `Variant` is now `StyleVariant?` and defaults to `null`, the chip with no color variant. It no longer reports `Primary` for that chip, and setting it back to `null` removes the variant.
