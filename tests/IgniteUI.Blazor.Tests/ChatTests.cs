@@ -99,6 +99,19 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
         Assert.True(chat.Options.DisableInputAttachments);
     }
 
+    /// <summary>
+    /// Only assigned options are sent, so an unassigned one must report the web component's own default.
+    /// </summary>
+    [Fact]
+    public void ChatOptions_DefaultValues_MatchWebComponent()
+    {
+        var options = new IgbChatOptions();
+
+        Assert.Equal("user", options.CurrentUserId);
+        Assert.Equal(ChatSuggestionsPosition.BelowMessages, options.SuggestionsPosition);
+        Assert.Equal(3000, options.StopTypingDelay);
+    }
+
     [Fact]
     public void Chat_Options_SetToNull_ReplacedWithDefaultAndAttachmentsDisabled()
     {
