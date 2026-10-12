@@ -263,6 +263,13 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static object? GetObjectOfType(Type type, bool isData = false, int depth = 0)
         {
+            // A null enum leaves the value to the client, which then reports one it derives itself
+            // (e.g. a week start from the locale), so sample a member instead.
+            if (Nullable.GetUnderlyingType(type) is { IsEnum: true } enumType)
+            {
+                type = enumType;
+            }
+
             object? value = GetSimpleType(type);
 
             if (CustomTypes.PredefinedTypes.ContainsKey(type.Name))
