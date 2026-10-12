@@ -96,13 +96,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _lowerBound = 0;
+        private double? _lowerBound;
 
         /// <summary>
         /// The lower bound of the slider value. If not set, the <see cref="Min"/> value is applied.
         /// </summary>
         [Parameter]
-        public double LowerBound
+        public double? LowerBound
         {
             get { return this._lowerBound; }
             set
@@ -115,13 +115,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _upperBound = 0;
+        private double? _upperBound;
 
         /// <summary>
         /// The upper bound of the slider value. If not set, the <see cref="Max"/> value is applied.
         /// </summary>
         [Parameter]
-        public double UpperBound
+        public double? UpperBound
         {
             get { return this._upperBound; }
             set

@@ -156,6 +156,19 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider<double>>
     }
 
     [Fact]
+    public void Slider_Bounds_Unset_RenderNoAttributes()
+    {
+        var cut = Render<IgbSlider<double>>();
+
+        // Unset: the client bounds the value by Min and Max, so the wrapper must not report 0.
+        var element = cut.Find("igc-slider");
+        Assert.Null(cut.Instance.LowerBound);
+        Assert.Null(cut.Instance.UpperBound);
+        Assert.Null(element.GetAttribute("lower-bound"));
+        Assert.Null(element.GetAttribute("upper-bound"));
+    }
+
+    [Fact]
     public void Slider_PrimaryTicks_RendersAttribute()
     {
         var cut = Render<IgbSlider<double>>(parameters =>
