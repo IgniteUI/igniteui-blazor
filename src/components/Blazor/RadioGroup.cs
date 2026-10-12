@@ -124,7 +124,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Gets the current value of the group.
         /// </summary>
-        /// <returns>The value of the checked <see cref="IgbRadio{TValue}"/>.</returns>
+        /// <returns>The value of the checked <see cref="IgbRadio{TValue}"/>, or <see langword="default"/> when none is checked.</returns>
         public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
@@ -134,7 +134,7 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Gets the current value of the group.
         /// </summary>
-        /// <returns>The value of the checked <see cref="IgbRadio{TValue}"/>.</returns>
+        /// <returns>The value of the checked <see cref="IgbRadio{TValue}"/>, or <see langword="default"/> when none is checked.</returns>
         public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
