@@ -6,12 +6,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public enum ButtonBaseTarget
     {
+        /// <summary>The current browsing context.</summary>
+        _self,
         /// <summary>A new tab or window.</summary>
         _blank,
         /// <summary>The parent browsing context; falls back to <see cref="_self"/> if there is none.</summary>
         _parent,
-        /// <summary>The current browsing context.</summary>
-        _self,
         /// <summary>The top-level browsing context; falls back to <see cref="_self"/> if there is none.</summary>
         _top
 

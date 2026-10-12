@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- **Button, Icon Button:** an unset `Target` reports `_self`, where the link opens, instead of `_blank`.
+
 ### Breaking Changes
 
 - **Calendar, Date Picker, Date Range Picker:** `WeekStart` is now `WeekDays?` and defaults to `null`, which follows the locale: `Locale` if set, otherwise the client locale. It no longer reports `Sunday` for a calendar that follows the locale, and setting it back to `null` returns to the locale's day.
