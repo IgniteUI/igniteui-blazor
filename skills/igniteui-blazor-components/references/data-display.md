@@ -100,7 +100,7 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 }
 ```
 
-`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`. `IgbChip` also has `Outlined`, `Selected` / `SelectedChanged` and a `Select` event.
+`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`; a chip without `Variant` has no color variant. `IgbChip` also has `Outlined`, `Selected` / `SelectedChanged` and a `Select` event.
 
 ## Progress
 
