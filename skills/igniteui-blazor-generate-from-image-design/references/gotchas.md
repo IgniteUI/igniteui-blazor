@@ -245,7 +245,7 @@ Switch both stylesheets together:
 ```html
 <link href="_content/IgniteUI.Blazor/themes/dark/bootstrap.css" rel="stylesheet" />
 <link href="_content/IgniteUI.Blazor/themes/grid/dark/bootstrap.css" rel="stylesheet" />
-<!-- IgbGridLite instead: _content/IgniteUI.Blazor.GridLite/css/themes/dark/bootstrap.css -->
+<!-- IgbGridLite instead: _content/IgniteUI.Blazor.GridLite/themes/dark/bootstrap.css -->
 ```
 
 For a runtime toggle, prefer `IgbThemeProvider` (`Theme`, `Variant`) over swapping `<link href>` via JS interop — no interop and it can scope to a region.
