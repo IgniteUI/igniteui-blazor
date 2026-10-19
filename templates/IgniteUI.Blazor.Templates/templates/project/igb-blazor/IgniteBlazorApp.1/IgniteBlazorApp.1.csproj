@@ -18,7 +18,7 @@
     <!--#endif -->
     <!--#endif -->
     <!--#if (HostingHasClient) -->
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
     <!--#endif -->
   </ItemGroup>
 
