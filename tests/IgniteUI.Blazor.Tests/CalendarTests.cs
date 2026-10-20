@@ -46,6 +46,7 @@ public static class CalendarTests
             .Prop(c => c.Selection, CalendarSelection.Range, wire: "range")
             .Prop(c => c.ShowWeekNumbers, true)
             .Prop(c => c.WeekStart, WeekDays.Monday, wire: "monday")
+            .Prop(c => c.WeekStart, default(WeekDays?), wire: null)
             .Prop(c => c.Locale, "en-US")
             .Prop(c => c.Value, value)
             .Prop(c => c.Values,
@@ -122,6 +123,8 @@ public static class CalendarTests
             var calendar = new IgbCalendar<TValue>();
 
             Assert.Equal(1, calendar.VisibleMonths);
+            // Unset: the client takes the week start from the locale.
+            Assert.Null(calendar.WeekStart);
         }
     }
 

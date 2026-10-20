@@ -311,7 +311,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        public void AddEnumProp(string propertyName, Enum value)
+        public void AddEnumProp(string propertyName, Enum? value)
         {
             if (_context.Filter != null)
             {
@@ -319,6 +319,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     return;
                 }
+            }
+
+            if (value == null)
+            {
+                _context.Writer.WriteNull(propertyName);
+                return;
             }
 
             if (Utils.TryGetWCEnumName(value.GetType(), value.ToString(), out var wcName))

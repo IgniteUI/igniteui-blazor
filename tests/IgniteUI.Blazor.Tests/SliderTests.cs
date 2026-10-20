@@ -156,6 +156,57 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider<double>>
     }
 
     [Fact]
+    public void Slider_Bounds_Unset_RenderNoAttributes()
+    {
+        var cut = Render<IgbSlider<double>>();
+
+        // Unset: the client bounds the value by Min and Max, so the wrapper must not report 0.
+        var element = cut.Find("igc-slider");
+        Assert.Null(cut.Instance.LowerBound);
+        Assert.Null(cut.Instance.UpperBound);
+        Assert.Null(element.GetAttribute("lower-bound"));
+        Assert.Null(element.GetAttribute("upper-bound"));
+    }
+
+    [Fact]
+    public void NumberFormatOptions_Unset_SendsNoDigitOrGroupingOptions()
+    {
+        var options = new IgbNumberFormatOptions { Style = "percent" };
+
+        // Unset: Intl derives these from the style and locale, and rejects 0 for the integer and significant digits.
+        Assert.Equal(NumberFormatGrouping.Auto, options.UseGrouping);
+        Assert.Null(options.MinimumIntegerDigits);
+        Assert.Null(options.MinimumFractionDigits);
+        Assert.Null(options.MaximumFractionDigits);
+        Assert.Null(options.MinimumSignificantDigits);
+        Assert.Null(options.MaximumSignificantDigits);
+        var json = options.Serialize();
+        Assert.DoesNotContain("useGrouping", json);
+        Assert.DoesNotContain("Digits", json);
+    }
+
+    [Fact]
+    public void NumberFormatOptions_SetToNull_SendsNull()
+    {
+        var options = new IgbNumberFormatOptions { MaximumFractionDigits = null };
+
+        Assert.Contains("\"maximumFractionDigits\":null", options.Serialize());
+    }
+
+    [Theory]
+    [InlineData(NumberFormatGrouping.Auto, "\"useGrouping\":\"auto\"")]
+    [InlineData(NumberFormatGrouping.Always, "\"useGrouping\":\"always\"")]
+    [InlineData(NumberFormatGrouping.Min2, "\"useGrouping\":\"min2\"")]
+    // Intl reads the string "false" as "auto"; only the boolean disables grouping.
+    [InlineData(NumberFormatGrouping.Never, "\"useGrouping\":false")]
+    public void NumberFormatOptions_UseGrouping_SendsIntlValue(NumberFormatGrouping grouping, string expected)
+    {
+        var options = new IgbNumberFormatOptions { UseGrouping = grouping };
+
+        Assert.Contains(expected, options.Serialize());
+    }
+
+    [Fact]
     public void Slider_PrimaryTicks_RendersAttribute()
     {
         var cut = Render<IgbSlider<double>>(parameters =>

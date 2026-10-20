@@ -100,6 +100,7 @@ public static class DateRangePickerTests
                 .Prop(c => c.ShowWeekNumbers, true)
                 .Prop(c => c.HideOutsideDays, true)
                 .Prop(c => c.WeekStart, WeekDays.Monday, wire: "monday")
+                .Prop(c => c.WeekStart, default(WeekDays?), wire: null)
                 .Prop(c => c.Disabled, true)
                 .Prop(c => c.Required, true)
                 .Prop(c => c.Invalid, true)
@@ -118,6 +119,8 @@ public static class DateRangePickerTests
         {
             var picker = new IgbDateRangePicker<TValue>();
             Assert.Equal(2, picker.VisibleMonths);
+            // Unset: the client takes the week start from the locale.
+            Assert.Null(picker.WeekStart);
         }
     }
 

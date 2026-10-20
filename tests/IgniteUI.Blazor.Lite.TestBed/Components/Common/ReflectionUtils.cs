@@ -263,6 +263,13 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static object? GetObjectOfType(Type type, bool isData = false, int depth = 0)
         {
+            // A null enum or number leaves the value to the client, which then reports one it derives itself
+            // (e.g. a week start from the locale, a slider bound from Min), so sample a value instead.
+            if (Nullable.GetUnderlyingType(type) is { } underlying && (underlying.IsEnum || underlying == typeof(double)))
+            {
+                type = underlying;
+            }
+
             object? value = GetSimpleType(type);
 
             if (CustomTypes.PredefinedTypes.ContainsKey(type.Name))
