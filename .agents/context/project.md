@@ -15,7 +15,8 @@ changes; if they disagree with this file, they win.
 - Trimming: the library ships `IsTrimmable`; trim diagnostics (IL2xxx) build as errors
 - Tests: xUnit + bUnit (unit), NUnit + Playwright against a TestBed app (integration),
   `node --test` for the built JS output
-- Docs and demos: Blazing Story stories under `stories/`, `dotnet new` templates under `templates/`
+- Docs and demos: Blazing Story stories under `stories/`; `dotnet new` templates live in
+  [igniteui-blazor-templates](https://github.com/IgniteUI/igniteui-blazor-templates)
 - Tooling: `dotnet format whitespace`, Prettier (via lint-staged pre-commit hook)
 
 ## Architecture
@@ -30,7 +31,6 @@ changes; if they disagree with this file, they win.
   `IgniteUI.Blazor.Lite.TestBed` (integration), `IgniteUI.Blazor.Lite.PublishSmoke` (trimmed
   publish), `js/` (static web asset checks)
 - `stories/`: Blazing Story app, one `.stories.razor` per component
-- `templates/`: `dotnet new` project and item templates
 - `docs/`: `TRIMMING.md` and the security threat model
 - `skills/`: public, user-facing skills that ship with the product
 - `.agents/`: contributor-facing skills and this context
