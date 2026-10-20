@@ -94,6 +94,7 @@ Use the following structure:
 
 **`<Stories TComponent="...">`**
 - `TComponent` is the Blazor component type.
+- For a generic component, close the type (`TComponent="IgbSelect<string>"`) and set the same `TValue` on the component tag in `<Template>` — `@attributes` gives Razor nothing to infer it from.
 - `Layout` is optional. Common choices:
   - `Centered` — centers the component horizontally and vertically (good default for most UI components).
   - `FullScreen` — fills the entire canvas (good for page-level components).

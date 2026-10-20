@@ -9,10 +9,10 @@
     <div class="control">
         <label>Indicator position</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorPositionName">
-                <IgbRadio Value="Start">Start</IgbRadio>
-                <IgbRadio Value="End">End</IgbRadio>
-                <IgbRadio Value="None">None</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="IndicatorPosition">
+                <IgbRadio Value="ExpansionPanelIndicatorPosition.Start">Start</IgbRadio>
+                <IgbRadio Value="ExpansionPanelIndicatorPosition.End">End</IgbRadio>
+                <IgbRadio Value="ExpansionPanelIndicatorPosition.None">None</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -50,7 +50,7 @@
     </IgbExpansionPanel>
 </div>
 
-<div class="state">Indicator: @IndicatorPositionName &nbsp;|&nbsp; Disabled: @Disabled</div>
+<div class="state">Indicator: @IndicatorPosition &nbsp;|&nbsp; Disabled: @Disabled</div>
 
 @code {
     /*
@@ -74,8 +74,7 @@
     private IgbExpansionPanel _p2 = default!;
     private IgbExpansionPanel _p3 = default!;
 
-    private string IndicatorPositionName { get; set; } = "Start";
-    private ExpansionPanelIndicatorPosition IndicatorPosition => Enum.Parse<ExpansionPanelIndicatorPosition>(IndicatorPositionName);
+    private ExpansionPanelIndicatorPosition IndicatorPosition { get; set; } = ExpansionPanelIndicatorPosition.Start;
 
     private bool Disabled { get; set; }
 

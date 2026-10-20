@@ -66,6 +66,8 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             // The generic sample string is not a valid CSS color and the component clears invalid
             // values by design. A full-alpha lowercase hex round-trips verbatim in the default format.
             { "IgbColorPicker.Value", "#875fc4" },
+            { "IgbSelect.Value", "integration-value" },
+            { "IgbSelectItem.Value", "integration-item-value" },
         };
     }
 }

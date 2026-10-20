@@ -9,10 +9,10 @@
     <div class="control">
         <label>Variant</label>
         <div class="control-box">
-            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="VariantName">
-                <IgbRadio Value="Contained">Contained</IgbRadio>
-                <IgbRadio Value="Flat">Flat</IgbRadio>
-                <IgbRadio Value="Outlined">Outlined</IgbRadio>
+            <IgbRadioGroup Alignment="ContentOrientation.Horizontal" @bind-Value="Variant">
+                <IgbRadio Value="IconButtonVariant.Contained">Contained</IgbRadio>
+                <IgbRadio Value="IconButtonVariant.Flat">Flat</IgbRadio>
+                <IgbRadio Value="IconButtonVariant.Outlined">Outlined</IgbRadio>
             </IgbRadioGroup>
         </div>
     </div>
@@ -36,7 +36,7 @@
                    @onclick="OnClick" />
 </div>
 
-<div class="state">Variant: @VariantName &nbsp;|&nbsp; Clicks: @Clicks</div>
+<div class="state">Variant: @Variant &nbsp;|&nbsp; Clicks: @Clicks</div>
 
 @code {
     /*
@@ -58,8 +58,7 @@
 
     private IgbIconButton _iconButtonRef = default!;
 
-    private string VariantName { get; set; } = "Contained";
-    private IconButtonVariant Variant => Enum.Parse<IconButtonVariant>(VariantName);
+    private IconButtonVariant Variant { get; set; } = IconButtonVariant.Contained;
 
     private bool Mirrored { get; set; }
     private bool Disabled { get; set; }

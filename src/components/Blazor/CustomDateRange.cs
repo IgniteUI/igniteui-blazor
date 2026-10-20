@@ -1,9 +1,10 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A predefined date range with label for <see cref="IgbDateRangePicker.CustomRanges"/>.
+    /// A predefined date range with label for <see cref="IgbDateRangePicker{TValue}.CustomRanges"/>.
     /// </summary>
-    public partial class IgbCustomDateRange : BaseJsonSerializable
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbDateRangePicker{TValue}"/> the range is for.</typeparam>
+    public partial class IgbCustomDateRange<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCustomDateRange"; } }
@@ -26,12 +27,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeValue _dateRange = new IgbDateRangeValue();
+        private IgbDateRangeValue<TValue> _dateRange = new();
 
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
-        public required IgbDateRangeValue DateRange
+        public required IgbDateRangeValue<TValue> DateRange
         {
             get { return this._dateRange; }
             set

@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class for <see cref="IgbDateTimeInput"/>.
+    /// Base class for <see cref="IgbDateTimeInput{TValue}"/>.
     /// </summary>
-    public partial class IgbDateTimeInputBase : IgbComponentBase
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbDateTimeInput{TValue}"/>.</typeparam>
+    public partial class IgbDateTimeInputBase<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateTimeInputBase"; } }
@@ -126,18 +127,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _min = DateTime.MinValue;
+        private TValue? _min = default!;
 
         /// <summary>
         /// The minimum value required for the input to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Min
+        public TValue? Min
         {
             get { return this._min; }
             set
             {
-                if (this._min != value || !IsPropDirty("Min"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._min, value) || !IsPropDirty("Min"))
                 {
                     MarkPropDirty("Min");
                 }
@@ -145,18 +146,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _max = DateTime.MinValue;
+        private TValue? _max = default!;
 
         /// <summary>
         /// The maximum value required for the input to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Max
+        public TValue? Max
         {
             get { return this._max; }
             set
             {
-                if (this._max != value || !IsPropDirty("Max"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._max, value) || !IsPropDirty("Max"))
                 {
                     MarkPropDirty("Max");
                 }
@@ -528,9 +529,9 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("InputFormat"))
             { ser.AddStringProp("inputFormat", this._inputFormat); }
             if (IsPropDirty("Min"))
-            { ser.AddDateTimeProp("min", this._min); }
+            { AddGenericValue(ser, "min", this._min); }
             if (IsPropDirty("Max"))
-            { ser.AddDateTimeProp("max", this._max); }
+            { AddGenericValue(ser, "max", this._max); }
             if (IsPropDirty("DisplayFormat"))
             { ser.AddStringProp("displayFormat", this._displayFormat); }
             if (IsPropDirty("SpinDelta"))

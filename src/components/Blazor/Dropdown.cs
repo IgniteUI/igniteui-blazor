@@ -136,13 +136,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<IgbDropdownItem[]> GetItemsAsync()
         {
             var iv = await InvokeMethod("p:Items", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbDropdownItem>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbDropdownItem>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbDropdownItem>(iv);
         }
 
         /// <summary>
@@ -151,13 +145,7 @@ namespace IgniteUI.Blazor.Controls
         public IgbDropdownItem[] GetItems()
         {
             var iv = InvokeMethodSync("p:Items", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbDropdownItem>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbDropdownItem>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbDropdownItem>(iv);
         }
 
         /// <summary>
@@ -166,13 +154,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<IgbDropdownGroup[]> GetGroupsAsync()
         {
             var iv = await InvokeMethod("p:Groups", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbDropdownGroup>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbDropdownGroup>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbDropdownGroup>(iv);
         }
 
         /// <summary>
@@ -181,13 +163,7 @@ namespace IgniteUI.Blazor.Controls
         public IgbDropdownGroup[] GetGroups()
         {
             var iv = InvokeMethodSync("p:Groups", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbDropdownGroup>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbDropdownGroup>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbDropdownGroup>(iv);
         }
 
         /// <summary>

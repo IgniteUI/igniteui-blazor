@@ -56,8 +56,9 @@ Decoded dates preserve the UTC instant and arrive with the same reading and `Kin
 - State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares the decoded date directly and asserts its kind; an expectation with any other kind (`Unspecified` or `Local`) throws.
 - Never write `.ToLocalTime()` in a spec or an author-written `assert:` lambda to make a comparison pass. If one seems needed, the assertion helper is missing a case — add it there.
 - Outbound dates (`.Prop` values, method args) are not decoded and keep the kind the spec wrote, so their wire expectation is a plain literal — `DateTimeKind.Utc` serializes with `Z`.
+- Stub event details and getter returns in the shape the client bridge sends (`src/src/index.ts` `toReturn` / `toSimpleArgs`): a `Date` as `{"retType": "date", "value": "<ISO>"}`, a `null` object as `{"retType": "object", "type": "", "value": null}` (`InteropReturn.Object("", "null")` for a getter). A bare ISO string or `null` skips the .NET unwrapping and hides decode bugs such as a culture-formatted or `MinValue` read.
 
-Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in an object), `DatePickerTests`/`DateTimeInputTests` (nullable, with a `// TODO:` for the cleared case crossing as `MinValue`).
+Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in an object), `DatePickerTests`/`DateTimeInputTests` (one suite per `TValue` — `DateTime`, `DateTime?`, `string` — including the cleared value).
 
 ### 1. Methods and getters
 
@@ -160,7 +161,7 @@ One dispatch pins: the driving event's registration crossed, the callback member
 | bare `ConvertReturnValue(iv)` cast to a component | single bound-object reference — crosses as a bare `{"refType": "name", "id": ...}` with no retType envelope (`InteropReturn.Ref`) |
 | `StringToEnum` returns | not modeled — skip with this reason |
 
-**Events**: Payload keys come from the args type's `FromEventJson` (`if (args.ContainsKey("key")) { this.X = ReturnToXxx(args["key"]); }` → key + sample value: `ReturnToBoolean` → `true`, `ReturnToDouble` → `3`, `ReturnToDate` → `"2026-01-02T03:04:05.000Z"`).
+**Events**: Payload keys come from the args type's `FromEventJson` (`if (args.ContainsKey("key")) { this.X = ReturnToXxx(args["key"]); }` → key + sample value: `ReturnToBoolean` → `true`, `ReturnToDouble` → `3`, `ReturnToDate` → `"2026-01-02T03:04:05.000Z"` inside an object detail; a date or `null` detail itself is wrapped, see [Dates](#dates)).
 Object details are envelope-wrapped by the client bridge (`src/src/index.ts` `toReturn` → `Loader.transformReturn`) as `{"detail": {"retType": "object", "type": "", "value": { ...detail... }}}` — type empty, .NET fills it from the typeGuess. Child references resolve through named cascading-parameter registration.
 
 **Props**: Wire details: enum values are `[WCEnumName]` or camelCase; nested keys camelCase; dates inside serialized objects cross as `"@d:<ISO>"` strings (`AddPrimitiveProp`) while dedicated date arrays (`AddDateArrayProp`) cross as plain ISO strings; data sources ride a `refChanged` transfer under a generated ref id the description advertises as `<wireName>Ref` (the harness follows it). Skip `SerializeCore` entries whose wire name ends in `Ref` (event/script ref advertisements — the script side is swept by `ScriptPropTests`; script refs transmit as `refChanged` with refValue `script:::<name>`, which the harness normalizes to the bare name).

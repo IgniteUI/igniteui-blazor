@@ -1,20 +1,100 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Describes a selection change of an <see cref="IgbCombo{T}"/>: the new value, the items it affected and the kind of change.
+    /// Describes a selection change of an <see cref="IgbCombo{TValue, TItem}"/>, without the combo's type arguments.
     /// </summary>
-    public partial class IgbComboChangeEventArgsDetail : BaseJsonSerializable
+    [Obsolete("Use IgbComboChangeEventArgsDetail<TValue, TItem>, with the TValue and TItem of the combo.")]
+    public abstract partial class IgbComboChangeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComboChangeEventArgsDetail"; } }
 
+        /// <summary>
+        /// The value of the combo after the change.
+        /// </summary>
+        public object?[] NewValue
+        {
+            get { return this.NewValueCore; }
+        }
+
+        private protected abstract object?[] NewValueCore { get; }
+
+        /// <summary>
+        /// The data items the change applies to.
+        /// </summary>
+        public object?[] Items
+        {
+            get { return this.ItemsCore; }
+        }
+
+        private protected abstract object?[] ItemsCore { get; }
+
+        private ComboChangeType _changeType = ComboChangeType.Selection;
+
+        /// <summary>
+        /// The kind of change.
+        /// </summary>
+        [WCWidgetMemberName("Type")]
+        public ComboChangeType ChangeType
+        {
+            get { return this._changeType; }
+            set
+            {
+                if (this._changeType != value || !IsPropDirty("ChangeType"))
+                {
+                    MarkPropDirty("ChangeType");
+                }
+                this._changeType = value;
+
+            }
+        }
+
+        internal override void SerializeCore(RendererSerializer ser)
+        {
+            base.SerializeCore(ser);
+
+            if (IsPropDirty("ChangeType"))
+            { ser.AddEnumProp("changeType", this._changeType); }
+
+        }
+
+        /// <inheritdoc />
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
+        {
+            base.ToEventJson(control, args);
+
+            if (IsPropDirty("ChangeType"))
+            { args["type"] = EnumToString(this._changeType); }
+
+        }
+
+        /// <inheritdoc />
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args != null && args.TryGetValue("type", out var typeObj))
+            { this.ChangeType = StringToEnum<ComboChangeType>(typeObj); }
+
+            this.SuppressParentNotify = false;
+        }
+    }
+
+#pragma warning disable CS0618 // The obsolete base is what IgbComboChangeEventArgs.Detail returns to handlers written against it.
+    /// <summary>
+    /// Describes a selection change of an <see cref="IgbCombo{TValue, TItem}"/>: the new value, the items it affected and the kind of change.
+    /// </summary>
+    public partial class IgbComboChangeEventArgsDetail<TValue, TItem> : IgbComboChangeEventArgsDetail
+#pragma warning restore CS0618
+    {
         private string? _newValueRef;
-        private object[] _newValue = Array.Empty<object>();
+        private TValue[] _newValue = Array.Empty<TValue>();
 
         /// <summary>
         /// The value of the combo after the change.
         /// </summary>
-        public object[] NewValue
+        public new TValue[] NewValue
         {
             get { return this._newValue; }
 
@@ -58,12 +138,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _itemsRef;
-        private object[] _items = Array.Empty<object>();
+        private TItem[] _items = Array.Empty<TItem>();
 
         /// <summary>
         /// The data items the change applies to.
         /// </summary>
-        public object[] Items
+        public new TItem[] Items
         {
             get { return this._items; }
 
@@ -106,24 +186,14 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
-        private ComboChangeType _changeType = ComboChangeType.Selection;
-
-        /// <summary>
-        /// The kind of change.
-        /// </summary>
-        [WCWidgetMemberName("Type")]
-        public ComboChangeType ChangeType
+        private protected override object?[] NewValueCore
         {
-            get { return this._changeType; }
-            set
-            {
-                if (this._changeType != value || !IsPropDirty("ChangeType"))
-                {
-                    MarkPropDirty("ChangeType");
-                }
-                this._changeType = value;
+            get { return Array.ConvertAll(this._newValue, v => (object?)v); }
+        }
 
-            }
+        private protected override object?[] ItemsCore
+        {
+            get { return Array.ConvertAll(this._items, i => (object?)i); }
         }
 
         internal override void SerializeCore(RendererSerializer ser)
@@ -134,8 +204,6 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddArrayProp("newValue", this._newValue); }
             if (IsPropDirty("Items"))
             { ser.AddArrayProp("items", this._items); }
-            if (IsPropDirty("ChangeType"))
-            { ser.AddEnumProp("changeType", this._changeType); }
 
         }
 
@@ -148,8 +216,6 @@ namespace IgniteUI.Blazor.Controls
             { args["newValue"] = ObjectArrayToParam(this._newValue); }
             if (IsPropDirty("Items"))
             { args["items"] = ObjectArrayToParam(this._items); }
-            if (IsPropDirty("ChangeType"))
-            { args["type"] = EnumToString(this._changeType); }
 
         }
 
@@ -160,11 +226,9 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("newValue", out var newValueObj))
-            { this.NewValue = ReturnToObjectArray(newValueObj); }
+            { this.NewValue = ReturnToObjectArray<TValue>(newValueObj) ?? Array.Empty<TValue>(); }
             if (args != null && args.TryGetValue("items", out var itemsObj))
-            { this.Items = ReturnToObjectArray(itemsObj); }
-            if (args != null && args.TryGetValue("type", out var typeObj))
-            { this.ChangeType = StringToEnum<ComboChangeType>(typeObj); }
+            { this.Items = ReturnToObjectArray<TItem>(itemsObj) ?? Array.Empty<TItem>(); }
 
             this.SuppressParentNotify = false;
         }
