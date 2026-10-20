@@ -176,4 +176,14 @@ public class BaseControlTests : BlazorComponentTestBase
     {
         Assert.True(typeof(IgbComponentBase).IsAssignableFrom(componentType));
     }
+
+    /// <summary>
+    /// Without it, a base class with no element of its own renders an element with an empty tag name instead of naming the component to use.
+    /// </summary>
+    [Fact]
+    public void BaseWithoutElement_Throws()
+    {
+        var ex = Assert.Throws<InvalidOperationException>(() => Render<IgbCalendarBase>());
+        Assert.Contains(nameof(IgbCalendarBase), ex.Message);
+    }
 }
