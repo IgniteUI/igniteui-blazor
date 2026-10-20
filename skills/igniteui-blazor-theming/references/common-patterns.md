@@ -21,7 +21,7 @@ If the page hosts any full-featured grid, add the grid stylesheet in the **same 
 <link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />
 ```
 
-`IgbGridLite` replaces both with its own: `_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css`.
+`IgbGridLite` replaces both with its own: `_content/IgniteUI.Blazor.GridLite/themes/light/bootstrap.css`.
 
 ## Switching theme at runtime
 
