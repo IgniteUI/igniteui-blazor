@@ -11,24 +11,6 @@ namespace IgniteUI.Blazor.Controls
         internal override string RendererType { get { return "WebProgressBase"; } }
 
         /// <inheritdoc />
-        private protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-progress-base";
-            }
-        }
-
-        /// <inheritdoc />
         private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
