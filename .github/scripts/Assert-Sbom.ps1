@@ -27,7 +27,7 @@ param(
     [string]$PackageId,
 
     # Below this share of packages carrying a resolved license, the run is annotated rather than failed.
-    # Zero resolved licenses fails regardless of this threshold - see the check below.
+    # Zero resolved licenses is annotated rather than failed, regardless of this threshold - see the check below.
     [ValidateRange(0, 1)]
     [double]$MinimumLicenseCoverage = 0.8
 )
