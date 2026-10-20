@@ -3,15 +3,11 @@
     Verifies the generated SPDX 2.2 and 3.0 manifests and their relationship to the shipped package.
 
 .DESCRIPTION
-    Requires parseable, structurally valid documents, verifies each manifest against its SHA-256 sidecar,
-    and proves that the SPDX 2.2 file entry describes the exact package bytes being released.
+    Requires parseable, structurally valid documents, verifies each manifest against its SHA-256 sidecar, and proves that the SPDX 2.2 file entry describes the exact package bytes being released.
 
-    Also guards the two failure modes sbom-tool does not report: a manifest that ended up inside the
-    component scan root and so describes itself, and a ClearlyDefined outage that silently replaces every
-    license with NOASSERTION. License gaps are reported rather than fatal - NOASSERTION is a valid SPDX
-    value and the upstream tool offers no way to require otherwise. Every package landing on NOASSERTION
-    gets its own run annotation: observed outages have been all-or-nothing (0 of N resolved), not a
-    gradual plateau, so a zero-license document is the outage signature rather than a coverage shortfall.
+    Also guards the two failure modes sbom-tool does not report: a manifest that ended up inside the component scan root and so describes itself, and a ClearlyDefined outage that silently replaces every
+    license with NOASSERTION. License gaps are reported rather than fatal - NOASSERTION is a valid SPDX value and the upstream tool offers no way to require otherwise. Every package landing on NOASSERTION
+    gets its own run annotation: observed outages have been all-or-nothing (0 of N resolved), not a gradual plateau, so a zero-license document is the outage signature rather than a coverage shortfall.
 #>
 [CmdletBinding()]
 param(
