@@ -1,3 +1,4 @@
+using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -113,6 +114,13 @@ public static class DateRangePickerTests
         [Fact] public void Props_FollowContract() => VerifyPropContract();
         [Fact] public void Events_FollowContract() => VerifyEventContract();
         [Fact] public void Binds_FollowContract() => VerifyBindContract();
+
+        [Fact]
+        public void DateRangePicker_RendersCorrectElement()
+        {
+            var cut = Render<IgbDateRangePicker<TValue>>();
+            Assert.True(cut.Find("igc-date-range-picker").HasAttribute("data-ig-root"));
+        }
 
         [Fact]
         public void DateRangePicker_DefaultValues_MatchWebComponent()

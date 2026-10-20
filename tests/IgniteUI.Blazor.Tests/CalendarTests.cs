@@ -1,3 +1,4 @@
+using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -99,6 +100,13 @@ public static class CalendarTests
 
         [Fact]
         public void Binds_FollowContract() => VerifyBindContract();
+
+        [Fact]
+        public void Calendar_RendersCorrectElement()
+        {
+            var cut = Render<IgbCalendar<TValue>>();
+            Assert.True(cut.Find("igc-calendar").HasAttribute("data-ig-root"));
+        }
 
         [Fact]
         public void Calendar_TypeMetadata()

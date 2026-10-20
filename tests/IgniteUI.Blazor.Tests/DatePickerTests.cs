@@ -1,3 +1,4 @@
+using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 using System;
@@ -125,6 +126,13 @@ public static class DatePickerTests
 
         [Fact]
         public void Binds_FollowContract() => VerifyBindContract();
+
+        [Fact]
+        public void DatePicker_RendersCorrectElement()
+        {
+            var cut = Render<IgbDatePicker<TValue>>();
+            Assert.True(cut.Find("igc-date-picker").HasAttribute("data-ig-root"));
+        }
 
         [Fact]
         public void DatePicker_TypeMetadata()
