@@ -11,21 +11,6 @@ namespace IgniteUI.Blazor.Controls
         internal override string RendererType { get { return "WebSliderBase"; } }
 
         /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
         private protected override bool UseDirectRender
         {
             get

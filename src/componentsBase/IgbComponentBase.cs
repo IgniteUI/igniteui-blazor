@@ -180,11 +180,6 @@ namespace IgniteUI.Blazor.Controls
             //_webCallbackHelper.WebCallback = WebCallback.Instance;
         }
 
-        private protected virtual string ResolveDisplay()
-        {
-            return "block";
-        }
-
         private string ToSpinal(string? value)
         {
             if (value == null)
@@ -238,14 +233,6 @@ namespace IgniteUI.Blazor.Controls
                 sb.Append(output[i]);
             }
             return sb.ToString();
-        }
-
-        private protected virtual bool SupportsVisualChildren
-        {
-            get
-            {
-                return false;
-            }
         }
 
         private protected virtual bool UseDirectRender
