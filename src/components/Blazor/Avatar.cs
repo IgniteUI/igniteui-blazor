@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// An avatar component is used as a representation of a user identity
     /// typically in a user profile.
     /// </summary>
-    public partial class IgbAvatar : BaseRendererControl
+    public partial class IgbAvatar : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebAvatar"; } }

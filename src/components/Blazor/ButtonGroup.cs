@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Groups a series of <see cref="IgbToggleButton"/> components together, exposing features
     /// such as layout and selection.
     /// </summary>
-    public partial class IgbButtonGroup : BaseRendererControl
+    public partial class IgbButtonGroup : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebButtonGroup"; } }

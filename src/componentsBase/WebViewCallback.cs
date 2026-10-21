@@ -21,13 +21,13 @@ namespace IgniteUI.Blazor.Controls
             ForControls((c) => c.OnReady());
         }
 
-        private void ForControls(Action<BaseRendererControl> act)
+        private void ForControls(Action<IgbComponentBase> act)
         {
             List<string>? toRemove = null;
             foreach (var controlKey in _controlsMap.Keys)
             {
                 var control = _controlsMap[controlKey];
-                BaseRendererControl? target;
+                IgbComponentBase? target;
                 if (control.TryGetTarget(out target))
                 {
                     target.OnReady();
@@ -51,12 +51,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseRendererControl? GetControl(string key)
+        private IgbComponentBase? GetControl(string key)
         {
             if (_controlsMap.ContainsKey(key))
             {
                 var control = _controlsMap[key];
-                BaseRendererControl? target;
+                IgbComponentBase? target;
                 if (control.TryGetTarget(out target))
                 {
                     return target;
@@ -70,10 +70,10 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private Dictionary<string, WeakReference<BaseRendererControl>> _controlsMap = new Dictionary<string, WeakReference<BaseRendererControl>>();
-        public void Register(BaseRendererControl control)
+        private readonly Dictionary<string, WeakReference<IgbComponentBase>> _controlsMap = new Dictionary<string, WeakReference<IgbComponentBase>>();
+        public void Register(IgbComponentBase control)
         {
-            _controlsMap.Add(control.ContainerId, new WeakReference<BaseRendererControl>(control));
+            _controlsMap.Add(control.ContainerId, new WeakReference<IgbComponentBase>(control));
         }
 
         [JSInvokable]

@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// A ripple can be applied to an element to represent
     /// an interactive surface.
     /// </summary>
-    public partial class IgbRipple : BaseRendererControl
+    public partial class IgbRipple : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRipple"; } }

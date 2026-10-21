@@ -6,10 +6,25 @@ namespace IgniteUI.Blazor.Controls
     /// A date time input is an input field that lets you set and edit the date and time in a chosen input element
     /// using customizable display and input formats.
     /// </summary>
-    public partial class IgbDateTimeInput : IgbDateTimeInputBase
+    /// <typeparam name="TValue"><see cref="DateTime"/>, <c>DateTime?</c> or an ISO 8601 <c>string</c>.</typeparam>
+    public partial class IgbDateTimeInput<TValue> : IgbDateTimeInputBase<TValue>
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateTimeInput"; } }
+
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
+        /// <summary>
+        /// Constructs an instance of <see cref="IgbDateTimeInput{TValue}"/>.
+        /// </summary>
+        public IgbDateTimeInput()
+        {
+            if (GenericType != typeof(DateTime) &&
+                GenericType != typeof(string))
+            {
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{GenericType}'.");
+            }
+        }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -38,18 +53,18 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private DateTime? _value = DateTime.MinValue;
+        private TValue? _value = default!;
 
         /// <summary>
         /// The value of the input.
         /// </summary>
         [Parameter]
-        public DateTime? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -61,19 +76,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the input.
         /// </summary>
-        public async Task<DateTime?> GetCurrentValueAsync()
+        public async Task<TValue?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ReturnToDate(iv);
+            var iv = await InvokeMethod("p:Value", [], []);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
         /// Returns the current value of the input.
         /// </summary>
-        public DateTime? GetCurrentValue()
+        public TValue? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ReturnToDate(iv);
+            var iv = InvokeMethodSync("p:Value", [], []);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
@@ -108,18 +123,18 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
-        private EventCallback<DateTime?>? _valueChanged = null;
+        private EventCallback<TValue?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime?> ValueChanged
+        public EventCallback<TValue?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue?>.Empty;
             }
             set
             {
@@ -245,17 +260,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentDateValueChangedEventArgs>? _change = null;
+        private EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>? _change = null;
 
         /// <summary>
         /// Emitted when the user modifies and commits the component's value.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentDateValueChangedEventArgs> Change
+        public EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbComponentDateValueChangedEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>.Empty;
             }
             set
             {
@@ -264,12 +279,12 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
+                        this.SetHandler<IgbComponentDateValueChangedEventArgs<TValue?>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(DateTime?);
+                            var newValueValue = default(TValue);
 
                             {
-                                newValueValue = (DateTime?)(args.Detail);
+                                newValueValue = args.Detail;
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -282,7 +297,7 @@ namespace IgniteUI.Blazor.Controls
                                 OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<DateTime?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
                                 ObserveHandlerTask(task);
@@ -299,7 +314,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.RendererName, "Change", null);
+                    this.SetHandler<IgbComponentDateValueChangedEventArgs<TValue?>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -310,9 +325,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbComponentDateValueChangedEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbComponentDateValueChangedEventArgs>(null, (Action<IgbComponentDateValueChangedEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>(null, (Action<IgbComponentDateValueChangedEventArgs<TValue?>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -468,7 +483,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddDateTimeProp("value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
             if (IsPropDirty("InputOcurredRef"))
             { ser.AddStringProp("inputOcurredRef", this._inputOcurredRef); }
             if (IsPropDirty("ChangeRef"))

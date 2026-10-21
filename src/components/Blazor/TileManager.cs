@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The tile manager component enables the dynamic arrangement, resizing, and interaction of tiles.
     /// </summary>
-    public partial class IgbTileManager : BaseRendererControl
+    public partial class IgbTileManager : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTileManager"; } }

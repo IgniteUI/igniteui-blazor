@@ -1,9 +1,9 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Represents a header item in an <see cref="IgbSelect"/> component.
+    /// Represents a header item in an <see cref="IgbSelect{TValue}"/> component.
     /// </summary>
-    public partial class IgbSelectHeader : BaseRendererControl
+    public partial class IgbSelectHeader : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSelectHeader"; } }

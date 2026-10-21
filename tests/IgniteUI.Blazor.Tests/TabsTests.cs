@@ -100,12 +100,6 @@ public class TabsTests : ComponentWithContractTestBase<IgbTabs>
         Assert.Contains("First", cut.Find("igc-tabs").InnerHtml);
     }
 
-    [Fact]
-    public void Tabs_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbTabs).IsSubclassOf(typeof(BaseRendererControl)));
-    }
-
     #region Child collection lifecycle
 
     /// <summary>Renders <paramref name="labels"/> as <see cref="IgbTab"/> children.</summary>

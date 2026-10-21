@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     /// It is used in the context of an <see cref="IgbButtonGroup"/> to facilitate the creation of
     /// group/toolbar like UX behaviors.
     /// </summary>
-    public partial class IgbToggleButton : BaseRendererControl
+    public partial class IgbToggleButton : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebToggleButton"; } }

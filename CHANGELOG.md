@@ -10,22 +10,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Interop:** the components reach their client code through the `_content/IgniteUI.Blazor/interop.js` module (JS isolation) instead of functions on `window`. The internal `window.igSendMessage`, `igCheckReady`, `igWaitForLoaded`, `igRequestLoad`, `igSetResourceString`, `igConvertReturnValue` and `igUnmarshalledDataSource*` functions, the unused `igSendMessages` and the `raisingEvent` flag no longer exist. They were never a supported API. On .NET 8 WebAssembly, unmarshalled data now travels on the same path as on .NET 9+. [#255](https://github.com/IgniteUI/igniteui-blazor/issues/255)
+## 1.0.0 - 2026-10-12
+
+📢 The first stable release: from here on, a breaking change to the public API comes with a major version.
+
+## 0.6.0 - 2026-10-12
+
+### Fixed
+
+- **Radio Group:** with no radio checked, `GetCurrentValue` and `GetCurrentValueAsync` return `default`, such as `null` for an `int?` group, instead of throwing for a non-string `TValue`.
+- **Button, Icon Button:** an unset `Target` reports `_self`, where the link opens, instead of `_blank`.
+- **Input:** unset `Min`, `MinLength`, `MaxLength` and `Step` report `null`, no constraint, instead of `0`.
+- **Chat:** unset `IgbChatOptions` report the defaults the chat uses: `CurrentUserId` `"user"`, `SuggestionsPosition` `BelowMessages` and `StopTypingDelay` `3000`.
+
+### Breaking Changes
+
+- **Calendar, Date Picker, Date Range Picker:** `WeekStart` is now `WeekDays?` and defaults to `null`, which follows the locale: `Locale` if set, otherwise the client locale. It no longer reports `Sunday` for a calendar that follows the locale, and setting it back to `null` returns to the locale's day.
+- **Slider, Range Slider:** in `IgbNumberFormatOptions`, `UseGrouping` is now a `NumberFormatGrouping` (`Auto`, `Always`, `Min2`, `Never`) and defaults to `Auto` instead of `false`, and the digit options are now nullable and default to `null` instead of `0`, which leaves them to the style and locale.
+- **QR Code:** `ErrorLevel` is now `QrErrorCorrectionLevel?` and defaults to `null`, which leaves the level to the web component's default.
+- **Slider, Range Slider:** `LowerBound` and `UpperBound` are now `double?` and default to `null`, which bounds the value by `Min` and `Max`. `UpperBound` no longer reports `0` for a slider bounded by `Max`.
+- **Textarea:** `MaxLength` and `MinLength` are now `double?` and default to `null`, no limit. They no longer report `0`, which is a limit of its own.
+- **Carousel:** `Interval` is now `double?` and defaults to `null`, which does not play automatically, instead of `0`.
+- **Chip:** `Variant` is now `StyleVariant?` and defaults to `null`, the chip with no color variant. It no longer reports `Primary` for that chip, and setting it back to `null` removes the variant.
+
+## 0.5.0 - 2026-10-11
+
 ### Added
 
 - `*Script` parameters for client templates and events now also support resolving late once `registerScript` is called even after the client component is created.
+- **Color Picker:** `Value` binds a `System.Drawing.Color` or `Color?` as well as a CSS color `string`.
+- **Radio, Radio Group, Select:** `TValue` can be an enum, and options name its members directly: `<IgbRadio Value="Plan.Pro">`.
 
 ### Fixed
 
 - **Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** the component no longer takes the internal id `mainControl` as its form-field name, so these fields no longer submit under that name or collide with each other in the same form.
 - **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** a `style` attribute no longer overrides the component's own layout ([#477](https://github.com/IgniteUI/igniteui-blazor/issues/477)), an `id` attribute is no longer duplicated on an extra element, an attribute removed from the markup no longer stays with `"null"` value, and the Chat no longer collapses to no width outside a layout that stretches it.
+- **Combo:** with a numeric `ValueKey`, such as an `int` key, `Change`, `ValueChanged` and `@bind-Value` now fire on a selection change, instead of the event being dropped. [#364](https://github.com/IgniteUI/igniteui-blazor/issues/364)
+
+### Deprecated
+
+- **Combo:** the non-generic `IgbComboChangeEventArgs` and `IgbComboChangeEventArgsDetail`; use `IgbComboChangeEventArgs<TValue, TItem>`. A `Change` handler that takes `IgbComboChangeEventArgs` still binds, with an obsolete warning, and reads `Detail.NewValue` and `Detail.Items` as `object?[]`. `Detail` is read-only.
 
 ### Breaking Changes
 
 - **Client scripts:** the deprecated `window.igRegisterScript`, `window.igRemoveScript`, and `window.igTemplating.html` globals have been removed from `IgniteUI.Blazor.Lite`, along with its legacy `app.bundle.js` queue shim. Remove any `<script src="_content/IgniteUI.Blazor/app.bundle.js">` tag from Lite apps, since it now returns 404. Import `registerScript`, `removeScript`, and `html` from `./_content/IgniteUI.Blazor/api.js` instead. `registerScript` defaults `shouldCall` to `false`; pass `true` only for parameters whose registered function produces a value, such as `DataScript`.
-- **Infrastructure:** the `EventBehavior` component parameter was removed and `ControlEventBehavior` was made internal, so code that sets the parameter or references the enum no longer compiles. The public renderer `Type` property was replaced with the internal `RendererType`, so code that reads or overrides `Type` no longer compiles. These changes do not alter default event dispatch, renderer keys or the wire format. `Name` is no longer public on non-component types other than `IgbIconMeta` and `IgbChatMessageAttachment`, so code using those properties must be updated. Form components now expose `Name` as a parameter; markup is unchanged.
+- **Calendar, Color Picker, Date Picker, Date Range Picker, Date Time Input, Radio, Radio Group, Rating, Select, Slider:** generic over `TValue`, the type of `Value`, or of each date in a Date Range Picker range; each component's API docs list the supported types.
+
+  Razor infers `TValue` from `Value` or `@bind-Value` but not through a method group, so a usage with nothing to infer it from (no value, or an `@ref` field) or a value event handled by a method, such as `Change="OnChange"`, needs `TValue="..."`. Code that names these types, or `IgbSelectGroup`, needs the type argument too, such as `IgbSelect<string>`.
+
+  Event args that carry the value are generic too, such as `IgbComponentDateValueChangedEventArgs<TValue>` and `IgbRadioChangeEventArgs<TValue>`, and the Color Picker's `Change` and `Input` now pass `IgbColorPickerValueEventArgs<TValue>` instead of `IgbComponentValueChangedEventArgs`.
+
+  `IgbDateRangeValue` and `IgbCustomDateRange` take the picker's `TValue`, so a range built in code is written `new IgbDateRangeValue<DateTime> { Start = start, End = end }`. A cleared Date Picker or Date Time Input bound to `DateTime?` reports `null` instead of `DateTime.MinValue`.
+- **Combo:** `IgbCombo<T>` is now `IgbCombo<TValue, TItem>` ([#511](https://github.com/IgniteUI/igniteui-blazor/issues/511)). `TValue` is the value type, as `T` was: the `ValueKey` property's type, or the item type without a `ValueKey`. `TItem` is the data item type, so `Data` is an `IEnumerable<TItem>`.
+
+  Razor infers both from `@bind-Value` and `Data`, but not through a `Change` handler, so a combo that handles `Change`, or has nothing to infer them from, needs `TValue="..." TItem="..."`. Code that names the type needs both arguments too, such as `IgbCombo<int, City>`. `Change` passes `IgbComboChangeEventArgs<TValue, TItem>`, whose `Detail.NewValue` is a `TValue[]` and `Detail.Items` a `TItem[]`.
+
+  `LocalJson` and `RemoteJson` are set through the new `DataJson` parameter instead of `Data`. `Select`, `Deselect` and their async forms take a `TValue[]`. `ItemTemplate` is a `RenderFragment<TItem>`, and `GroupHeaderTemplate` a `RenderFragment<IgbComboGroupHeaderContext>`, whose `Key` is the group's value.
+- **Radio, Select Item:** `Value` is a `TValue`, so Razor reads it as C# rather than text, and each option's value must match the type of its Radio Group or Select. Enum, number and loop values need no conversion, such as `Value="Plan.Pro"`, `Value="1"`, or `@foreach (var plan in plans) { <IgbRadio Value="plan">@plan</IgbRadio> }`, where a non-string value previously needed `.ToString()`. A string literal no longer compiles as text and is written as `Value="@("basic")"`.
 - **`Width` and `Height` removed:** size a component with CSS, like any other element. Usually the layout decides it: a flex or grid container sizes and aligns the components in it. For an explicit size, give the component a `class` and target it from your stylesheet, or from the [isolated CSS](https://learn.microsoft.com/aspnet/core/blazor/components/css-isolation) of the component that renders it, through `::deep`.
 - **Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input:** render their element directly, like every other component, instead of inside an `inline-block` wrapper `div`. In normal flow all but the Color Picker now fill their row, and sizing the Date Picker with `width` also needs a `display`, as its element is inline. CSS that reached the element through the wrapper, such as `.my-picker igc-date-picker`, now targets it directly: `igc-date-picker.my-picker`.
 - **Slider, Range Slider:** `ValueFormatOptions` takes the new `IgbNumberFormatOptions` instead of `IgbNumberFormatSpecifier`, carrying the same [`Intl.NumberFormatOptions`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#options) properties the web component takes. `IgbFormatSpecifier`, `IgbNumberFormatSpecifier` and their modules are removed from `IgniteUI.Blazor.Lite`.
+- **Calendar, Date Picker, Date Range Picker, Date Time Input:** the `RoundTripDateConversion` parameter and its enum are removed from the shared base. Dates coming back from the web component now always arrive as the UTC instant, with `Kind = Utc`, instead of being converted to the process's local time. On Blazor Server with a UTC server values remain. On WebAssembly call `.ToLocalTime()` on the value to get the previous reading.
+- **Infrastructure:** the `EventBehavior` component parameter was removed and `ControlEventBehavior` was made internal, so code that sets the parameter or references the enum no longer compiles. The public renderer `Type` property was replaced with the internal `RendererType`, so code that reads or overrides `Type` no longer compiles. These changes do not alter default event dispatch, renderer keys or the wire format. `Name` is no longer public on non-component types other than `IgbIconMeta` and `IgbChatMessageAttachment`, so code using those properties must be updated. Form components now expose `Name` as a parameter; markup is unchanged.
 
 ## 0.4.0 - 2026-09-30
 

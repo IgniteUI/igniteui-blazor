@@ -686,21 +686,19 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
 
     /// <summary>
     /// One decoded date: stated by the spec as the UTC instant that crossed the wire, and required
-    /// to arrive as the local rendering of it — reading *and* <see cref="DateTimeKind"/>. Asserting
-    /// the kind is what pins the conversion in every timezone, including the one where local and
-    /// UTC coincide and a plain instant comparison could not tell the two apart.
+    /// to arrive with the same reading and <see cref="DateTimeKind.Utc"/>. Asserting the kind pins
+    /// the conversion even when a plain value comparison would not distinguish UTC from local.
     /// </summary>
     private static void AssertDecodedDate(DateTime expectedInstant, object? actual)
     {
-        if (expectedInstant.Kind == DateTimeKind.Unspecified)
+        if (expectedInstant.Kind != DateTimeKind.Utc)
         {
             throw new XunitException(
-                $"expected date {expectedInstant:o} has Kind=Unspecified — state the instant explicitly " +
-                "(DateTimeKind.Utc), since ToLocalTime and ToUniversalTime read an unspecified kind in " +
-                "opposite directions and would shift it silently");
+                $"expected date {expectedInstant:o} has Kind={expectedInstant.Kind} — state the instant " +
+                "explicitly with DateTimeKind.Utc");
         }
         var actualDate = Assert.IsType<DateTime>(actual);
-        Assert.Equal(expectedInstant.ToLocalTime(), actualDate);
-        Assert.Equal(DateTimeKind.Local, actualDate.Kind);
+        Assert.Equal(expectedInstant, actualDate);
+        Assert.Equal(DateTimeKind.Utc, actualDate.Kind);
     }
 }

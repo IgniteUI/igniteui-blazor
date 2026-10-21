@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -14,7 +15,7 @@ namespace IgniteUI.Blazor.Controls
         {
             get
             {
-                if (Parent is BaseRendererControl)
+                if (Parent is IgbComponentBase)
                 {
                     return true;
                 }
@@ -86,9 +87,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     ((BaseJsonSerializable)CurrParent).OnElementNameChanged(element, oldName, newName);
                 }
-                else if (CurrParent is BaseRendererControl)
+                else if (CurrParent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)CurrParent).OnElementNameChanged(element, oldName, newName);
+                    ((IgbComponentBase)CurrParent).OnElementNameChanged(element, oldName, newName);
                 }
             }
             else
@@ -99,9 +100,9 @@ namespace IgniteUI.Blazor.Controls
                     {
                         ((BaseJsonSerializable)CurrParent).OnElementNameChanged(element, oldName, newName);
                     }
-                    else if (CurrParent is BaseRendererControl)
+                    else if (CurrParent is IgbComponentBase)
                     {
-                        ((BaseRendererControl)CurrParent).OnElementNameChanged(element, oldName, newName);
+                        ((IgbComponentBase)CurrParent).OnElementNameChanged(element, oldName, newName);
                     }
                 });
             }
@@ -211,9 +212,9 @@ namespace IgniteUI.Blazor.Controls
             }
             if (_parent != null)
             {
-                if (_parent is BaseRendererControl)
+                if (_parent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)_parent).ChildDirty(this);
+                    ((IgbComponentBase)_parent).ChildDirty(this);
                 }
                 else
                 {
@@ -234,7 +235,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                ((BaseRendererControl)CurrParent).OnPropertyPropagatedOut(name, propertyName);
+                ((IgbComponentBase)CurrParent).OnPropertyPropagatedOut(name, propertyName);
             }
         }
 
@@ -242,10 +243,10 @@ namespace IgniteUI.Blazor.Controls
         {
             Action templateUpdate = () =>
             {
-                if (_parent is BaseRendererControl)
+                if (_parent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)_parent).ChildDirty(this);
-                    ((BaseRendererControl)_parent).UpdateTemplate(contentType, template, type);
+                    ((IgbComponentBase)_parent).ChildDirty(this);
+                    ((IgbComponentBase)_parent).UpdateTemplate(contentType, template, type);
                 }
                 else if (_parent is BaseJsonSerializable)
                 {
@@ -274,10 +275,10 @@ namespace IgniteUI.Blazor.Controls
             }
             if (_parent != null)
             {
-                if (_parent is BaseRendererControl)
+                if (_parent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)_parent).ChildDirty(this);
-                    ((BaseRendererControl)_parent).OnRefChanged(_name + "/" + propertyName, oldValue, newValue, isScript, isElement, refChanged);
+                    ((IgbComponentBase)_parent).ChildDirty(this);
+                    ((IgbComponentBase)_parent).OnRefChanged(_name + "/" + propertyName, oldValue, newValue, isScript, isElement, refChanged);
                 }
                 else
                 {
@@ -319,9 +320,9 @@ namespace IgniteUI.Blazor.Controls
             }
             if (_parent != null)
             {
-                if (_parent is BaseRendererControl)
+                if (_parent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)_parent).ChildDirty(this);
+                    ((IgbComponentBase)_parent).ChildDirty(this);
                 }
                 else
                 {
@@ -443,9 +444,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToObject<T>(val, typeGuess);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToObject<T>(val, typeGuess);
+                return ((IgbComponentBase)CurrParent).ReturnToObject<T>(val, typeGuess);
             }
             return default(T);
         }
@@ -457,9 +458,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToInt(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToInt(val);
+                return ((IgbComponentBase)CurrParent).ReturnToInt(val);
             }
             return default(int);
         }
@@ -471,9 +472,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToDouble(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToDouble(val);
+                return ((IgbComponentBase)CurrParent).ReturnToDouble(val);
             }
             return default(double);
         }
@@ -485,9 +486,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToLong(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToLong(val);
+                return ((IgbComponentBase)CurrParent).ReturnToLong(val);
             }
             return default(long);
         }
@@ -499,9 +500,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToDate(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToDate(val);
+                return ((IgbComponentBase)CurrParent).ReturnToDate(val);
             }
             return default(DateTime);
         }
@@ -513,9 +514,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ComponentToJson(val, index);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ComponentToJson(val, index);
+                return ((IgbComponentBase)CurrParent).ComponentToJson(val, index);
             }
             return default(string);
         }
@@ -527,9 +528,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).DateToString(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).DateToString(val);
+                return ((IgbComponentBase)CurrParent).DateToString(val);
             }
             return String.Empty;
         }
@@ -541,9 +542,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).BooleanToString(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).BooleanToString(val);
+                return ((IgbComponentBase)CurrParent).BooleanToString(val);
             }
             return String.Empty;
         }
@@ -555,9 +556,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).EnumToString(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).EnumToString(val);
+                return ((IgbComponentBase)CurrParent).EnumToString(val);
             }
             return default(string);
         }
@@ -569,23 +570,28 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).StringToEnum<T>(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).StringToEnum<T>(val);
+                return ((IgbComponentBase)CurrParent).StringToEnum<T>(val);
             }
             return default(T);
         }
 
         internal string? ObjectArrayToParam(object[]? arr)
         {
+            return ObjectArrayToParam<object>(arr);
+        }
+
+        internal string? ObjectArrayToParam<T>(T[]? arr)
+        {
             EnsureValid();
             if (CurrParent is BaseJsonSerializable)
             {
                 return ((BaseJsonSerializable)CurrParent).ObjectArrayToParam(arr);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ObjectArrayToParam(arr);
+                return ((IgbComponentBase)CurrParent).ObjectArrayToParam(arr);
             }
             return default(string);
         }
@@ -597,9 +603,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToObjectArray(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToObjectArray(val);
+                return ((IgbComponentBase)CurrParent).ReturnToObjectArray(val);
             }
             return Array.Empty<object>();
         }
@@ -615,9 +621,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToObjectArray<T>(val, typeGuess);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToObjectArray<T>(val, typeGuess);
+                return ((IgbComponentBase)CurrParent).ReturnToObjectArray<T>(val, typeGuess);
             }
             return default;
         }
@@ -629,9 +635,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToStringArray(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToStringArray(val);
+                return ((IgbComponentBase)CurrParent).ReturnToStringArray(val);
             }
             return default;
         }
@@ -643,9 +649,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToIntArray(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToIntArray(val);
+                return ((IgbComponentBase)CurrParent).ReturnToIntArray(val);
             }
             return default;
         }
@@ -657,9 +663,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToDoubleArray(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToDoubleArray(val);
+                return ((IgbComponentBase)CurrParent).ReturnToDoubleArray(val);
             }
             return default;
         }
@@ -671,9 +677,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ObjectToParam(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ObjectToParam(val);
+                return ((IgbComponentBase)CurrParent).ObjectToParam(val);
             }
             return String.Empty;
         }
@@ -685,9 +691,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ObjectToParam(val, type);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ObjectToParam(val, type);
+                return ((IgbComponentBase)CurrParent).ObjectToParam(val, type);
             }
             return String.Empty;
         }
@@ -699,9 +705,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 ((BaseJsonSerializable)CurrParent).ObjectToParam(c, propertyName, val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                ((BaseRendererControl)CurrParent).ObjectToParam(c, propertyName, val);
+                ((IgbComponentBase)CurrParent).ObjectToParam(c, propertyName, val);
             }
         }
 
@@ -712,9 +718,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 ((BaseJsonSerializable)CurrParent).ObjectToParam(c, val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                ((BaseRendererControl)CurrParent).ObjectToParam(c, val);
+                ((IgbComponentBase)CurrParent).ObjectToParam(c, val);
             }
         }
 
@@ -725,9 +731,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToString(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToString(val);
+                return ((IgbComponentBase)CurrParent).ReturnToString(val);
             }
             return String.Empty;
         }
@@ -739,23 +745,42 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToBoolean(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToBoolean(val);
+                return ((IgbComponentBase)CurrParent).ReturnToBoolean(val);
             }
             return default;
         }
 
         internal object? ConvertReturnValue(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
         {
+            return ConvertReturnValue<object>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+
+        internal object? ConvertReturnValue<TValue>(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
             EnsureValid();
             if (CurrParent is BaseJsonSerializable)
             {
-                return ((BaseJsonSerializable)CurrParent).ConvertReturnValue(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((BaseJsonSerializable)CurrParent).ConvertReturnValue<TValue, object>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ConvertReturnValue(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+                return ((IgbComponentBase)CurrParent).ConvertReturnValue<TValue, object>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
+            }
+            return null;
+        }
+
+        internal object? ConvertReturnValue<TValue, TItem>(object? val, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            EnsureValid();
+            if (CurrParent is BaseJsonSerializable)
+            {
+                return ((BaseJsonSerializable)CurrParent).ConvertReturnValue<TValue, TItem>(val, typeGuess, acceptsNullIfMarshalDoesNotExist);
+            }
+            else if (CurrParent is IgbComponentBase)
+            {
+                return ((IgbComponentBase)CurrParent).ConvertReturnValue<TValue, TItem>(val, false, typeGuess, acceptsNullIfMarshalDoesNotExist);
             }
             return null;
         }
@@ -767,9 +792,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).ReturnToPrimitive(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).ReturnToPrimitive(val);
+                return ((IgbComponentBase)CurrParent).ReturnToPrimitive(val);
             }
             return null;
         }
@@ -781,9 +806,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).DowncastArray<T>(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).DowncastArray<T>(val);
+                return ((IgbComponentBase)CurrParent).DowncastArray<T>(val);
             }
             return default;
         }
@@ -798,9 +823,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     ((BaseJsonSerializable)CurrParent).SetHandler(name, propertyName, handler, onArgs);
                 }
-                else if (CurrParent is BaseRendererControl)
+                else if (CurrParent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)CurrParent).SetHandler(name, propertyName, handler, onArgs);
+                    ((IgbComponentBase)CurrParent).SetHandler(name, propertyName, handler, onArgs);
                 }
             };
 
@@ -820,9 +845,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     ((BaseJsonSerializable)CurrParent).SetHandlerSimple(name, propertyName, handler, getReturn, onArgs);
                 }
-                else if (CurrParent is BaseRendererControl)
+                else if (CurrParent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)CurrParent).SetHandlerSimple(name, propertyName, handler, getReturn, onArgs);
+                    ((IgbComponentBase)CurrParent).SetHandlerSimple(name, propertyName, handler, getReturn, onArgs);
                 }
             };
 
@@ -842,9 +867,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     ((BaseJsonSerializable)CurrParent).SetActionHandler(name, propertyName, handler, onArgs);
                 }
-                else if (CurrParent is BaseRendererControl)
+                else if (CurrParent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)CurrParent).SetActionHandler(name, propertyName, handler, onArgs);
+                    ((IgbComponentBase)CurrParent).SetActionHandler(name, propertyName, handler, onArgs);
                 }
             };
 
@@ -865,9 +890,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     ((BaseJsonSerializable)CurrParent).SetActionHandlerSimple(name, propertyName, handler, getReturn, onArgs);
                 }
-                else if (CurrParent is BaseRendererControl)
+                else if (CurrParent is IgbComponentBase)
                 {
-                    ((BaseRendererControl)CurrParent).SetActionHandlerSimple(name, propertyName, handler, getReturn, onArgs);
+                    ((IgbComponentBase)CurrParent).SetActionHandlerSimple(name, propertyName, handler, getReturn, onArgs);
                 }
             };
 
@@ -886,9 +911,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).StringToString(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).StringToString(val);
+                return ((IgbComponentBase)CurrParent).StringToString(val);
             }
             return default;
         }
@@ -900,9 +925,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).StringArrayToString(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).StringArrayToString(val);
+                return ((IgbComponentBase)CurrParent).StringArrayToString(val);
             }
             return default;
         }
@@ -914,9 +939,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).IntArrayToString(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).IntArrayToString(val);
+                return ((IgbComponentBase)CurrParent).IntArrayToString(val);
             }
             return default;
         }
@@ -928,21 +953,21 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((BaseJsonSerializable)CurrParent).DoubleArrayToString(val);
             }
-            else if (CurrParent is BaseRendererControl)
+            else if (CurrParent is IgbComponentBase)
             {
-                return ((BaseRendererControl)CurrParent).DoubleArrayToString(val);
+                return ((IgbComponentBase)CurrParent).DoubleArrayToString(val);
             }
             return default;
         }
 
         /// <summary>Reads this element's values from the event payload the client sent for <paramref name="control"/>.</summary>
-        internal virtual void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal virtual void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
 
         }
 
         /// <summary>Writes this element's values into the event payload returned to the client for <paramref name="control"/>.</summary>
-        internal virtual void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal virtual void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
 
         }
@@ -966,7 +991,7 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                return await ((BaseRendererControl)CurrParent).SetResourceStringAsync(grouping, id, value);
+                return await ((IgbComponentBase)CurrParent).SetResourceStringAsync(grouping, id, value);
             }
         }
         private protected async Task<object?> SetResourceStringAsync(string grouping, string json)
@@ -981,10 +1006,80 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                return await ((BaseRendererControl)CurrParent).SetResourceStringAsync(grouping, json);
+                return await ((IgbComponentBase)CurrParent).SetResourceStringAsync(grouping, json);
             }
         }
 
-    }
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ser"></param>
+        /// <param name="propName"></param>
+        /// <param name="value"></param>
+        internal void AddGenericValue<TValue>(RendererSerializer ser, string propName, TValue? value)
+        {
+            // Only a non-nullable date has a non-null empty state, its default DateTime.MinValue; 0 or false is a real radio value.
+            if (value is null || (value is DateTime && EqualityComparer<TValue>.Default.Equals(value, default)))
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (value is DateTime dateTime)
+            {
+                ser.AddDateTimeProp(propName, dateTime);
+            }
+            else if (value is string dateString)
+            {
+                ser.AddStringProp(propName, dateString);
+            }
+            else
+            {
+                // Invariant, as GenericValueFromEventJson parses the value back.
+                ser.AddStringProp(propName, value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value.ToString());
+            }
+        }
 
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        internal string? GenericValueString<TValue>(TValue? value)
+        {
+            if (value is null || EqualityComparer<TValue>.Default.Equals(value, default))
+            {
+                return null;
+            }
+            else if (value is DateTime dateTime)
+            {
+                return DateToString(dateTime);
+            }
+            else if (value is string dateString)
+            {
+                return dateString;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Converts event json values to the specified type. Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="detailObj"></param>
+        /// <returns></returns>
+        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj)
+        {
+            EnsureValid();
+            if (CurrParent is BaseJsonSerializable)
+            {
+                return ((BaseJsonSerializable)CurrParent).GenericValueFromEventJson<TValue>(detailObj);
+            }
+            else if (CurrParent is IgbComponentBase)
+            {
+                return ((IgbComponentBase)CurrParent).GenericValueFromEventJson<TValue>(detailObj);
+            }
+            return default;
+        }
+    }
 }

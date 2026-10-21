@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// Presents a set of <see cref="IgbCarouselSlide"/> components by sequentially displaying
     /// a subset of one or more slides.
     /// </summary>
-    public partial class IgbCarousel : BaseRendererControl
+    public partial class IgbCarousel : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCarousel"; } }
@@ -215,13 +215,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _interval = 0;
+        private double? _interval;
 
         /// <summary>
-        /// The duration in milliseconds between changing the active slide.
+        /// The duration in milliseconds between changing the active slide. When <c>null</c>, the carousel does not play automatically.
         /// </summary>
         [Parameter]
-        public double Interval
+        public double? Interval
         {
             get { return this._interval; }
             set

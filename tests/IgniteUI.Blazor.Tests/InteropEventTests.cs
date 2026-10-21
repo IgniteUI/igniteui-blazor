@@ -51,7 +51,7 @@ public class InteropEventTests : BlazorComponentTestBase
     }
 
     /// <summary>
-    /// Regression coverage for <c>BaseRendererControl.ObserveHandlerTask</c>: an async
+    /// Regression coverage for <c>IgbComponentBase.ObserveHandlerTask</c>: an async
     /// <see cref="EventCallback{T}"/> handler that faults *after* an await returns a
     /// task that completes asynchronously. Without observation those exceptions would
     /// be silently dropped by the interop dispatch path (which does not itself await

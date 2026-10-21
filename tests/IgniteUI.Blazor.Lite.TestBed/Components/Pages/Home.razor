@@ -29,7 +29,7 @@
     private string eventMessage = string.Empty;
     private ComponentRunSummary summary = new();
 
-    // BaseRendererControl.QueueUpdate flushes to the client on a queued, fire-and-forget pass
+    // IgbComponentBase.QueueUpdate flushes to the client on a queued, fire-and-forget pass
     // timed by the thread pool, so wait for results to show up, not for a fixed delay.
     private const int PropagationTimeoutMs = 1000;
     private const int PollIntervalMs = 20;
@@ -87,9 +87,9 @@
         app.StateHasChanged();
         await Task.Delay(1);
 
-        if (app.dc?.Instance is not BaseRendererControl renderer)
+        if (app.dc?.Instance is not IgbComponentBase renderer)
         {
-            return ComponentRunSummary.Failed(type, "the rendered component is not a BaseRendererControl");
+            return ComponentRunSummary.Failed(type, "the rendered component is not an IgbComponentBase");
         }
 
         await renderer.EnsureReady();

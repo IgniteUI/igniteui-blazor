@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// using the built-in collapse buttons or the <see cref="Toggle"/> method.
     /// Nested splitters are supported for more complex layouts.
     /// </summary>
-    public partial class IgbSplitter : BaseRendererControl
+    public partial class IgbSplitter : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSplitter"; } }

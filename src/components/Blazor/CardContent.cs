@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// A container component for the card's main text content.
     /// Nest inside an <see cref="IgbCard"/> to display the primary content.
     /// </summary>
-    public partial class IgbCardContent : BaseRendererControl
+    public partial class IgbCardContent : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCardContent"; } }

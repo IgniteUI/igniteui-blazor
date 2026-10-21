@@ -51,13 +51,14 @@ The render scope handed to the lambda is the cut for an arranged spec and the wh
 
 ### Dates
 
-Decoding converts to local time (`ReturnToDate`, default `RoundTripDateConversion.Auto`), so a decoded date is `Kind=Local` with a shifted reading. Rules:
+Decoded dates preserve the UTC instant and arrive with the same reading and `Kind=Utc`. Rules:
 
-- State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares against its local rendering and asserts the kind; an `Unspecified` expectation throws.
-- Never write `.ToLocalTime()` in a spec to make a comparison pass. If one seems needed, the assertion helper is missing a case — add it there. The one exception is an author-written `assert:` lambda, where you do the comparing: use `…Utc).ToLocalTime()` (see `DateRangePickerTests`' bind assert).
+- State every date **expectation** as the UTC instant with an explicit `DateTimeKind.Utc` — `returns:`, `expect:`, args. The runner compares the decoded date directly and asserts its kind; an expectation with any other kind (`Unspecified` or `Local`) throws.
+- Never write `.ToLocalTime()` in a spec or an author-written `assert:` lambda to make a comparison pass. If one seems needed, the assertion helper is missing a case — add it there.
 - Outbound dates (`.Prop` values, method args) are not decoded and keep the kind the spec wrote, so their wire expectation is a plain literal — `DateTimeKind.Utc` serializes with `Z`.
+- Stub event details and getter returns in the shape the client bridge sends (`src/src/index.ts` `toReturn` / `toSimpleArgs`): a `Date` as `{"retType": "date", "value": "<ISO>"}`, a `null` object as `{"retType": "object", "type": "", "value": null}` (`InteropReturn.Object("", "null")` for a getter). A bare ISO string or `null` skips the .NET unwrapping and hides decode bugs such as a culture-formatted or `MinValue` read.
 
-Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in an object), `DatePickerTests`/`DateTimeInputTests` (nullable, with a `// TODO:` for the cleared case crossing as `MinValue`).
+Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in an object), `DatePickerTests`/`DateTimeInputTests` (one suite per `TValue` — `DateTime`, `DateTime?`, `string` — including the cleared value).
 
 ### 1. Methods and getters
 
@@ -69,7 +70,7 @@ Exemplars: `CalendarTests` (scalar + array), `DateRangePickerTests` (nested in a
   | Return kind | Contract form |
   |---|---|
   | none | omit — void overload |
-  | scalar (bool/number/string/date) | just the value: `returns: true` / `5.0` / a UTC `DateTime` — the wire return kind is derived from the value's type, and the decoded .NET return must round-trip back to it (dates: see the rule above — stated as the UTC instant, asserted as its local rendering) |
+  | scalar (bool/number/string/date) | just the value: `returns: true` / `5.0` / a UTC `DateTime` — the wire return kind is derived from the value's type, and the decoded .NET return must round-trip back to it (dates: see the rule above — stated as the UTC instant, asserted unchanged as `DateTimeKind.Utc`) |
   | single serialized object | arranged `Getter` overload with `InteropReturn.Object(...)` + value-level `assert:` — see `ChatTests.cs` `DraftMessage` |
   | array of component/data-item references | arranged `Getter` overload with `InteropReturn.Array` of refs, `Assert.Same` against arranged instances — see `TileManagerTests.cs` `Tiles`, `ComboTests.cs` `Value` |
   | single bound-object reference | arranged `Getter` overload with `InteropReturn.Ref(...)`, `Assert.Same` against the arranged child — see `SelectTests.cs`/`DropdownTests.cs` `SelectedItem` |
@@ -125,7 +126,7 @@ One dispatch pins: the driving event's registration crossed, the callback member
 ## Current-stack cheat-sheet (legacy `RendererMessage` pipeline)
 
 > Everything in this section is specific to components still on the legacy
-> `BaseRendererControl`/`RendererMessage` stack.
+> `IgbComponentBase`/`RendererMessage` stack.
 
 **Surface markers** in the component's source:
 - `InvokeMethod("...", args, types)` inside `public async Task...` wrappers → methods/getters;
@@ -160,7 +161,7 @@ One dispatch pins: the driving event's registration crossed, the callback member
 | bare `ConvertReturnValue(iv)` cast to a component | single bound-object reference — crosses as a bare `{"refType": "name", "id": ...}` with no retType envelope (`InteropReturn.Ref`) |
 | `StringToEnum` returns | not modeled — skip with this reason |
 
-**Events**: Payload keys come from the args type's `FromEventJson` (`if (args.ContainsKey("key")) { this.X = ReturnToXxx(args["key"]); }` → key + sample value: `ReturnToBoolean` → `true`, `ReturnToDouble` → `3`, `ReturnToDate` → `"2026-01-02T03:04:05.000Z"`).
+**Events**: Payload keys come from the args type's `FromEventJson` (`if (args.ContainsKey("key")) { this.X = ReturnToXxx(args["key"]); }` → key + sample value: `ReturnToBoolean` → `true`, `ReturnToDouble` → `3`, `ReturnToDate` → `"2026-01-02T03:04:05.000Z"` inside an object detail; a date or `null` detail itself is wrapped, see [Dates](#dates)).
 Object details are envelope-wrapped by the client bridge (`src/src/index.ts` `toReturn` → `Loader.transformReturn`) as `{"detail": {"retType": "object", "type": "", "value": { ...detail... }}}` — type empty, .NET fills it from the typeGuess. Child references resolve through named cascading-parameter registration.
 
 **Props**: Wire details: enum values are `[WCEnumName]` or camelCase; nested keys camelCase; dates inside serialized objects cross as `"@d:<ISO>"` strings (`AddPrimitiveProp`) while dedicated date arrays (`AddDateArrayProp`) cross as plain ISO strings; data sources ride a `refChanged` transfer under a generated ref id the description advertises as `<wireName>Ref` (the harness follows it). Skip `SerializeCore` entries whose wire name ends in `Ref` (event/script ref advertisements — the script side is swept by `ScriptPropTests`; script refs transmit as `refChanged` with refValue `script:::<name>`, which the harness normalizes to the bare name).

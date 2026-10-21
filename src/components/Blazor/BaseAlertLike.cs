@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbSnackbar"/> and <see cref="IgbToast"/>.
     /// </summary>
-    public partial class IgbBaseAlertLike : BaseRendererControl
+    public partial class IgbBaseAlertLike : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebBaseAlertLike"; } }

@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A container for a group of dropdown items.
     /// </summary>
-    public partial class IgbDropdownGroup : BaseRendererControl
+    public partial class IgbDropdownGroup : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDropdownGroup"; } }

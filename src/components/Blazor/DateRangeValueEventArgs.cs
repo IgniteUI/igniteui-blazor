@@ -1,19 +1,20 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbDateRangePicker"/> events that carry a date range payload.
+    /// Event arguments for the <see cref="IgbDateRangePicker{TValue}"/> events that carry a date range payload.
     /// </summary>
-    public partial class IgbDateRangeValueEventArgs : BaseJsonSerializable
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbDateRangePicker{TValue}"/> that raises the event.</typeparam>
+    public partial class IgbDateRangeValueEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDateRangeValueEventArgs"; } }
 
-        private IgbDateRangeValueDetail _detail = new IgbDateRangeValueDetail();
+        private IgbDateRangeValueDetail<TValue> _detail = new();
 
         /// <summary>
         /// The date range carried by the event.
         /// </summary>
-        public IgbDateRangeValueDetail Detail
+        public IgbDateRangeValueDetail<TValue> Detail
         {
             get { return this._detail; }
             set
@@ -42,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -52,13 +53,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "DateRangeValueDetail", true) is IgbDateRangeValueDetail detail)
-            { this.Detail = detail; }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<TValue>(detailObj, "DateRangeValueDetail", true) is IgbDateRangeValueDetail<TValue> detail)
+            {
+                this.Detail = detail;
+            }
 
             this.SuppressParentNotify = false;
         }

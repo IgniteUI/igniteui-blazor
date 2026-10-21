@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// The component renders an SVG representation of the QR code, which can be
     /// customized using various properties.
     /// </summary>
-    public partial class IgbQrCode : BaseRendererControl
+    public partial class IgbQrCode : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebQrCode"; } }
@@ -101,16 +101,17 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private QrErrorCorrectionLevel _errorLevel = QrErrorCorrectionLevel.Medium;
+        private QrErrorCorrectionLevel? _errorLevel;
 
         /// <summary>
         /// The error correction level for the QR code, which determines the QR code's ability to be read
         /// if it is partially obscured or damaged.
         /// <see cref="QrErrorCorrectionLevel.Low"/> provides the lowest level of error correction
         /// and <see cref="QrErrorCorrectionLevel.High"/> provides the highest level.
+        /// When <c>null</c>, the web component's default level applies.
         /// </summary>
         [Parameter]
-        public QrErrorCorrectionLevel ErrorLevel
+        public QrErrorCorrectionLevel? ErrorLevel
         {
             get { return this._errorLevel; }
             set

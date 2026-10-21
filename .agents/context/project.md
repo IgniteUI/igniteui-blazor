@@ -15,14 +15,15 @@ changes; if they disagree with this file, they win.
 - Trimming: the library ships `IsTrimmable`; trim diagnostics (IL2xxx) build as errors
 - Tests: xUnit + bUnit (unit), NUnit + Playwright against a TestBed app (integration),
   `node --test` for the built JS output
-- Docs and demos: Blazing Story stories under `stories/`, `dotnet new` templates under `templates/`
+- Docs and demos: Blazing Story stories under `stories/`; `dotnet new` templates live in
+  [igniteui-blazor-templates](https://github.com/IgniteUI/igniteui-blazor-templates)
 - Tooling: `dotnet format whitespace`, Prettier (via lint-staged pre-commit hook)
 
 ## Architecture
 
 - `src/components/Blazor/`: one C# wrapper per component (`<Name>.cs`, `<Name>Module.cs`, enums).
   Classes are `partial`; hand-written extensions live in `src/componentsBase/WebInputs/`
-- `src/componentsBase/`: base classes (`BaseRendererControl`), DI (`AddIgniteUIBlazor`),
+- `src/componentsBase/`: base classes (`IgbComponentBase`), DI (`AddIgniteUIBlazor`),
   serialization (`IgbJsonContext`, `MarshalByValueFactory`), data adapters and interop plumbing
 - `src/src/`: TypeScript interop (`index.ts`, `Loader.ts`, `api.ts`); `src/src/ig/` holds the
   per-component description and metadata sources (generator style: tab-indented, prettier-exempt)
@@ -30,7 +31,6 @@ changes; if they disagree with this file, they win.
   `IgniteUI.Blazor.Lite.TestBed` (integration), `IgniteUI.Blazor.Lite.PublishSmoke` (trimmed
   publish), `js/` (static web asset checks)
 - `stories/`: Blazing Story app, one `.stories.razor` per component
-- `templates/`: `dotnet new` project and item templates
 - `docs/`: `TRIMMING.md` and the security threat model
 - `skills/`: public, user-facing skills that ship with the product
 - `.agents/`: contributor-facing skills and this context

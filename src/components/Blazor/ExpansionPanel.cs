@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// compact summary view containing title and description and expanded detail view containing
     /// additional content to the summary header.
     /// </summary>
-    public partial class IgbExpansionPanel : BaseRendererControl
+    public partial class IgbExpansionPanel : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebExpansionPanel"; } }

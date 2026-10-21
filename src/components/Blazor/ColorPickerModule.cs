@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Client resource module for <see cref="IgbColorPicker"/>.
+    /// Client resource module for <see cref="IgbColorPicker{TValue}"/>.
     /// </summary>
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.

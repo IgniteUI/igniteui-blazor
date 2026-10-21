@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// useful when you want to allow users to enter a sizeable amount of free-form text,
     /// for example a comment on a review or feedback form.
     /// </summary>
-    public partial class IgbTextarea : BaseRendererControl
+    public partial class IgbTextarea : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTextarea"; } }
@@ -165,7 +165,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _maxLength = 0;
+        private double? _maxLength;
 
         /// <summary>
         /// The maximum number of characters (UTF-16 code units) that the user can enter.
@@ -173,7 +173,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         [Parameter]
         [WCAttributeName("maxlength")]
-        public double MaxLength
+        public double? MaxLength
         {
             get { return this._maxLength; }
             set
@@ -186,14 +186,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _minLength = 0;
+        private double? _minLength;
 
         /// <summary>
         /// The minimum number of characters (UTF-16 code units) that the user is required to enter.
         /// </summary>
         [Parameter]
         [WCAttributeName("minlength")]
-        public double MinLength
+        public double? MinLength
         {
             get { return this._minLength; }
             set

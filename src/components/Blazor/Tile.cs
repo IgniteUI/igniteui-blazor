@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// The tile component is used within the <see cref="IgbTileManager"/> as a container
     /// for displaying various types of information.
     /// </summary>
-    public partial class IgbTile : BaseRendererControl
+    public partial class IgbTile : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTile"; } }

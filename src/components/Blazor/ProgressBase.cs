@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbCircularProgress"/> and <see cref="IgbLinearProgress"/>.
     /// </summary>
-    public partial class IgbProgressBase : BaseRendererControl
+    public partial class IgbProgressBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebProgressBase"; } }

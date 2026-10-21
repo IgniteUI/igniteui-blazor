@@ -62,9 +62,4 @@ public class BannerTests : ComponentWithContractTestBase<IgbBanner>
         Assert.Contains("Important notice", cut.Find("igc-banner").InnerHtml);
     }
 
-    [Fact]
-    public void Banner_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbBanner).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

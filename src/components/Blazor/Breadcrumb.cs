@@ -10,7 +10,7 @@ namespace IgniteUI.Blazor.Controls
     /// the <c>prefix</c> and <c>suffix</c> slots add content before and after it, and the <c>separator</c> slot
     /// replaces the separator icon of this item. Assistive technology does not read the separator.
     /// </remarks>
-    public partial class IgbBreadcrumb : BaseRendererControl
+    public partial class IgbBreadcrumb : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebBreadcrumb"; } }

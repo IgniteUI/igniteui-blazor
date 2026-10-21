@@ -28,11 +28,6 @@ public class ListTests : BlazorComponentTestBase
         Assert.Contains("List items", cut.Markup);
     }
 
-    [Fact]
-    public void List_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbList).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class ListItemTests : BlazorComponentTestBase

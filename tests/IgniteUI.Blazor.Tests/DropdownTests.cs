@@ -180,11 +180,6 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
         Assert.Contains("Item", cut.Find("igc-dropdown").InnerHtml);
     }
 
-    [Fact]
-    public void Dropdown_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbDropdown).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class DropdownItemTests : BlazorComponentTestBase

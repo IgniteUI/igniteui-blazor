@@ -36,7 +36,7 @@ namespace IgniteUI.Blazor.Controls
         /// The owning <see cref="IgbAccordion"/>, supplied as a cascading parameter.
         /// </summary>
         [CascadingParameter(Name = "AccordionParent")]
-        private protected BaseRendererControl? AccordionParent
+        private protected IgbComponentBase? AccordionParent
         {
             get; set;
         }

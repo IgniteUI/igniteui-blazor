@@ -21,16 +21,16 @@ public sealed class DisposalCollection
 }
 
 /// <summary>
-/// Tests around <see cref="BaseRendererControl.DisposeAsync"/> — the async disposal
+/// Tests around <see cref="IgbComponentBase.DisposeAsync"/> — the async disposal
 /// path must be resilient to JS interop failures, since disposal typically runs
 /// while the Blazor circuit / JS runtime is being torn down and any interop call
-/// can legitimately throw. <see cref="BaseRendererControl"/> intentionally does
+/// can legitimately throw. <see cref="IgbComponentBase"/> intentionally does
 /// not implement <see cref="IDisposable"/> per Blazor guidance
 /// (https://learn.microsoft.com/aspnet/core/blazor/components/component-disposal):
 /// when both are implemented the framework only invokes the async overload.
 /// </summary>
 [Collection(DisposalCollection.Name)]
-public class BaseRendererControlDisposalTests : BlazorComponentTestBase
+public class IgbComponentBaseDisposalTests : BlazorComponentTestBase
 {
     /// <summary>The client interop module the components send their messages to.</summary>
     private BunitJSInterop Module => ((RendererMessageInteropHarness)Interop).Module;
@@ -171,7 +171,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
     {
         Interop.PrimeReady();
         var data = new ObservableCollection<Row>();
-        var cut = Render<IgbCombo<Row>>(ps => ps.Add(c => c.Data, data));
+        var cut = Render<IgbCombo<Row, Row>>(ps => ps.Add(c => c.Data, data));
         var id = Interop.ContainerIdOf(cut);
 
         // The flush is posted through a thread-pool work item, so holding the pool leaves one
@@ -202,7 +202,7 @@ public class BaseRendererControlDisposalTests : BlazorComponentTestBase
     {
         Interop.PrimeReady();
         var data = new ObservableCollection<Row>();
-        var cut = Render<IgbCombo<Row>>(ps => ps.Add(c => c.Data, data));
+        var cut = Render<IgbCombo<Row, Row>>(ps => ps.Add(c => c.Data, data));
         var id = Interop.ContainerIdOf(cut);
 
         // A producer that does not know the component is going away, so it keeps reaching the
