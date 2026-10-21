@@ -3857,6 +3857,12 @@ namespace IgniteUI.Blazor.Controls
     /// </summary>
     public interface IIgniteUIBlazor
     {
+        /// <summary>
+        /// The JS runtime the client resources load through. Supports the product infrastructure and is not
+        /// intended to be used directly from your code.
+        /// </summary>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        IJSRuntime JsRuntime { get; }
     }
 
     internal class IgniteUIBlazor : IIgniteUIBlazor, IIgniteUIBlazorRuntime

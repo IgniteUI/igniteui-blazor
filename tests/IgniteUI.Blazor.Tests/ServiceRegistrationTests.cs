@@ -1,3 +1,4 @@
+using Bunit;
 using IgniteUI.Blazor.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
@@ -178,6 +179,41 @@ public class ServiceRegistrationTests
         modules[0] = typeof(SecondModule);
 
         Assert.Equal([typeof(FirstModule)], SettingsOf(host).ModulesToLoad);
+    }
+
+    /// <summary>
+    /// The full IgniteUI.Blazor package requests its preloaded modules through this JS runtime
+    /// when the runtime invokes their <c>Register</c>, the only time it has the instance.
+    /// </summary>
+    [Fact]
+    public void Runtime_ExposesTheRegisteredJsRuntime()
+    {
+        using var host = new Host(s => s.AddIgniteUIBlazor());
+
+        Assert.Same(host.Services.GetRequiredService<IJSRuntime>(), host.Services.GetRequiredService<IIgniteUIBlazor>().JsRuntime);
+    }
+
+    /// <summary>
+    /// An <see cref="IIgniteUIBlazor"/> registered without <c>AddIgniteUIBlazor</c>, as the full
+    /// IgniteUI.Blazor package's deprecated <c>IgniteUIBlazor</c> is, gets a runtime of its own;
+    /// without it every component throws while being injected.
+    /// </summary>
+    [Fact]
+    public void Component_WithHandRegisteredService_RequestsItsModuleThroughThatJsRuntime()
+    {
+        using var context = new BunitContext();
+        context.JSInterop.Mode = JSRuntimeMode.Loose;
+        context.Services.AddScoped<IIgniteUIBlazor>(sp => new HandRegisteredService(sp.GetRequiredService<IJSRuntime>()));
+
+        context.Render<IgbButton>();
+
+        var load = Assert.Single(context.JSInterop.Invocations, v => v.Identifier == "igRequestLoad");
+        Assert.Equal("WebButtonModule", load.Arguments[0]);
+    }
+
+    private sealed class HandRegisteredService(IJSRuntime jsRuntime) : IIgniteUIBlazor
+    {
+        public IJSRuntime JsRuntime { get; } = jsRuntime;
     }
 
     [Fact]
