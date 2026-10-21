@@ -97,9 +97,6 @@ jobs:
           tests/IgniteUI.Blazor.Lite.AotSmoke/bin/Release/net10.0/linux-x64/publish/IgniteUI.Blazor.Lite.AotSmoke || status=$?
           test "$status" -eq 100
 
-      - name: Build VS Templates
-        run: dotnet pack templates/IgniteUI.Blazor.Templates/
-
       - name: Run .NET tests with coverage
         run: >
           dotnet test ./tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj
