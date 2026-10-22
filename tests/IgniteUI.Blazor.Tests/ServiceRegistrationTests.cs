@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Reflection.Emit;
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -194,16 +196,15 @@ public class ServiceRegistrationTests
     }
 
     /// <summary>
-    /// An <see cref="IIgniteUIBlazor"/> registered without <c>AddIgniteUIBlazor</c>, as the full
-    /// IgniteUI.Blazor package's deprecated <c>IgniteUIBlazor</c> is, gets a runtime of its own;
-    /// without it every component throws while being injected.
+    /// The full IgniteUI.Blazor package's deprecated <c>IgniteUIBlazor</c>, registered in place of
+    /// <c>AddIgniteUIBlazor</c>, gets a runtime of its own; without it every component throws while being injected.
     /// </summary>
     [Fact]
-    public void Component_WithHandRegisteredService_RequestsItsModuleThroughThatJsRuntime()
+    public void Component_WithFullPackageRuntimeRegistered_RequestsItsModuleThroughItsJsRuntime()
     {
         using var context = new BunitContext();
         context.JSInterop.Mode = JSRuntimeMode.Loose;
-        context.Services.AddScoped<IIgniteUIBlazor>(sp => new HandRegisteredService(sp.GetRequiredService<IJSRuntime>()));
+        context.Services.AddScoped<IIgniteUIBlazor>(sp => FullPackageRuntime.Create(sp.GetRequiredService<IJSRuntime>()));
 
         context.Render<IgbButton>();
 
@@ -211,9 +212,49 @@ public class ServiceRegistrationTests
         Assert.Equal("WebButtonModule", load.Arguments[0]);
     }
 
-    private sealed class HandRegisteredService(IJSRuntime jsRuntime) : IIgniteUIBlazor
+    /// <summary>Only the full package's class is bridged; any other implementation is still rejected.</summary>
+    [Fact]
+    public void Component_WithOtherRuntimeRegistered_Throws()
+    {
+        using var context = new BunitContext();
+        context.JSInterop.Mode = JSRuntimeMode.Loose;
+        context.Services.AddScoped<IIgniteUIBlazor>(sp => new OtherRuntime(sp.GetRequiredService<IJSRuntime>()));
+
+        var error = Assert.Throws<InvalidOperationException>(() => context.Render<IgbButton>());
+        Assert.Contains("not the runtime registered by AddIgniteUIBlazor", error.Message);
+    }
+
+    private sealed class OtherRuntime(IJSRuntime jsRuntime) : IIgniteUIBlazor
     {
         public IJSRuntime JsRuntime { get; } = jsRuntime;
+    }
+
+    /// <summary>
+    /// Stand-in for the full package's <c>IgniteUIBlazor</c>, which this repository cannot reference: a type of
+    /// that full name, emitted into an assembly of that name, deriving from this class for its members.
+    /// </summary>
+    public abstract class FullPackageRuntime : IIgniteUIBlazor
+    {
+        private static readonly Type _emitted = Emit();
+        private IJSRuntime? _jsRuntime;
+
+        public IJSRuntime JsRuntime => _jsRuntime ?? throw new InvalidOperationException("Create sets the JS runtime.");
+
+        public static IIgniteUIBlazor Create(IJSRuntime jsRuntime)
+        {
+            var runtime = (FullPackageRuntime)(Activator.CreateInstance(_emitted) ?? throw new InvalidOperationException());
+            runtime._jsRuntime = jsRuntime;
+            return runtime;
+        }
+
+        private static Type Emit()
+        {
+            var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("IgniteUI.Blazor"), AssemblyBuilderAccess.Run);
+            var type = assembly.DefineDynamicModule("IgniteUI.Blazor")
+                .DefineType("IgniteUI.Blazor.Controls.IgniteUIBlazor", TypeAttributes.Public | TypeAttributes.Sealed, typeof(FullPackageRuntime));
+            type.DefineDefaultConstructor(MethodAttributes.Public);
+            return type.CreateType();
+        }
     }
 
     [Fact]
