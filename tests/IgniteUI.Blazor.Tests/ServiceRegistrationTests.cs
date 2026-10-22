@@ -183,10 +183,6 @@ public class ServiceRegistrationTests
         Assert.Equal([typeof(FirstModule)], SettingsOf(host).ModulesToLoad);
     }
 
-    /// <summary>
-    /// The full IgniteUI.Blazor package requests its preloaded modules through this JS runtime
-    /// when the runtime invokes their <c>Register</c>, the only time it has the instance.
-    /// </summary>
     [Fact]
     public void Runtime_ExposesTheRegisteredJsRuntime()
     {
@@ -195,16 +191,18 @@ public class ServiceRegistrationTests
         Assert.Same(host.Services.GetRequiredService<IJSRuntime>(), host.Services.GetRequiredService<IIgniteUIBlazor>().JsRuntime);
     }
 
-    /// <summary>
-    /// The full IgniteUI.Blazor package's deprecated <c>IgniteUIBlazor</c>, registered in place of
-    /// <c>AddIgniteUIBlazor</c>, gets a runtime of its own; without it every component throws while being injected.
-    /// </summary>
+    /// <summary>The full IgniteUI.Blazor package's deprecated <c>IgniteUIBlazor</c>, registered in place of <c>AddIgniteUIBlazor</c>.</summary>
     [Fact]
     public void Component_WithFullPackageRuntimeRegistered_RequestsItsModuleThroughItsJsRuntime()
     {
         using var context = new BunitContext();
         context.JSInterop.Mode = JSRuntimeMode.Loose;
-        context.Services.AddScoped<IIgniteUIBlazor>(sp => FullPackageRuntime.Create(sp.GetRequiredService<IJSRuntime>()));
+        context.Services.AddScoped<IIgniteUIBlazor>(sp =>
+        {
+            var runtime = (HandRegisteredRuntime)Activator.CreateInstance(_fullPackageRuntimeType)!;
+            runtime.JsRuntime = sp.GetRequiredService<IJSRuntime>();
+            return runtime;
+        });
 
         context.Render<IgbButton>();
 
@@ -212,50 +210,26 @@ public class ServiceRegistrationTests
         Assert.Equal("WebButtonModule", load.Arguments[0]);
     }
 
-    /// <summary>Only the full package's class is bridged; any other implementation is still rejected.</summary>
     [Fact]
     public void Component_WithOtherRuntimeRegistered_Throws()
     {
         using var context = new BunitContext();
-        context.JSInterop.Mode = JSRuntimeMode.Loose;
-        context.Services.AddScoped<IIgniteUIBlazor>(sp => new OtherRuntime(sp.GetRequiredService<IJSRuntime>()));
+        context.Services.AddScoped<IIgniteUIBlazor>(_ => new HandRegisteredRuntime());
 
         var error = Assert.Throws<InvalidOperationException>(() => context.Render<IgbButton>());
         Assert.Contains("not the runtime registered by AddIgniteUIBlazor", error.Message);
     }
 
-    private sealed class OtherRuntime(IJSRuntime jsRuntime) : IIgniteUIBlazor
+    public class HandRegisteredRuntime : IIgniteUIBlazor
     {
-        public IJSRuntime JsRuntime { get; } = jsRuntime;
+        public IJSRuntime JsRuntime { get; set; } = null!;
     }
 
-    /// <summary>
-    /// Stand-in for the full package's <c>IgniteUIBlazor</c>, which this repository cannot reference: a type of
-    /// that full name, emitted into an assembly of that name, deriving from this class for its members.
-    /// </summary>
-    public abstract class FullPackageRuntime : IIgniteUIBlazor
-    {
-        private static readonly Type _emitted = Emit();
-        private IJSRuntime? _jsRuntime;
-
-        public IJSRuntime JsRuntime => _jsRuntime ?? throw new InvalidOperationException("Create sets the JS runtime.");
-
-        public static IIgniteUIBlazor Create(IJSRuntime jsRuntime)
-        {
-            var runtime = (FullPackageRuntime)(Activator.CreateInstance(_emitted) ?? throw new InvalidOperationException());
-            runtime._jsRuntime = jsRuntime;
-            return runtime;
-        }
-
-        private static Type Emit()
-        {
-            var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("IgniteUI.Blazor"), AssemblyBuilderAccess.Run);
-            var type = assembly.DefineDynamicModule("IgniteUI.Blazor")
-                .DefineType("IgniteUI.Blazor.Controls.IgniteUIBlazor", TypeAttributes.Public | TypeAttributes.Sealed, typeof(FullPackageRuntime));
-            type.DefineDefaultConstructor(MethodAttributes.Public);
-            return type.CreateType();
-        }
-    }
+    // HandRegisteredRuntime under the full package's type and assembly name; this repository cannot reference that package.
+    private static readonly Type _fullPackageRuntimeType = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("IgniteUI.Blazor"), AssemblyBuilderAccess.Run)
+        .DefineDynamicModule("IgniteUI.Blazor")
+        .DefineType("IgniteUI.Blazor.Controls.IgniteUIBlazor", TypeAttributes.Public, typeof(HandRegisteredRuntime))
+        .CreateType();
 
     [Fact]
     public void Runtime_IsScoped_SoEachScopeRegistersItsOwn()
