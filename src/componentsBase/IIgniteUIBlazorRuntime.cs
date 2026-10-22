@@ -1,9 +1,10 @@
+using System.Runtime.CompilerServices;
 using Microsoft.JSInterop;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The runtime behind the <see cref="IIgniteUIBlazor"/> marker; the components and
+    /// The runtime behind <see cref="IIgniteUIBlazor"/>; the components and
     /// <see cref="ModuleLoader"/> reach it through <see cref="IgniteUIBlazorRuntimeExtensions.AsRuntime"/>.
     /// </summary>
     internal interface IIgniteUIBlazorRuntime
@@ -22,14 +23,29 @@ namespace IgniteUI.Blazor.Controls
 
     internal static class IgniteUIBlazorRuntimeExtensions
     {
+        private static readonly ConditionalWeakTable<IIgniteUIBlazor, IgniteUIBlazor> _adopted = new();
+
         /// <summary>
-        /// The single conversion from the public marker to the runtime it is implemented by.
+        /// The single conversion from the public service to the runtime it is implemented by.
         /// </summary>
         internal static IIgniteUIBlazorRuntime AsRuntime(this IIgniteUIBlazor service)
         {
-            return service as IIgniteUIBlazorRuntime
-                ?? throw new InvalidOperationException(
-                    $"The registered {nameof(IIgniteUIBlazor)} instance is of type {service?.GetType().Name ?? "null"}, which is not the runtime registered by AddIgniteUIBlazor.");
+            if (service is IIgniteUIBlazorRuntime runtime)
+            {
+                return runtime;
+            }
+            if (service != null && IsFullPackageRuntime(service.GetType()))
+            {
+                return _adopted.GetValue(service, s => new IgniteUIBlazor(s.JsRuntime));
+            }
+            throw new InvalidOperationException(
+                $"The registered {nameof(IIgniteUIBlazor)} instance is of type {service?.GetType().Name ?? "null"}, which is not the runtime registered by AddIgniteUIBlazor.");
         }
+
+        // Temporary, while the full IgniteUI.Blazor package deprecates its IgniteUIBlazor class: an app that registers
+        // that class instead of calling AddIgniteUIBlazor gets a runtime of its own, one per instance and so one per scope.
+        // Matched by name because that package depends on this one.
+        private static bool IsFullPackageRuntime(Type type) =>
+            type.FullName == "IgniteUI.Blazor.Controls.IgniteUIBlazor" && type.Assembly.GetName().Name == "IgniteUI.Blazor";
     }
 }
