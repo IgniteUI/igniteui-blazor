@@ -63,11 +63,11 @@ public class ColorPickerTests : ComponentWithContractTestBase<IgbColorPicker<str
     [Fact]
     public void Binds_FollowContract() => VerifyBindContract();
 
-    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+    [Fact]
     public void ColorPicker_RendersCorrectElement()
     {
         var cut = Render<IgbColorPicker<string>>();
-        cut.Find("igc-color-picker").Should_Exist();
+        Assert.True(cut.Find("igc-color-picker").HasAttribute("data-ig-root"));
     }
 
     [Fact]

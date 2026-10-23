@@ -4,11 +4,8 @@ import { fromSpinal, getAllPropertyNames } from 'igniteui-core/componentUtil';
 import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
-import { IgcPortalModule } from 'igniteui-core/igc-portal';
 import { refValues, itemMaps } from './refs-state';
 import { _getRegisteredScript, _scriptRegistryEvents } from './api';
-
-IgcPortalModule.register();
 
 let cr = new ComponentRenderer();
 ComponentRenderer.defaultInstance = cr;
@@ -47,25 +44,10 @@ function getContainer(id: string): HTMLElement {
     return null;
   }
   if (!containersDirect.has(id)) {
-    // A data-ig-root element is the component too, but driven by the renderer like a container.
-    containersDirect.set(id, !isRendererContainer(cont) && !cont.hasAttribute('data-ig-root'));
+    // A data-ig-root element is driven by the renderer through descriptions, any other by its attributes and direct events.
+    containersDirect.set(id, !cont.hasAttribute('data-ig-root'));
   }
   return cont;
-}
-function isRendererContainer(cont: Element): boolean {
-  return cont.tagName.toUpperCase() == 'IGC-COMPONENT-RENDERER-CONTAINER';
-}
-/** The component element for a container: the container's child, or the element itself when Blazor rendered it. */
-function targetOf(cont: Element): any {
-  if (!cont) {
-    return null;
-  }
-  return isRendererContainer(cont) ? cont.children[0] : cont;
-}
-/** Blazor renders the template holder next to a renderer container, and inside a data-ig-root element. */
-function dynamicContentHolderOf(cont: Element): Element {
-  const scope = isRendererContainer(cont) ? cont.parentElement : cont;
-  return scope.querySelector(':scope > .ig-dynamic-content-holder');
 }
 function getContainerId(container) {
   // return container.id;
@@ -105,7 +87,7 @@ cr.addReferenceLookupListener((container, refType, value) => {
     });
     return retVal;
   } else {
-    findByName(targetOf(container), value);
+    findByName(container, value);
   }
 });
 
@@ -166,7 +148,7 @@ function isContainerDirectRender(): boolean {
 }
 
 function getMainTarget() {
-  return targetOf(currentContainer());
+  return currentContainer();
 }
 
 function copyProperties(target: any, source: any) {
@@ -812,8 +794,8 @@ export const sendMessage = function sendMessage(
         } else {
           if (typeof refValue == 'string' && refValue.indexOf('containerId:::') == 0) {
             refValue = refValue.substring('containerId:::'.length);
-            if (containers.has(refValue) && targetOf(containers.get(refValue)) != null) {
-              refValue = targetOf(containers.get(refValue));
+            if (containers.has(refValue) && containers.get(refValue) != null) {
+              refValue = containers.get(refValue);
             } else {
               if (!containersPendingRefs.has(refValue)) {
                 containersPendingRefs.set(refValue, []);
@@ -821,7 +803,7 @@ export const sendMessage = function sendMessage(
               let arr = containersPendingRefs.get(refValue);
               let cc = currentContainer();
               arr.push(() => {
-                refValue = targetOf(containers.get(refValue));
+                refValue = containers.get(refValue);
                 cr.provideRefValue(cc, refName, refValue);
                 refValues.set(refName, refValue);
               });
@@ -1032,7 +1014,7 @@ export const sendMessage = function sendMessage(
                 mut.observe(templateContent, {
                   childList: true,
                 });
-                var dynCont = dynamicContentHolderOf(template.___container);
+                var dynCont = template.___container.querySelector(':scope > .ig-dynamic-content-holder');
                 let mut2 = createMutationObserver((list) => {
                   for (var mutation of list) {
                     if (mutation.type == 'childList') {
@@ -1192,7 +1174,7 @@ export const sendMessage = function sendMessage(
               if (args[i].indexOf('containerId:::') == 0) {
                 args[i] = args[i].substring('containerId:::'.length);
                 if (containers.has(args[i])) {
-                  args[i] = targetOf(containers.get(args[i]));
+                  args[i] = containers.get(args[i]);
                 } else {
                   var ele = getContainerByIgIdAttribute(args[i]);
                   if (ele) {

@@ -11,12 +11,6 @@ namespace IgniteUI.Blazor.Controls
         internal override string RendererType { get { return "WebBaseComboBox"; } }
 
         /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
         private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }

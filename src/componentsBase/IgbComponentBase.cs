@@ -185,11 +185,6 @@ namespace IgniteUI.Blazor.Controls
             //_webCallbackHelper.WebCallback = WebCallback.Instance;
         }
 
-        private protected virtual string ResolveDisplay()
-        {
-            return "block";
-        }
-
         private string ToSpinal(string? value)
         {
             if (value == null)
@@ -243,14 +238,6 @@ namespace IgniteUI.Blazor.Controls
                 sb.Append(output[i]);
             }
             return sb.ToString();
-        }
-
-        private protected virtual bool SupportsVisualChildren
-        {
-            get
-            {
-                return false;
-            }
         }
 
         private protected virtual bool UseDirectRender
@@ -464,6 +451,11 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
+            if (DirectRenderElementName.Length == 0)
+            {
+                throw new InvalidOperationException($"{GetType().Name} has no element of its own; render one of the components derived from it.");
+            }
+
             string? spinalName = ToSpinal(this.RendererType);
             string className = "igb-" + spinalName;
             if (Class != null)
@@ -528,123 +520,33 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            // Non-DirectRender WITH element to adopt as root (data-ig-root) instead of creating a container:
-            if (DirectRenderElementName.Length > 0)
-            {
-                builder.OpenElement(0, DirectRenderElementName);
-                builder.AddAttribute(1, "class", className);
-                builder.AddAttribute(2, "data-ig-id", _containerId);
-                builder.AddAttribute(3, "data-ig-root", true);
-                builder.AddMultipleAttributes(4, AdditionalAttributes);
-                builder.AddElementReferenceCapture(5, delegate (ElementReference value)
-                {
-                    contEle = value;
-                });
-                builder.OpenComponent<CascadingValue<IgbComponentBase>>(6);
-                builder.AddAttribute(7, "Value", this);
-                builder.AddAttribute(8, "Name", ParentTypeName);
-                builder.AddAttribute(9, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
-                {
-                    builder2.AddContent(10, ChildContent);
-                });
-                builder.CloseComponent();
-                if (NeedsDynamicContent)
-                {
-                    // None of the current elements has a default slot, so the hidden holder is never projected too.
-                    builder.OpenComponent<DynamicContentHolder>(11);
-                    builder.AddComponentReferenceCapture(12, delegate (object __value)
-                    {
-                        Holder = (DynamicContentHolder)__value;
-                    });
-                    builder.CloseComponent();
-                }
-                builder.CloseElement();
-                return;
-            }
-
-            //Console.WriteLine("rendering");
-            var display = ResolveDisplay();
-
-            builder.OpenElement(0, "div");
+            // The client renderer adopts this element (data-ig-root) and drives it through descriptions.
+            builder.OpenElement(0, DirectRenderElementName);
             builder.AddAttribute(1, "class", className);
-            builder.AddAttribute(2, "style", "display: " + display + "; padding: 0px;");
-            builder.AddMultipleAttributes(3, AdditionalAttributes);
-
-            builder.OpenElement(4, "igc-component-renderer-container");
-            builder.AddAttribute(5, "data-ig-id", _containerId);
-            builder.AddAttribute(6, "style", "width: 100%; height: 100%; display: " + display + ";");
-
-            // if (SupportsVisualChildren) {
-            //     builder.AddAttribute(7, "shadow-dom-mode", true);
-            //     builder.AddAttribute(8, "child-content-mode", true);
-            // }
-
-            if (SupportsVisualChildren)
-            {
-                builder.AddAttribute(7, "portal-mode", true);
-            }
-
-            // else
-            // {
-            //     builder.AddAttribute(4, "style", "display: " + display + ";");
-            // }
-
-            builder.AddElementReferenceCapture(9, delegate (ElementReference value)
+            builder.AddAttribute(2, "data-ig-id", _containerId);
+            builder.AddAttribute(3, "data-ig-root", true);
+            builder.AddMultipleAttributes(4, AdditionalAttributes);
+            builder.AddElementReferenceCapture(5, delegate (ElementReference value)
             {
                 contEle = value;
             });
-
-            builder.CloseElement();
-
-            builder.AddMarkupContent(10, "\r\n    ");
-            if (!SupportsVisualChildren)
+            builder.OpenComponent<CascadingValue<IgbComponentBase>>(6);
+            builder.AddAttribute(7, "Value", this);
+            builder.AddAttribute(8, "Name", ParentTypeName);
+            builder.AddAttribute(9, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
             {
-                builder.OpenElement(11, "div");
-                builder.AddAttribute(12, "class", "ig-hidden-content");
-                builder.AddAttribute(13, "style", "display: none");
-                builder.AddMarkupContent(14, "\r\n");
-                builder.OpenComponent<CascadingValue<IgbComponentBase>>(10);
-                builder.AddAttribute(15, "Value", this);
-                builder.AddAttribute(16, "Name", ParentTypeName);
-                builder.AddAttribute(17, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
-                {
-                    builder2.AddMarkupContent(18, "\r\n        ");
-                    builder2.AddContent(19, ChildContent);
-                    builder2.AddMarkupContent(20, "\r\n    ");
-                });
-                builder.CloseComponent();
-                builder.CloseElement();
-            }
-            builder.AddMarkupContent(21, "\r\n");
-
-            if (SupportsVisualChildren)
-            {
-                builder.OpenComponent<CascadingValue<IgbComponentBase>>(10);
-                builder.AddAttribute(22, "Value", this);
-                builder.AddAttribute(23, "Name", ParentTypeName);
-                builder.AddAttribute(24, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
-                {
-                    builder2.AddMarkupContent(25, "\r\n        ");
-                    builder2.OpenElement(26, "igc-portal-entrance");
-                    builder2.AddAttribute(27, "portal-id", "portal-" + _containerId);
-                    builder2.AddAttribute(28, "move-once-mode", "true");
-                    builder2.AddContent(29, ChildContent);
-                    builder2.CloseElement();
-                    builder2.AddMarkupContent(30, "\r\n    ");
-                });
-                builder.CloseComponent();
-                builder.AddMarkupContent(31, "\r\n");
-            }
-
+                builder2.AddContent(10, ChildContent);
+            });
+            builder.CloseComponent();
             if (NeedsDynamicContent)
             {
-                builder.OpenComponent<DynamicContentHolder>(32);
-                builder.AddComponentReferenceCapture(33, delegate (object __value)
+                // None of the current elements has a default slot, so the hidden holder is never projected too.
+                builder.OpenComponent<DynamicContentHolder>(11);
+                builder.AddComponentReferenceCapture(12, delegate (object __value)
                 {
                     Holder = (DynamicContentHolder)__value;
                 });
                 builder.CloseComponent();
-                builder.AddMarkupContent(34, "\r\n");
             }
             builder.CloseElement();
         }

@@ -87,11 +87,11 @@ public static class DateTimeInputTests
         [Fact]
         public void Binds_FollowContract() => VerifyBindContract();
 
-        [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+        [Fact]
         public void DateTimeInput_RendersCorrectElement()
         {
             var cut = Render<IgbDateTimeInput<TValue>>();
-            cut.Find("igc-date-time-input").Should_Exist();
+            Assert.True(cut.Find("igc-date-time-input").HasAttribute("data-ig-root"));
         }
 
         [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
