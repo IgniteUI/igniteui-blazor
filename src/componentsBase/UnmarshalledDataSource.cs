@@ -1794,7 +1794,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceClear", containerId + ":" + refName, -1, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceClear", containerId + ":" + refName, -1, GetColumns(refName));
         }
 
         public void SendRemove(string containerId, string refName, int index)
@@ -1803,7 +1803,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceRemove", containerId + ":" + refName, index, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceRemove", containerId + ":" + refName, index, GetColumns(refName));
         }
 
         public void SendInsert(string containerId, string refName, int index)
@@ -1812,7 +1812,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceInsert", containerId + ":" + refName, index, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceInsert", containerId + ":" + refName, index, GetColumns(refName));
         }
 
         public void SendUpdate(string containerId, string refName, int index, bool syncDataOnly)
@@ -1821,7 +1821,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceUpdate", containerId + ":" + refName + ":" + (syncDataOnly ? "true" : "false"), index, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceUpdate", containerId + ":" + refName + ":" + (syncDataOnly ? "true" : "false"), index, GetColumns(refName));
         }
 
         public void SendCreate(string containerId, string refName, string? dataIntents)
@@ -1833,9 +1833,9 @@ namespace IgniteUI.Blazor.Controls
             if (dataIntents != null)
             {
                 //Console.WriteLine("sending create data intents");
-                _helper.SendUnmarshalledColumnDataIntentsMessage("igUnmarshalledDataSourceCreateDataIntents", containerId + ":" + refName, dataIntents);
+                _helper.SendUnmarshalledColumnDataIntentsMessage("unmarshalledDataSourceCreateDataIntents", containerId + ":" + refName, dataIntents);
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceCreate", containerId + ":" + refName, -1, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceCreate", containerId + ":" + refName, -1, GetColumns(refName));
         }
 
         private void OnRemoveId(Guid oldId)
