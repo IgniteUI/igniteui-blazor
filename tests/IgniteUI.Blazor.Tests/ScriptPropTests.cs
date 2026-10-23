@@ -28,9 +28,15 @@ public class ScriptPropTests : BlazorComponentTestBase
     public static TheoryData<Type> ComponentsWithScriptProps()
     {
         var data = new TheoryData<Type>();
-        foreach (var type in typeof(IgbBanner).Assembly.GetTypes())
+        var types = typeof(IgbBanner).Assembly.GetTypes();
+        foreach (var type in types)
         {
             if (type.IsAbstract || !typeof(IgbComponentBase).IsAssignableFrom(type))
+            {
+                continue;
+            }
+            // A base class is swept through the components derived from it, which inherit its Script props; some bases have no element and cannot render.
+            if (types.Any(t => (t.BaseType is { IsGenericType: true } b ? b.GetGenericTypeDefinition() : t.BaseType) == type))
             {
                 continue;
             }

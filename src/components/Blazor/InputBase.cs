@@ -10,21 +10,6 @@ namespace IgniteUI.Blazor.Controls
         internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
         private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }

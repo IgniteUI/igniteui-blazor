@@ -176,6 +176,13 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
     public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
+    public void Combo_RendersCorrectElement()
+    {
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>();
+        Assert.True(cut.Find("igc-combo").HasAttribute("data-ig-root"));
+    }
+
+    [Fact]
     public void Combo_TypeMetadata()
     {
         var combo = new IgbCombo<object, object>();

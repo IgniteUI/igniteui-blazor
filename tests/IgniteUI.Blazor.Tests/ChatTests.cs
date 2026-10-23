@@ -83,11 +83,11 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
 
-    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+    [Fact]
     public void Chat_RendersCorrectElement()
     {
         var cut = Render<IgbChat>();
-        Assert.NotNull(cut.Find("igc-chat"));
+        Assert.True(cut.Find("igc-chat").HasAttribute("data-ig-root"));
     }
 
     [Fact]

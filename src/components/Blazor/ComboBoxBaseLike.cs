@@ -11,12 +11,6 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebComboBoxBaseLike"; } }
 
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
         private bool _keepOpenOnSelect = false;
 
         /// <summary>
