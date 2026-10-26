@@ -122,6 +122,8 @@ namespace IgniteUI.Blazor.Controls
                     catch (Exception)
                     {
                         // Fire-and-forget calls: one failing must not keep the rest from being dispatched.
+                        // Deliberately broad: an exception escaping here would fault the load before the module
+                        // is published, leaving every later call queued forever.
                     }
                 }
             }
@@ -146,17 +148,10 @@ namespace IgniteUI.Blazor.Controls
             {
                 await module.DisposeAsync().ConfigureAwait(false);
             }
-            catch (JSDisconnectedException)
+            catch (Exception ex) when (ex is JSDisconnectedException or JSException
+                                          or OperationCanceledException or ObjectDisposedException)
             {
-            }
-            catch (JSException)
-            {
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (ObjectDisposedException)
-            {
+                // Best-effort disposal during teardown; the client or runtime may already be gone.
             }
         }
     }
