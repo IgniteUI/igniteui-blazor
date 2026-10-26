@@ -42,8 +42,19 @@ namespace IgniteUI.Blazor.Controls
         {
             lock (_lock)
             {
-                return _loading ??= LoadAsync();
+                return StartLoading();
             }
+        }
+
+        // Under _lock. A faulted load is replaced, so a later call retries the import; checking the stored task
+        // (instead of resetting it from LoadAsync) also covers an import that fails before LoadAsync yields.
+        private Task<IJSObjectReference> StartLoading()
+        {
+            if (_loading == null || _loading.IsFaulted)
+            {
+                _loading = LoadAsync();
+            }
+            return _loading;
         }
 
         /// <summary>Runs <paramref name="call"/> with the module: now if it is imported, otherwise after the calls queued before it.</summary>
@@ -60,7 +71,7 @@ namespace IgniteUI.Blazor.Controls
                 if (module == null)
                 {
                     _pending.Add(call);
-                    _loading ??= LoadAsync();
+                    StartLoading();
                     return;
                 }
             }
@@ -90,9 +101,8 @@ namespace IgniteUI.Blazor.Controls
             {
                 lock (_lock)
                 {
-                    // Allow a later call to retry (e.g. the circuit was not connected yet); queued calls are dropped,
+                    // A later call retries (e.g. the circuit was not connected yet); queued calls are dropped,
                     // like calls made on a runtime that could not reach the client.
-                    _loading = null;
                     _pending.Clear();
                 }
                 throw;
@@ -105,10 +115,14 @@ namespace IgniteUI.Blazor.Controls
                 Action<IJSObjectReference>[] batch;
                 lock (_lock)
                 {
+                    if (_disposed)
+                    {
+                        break;
+                    }
                     if (_pending.Count == 0)
                     {
                         _module = module;
-                        break;
+                        return module;
                     }
                     batch = _pending.ToArray();
                     _pending.Clear();
@@ -127,7 +141,10 @@ namespace IgniteUI.Blazor.Controls
                     }
                 }
             }
-            return module;
+
+            // Disposed while importing: the module was never published, so nothing else will release it.
+            await ReleaseAsync(module).ConfigureAwait(false);
+            throw new ObjectDisposedException(nameof(InteropModule));
         }
 
         public async ValueTask DisposeAsync()
@@ -140,10 +157,14 @@ namespace IgniteUI.Blazor.Controls
                 module = _module;
                 _module = null;
             }
-            if (module == null)
+            if (module != null)
             {
-                return;
+                await ReleaseAsync(module).ConfigureAwait(false);
             }
+        }
+
+        private static async ValueTask ReleaseAsync(IJSObjectReference module)
+        {
             try
             {
                 await module.DisposeAsync().ConfigureAwait(false);
