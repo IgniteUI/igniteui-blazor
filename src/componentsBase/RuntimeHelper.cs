@@ -19,6 +19,18 @@ namespace IgniteUI.Blazor.Controls
             IsInproc = runtime is IJSInProcessRuntime;
         }
 
+        /// <summary>
+        /// Whether the client module is imported. Until it is, a column message cannot be queued: the client
+        /// would read the shared value arrays only once it is sent, after later inserts and removes shifted them.
+        /// </summary>
+        public bool IsInteropLoaded => _interop?.Invoke().Loaded != null;
+
+        /// <summary>Runs <paramref name="send"/> once the client module is imported, ahead of later messages.</summary>
+        public void WhenInteropLoaded(Action send)
+        {
+            _interop?.Invoke().Post(_ => send());
+        }
+
         public void SendUnmarshalledColumnMessage(string methodName, string refName, int index, UnmarshalledColumn[]? columns)
         {
             _interop?.Invoke().Post(module => SendUnmarshalledColumnMessageNow(module, methodName, refName, index, columns));

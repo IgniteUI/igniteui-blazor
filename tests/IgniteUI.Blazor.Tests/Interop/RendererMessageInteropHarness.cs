@@ -50,7 +50,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         _module = js.SetupModule(InteropModule.LitePath);
         var runtime = forceJsonDataMarshalling
             ? js.JSRuntime
-            : new UnmarshalledRecordingRuntime(js.JSRuntime, RecordUnmarshalledMessage);
+            : new UnmarshalledRecordingRuntime(js.JSRuntime, RecordUnmarshalledMessage, () => _importGate?.Task ?? Task.CompletedTask);
         _service = new IgniteUIBlazor(runtime, IgniteUIBlazorSettings.Create().WithForceJsonDataMarshalling(forceJsonDataMarshalling));
 
         // Answer every message with an "undefined" return envelope by default —
@@ -87,6 +87,19 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         return null;
     }
 
+    private TaskCompletionSource? _importGate;
+
+    /// <summary>
+    /// Holds the interop module import (unmarshalled channel only) until the returned action runs, to observe
+    /// what the components send while the module is still loading.
+    /// </summary>
+    internal Action HoldModuleImport()
+    {
+        var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _importGate = gate;
+        return () => gate.SetResult();
+    }
+
     private void RecordUnmarshalledMessage(string methodName, string refName, int index, UnmarshalledColumn[]? columns)
     {
         lock (_unmarshalledMessages)
@@ -104,11 +117,13 @@ public sealed class RendererMessageInteropHarness : InteropHarness
     {
         private readonly Microsoft.JSInterop.IJSInProcessRuntime _inner;
         private readonly Action<string, string, int, UnmarshalledColumn[]?> _record;
+        private readonly Func<Task> _importGate;
 
-        public UnmarshalledRecordingRuntime(Microsoft.JSInterop.IJSRuntime inner, Action<string, string, int, UnmarshalledColumn[]?> record)
+        public UnmarshalledRecordingRuntime(Microsoft.JSInterop.IJSRuntime inner, Action<string, string, int, UnmarshalledColumn[]?> record, Func<Task> importGate)
         {
             _inner = (Microsoft.JSInterop.IJSInProcessRuntime)inner;
             _record = record;
+            _importGate = importGate;
         }
 
         public TResult Invoke<TResult>(string identifier, params object?[]? args)
@@ -125,6 +140,7 @@ public sealed class RendererMessageInteropHarness : InteropHarness
             var value = await result;
             if (identifier == "import" && value is Microsoft.JSInterop.IJSInProcessObjectReference module)
             {
+                await _importGate();
                 return (TValue)(object)new RecordingModule(module, _record);
             }
             return value;

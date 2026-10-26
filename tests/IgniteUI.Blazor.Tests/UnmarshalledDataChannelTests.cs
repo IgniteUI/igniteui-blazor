@@ -1,12 +1,8 @@
-// net8.0 only. The harness records column messages through the InvokeUnmarshalled seam that
-// RuntimeHelper probes for by reflection, and that API exists only on net8 (removed in net9+,
-// where RuntimeHelper always takes the raw-pointer InvokeVoid path instead). Compiling these
-// tests on net9+ would assert the net8 code path against a fake runtime that real apps do not
-// have — coverage that looks green without exercising the shipping channel. The net9+ pointer
-// transport is covered in the browser by the ComboDataTest integration suite; it cannot be
-// covered here, because RuntimeHelper truncates the pointer to int (valid under wasm's 32-bit
-// address space, unrecoverable in a 64-bit test host).
-#if NET8_0
+// The harness records column messages through a module double (IUnmarshalledColumnSink) that takes the
+// column arrays themselves, on every target framework: the shipping channel is the same on all of them.
+// The pointer transport is covered in the browser by the ComboDataTest integration suite; it cannot be
+// covered here, because RuntimeHelper truncates the pointer to int (valid under wasm's 32-bit address
+// space, unrecoverable in a 64-bit test host).
 using System.Collections.ObjectModel;
 using Bunit;
 using IgniteUI.Blazor.Controls;
@@ -132,6 +128,33 @@ public class UnmarshalledDataChannelTests : BunitContext
         Assert.Empty(clear.Columns!);
     }
 
+    [Fact]
+    public void MutationsWhileTheModuleImports_ArriveAsOneCreateOfTheCurrentData()
+    {
+        var release = _interop.HoldModuleImport();
+        var scenario = ComboDataScenarios.Get("observable-products");
+        var items = (ObservableCollection<ComboDataScenarios.Product>)scenario.Data;
+        _interop.PrimeReady();
+        Render<IgbCombo<object, object>>(ps => ps
+            .Add(c => c.Data, scenario.Data)
+            .Add(c => c.ValueKey, scenario.ValueKey)
+            .Add(c => c.DisplayKey, scenario.DisplayKey));
+
+        // Both inserts shift the shared value arrays; a queued create or insert would replay shifted values.
+        items.Insert(0, ComboDataScenarios.AddedProduct());
+        items.Insert(0, ComboDataScenarios.ReplacementProduct());
+        Assert.Empty(_interop.UnmarshalledColumnMessages);
+
+        release();
+        _interop.MakeReady();
+        var create = WaitFor("unmarshalledDataSourceCreate");
+
+        var name = Column(create, "Name");
+        Assert.Equal(5, name.ActualCount);
+        Assert.Equal(new[] { "Replaced", "Added" }, name.StringValues.Take(2));
+        Assert.DoesNotContain(_interop.UnmarshalledColumnMessages, m => m.MethodName == "unmarshalledDataSourceInsert");
+    }
+
     private UnmarshalledColumnMessage RenderScenario(string scenario) =>
         RenderScenario(ComboDataScenarios.Get(scenario));
 
@@ -153,4 +176,3 @@ public class UnmarshalledDataChannelTests : BunitContext
     private static UnmarshalledColumn Column(UnmarshalledColumnMessage message, string propertyPath) =>
         Assert.Single(message.Columns!, c => c.PropertyPath == propertyPath);
 }
-#endif
