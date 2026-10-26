@@ -74,14 +74,7 @@ public class InteropModuleTests
 
         await interop.DisposeAsync();
         js.CompleteImport();
-        try
-        {
-            await load;
-        }
-        catch (ObjectDisposedException)
-        {
-        }
-
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => load);
         Assert.True(js.Module.Disposed);
         Assert.Null(interop.Loaded);
     }
