@@ -2408,7 +2408,7 @@ export const unmarshalledDataSourceRemove = function unmarshalledDataSourceRemov
   index: number,
   columns: any,
 ) {
-  columns = derefColumns(columns);
+  derefColumns(columns);
 
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
