@@ -2,7 +2,7 @@
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTabs : BaseRendererControl
+    public partial class IgbTabs : IgbComponentBase
     {
 
         private void SyncSelectedTab(IgbTabComponentEventArgs args)
@@ -18,21 +18,18 @@ namespace IgniteUI.Blazor.Controls
             {
                 if (item == args.Detail)
                 {
-                    item.Selected = true;
+                    item.Select();
                 }
                 else
                 {
-                    item.Selected = false;
+                    item.Deselect();
 
                 }
 
                 if (!EventCallback<bool>.Empty.Equals(item.SelectedChanged))
                 {
                     var task = item.SelectedChanged.InvokeAsync(item.Selected);
-                    if (task.Exception != null)
-                    {
-                        throw task.Exception;
-                    }
+                    ObserveHandlerTask(task);
                 }
             }
 

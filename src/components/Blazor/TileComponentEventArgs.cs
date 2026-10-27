@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -7,19 +5,16 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTileManager"/>, such as <see cref="IgbTile.TileDragStart"/> and
     /// <see cref="IgbTile.TileResizeEnd"/>.
     /// </summary>
-    public partial class IgbTileComponentEventArgs : BaseRendererElement
+    public partial class IgbTileComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTileComponentEventArgs"; } }
+        internal override string RendererType { get { return "WebTileComponentEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private IgbTile _detail;
+        private IgbTile _detail = new IgbTile();
 
         /// <summary>
         /// The tile the operation applies to.
         /// </summary>
-        [Parameter]
         public IgbTile Detail
         {
             get { return this._detail; }
@@ -44,7 +39,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -54,13 +49,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbTile)ConvertReturnValue(args["detail"], "Tile", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "Tile", true) is IgbTile detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

@@ -5,46 +5,13 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbCircularProgress"/> and <see cref="IgbLinearProgress"/>.
     /// </summary>
-    public partial class IgbProgressBase : BaseRendererControl
+    public partial class IgbProgressBase : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebProgressBase"; } }
+        internal override string RendererType { get { return "WebProgressBase"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-progress-base";
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -163,7 +130,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _labelFormat;
+        private string? _labelFormat;
 
         /// <summary>
         /// Format string for the default label of the control. Placeholders:
@@ -173,7 +140,7 @@ namespace IgniteUI.Blazor.Controls
         /// </list>
         /// </summary>
         [Parameter]
-        public string LabelFormat
+        public string? LabelFormat
         {
             get { return this._labelFormat; }
             set
@@ -185,15 +152,6 @@ namespace IgniteUI.Blazor.Controls
                 this._labelFormat = value;
 
             }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

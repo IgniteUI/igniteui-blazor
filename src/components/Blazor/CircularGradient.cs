@@ -9,10 +9,10 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="Color"/>, <see cref="Offset"/> and <see cref="Opacity"/> are applied as the
     /// <c>stop-color</c>, <c>offset</c> and <c>stop-opacity</c> of that stop without further validation.
     /// </summary>
-    public partial class IgbCircularGradient : BaseRendererControl
+    public partial class IgbCircularGradient : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCircularGradient"; } }
+        internal override string RendererType { get { return "WebCircularGradient"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -24,13 +24,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -39,16 +33,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -57,18 +42,18 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _offset;
+        private string? _offset;
 
         /// <summary>
         /// Defines where the gradient stop is placed along the gradient vector.
         /// </summary>
         [Parameter]
-        public string Offset
+        public string? Offset
         {
             get { return this._offset; }
             set
@@ -81,13 +66,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _color;
+        private string? _color;
 
         /// <summary>
         /// Defines the color of the gradient stop.
         /// </summary>
         [Parameter]
-        public string Color
+        public string? Color
         {
             get { return this._color; }
             set
@@ -118,15 +103,6 @@ namespace IgniteUI.Blazor.Controls
                 this._opacity = value;
 
             }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

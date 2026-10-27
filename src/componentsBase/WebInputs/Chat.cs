@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// </remarks>
     public partial class IgbChat
     {
-        protected override bool NeedsDynamicContent
+        private protected override bool NeedsDynamicContent
         {
             get
             {
@@ -14,15 +14,21 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public IgbChatDraftMessage GetCurrentDraftMessage()
+        /// <summary>
+        /// Returns the message currently being composed but not yet sent, including its text and attachments.
+        /// </summary>
+        public IgbChatDraftMessage? GetCurrentDraftMessage()
         {
-            var iv = InvokeMethodSync("p:DraftMessage", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:DraftMessage", new object?[] { }, new string[] { });
             return ReturnToObject<IgbChatDraftMessage>(iv, "ChatDraftMessage");
         }
 
-        public async Task<IgbChatDraftMessage> GetCurrentDraftMessageAsync()
+        /// <summary>
+        /// Returns the message currently being composed but not yet sent, including its text and attachments.
+        /// </summary>
+        public async Task<IgbChatDraftMessage?> GetCurrentDraftMessageAsync()
         {
-            var iv = await InvokeMethod("p:DraftMessage", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:DraftMessage", new object?[] { }, new string[] { });
             return ReturnToObject<IgbChatDraftMessage>(iv, "ChatDraftMessage");
         }
     }

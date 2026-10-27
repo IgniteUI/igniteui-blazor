@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// An avatar component is used as a representation of a user identity
     /// typically in a user profile.
     /// </summary>
-    public partial class IgbAvatar : BaseRendererControl
+    public partial class IgbAvatar : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebAvatar"; } }
+        internal override string RendererType { get { return "WebAvatar"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,13 +21,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -36,16 +30,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -54,18 +39,18 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _src;
+        private string? _src;
 
         /// <summary>
         /// The image source to use.
         /// </summary>
         [Parameter]
-        public string Src
+        public string? Src
         {
             get { return this._src; }
             set
@@ -78,13 +63,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _alt;
+        private string? _alt;
 
         /// <summary>
         /// Alternative text for the image.
         /// </summary>
         [Parameter]
-        public string Alt
+        public string? Alt
         {
             get { return this._alt; }
             set
@@ -97,13 +82,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _initials;
+        private string? _initials;
 
         /// <summary>
         /// Initials to use as a fallback when no image is available.
         /// </summary>
         [Parameter]
-        public string Initials
+        public string? Initials
         {
             get { return this._initials; }
             set
@@ -134,15 +119,6 @@ namespace IgniteUI.Blazor.Controls
                 this._shape = value;
 
             }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

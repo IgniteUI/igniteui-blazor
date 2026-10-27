@@ -1,22 +1,20 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A predefined date range with label for <see cref="IgbDateRangePicker.CustomRanges"/>.
+    /// A predefined date range with label for <see cref="IgbDateRangePicker{TValue}.CustomRanges"/>.
     /// </summary>
-    public partial class IgbCustomDateRange : BaseRendererElement
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbDateRangePicker{TValue}"/> the range is for.</typeparam>
+    public partial class IgbCustomDateRange<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCustomDateRange"; } }
+        internal override string RendererType { get { return "WebCustomDateRange"; } }
 
-        private string _label;
+        private string _label = string.Empty;
 
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
-        [Parameter]
-        public string Label
+        public required string Label
         {
             get { return this._label; }
             set
@@ -29,13 +27,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeValue _dateRange;
+        private IgbDateRangeValue<TValue> _dateRange = new();
 
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
-        [Parameter]
-        public IgbDateRangeValue DateRange
+        public required IgbDateRangeValue<TValue> DateRange
         {
             get { return this._dateRange; }
             set
@@ -45,22 +42,13 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._dateRange);
                 }
+                this._dateRange = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._dateRange = value;
             }
 
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

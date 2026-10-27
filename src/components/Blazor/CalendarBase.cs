@@ -3,21 +3,15 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class for <see cref="IgbCalendar"/>.
+    /// Base class for <see cref="IgbCalendar{TValue}"/>.
     /// </summary>
-    public partial class IgbCalendarBase : BaseRendererControl
+    public partial class IgbCalendarBase : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCalendarBase"; } }
+        internal override string RendererType { get { return "WebCalendarBase"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
@@ -60,13 +54,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private WeekDays _weekStart = WeekDays.Sunday;
+        private WeekDays? _weekStart;
 
         /// <summary>
-        /// Gets/Sets the first day of the week.
+        /// Gets/Sets the first day of the week. When <c>null</c>, the week follows the locale: <see cref="Locale"/> if set, otherwise the client locale.
         /// </summary>
         [Parameter]
-        public WeekDays WeekStart
+        public WeekDays? WeekStart
         {
             get { return this._weekStart; }
             set
@@ -79,13 +73,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// Gets/Sets the locale used for formatting and displaying the dates in the component.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -98,13 +92,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbCalendarResourceStrings _resourceStrings;
+        private IgbCalendarResourceStrings? _resourceStrings;
 
         /// <summary>
         /// The resource strings for localization.
         /// </summary>
         [Parameter]
-        public IgbCalendarResourceStrings ResourceStrings
+        public IgbCalendarResourceStrings? ResourceStrings
         {
             get { return this._resourceStrings; }
             set
@@ -122,13 +116,13 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-        private IgbDateRangeDescriptor[]? _specialDates;
+        private IgbDateRangeDescriptor[] _specialDates = Array.Empty<IgbDateRangeDescriptor>();
 
         /// <summary>
         /// Gets/Sets the special dates for the component.
         /// </summary>
         [Parameter]
-        public IgbDateRangeDescriptor[]? SpecialDates
+        public IgbDateRangeDescriptor[] SpecialDates
         {
             get { return this._specialDates; }
             set
@@ -141,13 +135,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[]? _disabledDates;
+        private IgbDateRangeDescriptor[] _disabledDates = Array.Empty<IgbDateRangeDescriptor>();
 
         /// <summary>
         /// Gets/Sets the disabled dates for the component.
         /// </summary>
         [Parameter]
-        public IgbDateRangeDescriptor[]? DisabledDates
+        public IgbDateRangeDescriptor[] DisabledDates
         {
             get { return this._disabledDates; }
             set
@@ -159,15 +153,6 @@ namespace IgniteUI.Blazor.Controls
                 this._disabledDates = value;
 
             }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

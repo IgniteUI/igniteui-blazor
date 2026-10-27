@@ -23,6 +23,14 @@ export abstract class WebBaseComboBoxDescription extends Description {
 		this._open = value;
 		this.markDirty("Open");
 	}
+	private _scrollStrategy: string = null;
+	get scrollStrategy(): string {
+		return this._scrollStrategy;
+	}
+	set scrollStrategy(value: string) {
+		this._scrollStrategy = value;
+		this.markDirty("ScrollStrategy");
+	}
 }
 
 

@@ -5,10 +5,12 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A container for a group of select items.
     /// </summary>
-    public partial class IgbSelectGroup : BaseRendererControl
+    /// <typeparam name="TValue">The <c>TValue</c> of the containing <see cref="IgbSelect{TValue}"/>, from which it is inferred.</typeparam>
+    [CascadingTypeParameter(nameof(TValue))]
+    public partial class IgbSelectGroup<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSelectGroup"; } }
+        internal override string RendererType { get { return "WebSelectGroup"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +22,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +31,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -53,18 +40,18 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private IgbSelectItem[] _items;
+        private IgbSelectItem<TValue>[] _items = Array.Empty<IgbSelectItem<TValue>>();
 
         /// <summary>
-        /// All child <see cref="IgbSelectItem"/> components.
+        /// All child <see cref="IgbSelectItem{TValue}"/> components.
         /// </summary>
         [Parameter]
-        public IgbSelectItem[] Items
+        public IgbSelectItem<TValue>[] Items
         {
             get { return this._items; }
             set
@@ -95,15 +82,6 @@ namespace IgniteUI.Blazor.Controls
                 this._disabled = value;
 
             }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

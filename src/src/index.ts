@@ -1,26 +1,19 @@
-import './public_path';
-
 import { ComponentRenderer } from 'igniteui-core/ComponentRenderer';
 import { TypeRegistrar, createMutationObserver } from 'igniteui-core/type';
 import { fromSpinal, getAllPropertyNames } from 'igniteui-core/componentUtil';
 import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
-import { IgcPortalModule } from 'igniteui-core/igc-portal';
 import { IgcTemplateContentComponent } from 'igniteui-core/igc-template-content-component';
 import { refValues, itemMaps } from './refs-state';
+import { _getRegisteredScript, _scriptRegistryEvents } from './api';
 
-IgcPortalModule.register();
 // Ensure the <igc-template-content> host element is always defined. Bridged
 // templates invoked directly by a web component (e.g. igc-combo item /
 // group-header templates) rely on this element to satisfy the Blazor template
 // lifecycle contract, and unlike the grid the combo does not pull in the
 // template-container module on its own.
 IgcTemplateContentComponent.register();
-
-(window as any).igTemplating = {
-  html: html,
-};
 
 let cr = new ComponentRenderer();
 ComponentRenderer.defaultInstance = cr;
@@ -31,17 +24,36 @@ let containers: Map<string, HTMLElement> = new Map<string, HTMLElement>();
 let containersDirect: Map<string, boolean> = new Map<string, boolean>();
 let containersPendingRefs: Map<string, (() => void)[]> = new Map<string, (() => void)[]>();
 let containersPendingDataRefs: Map<string, (() => void)[]> = new Map<string, (() => void)[]>();
+/** A name and partial payload for a `*Script` ref pending register. */
+type PendingScriptRef = { name: string; json: string };
+/** Keyed by container, then ref */
+const containersPendingScriptRefs = new Map<string, Map<string, PendingScriptRef>>();
+_scriptRegistryEvents.addEventListener('registered', (e) => {
+  // "replay" refChanged to resolve again against the now registered script
+  const name = (e as CustomEvent<string>).detail;
+  // collect first, refChanged re-enters the code that edits this map.
+  const ready: [string, string][] = [];
+  for (const [containerId, refs] of containersPendingScriptRefs) {
+    for (const [refName, pending] of refs) {
+      if (pending.name === name) {
+        ready.push([containerId, pending.json]);
+        refs.delete(refName);
+      }
+    }
+    if (refs.size === 0) containersPendingScriptRefs.delete(containerId);
+  }
+  for (const [containerId, json] of ready) {
+    (window as any).igSendMessage(containerId, json, null /* webCallback not used */, [] /* nativeElements not used */);
+  }
+});
 function getContainer(id: string): HTMLElement {
   let cont = containers.get(id);
   if (!cont) {
     return null;
   }
   if (!containersDirect.has(id)) {
-    if (cont.tagName.toUpperCase() == 'IGC-COMPONENT-RENDERER-CONTAINER') {
-      containersDirect.set(id, false);
-    } else {
-      containersDirect.set(id, true);
-    }
+    // A data-ig-root element is driven by the renderer through descriptions, any other by its attributes and direct events.
+    containersDirect.set(id, !cont.hasAttribute('data-ig-root'));
   }
   return cont;
 }
@@ -83,7 +95,7 @@ cr.addReferenceLookupListener((container, refType, value) => {
     });
     return retVal;
   } else {
-    findByName(container.children[0], value);
+    findByName(container, value);
   }
 });
 
@@ -149,13 +161,7 @@ function isContainerDirectRender(): boolean {
 }
 
 function getMainTarget() {
-  let cont = currentContainer();
-
-  if (!containersDirect.get(currentContainerName)) {
-    return cont.children[0];
-  } else {
-    return cont;
-  }
+  return currentContainer();
 }
 
 function copyProperties(target: any, source: any) {
@@ -535,17 +541,6 @@ var raiseEvent = function (propertyName: string, sender: any, args: any, contain
   }
 };
 
-let igScripts: Map<string, { shouldCall: boolean; func: Function }> = new Map<
-  string,
-  { shouldCall: boolean; func: Function }
->();
-(window as any).igRegisterScript = function (scriptId: string, script: Function, shouldCall: boolean = true) {
-  igScripts.set(scriptId, { shouldCall: shouldCall, func: script });
-};
-(window as any).igRemoveScript = function (scriptId: string) {
-  igScripts.delete(scriptId);
-};
-
 (window as any).igCheckReady = function (containerId: string) {
   // var cont = document.getElementById(containerId);
   var cont = getContainerByIgIdAttribute(containerId);
@@ -771,6 +766,8 @@ function updateAngularElement(element: any) {
         if (eventBehaviors.has(containerId)) {
           eventBehaviors.delete(containerId);
         }
+
+        containersPendingScriptRefs.delete(containerId);
       }
       break;
     case 'descriptionDelta':
@@ -801,6 +798,7 @@ function updateAngularElement(element: any) {
         let refName = m.refName;
         const originalRefVal = m.refValue;
         let refValue = m.refValue;
+        containersPendingScriptRefs.get(containerId)?.delete(refName);
 
         if (typeof refValue == 'string' && refValue.indexOf('json:::') == 0) {
           refValue = refValue.substring('json:::'.length);
@@ -819,8 +817,8 @@ function updateAngularElement(element: any) {
         } else {
           if (typeof refValue == 'string' && refValue.indexOf('containerId:::') == 0) {
             refValue = refValue.substring('containerId:::'.length);
-            if (containers.has(refValue) && containers.get(refValue).children.length > 0) {
-              refValue = containers.get(refValue).children[0];
+            if (containers.has(refValue) && containers.get(refValue) != null) {
+              refValue = containers.get(refValue);
             } else {
               if (!containersPendingRefs.has(refValue)) {
                 containersPendingRefs.set(refValue, []);
@@ -828,7 +826,7 @@ function updateAngularElement(element: any) {
               let arr = containersPendingRefs.get(refValue);
               let cc = currentContainer();
               arr.push(() => {
-                refValue = containers.get(refValue).children[0];
+                refValue = containers.get(refValue);
                 cr.provideRefValue(cc, refName, refValue);
                 refValues.set(refName, refValue);
               });
@@ -850,10 +848,16 @@ function updateAngularElement(element: any) {
           if (typeof refValue == 'string' && refValue.indexOf('script:::') == 0) {
             refValue = refValue.substring('script:::'.length);
             let scriptRef = refValue;
-            if (!igScripts.has(refValue)) {
+            var f = _getRegisteredScript(refValue);
+            if (!f) {
+              console.debug(
+                `[Ignite UI] script '${scriptRef}' is not registered yet; it will be applied once registerScript('${scriptRef}', ...) runs.`,
+              );
+              let refs = containersPendingScriptRefs.get(containerId);
+              if (!refs) containersPendingScriptRefs.set(containerId, (refs = new Map()));
+              refs.set(refName, { name: scriptRef, json });
               return;
             }
-            var f = igScripts.get(refValue);
             if (f.shouldCall && typeof f.func == 'function') {
               refValue = f.func();
             } else {
@@ -1055,7 +1059,7 @@ function updateAngularElement(element: any) {
                 mut.observe(templateContent, {
                   childList: true,
                 });
-                var dynCont = template.___container.parentElement.querySelector('.ig-dynamic-content-holder');
+                var dynCont = template.___container.querySelector(':scope > .ig-dynamic-content-holder');
                 let mut2 = createMutationObserver((list) => {
                   for (var mutation of list) {
                     if (mutation.type == 'childList') {
@@ -1215,11 +1219,7 @@ function updateAngularElement(element: any) {
               if (args[i].indexOf('containerId:::') == 0) {
                 args[i] = args[i].substring('containerId:::'.length);
                 if (containers.has(args[i])) {
-                  if (containersDirect.has(args[i])) {
-                    args[i] = containers.get(args[i]);
-                  } else {
-                    args[i] = containers.get(args[i]).children[0];
-                  }
+                  args[i] = containers.get(args[i]);
                 } else {
                   var ele = getContainerByIgIdAttribute(args[i]);
                   if (ele) {
@@ -1259,7 +1259,10 @@ function updateAngularElement(element: any) {
             methodName = methodName.substr(7);
           }
 
-          if (!hasProp(child, methodName)) {
+          // The prop map stops walking the prototype chain below HTMLElement, so methods
+          // inherited from it (e.g. focus/blur on components that rely on delegatesFocus
+          // instead of overriding them) are missing from it while still being invokable.
+          if (!hasProp(child, methodName) && !(child && typeof child[methodName] === 'function')) {
             let error = "error: target doesn't have prop: " + methodName;
             console.error(error);
             return error;
@@ -2254,8 +2257,8 @@ function getArrayDataPtr(value: any): any {
   if ((window as any).getValue) {
     getValueActual = (window as any).getValue;
   }
-  if ((global as any).getValue) {
-    getValueActual = (global as any).getValue;
+  if ((globalThis as any).getValue) {
+    getValueActual = (globalThis as any).getValue;
   }
   if ((self as any).getValue) {
     getValueActual = (self as any).getValue;

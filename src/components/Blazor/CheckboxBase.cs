@@ -5,57 +5,24 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbCheckbox"/> and <see cref="IgbSwitch"/>.
     /// </summary>
-    public partial class IgbCheckboxBase : BaseRendererControl
+    public partial class IgbCheckboxBase : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCheckboxBase"; } }
+        internal override string RendererType { get { return "WebCheckboxBase"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-checkbox-base";
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the control.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set
@@ -65,6 +32,25 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Value");
                 }
                 this._value = value;
+
+            }
+        }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
 
             }
         }
@@ -93,7 +79,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> GetCurrentCheckedAsync()
         {
-            var iv = await InvokeMethod("p:Checked", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Checked", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -102,7 +88,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool GetCurrentChecked()
         {
-            var iv = InvokeMethodSync("p:Checked", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Checked", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         private ToggleLabelPosition _labelPosition = ToggleLabelPosition.After;
@@ -182,20 +168,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Simulates a click on the control.
         /// </summary>
         public async Task ClickAsync()
         {
-            await InvokeMethod("click", new object[] { }, new string[] { });
+            await InvokeMethod("click", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -203,7 +181,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Click()
         {
-            InvokeMethodSync("click", new object[] { }, new string[] { });
+            InvokeMethodSync("click", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Sets focus on the control.
@@ -212,7 +190,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public async Task FocusComponentAsync(IgbFocusOptions options)
         {
-            await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            await InvokeMethod("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -221,7 +199,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
-            InvokeMethodSync("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            InvokeMethodSync("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
         /// <summary>
         /// Removes focus from the control.
@@ -230,7 +208,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public async Task BlurComponentAsync()
         {
-            await InvokeMethod("blur", new object[] { }, new string[] { });
+            await InvokeMethod("blur", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -239,14 +217,14 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
-            InvokeMethodSync("blur", new object[] { }, new string[] { });
+            InvokeMethodSync("blur", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
-            var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -255,7 +233,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool ReportValidity()
         {
-            var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -263,7 +241,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
-            var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -272,7 +250,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool CheckValidity()
         {
-            var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -281,7 +259,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
-            await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            await InvokeMethod("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -290,7 +268,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetCustomValidity(String message)
         {
-            InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         private EventCallback<bool>? _checkedChanged = null;
@@ -324,18 +302,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -343,7 +322,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -375,7 +354,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbCheckboxChangeEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbCheckboxChangeEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueChecked = default(bool);
 
@@ -390,16 +369,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._checked = newValueChecked;
                                 }
-                                OnPropertyPropagatedOut(Name, "Checked");
+                                OnPropertyPropagatedOut(RendererName, "Checked");
                             }
 
                             if (!EventCallback<bool>.Empty.Equals(CheckedChanged))
                             {
                                 var task = CheckedChanged.InvokeAsync(newValueChecked);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -413,7 +389,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbCheckboxChangeEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbCheckboxChangeEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -431,18 +407,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _focusRef = null;
-        private string _focusScript = null;
+        private string? _focusRef = null;
+        private string? _focusScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string FocusScript
+        public string? FocusScript
         {
 
             set
@@ -450,7 +427,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._focusScript)
                 {
                     this._focusScript = value;
-                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._focusRef = refName;
                         this.MarkPropDirty("FocusRef");
@@ -482,7 +459,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -493,7 +470,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _focus = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", null);
                     this.OnRefChanged("Focus", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._focusRef = null;
@@ -503,18 +480,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _blurRef = null;
-        private string _blurScript = null;
+        private string? _blurRef = null;
+        private string? _blurScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string BlurScript
+        public string? BlurScript
         {
 
             set
@@ -522,7 +500,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._blurScript)
                 {
                     this._blurScript = value;
-                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._blurRef = refName;
                         this.MarkPropDirty("BlurRef");
@@ -554,7 +532,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -565,7 +543,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _blur = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", null);
                     this.OnRefChanged("Blur", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._blurRef = null;
@@ -581,6 +559,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (IsPropDirty("Value"))
             { ser.AddStringProp("value", this._value); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Checked"))
             { ser.AddBooleanProp("checked", this._checked); }
             if (IsPropDirty("LabelPosition"))

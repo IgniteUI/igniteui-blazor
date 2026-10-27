@@ -1,22 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The base context object passed to custom renderers, containing the
     /// <see cref="IgbChat"/> component instance.
     /// </summary>
-    public partial class IgbChatRenderContext : BaseRendererElement
+    public partial class IgbChatRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatRenderContext"; } }
+        internal override string RendererType { get { return "WebChatRenderContext"; } }
 
-        private IgbChat _instance;
+        private IgbChat _instance = new IgbChat();
 
         /// <summary>
         /// The instance of the <see cref="IgbChat"/> component.
         /// </summary>
-        [Parameter]
         public IgbChat Instance
         {
             get { return this._instance; }
@@ -31,15 +28,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -50,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -60,13 +48,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("instance"))
-            { this.Instance = (IgbChat)ConvertReturnValue(args["instance"], "Chat", true); }
+            if (args != null && args.TryGetValue("instance", out var instanceObj) && ConvertReturnValue(instanceObj, "Chat", true) is IgbChat instance)
+            { this.Instance = instance; }
 
             this.SuppressParentNotify = false;
         }

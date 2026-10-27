@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -7,19 +5,16 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTileManager"/>, such as <see cref="IgbTile.TileFullscreen"/> and
     /// <see cref="IgbTile.TileMaximize"/>.
     /// </summary>
-    public partial class IgbTileChangeStateEventArgs : BaseRendererElement
+    public partial class IgbTileChangeStateEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTileChangeStateEventArgs"; } }
+        internal override string RendererType { get { return "WebTileChangeStateEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private IgbTileChangeStateEventArgsDetail _detail;
+        private IgbTileChangeStateEventArgsDetail _detail = new IgbTileChangeStateEventArgsDetail();
 
         /// <summary>
         /// The affected tile and the state it is changing to.
         /// </summary>
-        [Parameter]
         public IgbTileChangeStateEventArgsDetail Detail
         {
             get { return this._detail; }
@@ -30,11 +25,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -49,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -59,13 +54,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbTileChangeStateEventArgsDetail)ConvertReturnValue(args["detail"], "TileChangeStateEventArgsDetail", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "TileChangeStateEventArgsDetail", true) is IgbTileChangeStateEventArgsDetail detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

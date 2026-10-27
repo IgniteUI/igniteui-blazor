@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <c>Change</c> event of <see cref="IgbCheckbox"/>
     /// and <see cref="IgbSwitch"/>, raised when the checked state of the control changes.
     /// </summary>
-    public partial class IgbCheckboxChangeEventArgs : BaseRendererElement
+    public partial class IgbCheckboxChangeEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCheckboxChangeEventArgs"; } }
+        internal override string RendererType { get { return "WebCheckboxChangeEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private IgbCheckboxChangeEventArgsDetail _detail;
+        private IgbCheckboxChangeEventArgsDetail _detail = new IgbCheckboxChangeEventArgsDetail();
 
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the control.
         /// </summary>
-        [Parameter]
         public IgbCheckboxChangeEventArgsDetail Detail
         {
             get { return this._detail; }
@@ -29,11 +24,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -48,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -58,13 +53,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbCheckboxChangeEventArgsDetail)ConvertReturnValue(args["detail"], "CheckboxChangeEventArgsDetail", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "CheckboxChangeEventArgsDetail", true) is IgbCheckboxChangeEventArgsDetail detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

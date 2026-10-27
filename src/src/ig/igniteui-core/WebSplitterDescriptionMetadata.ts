@@ -2,6 +2,7 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebSplitterResizeEventArgsDescriptionMetadata } from "./WebSplitterResizeEventArgsDescriptionMetadata";
+import { WebSplitterLayoutChangedEventArgsDescriptionMetadata } from "./WebSplitterLayoutChangedEventArgsDescriptionMetadata";
 import { WebSplitterDescription } from "./WebSplitterDescription";
 
 /**
@@ -20,6 +21,7 @@ export class WebSplitterDescriptionMetadata extends Base {
 		}
 		context.markSeen(WebSplitterDescriptionMetadata._metadata);
 		WebSplitterResizeEventArgsDescriptionMetadata.register(context);
+		WebSplitterLayoutChangedEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:Splitter");
@@ -39,12 +41,16 @@ export class WebSplitterDescriptionMetadata extends Base {
 		metadata.item("EndMaxSize", "String");
 		metadata.item("StartSize", "String");
 		metadata.item("EndSize", "String");
+		metadata.item("StartCollapsed", "Boolean");
+		metadata.item("EndCollapsed", "Boolean");
 		metadata.item("ResizeStartRef", "EventRef:SplitterResizeEventHandler:resizeStart");
 		metadata.item("ResizeStartRef@args", "SplitterResizeEventArgs");
 		metadata.item("ResizingRef", "EventRef:SplitterResizeEventHandler:resizing");
 		metadata.item("ResizingRef@args", "SplitterResizeEventArgs");
 		metadata.item("ResizeEndRef", "EventRef:SplitterResizeEventHandler:resizeEnd");
 		metadata.item("ResizeEndRef@args", "SplitterResizeEventArgs");
+		metadata.item("LayoutChangedRef", "EventRef:SplitterLayoutChangedEventHandler:layoutChanged");
+		metadata.item("LayoutChangedRef@args", "SplitterLayoutChangedEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebSplitterDescriptionMetadata.ensureMetadata(context);

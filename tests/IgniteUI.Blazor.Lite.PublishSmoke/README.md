@@ -32,7 +32,7 @@ Three gates, in order of what they can see:
 | `ChatModule preloaded:` | `True` | `[IgbModule<TSelf>]` preservation broke — the Type-based module preload silently lost `Register` (IgbChat's component is deliberately never referenced by this app, so nothing else can keep it alive) |
 | Outlined button + avatar render styled | camelCase enum attributes (`variant="outlined"`, `shape="circle"` in dev tools) | enum fields were trimmed — the enum-preservation justification in `TryGetWCEnumName`/`GetWCEnumTransform` no longer holds |
 | Button group | `selection` is `single-required` in dev tools | enum **field attributes** were trimmed — the `[WCEnumName]` mapping path degraded to camelCase (`singleRequired`) |
-| Combo shows 3 items | `Alpha`, `Beta`, `Gamma` | data-source reflection over the (preserved) POCO broke — the documented `DynamicallyAccessedMembers` consumer pattern in docs/TRIMMING.md no longer suffices |
+| Combo shows 3 items | `Alpha`, `Beta`, `Gamma` | data-source reflection over the POCO broke — `IgbCombo<TValue, TItem>` must continue to preserve all members of its `TItem` argument |
 | Date range picker present; selecting a range updates the result line | date text below the picker | the event payload path (`IgbDateRangeValue` materialization) broke |
 | Browser console | no errors (a stray `favicon` 404 is fine) | anything else: investigate |
 
@@ -44,8 +44,22 @@ dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=Trimme
 
 The manual browser pass above remains useful for the other TFMs and for linker experiments.
 
+## Wasm AOT
+
+The manual **`Wasm AOT Smoke`** workflow (`workflow_dispatch`) publishes this app with `-p:RunAOTCompilation=true` (net10.0, slow multi-minute compile) and runs the same browser checks against that output. Locally:
+
+```bash
+dotnet workload install wasm-tools
+dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net10.0 -p:TargetFrameworks=net10.0 -p:RunAOTCompilation=true
+dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=TrimmedPublish --settings .runsettings
+```
+
+Restore ignores `-f`, and restoring net8/net9 with AOT on needs `wasm-tools-net8`/`wasm-tools-net9`. `-p:TargetFrameworks=net10.0` limits restore to net10.
+
+Wasm AOT is Mono AOT with the interpreter retained — it validates the product path but emits no NativeAOT diagnostics; that gate is `tests/IgniteUI.Blazor.Lite.AotSmoke` (per-PR CI).
+
 ## When to run
 
-- After any change to reflection, serialization, `[DynamicallyAccessedMembers]` annotations, or suppressions in `src/` (see the `igniteui-blazor-lite-trimming` skill in `.agents/skills/` and docs/TRIMMING.md).
+- After any change to reflection, serialization, `[DynamicallyAccessedMembers]` annotations, or suppressions in `src/` (see the `maintain-trim-compatibility` skill in `.agents/skills/` and docs/TRIMMING.md).
 - After SDK updates — linker behavior should be re-validated.
 - For linker experiments, run a control (publish *without* the change) first. Beware: any constrained static-abstract call (e.g. `IIgbModule.Register` through a generic) roots the implementations on all kept module types, contaminating controls.

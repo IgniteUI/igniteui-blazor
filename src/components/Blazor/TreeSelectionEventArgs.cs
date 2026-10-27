@@ -1,23 +1,18 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for <see cref="IgbTree.SelectionChanged"/>.
     /// </summary>
-    public partial class IgbTreeSelectionEventArgs : BaseRendererElement
+    public partial class IgbTreeSelectionEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTreeSelectionEventArgs"; } }
+        internal override string RendererType { get { return "WebTreeSelectionEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private IgbTreeSelectionEventArgsDetail _detail;
+        private IgbTreeSelectionEventArgsDetail _detail = new IgbTreeSelectionEventArgsDetail();
 
         /// <summary>
         /// The selection the tree is about to apply.
         /// </summary>
-        [Parameter]
         public IgbTreeSelectionEventArgsDetail Detail
         {
             get { return this._detail; }
@@ -28,11 +23,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -47,7 +42,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -57,13 +52,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbTreeSelectionEventArgsDetail)ConvertReturnValue(args["detail"], "TreeSelectionEventArgsDetail", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "TreeSelectionEventArgsDetail", true) is IgbTreeSelectionEventArgsDetail detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

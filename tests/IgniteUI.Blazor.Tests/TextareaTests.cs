@@ -44,7 +44,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
     public void Textarea_TypeMetadata_IsCorrect()
     {
         var textarea = new IgbTextarea();
-        Assert.Equal("WebTextarea", textarea.Type);
+        Assert.Equal("WebTextarea", textarea.RendererType);
     }
 
     [Fact]
@@ -54,6 +54,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Value, "Hello world"));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal("Hello world", cut.Instance.Value);
         Assert.Equal("Hello world", element.GetAttribute("value"));
     }
 
@@ -64,6 +65,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Placeholder, "Type here..."));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal("Type here...", cut.Instance.Placeholder);
         Assert.Equal("Type here...", element.GetAttribute("placeholder"));
     }
 
@@ -74,6 +76,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-textarea");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -84,6 +87,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-textarea");
+        Assert.True(cut.Instance.Required);
         Assert.NotNull(element.GetAttribute("required"));
     }
 
@@ -94,6 +98,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.ReadOnly, true));
 
         var element = cut.Find("igc-textarea");
+        Assert.True(cut.Instance.ReadOnly);
         Assert.NotNull(element.GetAttribute("readonly"));
     }
 
@@ -114,6 +119,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Label, "Comments"));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal("Comments", cut.Instance.Label);
         Assert.Equal("Comments", element.GetAttribute("label"));
     }
 
@@ -124,6 +130,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Resize, TextareaResize.Vertical));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal(TextareaResize.Vertical, cut.Instance.Resize);
         Assert.Equal("vertical", element.GetAttribute("resize"));
     }
 
@@ -134,6 +141,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Outlined, true));
 
         var element = cut.Find("igc-textarea");
+        Assert.True(cut.Instance.Outlined);
         Assert.NotNull(element.GetAttribute("outlined"));
     }
 
@@ -144,7 +152,21 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.MaxLength, 500));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal(500.0, cut.Instance.MaxLength);
         Assert.Equal("500", element.GetAttribute("maxlength"));
+    }
+
+    [Fact]
+    public void Textarea_Lengths_Unset_RenderNoAttributes()
+    {
+        var cut = Render<IgbTextarea>();
+
+        // Unset: no length limit. 0 is a real limit, so the wrapper must not report it here.
+        var element = cut.Find("igc-textarea");
+        Assert.Null(cut.Instance.MaxLength);
+        Assert.Null(cut.Instance.MinLength);
+        Assert.Null(element.GetAttribute("maxlength"));
+        Assert.Null(element.GetAttribute("minlength"));
     }
 
     [Fact]
@@ -154,6 +176,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.MinLength, 10));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal(10.0, cut.Instance.MinLength);
         Assert.Equal("10", element.GetAttribute("minlength"));
     }
 
@@ -174,6 +197,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.InputMode, "text"));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal("text", cut.Instance.InputMode);
         Assert.Equal("text", element.GetAttribute("inputmode"));
     }
 
@@ -184,6 +208,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Wrap, TextareaWrap.Hard));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal(TextareaWrap.Hard, cut.Instance.Wrap);
         Assert.Equal("hard", element.GetAttribute("wrap"));
     }
 
@@ -194,6 +219,7 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.ValidateOnly, true));
 
         var element = cut.Find("igc-textarea");
+        Assert.True(cut.Instance.ValidateOnly);
         Assert.NotNull(element.GetAttribute("validate-only"));
     }
 
@@ -204,13 +230,8 @@ public class TextareaTests : ComponentWithContractTestBase<IgbTextarea>
             parameters.Add(p => p.Autocomplete, "on"));
 
         var element = cut.Find("igc-textarea");
+        Assert.Equal("on", cut.Instance.Autocomplete);
         Assert.Equal("on", element.GetAttribute("autocomplete"));
-    }
-
-    [Fact]
-    public void Textarea_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbTextarea).IsSubclassOf(typeof(BaseRendererControl)));
     }
 
     /// <summary>

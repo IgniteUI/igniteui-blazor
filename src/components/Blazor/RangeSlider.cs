@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbRangeSlider : IgbSliderBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRangeSlider"; } }
+        internal override string RendererType { get { return "WebRangeSlider"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +20,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +29,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -90,13 +75,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _thumbLabelLower;
+        private string? _thumbLabelLower;
 
         /// <summary>
         /// The aria label for the lower thumb.
         /// </summary>
         [Parameter]
-        public string ThumbLabelLower
+        public string? ThumbLabelLower
         {
             get { return this._thumbLabelLower; }
             set
@@ -109,13 +94,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _thumbLabelUpper;
+        private string? _thumbLabelUpper;
 
         /// <summary>
         /// The aria label for the upper thumb.
         /// </summary>
         [Parameter]
-        public string ThumbLabelUpper
+        public string? ThumbLabelUpper
         {
             get { return this._thumbLabelUpper; }
             set
@@ -129,18 +114,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputRef = null;
-        private string _inputScript = null;
+        private string? _inputRef = null;
+        private string? _inputScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Input"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string InputScript
+        public string? InputScript
         {
 
             set
@@ -148,7 +134,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputScript)
                 {
                     this._inputScript = value;
-                    this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Input", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputRef = refName;
                         this.MarkPropDirty("InputRef");
@@ -180,7 +166,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_input))
                     {
                         _input = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", value);
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -191,7 +177,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _input = null;
-                    this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Input", null);
+                    this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Input", null);
                     this.OnRefChanged("Input", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._inputRef = null;
@@ -201,18 +187,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -220,7 +207,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -252,7 +239,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", value);
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Change", value);
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {
                             this._changeRef = refName;
@@ -263,7 +250,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbRangeSliderValueEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

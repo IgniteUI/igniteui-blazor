@@ -6,10 +6,25 @@ namespace IgniteUI.Blazor.Controls
     /// A feature rich component used for entering a date through manual text input or
     /// choosing date values from a calendar dialog that pops up.
     /// </summary>
-    public partial class IgbDatePicker : IgbComboBoxBaseLike
+    /// <typeparam name="TValue"><see cref="DateTime"/>, <c>DateTime?</c> or an ISO 8601 <c>string</c>.</typeparam>
+    public partial class IgbDatePicker<TValue> : IgbComboBoxBaseLike
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDatePicker"; } }
+        internal override string RendererType { get { return "WebDatePicker"; } }
+
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
+        /// <summary>
+        /// Constructs an instance of <see cref="IgbDatePicker{TValue}"/>
+        /// </summary>
+        public IgbDatePicker()
+        {
+            if (GenericType != typeof(DateTime) &&
+                GenericType != typeof(string))
+            {
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{GenericType}'.");
+            }
+        }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,27 +36,21 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override string DirectRenderElementName
         {
             get
             {
-                return true;
+                return "igc-date-picker";
             }
         }
 
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The label of the datepicker.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -51,6 +60,25 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Label");
                 }
                 this._label = value;
+
+            }
+        }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
 
             }
         }
@@ -112,18 +140,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _value = DateTime.MinValue;
+
+        private TValue? _value = default!;
 
         /// <summary>
         /// The value of the picker.
         /// </summary>
         [Parameter]
-        public DateTime? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -135,33 +164,33 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Gets the current value of the picker.
         /// </summary>
-        public async Task<DateTime?> GetCurrentValueAsync()
+        public async Task<TValue?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
-            return ReturnToDate(iv);
+            var iv = await InvokeMethod("p:Value", [], []);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
         /// Gets the current value of the picker.
         /// </summary>
-        public DateTime? GetCurrentValue()
+        public TValue? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
-            return ReturnToDate(iv);
+            var iv = InvokeMethodSync("p:Value", [], []);
+            return GenericValueFromEventJson<TValue>(iv);
         }
-        private DateTime _activeDate = DateTime.MinValue;
+        private TValue? _activeDate = default!;
 
         /// <summary>
         /// Gets/Sets the date which is shown in the calendar picker and is highlighted.
         /// By default it is the current date.
         /// </summary>
         [Parameter]
-        public DateTime ActiveDate
+        public TValue? ActiveDate
         {
             get { return this._activeDate; }
             set
             {
-                if (this._activeDate != value || !IsPropDirty("ActiveDate"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._activeDate, value) || !IsPropDirty("ActiveDate"))
                 {
                     MarkPropDirty("ActiveDate");
                 }
@@ -169,18 +198,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _min = DateTime.MinValue;
+        private TValue? _min = default!;
 
         /// <summary>
         /// The minimum value required for the date picker to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Min
+        public TValue? Min
         {
             get { return this._min; }
             set
             {
-                if (this._min != value || !IsPropDirty("Min"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._min, value) || !IsPropDirty("Min"))
                 {
                     MarkPropDirty("Min");
                 }
@@ -188,18 +217,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _max = DateTime.MinValue;
+        private TValue? _max = default!;
 
         /// <summary>
         /// The maximum value required for the date picker to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Max
+        public TValue? Max
         {
             get { return this._max; }
             set
             {
-                if (this._max != value || !IsPropDirty("Max"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._max, value) || !IsPropDirty("Max"))
                 {
                     MarkPropDirty("Max");
                 }
@@ -283,7 +312,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[] _disabledDates;
+        private IgbDateRangeDescriptor[] _disabledDates = Array.Empty<IgbDateRangeDescriptor>();
 
         /// <summary>
         /// Gets/sets disabled dates.
@@ -302,7 +331,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeDescriptor[] _specialDates;
+        private IgbDateRangeDescriptor[] _specialDates = Array.Empty<IgbDateRangeDescriptor>();
 
         /// <summary>
         /// Gets/sets special dates.
@@ -340,13 +369,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _placeholder;
+        private string? _placeholder;
 
         /// <summary>
         /// The placeholder text of the control.
         /// </summary>
         [Parameter]
-        public string Placeholder
+        public string? Placeholder
         {
             get { return this._placeholder; }
             set
@@ -397,14 +426,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _displayFormat;
+        private string? _displayFormat;
 
         /// <summary>
         /// Format to display the value in when not editing.
         /// Defaults to the locale format if not set.
         /// </summary>
         [Parameter]
-        public string DisplayFormat
+        public string? DisplayFormat
         {
             get { return this._displayFormat; }
             set
@@ -417,14 +446,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inputFormat;
+        private string? _inputFormat;
 
         /// <summary>
         /// The date format to apply on the input.
         /// Defaults to the current locale of the client <c>Intl.DateTimeFormat</c>
         /// </summary>
         [Parameter]
-        public string InputFormat
+        public string? InputFormat
         {
             get { return this._inputFormat; }
             set
@@ -437,13 +466,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _prompt;
+        private string? _prompt;
 
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask.
         /// </summary>
         [Parameter]
-        public string Prompt
+        public string? Prompt
         {
             get { return this._prompt; }
             set
@@ -456,13 +485,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _locale;
+        private string? _locale;
 
         /// <summary>
         /// Gets/Sets the locale used for formatting the display value.
         /// </summary>
         [Parameter]
-        public string Locale
+        public string? Locale
         {
             get { return this._locale; }
             set
@@ -475,13 +504,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbCalendarResourceStrings _resourceStrings;
+        private IgbCalendarResourceStrings? _resourceStrings;
 
         /// <summary>
         /// The resource strings for localization.
         /// </summary>
         [Parameter]
-        public IgbCalendarResourceStrings ResourceStrings
+        public IgbCalendarResourceStrings? ResourceStrings
         {
             get { return this._resourceStrings; }
             set
@@ -499,13 +528,13 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-        private WeekDays _weekStart = WeekDays.Sunday;
+        private WeekDays? _weekStart;
 
         /// <summary>
-        /// Sets the start day of the week for the calendar.
+        /// Sets the start day of the week for the calendar. When <c>null</c>, the week follows the locale: <see cref="Locale"/> if set, otherwise the client locale.
         /// </summary>
         [Parameter]
-        public WeekDays WeekStart
+        public WeekDays? WeekStart
         {
             get { return this._weekStart; }
             set
@@ -581,7 +610,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task ClearAsync()
         {
-            await InvokeMethod("clear", new object[] { }, new string[] { });
+            await InvokeMethod("clear", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -589,7 +618,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Clear()
         {
-            InvokeMethodSync("clear", new object[] { }, new string[] { });
+            InvokeMethodSync("clear", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -597,7 +626,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepUpAsync(DatePart? datePart = null, double delta = -1)
         {
-            await InvokeMethod("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            await InvokeMethod("stepUp", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -605,7 +634,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepUp(DatePart? datePart = null, double delta = -1)
         {
-            InvokeMethodSync("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            InvokeMethodSync("stepUp", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -613,7 +642,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepDownAsync(DatePart? datePart = null, double delta = -1)
         {
-            await InvokeMethod("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            await InvokeMethod("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -621,14 +650,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepDown(DatePart? datePart = null, double delta = -1)
         {
-            InvokeMethodSync("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            InvokeMethodSync("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
         /// <summary>
         /// Selects the text in the input of the component.
         /// </summary>
         public async Task SelectAsync()
         {
-            await InvokeMethod("select", new object[] { }, new string[] { });
+            await InvokeMethod("select", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -636,14 +665,14 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Select()
         {
-            InvokeMethodSync("select", new object[] { }, new string[] { });
+            InvokeMethodSync("select", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
         public async Task<bool> ReportValidityAsync()
         {
-            var iv = await InvokeMethod("reportValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -652,7 +681,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool ReportValidity()
         {
-            var iv = InvokeMethodSync("reportValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("reportValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -660,7 +689,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<bool> CheckValidityAsync()
         {
-            var iv = await InvokeMethod("checkValidity", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -669,7 +698,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public bool CheckValidity()
         {
-            var iv = InvokeMethodSync("checkValidity", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("checkValidity", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -678,7 +707,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task SetCustomValidityAsync(String message)
         {
-            await InvokeMethod("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            await InvokeMethod("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
         /// <summary>
@@ -687,21 +716,21 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void SetCustomValidity(String message)
         {
-            InvokeMethodSync("setCustomValidity", new object[] { StringToString(message) }, new string[] { "String" });
+            InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
-        private EventCallback<DateTime?>? _valueChanged = null;
+        private EventCallback<TValue?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime?> ValueChanged
+        public EventCallback<TValue?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue?>.Empty;
             }
             set
             {
@@ -721,18 +750,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _openingRef = null;
-        private string _openingScript = null;
+        private string? _openingRef = null;
+        private string? _openingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string OpeningScript
+        public string? OpeningScript
         {
 
             set
@@ -740,7 +770,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._openingScript)
                 {
                     this._openingScript = value;
-                    this.OnRefChanged("Opening", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Opening", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._openingRef = refName;
                         this.MarkPropDirty("OpeningRef");
@@ -772,7 +802,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -783,7 +813,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opening = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opening", null);
                     this.OnRefChanged("Opening", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openingRef = null;
@@ -793,18 +823,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _openedRef = null;
-        private string _openedScript = null;
+        private string? _openedRef = null;
+        private string? _openedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string OpenedScript
+        public string? OpenedScript
         {
 
             set
@@ -812,7 +843,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._openedScript)
                 {
                     this._openedScript = value;
-                    this.OnRefChanged("Opened", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Opened", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._openedRef = refName;
                         this.MarkPropDirty("OpenedRef");
@@ -844,7 +875,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -855,7 +886,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opened = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opened", null);
                     this.OnRefChanged("Opened", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openedRef = null;
@@ -865,18 +896,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _closingRef = null;
-        private string _closingScript = null;
+        private string? _closingRef = null;
+        private string? _closingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ClosingScript
+        public string? ClosingScript
         {
 
             set
@@ -884,7 +916,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closingScript)
                 {
                     this._closingScript = value;
-                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closingRef = refName;
                         this.MarkPropDirty("ClosingRef");
@@ -916,7 +948,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -927,7 +959,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closing = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", null);
                     this.OnRefChanged("Closing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closingRef = null;
@@ -937,18 +969,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _closedRef = null;
-        private string _closedScript = null;
+        private string? _closedRef = null;
+        private string? _closedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ClosedScript
+        public string? ClosedScript
         {
 
             set
@@ -956,7 +989,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closedScript)
                 {
                     this._closedScript = value;
-                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closedRef = refName;
                         this.MarkPropDirty("ClosedRef");
@@ -988,7 +1021,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -999,7 +1032,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closed = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", null);
                     this.OnRefChanged("Closed", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closedRef = null;
@@ -1009,18 +1042,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private protected string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
-        /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
+        /// Name of a client-side function that handles the Change event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -1028,7 +1062,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -1041,17 +1075,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentDateValueChangedEventArgs>? _change = null;
+        private EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>? _change = null;
 
         /// <summary>
         /// Emitted when the user modifies and commits the component's value.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentDateValueChangedEventArgs> Change
+        public EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbComponentDateValueChangedEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>.Empty;
             }
             set
             {
@@ -1060,12 +1094,12 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComponentDateValueChangedEventArgs<TValue?>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(DateTime?);
+                            var newValueValue = default(TValue);
 
                             {
-                                newValueValue = (DateTime?)(args.Detail);
+                                newValueValue = args.Detail;
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -1075,16 +1109,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<DateTime?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -1098,7 +1129,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComponentDateValueChangedEventArgs<TValue?>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -1107,27 +1138,29 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
+
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbComponentDateValueChangedEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbComponentDateValueChangedEventArgs>(null, (Action<IgbComponentDateValueChangedEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>(null, (Action<IgbComponentDateValueChangedEventArgs<TValue?>>)((e) => { }));
                 this._change = null;
             }
         }
 
-        private string _inputRef = null;
-        private string _inputScript = null;
+        private string? _inputRef = null;
+        private string? _inputScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Input"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string InputScript
+        public string? InputScript
         {
 
             set
@@ -1135,7 +1168,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputScript)
                 {
                     this._inputScript = value;
-                    this.OnRefChanged("Input", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Input", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputRef = refName;
                         this.MarkPropDirty("InputRef");
@@ -1148,17 +1181,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentDateValueChangedEventArgs>? _input = null;
+        private EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>? _input = null;
 
         /// <summary>
         /// Emitted when the user types in the component.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentDateValueChangedEventArgs> Input
+        public EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>> Input
         {
             get
             {
-                return this._input != null ? this._input.Value : EventCallback<IgbComponentDateValueChangedEventArgs>.Empty;
+                return this._input != null ? this._input.Value : EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>.Empty;
             }
             set
             {
@@ -1167,7 +1200,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_input))
                     {
                         _input = value;
-                        this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Input", value);
+                        this.SetHandler<IgbComponentDateValueChangedEventArgs<TValue?>>(this.RendererName, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -1178,7 +1211,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _input = null;
-                    this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Input", null);
+                    this.SetHandler<IgbComponentDateValueChangedEventArgs<TValue?>>(this.RendererName, "Input", null);
                     this.OnRefChanged("Input", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._inputRef = null;
@@ -1194,6 +1227,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Mode"))
             { ser.AddEnumProp("mode", this._mode); }
             if (IsPropDirty("NonEditable"))
@@ -1201,13 +1236,13 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("ReadOnly"))
             { ser.AddBooleanProp("readOnly", this._readOnly); }
             if (IsPropDirty("Value"))
-            { ser.AddDateTimeProp("value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
             if (IsPropDirty("ActiveDate"))
-            { ser.AddDateTimeProp("activeDate", this._activeDate); }
+            { AddGenericValue(ser, "activeDate", this._activeDate); }
             if (IsPropDirty("Min"))
-            { ser.AddDateTimeProp("min", this._min); }
+            { AddGenericValue(ser, "min", this._min); }
             if (IsPropDirty("Max"))
-            { ser.AddDateTimeProp("max", this._max); }
+            { AddGenericValue(ser, "max", this._max); }
             if (IsPropDirty("HeaderOrientation"))
             { ser.AddEnumProp("headerOrientation", this._headerOrientation); }
             if (IsPropDirty("Orientation"))

@@ -1,19 +1,23 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public class MarshalByValueFactory
+    internal class MarshalByValueFactory
     {
-        internal static bool MustMarshalByValue(string typeName)
+        internal static bool MustMarshalByValue(string? typeName)
         {
             switch (typeName)
             {
                 //@@MustMarshalByValue
                 case "CalendarFormatOptions":
                     return true;
-                case "FocusOptions":
+                case "WebFocusOptions":
                     return true;
-                case "FormatSpecifier":
+                case "NumberFormatOptions":
                     return true;
-                case "NumberFormatSpecifier":
+                case "QrCodeExportOptions":
+                case "WebQrCodeExportOptions":
+                    return true;
+                case "RegisterIconOptions":
+                case "WebRegisterIconOptions":
                     return true;
                 case "ActiveStepChangedEventArgs":
                 case "WebActiveStepChangedEventArgs":
@@ -101,6 +105,12 @@ namespace IgniteUI.Blazor.Controls
                     return true;
                 case "SelectItemComponentEventArgs":
                 case "WebSelectItemComponentEventArgs":
+                    return true;
+                case "SplitterLayoutChangedEventArgs":
+                case "WebSplitterLayoutChangedEventArgs":
+                    return true;
+                case "SplitterLayoutChangedEventArgsDetail":
+                case "WebSplitterLayoutChangedEventArgsDetail":
                     return true;
                 case "SplitterResizeEventArgs":
                 case "WebSplitterResizeEventArgs":
@@ -135,175 +145,151 @@ namespace IgniteUI.Blazor.Controls
             return false;
         }
 
-        internal static object CreateInstance(string typeName)
+        internal static object? CreateInstance<TValue>(string typeName)
+        {
+            return CreateInstance<TValue, object>(typeName);
+        }
+
+        internal static object? CreateInstance<TValue, TItem>(string typeName)
         {
             switch (typeName)
             {
                 //@@MarshalByValue
                 case "CalendarFormatOptions":
                     return new IgbCalendarFormatOptions();
-                    break;
-                case "FocusOptions":
+                case "WebFocusOptions":
                     return new IgbFocusOptions();
-                    break;
-                case "FormatSpecifier":
-                    return new IgbFormatSpecifier();
-                    break;
-                case "NumberFormatSpecifier":
-                    return new IgbNumberFormatSpecifier();
-                    break;
+                case "NumberFormatOptions":
+                    return new IgbNumberFormatOptions();
+                case "QrCodeExportOptions":
+                case "WebQrCodeExportOptions":
+                    return new IgbQrCodeExportOptions();
+                case "RegisterIconOptions":
+                case "WebRegisterIconOptions":
+                    return new IgbRegisterIconOptions();
                 case "ActiveStepChangedEventArgs":
                 case "WebActiveStepChangedEventArgs":
                     return new IgbActiveStepChangedEventArgs();
-                    break;
                 case "ActiveStepChangedEventArgsDetail":
                 case "WebActiveStepChangedEventArgsDetail":
                     return new IgbActiveStepChangedEventArgsDetail();
-                    break;
                 case "ActiveStepChangingEventArgs":
                 case "WebActiveStepChangingEventArgs":
                     return new IgbActiveStepChangingEventArgs();
-                    break;
                 case "ActiveStepChangingEventArgsDetail":
                 case "WebActiveStepChangingEventArgsDetail":
                     return new IgbActiveStepChangingEventArgsDetail();
-                    break;
                 case "ChatDraftMessage":
                 case "WebChatDraftMessage":
                     return new IgbChatDraftMessage();
-                    break;
                 case "ChatMessage":
                 case "WebChatMessage":
                     return new IgbChatMessage();
-                    break;
                 case "ChatMessageAttachment":
                 case "WebChatMessageAttachment":
                     return new IgbChatMessageAttachment();
-                    break;
                 case "ChatMessageAttachmentEventArgs":
                 case "WebChatMessageAttachmentEventArgs":
                     return new IgbChatMessageAttachmentEventArgs();
-                    break;
                 case "ChatMessageEventArgs":
                 case "WebChatMessageEventArgs":
                     return new IgbChatMessageEventArgs();
-                    break;
                 case "ChatMessageReaction":
                 case "WebChatMessageReaction":
                     return new IgbChatMessageReaction();
-                    break;
                 case "ChatMessageReactionEventArgs":
                 case "WebChatMessageReactionEventArgs":
                     return new IgbChatMessageReactionEventArgs();
-                    break;
                 case "CheckboxChangeEventArgs":
                 case "WebCheckboxChangeEventArgs":
                     return new IgbCheckboxChangeEventArgs();
-                    break;
                 case "CheckboxChangeEventArgsDetail":
                 case "WebCheckboxChangeEventArgsDetail":
                     return new IgbCheckboxChangeEventArgsDetail();
-                    break;
                 case "ComboChangeEventArgs":
                 case "WebComboChangeEventArgs":
-                    return new IgbComboChangeEventArgs();
-                    break;
+                    return new IgbComboChangeEventArgs<TValue, TItem>();
                 case "ComboChangeEventArgsDetail":
                 case "WebComboChangeEventArgsDetail":
-                    return new IgbComboChangeEventArgsDetail();
-                    break;
+                    return new IgbComboChangeEventArgsDetail<TValue, TItem>();
                 case "ComponentBoolValueChangedEventArgs":
                 case "WebComponentBoolValueChangedEventArgs":
                     return new IgbComponentBoolValueChangedEventArgs();
-                    break;
                 case "ComponentDateValueChangedEventArgs":
                 case "WebComponentDateValueChangedEventArgs":
-                    return new IgbComponentDateValueChangedEventArgs();
-                    break;
+                    return new IgbComponentDateValueChangedEventArgs<TValue>();
                 case "ComponentValueChangedEventArgs":
                 case "WebComponentValueChangedEventArgs":
                     return new IgbComponentValueChangedEventArgs();
-                    break;
                 case "DateRangeValueDetail":
                 case "WebDateRangeValueDetail":
-                    return new IgbDateRangeValueDetail();
-                    break;
+                    return new IgbDateRangeValueDetail<TValue>();
                 case "DateRangeValueEventArgs":
                 case "WebDateRangeValueEventArgs":
-                    return new IgbDateRangeValueEventArgs();
-                    break;
+                    return new IgbDateRangeValueEventArgs<TValue>();
+                case "DateRangeValue":
+                case "WebDateRangeValue":
+                    return new IgbDateRangeValue<TValue>();
                 case "DropdownItemComponentEventArgs":
                 case "WebDropdownItemComponentEventArgs":
                     return new IgbDropdownItemComponentEventArgs();
-                    break;
                 case "ExpansionPanelComponentEventArgs":
                 case "WebExpansionPanelComponentEventArgs":
                     return new IgbExpansionPanelComponentEventArgs();
-                    break;
                 case "HighlightNavigation":
                 case "WebHighlightNavigation":
                     return new IgbHighlightNavigation();
-                    break;
                 case "IconMeta":
                 case "WebIconMeta":
                     return new IgbIconMeta();
-                    break;
                 case "NumberEventArgs":
                 case "WebNumberEventArgs":
                     return new IgbNumberEventArgs();
-                    break;
                 case "RadioChangeEventArgs":
                 case "WebRadioChangeEventArgs":
-                    return new IgbRadioChangeEventArgs();
-                    break;
+                    return new IgbRadioChangeEventArgs<TValue>();
                 case "RadioChangeEventArgsDetail":
                 case "WebRadioChangeEventArgsDetail":
-                    return new IgbRadioChangeEventArgsDetail();
-                    break;
+                    return new IgbRadioChangeEventArgsDetail<TValue>();
                 case "RangeSliderValue":
                 case "WebRangeSliderValue":
                     return new IgbRangeSliderValue();
-                    break;
                 case "SelectItemComponentEventArgs":
                 case "WebSelectItemComponentEventArgs":
-                    return new IgbSelectItemComponentEventArgs();
-                    break;
+                    return new IgbSelectItemComponentEventArgs<TValue>();
+                case "SplitterLayoutChangedEventArgs":
+                case "WebSplitterLayoutChangedEventArgs":
+                    return new IgbSplitterLayoutChangedEventArgs();
+                case "SplitterLayoutChangedEventArgsDetail":
+                case "WebSplitterLayoutChangedEventArgsDetail":
+                    return new IgbSplitterLayoutChangedEventArgsDetail();
                 case "SplitterResizeEventArgs":
                 case "WebSplitterResizeEventArgs":
                     return new IgbSplitterResizeEventArgs();
-                    break;
                 case "SplitterResizeEventArgsDetail":
                 case "WebSplitterResizeEventArgsDetail":
                     return new IgbSplitterResizeEventArgsDetail();
-                    break;
                 case "TabComponentEventArgs":
                 case "WebTabComponentEventArgs":
                     return new IgbTabComponentEventArgs();
-                    break;
                 case "TileChangeStateEventArgs":
                 case "WebTileChangeStateEventArgs":
                     return new IgbTileChangeStateEventArgs();
-                    break;
                 case "TileChangeStateEventArgsDetail":
                 case "WebTileChangeStateEventArgsDetail":
                     return new IgbTileChangeStateEventArgsDetail();
-                    break;
                 case "TileComponentEventArgs":
                 case "WebTileComponentEventArgs":
                     return new IgbTileComponentEventArgs();
-                    break;
                 case "TreeItemComponentEventArgs":
                 case "WebTreeItemComponentEventArgs":
                     return new IgbTreeItemComponentEventArgs();
-                    break;
                 case "TreeSelectionEventArgs":
                 case "WebTreeSelectionEventArgs":
                     return new IgbTreeSelectionEventArgs();
-                    break;
                 case "TreeSelectionEventArgsDetail":
                 case "WebTreeSelectionEventArgsDetail":
                     return new IgbTreeSelectionEventArgsDetail();
-                    break;
 
                     //@@MarshalByValueEnd
             }

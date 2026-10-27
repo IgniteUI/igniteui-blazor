@@ -1,3 +1,12 @@
+// net8.0 only. The harness records column messages through the InvokeUnmarshalled seam that
+// RuntimeHelper probes for by reflection, and that API exists only on net8 (removed in net9+,
+// where RuntimeHelper always takes the raw-pointer InvokeVoid path instead). Compiling these
+// tests on net9+ would assert the net8 code path against a fake runtime that real apps do not
+// have — coverage that looks green without exercising the shipping channel. The net9+ pointer
+// transport is covered in the browser by the ComboDataTest integration suite; it cannot be
+// covered here, because RuntimeHelper truncates the pointer to int (valid under wasm's 32-bit
+// address space, unrecoverable in a 64-bit test host).
+#if NET8_0
 using System.Collections.ObjectModel;
 using Bunit;
 using IgniteUI.Blazor.Controls;
@@ -21,7 +30,7 @@ public class UnmarshalledDataChannelTests : BunitContext
     public UnmarshalledDataChannelTests()
     {
         JSInterop.Mode = JSRuntimeMode.Loose;
-        _interop = new RendererMessageInteropHarness(JSInterop, forceJsonDataMarshalling: false);
+        _interop = new RendererMessageInteropHarness(JSInterop, () => Renderer.Dispatcher, forceJsonDataMarshalling: false);
         _interop.ConfigureServices(Services);
     }
 
@@ -83,9 +92,7 @@ public class UnmarshalledDataChannelTests : BunitContext
         Assert.Equal(["alpha", "beta", "gamma"], values.StringValues.Take(3));
     }
 
-    [Fact(Skip = "Item types with public primitive-typed fields crash schema creation: JsonDataSourceSchema.Commit " +
-        "stores the typed field getters in a Func<object, object>[] and throws ArrayTypeMismatchException " +
-        "(TypedPropertyGetters uses Delegate[]). Enable once the field getter array type is fixed.")]
+    [Fact]
     public void NestedPublicFields_TransferAsColumns()
     {
         var create = RenderScenario("nested-field-shipments");
@@ -131,7 +138,7 @@ public class UnmarshalledDataChannelTests : BunitContext
     private UnmarshalledColumnMessage RenderScenario(ComboDataScenarios.Scenario scenario)
     {
         _interop.PrimeReady();
-        Render<IgbCombo<object>>(ps => ps
+        Render<IgbCombo<object, object>>(ps => ps
             .Add(c => c.Data, scenario.Data)
             .Add(c => c.ValueKey, scenario.ValueKey)
             .Add(c => c.DisplayKey, scenario.DisplayKey));
@@ -146,3 +153,4 @@ public class UnmarshalledDataChannelTests : BunitContext
     private static UnmarshalledColumn Column(UnmarshalledColumnMessage message, string propertyPath) =>
         Assert.Single(message.Columns!, c => c.PropertyPath == propertyPath);
 }
+#endif

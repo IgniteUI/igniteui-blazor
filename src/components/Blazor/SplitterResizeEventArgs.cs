@@ -1,23 +1,18 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbSplitter"/> resize events.
     /// </summary>
-    public partial class IgbSplitterResizeEventArgs : BaseRendererElement
+    public partial class IgbSplitterResizeEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSplitterResizeEventArgs"; } }
+        internal override string RendererType { get { return "WebSplitterResizeEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private IgbSplitterResizeEventArgsDetail _detail;
+        private IgbSplitterResizeEventArgsDetail _detail = new IgbSplitterResizeEventArgsDetail();
 
         /// <summary>
         /// The current sizes of the panes adjacent to the resized splitter bar.
         /// </summary>
-        [Parameter]
         public IgbSplitterResizeEventArgsDetail Detail
         {
             get { return this._detail; }
@@ -28,11 +23,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -47,7 +42,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -57,13 +52,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbSplitterResizeEventArgsDetail)ConvertReturnValue(args["detail"], "SplitterResizeEventArgsDetail", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "SplitterResizeEventArgsDetail", true) is IgbSplitterResizeEventArgsDetail detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

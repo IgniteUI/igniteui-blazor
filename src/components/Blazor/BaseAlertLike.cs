@@ -5,46 +5,13 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbSnackbar"/> and <see cref="IgbToast"/>.
     /// </summary>
-    public partial class IgbBaseAlertLike : BaseRendererControl
+    public partial class IgbBaseAlertLike : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBaseAlertLike"; } }
+        internal override string RendererType { get { return "WebBaseAlertLike"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-base-alert-like";
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -168,22 +135,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public async Task ConnectedCallbackAsync()
-        {
-            await InvokeMethod("connectedCallback", new object[] { }, new string[] { });
-        }
-        public void ConnectedCallback()
-        {
-            InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
-        }
         /// <summary>
         /// Opens the component.
         /// </summary>
@@ -194,7 +145,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> ShowAsync()
         {
-            var iv = await InvokeMethod("show", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -208,7 +159,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Show()
         {
-            var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -220,7 +171,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> HideAsync()
         {
-            var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -233,7 +184,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Hide()
         {
-            var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -245,7 +196,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public async Task<bool> ToggleAsync()
         {
-            var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -258,7 +209,7 @@ namespace IgniteUI.Blazor.Controls
         /// </returns>
         public bool Toggle()
         {
-            var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 

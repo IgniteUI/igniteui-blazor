@@ -6,10 +6,25 @@ namespace IgniteUI.Blazor.Controls
     /// A date time input is an input field that lets you set and edit the date and time in a chosen input element
     /// using customizable display and input formats.
     /// </summary>
-    public partial class IgbDateTimeInput : IgbDateTimeInputBase
+    /// <typeparam name="TValue"><see cref="DateTime"/>, <c>DateTime?</c> or an ISO 8601 <c>string</c>.</typeparam>
+    public partial class IgbDateTimeInput<TValue> : IgbDateTimeInputBase<TValue>
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDateTimeInput"; } }
+        internal override string RendererType { get { return "WebDateTimeInput"; } }
+
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
+        /// <summary>
+        /// Constructs an instance of <see cref="IgbDateTimeInput{TValue}"/>.
+        /// </summary>
+        public IgbDateTimeInput()
+        {
+            if (GenericType != typeof(DateTime) &&
+                GenericType != typeof(string))
+            {
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{GenericType}'.");
+            }
+        }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,32 +36,26 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override string DirectRenderElementName
         {
             get
             {
-                return true;
+                return "igc-date-time-input";
             }
         }
 
-        private DateTime? _value = DateTime.MinValue;
+        private TValue? _value = default!;
 
         /// <summary>
         /// The value of the input.
         /// </summary>
         [Parameter]
-        public DateTime? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -58,19 +67,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the input.
         /// </summary>
-        public async Task<DateTime?> GetCurrentValueAsync()
+        public async Task<TValue?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
-            return ReturnToDate(iv);
+            var iv = await InvokeMethod("p:Value", [], []);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
         /// Returns the current value of the input.
         /// </summary>
-        public DateTime? GetCurrentValue()
+        public TValue? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
-            return ReturnToDate(iv);
+            var iv = InvokeMethodSync("p:Value", [], []);
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
@@ -78,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepUpAsync(DatePart? datePart = null, double delta = -1)
         {
-            await InvokeMethod("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            await InvokeMethod("stepUp", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -86,7 +95,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepUp(DatePart? datePart = null, double delta = -1)
         {
-            InvokeMethodSync("stepUp", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            InvokeMethodSync("stepUp", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -94,7 +103,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task StepDownAsync(DatePart? datePart = null, double delta = -1)
         {
-            await InvokeMethod("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
+            await InvokeMethod("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
         /// <summary>
@@ -102,36 +111,21 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void StepDown(DatePart? datePart = null, double delta = -1)
         {
-            InvokeMethodSync("stepDown", new object[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
-        }
-        /// <summary>
-        /// Clears the component of any user input.
-        /// </summary>
-        public async Task ClearAsync()
-        {
-            await InvokeMethod("clear", new object[] { }, new string[] { });
+            InvokeMethodSync("stepDown", new object?[] { ObjectToParam(datePart, typeof(DatePart)), delta }, new string[] { "Json", "Number" });
         }
 
-        /// <summary>
-        /// Clears the component of any user input.
-        /// </summary>
-        public void Clear()
-        {
-            InvokeMethodSync("clear", new object[] { }, new string[] { });
-        }
-
-        private EventCallback<DateTime?>? _valueChanged = null;
+        private EventCallback<TValue?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<DateTime?> ValueChanged
+        public EventCallback<TValue?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<DateTime?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue?>.Empty;
             }
             set
             {
@@ -151,18 +145,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _inputOcurredRef = null;
-        private string _inputOcurredScript = null;
+        private string? _inputOcurredRef = null;
+        private string? _inputOcurredScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="InputOcurred"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string InputOcurredScript
+        public string? InputOcurredScript
         {
 
             set
@@ -170,7 +165,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._inputOcurredScript)
                 {
                     this._inputOcurredScript = value;
-                    this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("InputOcurred", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._inputOcurredRef = refName;
                         this.MarkPropDirty("InputOcurredRef");
@@ -202,7 +197,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_inputOcurred))
                     {
                         _inputOcurred = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", value);
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "InputOcurred", value);
                         this.OnRefChanged("InputOcurred", null, "event:::InputOcurred", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputOcurredRef = refName;
@@ -213,7 +208,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _inputOcurred = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "InputOcurred", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "InputOcurred", null);
                     this.OnRefChanged("InputOcurred", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._inputOcurredRef = null;
@@ -223,18 +218,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -242,7 +238,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -255,17 +251,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentDateValueChangedEventArgs>? _change = null;
+        private EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>? _change = null;
 
         /// <summary>
         /// Emitted when the user modifies and commits the component's value.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentDateValueChangedEventArgs> Change
+        public EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbComponentDateValueChangedEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>.Empty;
             }
             set
             {
@@ -274,12 +270,12 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComponentDateValueChangedEventArgs<TValue?>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(DateTime?);
+                            var newValueValue = default(TValue);
 
                             {
-                                newValueValue = (DateTime?)(args.Detail);
+                                newValueValue = args.Detail;
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -289,16 +285,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<DateTime?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -312,7 +305,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentDateValueChangedEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComponentDateValueChangedEventArgs<TValue?>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -323,25 +316,26 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbComponentDateValueChangedEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbComponentDateValueChangedEventArgs>(null, (Action<IgbComponentDateValueChangedEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbComponentDateValueChangedEventArgs<TValue?>>(null, (Action<IgbComponentDateValueChangedEventArgs<TValue?>>)((e) => { }));
                 this._change = null;
             }
         }
 
-        private string _focusRef = null;
-        private string _focusScript = null;
+        private string? _focusRef = null;
+        private string? _focusScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string FocusScript
+        public string? FocusScript
         {
 
             set
@@ -349,7 +343,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._focusScript)
                 {
                     this._focusScript = value;
-                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Focus", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._focusRef = refName;
                         this.MarkPropDirty("FocusRef");
@@ -381,7 +375,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -392,7 +386,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _focus = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", null);
                     this.OnRefChanged("Focus", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._focusRef = null;
@@ -402,18 +396,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _blurRef = null;
-        private string _blurScript = null;
+        private string? _blurRef = null;
+        private string? _blurScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string BlurScript
+        public string? BlurScript
         {
 
             set
@@ -421,7 +416,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._blurScript)
                 {
                     this._blurScript = value;
-                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Blur", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._blurRef = refName;
                         this.MarkPropDirty("BlurRef");
@@ -453,7 +448,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -464,7 +459,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _blur = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", null);
                     this.OnRefChanged("Blur", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._blurRef = null;
@@ -479,7 +474,7 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddDateTimeProp("value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
             if (IsPropDirty("InputOcurredRef"))
             { ser.AddStringProp("inputOcurredRef", this._inputOcurredRef); }
             if (IsPropDirty("ChangeRef"))

@@ -28,13 +28,29 @@ public class ScriptPropTests : BlazorComponentTestBase
     public static TheoryData<Type> ComponentsWithScriptProps()
     {
         var data = new TheoryData<Type>();
-        foreach (var type in typeof(IgbBanner).Assembly.GetTypes())
+        var types = typeof(IgbBanner).Assembly.GetTypes();
+        foreach (var type in types)
         {
-            if (type.IsAbstract || !typeof(BaseRendererControl).IsAssignableFrom(type))
+            if (type.IsAbstract || !typeof(IgbComponentBase).IsAssignableFrom(type))
             {
                 continue;
             }
-            var closed = type.IsGenericTypeDefinition ? type.MakeGenericType(typeof(object)) : type;
+            // A base class is swept through the components derived from it, which inherit its Script props; some bases have no element and cannot render.
+            if (types.Any(t => (t.BaseType is { IsGenericType: true } b ? b.GetGenericTypeDefinition() : t.BaseType) == type))
+            {
+                continue;
+            }
+            var closed = type.IsGenericTypeDefinition
+                ? type.MakeGenericType(type.Name[..type.Name.IndexOf('`')] switch
+                {
+                    // TODO: generic object fallback due to nameof(T<>) being C# 14 / .NET 10 only
+                    nameof(IgbCalendar<object>) or nameof(IgbDatePicker<object>) or nameof(IgbDateTimeInput<object>) or nameof(IgbDateRangePicker<object>) => new Type[] { typeof(DateTime) },
+                    nameof(IgbSlider<object>) or nameof(IgbRating<object>) => new Type[] { typeof(double) },
+                    nameof(IgbColorPicker<object>) or nameof(IgbSelect<object>) => new Type[] { typeof(string) },
+                    nameof(IgbCombo<object, object>) => new Type[] { typeof(object), typeof(object) },
+                    _ => new Type[] { typeof(object) }
+                })
+                : type;
             if (ScriptPropsOf(closed).Any())
             {
                 data.Add(closed);
@@ -80,13 +96,14 @@ public class ScriptPropTests : BlazorComponentTestBase
             if (actual is null)
             {
                 throw new Xunit.Sdk.XunitException(
-                    $"{componentType.Name}.{prop.Name}: no script-ref transmission observed for \"{wireName}\"");
+                    $"{componentType.Name}.{prop.Name}: no script-ref transmission observed for \"{wireName}\" — " +
+                    interop.DescribeTraffic(interop.ContainerIdOf(cut)));
             }
             Assert.Equal(scriptName, actual.Value.GetString());
 
             // Clear:
             interop.ClearObserved();
-            prop.SetValue(cut.Instance, null);
+            interop.OnDispatcher(() => prop.SetValue(cut.Instance, null));
             var cleared = interop.FindPropertyUpdate(interop.ContainerIdOf(cut), wireName);
             if (cleared is null)
             {

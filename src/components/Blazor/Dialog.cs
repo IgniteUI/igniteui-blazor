@@ -14,10 +14,10 @@ namespace IgniteUI.Blazor.Controls
     /// <c>"--toggle"</c> and <c>commandfor</c> pointing to this element will call the corresponding
     /// method declaratively.
     /// </summary>
-    public partial class IgbDialog : BaseRendererControl
+    public partial class IgbDialog : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDialog"; } }
+        internal override string RendererType { get { return "WebDialog"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -29,13 +29,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -44,16 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -62,7 +47,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -154,14 +139,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _title;
+        private string? _title;
 
         /// <summary>
         /// The title displayed in the dialog header.
         /// Overridden by any content projected into the <c>title</c> slot.
         /// </summary>
         [Parameter]
-        public string Title
+        public string? Title
         {
             get { return this._title; }
             set
@@ -174,7 +159,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _returnValue;
+        private string? _returnValue;
 
         /// <summary>
         /// The return value of the dialog.
@@ -183,7 +168,7 @@ namespace IgniteUI.Blazor.Controls
         /// be set programmatically before calling <see cref="Hide"/>.
         /// </summary>
         [Parameter]
-        public string ReturnValue
+        public string? ReturnValue
         {
             get { return this._returnValue; }
             set
@@ -197,14 +182,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Opens the dialog with an animated fade-in transition.
         /// </summary>
@@ -212,7 +189,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already open.</returns>
         public async Task<bool> ShowAsync()
         {
-            var iv = await InvokeMethod("show", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -223,7 +200,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already open.</returns>
         public bool Show()
         {
-            var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -233,7 +210,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already closed.</returns>
         public async Task<bool> HideAsync()
         {
-            var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -244,7 +221,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already closed.</returns>
         public bool Hide()
         {
-            var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -254,7 +231,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns><see langword="true"/> when the transition completed successfully.</returns>
         public async Task<bool> ToggleAsync()
         {
-            var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -265,22 +242,23 @@ namespace IgniteUI.Blazor.Controls
         /// <returns><see langword="true"/> when the transition completed successfully.</returns>
         public bool Toggle()
         {
-            var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
-        private string _closingRef = null;
-        private string _closingScript = null;
+        private string? _closingRef = null;
+        private string? _closingScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ClosingScript
+        public string? ClosingScript
         {
 
             set
@@ -288,7 +266,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closingScript)
                 {
                     this._closingScript = value;
-                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closing", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closingRef = refName;
                         this.MarkPropDirty("ClosingRef");
@@ -320,7 +298,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -331,7 +309,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closing = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", null);
                     this.OnRefChanged("Closing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closingRef = null;
@@ -341,18 +319,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _closedRef = null;
-        private string _closedScript = null;
+        private string? _closedRef = null;
+        private string? _closedScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ClosedScript
+        public string? ClosedScript
         {
 
             set
@@ -360,7 +339,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._closedScript)
                 {
                     this._closedScript = value;
-                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Closed", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._closedRef = refName;
                         this.MarkPropDirty("ClosedRef");
@@ -392,7 +371,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -403,7 +382,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closed = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", null);
                     this.OnRefChanged("Closed", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closedRef = null;

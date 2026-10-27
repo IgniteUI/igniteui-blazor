@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbTabs.Change"/> event, carrying the <see cref="IgbTab"/>
     /// instance the event applies to.
     /// </summary>
-    public partial class IgbTabComponentEventArgs : BaseRendererElement
+    public partial class IgbTabComponentEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTabComponentEventArgs"; } }
+        internal override string RendererType { get { return "WebTabComponentEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private IgbTab _detail;
+        private IgbTab _detail = new IgbTab();
 
         /// <summary>
         /// The tab that became selected.
         /// </summary>
-        [Parameter]
         public IgbTab Detail
         {
             get { return this._detail; }
@@ -43,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -53,13 +48,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbTab)ConvertReturnValue(args["detail"], "Tab", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "Tab", true) is IgbTab detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

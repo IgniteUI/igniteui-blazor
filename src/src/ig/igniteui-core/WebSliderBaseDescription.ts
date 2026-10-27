@@ -1,5 +1,5 @@
 import { Description } from "./Description";
-import { NumberFormatSpecifierDescription } from "./NumberFormatSpecifierDescription";
+import { NumberFormatOptionsDescription } from "./NumberFormatOptionsDescription";
 import { Base, Type, markType } from "./type";
 
 /**
@@ -144,11 +144,11 @@ export class WebSliderBaseDescription extends Description {
 		this._tickLabelRotation = value;
 		this.markDirty("TickLabelRotation");
 	}
-	private _valueFormatOptions: NumberFormatSpecifierDescription = null;
-	get valueFormatOptions(): NumberFormatSpecifierDescription {
+	private _valueFormatOptions: NumberFormatOptionsDescription = null;
+	get valueFormatOptions(): NumberFormatOptionsDescription {
 		return this._valueFormatOptions;
 	}
-	set valueFormatOptions(value: NumberFormatSpecifierDescription) {
+	set valueFormatOptions(value: NumberFormatOptionsDescription) {
 		this._valueFormatOptions = value;
 		this.markDirty("ValueFormatOptions");
 	}

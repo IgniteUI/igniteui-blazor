@@ -125,6 +125,20 @@ export class Loader {
         break;
       }
 
+      case 'WebBreadcrumbsModule': {
+        let { IgcBreadcrumbsComponent } = await import('igniteui-webcomponents');
+        let { WebBreadcrumbsDescriptionModule } = await import('igniteui-core/WebBreadcrumbsDescriptionModule');
+
+        this._loadingSet.delete(module);
+
+        IgcBreadcrumbsComponent.register();
+        TypeRegistrar.registerCons('IgcBreadcrumbsComponent', IgcBreadcrumbsComponent);
+
+        WebBreadcrumbsDescriptionModule.register(cr.context);
+        this.checkDone();
+        break;
+      }
+
       case 'WebButtonGroupModule': {
         let { IgcButtonGroupComponent } = await import('igniteui-webcomponents');
         let { WebButtonGroupDescriptionModule } = await import('igniteui-core/WebButtonGroupDescriptionModule');
@@ -267,6 +281,20 @@ export class Loader {
         break;
       }
 
+      case 'WebColorPickerModule': {
+        let { IgcColorPickerComponent } = await import('igniteui-webcomponents');
+        let { WebColorPickerDescriptionModule } = await import('igniteui-core/WebColorPickerDescriptionModule');
+
+        this._loadingSet.delete(module);
+
+        IgcColorPickerComponent.register();
+        TypeRegistrar.registerCons('IgcColorPickerComponent', IgcColorPickerComponent);
+
+        WebColorPickerDescriptionModule.register(cr.context);
+        this.checkDone();
+        break;
+      }
+
       case 'WebComboModule': {
         let { IgcComboComponent } = await import('igniteui-webcomponents');
         let { WebComboDescriptionModule } = await import('igniteui-core/WebComboDescriptionModule');
@@ -378,15 +406,6 @@ export class Loader {
         this.checkDone();
         break;
       }
-
-      case 'FormatSpecifierModule':
-        let { IgcFormatSpecifierModule } = await import('igniteui-core/igc-format-specifier-module');
-        let { FormatSpecifierDescriptionModule } = await import('igniteui-core/FormatSpecifierDescriptionModule');
-        this._loadingSet.delete(module);
-        ModuleManager.register(IgcFormatSpecifierModule);
-        FormatSpecifierDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
 
       case 'WebHighlightModule': {
         let { IgcHighlightComponent } = await import('igniteui-webcomponents');
@@ -514,15 +533,19 @@ export class Loader {
         break;
       }
 
-      case 'NumberFormatSpecifierModule':
-        let { IgcNumberFormatSpecifierModule } = await import('igniteui-core/igc-number-format-specifier-module');
-        let { NumberFormatSpecifierDescriptionModule } =
-          await import('igniteui-core/NumberFormatSpecifierDescriptionModule');
+      case 'WebQrCodeModule': {
+        let { IgcQrCodeComponent } = await import('igniteui-webcomponents');
+        let { WebQrCodeDescriptionModule } = await import('igniteui-core/WebQrCodeDescriptionModule');
+
         this._loadingSet.delete(module);
-        ModuleManager.register(IgcNumberFormatSpecifierModule);
-        NumberFormatSpecifierDescriptionModule.register(cr.context);
+
+        IgcQrCodeComponent.register();
+        TypeRegistrar.registerCons('IgcQrCodeComponent', IgcQrCodeComponent);
+
+        WebQrCodeDescriptionModule.register(cr.context);
         this.checkDone();
         break;
+      }
 
       case 'WebRadioGroupModule': {
         let { IgcRadioGroupComponent } = await import('igniteui-webcomponents');
@@ -836,9 +859,12 @@ export class Loader {
       Loader.marshalByValueSet = new Set<string>();
       //@@MarshalByValue
       Loader.marshalByValueSet.add('CalendarFormatOptions');
-      Loader.marshalByValueSet.add('FocusOptions');
-      Loader.marshalByValueSet.add('FormatSpecifier');
-      Loader.marshalByValueSet.add('NumberFormatSpecifier');
+      Loader.marshalByValueSet.add('WebFocusOptions');
+      Loader.marshalByValueSet.add('NumberFormatOptions');
+      Loader.marshalByValueSet.add('QrCodeExportOptions');
+      Loader.marshalByValueSet.add('WebQrCodeExportOptions');
+      Loader.marshalByValueSet.add('RegisterIconOptions');
+      Loader.marshalByValueSet.add('WebRegisterIconOptions');
       Loader.marshalByValueSet.add('ActiveStepChangedEventArgs');
       Loader.marshalByValueSet.add('WebActiveStepChangedEventArgs');
       Loader.marshalByValueSet.add('ActiveStepChangedEventArgsDetail');
@@ -897,6 +923,10 @@ export class Loader {
       Loader.marshalByValueSet.add('WebRangeSliderValue');
       Loader.marshalByValueSet.add('SelectItemComponentEventArgs');
       Loader.marshalByValueSet.add('WebSelectItemComponentEventArgs');
+      Loader.marshalByValueSet.add('SplitterLayoutChangedEventArgs');
+      Loader.marshalByValueSet.add('WebSplitterLayoutChangedEventArgs');
+      Loader.marshalByValueSet.add('SplitterLayoutChangedEventArgsDetail');
+      Loader.marshalByValueSet.add('WebSplitterLayoutChangedEventArgsDetail');
       Loader.marshalByValueSet.add('SplitterResizeEventArgs');
       Loader.marshalByValueSet.add('WebSplitterResizeEventArgs');
       Loader.marshalByValueSet.add('SplitterResizeEventArgsDetail');

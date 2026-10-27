@@ -19,12 +19,12 @@ public abstract class BlazorComponentTestBase : BunitContext
     /// <summary>The interop harness for components on the default (current) interop stack.</summary>
     protected InteropHarness Interop { get; }
 
-    private Dictionary<Func<BunitJSInterop, InteropHarness>, InteropHarness>? _overrideHarnesses;
+    private Dictionary<InteropHarnessRegistry.HarnessFactory, InteropHarness>? _overrideHarnesses;
 
     protected BlazorComponentTestBase()
     {
         JSInterop.Mode = JSRuntimeMode.Loose;
-        Interop = InteropHarnessRegistry.CreateDefault(JSInterop);
+        Interop = InteropHarnessRegistry.CreateDefault(JSInterop, () => Renderer.Dispatcher);
         Interop.ConfigureServices(Services);
         IgniteUIBlazor = Interop.Service;
     }
@@ -50,7 +50,7 @@ public abstract class BlazorComponentTestBase : BunitContext
         _overrideHarnesses ??= new();
         if (!_overrideHarnesses.TryGetValue(factory, out var harness))
         {
-            harness = factory(JSInterop);
+            harness = factory(JSInterop, () => Renderer.Dispatcher);
             harness.ConfigureServices(Services);
             _overrideHarnesses[factory] = harness;
         }

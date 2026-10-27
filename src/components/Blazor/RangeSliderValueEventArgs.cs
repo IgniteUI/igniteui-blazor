@@ -1,22 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbRangeSlider"/> value events, such as
     /// <see cref="IgbRangeSlider.Input"/> and <see cref="IgbRangeSlider.Change"/>.
     /// </summary>
-    public partial class IgbRangeSliderValueEventArgs : BaseRendererElement
+    public partial class IgbRangeSliderValueEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRangeSliderValueEventArgs"; } }
+        internal override string RendererType { get { return "WebRangeSliderValueEventArgs"; } }
 
-        private IgbRangeSliderValue _detail;
+        private IgbRangeSliderValue _detail = new IgbRangeSliderValue();
 
         /// <summary>
         /// The lower and upper thumb values of the range slider.
         /// </summary>
-        [Parameter]
         public IgbRangeSliderValue Detail
         {
             get { return this._detail; }
@@ -27,11 +24,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -46,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -56,13 +53,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbRangeSliderValue)ConvertReturnValue(args["detail"], "RangeSliderValue", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "RangeSliderValue", true) is IgbRangeSliderValue detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

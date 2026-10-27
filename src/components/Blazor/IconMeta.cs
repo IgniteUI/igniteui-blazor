@@ -1,23 +1,25 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Identifies a registered icon by its name and the collection it belongs to.
     /// </summary>
-    public partial class IgbIconMeta : BaseRendererElement
+    public partial class IgbIconMeta : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebIconMeta"; } }
+        internal override string RendererType { get { return "WebIconMeta"; } }
 
-        private static bool _marshalByValue = true;
+        /// <summary>The name identifier of the icon in the collection.</summary>
+        public string Name
+        {
+            get { return RendererName; }
+            set { RendererName = value; }
+        }
 
-        private string _collection;
+        private string _collection = string.Empty;
 
         /// <summary>
         /// The name of the collection the icon is registered in.
         /// </summary>
-        [Parameter]
         public string Collection
         {
             get { return this._collection; }
@@ -42,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -54,15 +56,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("name"))
-            { this.Name = ReturnToString(args["name"]); }
-            if (args.ContainsKey("collection"))
-            { this.Collection = ReturnToString(args["collection"]); }
+            if (args != null && args.TryGetValue("name", out var nameObj))
+            { this.RendererName = ReturnToString(nameObj); }
+            if (args != null && args.TryGetValue("collection", out var collectionObj))
+            { this.Collection = ReturnToString(collectionObj); }
 
             this.SuppressParentNotify = false;
         }

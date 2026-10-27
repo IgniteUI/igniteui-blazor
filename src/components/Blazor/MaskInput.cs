@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// A masked input is an input field where a developer can control user input and format the visible value,
     /// based on configurable rules.
     /// </summary>
-    public partial class IgbMaskInput : IgbInputBase
+    public partial class IgbMaskInput : IgbInputBase<string>
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebMaskInput"; } }
+        internal override string RendererType { get { return "WebMaskInput"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,17 +21,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override string DirectRenderElementName
         {
             get
             {
-                return true;
+                return "igc-mask-input";
             }
         }
 
@@ -64,7 +58,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private string _value = string.Empty;
 
         /// <summary>
         /// The value of the input.
@@ -91,7 +85,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public async Task<string> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
 
@@ -101,10 +95,10 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public string GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
             return ReturnToString(iv);
         }
-        private string _mask;
+        private string _mask = "CCCCCCCCCC";
 
         /// <summary>
         /// The masked pattern of the component.
@@ -123,7 +117,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _prompt;
+        private string _prompt = "_";
 
         /// <summary>
         /// The prompt symbol to use for unfilled parts of the mask pattern.
@@ -165,33 +159,33 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Sets the text selection range of the control.
         /// </summary>
-        public async Task SetSelectionRangeAsync(double start = -1, double end = -1, String direction = null)
+        public async Task SetSelectionRangeAsync(double start = -1, double end = -1, String? direction = null)
         {
-            await InvokeMethod("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
+            await InvokeMethod("setSelectionRange", new object?[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
 
         /// <summary>
         /// Sets the text selection range of the control.
         /// </summary>
-        public void SetSelectionRange(double start = -1, double end = -1, String direction = null)
+        public void SetSelectionRange(double start = -1, double end = -1, String? direction = null)
         {
-            InvokeMethodSync("setSelectionRange", new object[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
+            InvokeMethodSync("setSelectionRange", new object?[] { start, end, StringToString(direction) }, new string[] { "Number", "Number", "String" });
         }
 
         /// <summary>
         /// Replaces the selected text in the control and re-applies the mask.
         /// </summary>
-        public async Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String selectMode = null)
+        public async Task SetRangeTextAsync(String replacement, double start = -1, double end = -1, String? selectMode = null)
         {
-            await InvokeMethod("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
+            await InvokeMethod("setRangeText", new object?[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
 
         /// <summary>
         /// Replaces the selected text in the control and re-applies the mask.
         /// </summary>
-        public void SetRangeText(String replacement, double start = -1, double end = -1, String selectMode = null)
+        public void SetRangeText(String replacement, double start = -1, double end = -1, String? selectMode = null)
         {
-            InvokeMethodSync("setRangeText", new object[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
+            InvokeMethodSync("setRangeText", new object?[] { StringToString(replacement), start, end, StringToString(selectMode) }, new string[] { "String", "Number", "Number", "String" });
         }
 
         private EventCallback<string>? _valueChanged = null;
@@ -225,18 +219,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -244,7 +239,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -276,12 +271,12 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(string);
 
                             {
-                                newValueValue = (string)(args.Detail);
+                                newValueValue = (string)(args.Detail ?? string.Empty);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -291,16 +286,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             if (!EventCallback<string>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -314,7 +306,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

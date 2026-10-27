@@ -55,6 +55,14 @@ export class WebChipDescription extends Description {
 		this._variant = value;
 		this.markDirty("Variant");
 	}
+	private _outlined: boolean = false;
+	get outlined(): boolean {
+		return this._outlined;
+	}
+	set outlined(value: boolean) {
+		this._outlined = value;
+		this.markDirty("Outlined");
+	}
 	private _remove: string = null;
 	get removeRef(): string {
 		return this._remove;

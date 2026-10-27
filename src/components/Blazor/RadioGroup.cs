@@ -3,12 +3,16 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Unifies one or more <see cref="IgbRadio"/> components into a single group.
+    /// Unifies one or more <see cref="IgbRadio{TValue}"/> components into a single group.
     /// </summary>
-    public partial class IgbRadioGroup : BaseRendererControl
+    /// <typeparam name="TValue"><c>string</c>, <c>char</c>, <c>bool</c>, an enum, or a numeric type such as <c>int</c> or <c>double</c>, or their nullable forms.</typeparam>
+    [CascadingTypeParameter(nameof(TValue))]
+    public partial class IgbRadioGroup<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRadioGroup"; } }
+        internal override string RendererType { get { return "WebRadioGroup"; } }
+
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +24,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +33,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -53,7 +42,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -77,19 +66,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _value;
+        private TValue? _value;
 
         /// <summary>
-        /// The value of the group, reflecting the value of the currently checked <see cref="IgbRadio"/> button.
-        /// Setting it checks the <see cref="IgbRadio"/> button in the group with a matching value.
+        /// The value of the group, reflecting the value of the currently checked <see cref="IgbRadio{TValue}"/> button.
+        /// Setting it checks the <see cref="IgbRadio{TValue}"/> button in the group with a matching value.
         /// </summary>
         [Parameter]
-        public string Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -97,48 +86,58 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name applied to all radio buttons in the group.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
 
         /// <summary>
         /// Gets the current value of the group.
         /// </summary>
-        /// <returns>The value of the checked <see cref="IgbRadio"/>.</returns>
-        public async Task<string> GetCurrentValueAsync()
+        /// <returns>The value of the checked <see cref="IgbRadio{TValue}"/>, or <see langword="default"/> when none is checked.</returns>
+        public async Task<TValue?> GetCurrentValueAsync()
         {
-            var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
-            return ReturnToString(iv);
+            var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
         /// <summary>
         /// Gets the current value of the group.
         /// </summary>
-        /// <returns>The value of the checked <see cref="IgbRadio"/>.</returns>
-        public string GetCurrentValue()
+        /// <returns>The value of the checked <see cref="IgbRadio{TValue}"/>, or <see langword="default"/> when none is checked.</returns>
+        public TValue? GetCurrentValue()
         {
-            var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
-            return ReturnToString(iv);
+            var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
+            return GenericValueFromEventJson<TValue>(iv);
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
-        private EventCallback<string>? _valueChanged = null;
+        private EventCallback<TValue>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<string> ValueChanged
+        public EventCallback<TValue> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<string>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue>.Empty;
             }
             set
             {
@@ -158,18 +157,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _changeRef = null;
-        private string _changeScript = null;
+        private string? _changeRef = null;
+        private string? _changeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string ChangeScript
+        public string? ChangeScript
         {
 
             set
@@ -177,7 +177,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._changeScript)
                 {
                     this._changeScript = value;
-                    this.OnRefChanged("Change", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("Change", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._changeRef = refName;
                         this.MarkPropDirty("ChangeRef");
@@ -190,17 +190,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbRadioChangeEventArgs>? _change = null;
+        private EventCallback<IgbRadioChangeEventArgs<TValue>>? _change = null;
 
         /// <summary>
         /// Emitted when the checked state of a radio button in the group changes.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbRadioChangeEventArgs> Change
+        public EventCallback<IgbRadioChangeEventArgs<TValue>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbRadioChangeEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbRadioChangeEventArgs<TValue>>.Empty;
             }
             set
             {
@@ -209,12 +209,12 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbRadioChangeEventArgs<TValue>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(string);
+                            var newValueValue = default(TValue);
 
                             {
-                                newValueValue = (string)(args.Detail.Value);
+                                newValueValue = args.Detail.Value ?? default(TValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -224,16 +224,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             if (!EventCallback<string>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -247,7 +244,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbRadioChangeEventArgs<TValue>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -258,9 +255,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbRadioChangeEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbRadioChangeEventArgs<TValue>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbRadioChangeEventArgs>(null, (Action<IgbRadioChangeEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbRadioChangeEventArgs<TValue>>(null, (Action<IgbRadioChangeEventArgs<TValue>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -272,7 +269,9 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Alignment"))
             { ser.AddEnumProp("alignment", this._alignment); }
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("ChangeRef"))
             { ser.AddStringProp("changeRef", this._changeRef); }
 

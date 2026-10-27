@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A tab nested in an <see cref="IgbTabs"/> component.
     /// </summary>
-    public partial class IgbTab : BaseRendererControl
+    public partial class IgbTab : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTab"; } }
+        internal override string RendererType { get { return "WebTab"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +20,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +29,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -53,13 +38,16 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
+        /// <summary>
+        /// The owning <see cref="IgbTabs"/>, supplied as a cascading parameter.
+        /// </summary>
         [CascadingParameter(Name = "TabsParent")]
-        protected BaseRendererControl TabsParent
+        private protected IgbComponentBase? TabsParent
         {
             get; set;
         }
@@ -86,13 +74,13 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        private string _label;
+        private string? _label;
 
         /// <summary>
         /// The tab item label.
         /// </summary>
         [Parameter]
-        public string Label
+        public string? Label
         {
             get { return this._label; }
             set
@@ -144,13 +132,14 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
+        internal void Select()
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            this.Selected = true;
         }
-        public void SetNativeElement(Object element)
+
+        internal void Deselect()
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            this.Selected = false;
         }
 
         internal override void SerializeCore(RendererSerializer ser)

@@ -7,7 +7,6 @@ import { TypeRegistrar } from './type';
 import { DescriptionRef } from './DescriptionRef';
 import { Description } from './Description';
 import { ComponentRendererSerializationHelper } from './ComponentRendererSerializationHelper';
-import { IgcComponentRendererContainerComponent } from './igc-component-renderer-container-component';
 
 
 export class ComponentRendererAdapter implements IComponentRendererAdapter {
@@ -38,37 +37,14 @@ export class ComponentRendererAdapter implements IComponentRendererAdapter {
             tagName = meta.specificExternalType;
         }
 
-        var portalChildren = false;
-        var meta = context.getMetadata(origName, "__portalChildrenWC");
-        if (meta && this._platform === "Igc") {
-            portalChildren = true;
-        }
-
         if (tagName) {
-            if (this._platform === "Igc") {
-                let crc = (IgcComponentRendererContainerComponent as any).fromElement(container);
-                return crc.createObject(tagName, container, context, portalChildren, nameContext);
-            }
+            return document.createElement(tagName);
         }
 
-        var mustManageInMarkup: boolean = false;
-        var meta = context.getMetadata(origName, "__manageCollectionInMarkup");
-        if (meta) {
-            mustManageInMarkup = true;
-        }
-        var meta = context.getMetadata(origName, "__manageItemInMarkup");
-        if (meta) {
-            mustManageInMarkup = true;
-        }
         var preferUnsuffixed = false
         var meta = context.getMetadata(origName, "__preferUnsuffixed");
         if (meta) {
             preferUnsuffixed = true;
-        }
-
-        if (mustManageInMarkup && this._platform == "Igx") {
-            let crc = container as IgcComponentRendererContainerComponent;
-            return crc.createObject(origName, container, context, false, nameContext);
         }
 
 
@@ -91,6 +67,7 @@ export class ComponentRendererAdapter implements IComponentRendererAdapter {
     }
 
     private _platform = "Igc";
+    private _adoptedRoots = new WeakSet<Element>();
 
     //createRootObject(type: string, container: any, context: TypeDescriptionContext, continueActions: (resumeRequired: boolean) => void) {
     //    let typeName = "Igr" + type;
@@ -216,31 +193,6 @@ export class ComponentRendererAdapter implements IComponentRendererAdapter {
     }
 
     setPropertyValue(target: any, propertyName: string, propertyMetadata: TypeDescriptionMetadata, value: any, oldValue: any, sourceRef: DescriptionRef): void {
-        if (this._platform == "Igx" &&
-            (IgcComponentRendererContainerComponent as any).isEvent &&
-            (IgcComponentRendererContainerComponent as any).isEvent(target[propertyName])) {
-            if (target["_" + propertyName + "Subscription"]) {
-                if (target["_" + propertyName + "Subscription"].unsubscribe) {
-                    target["_" + propertyName + "Subscription"].unsubscribe();
-                } else {
-                    target["_" + propertyName + "Subscription"]();
-                }
-                target["_" + propertyName + "Subscription"] = null;
-            }
-
-            if (value != null) {
-                var fun = function (ev: any) {
-                    if (ev.sender && ev.args) {
-                        value(ev.sender, ev.args);
-                    } else {
-                        value(ev);
-                    }
-                }
-                var sub = target[propertyName].subscribe(fun);
-                target["_" + propertyName + "Subscription"] = sub;
-            }
-            return;
-        }
         var fromScript = value && value.___fromScript;
         
         if (this._platform == "Igc" &&
@@ -401,22 +353,12 @@ export class ComponentRendererAdapter implements IComponentRendererAdapter {
         return target[propertyName];
     }
     clearContainer(container: any, context: TypeDescriptionContext, continueActions: (resumeRequired: boolean) => void): void {
-        if (this._platform === "Igc") {
-            let crc = (IgcComponentRendererContainerComponent as any).fromElement(container);
-            crc.clearContainer(continueActions);
-            return;
-        }
-        let crc = container as IgcComponentRendererContainerComponent;
-        crc.clearContainer(continueActions);
+        // The element stays: Blazor rendered it and removes it.
+        this._adoptedRoots.delete(container);
+        continueActions(false);
     }
     getRootObject(container: any) {
-        if (this._platform === "Igc") {
-            let crc = (IgcComponentRendererContainerComponent as any).fromElement(container);
-            return crc.getRootObject();
-        }
-        let crc = container as IgcComponentRendererContainerComponent;
-
-        return crc.getRootObject();
+        return this._adoptedRoots.has(container) ? container : null;
     }
     forPropertyValueItem(target: any, propertyName: string, forItem: (item) => void) {
         let coll = this.getPropertyValue(target, propertyName);
@@ -734,54 +676,9 @@ export class ComponentRendererAdapter implements IComponentRendererAdapter {
         }
     }
     replaceRootItem(container: any, type: string, context: TypeDescriptionContext, continueActions: (resumeRequired: boolean) => void): void {
-        let typeName = "Igc" + type + "Component";
-        let deferAttach = false;
-        var meta = context.getMetadata(type, "__qualifiedNameTS");
-        if (meta) {
-            typeName = "Igc" + meta.specificExternalType + "Component";
-        }
-        meta = context.getMetadata(type, "__deferAttachWC");
-        if (meta && this._platform === "Igc") {
-            deferAttach = true;
-        }
-
-
-        var tagName: string = null;
-        var meta = context.getMetadata(type, "__tagNameWC");
-        if (meta && this._platform === "Igc") {
-            tagName = meta.specificExternalType;
-        }
-
-        if (tagName) {
-            if (this._platform === "Igc") {
-                let crc = (IgcComponentRendererContainerComponent as any).fromElement(container);
-                crc.replaceRootItem(tagName, deferAttach, continueActions);
-                return;
-            }
-        }
-
-        if (TypeRegistrar.isRegistered(typeName)) {
-            let t = TypeRegistrar.get(typeName);
-
-            if (this._platform === "Igc") {
-                let crc = (IgcComponentRendererContainerComponent as any).fromElement(container);
-                crc.replaceRootItem(t, deferAttach, continueActions);
-                return;
-            }
-
-            let crc = container as IgcComponentRendererContainerComponent;
-            crc.replaceRootItem(t, deferAttach, continueActions);
-        } else {
-
-            if (this._platform === "Igc") {
-                let crc = (IgcComponentRendererContainerComponent as any).fromElement(container);
-                crc.clearContainer(continueActions);
-                return;
-            }
-
-            let crc = container as IgcComponentRendererContainerComponent;
-            crc.clearContainer(continueActions);
-        }
+        // The container is the component's own element (data-ig-root), rendered by Blazor with its content.
+        this._adoptedRoots.add(container);
+        continueActions(false);
     }
     removeRootItem(container: any, context: TypeDescriptionContext, continueActions: (resumeRequired: boolean) => void): void {
         this.clearContainer(container, context, continueActions);

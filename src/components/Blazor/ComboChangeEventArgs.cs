@@ -1,40 +1,43 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbCombo{T}.Change"/> event.
+    /// Event arguments for the <see cref="IgbCombo{TValue, TItem}.Change"/> event, without the combo's type arguments.
     /// </summary>
-    public partial class IgbComboChangeEventArgs : BaseRendererElement
+    [Obsolete("Use IgbComboChangeEventArgs<TValue, TItem>, with the TValue and TItem of the combo.")]
+    public abstract partial class IgbComboChangeEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebComboChangeEventArgs"; } }
-
-        private static bool _marshalByValue = true;
-
-        private IgbComboChangeEventArgsDetail _detail;
+        internal override string RendererType { get { return "WebComboChangeEventArgs"; } }
 
         /// <summary>
         /// Describes the selection change: the new value, the items it affected and the kind of change.
         /// </summary>
-        [Parameter]
-        public IgbComboChangeEventArgsDetail Detail
+        public abstract IgbComboChangeEventArgsDetail Detail { get; }
+    }
+
+#pragma warning disable CS0618 // The obsolete base keeps handlers written against IgbComboChangeEventArgs binding to Change.
+    /// <summary>
+    /// Event arguments for the <see cref="IgbCombo{TValue, TItem}.Change"/> event.
+    /// </summary>
+    public partial class IgbComboChangeEventArgs<TValue, TItem> : IgbComboChangeEventArgs
+#pragma warning restore CS0618
+    {
+        private IgbComboChangeEventArgsDetail<TValue, TItem> _detail = new();
+
+        /// <summary>
+        /// Describes the selection change: the new value, the items it affected and the kind of change.
+        /// </summary>
+        public override IgbComboChangeEventArgsDetail<TValue, TItem> Detail
         {
             get { return this._detail; }
-            set
-            {
-                MarkPropDirty("Detail");
-                if (this._detail != null)
-                {
-                    this.DetachChild(this._detail);
-                }
-                if (value != null)
-                {
-                    this.AttachChild(value);
-                }
-                this._detail = value;
-            }
+        }
 
+        private void SetDetail(IgbComboChangeEventArgsDetail<TValue, TItem> value)
+        {
+            MarkPropDirty("Detail");
+            this.DetachChild(this._detail);
+            this._detail = value;
+            this.AttachChild(value);
         }
 
         internal override void SerializeCore(RendererSerializer ser)
@@ -47,7 +50,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -57,13 +60,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbComboChangeEventArgsDetail)ConvertReturnValue(args["detail"], "ComboChangeEventArgsDetail", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<TValue, TItem>(detailObj, "ComboChangeEventArgsDetail", true) is IgbComboChangeEventArgsDetail<TValue, TItem> detail)
+            { this.SetDetail(detail); }
 
             this.SuppressParentNotify = false;
         }

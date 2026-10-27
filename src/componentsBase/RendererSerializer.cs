@@ -1,29 +1,28 @@
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
 
     internal partial class RendererSerializer
     {
-        public RendererSerializer(SerializationContext context, ComponentBase component, string name)
+        public RendererSerializer(SerializationContext context, JsonSerializable component, string name)
         {
             _name = name;
             _context = context;
             _component = component;
         }
 
-        private string _name;
-        private ComponentBase _component;
+        private string? _name;
+        private readonly JsonSerializable? _component;
 
         private SerializationContext _context;
 
         //private List<string> _properties = new List<string>();
-        private string _type = null;
+        private string? _type = null;
 
-        public string Type
+        public string? Type
         {
             get
             {
@@ -48,7 +47,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": " + value.ToString(CultureInfo.InvariantCulture).ToLower());
         }
 
-        public void AddStringProp(string propertyName, string value)
+        public void AddStringProp(string propertyName, string? value)
         {
             if (_context.Filter != null)
             {
@@ -64,7 +63,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": \"" + (value == null ? "null" : value) + "\"");
         }
 
-        public void AddPrimitiveProp(object val)
+        public void AddPrimitiveProp(object? val)
         {
             if (val is Array)
             {
@@ -108,18 +107,18 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 // ObjectToParam this thing
-                if (_component is BaseRendererElement)
+                if (_component is BaseJsonSerializable)
                 {
-                    (_component as BaseRendererElement).ObjectToParam(_context, val);
+                    (_component as BaseJsonSerializable)?.ObjectToParam(_context, val);
                 }
-                else if (_component is BaseRendererControl)
+                else if (_component is IgbComponentBase)
                 {
-                    (_component as BaseRendererControl).ObjectToParam(_context, val);
+                    (_component as IgbComponentBase)?.ObjectToParam(_context, val);
                 }
             }
         }
 
-        public void AddPrimitiveProp(string propertyName, object val)
+        public void AddPrimitiveProp(string propertyName, object? val)
         {
             if (_context.Filter != null)
             {
@@ -156,6 +155,34 @@ namespace IgniteUI.Blazor.Controls
             {
                 _context.Writer.WriteNumber(propertyName, (short)val);
             }
+            else if (val is byte)
+            {
+                _context.Writer.WriteNumber(propertyName, (byte)val);
+            }
+            else if (val is sbyte)
+            {
+                _context.Writer.WriteNumber(propertyName, (sbyte)val);
+            }
+            else if (val is ushort)
+            {
+                _context.Writer.WriteNumber(propertyName, (ushort)val);
+            }
+            else if (val is uint)
+            {
+                _context.Writer.WriteNumber(propertyName, (uint)val);
+            }
+            else if (val is ulong)
+            {
+                _context.Writer.WriteNumber(propertyName, (ulong)val);
+            }
+            else if (val is float)
+            {
+                _context.Writer.WriteNumber(propertyName, (float)val);
+            }
+            else if (val is decimal)
+            {
+                _context.Writer.WriteNumber(propertyName, (decimal)val);
+            }
             else if (val is bool)
             {
                 _context.Writer.WriteBoolean(propertyName, (bool)val);
@@ -171,18 +198,18 @@ namespace IgniteUI.Blazor.Controls
             else
             {
                 // ObjectToParam this thing
-                if (_component is BaseRendererElement)
+                if (_component is BaseJsonSerializable)
                 {
-                    (_component as BaseRendererElement).ObjectToParam(_context, propertyName, val);
+                    (_component as BaseJsonSerializable)?.ObjectToParam(_context, propertyName, val);
                 }
-                else if (_component is BaseRendererControl)
+                else if (_component is IgbComponentBase)
                 {
-                    (_component as BaseRendererControl).ObjectToParam(_context, propertyName, val);
+                    (_component as IgbComponentBase)?.ObjectToParam(_context, propertyName, val);
                 }
             }
         }
 
-        public void AddArrayProp<T>(string propertyName, IEnumerable<T> values)
+        public void AddArrayProp<T>(string propertyName, IEnumerable<T>? values)
         {
             var items = values == null ? null : values as IList<T> ?? values.ToList();
             bool containsSub = false;
@@ -190,7 +217,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 foreach (var val in items)
                 {
-                    if (val is BaseRendererControl || val is BaseRendererElement)
+                    if (val is IgbComponentBase || val is BaseJsonSerializable)
                     {
                         containsSub = true;
                         break;
@@ -217,7 +244,7 @@ namespace IgniteUI.Blazor.Controls
             }
             //string[] strValues = new string[values.Length];
             context.Writer.WriteStartArray(propertyName);
-            foreach (object val in items)
+            foreach (object? val in items)
             {
                 if (val is String)
                 {
@@ -260,13 +287,13 @@ namespace IgniteUI.Blazor.Controls
                     }
                     else
                     {
-                        if (_component is BaseRendererElement)
+                        if (_component is BaseJsonSerializable)
                         {
-                            (_component as BaseRendererElement).ObjectToParam(context, val);
+                            (_component as BaseJsonSerializable)?.ObjectToParam(context, val);
                         }
-                        else if (_component is BaseRendererControl)
+                        else if (_component is IgbComponentBase)
                         {
-                            (_component as BaseRendererControl).ObjectToParam(context, val);
+                            (_component as IgbComponentBase)?.ObjectToParam(context, val);
                         }
                     }
                 }
@@ -275,7 +302,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": [" + String.Join(", ", strValues) + " ]");
         }
 
-        protected string Camelize(string value)
+        protected string? Camelize(string? value)
         {
             if (value == null || value.Length == 0)
             {
@@ -284,7 +311,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        public void AddEnumProp(string propertyName, Enum value)
+        public void AddEnumProp(string propertyName, Enum? value)
         {
             if (_context.Filter != null)
             {
@@ -292,6 +319,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     return;
                 }
+            }
+
+            if (value == null)
+            {
+                _context.Writer.WriteNull(propertyName);
+                return;
             }
 
             if (Utils.TryGetWCEnumName(value.GetType(), value.ToString(), out var wcName))
@@ -311,7 +344,7 @@ namespace IgniteUI.Blazor.Controls
         //     return TextUtils.join("", parts);
         // }
 
-        public void AddNumberProp(String propertyName, Object value)
+        public void AddNumberProp(String propertyName, Object? value)
         {
             if (_context.Filter != null)
             {
@@ -356,7 +389,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": \"" + value.ToString("o") + "\"");
         }
 
-        public void Start(string propertyName = null)
+        public void Start(string? propertyName = null)
         {
             if (propertyName != null)
             {
@@ -374,7 +407,7 @@ namespace IgniteUI.Blazor.Controls
             _context.Writer.WriteEndObject();
         }
 
-        public void AddSerializableProp(String propertyName, JsonSerializable value)
+        public void AddSerializableProp(String propertyName, JsonSerializable? value)
         {
             var context = _context;
 
@@ -411,7 +444,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": " + value.Serialize());
         }
 
-        public void AddStringArrayProp(String propertyName, string[] values)
+        public void AddStringArrayProp(String propertyName, string[]? values)
         {
             if (_context.Filter != null)
             {
@@ -453,7 +486,7 @@ namespace IgniteUI.Blazor.Controls
             // _properties.Add("\"" + propertyName + "\"" + ": [" + arrayParts + " ]");
         }
 
-        public void AddDateArrayProp(String propertyName, DateTime[] values)
+        public void AddDateArrayProp(String propertyName, DateTime[]? values)
         {
             if (_context.Filter != null)
             {
@@ -499,7 +532,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private Regex _colorSplitRegex = new Regex("[\\s,]+(?![^(]*\\))");
-        public void AddStringArrayProp(String propertyName, string values)
+        public void AddStringArrayProp(String propertyName, string? values)
         {
             if (_context.Filter != null)
             {
@@ -541,7 +574,7 @@ namespace IgniteUI.Blazor.Controls
             // _properties.Add("\"" + propertyName + "\"" + ": [" + arrayParts + " ]");
         }
 
-        public void AddEnumArrayProp(String propertyName, object values)
+        public void AddEnumArrayProp(String propertyName, object? values)
         {
             if (_context.Filter != null)
             {
@@ -562,15 +595,23 @@ namespace IgniteUI.Blazor.Controls
             _context.Writer.WriteStartArray(propertyName);
             for (int i = 0; i < vals.Count; i++)
             {
-                Enum val = (Enum)vals[i];
-                _context.Writer.WriteStringValue(Camelize(val.ToString()));
+                Enum? val = (Enum?)vals[i];
+                if (val == null)
+                {
+                    // Keep the element positions aligned with the source collection.
+                    _context.Writer.WriteNullValue();
+                }
+                else
+                {
+                    _context.Writer.WriteStringValue(Camelize(val.ToString()));
+                }
                 //strValues[i] = "\"" + val.ToString() + "\"";
             }
             _context.Writer.WriteEndArray();
             //_properties.Add("\"" + propertyName + "\"" + ": [" + string.Join(", ", strValues) + " ]");
         }
 
-        public void AddIntArrayProp(String propertyName, int[] values)
+        public void AddIntArrayProp(String propertyName, int[]? values)
         {
             if (_context.Filter != null)
             {
@@ -598,7 +639,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\"" + ": [" + string.Join(", ", strValues) + " ]");
         }
 
-        public void AddDoubleArrayProp(string propertyName, double[] numbers)
+        public void AddDoubleArrayProp(string propertyName, double[]? numbers)
         {
             if (_context.Filter != null)
             {
@@ -627,7 +668,7 @@ namespace IgniteUI.Blazor.Controls
             //_properties.Add("\"" + propertyName + "\": " + "[" + string.Join(", ", items) + "]");
         }
 
-        public void AddSerializableArrayProp<T>(string propertyName, T[] array) where T : JsonSerializable
+        public void AddSerializableArrayProp<T>(string propertyName, T[]? array) where T : JsonSerializable
         {
             if (array == null)
             {

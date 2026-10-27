@@ -39,9 +39,6 @@ export class WebSelectDescriptionMetadata extends Base {
 		metadata.item("Placement", "ExportedType:string:PopoverPlacement");
 		metadata.item("Placement@stringUnion", "WebComponents;React");
 		metadata.item("Placement@names", "Top;TopStart;TopEnd;Bottom;BottomStart;BottomEnd;Right;RightStart;RightEnd;Left;LeftStart;LeftEnd");
-		metadata.item("ScrollStrategy", "ExportedType:string:PopoverScrollStrategy");
-		metadata.item("ScrollStrategy@stringUnion", "WebComponents;React");
-		metadata.item("ScrollStrategy@names", "Scroll;Block;Close");
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");

@@ -1,6 +1,7 @@
 import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 
 /**
  * @hidden 
@@ -17,12 +18,16 @@ export class WebBaseComboBoxDescriptionMetadata extends Base {
 			return;
 		}
 		context.markSeen(WebBaseComboBoxDescriptionMetadata._metadata);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:BaseComboBox");
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
 		metadata.item("Open", "Boolean");
+		metadata.item("ScrollStrategy", "ExportedType:string:PopoverScrollStrategy");
+		metadata.item("ScrollStrategy@stringUnion", "WebComponents;React");
+		metadata.item("ScrollStrategy@names", "Scroll;Hide;Close");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebBaseComboBoxDescriptionMetadata.ensureMetadata(context);

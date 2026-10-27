@@ -1,25 +1,21 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbRadio.Change"/> and <see cref="IgbRadioGroup.Change"/>
+    /// Event arguments for the <see cref="IgbRadio{TValue}.Change"/> and <see cref="IgbRadioGroup{TValue}.Change"/>
     /// events, raised when the checked state of a radio button changes.
     /// </summary>
-    public partial class IgbRadioChangeEventArgs : BaseRendererElement
+    /// <typeparam name="TValue">The <c>TValue</c> of the radio or radio group that raises the event.</typeparam>
+    public partial class IgbRadioChangeEventArgs<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRadioChangeEventArgs"; } }
+        internal override string RendererType { get { return "WebRadioChangeEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private IgbRadioChangeEventArgsDetail _detail;
+        private IgbRadioChangeEventArgsDetail<TValue> _detail = new IgbRadioChangeEventArgsDetail<TValue>();
 
         /// <summary>
         /// The payload of the event, carrying the new checked state and the value of the radio button.
         /// </summary>
-        [Parameter]
-        public IgbRadioChangeEventArgsDetail Detail
+        public IgbRadioChangeEventArgsDetail<TValue> Detail
         {
             get { return this._detail; }
             set
@@ -29,11 +25,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -48,7 +44,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -58,13 +54,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbRadioChangeEventArgsDetail)ConvertReturnValue(args["detail"], "RadioChangeEventArgsDetail", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue<TValue>(detailObj, "RadioChangeEventArgsDetail", true) is IgbRadioChangeEventArgsDetail<TValue> detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

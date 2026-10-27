@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The icon component allows visualizing collections of pre-registered SVG icons.
     /// </summary>
-    public partial class IgbIcon : BaseRendererControl
+    public partial class IgbIcon : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebIcon"; } }
+        internal override string RendererType { get { return "WebIcon"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +20,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +29,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -53,19 +38,19 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _iconName;
+        private string? _iconName;
 
         /// <summary>
         /// The name of the icon glyph to draw.
         /// </summary>
         [Parameter]
         [WCWidgetMemberName("Name")]
-        public string IconName
+        public string? IconName
         {
             get { return this._iconName; }
             set
@@ -78,13 +63,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _collection;
+        private string? _collection;
 
         /// <summary>
         /// The name of the registered collection for look up of icons.
         /// </summary>
         [Parameter]
-        public string Collection
+        public string? Collection
         {
             get { return this._collection; }
             set
@@ -117,13 +102,15 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
+        public async Task RegisterIconAsync(String name, String url, String? collection = null)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            await InvokeMethod("registerIcon", new object?[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -132,9 +119,31 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="name">The unique name for the icon.</param>
         /// <param name="url">The URL to fetch the SVG icon from.</param>
         /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        public async Task RegisterIconAsync(String name, String url, String collection = null)
+        public void RegisterIcon(String name, String url, String? collection = null)
         {
-            await InvokeMethod("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
+            InvokeMethodSync("registerIcon", new object?[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
+        }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
+        public async Task RegisterIconFromTextAsync(String name, String iconText, String? collection = null)
+        {
+            await InvokeMethod("registerIconFromText", new object?[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
+        }
+
+        /// <summary>
+        /// Registers an icon from SVG text content.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="iconText">The SVG markup as a string.</param>
+        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
+        public void RegisterIconFromText(String name, String iconText, String? collection = null)
+        {
+            InvokeMethodSync("registerIconFromText", new object?[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
         }
 
         /// <summary>
@@ -142,10 +151,21 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <param name="name">The unique name for the icon.</param>
         /// <param name="url">The URL to fetch the SVG icon from.</param>
-        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        public void RegisterIcon(String name, String url, String collection = null)
+        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
+        public async Task RegisterIconAsync(String name, String url, IgbRegisterIconOptions options)
         {
-            InvokeMethodSync("registerIcon", new object[] { StringToString(name), StringToString(url), StringToString(collection) }, new string[] { "String", "String", "String" });
+            await InvokeMethod("registerIcon", new object?[] { StringToString(name), StringToString(url), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
+        }
+
+        /// <summary>
+        /// Registers an icon by fetching it from a URL.
+        /// </summary>
+        /// <param name="name">The unique name for the icon.</param>
+        /// <param name="url">The URL to fetch the SVG icon from.</param>
+        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
+        public void RegisterIcon(String name, String url, IgbRegisterIconOptions options)
+        {
+            InvokeMethodSync("registerIcon", new object?[] { StringToString(name), StringToString(url), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
         }
 
         /// <summary>
@@ -153,10 +173,10 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <param name="name">The unique name for the icon.</param>
         /// <param name="iconText">The SVG markup as a string.</param>
-        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        public async Task RegisterIconFromTextAsync(String name, String iconText, String collection = null)
+        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
+        public async Task RegisterIconFromTextAsync(String name, String iconText, IgbRegisterIconOptions options)
         {
-            await InvokeMethod("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
+            await InvokeMethod("registerIconFromText", new object?[] { StringToString(name), StringToString(iconText), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
         }
 
         /// <summary>
@@ -164,10 +184,10 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         /// <param name="name">The unique name for the icon.</param>
         /// <param name="iconText">The SVG markup as a string.</param>
-        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        public void RegisterIconFromText(String name, String iconText, String collection = null)
+        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
+        public void RegisterIconFromText(String name, String iconText, IgbRegisterIconOptions options)
         {
-            InvokeMethodSync("registerIconFromText", new object[] { StringToString(name), StringToString(iconText), StringToString(collection) }, new string[] { "String", "String", "String" });
+            InvokeMethodSync("registerIconFromText", new object?[] { StringToString(name), StringToString(iconText), StringToString(options.Collection), options.StripMeta }, new string[] { "String", "String", "String", "Boolean" });
         }
 
         /// <summary>
@@ -178,7 +198,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="icon">The target icon metadata (name and collection).</param>
         public async Task SetIconRefAsync(String name, String collection, IgbIconMeta icon)
         {
-            await InvokeMethod("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
+            await InvokeMethod("setIconRef", new object?[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
         }
 
         /// <summary>
@@ -189,7 +209,7 @@ namespace IgniteUI.Blazor.Controls
         /// <param name="icon">The target icon metadata (name and collection).</param>
         public void SetIconRef(String name, String collection, IgbIconMeta icon)
         {
-            InvokeMethodSync("setIconRef", new object[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
+            InvokeMethodSync("setIconRef", new object?[] { StringToString(name), StringToString(collection), ObjectToParam(icon) }, new string[] { "String", "String", "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

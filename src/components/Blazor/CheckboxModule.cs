@@ -18,12 +18,12 @@ namespace IgniteUI.Blazor.Controls
             ModuleLoader.Load(runtime, "WebCheckboxModule");
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebCheckboxModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "WebCheckboxModule");
         }

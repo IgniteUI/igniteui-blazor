@@ -3,21 +3,15 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class shared by <see cref="IgbCombo{T}"/> and <see cref="IgbComboBoxBaseLike"/>.
+    /// Base class shared by <see cref="IgbCombo{TValue, TItem}"/> and <see cref="IgbComboBoxBaseLike"/>.
     /// </summary>
-    public partial class IgbBaseComboBox : BaseRendererControl
+    public partial class IgbBaseComboBox : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBaseComboBox"; } }
+        internal override string RendererType { get { return "WebBaseComboBox"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
@@ -41,15 +35,26 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private PopoverScrollStrategy _scrollStrategy = PopoverScrollStrategy.Hide;
 
-        public async Task SetNativeElementAsync(Object element)
+        /// <summary>
+        /// Sets the behavior of the component when a parent container scrolls.
+        /// </summary>
+        [Parameter]
+        public PopoverScrollStrategy ScrollStrategy
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            get { return this._scrollStrategy; }
+            set
+            {
+                if (this._scrollStrategy != value || !IsPropDirty("ScrollStrategy"))
+                {
+                    MarkPropDirty("ScrollStrategy");
+                }
+                this._scrollStrategy = value;
+
+            }
         }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
+
         /// <summary>
         /// Shows the component.
         /// </summary>
@@ -57,7 +62,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already open.</returns>
         public async Task<bool> ShowAsync()
         {
-            var iv = await InvokeMethod("show", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -68,7 +73,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already open.</returns>
         public bool Show()
         {
-            var iv = InvokeMethodSync("show", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("show", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -78,7 +83,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already closed.</returns>
         public async Task<bool> HideAsync()
         {
-            var iv = await InvokeMethod("hide", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -89,7 +94,7 @@ namespace IgniteUI.Blazor.Controls
         /// or <see langword="false"/> if it was already closed.</returns>
         public bool Hide()
         {
-            var iv = InvokeMethodSync("hide", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("hide", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
         /// <summary>
@@ -98,7 +103,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns><see langword="true"/> when the open state was changed.</returns>
         public async Task<bool> ToggleAsync()
         {
-            var iv = await InvokeMethod("toggle", new object[] { }, new string[] { });
+            var iv = await InvokeMethod("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -108,7 +113,7 @@ namespace IgniteUI.Blazor.Controls
         /// <returns><see langword="true"/> when the open state was changed.</returns>
         public bool Toggle()
         {
-            var iv = InvokeMethodSync("toggle", new object[] { }, new string[] { });
+            var iv = InvokeMethodSync("toggle", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
 
@@ -118,6 +123,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }
+            if (IsPropDirty("ScrollStrategy"))
+            { ser.AddEnumProp("scrollStrategy", this._scrollStrategy); }
 
         }
 

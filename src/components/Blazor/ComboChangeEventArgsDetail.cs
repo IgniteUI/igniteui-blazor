@@ -1,113 +1,39 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbComboChangeEventArgsDetail : BaseRendererElement
+    /// <summary>
+    /// Describes a selection change of an <see cref="IgbCombo{TValue, TItem}"/>, without the combo's type arguments.
+    /// </summary>
+    [Obsolete("Use IgbComboChangeEventArgsDetail<TValue, TItem>, with the TValue and TItem of the combo.")]
+    public abstract partial class IgbComboChangeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebComboChangeEventArgsDetail"; } }
+        internal override string RendererType { get { return "WebComboChangeEventArgsDetail"; } }
 
-        private static bool _marshalByValue = true;
-
-        private string _newValueRef;
-        private object[] _newValue;
-
-        [Parameter]
-        public object[] NewValue
+        /// <summary>
+        /// The value of the combo after the change.
+        /// </summary>
+        public object?[] NewValue
         {
-            get { return this._newValue; }
-
-            set
-            {
-                var oldValue = this._newValue;
-
-                if (oldValue != value || !IsPropDirty("NewValue"))
-                {
-                    MarkPropDirty("NewValue");
-                    this._newValue = value;
-                    this.OnRefChanged("NewValue", oldValue, value, false, false, (string refName, object old, object newValue) =>
-                    {
-                        this._newValueRef = refName;
-                        this.MarkPropDirty("NewValueRef");
-                    });
-                }
-            }
+            get { return this.NewValueCore; }
         }
 
-        private string _newValueScript;
+        private protected abstract object?[] NewValueCore { get; }
 
-        ///<summary>Provides a means of setting NewValue in the JavaScript environment.</summary>
-        [Parameter]
-        public string NewValueScript
+        /// <summary>
+        /// The data items the change applies to.
+        /// </summary>
+        public object?[] Items
         {
-            get { return _newValueScript; }
-
-            set
-            {
-                var oldValue = this._newValueScript;
-                if (oldValue != value || !IsPropDirty("NewValue"))
-                {
-                    this._newValueScript = value;
-                    MarkPropDirty("NewValue");
-                    this.OnRefChanged("NewValue", oldValue, value, true, false, (string refName, object old, object newValue) =>
-                    {
-                        this._newValueRef = refName;
-                        this.MarkPropDirty("NewValueRef");
-                    });
-                }
-            }
-        }
-        private string _itemsRef;
-        private object[] _items;
-
-        [Parameter]
-        public object[] Items
-        {
-            get { return this._items; }
-
-            set
-            {
-                var oldValue = this._items;
-
-                if (oldValue != value || !IsPropDirty("Items"))
-                {
-                    MarkPropDirty("Items");
-                    this._items = value;
-                    this.OnRefChanged("Items", oldValue, value, false, false, (string refName, object old, object newValue) =>
-                    {
-                        this._itemsRef = refName;
-                        this.MarkPropDirty("ItemsRef");
-                    });
-                }
-            }
+            get { return this.ItemsCore; }
         }
 
-        private string _itemsScript;
+        private protected abstract object?[] ItemsCore { get; }
 
-        ///<summary>Provides a means of setting Items in the JavaScript environment.</summary>
-        [Parameter]
-        public string ItemsScript
-        {
-            get { return _itemsScript; }
-
-            set
-            {
-                var oldValue = this._itemsScript;
-                if (oldValue != value || !IsPropDirty("Items"))
-                {
-                    this._itemsScript = value;
-                    MarkPropDirty("Items");
-                    this.OnRefChanged("Items", oldValue, value, true, false, (string refName, object old, object newValue) =>
-                    {
-                        this._itemsRef = refName;
-                        this.MarkPropDirty("ItemsRef");
-                    });
-                }
-            }
-        }
         private ComboChangeType _changeType = ComboChangeType.Selection;
 
-        [Parameter]
+        /// <summary>
+        /// The kind of change.
+        /// </summary>
         [WCWidgetMemberName("Type")]
         public ComboChangeType ChangeType
         {
@@ -123,13 +49,151 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
+        internal override void SerializeCore(RendererSerializer ser)
         {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            base.SerializeCore(ser);
+
+            if (IsPropDirty("ChangeType"))
+            { ser.AddEnumProp("changeType", this._changeType); }
+
         }
-        public void SetNativeElement(Object element)
+
+        /// <inheritdoc />
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
+            base.ToEventJson(control, args);
+
+            if (IsPropDirty("ChangeType"))
+            { args["type"] = EnumToString(this._changeType); }
+
+        }
+
+        /// <inheritdoc />
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args != null && args.TryGetValue("type", out var typeObj))
+            { this.ChangeType = StringToEnum<ComboChangeType>(typeObj); }
+
+            this.SuppressParentNotify = false;
+        }
+    }
+
+#pragma warning disable CS0618 // The obsolete base is what IgbComboChangeEventArgs.Detail returns to handlers written against it.
+    /// <summary>
+    /// Describes a selection change of an <see cref="IgbCombo{TValue, TItem}"/>: the new value, the items it affected and the kind of change.
+    /// </summary>
+    public partial class IgbComboChangeEventArgsDetail<TValue, TItem> : IgbComboChangeEventArgsDetail
+#pragma warning restore CS0618
+    {
+        private string? _newValueRef;
+        private TValue[] _newValue = Array.Empty<TValue>();
+
+        /// <summary>
+        /// The value of the combo after the change.
+        /// </summary>
+        public new TValue[] NewValue
+        {
+            get { return this._newValue; }
+
+            set
+            {
+                var oldValue = this._newValue;
+
+                if (oldValue != value || !IsPropDirty("NewValue"))
+                {
+                    MarkPropDirty("NewValue");
+                    this._newValue = value;
+                    this.OnRefChanged("NewValue", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
+                    {
+                        this._newValueRef = refName;
+                        this.MarkPropDirty("NewValueRef");
+                    });
+                }
+            }
+        }
+
+        private string? _newValueScript;
+
+        ///<summary>Provides a means of setting NewValue in the JavaScript environment.</summary>
+        public string? NewValueScript
+        {
+            get { return _newValueScript; }
+
+            set
+            {
+                var oldValue = this._newValueScript;
+                if (oldValue != value || !IsPropDirty("NewValue"))
+                {
+                    this._newValueScript = value;
+                    MarkPropDirty("NewValue");
+                    this.OnRefChanged("NewValue", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
+                    {
+                        this._newValueRef = refName;
+                        this.MarkPropDirty("NewValueRef");
+                    });
+                }
+            }
+        }
+        private string? _itemsRef;
+        private TItem[] _items = Array.Empty<TItem>();
+
+        /// <summary>
+        /// The data items the change applies to.
+        /// </summary>
+        public new TItem[] Items
+        {
+            get { return this._items; }
+
+            set
+            {
+                var oldValue = this._items;
+
+                if (oldValue != value || !IsPropDirty("Items"))
+                {
+                    MarkPropDirty("Items");
+                    this._items = value;
+                    this.OnRefChanged("Items", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
+                    {
+                        this._itemsRef = refName;
+                        this.MarkPropDirty("ItemsRef");
+                    });
+                }
+            }
+        }
+
+        private string? _itemsScript;
+
+        ///<summary>Provides a means of setting Items in the JavaScript environment.</summary>
+        public string? ItemsScript
+        {
+            get { return _itemsScript; }
+
+            set
+            {
+                var oldValue = this._itemsScript;
+                if (oldValue != value || !IsPropDirty("Items"))
+                {
+                    this._itemsScript = value;
+                    MarkPropDirty("Items");
+                    this.OnRefChanged("Items", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
+                    {
+                        this._itemsRef = refName;
+                        this.MarkPropDirty("ItemsRef");
+                    });
+                }
+            }
+        }
+        private protected override object?[] NewValueCore
+        {
+            get { return Array.ConvertAll(this._newValue, v => (object?)v); }
+        }
+
+        private protected override object?[] ItemsCore
+        {
+            get { return Array.ConvertAll(this._items, i => (object?)i); }
         }
 
         internal override void SerializeCore(RendererSerializer ser)
@@ -140,13 +204,11 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddArrayProp("newValue", this._newValue); }
             if (IsPropDirty("Items"))
             { ser.AddArrayProp("items", this._items); }
-            if (IsPropDirty("ChangeType"))
-            { ser.AddEnumProp("changeType", this._changeType); }
 
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -154,23 +216,19 @@ namespace IgniteUI.Blazor.Controls
             { args["newValue"] = ObjectArrayToParam(this._newValue); }
             if (IsPropDirty("Items"))
             { args["items"] = ObjectArrayToParam(this._items); }
-            if (IsPropDirty("ChangeType"))
-            { args["changeType"] = EnumToString(this._changeType); }
 
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("newValue"))
-            { this.NewValue = ReturnToObjectArray(args["newValue"]); }
-            if (args.ContainsKey("items"))
-            { this.Items = ReturnToObjectArray(args["items"]); }
-            if (args.ContainsKey("changeType"))
-            { this.ChangeType = StringToEnum<ComboChangeType>(args["changeType"]); }
+            if (args != null && args.TryGetValue("newValue", out var newValueObj))
+            { this.NewValue = ReturnToObjectArray<TValue>(newValueObj) ?? Array.Empty<TValue>(); }
+            if (args != null && args.TryGetValue("items", out var itemsObj))
+            { this.Items = ReturnToObjectArray<TItem>(itemsObj) ?? Array.Empty<TItem>(); }
 
             this.SuppressParentNotify = false;
         }

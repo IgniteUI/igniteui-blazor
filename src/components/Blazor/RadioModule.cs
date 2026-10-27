@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Client resource module for <see cref="IgbRadio"/>.
+    /// Client resource module for <see cref="IgbRadio{TValue}"/>.
     /// </summary>
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.
@@ -19,12 +19,12 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-        public static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime)
         {
             ModuleLoader.MarkIsLoadRequested(runtime, "WebRadioModule");
         }
 
-        public static bool IsLoadRequested(IIgniteUIBlazor runtime)
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime)
         {
             return ModuleLoader.IsLoadRequested(runtime, "WebRadioModule");
         }

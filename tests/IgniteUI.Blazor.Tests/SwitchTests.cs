@@ -49,7 +49,7 @@ public class SwitchTests : ComponentWithContractTestBase<IgbSwitch>
     public void Switch_TypeMetadata_IsCorrect()
     {
         var sw = new IgbSwitch();
-        Assert.Equal("WebSwitch", sw.Type);
+        Assert.Equal("WebSwitch", sw.RendererType);
     }
 
     [Fact]

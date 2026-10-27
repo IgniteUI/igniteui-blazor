@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for component events that carry a Boolean payload.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
-    public partial class IgbComponentBoolValueChangedEventArgs : BaseRendererElement
+    public partial class IgbComponentBoolValueChangedEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebComponentBoolValueChangedEventArgs"; } }
-
-        private static bool _marshalByValue = true;
+        internal override string RendererType { get { return "WebComponentBoolValueChangedEventArgs"; } }
 
         private bool _detail = false;
 
         /// <summary>
         /// The Boolean value carried by the event.
         /// </summary>
-        [Parameter]
         public bool Detail
         {
             get { return this._detail; }
@@ -43,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -53,13 +48,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = ReturnToBoolean(args["detail"]); }
+            if (args != null && args.TryGetValue("detail", out var detailObj))
+            { this.Detail = ReturnToBoolean(detailObj); }
 
             this.SuppressParentNotify = false;
         }

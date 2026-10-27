@@ -1,12 +1,12 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Used when a custom icon/symbol/element needs to be passed to an <see cref="IgbRating"/> component.
+    /// Used when a custom icon/symbol/element needs to be passed to an <see cref="IgbRating{TValue}"/> component.
     /// </summary>
-    public partial class IgbRatingSymbol : BaseRendererControl
+    public partial class IgbRatingSymbol : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRatingSymbol"; } }
+        internal override string RendererType { get { return "WebRatingSymbol"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -18,13 +18,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -33,16 +27,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -51,26 +36,9 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public async Task ConnectedCallbackAsync()
-        {
-            await InvokeMethod("connectedCallback", new object[] { }, new string[] { });
-        }
-        public void ConnectedCallback()
-        {
-            InvokeMethodSync("connectedCallback", new object[] { }, new string[] { });
         }
 
     }

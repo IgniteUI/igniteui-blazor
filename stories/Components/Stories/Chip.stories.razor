@@ -10,6 +10,7 @@
             <Arg For="_ => _!.Disabled" Value="false" />
             <Arg For="_ => _!.Selectable" Value="false" />
             <Arg For="_ => _!.Removable" Value="false" />
+            <Arg For="_ => _!.Outlined" Value="false" />
             <Arg For="_ => _!.ChildContent" Value="_content" />
         </Arguments>
         <Template>
@@ -26,6 +27,19 @@
                 <IgbChip Variant="StyleVariant.Success">Success</IgbChip>
                 <IgbChip Variant="StyleVariant.Warning">Warning</IgbChip>
                 <IgbChip Variant="StyleVariant.Danger">Danger</IgbChip>
+            </div>
+        </Template>
+    </Story>
+
+    <Story Name="Outlined">
+        <Template>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <IgbChip Outlined="true">Default</IgbChip>
+                <IgbChip Outlined="true" Variant="StyleVariant.Primary">Primary</IgbChip>
+                <IgbChip Outlined="true" Variant="StyleVariant.Info">Info</IgbChip>
+                <IgbChip Outlined="true" Variant="StyleVariant.Success">Success</IgbChip>
+                <IgbChip Outlined="true" Variant="StyleVariant.Warning">Warning</IgbChip>
+                <IgbChip Outlined="true" Variant="StyleVariant.Danger">Danger</IgbChip>
             </div>
         </Template>
     </Story>

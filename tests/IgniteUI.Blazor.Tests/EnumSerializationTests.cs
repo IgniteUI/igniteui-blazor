@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Tests;
 /// <summary>
 /// Tests enum serialization rules:
 /// - Single word → lowercase
-/// - Multi-word without WCEnumName → camelCase  
+/// - Multi-word without WCEnumName → camelCase
 /// - With WCEnumName → specified string
 /// </summary>
 public class EnumSerializationTests : BlazorComponentTestBase
@@ -179,7 +179,7 @@ public class EnumSerializationTests : BlazorComponentTestBase
     [InlineData(SliderTickOrientation.Mirror, "mirror")]
     public void SliderTickOrientation_Serialization(SliderTickOrientation orient, string expected)
     {
-        var cut = Render<IgbSlider>(p => p.Add(x => x.TickOrientation, orient));
+        var cut = Render<IgbSlider<double>>(p => p.Add(x => x.TickOrientation, orient));
         Assert.Equal(expected, cut.Find("igc-slider").GetAttribute("tick-orientation"));
     }
 
@@ -289,5 +289,53 @@ public class EnumSerializationTests : BlazorComponentTestBase
     {
         var cut = Render<IgbCarousel>(p => p.Add(x => x.IndicatorsOrientation, orient));
         Assert.Equal(expected, cut.Find("igc-carousel").GetAttribute("indicators-orientation"));
+    }
+
+    // ColorFormat / ColorPickerMode render indirectly (renderer-container component), so their
+    // wire forms are pinned by the .Prop specs in ColorPickerTests instead of attribute facts.
+
+    // QrErrorCorrectionLevel: WCEnumName single-letter values
+    [Theory]
+    [InlineData(QrErrorCorrectionLevel.Low, "L")]
+    [InlineData(QrErrorCorrectionLevel.Medium, "M")]
+    [InlineData(QrErrorCorrectionLevel.Quartile, "Q")]
+    [InlineData(QrErrorCorrectionLevel.High, "H")]
+    public void QrErrorCorrectionLevel_Serialization(QrErrorCorrectionLevel level, string expected)
+    {
+        var cut = Render<IgbQrCode>(p => p.Add(x => x.ErrorLevel, level));
+        Assert.Equal(expected, cut.Find("igc-qr-code").GetAttribute("error-level"));
+    }
+
+    // QrDotStyle
+    [Theory]
+    [InlineData(QrDotStyle.Square, "square")]
+    [InlineData(QrDotStyle.Circle, "circle")]
+    [InlineData(QrDotStyle.Rounded, "rounded")]
+    public void QrDotStyle_Serialization(QrDotStyle style, string expected)
+    {
+        var cut = Render<IgbQrCode>(p => p.Add(x => x.DotStyle, style));
+        Assert.Equal(expected, cut.Find("igc-qr-code").GetAttribute("dot-style"));
+    }
+
+    // QrCornerSquareStyle
+    [Theory]
+    [InlineData(QrCornerSquareStyle.Square, "square")]
+    [InlineData(QrCornerSquareStyle.Circle, "circle")]
+    [InlineData(QrCornerSquareStyle.Rounded, "rounded")]
+    public void QrCornerSquareStyle_Serialization(QrCornerSquareStyle style, string expected)
+    {
+        var cut = Render<IgbQrCode>(p => p.Add(x => x.SquareStyle, style));
+        Assert.Equal(expected, cut.Find("igc-qr-code").GetAttribute("square-style"));
+    }
+
+    // PopoverScrollStrategy
+    [Theory]
+    [InlineData(PopoverScrollStrategy.Scroll, "scroll")]
+    [InlineData(PopoverScrollStrategy.Hide, "hide")]
+    [InlineData(PopoverScrollStrategy.Close, "close")]
+    public void PopoverScrollStrategy_Serialization(PopoverScrollStrategy strategy, string expected)
+    {
+        var cut = Render<IgbDropdown>(p => p.Add(x => x.ScrollStrategy, strategy));
+        Assert.Equal(expected, cut.Find("igc-dropdown").GetAttribute("scroll-strategy"));
     }
 }

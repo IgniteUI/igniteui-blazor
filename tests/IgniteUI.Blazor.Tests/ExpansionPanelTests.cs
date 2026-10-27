@@ -42,7 +42,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
     public void ExpansionPanel_TypeMetadata_IsCorrect()
     {
         var panel = new IgbExpansionPanel();
-        Assert.Equal("WebExpansionPanel", panel.Type);
+        Assert.Equal("WebExpansionPanel", panel.RendererType);
     }
 
     [Fact]
@@ -52,6 +52,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-expansion-panel");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -62,6 +63,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-expansion-panel");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -72,6 +74,7 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
             parameters.Add(p => p.IndicatorPosition, ExpansionPanelIndicatorPosition.End));
 
         var element = cut.Find("igc-expansion-panel");
+        Assert.Equal(ExpansionPanelIndicatorPosition.End, cut.Instance.IndicatorPosition);
         Assert.Equal("end", element.GetAttribute("indicator-position"));
     }
 
@@ -84,9 +87,4 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
         Assert.Contains("Panel content", cut.Markup);
     }
 
-    [Fact]
-    public void ExpansionPanel_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbExpansionPanel).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

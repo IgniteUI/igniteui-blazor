@@ -1,0 +1,8 @@
+# Infragistics strong-name public key, as the raw public key blob in hex.
+#
+# This is public data embedded in every assembly. It is pinned here so signing with a different key
+# fails the release instead of silently establishing a new binary identity.
+#
+# Public key token: 7dd5c3163f2cd0cb
+# Re-derive with: sn -Tp <any shipped Infragistics assembly>
+002400000480000094000000060200000024000052534131000400000100010001afa6285b0af5cdd03aa2b6fdaf33fc4759cf9cd9bcf8b778ae60b9fcf71fc8126b78dbf930519614013b7999297907dd9c00bcc487a14f4c6733fe9adb96c053f005d7148f1666fcb882a0f9ba4307c85694b3322889dab357ad5cefd72ccc45e1b6973bdd2f15b2a300077b8d9de30739200887c5407c8a68c90345cbc4f1

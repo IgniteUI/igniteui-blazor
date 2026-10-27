@@ -16,7 +16,7 @@ public class BadgeTests : BlazorComponentTestBase
     public void Badge_TypeMetadata_IsCorrect()
     {
         var badge = new IgbBadge();
-        Assert.Equal("WebBadge", badge.Type);
+        Assert.Equal("WebBadge", badge.RendererType);
     }
 
     [Fact]
@@ -26,6 +26,7 @@ public class BadgeTests : BlazorComponentTestBase
             parameters.Add(p => p.Outlined, true));
 
         var element = cut.Find("igc-badge");
+        Assert.True(cut.Instance.Outlined);
         Assert.NotNull(element.GetAttribute("outlined"));
     }
 
@@ -36,6 +37,7 @@ public class BadgeTests : BlazorComponentTestBase
             parameters.Add(p => p.Dot, true));
 
         var element = cut.Find("igc-badge");
+        Assert.True(cut.Instance.Dot);
         Assert.NotNull(element.GetAttribute("dot"));
     }
 
@@ -46,6 +48,7 @@ public class BadgeTests : BlazorComponentTestBase
             parameters.Add(p => p.Shape, BadgeShape.Rounded));
 
         var element = cut.Find("igc-badge");
+        Assert.Equal(BadgeShape.Rounded, cut.Instance.Shape);
         Assert.Equal("rounded", element.GetAttribute("shape"));
     }
 
@@ -66,6 +69,7 @@ public class BadgeTests : BlazorComponentTestBase
             parameters.Add(p => p.Variant, StyleVariant.Danger));
 
         var element = cut.Find("igc-badge");
+        Assert.Equal(StyleVariant.Danger, cut.Instance.Variant);
         Assert.Equal("danger", element.GetAttribute("variant"));
     }
 
@@ -103,11 +107,5 @@ public class BadgeTests : BlazorComponentTestBase
             parameters.AddChildContent("99+"));
 
         Assert.Contains("99+", cut.Find("igc-badge").InnerHtml);
-    }
-
-    [Fact]
-    public void Badge_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbBadge).IsSubclassOf(typeof(BaseRendererControl)));
     }
 }

@@ -1,21 +1,18 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The context object for renderers that deal with the chat input area.
     /// </summary>
-    public partial class IgbChatInputRenderContext : BaseRendererElement
+    public partial class IgbChatInputRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatInputRenderContext"; } }
+        internal override string RendererType { get { return "WebChatInputRenderContext"; } }
 
-        private string _value;
+        private string _value = string.Empty;
 
         /// <summary>
         /// The current value of the input field.
         /// </summary>
-        [Parameter]
         public string Value
         {
             get { return this._value; }
@@ -30,15 +27,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -49,7 +37,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -59,13 +47,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("value"))
-            { this.Value = ReturnToString(args["value"]); }
+            if (args != null && args.TryGetValue("value", out var valueObj))
+            { this.Value = ReturnToString(valueObj); }
 
             this.SuppressParentNotify = false;
         }

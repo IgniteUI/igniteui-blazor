@@ -92,6 +92,20 @@ Tab headers come from the `Label` string or from children in the `label` slot; e
 
 Purely slot-driven: `start`, default (title), `end`. Icons must be registered before they display — see [`data-display.md`](./data-display.md).
 
+## Breadcrumbs
+
+```razor
+<nav aria-label="Breadcrumb">
+    <IgbBreadcrumbs Separator="chevron_right">
+        <IgbBreadcrumb><a href="/">Home</a></IgbBreadcrumb>
+        <IgbBreadcrumb><a href="/products">Products</a></IgbBreadcrumb>
+        <IgbBreadcrumb Current="true"><a href="/products/laptop">Laptop</a></IgbBreadcrumb>
+    </IgbBreadcrumbs>
+</nav>
+```
+
+`IgbBreadcrumbs` is the ARIA `list`; wrap it in `<nav aria-label="...">` — the label belongs on the landmark, not on the list. `Separator` is an icon name from the built-in `default` collection (`tree_expand` when unset, e.g. `chevron_right`, `arrow_next`), and no icon registration is needed for those. Each `IgbBreadcrumb` takes its content, usually an anchor, in the default slot, plus `prefix` / `suffix` slots and a `separator` slot that replaces the icon after that one item. `Current` sets `aria-current="page"`; `Disabled` sets `aria-disabled` and takes the slotted link out of the tab sequence. There are no events — handle navigation on the anchors.
+
 ## Navigation Drawer
 
 ```razor
@@ -182,5 +196,5 @@ Width comes from the `--menu-full-width` custom property (default `15rem`); the 
 <IgbDivider LineType="DividerType.Solid" Middle="true" />
 ```
 
-`IgbSplitter`: `Orientation`, `StartSize` / `EndSize`, `StartMinSize` / `StartMaxSize` / `EndMinSize` / `EndMaxSize`, `DisableResize`, `DisableCollapse`, `HideDragHandle`, `HideCollapseButtons`, `ToggleAsync(PanePosition)`.
+`IgbSplitter`: `Orientation`, `StartSize` / `EndSize`, `StartMinSize` / `StartMaxSize` / `EndMinSize` / `EndMaxSize` (all CSS lengths — `280px`, `30%`), `StartCollapsed` / `EndCollapsed`, `DisableResize`, `DisableCollapse`, `HideDragHandle`, `HideCollapseButtons`, `ToggleAsync(PanePosition)`. `LayoutChanged` fires after a user resize or collapse with a full snapshot (`StartSize`, `EndSize`, `StartCollapsed`, `EndCollapsed`); `ResizeStart` / `Resizing` / `ResizeEnd` report pixel sizes during a drag.
 `IgbDivider`: `Vertical`, `Middle`, `LineType`.

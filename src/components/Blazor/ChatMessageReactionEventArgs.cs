@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for the <see cref="IgbChat.MessageReact"/> event, carrying the reaction and
     /// the chat message it applies to.
     /// </summary>
-    public partial class IgbChatMessageReactionEventArgs : BaseRendererElement
+    public partial class IgbChatMessageReactionEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatMessageReactionEventArgs"; } }
+        internal override string RendererType { get { return "WebChatMessageReactionEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private IgbChatMessageReaction _detail;
+        private IgbChatMessageReaction _detail = new IgbChatMessageReaction();
 
         /// <summary>
         /// The reaction the event was raised for, together with the chat message it is associated with.
         /// </summary>
-        [Parameter]
         public IgbChatMessageReaction Detail
         {
             get { return this._detail; }
@@ -29,11 +24,11 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this.DetachChild(this._detail);
                 }
+                this._detail = value;
                 if (value != null)
                 {
                     this.AttachChild(value);
                 }
-                this._detail = value;
             }
 
         }
@@ -48,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -58,13 +53,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = (IgbChatMessageReaction)ConvertReturnValue(args["detail"], "ChatMessageReaction", true); }
+            if (args != null && args.TryGetValue("detail", out var detailObj) && ConvertReturnValue(detailObj, "ChatMessageReaction", true) is IgbChatMessageReaction detail)
+            { this.Detail = detail; }
 
             this.SuppressParentNotify = false;
         }

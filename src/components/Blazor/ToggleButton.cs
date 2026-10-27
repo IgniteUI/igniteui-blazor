@@ -8,10 +8,10 @@ namespace IgniteUI.Blazor.Controls
     /// It is used in the context of an <see cref="IgbButtonGroup"/> to facilitate the creation of
     /// group/toolbar like UX behaviors.
     /// </summary>
-    public partial class IgbToggleButton : BaseRendererControl
+    public partial class IgbToggleButton : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebToggleButton"; } }
+        internal override string RendererType { get { return "WebToggleButton"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -23,13 +23,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -38,16 +32,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -56,18 +41,18 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// The value of the control.
         /// </summary>
         [Parameter]
-        public string Value
+        public string? Value
         {
             get { return this._value; }
             set
@@ -119,14 +104,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
         /// <summary>
         /// Sets focus on the button.
         /// </summary>
@@ -134,7 +111,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public async Task FocusComponentAsync(IgbFocusOptions options)
         {
-            await InvokeMethod("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            await InvokeMethod("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
 
         /// <summary>
@@ -143,7 +120,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Focus")]
         public void FocusComponent(IgbFocusOptions options)
         {
-            InvokeMethodSync("focus", new object[] { ObjectToParam(options) }, new string[] { "Json" });
+            InvokeMethodSync("focus", new object?[] { ObjectToParam(options) }, new string[] { "Json" });
         }
         /// <summary>
         /// Removes focus from the button.
@@ -152,7 +129,7 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public async Task BlurComponentAsync()
         {
-            await InvokeMethod("blur", new object[] { }, new string[] { });
+            await InvokeMethod("blur", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -161,14 +138,14 @@ namespace IgniteUI.Blazor.Controls
         [WCWidgetMemberName("Blur")]
         public void BlurComponent()
         {
-            InvokeMethodSync("blur", new object[] { }, new string[] { });
+            InvokeMethodSync("blur", new object?[] { }, new string[] { });
         }
         /// <summary>
         /// Simulates a mouse click on the button.
         /// </summary>
         public async Task ClickAsync()
         {
-            await InvokeMethod("click", new object[] { }, new string[] { });
+            await InvokeMethod("click", new object?[] { }, new string[] { });
         }
 
         /// <summary>
@@ -176,7 +153,7 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         public void Click()
         {
-            InvokeMethodSync("click", new object[] { }, new string[] { });
+            InvokeMethodSync("click", new object?[] { }, new string[] { });
         }
 
         internal override void SerializeCore(RendererSerializer ser)

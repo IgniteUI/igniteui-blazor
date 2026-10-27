@@ -1,0 +1,3998 @@
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
+
+namespace IgniteUI.Blazor.Controls
+{
+
+    /// <summary>
+    /// Determines the behavior of events as they are fired at the JavaScript level and bubbled up to the Blazor level.
+    /// </summary>
+    internal enum ControlEventBehavior
+    {
+        /// <summary>
+        /// The behavior is automatically determined by the component.
+        /// </summary>
+        Auto,
+        /// <summary>
+        /// The behavior is to immediately fire event handlers.
+        /// </summary>
+        Immediate,
+        /// <summary>
+        /// The behavior is to queue the event handlers to the next available cycle.
+        /// </summary>
+        Queued
+    }
+
+    /// <summary>
+    /// Base Ignite UI Blazor shared control class.
+    /// </summary>
+    // PublicProperties: required by the BuildSequenceInfo parameter walk; rendered components already keep All via OpenComponent<T>.
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+    public partial class IgbComponentBase : ComponentBase, RefSink, JsonSerializable, IAsyncDisposable
+    {
+        private IIgniteUIBlazor? _igBlazor;
+        private IIgniteUIBlazorRuntime? _runtime;
+        /// <summary>The injected <see cref="IIgniteUIBlazor"/> service; pass it to a module's <c>Register</c> from <see cref="EnsureModulesLoaded"/>.</summary>
+        [Inject]
+        protected IIgniteUIBlazor IgBlazor
+        {
+            get
+            {
+                return _igBlazor ?? throw new InvalidOperationException("IgBlazor accessed before dependency injection completed.");
+            }
+            set
+            {
+                _igBlazor = value;
+                _runtime = value.AsRuntime();
+                // if (_igBlazor is IJSInProcessRuntime)
+                // {
+                //     this.JsInProcessRuntime = (IJSInProcessRuntime)_igBlazor;
+                // }
+
+                _runtime.WebCallback.Register(this);
+                _dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime, _runtime));
+                EnsureModulesLoaded();
+            }
+        }
+
+        internal IIgniteUIBlazorRuntime Runtime => _runtime ?? throw new InvalidOperationException("IgBlazor accessed before dependency injection completed.");
+
+        /// <summary>Requests the client modules this component needs; override to register more through <see cref="IgBlazor"/>.</summary>
+        protected virtual void EnsureModulesLoaded()
+        {
+
+        }
+
+        private IJSRuntime? JsRuntime
+        {
+            get
+            {
+                return _igBlazor != null ? Runtime.JsRuntime : null;
+            }
+        }
+
+        private IJSInProcessRuntime? _inproc = null;
+        private bool _checkedInproc = false;
+        private IJSInProcessRuntime? JsInProcessRuntime
+        {
+            get
+            {
+                if (!_checkedInproc)
+                {
+                    _checkedInproc = true;
+                    _inproc = JsRuntime as IJSInProcessRuntime;
+
+                }
+                return _inproc;
+            }
+        }
+
+        /// <summary>CSS classes added to the component's root element.</summary>
+        [Parameter]
+        public string? Class
+        {
+            get; set;
+        }
+
+        /// <summary>Attributes not matched by a parameter, applied to the component's root element.</summary>
+        [Parameter(CaptureUnmatchedValues = true)]
+        public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+        private protected virtual string ParentTypeName
+        {
+            get
+            {
+                return "IgbComponentBaseParent";
+            }
+        }
+
+        /// <summary>
+        /// Gets the components default event behavior.
+        /// </summary>
+        private protected virtual ControlEventBehavior DefaultEventBehavior
+        {
+            get { return ControlEventBehavior.Queued; }
+        }
+
+        /// <summary>The content rendered inside the component.</summary>
+        [Parameter] public RenderFragment? ChildContent { get; set; }
+
+        private ElementReference contEle;
+        private Dictionary<string, bool> _isDirty = new Dictionary<string, bool>();
+        private Dictionary<string, bool> _isDirtyRef = new Dictionary<string, bool>();
+        private bool _serializeDirty = true;
+        private DataSourceManager? _dataSourceManager;
+        internal DataSourceManager? DataSourceManager
+        {
+            get { return _dataSourceManager; }
+        }
+        private LinkedList<RendererMessage> _messageQueue = new LinkedList<RendererMessage>();
+
+        /// <summary>
+        /// Guards <see cref="_messageQueue"/> and the <c>_updateQueued</c> flag that decides when it
+        /// is flushed. Two paths flush it - <c>SendMessageImmediate</c> on the caller's thread,
+        /// <c>QueueUpdate</c> on the renderer's - and a component driven from off the Blazor
+        /// dispatcher (a timer, a bound collection filled in the background) hits both at once.
+        /// </summary>
+        private readonly object _messageQueueLock = new object();
+
+        private string _containerId = Guid.NewGuid().ToString();
+
+        internal string ContainerId
+        {
+            get
+            {
+                return _containerId;
+            }
+        }
+
+        private bool _ready = false;
+        private Dictionary<string, Action<object?, object?>> _handlers = new Dictionary<string, Action<object?, object?>>();
+        private bool _updateQueued = false;
+
+        private DotNetObjectReference<WebCallback>? _objRef;
+
+        private DotNetObjectReference<WebCallback> GetObjectRef()
+        {
+            if (_objRef == null)
+            {
+                _objRef = DotNetObjectReference.Create(Runtime.WebCallback);
+            }
+
+            return _objRef;
+        }
+
+        /// <summary>Creates the component.</summary>
+        public IgbComponentBase() : base()
+        {
+            //Console.WriteLine("constructed: " + this.GetType().Name);
+            //_dataSourceManager = new DataSourceManager(this, new RuntimeHelper(JsRuntime));
+            //WebCallback.Instance.Register(this);
+            //this._objRef = DotNetObjectReference.Create(IgBlazor.WebCallback);
+            //_webCallbackHelper.WebCallback = WebCallback.Instance;
+        }
+
+        private string ToSpinal(string? value)
+        {
+            if (value == null)
+            {
+                return String.Empty;
+            }
+
+            List<char> output = new List<char>();
+            int upperRun = 0;
+
+            for (var i = 0; i < value.Length; i++)
+            {
+                var curr = value[i];
+
+                var upperChar = Char.ToUpper(curr);
+                var lowerChar = Char.ToLower(curr);
+                //if (i == 0)
+                //{
+                //	curr = upperChar;
+                //}
+                bool charIsNewWord = (upperRun == 0 && output.Count > 0);
+                bool previousCharWasNewWord = (upperRun > 1);
+
+                if (upperChar == curr)
+                {
+                    if (charIsNewWord)
+                    {
+                        output.Add('-');
+                    }
+                    upperRun++;
+                }
+                else if (lowerChar == curr)
+                {
+                    if (previousCharWasNewWord)
+                    {
+                        output.Insert(output.Count - 1, '-');
+                    }
+                    upperRun = 0;
+                }
+                else
+                {
+                    upperRun = 0;
+                }
+
+                output.Add(lowerChar);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (var i = 0; i < output.Count; i++)
+            {
+                sb.Append(output[i]);
+            }
+            return sb.ToString();
+        }
+
+        private protected virtual bool UseDirectRender
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        private protected virtual string DirectRenderElementName
+        {
+            get
+            {
+                return "";
+            }
+        }
+
+        private Dictionary<string, object> GatherSimpleAttributes()
+        {
+            var ser = Serialize();
+            var data = JsonSerializer.Deserialize(ser, SerializerContext.DictionaryStringObject);
+            if (data == null)
+            {
+                return new Dictionary<string, object>();
+            }
+            Dictionary<string, object> ret = new Dictionary<string, object>();
+            foreach (var key in data.Keys)
+            {
+                var currKey = key;
+                var currValue = data[key];
+                if (currValue is JsonElement)
+                {
+                    switch (((JsonElement)currValue).ValueKind)
+                    {
+                        case JsonValueKind.False:
+                            currValue = false;
+                            break;
+                        case JsonValueKind.True:
+                            currValue = true;
+                            break;
+                        case JsonValueKind.Array:
+                            currValue = ArrayToSimpleAttributeValue((JsonElement)currValue);
+                            break;
+                    }
+                }
+                //currKey = TransformSimpleKey(currKey);
+                ret[currKey] = currValue;
+            }
+
+            return ret;
+        }
+
+        private object ArrayToSimpleAttributeValue(JsonElement currValue)
+        {
+            string ret = "[";
+            for (var i = 0; i < currValue.GetArrayLength(); i++)
+            {
+                if (i > 0)
+                {
+                    ret += ", ";
+                }
+                var currEle = currValue[i];
+                ret += "\"";
+                switch (currEle.ValueKind)
+                {
+                    case JsonValueKind.Undefined:
+                        continue;
+                    case JsonValueKind.Object:
+                        ret += currEle.ToString();
+                        break;
+                    case JsonValueKind.Array:
+                        ret += ArrayToSimpleAttributeValue(currEle);
+                        break;
+                    case JsonValueKind.False:
+                        ret += "false";
+                        break;
+                    case JsonValueKind.Null:
+                        ret += "null";
+                        break;
+                    case JsonValueKind.String:
+                        ret += currEle.GetString();
+                        break;
+                    case JsonValueKind.True:
+                        ret += "true";
+                        break;
+                    case JsonValueKind.Number:
+                        ret += currEle.ToString();
+                        break;
+                }
+                ret += "\"";
+            }
+            ret += "]";
+            return ret;
+        }
+
+        private protected virtual string TransformSimpleKey(string? key)
+        {
+            key = Camelize(key);
+            return Sequence.TransformKey(key);
+        }
+
+        private protected virtual bool IsTransformedEnumValue(string? key)
+        {
+            key = Camelize(key);
+            if (Sequence.IsTransformedEnum(key))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private protected virtual object TransformPotentialEnumValue(string? key, object value)
+        {
+            key = Camelize(key);
+            //Console.WriteLine("transforming enum value...." + (value.GetType().Name));
+            if (Sequence.IsTransformedEnum(key))
+            {
+                //Console.WriteLine("transforming enum value....");
+
+                key = Camelize(key);
+                return Sequence.TransformEnumValue(key, value.ToString());
+            }
+            return value;
+        }
+
+        private SequenceInfo? _sequenceInfo = null;
+
+        // Built on first use: BuildSequenceInfo is virtual and walks this instance's properties by
+        // reflection, so it must not run from the constructor.
+        private SequenceInfo Sequence => _sequenceInfo ??= BuildSequenceInfo(3);
+
+        private protected virtual SequenceInfo BuildSequenceInfo(int startSequence)
+        {
+            SequenceInfo info = new SequenceInfo(startSequence);
+            var props = this.GetType().GetProperties(System.Reflection.BindingFlags.Public |
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.FlattenHierarchy);
+            foreach (var prop in props)
+            {
+                bool isParam = false;
+                string? wcName = null;
+                foreach (var attr in prop.GetCustomAttributes(true))
+                {
+                    if (attr is ParameterAttribute)
+                    {
+                        isParam = true;
+                    }
+                    if (attr is WCWidgetMemberNameAttribute memberName)
+                    {
+                        wcName = Camelize(memberName.Name);
+                    }
+                    if (attr is WCAttributeNameAttribute attributeName)
+                    {
+                        wcName = attributeName.Name;
+                    }
+                }
+
+                var pType = prop.PropertyType;
+                Dictionary<string, string>? wcEnumTransform = null;
+                if (pType != null)
+                {
+                    if (pType.IsEnum)
+                    {
+                        wcEnumTransform = GetWCEnumTransform(pType);
+                    }
+                }
+
+                if (isParam)
+                {
+                    var key = Camelize(prop.Name);
+                    // "name" in the serialized description is the renderer's id for the component, so a Name
+                    // parameter is serialized as "formName" and rendered back as the element's name attribute.
+                    if (key == "name")
+                    {
+                        key = "formName";
+                        wcName ??= "name";
+                    }
+                    info.AddSequence(key, wcName, wcEnumTransform);
+                }
+            }
+
+            return info;
+        }
+
+        // enumType intentionally unannotated: PropertyInfo.PropertyType cannot satisfy annotations, so one here would only move the warning to the caller.
+        [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "The trimmer preserves all fields of enum types that are kept, and enum parameter property types are kept with their declaring component.")]
+        private Dictionary<string, string>? GetWCEnumTransform(Type enumType)
+        {
+            Dictionary<string, string>? wcEnumTransform = null;
+            foreach (var f in enumType.GetFields())
+            {
+                if (f.IsPublic && !f.IsSpecialName)
+                {
+                    foreach (var attr in f.GetCustomAttributes(true))
+                    {
+                        if (attr is WCEnumNameAttribute enumName)
+                        {
+                            if (wcEnumTransform == null)
+                            {
+                                wcEnumTransform = new Dictionary<string, string>();
+                            }
+                            wcEnumTransform.Add(f.Name.ToLower(), Camelize(enumName.Name));
+                        }
+                    }
+                }
+            }
+            return wcEnumTransform;
+        }
+
+        /// <inheritdoc />
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            if (DirectRenderElementName.Length == 0)
+            {
+                throw new InvalidOperationException($"{GetType().Name} has no element of its own; render one of the components derived from it.");
+            }
+
+            string? spinalName = ToSpinal(this.RendererType);
+            string className = "igb-" + spinalName;
+            if (Class != null)
+            {
+                className = Class;
+            }
+
+            if (UseDirectRender)
+            {
+                builder.OpenElement(0, DirectRenderElementName);
+                builder.AddAttribute(1, "class", className);
+                var attributes = GatherSimpleAttributes();
+                builder.AddAttribute(2, "data-ig-id", _containerId);
+
+                foreach (var key in Sequence.AttributeKeys)
+                {
+                    if (attributes.ContainsKey(key))
+                    {
+                        var sequence = Sequence.GetSequence(key);
+                        var tKey = TransformSimpleKey(key);
+
+                        var val = attributes[key];
+                        if (val is bool)
+                        {
+                            if ((bool)val == false)
+                            {
+                                continue;
+                            }
+                        }
+
+                        var attributeVal = attributes[key];
+                        if (IsTransformedEnumValue(key))
+                        {
+                            attributeVal = TransformPotentialEnumValue(key, attributeVal);
+                        }
+                        //Console.WriteLine("adding attribute: " + tKey + ", " + attributes[key]);
+                        builder.AddAttribute(sequence, ToSpinal(ToPascal(tKey)), attributeVal);
+                    }
+                }
+
+                builder.AddMultipleAttributes(4 + Sequence.MaxSequence, AdditionalAttributes);
+
+                builder.AddElementReferenceCapture(5 + 15 + Sequence.MaxSequence, delegate (ElementReference value)
+                {
+                    contEle = value;
+                });
+
+                //builder.AddMarkupContent(6 + 15 + Sequence.MaxSequence, "\r\n    ");
+                builder.OpenComponent<CascadingValue<IgbComponentBase>>(6); // TODO: This '6' here might be a bug because it doesn't seem to match the other line sequence numbers
+                builder.AddAttribute(7 + 15 + Sequence.MaxSequence, "Value", this);
+                builder.AddAttribute(8 + 15 + Sequence.MaxSequence, "Name", ParentTypeName);
+                builder.AddAttribute(9 + 15 + Sequence.MaxSequence, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
+                {
+                    //builder2.AddMarkupContent(10 + 15 + Sequence.MaxSequence, "\r\n        ");
+                    builder2.AddContent(11 + 15 + Sequence.MaxSequence, ChildContent);
+                    //builder2.AddMarkupContent(12 + 15 + Sequence.MaxSequence, "\r\n    ");
+                });
+                builder.CloseComponent();
+                //builder.AddMarkupContent(13 + 15 + Sequence.MaxSequence, "\r\n");
+
+                builder.CloseElement();
+                return;
+            }
+
+            // The client renderer adopts this element (data-ig-root) and drives it through descriptions.
+            builder.OpenElement(0, DirectRenderElementName);
+            builder.AddAttribute(1, "class", className);
+            builder.AddAttribute(2, "data-ig-id", _containerId);
+            builder.AddAttribute(3, "data-ig-root", true);
+            builder.AddMultipleAttributes(4, AdditionalAttributes);
+            builder.AddElementReferenceCapture(5, delegate (ElementReference value)
+            {
+                contEle = value;
+            });
+            builder.OpenComponent<CascadingValue<IgbComponentBase>>(6);
+            builder.AddAttribute(7, "Value", this);
+            builder.AddAttribute(8, "Name", ParentTypeName);
+            builder.AddAttribute(9, "ChildContent", (RenderFragment)delegate (RenderTreeBuilder builder2)
+            {
+                builder2.AddContent(10, ChildContent);
+            });
+            builder.CloseComponent();
+            if (NeedsDynamicContent)
+            {
+                // None of the current elements has a default slot, so the hidden holder is never projected too.
+                builder.OpenComponent<DynamicContentHolder>(11);
+                builder.AddComponentReferenceCapture(12, delegate (object __value)
+                {
+                    Holder = (DynamicContentHolder)__value;
+                });
+                builder.CloseComponent();
+            }
+            builder.CloseElement();
+        }
+
+        internal Dictionary<string, object>[]? DeserializeDictionaryArray(string batch)
+        {
+            return JsonSerializer.Deserialize(batch, SerializerContext.DictionaryStringObjectArray);
+        }
+
+        private Dictionary<string, DynamicContentInfo> _dynamicContentInfos = new Dictionary<string, DynamicContentInfo>();
+
+        private Dictionary<string, object?> _contentTemplates = new Dictionary<string, object?>();
+        private Dictionary<string, Type> _contentTemplateTypes = new Dictionary<string, Type>();
+        internal void UpdateTemplate(string templateId, object? template, Type type)
+        {
+            _contentTemplates[templateId] = template;
+            _contentTemplateTypes[templateId] = type;
+        }
+
+        internal object? FindTemplate(string templateId)
+        {
+            if (_contentTemplates.ContainsKey(templateId))
+            {
+                return _contentTemplates[templateId];
+            }
+            return null;
+        }
+
+        internal void AdjustDynamicContent(string? containerId, string? contentType, string? templateId, string? contentId, string? actionType, string? args)
+        {
+            switch (actionType)
+            {
+                case "Add":
+                {
+                    if (contentType == null || templateId == null || contentId == null)
+                    {
+                        return;
+                    }
+                    DynamicContentInfo? dynamicContent = BuildDynamicContentInfo(contentType, templateId);
+                    if (dynamicContent == null)
+                    {
+                        return;
+                    }
+                    dynamicContent.Owner = this;
+                    dynamicContent.RefName = contentId;
+                    _dynamicContentInfos[contentId] = dynamicContent;
+
+                    var template = FindTemplate(templateId);
+                    if (template == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        dynamicContent.UpdateTemplate(template);
+                    }
+
+                    Holder?.AddDynamicContent(dynamicContent);
+                    break;
+                }
+                case "Remove":
+                {
+                    if (contentId == null)
+                    {
+                        return;
+                    }
+                    if (_dynamicContentInfos.ContainsKey(contentId))
+                    {
+                        DynamicContentInfo dynamicContent = _dynamicContentInfos[contentId];
+                        _dynamicContentInfos.Remove(contentId);
+                        Holder?.RemoveDynamicContent(dynamicContent);
+                    }
+                    break;
+                }
+                case "Update":
+                {
+                    if (contentId == null)
+                    {
+                        return;
+                    }
+                    if (_dynamicContentInfos.ContainsKey(contentId))
+                    {
+                        DynamicContentInfo dynamicContent = _dynamicContentInfos[contentId];
+
+                        object? context = null;
+                        if (args != null)
+                        {
+                            var argsDic = JsonSerializer.Deserialize(args, SerializerContext.DictionaryStringObject);
+                            context = ConvertReturnValue(argsDic);
+                        }
+                        dynamicContent.UpdateContext(context);
+                    }
+                    break;
+                }
+            }
+        }
+
+        private Type? TemplateContentType(string? templateId)
+        {
+            if (templateId == null || !_contentTemplateTypes.ContainsKey(templateId))
+            {
+                return null;
+            }
+
+            return _contentTemplateTypes[templateId];
+        }
+
+        private Dictionary<Type, Func<DynamicContentInfo?>> _dynamicContentBuilders = new Dictionary<Type, Func<DynamicContentInfo?>>();
+        [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "DynamicContentInfo<T> is class-constrained and templateContentType only ever holds reference types (typeof literals via the internal UpdateTemplate relay), so the instantiation uses AOT shared generics. The net9+ analyzer proves this via the class constraint; this suppression covers the net8 analyzer only.")]
+        private DynamicContentInfo? BuildDynamicContentInfo(string? contentType, string? templateId)
+        {
+            var templateContentType = TemplateContentType(templateId);
+            if (templateContentType != null)
+            {
+                if (!_dynamicContentBuilders.ContainsKey(templateContentType))
+                {
+                    if (contentType == "TemplateContent")
+                    {
+                        var createType = typeof(DynamicContentInfo<>).MakeGenericType(templateContentType);
+                        var nonGen = typeof(DynamicContentInfo);
+                        System.Linq.Expressions.NewExpression newExp = System.Linq.Expressions.Expression.New(createType);
+                        System.Linq.Expressions.UnaryExpression conversion = System.Linq.Expressions.Expression.Convert(newExp, nonGen);
+
+                        var getNew = System.Linq.Expressions.Expression.Lambda<Func<DynamicContentInfo>>(conversion).Compile();
+                        _dynamicContentBuilders[templateContentType] = getNew;
+                    }
+                    else
+                    {
+                        //TODO: other types
+                        _dynamicContentBuilders[templateContentType] = () => null;
+                    }
+                }
+                return _dynamicContentBuilders[templateContentType]();
+            }
+            return null;
+        }
+
+        private protected virtual bool NeedsDynamicContent
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        private DynamicContentHolder? Holder { get; set; }
+
+        /// <inheritdoc />
+        protected override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                MarkContentDirty();
+                // start the readiness poll, intentionally unawaited
+                _ = EnsureReady();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        //protected override void OnParametersSet()
+        //{
+        //    Console.WriteLine("on parameters set");
+        //}
+        // protected override bool ShouldRender()
+        // {
+        //     return false;
+        // }
+
+        /// <summary>Completes once the client-side component exists and has its parameters, so methods that need it can be called.</summary>
+        public async Task EnsureReady()
+        {
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime))
+            {
+                return;
+            }
+
+            var jsRuntime = JsRuntime;
+            if (jsRuntime == null)
+            {
+                return;
+            }
+
+            //Console.WriteLine("ensuring ready: " + this.GetType().Name);
+            while (!this._ready)
+            {
+                bool ready = await jsRuntime.InvokeAsync<bool>("igCheckReady", new object[] { _containerId });
+                //Console.WriteLine(ready + " -> " + this.GetType().Name);
+                if (ready)
+                {
+                    await jsRuntime.InvokeVoidAsync("igWaitForLoaded");
+                    OnReady();
+                    break;
+                }
+                await Task.Delay(100);
+            }
+        }
+
+        internal void OnReady()
+        {
+            this._ready = true;
+
+            QueueUpdate();
+        }
+
+        /// <summary>Marks <paramref name="propertyName"/> as changed so the next render sends it to the client.</summary>
+        internal void MarkPropDirty(string? propertyName)
+        {
+            if (propertyName == null)
+            {
+                return;
+            }
+            _isDirty[propertyName] = true;
+            _serializeDirty = true;
+            //Console.WriteLine("dirty: " + propertyName);
+            MarkContentDirty();
+        }
+
+        private bool _isContentDirty = false;
+        private void MarkContentDirty()
+        {
+            if (!_isContentDirty)
+            {
+                //Console.WriteLine("sending message");
+                _isContentDirty = true;
+                SendDescriptionMessage();
+            }
+        }
+
+        private void SendDescriptionMessage()
+        {
+            if (disposedValue)
+            {
+                return;
+            }
+            RendererMessage m = new RendererMessage();
+            m.Type = ("description");
+            Enqueue(m);
+            QueueUpdate();
+        }
+
+        internal void OnPropertyPropagatedOut(string name, string propertyName)
+        {
+            var camelName = propertyName.Substring(0, 1).ToLower() + propertyName.Substring(1);
+            SendImmediateDeltaDescription((n, p) => n == name && p == camelName);
+        }
+
+        private void SendImmediateDeltaDescription(SerializationFilter filter)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (Utf8JsonWriter uw = new Utf8JsonWriter(stream))
+                {
+                    SerializationContext c = new SerializationContext(uw, filter);
+                    Serialize(c);
+
+                    RendererMessage m = new RendererMessage();
+                    m.Type = "descriptionDelta";
+                    m.SetData("skipApply", "true");
+
+                    uw.Flush();
+                    var desc = Encoding.UTF8.GetString(stream.ToArray());
+                    m.SetData("description", desc);
+
+                    _ = SendMessageImmediate(m);
+                }
+            }
+        }
+
+        /// <summary>Whether <paramref name="propertyName"/> changed since the component last sent its properties to the client.</summary>
+        private protected bool IsPropDirty(String propertyName)
+        {
+            if (_isDirty.ContainsKey(propertyName))
+            {
+                return _isDirty[propertyName];
+            }
+
+            return false;
+        }
+
+        internal void ChildDirty(object child)
+        {
+            _serializeDirty = true;
+            MarkContentDirty();
+        }
+
+        internal virtual void SerializeCore(RendererSerializer ser)
+        {
+            ser.AddStringProp("name", "mainControl");
+        }
+
+        private String _cachedSerializedContent = "";
+
+        /// <summary>The type name of this component.</summary>
+        internal virtual string? RendererType
+        {
+            get
+            {
+                var typeName = (this.GetType().Name.Replace("View", "View"));
+                if (typeName.StartsWith("Igb"))
+                {
+                    typeName = typeName.Substring(3);
+                }
+                return typeName;
+            }
+        }
+
+        internal virtual Type? GenericType => null;
+
+        void JsonSerializable.Serialize(SerializationContext context, string? propertyName) => Serialize(context, propertyName);
+
+        internal void Serialize(SerializationContext context, string? propertyName = null)
+        {
+            RendererSerializer ser = new RendererSerializer(context, this, RendererName);
+            ser.Type = RendererType;
+            ser.Start(propertyName);
+            SerializeCore(ser);
+            ser.End();
+        }
+
+        internal string Serialize()
+        {
+            if (_serializeDirty)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    using (Utf8JsonWriter uw = new Utf8JsonWriter(stream))
+                    {
+                        SerializationContext c = new SerializationContext(uw, null);
+                        //RendererSerializer ser = new RendererSerializer(uw);
+
+                        Serialize(c);
+                        uw.Flush();
+                        _cachedSerializedContent = Encoding.UTF8.GetString(stream.ToArray());
+                    }
+                }
+                _serializeDirty = false;
+            }
+            return _cachedSerializedContent;
+        }
+
+        //private Dictionary<Long, Semaphore> _methodSemaphores = new Dictionary<Long, Semaphore>();
+        private Dictionary<long, Object> _methodReturns = new Dictionary<long, Object>();
+        private Object _semLock = new Object();
+
+        /// <summary>
+        /// Shared by every instance because the WebView callback paths return only the invoke ID,
+        /// without a container ID to identify the originating component.
+        /// </summary>
+        /// <remarks>
+        /// Only use <see cref="Interlocked.Increment(ref long)" /> as this is incremented from any thread.
+        /// </remarks>
+        static long _invokeId = 0;
+
+        /// <summary>Calls <paramref name="methodName"/> on the client-side component with <paramref name="arguments"/> and returns its result.</summary>
+        protected async Task<object?> InvokeMethod(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
+        {
+            return await InvokeMethodHelper(null, methodName, arguments, types, nativeElements);
+        }
+
+        /// <summary>Calls <paramref name="methodName"/> on the client-side component and returns its result synchronously; only available where .NET runs in the browser.</summary>
+        protected object? InvokeMethodSync(string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements = null)
+        {
+            return InvokeMethodHelperSync(null, methodName, arguments, types, nativeElements);
+        }
+
+        private IgbJsonContext? _serializerContext = null;
+        private IgbJsonContext SerializerContext
+        {
+            get
+            {
+                if (_serializerContext == null)
+                {
+                    var def = Runtime.Settings?.JsonSerializerOptions;
+                    var options = new JsonSerializerOptions();
+                    options.MaxDepth = def != null ? def.MaxDepth : 0;
+                    _serializerContext = new IgbJsonContext(options);
+                }
+                return _serializerContext;
+            }
+        }
+
+        internal object? InvokeMethodHelperSync(string? target, string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements)
+        {
+            if (!_ready)
+            {
+                throw new InvalidOperationException("cannot invoke method until main component is ready.");
+            }
+            if (JsInProcessRuntime == null)
+            {
+                throw new InvalidOperationException("cannot synchronously invoke a method without IJSInProcessRuntime");
+            }
+            RendererMessage m = new RendererMessage();
+            m.Type = ("invokeMethod");
+            string?[] args = new string?[arguments.Length];
+            string[] typeStrings = new string[arguments.Length];
+            long invokeId = Interlocked.Increment(ref _invokeId);
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                args[i] = GetStringArg(arguments[i], types[i]);
+                typeStrings[i] = "\"" + types[i] + "\"";
+            }
+            m.SetData("isSync", "true");
+            m.SetData("methodName", "\"" + methodName + "\"");
+            if (target != null)
+            {
+                m.SetData("target", "\"" + target + "\"");
+            }
+            m.SetData("invokeId", ((long)invokeId).ToString());
+            m.SetData("arguments", "[" + String.Join(", ", args) + "]");
+            m.SetData("types", "[" + String.Join(", ", typeStrings) + "]");
+            m.NativeElements = nativeElements;
+            var ret = SendMessageSyncImmediate(m);
+
+            if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
+            {
+                var str = ((JsonElement)ret).GetString();
+                if (str != null)
+                {
+                    var retDict = JsonSerializer.Deserialize(str, SerializerContext.DictionaryStringObject);
+
+                    if (retDict != null && retDict.ContainsKey("retType") &&
+                        retDict["retType"] is JsonElement &&
+                        ((JsonElement)retDict["retType"]).GetString() == "promise")
+                    {
+                        throw new Exception($"Invocation of method \"{methodName}\" returned a promise. Please use the async version of the method to get the value.");
+                    }
+
+                    ret = retDict;
+                }
+            }
+            //Console.WriteLine("got return");
+            //Console.WriteLine(ret);
+            return ret;
+
+        }
+
+        Dictionary<long, TaskCompletionSource<object?>> _methodTasks = new Dictionary<long, TaskCompletionSource<object?>>();
+
+        internal async Task<object?> InvokeMethodHelper(string? target, string methodName, object?[] arguments, string[] types, ElementReference[]? nativeElements)
+        {
+            if (!_ready)
+            {
+                throw new InvalidOperationException("cannot invoke method until main component is ready.");
+            }
+            RendererMessage m = new RendererMessage();
+            m.Type = ("invokeMethod");
+            string?[] args = new string?[arguments.Length];
+            string[] typeStrings = new string[arguments.Length];
+            long invokeId = Interlocked.Increment(ref _invokeId);
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                args[i] = GetStringArg(arguments[i], types[i]);
+                typeStrings[i] = "\"" + types[i] + "\"";
+            }
+            m.SetData("methodName", "\"" + methodName + "\"");
+            if (target != null)
+            {
+                m.SetData("target", "\"" + target + "\"");
+            }
+            m.SetData("invokeId", ((long)invokeId).ToString());
+            m.SetData("arguments", "[" + String.Join(", ", args) + "]");
+            m.SetData("types", "[" + String.Join(", ", typeStrings) + "]");
+            m.NativeElements = nativeElements;
+            var ret = await SendMessageImmediate(m);
+
+            TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
+            // A return can arrive on the dispatcher while a call made off it is still getting here.
+            lock (_semLock)
+            {
+                _methodTasks[invokeId] = tcs;
+            }
+
+            if (ret is JsonElement && ((JsonElement)ret).ValueKind == JsonValueKind.String)
+            {
+                var str = ((JsonElement)ret).GetString() ?? "";
+                var retDict = JsonSerializer.Deserialize(str, SerializerContext.DictionaryStringObject);
+                ret = retDict;
+
+                if (retDict != null && retDict.ContainsKey("retType") &&
+                    retDict["retType"] is JsonElement &&
+                    ((JsonElement)retDict["retType"]).GetString() == "promise")
+                {
+                    // did we already get a value returned for this method invoke before we could start up a task?
+                    object? early;
+                    bool arrivedEarly;
+                    lock (_semLock)
+                    {
+                        arrivedEarly = _methodReturns.TryGetValue(invokeId, out early);
+                    }
+                    if (arrivedEarly)
+                    {
+                        tcs.TrySetResult(early);
+                    }
+                }
+                else
+                {
+                    tcs.TrySetResult(ret);
+                }
+            }
+            var result = await tcs.Task;
+
+            lock (_semLock)
+            {
+                _methodTasks.Remove(invokeId);
+                _methodReturns.Remove(invokeId);
+            }
+
+            return result;
+        }
+
+        private string? GetStringArg(object? argument, string type)
+        {
+            if (argument == null)
+            {
+                return null;
+            }
+            if (type == "Number" && argument is double &&
+            double.IsNaN((double)argument))
+            {
+                return null;
+            }
+            if (type == "Boolean" && argument is bool)
+            {
+                return ((bool)argument).ToString().ToLower();
+            }
+            if (type == "Date")
+            {
+                if (argument is DateTime)
+                {
+                    argument = DateToString((DateTime)argument);
+                }
+                return "\"" + argument.ToString() + "\"";
+            }
+            if (type == "NumberArray")
+            {
+                var str = "[";
+                if (argument is int[])
+                {
+                    var values = (int[])argument;
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            str += ",";
+                        }
+                        str += values[i].ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+                if (argument is double[])
+                {
+                    var values = (double[])argument;
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            str += ",";
+                        }
+                        str += values[i].ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+                str += "]";
+                return str;
+            }
+            if (type == "StringArray")
+            {
+                var str = "[";
+                var values = (string[])argument;
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        str += ",";
+                    }
+                    str += "\"" + values[i].ToString() + "\"";
+                }
+                str += "]";
+                return str;
+            }
+            if (type == "DateArray")
+            {
+                var str = "[";
+                var values = (DateTime[])argument;
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        str += ",";
+                    }
+                    str += "\"" + DateToString((DateTime)values[i]) + "\"";
+                }
+                str += "]";
+                return str;
+            }
+            if (type == "BoolArray")
+            {
+                var str = "[";
+                var values = (bool[])argument;
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        str += ",";
+                    }
+                    str += values[i].ToString().ToLower();
+                }
+                str += "]";
+                return str;
+            }
+
+            return argument.ToString();
+        }
+
+        internal void OnRefChanged(string propertyName, object? oldValue, object? newValue, bool isScript, bool isElement, Action<string, object?, object?> refChanged)
+        {
+            _isDirtyRef[propertyName] = true;
+            _isDirty[propertyName] = true;
+            _serializeDirty = true;
+            string? refId = _containerId + "/" + propertyName;
+
+            if (newValue is IJsonData)
+            {
+                newValue = ((IJsonData)newValue).ToRef();
+            }
+
+            // Check if the incoming object has BlazorPlainObjectAttribute
+            if (newValue != null)
+            {
+                var valueType = newValue.GetType();
+                // Use IsDefined for better performance and only check if it implements JsonSerializable
+                if (newValue is JsonSerializable && Attribute.IsDefined(valueType, typeof(BlazorPlainObjectAttribute), true))
+                {
+                    try
+                    {
+                        using (var stream = new System.IO.MemoryStream())
+                        using (var writer = new System.Text.Json.Utf8JsonWriter(stream))
+                        {
+                            var context = new SerializationContext(writer, null);
+                            ((JsonSerializable)newValue).Serialize(context);
+                            writer.Flush();
+                            var json = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+
+                            // Ensure we always send syntactically valid JSON, even if nothing was written
+                            if (string.IsNullOrWhiteSpace(json))
+                            {
+                                json = "null";
+                            }
+
+                            // Use LocalJson to ensure proper escaping
+                            newValue = new LocalJson(json).ToRef();
+                            isScript = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException(
+                            $"Failed to serialize BlazorPlainObject of type {valueType.Name} for property '{propertyName}': {ex.Message}",
+                            ex);
+                    }
+                }
+            }
+
+            if (!isElement && !isScript)
+            {
+                if (newValue is IgbComponentBase || newValue is BaseJsonSerializable)
+                {
+                    isElement = true;
+                }
+            }
+
+            if (newValue is string && ((string)newValue).StartsWith("json:::"))
+            {
+                isScript = true;
+            }
+            if (newValue is string && ((string)newValue).StartsWith("localJson:::"))
+            {
+                isScript = true;
+            }
+
+            if (!isScript)
+            {
+                if (isElement)
+                {
+                    if (newValue == null)
+                    {
+                        refId = null;
+                    }
+                    else
+                    {
+                        if (oldValue is BaseJsonSerializable)
+                        {
+                            ((BaseJsonSerializable)oldValue).Parent = null;
+                        }
+                        if (newValue is BaseJsonSerializable)
+                        {
+                            refId = _containerId + "/" + ((BaseJsonSerializable)newValue).RendererName;
+                            ((BaseJsonSerializable)newValue).Parent = this;
+                        }
+                        else
+                        {
+                            if (!((IgbComponentBase)newValue).disposedValue)
+                            {
+                                refId = ((IgbComponentBase)newValue)._containerId;
+                                newValue = "containerId:::" + refId;
+                                OnRefChanged(refId, "\"" + newValue + "\"");
+                            }
+                        }
+                    }
+                }
+                else if (_dataSourceManager != null)
+                {
+                    refId = _dataSourceManager.OnRefChanged(propertyName, newValue);
+                }
+            }
+            else if (newValue == null)
+            {
+                // Clearing an event handler or script ref: the client is told the ref is gone, so it
+                // unsubscribes. Without this the unset path threw on newValue.ToString().
+                OnRefChanged(refId, null);
+            }
+            else
+            {
+                var str = newValue.ToString();
+
+                if (str != null && (str.StartsWith("event:::") || str.StartsWith("nativeEvent:::") || str.StartsWith("json:::") || str.StartsWith("localJson:::") || str.StartsWith("template:::")))
+                {
+                    OnRefChanged(refId, "\"" + newValue.ToString() + "\"");
+                }
+                else
+                {
+                    OnRefChanged(refId, "\"script:::" + newValue.ToString() + "\"");
+                }
+            }
+            if (refId != null)
+            {
+                refChanged(refId, oldValue, newValue);
+            }
+        }
+
+        internal string DateToString(DateTime val)
+        {
+            return val.ToString("o");
+        }
+
+        void RefSink.OnRefChanged(string refName, object? refValue) => OnRefChanged(refName, refValue);
+
+        internal void OnRefChanged(string refName, object? refValue)
+        {
+            RendererMessage m = new RendererMessage();
+            m.Type = ("refChanged");
+            m.SetData("refName", "\"" + refName + "\"");
+            if (refValue is IJSDataSource)
+            {
+                var ds = (IJSDataSource)refValue;
+                var dataIntents = ds.GetDataIntentsAsJson();
+                if (dataIntents != null)
+                {
+                    m.SetData("dataIntents", dataIntents);
+                }
+                if (ds.DataSourceType == JSDataSourceType.Json)
+                {
+                    if (!ds.IsSent)
+                    {
+                        ds.IsSent = true;
+                        m.SetData("refValue", refValue == null ? "null" : ((JsonDataSource)refValue).ToJson());
+                        m.SetData("dateCache", refValue == null ? "null" : ((JsonDataSource)refValue).GetDateCacheAsJson());
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    var uds = (UnmarshalledDataSource)refValue;
+                    uds.SendCreate(_containerId, refName, dataIntents);
+
+                    return;
+                }
+            }
+            else
+            {
+                m.SetData("refValue", refValue == null ? "null" : refValue.ToString());
+            }
+            SendMessage(m);
+        }
+
+        void RefSink.OnRefNotifyInsertItem(IJSDataSource dataSource, string refName, int index, object? refItem)
+        {
+            if (dataSource.DataSourceType == JSDataSourceType.Json)
+            {
+                RendererMessage m = new RendererMessage();
+                m.Type = ("refNotifyInsertItem");
+                m.SetData("refName", "\"" + refName + "\"");
+                m.SetData("index", index.ToString());
+                m.SetData("newItem", refItem == null ? "null" : ((JsonDataSourceItem)refItem).ToJson());
+
+                if (!((JsonDataSource)dataSource).DateCacheReady)
+                {
+                    m.SetData("dateCache", ((JsonDataSource)dataSource).GetDateCacheAsJson());
+                }
+                //Console.WriteLine("sending insert message");
+                SendMessage(m);
+            }
+            else
+            {
+                var uds = (UnmarshalledDataSource)dataSource;
+                uds.SendInsert(_containerId, refName, index);
+            }
+        }
+
+        void RefSink.OnRefNotifyRemoveItem(IJSDataSource dataSource, string refName, int index, object? oldItem)
+        {
+            if (dataSource.DataSourceType == JSDataSourceType.Json)
+            {
+                RendererMessage m = new RendererMessage();
+                m.Type = ("refNotifyRemoveItem");
+                m.SetData("refName", "\"" + refName + "\"");
+                m.SetData("index", index.ToString());
+                m.SetData("oldItem", oldItem == null ? "null" : ((JsonDataSourceItem)oldItem).ToJson());
+                if (!((JsonDataSource)dataSource).DateCacheReady)
+                {
+                    m.SetData("dateCache", ((JsonDataSource)dataSource).GetDateCacheAsJson());
+                }
+                SendMessage(m);
+            }
+            else
+            {
+                var uds = (UnmarshalledDataSource)dataSource;
+                uds.SendRemove(_containerId, refName, index);
+            }
+        }
+
+        void RefSink.OnRefNotifyClearItems(IJSDataSource dataSource, string refName, object? refValue)
+        {
+            if (dataSource.DataSourceType == JSDataSourceType.Json)
+            {
+                RendererMessage m = new RendererMessage();
+                m.Type = ("refClearItems");
+                m.SetData("refName", "\"" + refName + "\"");
+                m.SetData("refValue", refValue == null ? "null" : ((JsonDataSource)refValue).ToJson());
+                if (!((JsonDataSource)dataSource).DateCacheReady)
+                {
+                    m.SetData("dateCache", ((JsonDataSource)dataSource).GetDateCacheAsJson());
+                }
+                SendMessage(m);
+            }
+            else
+            {
+                var uds = (UnmarshalledDataSource)dataSource;
+                uds.SendClear(_containerId, refName);
+            }
+        }
+
+        void RefSink.OnRefNotifySetItem(IJSDataSource dataSource, string refName, int index, object? oldItem, object? newItem)
+        {
+            if (dataSource.DataSourceType == JSDataSourceType.Json)
+            {
+                RendererMessage m = new RendererMessage();
+                m.Type = ("refNotifySetItem");
+                m.SetData("refName", "\"" + refName + "\"");
+                m.SetData("index", index.ToString());
+                m.SetData("oldItem", oldItem == null ? "null" : ((JsonDataSourceItem)oldItem).ToJson());
+                m.SetData("newItem", oldItem == null ? "null" : ((JsonDataSourceItem?)newItem)?.ToJson());
+                if (!((JsonDataSource)dataSource).DateCacheReady)
+                {
+                    m.SetData("dateCache", ((JsonDataSource)dataSource).GetDateCacheAsJson());
+                }
+                SendMessage(m);
+            }
+            else
+            {
+                var uds = (UnmarshalledDataSource)dataSource;
+                uds.SendUpdate(_containerId, refName, index, false);
+            }
+        }
+
+        void RefSink.OnRefNotifyUpdateItem(IJSDataSource dataSource, string refName, int index, object? refItem, bool syncDataOnly)
+        {
+            if (dataSource.DataSourceType == JSDataSourceType.Json)
+            {
+                RendererMessage m = new RendererMessage();
+                m.Type = ("refNotifyUpdateItem");
+                m.SetData("refName", "\"" + refName + "\"");
+                m.SetData("index", index.ToString());
+                m.SetData("item", refItem == null ? "null" : ((JsonDataSourceItem)refItem).ToJson());
+                m.SetData("syncDataOnly", syncDataOnly ? "true" : "false");
+                if (!((JsonDataSource)dataSource).DateCacheReady)
+                {
+                    m.SetData("dateCache", ((JsonDataSource)dataSource).GetDateCacheAsJson());
+                }
+                SendMessage(m);
+            }
+            else
+            {
+                var uds = (UnmarshalledDataSource)dataSource;
+                uds.SendUpdate(_containerId, refName, index, syncDataOnly);
+            }
+        }
+
+        private void SendMessage(RendererMessage m)
+        {
+            if (disposedValue)
+            {
+                return;
+            }
+            //Console.WriteLine("sending message");
+            Enqueue(m);
+            QueueUpdate();
+        }
+
+        private async Task<object?> SendMessageImmediate(RendererMessage m)
+        {
+            // The send must start under this lock, which is also where disposal closes it.
+            Task<object?> sent;
+            lock (_messageQueueLock)
+            {
+                if (disposedValue)
+                {
+                    return null;
+                }
+                Update();
+                sent = SendJsonImmediate(m);
+            }
+            return await sent;
+        }
+
+        private object? SendMessageSyncImmediate(RendererMessage m)
+        {
+            lock (_messageQueueLock)
+            {
+                if (disposedValue)
+                {
+                    return null;
+                }
+                UpdateSync();
+                return SendJsonImmediateSync(m);
+            }
+        }
+
+        private void Enqueue(RendererMessage m)
+        {
+            lock (_messageQueueLock)
+            {
+                // Also checked here so disposal cannot land between a caller's check and its enqueue.
+                if (disposedValue)
+                {
+                    return;
+                }
+                _messageQueue.AddLast(m);
+            }
+        }
+
+        private void QueueUpdate()
+        {
+            bool schedule = false;
+            lock (_messageQueueLock)
+            {
+                if (!_updateQueued && _ready)
+                {
+                    _updateQueued = true;
+                    schedule = true;
+                }
+            }
+
+            if (schedule)
+            {
+                Task.Delay(0).ContinueWith((t) => InvokeAsync(Update));
+            }
+        }
+
+        private void Update()
+        {
+            // Spans the whole drain, not just the dequeue, so two flushes cannot interleave their
+            // sends. A thread already holding it can take it again, so nesting is fine.
+            lock (_messageQueueLock)
+            {
+                this._updateQueued = false;
+
+                if (!_ready || disposedValue)
+                {
+                    return;
+                }
+
+                //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
+                while (_messageQueue != null && _messageQueue.First != null && _messageQueue.Count > 0)
+                {
+                    RendererMessage m = _messageQueue.First.Value;
+                    _messageQueue.RemoveFirst();
+                    ProcessMessage(m);
+                }
+            }
+        }
+
+        private void UpdateSync()
+        {
+            lock (_messageQueueLock)
+            {
+                this._updateQueued = false;
+
+                if (!_ready || disposedValue)
+                {
+                    return;
+                }
+
+                while (_messageQueue.Count > 0 && _messageQueue.First != null)
+                {
+                    RendererMessage m = _messageQueue.First.Value;
+                    _messageQueue.RemoveFirst();
+                    ProcessMessageSync(m);
+                }
+            }
+        }
+
+        private string _description = "description";
+        private bool disposedValue;
+
+        private void ProcessMessage(RendererMessage m)
+        {
+            if (m.Type == _description)
+            {
+                if (UseDirectRender)
+                {
+                    _isContentDirty = false;
+                    return;
+                }
+                //Console.WriteLine("is description: " + this.GetType().Name);
+                string ser = this.Serialize();
+                //Console.WriteLine("ser");
+                //Console.WriteLine(ser);
+                m.SetData("description", ser);
+                _isContentDirty = false;
+            }
+            else if (m.Type == "refChanged")
+            {
+                m.SetData("eventBehavior", "\"" + DefaultEventBehavior.ToString().ToLower() + "\"");
+            }
+            string json = m.ToJson();
+            //Console.WriteLine("message");
+            //Console.WriteLine("json: " + json);
+            SendJson(json, m.NativeElements);
+        }
+
+        private void ProcessMessageSync(RendererMessage m)
+        {
+            if (m.Type == _description)
+            {
+                if (UseDirectRender)
+                {
+                    _isContentDirty = false;
+                    return;
+                }
+                string ser = this.Serialize();
+                m.SetData("description", ser);
+                _isContentDirty = false;
+            }
+            else if (m.Type == "refChanged")
+            {
+                m.SetData("eventBehavior", "\"" + DefaultEventBehavior.ToString().ToLower() + "\"");
+            }
+            string json = m.ToJson();
+            SendJsonSync(json, m.NativeElements);
+        }
+
+        private async Task<object?> SendJsonImmediate(RendererMessage m)
+        {
+            if (_igBlazor == null || !Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            {
+                return null;
+            }
+
+            if (m.Type == _description)
+            {
+                if (UseDirectRender)
+                {
+                    _isContentDirty = false;
+                    return null;
+                }
+                string ser = this.Serialize();
+                m.SetData("description", ser);
+                _isContentDirty = false;
+            }
+
+            string json = m.ToJson();
+
+            if (m.NativeElements != null)
+            {
+                return await JsRuntime.InvokeAsync<object>("igSendMessage",
+                    new object[] { this._containerId, json,
+                    GetObjectRef(), m.NativeElements });
+            }
+            else
+            {
+                //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
+                return await JsRuntime.InvokeAsync<object>("igSendMessage",
+                    new object[] { this._containerId, json,
+                    GetObjectRef() });
+            }
+        }
+
+        private object? SendJsonImmediateSync(RendererMessage m)
+        {
+            if (this.JsInProcessRuntime == null)
+            {
+                return null;
+            }
+            if (m.Type == _description)
+            {
+                string ser = this.Serialize();
+                m.SetData("description", ser);
+                _isContentDirty = false;
+            }
+
+            string json = m.ToJson();
+
+            return SendJsonSync(json, m.NativeElements);
+        }
+
+        private void SendJson(string json, ElementReference[]? nativeElements)
+        {
+            //json = "window.sendMessage(`" + this._containerId + "`, `" + json + "`)";
+            //Console.WriteLine(json);
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            {
+                return;
+            }
+
+            if (nativeElements != null)
+            {
+                JsRuntime.InvokeAsync<object>("igSendMessage",
+                    new object[] { this._containerId, json,
+                    GetObjectRef(), nativeElements });
+            }
+            else
+            {
+                JsRuntime.InvokeAsync<object>("igSendMessage",
+                    new object[] { this._containerId, json,
+                    GetObjectRef() });
+            }
+        }
+
+        internal void AttachChild(BaseJsonSerializable child)
+        {
+            if (child == null)
+            {
+                return;
+            }
+            child.Parent = this;
+        }
+
+        internal void AttachChild<T>(BaseCollection<T> child)
+        {
+            if (child == null)
+            {
+                return;
+            }
+            child.Parent = this;
+
+            if (child != null)
+            {
+                for (var i = 0; i < child.Count; i++)
+                {
+                    var subChild = child[i];
+                    if (subChild is BaseJsonSerializable)
+                    {
+                        AttachChild((BaseJsonSerializable)(object)subChild);
+                    }
+                }
+            }
+        }
+
+        internal void DetachChild(BaseJsonSerializable child)
+        {
+            if (child == null)
+            {
+                return;
+            }
+            if (child.Parent == this)
+            {
+                child.Parent = null;
+            }
+        }
+
+        internal void DetachChild<T>(BaseCollection<T> child)
+        {
+            if (child == null)
+            {
+                return;
+            }
+            if (child.Parent == this)
+            {
+                child.Parent = null;
+            }
+        }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Arguments are strings, DotNetObjectReference and ElementReference[]; the return value is consumed as a JsonElement and re-parsed only via the source-generated IgbJsonContext — no user types cross this boundary.")]
+        private object SendJsonSync(string json, ElementReference[]? nativeElements)
+        {
+            //json = "window.sendMessage(`" + this._id + "`, `" + json + "`)";
+            if (this.JsInProcessRuntime == null)
+            {
+                throw new InvalidOperationException("JsInProcessRuntime is not available.");
+            }
+            if (nativeElements != null)
+            {
+                return JsInProcessRuntime.Invoke<object>("igSendMessage",
+                    new object[] {
+                    this._containerId, json,
+                    GetObjectRef(), nativeElements });
+            }
+            else
+            {
+                return JsInProcessRuntime.Invoke<object>("igSendMessage",
+                    new object[] {
+                    this._containerId, json,
+                    GetObjectRef() });
+            }
+        }
+
+        internal object? ReturnToPrimitive(object? returnValue)
+        {
+            return ConvertReturnValue(returnValue, true);
+        }
+
+        internal T[] DowncastArray<T>(object val)
+        {
+            if (val is T[])
+            {
+                return (T[])val;
+            }
+
+            if (val is object[])
+            {
+                var objArr = (object[])val;
+                var ret = new T[objArr.Length];
+                for (var i = 0; i < objArr.Length; i++)
+                {
+                    ret[i] = objArr[i] is T item
+                         ? item
+                         : (T)Convert.ChangeType(objArr[i], typeof(T));
+                }
+
+                return ret;
+            }
+
+            return (T[])val;
+        }
+
+        internal object? ConvertReturnValue(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            return ConvertReturnValue<object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+
+        internal object? ConvertReturnValue<TValue>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            return ConvertReturnValue<TValue, object>(returnValue, transformArrays, typeGuess, acceptsNullIfMarshalDoesNotExist);
+        }
+
+        internal object? ConvertReturnValue<TValue, TItem>(object? returnValue, bool transformArrays = false, string? typeGuess = null, bool acceptsNullIfMarshalDoesNotExist = false)
+        {
+            try
+            {
+                //Console.WriteLine(returnValue.GetType().ToString());
+                if (returnValue is String || returnValue is Dictionary<string, object> || returnValue is JsonElement)
+                {
+                    Dictionary<string, object>? obj;
+                    if (returnValue is String)
+                    {
+                        obj = JsonSerializer.Deserialize((string)returnValue, SerializerContext.DictionaryStringObject);
+                    }
+                    else if (returnValue is JsonElement)
+                    {
+                        var test = returnValue.ToString();
+                        //Console.WriteLine("is ele");
+                        obj = new Dictionary<string, object>();
+                        var j = ((JsonElement)(returnValue));
+                        // if (j.ValueKind == JsonValueKind.String)
+                        // {
+                        //     var str = j.ToString();
+                        //     //Console.WriteLine(j.ToString());
+                        //     JsonDocument document = JsonDocument.Parse(str);
+                        //     if (document.RootElement.ValueKind == JsonValueKind.Object)
+                        //     {
+                        //         obj = JsonSerializer.Deserialize<Dictionary<string, object>>((string)j.GetString());
+                        //     }
+                        //     else
+                        //     {
+                        //         return str;
+                        //     }
+                        // } else
+                        if (j.ValueKind == JsonValueKind.String)
+                        {
+                            returnValue = j.GetString();
+                        }
+                        else if (j.ValueKind == JsonValueKind.Number)
+                        {
+                            returnValue = j.GetDouble();
+                        }
+                        else if (j.ValueKind == JsonValueKind.Array)
+                        {
+                            var str = j.ToString();
+                            //Console.WriteLine(j.ToString());
+                            JsonDocument document = JsonDocument.Parse(str);
+                            if (document.RootElement.ValueKind == JsonValueKind.Array)
+                            {
+                                returnValue = JsonSerializer.Deserialize((string)j.ToString(), SerializerContext.DictionaryStringObjectArray);
+                            }
+                            else
+                            {
+                                return str;
+                            }
+                        }
+                        else if (j.ValueKind == JsonValueKind.Object)
+                        {
+                            //var str = j.ToString();
+                            //Console.WriteLine(j.ToString());
+                            obj = JsonSerializer.Deserialize((string)j.ToString(), SerializerContext.DictionaryStringObject);
+                        }
+                    }
+                    else
+                    {
+                        obj = (Dictionary<string, object>)returnValue;
+                    }
+                    if (obj != null && obj.ContainsKey("refType"))
+                    {
+                        String refType = ((JsonElement)obj["refType"]).ToString();
+                        if ("uuid".Equals(refType))
+                        {
+                            String id = ((JsonElement)obj["id"]).ToString();
+                            if (id.Contains("/"))
+                            {
+                                returnValue = _dataSourceManager?.FindItem(id);
+                            }
+                            else
+                            {
+                                Guid uuid = Guid.Parse(id);
+                                returnValue = _dataSourceManager?.FindItem(uuid);
+                            }
+                        }
+                        else
+                        {
+                            String name = ((JsonElement)obj["id"]).ToString();
+                            returnValue = FindByName(name);
+                        }
+                    }
+                    else if (obj != null && obj.ContainsKey("retType"))
+                    {
+                        String retType = ((JsonElement)obj["retType"]).ToString();
+                        if ("number".Equals(retType))
+                        {
+                            if (obj["value"] == null ||
+                                ((JsonElement)obj["value"]).ValueKind == JsonValueKind.Null)
+                            {
+                                returnValue = double.NaN;
+                            }
+                            else
+                            {
+                                returnValue = (Object)double.Parse(((JsonElement)obj["value"]).ToString(), CultureInfo.InvariantCulture);
+                            }
+                        }
+                        else if ("string".Equals(retType))
+                        {
+                            returnValue = (Object)((JsonElement)obj["value"]).ToString();
+                        }
+                        else if ("boolean".Equals(retType))
+                        {
+                            returnValue = (Object)bool.Parse(((JsonElement)obj["value"]).ToString());
+                        }
+                        else if ("date".Equals(retType))
+                        {
+                            returnValue = (Object)ReturnToDate(((JsonElement)obj["value"]).ToString(), false);
+                        }
+                        else if ("undefined".Equals(retType))
+                        {
+                            return null;
+                        }
+                        else if ("Array".Equals(retType))
+                        {
+                            var arr = ((JsonElement)obj["value"]);
+                            if (transformArrays && arr.ValueKind == JsonValueKind.Array)
+                            {
+                                object?[] ret = new object?[arr.GetArrayLength()];
+                                for (var i = 0; i < arr.GetArrayLength(); i++)
+                                {
+                                    var item = arr[i];
+                                    var cItem = ConvertReturnValue<TValue>(item);
+                                    ret[i] = cItem;
+                                }
+                                return ret;
+                            }
+                            //Console.WriteLine(arr.GetArrayLength());
+                            returnValue = arr.ToString();
+                        }
+                        else if ("localJson".Equals(retType))
+                        {
+                            var v = ((JsonElement)obj["value"]);
+                            return v;
+                        }
+                        else if ("object".Equals(retType))
+                        {
+
+                            if (obj.ContainsKey("type"))
+                            {
+                                var type = obj["type"].ToString();
+                                if (String.IsNullOrEmpty(type))
+                                {
+                                    if (typeGuess != null)
+                                    {
+                                        type = typeGuess;
+                                    }
+                                }
+                                if (obj["value"] == null ||
+                                    ((JsonElement)obj["value"]).ValueKind == JsonValueKind.Null)
+                                {
+                                    return null;
+                                }
+
+                                object? o = null;
+                                if (type != null)
+                                {
+                                    o = MarshalByValueFactory.CreateInstance<TValue, TItem>(type);
+                                }
+                                if (o != null)
+                                {
+                                    if (o is BaseJsonSerializable)
+                                    {
+                                        ((BaseJsonSerializable)o).TempParent = this;
+                                        var v = ((JsonElement)obj["value"]);
+                                        var str = v.ToString();
+                                        //Console.WriteLine(str);
+                                        var ev = JsonSerializer.Deserialize(str, SerializerContext.DictionaryStringObject);
+                                        Dictionary<string, object?>? eventArgs = null;
+                                        if (ev != null)
+                                        {
+                                            eventArgs = new Dictionary<string, object?>();
+                                            foreach (var item in ev)
+                                            {
+                                                eventArgs[item.Key] = item.Value;
+                                            }
+                                        }
+                                        ((BaseJsonSerializable)o).FromEventJson(this, eventArgs);
+                                        returnValue = o;
+                                    }
+                                    // else if (o is IgbComponentBase)
+                                    // {
+                                    //     var ev = JsonSerializer.Deserialize<Dictionary<string, string>>(((JsonElement)obj["value"]).GetString());
+                                    //     ((IgbComponentBase)o).FromEventJson(this, ev);
+                                    // }
+                                    else
+                                    {
+                                        returnValue = ((JsonElement)obj["value"]).ToString();
+                                    }
+                                }
+                                else
+                                {
+                                    if (acceptsNullIfMarshalDoesNotExist)
+                                    {
+                                        return null;
+                                    }
+                                    var ret = obj["value"].ToString() ?? "";
+                                    returnValue = JsonSerializer.Deserialize(ret, SerializerContext.DictionaryStringObject);
+                                }
+                            }
+                            else
+                            {
+                                returnValue = ((JsonElement)obj["value"]).ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return returnValue;
+        }
+
+        internal void OnInvokeReturn(long invokeId, Object returnValue)
+        {
+            //lock (_semLock) {
+            //    if (returnValue instanceof String) {
+            //        returnValue = convertReturnValue(returnValue);
+            //    }
+
+            //    _methodReturns.Add(invokeId, returnValue);
+            //    if (_methodSemaphores.containsKey(invokeId)) {
+            //        Semaphore s = _methodSemaphores.get(invokeId);
+            //        s.release();
+            //    }
+            //}
+
+            object result = returnValue;
+            if (returnValue is JsonElement && ((JsonElement)returnValue).ValueKind == JsonValueKind.String)
+            {
+                var str = ((JsonElement)returnValue).GetString();
+                if (str != null)
+                {
+                    result = JsonSerializer.Deserialize(str, SerializerContext.DictionaryStringObject) ?? returnValue;
+                }
+
+            }
+            InvokeAsync(() =>
+            {
+                TaskCompletionSource<object?>? waiting;
+                lock (_semLock)
+                {
+                    if (!_methodTasks.TryGetValue(invokeId, out waiting))
+                    {
+                        _methodReturns[invokeId] = result;
+                    }
+                }
+                // Completed outside the lock: the continuation runs inline on this thread.
+                waiting?.TrySetResult(result);
+            });
+        }
+
+        internal T? ReturnToObject<T>(object val)
+        {
+            return ReturnToObject<T>(val, null);
+        }
+
+        internal T? ReturnToObject<T>(object? val, string? typeGuess)
+        {
+            if (val == null)
+            {
+                return default(T?);
+            }
+            val = ConvertReturnValue(val, false, typeGuess);
+
+            return (T?)val;
+        }
+
+        /// <summary>Resolves <paramref name="name"/> to the child element it identifies, or <c>null</c>.</summary>
+        private protected virtual object? FindByName(string name)
+        {
+            if ("mainControl".Equals(name))
+            {
+                return this;
+            }
+
+            return null;
+        }
+
+        internal int ReturnToInt(object? val)
+        {
+            if (val == null)
+            {
+                return 0;
+            }
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return 0;
+            }
+            if (val is String)
+            {
+                return int.Parse((String)val);
+            }
+            else if (val is IConvertible)
+            {
+                return ((IConvertible)val).ToInt32(CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                var stringVal = val.ToString();
+                return stringVal != null ? int.Parse(stringVal) : 0;
+            }
+        }
+
+        internal double ReturnToDouble(object? val)
+        {
+            if (val == null)
+            {
+                return 0;
+            }
+            //Console.WriteLine("converting return");
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return double.NaN;
+            }
+            //Console.WriteLine(val);
+            if (val is String)
+            {
+                return double.Parse((String)val, CultureInfo.InvariantCulture);
+            }
+            else if (val is IConvertible)
+            {
+                //Console.WriteLine(val);
+                return ((IConvertible)val).ToDouble(CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                //Console.WriteLine(val);
+                var stringVal = val.ToString();
+                return stringVal != null ? Double.Parse(stringVal, CultureInfo.InvariantCulture) : double.NaN;
+            }
+        }
+
+        internal long ReturnToLong(object? val)
+        {
+            if (val == null)
+            {
+                return 0;
+            }
+            //Console.WriteLine("converting return");
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return Int64.MinValue;
+            }
+            //Console.WriteLine(val);
+            if (val is String)
+            {
+                return (long)double.Parse((String)val, CultureInfo.InvariantCulture);
+            }
+            else if (val is IConvertible)
+            {
+                //Console.WriteLine(val);
+                return ((IConvertible)val).ToInt64(CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                var stringVal = val.ToString();
+                //Console.WriteLine(val);
+                return stringVal != null ? (long)Double.Parse(stringVal, CultureInfo.InvariantCulture) : Int64.MinValue;
+            }
+        }
+
+        internal DateTime[] ReturnToDateArray(object? val)
+        {
+            if (val == null)
+            {
+                return Array.Empty<DateTime>();
+            }
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return Array.Empty<DateTime>();
+            }
+            try
+            {
+                var stringVal = val.ToString();
+                if (stringVal == null)
+                {
+                    return Array.Empty<DateTime>();
+                }
+                var arr = JsonSerializer.Deserialize<object[]>(stringVal, SerializerContext.ObjectArray);
+                if (arr == null)
+                {
+                    return Array.Empty<DateTime>();
+                }
+                DateTime[] ret = new DateTime[arr.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Object ele = arr[i];
+                    ele = ReturnToDate(ele);
+                    ret[i] = (DateTime)ele;
+                }
+                return ret;
+            }
+            catch (Exception)
+            {
+                return Array.Empty<DateTime>();
+            }
+        }
+
+        internal DateTime ReturnToDate(object? val, bool tryConvertValue = true)
+        {
+            if (val == null)
+            {
+                return DateTime.MinValue;
+            }
+            //Console.WriteLine("converting return");
+            if (tryConvertValue)
+            {
+                val = ConvertReturnValue(val);
+            }
+            if (val == null)
+            {
+                return DateTime.MinValue;
+            }
+            //Console.WriteLine(val);
+            if (val is String)
+            {
+                return DateTime.Parse((string)val, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+            }
+            else if (val is IConvertible)
+            {
+                //Console.WriteLine(val);
+                return ((IConvertible)val).ToDateTime(CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                //Console.WriteLine(val);
+                var dateString = val.ToString();
+                if (dateString == null)
+                {
+                    return DateTime.MinValue;
+                }
+
+                return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+            }
+        }
+
+        internal bool ReturnToBoolean(object? val)
+        {
+            if (val == null)
+            {
+                return false;
+            }
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return false;
+            }
+            if (val is bool)
+            {
+                return (bool)val;
+            }
+            else if (val is Dictionary<string, object>)
+            {
+                return true;
+            }
+            else
+            {
+                var stringVal = val.ToString();
+                return stringVal != null ? Boolean.Parse(stringVal) : false;
+            }
+        }
+
+        internal string? ComponentToJson(object val, int index)
+        {
+            if (val is IgbComponentBase || val is BaseJsonSerializable)
+            {
+                string refId;
+                if (val is BaseJsonSerializable)
+                {
+                    //TODO: this should be the parent component's _Container id.... but maybe we don't need elements here.
+                    refId = _containerId + "/" + ((BaseJsonSerializable)val).RendererName;
+                }
+                else
+                {
+                    refId = ((IgbComponentBase)val)._containerId;
+                    val = "containerId:::" + refId;
+                    //OnRefChanged(refId, "\"" + val + "\"");
+                }
+                return "\"" + val + "\"";
+            }
+            if (val is ElementReference)
+            {
+                return "\"elementIndex:::" + index + "\"";
+            }
+            return null;
+        }
+
+        internal String BooleanToString(bool val)
+        {
+            return ((bool)val).ToString().ToLower();
+        }
+
+        internal string ObjectToParam(object? val)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (Utf8JsonWriter w = new Utf8JsonWriter(ms))
+                {
+                    SerializationContext c = new SerializationContext(w, null);
+                    ObjectToParam(c, val);
+                    w.Flush();
+                    return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }
+        }
+
+        internal string ObjectToParam(object? val, Type type)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (Utf8JsonWriter w = new Utf8JsonWriter(ms))
+                {
+                    SerializationContext c = new SerializationContext(w, null);
+                    ObjectToParam(c, type, val);
+                    w.Flush();
+                    return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }
+        }
+
+        internal void ObjectToParam(SerializationContext? context, object? val)
+        {
+            ArgumentNullException.ThrowIfNull(context);
+            if (val == null)
+            {
+                context.Writer.WriteNullValue();
+                return;
+            }
+            var w = context.Writer;
+            Guid id = _dataSourceManager?.FindItemId(val) ?? Guid.Empty;
+
+            var typeName = "";
+
+            if (val is JsonSerializable)
+            {
+
+                if (val is IgbComponentBase)
+                {
+                    typeName = ((IgbComponentBase)val).RendererType;
+                }
+                else if (val is BaseJsonSerializable)
+                {
+                    typeName = ((BaseJsonSerializable)val).RendererType;
+                }
+                else
+                {
+                    typeName = val.GetType().Name;
+                }
+            }
+
+            if (id != Guid.Empty)
+            {
+                w.WriteStartObject();
+                w.WriteString("refType", "uuid");
+                w.WriteString("id", id.ToString());
+                w.WriteEndObject();
+            }
+            else if (val is JsonSerializable && MarshalByValueFactory.MustMarshalByValue(typeName))
+            {
+                ((JsonSerializable)(val)).Serialize(context);
+            }
+            else if (val is BaseJsonSerializable)
+            {
+                w.WriteStartObject();
+                w.WriteString("refType", "name");
+                w.WriteString("id", ((BaseJsonSerializable)val).RendererName);
+                w.WriteEndObject();
+            }
+            else if (val is IgbComponentBase)
+            {
+                w.WriteStartObject();
+                w.WriteString("refType", "name");
+                w.WriteString("id", ((IgbComponentBase)val).RendererName);
+                w.WriteEndObject();
+            }
+            else if (val is double)
+            {
+                w.WriteNumberValue((double)val);
+            }
+            else if (val is int)
+            {
+                w.WriteNumberValue((int)val);
+            }
+            else if (val is long)
+            {
+                w.WriteNumberValue((long)val);
+            }
+            else if (val is short)
+            {
+                w.WriteNumberValue((long)val);
+            }
+            else if (val is byte byteValue)
+            {
+                w.WriteNumberValue(byteValue);
+            }
+            else if (val is sbyte sbyteValue)
+            {
+                w.WriteNumberValue(sbyteValue);
+            }
+            else if (val is ushort ushortValue)
+            {
+                w.WriteNumberValue(ushortValue);
+            }
+            else if (val is uint uintValue)
+            {
+                w.WriteNumberValue(uintValue);
+            }
+            else if (val is ulong ulongValue)
+            {
+                w.WriteNumberValue(ulongValue);
+            }
+            else if (val is float floatValue)
+            {
+                w.WriteNumberValue(floatValue);
+            }
+            else if (val is decimal decimalValue)
+            {
+                w.WriteNumberValue(decimalValue);
+            }
+            else if (val is bool)
+            {
+                w.WriteBooleanValue((bool)val);
+            }
+            else if (val is DateTime)
+            {
+                w.WriteStringValue(((DateTime)val).ToString("o"));
+            }
+            else
+            {
+                w.WriteStringValue(val.ToString());
+            }
+        }
+        internal void ObjectToParam(SerializationContext c, string propertyName, object? val)
+        {
+            var w = c.Writer;
+            if (val == null)
+            {
+                w.WriteNull(propertyName);
+                return;
+            }
+            Guid id = _dataSourceManager?.FindItemId(val) ?? Guid.Empty;
+
+            string typeName = "";
+            if (val is JsonSerializable)
+            {
+
+                if (val is IgbComponentBase)
+                {
+                    typeName = ((IgbComponentBase)val).RendererType ?? "";
+                }
+                else if (val is BaseJsonSerializable)
+                {
+                    typeName = ((BaseJsonSerializable)val).RendererType;
+                }
+                else
+                {
+                    typeName = val.GetType().Name;
+                }
+            }
+
+            if (id != Guid.Empty)
+            {
+                w.WriteStartObject(propertyName);
+                w.WriteString("refType", "uuid");
+                w.WriteString("id", id.ToString());
+                w.WriteEndObject();
+            }
+            else if (val is JsonSerializable && MarshalByValueFactory.MustMarshalByValue(typeName))
+            {
+                ((JsonSerializable)(val)).Serialize(c);
+            }
+            else if (val is BaseJsonSerializable)
+            {
+                w.WriteStartObject(propertyName);
+                w.WriteString("refType", "name");
+                w.WriteString("id", ((BaseJsonSerializable)val).RendererName);
+                w.WriteEndObject();
+            }
+            else if (val is IgbComponentBase)
+            {
+                w.WriteStartObject(propertyName);
+                w.WriteString("refType", "name");
+                w.WriteString("id", ((IgbComponentBase)val).RendererName);
+                w.WriteEndObject();
+            }
+            else if (val is double)
+            {
+                w.WriteNumber(propertyName, (double)val);
+            }
+            else if (val is int)
+            {
+                w.WriteNumber(propertyName, (int)val);
+            }
+            else if (val is long)
+            {
+                w.WriteNumber(propertyName, (long)val);
+            }
+            else if (val is short)
+            {
+                w.WriteNumber(propertyName, (long)val);
+            }
+            else if (val is byte byteValue)
+            {
+                w.WriteNumber(propertyName, byteValue);
+            }
+            else if (val is sbyte sbyteValue)
+            {
+                w.WriteNumber(propertyName, sbyteValue);
+            }
+            else if (val is ushort ushortValue)
+            {
+                w.WriteNumber(propertyName, ushortValue);
+            }
+            else if (val is uint uintValue)
+            {
+                w.WriteNumber(propertyName, uintValue);
+            }
+            else if (val is ulong ulongValue)
+            {
+                w.WriteNumber(propertyName, ulongValue);
+            }
+            else if (val is float floatValue)
+            {
+                w.WriteNumber(propertyName, floatValue);
+            }
+            else if (val is decimal decimalValue)
+            {
+                w.WriteNumber(propertyName, decimalValue);
+            }
+            else if (val is bool)
+            {
+                w.WriteBoolean(propertyName, (bool)val);
+            }
+            else if (val is DateTime)
+            {
+                w.WriteString(propertyName, ((DateTime)val).ToString("o"));
+            }
+            else
+            {
+                w.WriteString(propertyName, val.ToString());
+            }
+        }
+        internal void ObjectToParam(SerializationContext c, Type type, object? val)
+        {
+            if (type.IsEnum)
+            {
+                if (val == null)
+                {
+                    ObjectToParam(c, val);
+                    return;
+                }
+
+                if (Utils.TryGetWCEnumName(type, val.ToString(), out var wcName))
+                {
+                    c.Writer.WriteStringValue(wcName);
+                    return;
+                }
+
+                if (UseCamelEnumValues)
+                {
+                    c.Writer.WriteStringValue(Camelize(val.ToString()));
+                }
+                else
+                {
+                    c.Writer.WriteStringValue(val.ToString());
+                }
+                return;
+            }
+            ObjectToParam(c, val);
+        }
+
+        internal string ReturnToString(object? val)
+        {
+            val = ConvertReturnValue(val);
+            return val?.ToString() ?? String.Empty;
+        }
+
+        internal string? StringToString(object? val)
+        {
+            return val == null ? null : JsonSerializer.Serialize(val.ToString() ?? string.Empty, SerializerContext.String);
+            //return val == null ? null : val.ToString();
+        }
+
+        private protected virtual bool UseCamelEnumValues
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        private string Camelize(string? value)
+        {
+            if (value == null || value.Length == 0)
+            {
+                return value ?? string.Empty;
+            }
+            return value.Substring(0, 1).ToLower() + value.Substring(1);
+        }
+
+        private string? ToPascal(string? value)
+        {
+            if (value == null || value.Length == 0)
+            {
+                return value;
+            }
+            return value.Substring(0, 1).ToUpper() + value.Substring(1);
+        }
+
+        internal string? EnumToString<T>(T val) where T : struct
+        {
+            if (UseCamelEnumValues)
+            {
+                return Camelize(val.ToString());
+            }
+
+            return val.ToString();
+        }
+
+        internal T StringToEnum<T>(Object? val) where T : struct
+        {
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return default(T);
+            }
+            var str = val.ToString();
+            T ret;
+            if (Enum.TryParse<T>(str, true, out ret))
+            {
+                return ret;
+            }
+            return default(T);
+        }
+
+        internal string? ObjectArrayToParam(object[]? arr)
+        {
+            return ObjectArrayToParam<object>(arr);
+        }
+
+        internal string? ObjectArrayToParam<T>(T[]? arr)
+        {
+            if (arr == null)
+            {
+                return null;
+            }
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (Utf8JsonWriter w = new Utf8JsonWriter(ms))
+                {
+                    SerializationContext c = new SerializationContext(w, null);
+                    w.WriteStartArray();
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        var val = arr[i];
+                        ObjectToParam(c, val);
+                    }
+                    w.WriteEndArray();
+                    w.Flush();
+                    return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }
+            // object jarr = new JSONArray();
+            // try {
+            //     for (int i = 0; i < arr.length; i++) {
+            //         jarr.put(i, arr[i]);
+            //     }
+            // } catch (Exception e) {
+            //     return null;
+            // }
+            // return jarr.toString();
+            // try
+            // {
+            //     return JsonSerializer.Serialize(arr);
+            // }
+            // catch (Exception e)
+            // {
+            //     return null;
+            // }
+        }
+
+        internal string? StringArrayToString(string[]? arr)
+        {
+            // object jarr = new JSONArray();
+            // try {
+            //     for (int i = 0; i < arr.length; i++) {
+            //         jarr.put(i, arr[i]);
+            //     }
+            // } catch (Exception e) {
+            //     return null;
+            // }
+            // return jarr.toString();
+            try
+            {
+                return JsonSerializer.Serialize<string[]>(arr!, SerializerContext.StringArray);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        internal string? IntArrayToString(int[]? arr)
+        {
+            // object jarr = new JSONArray();
+            // try {
+            //     for (int i = 0; i < arr.length; i++) {
+            //         jarr.put(i, arr[i]);
+            //     }
+            // } catch (Exception e) {
+            //     return null;
+            // }
+            // return jarr.toString();
+            try
+            {
+                return JsonSerializer.Serialize<int[]>(arr!, SerializerContext.Int32Array);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        internal string? DoubleArrayToString(double[]? arr)
+        {
+            // object jarr = new JSONArray();
+            // try {
+            //     for (int i = 0; i < arr.length; i++) {
+            //         jarr.put(i, arr[i]);
+            //     }
+            // } catch (Exception e) {
+            //     return null;
+            // }
+            // return jarr.toString();
+            try
+            {
+                return JsonSerializer.Serialize<double[]>(arr!, SerializerContext.DoubleArray);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        internal object[] ReturnToObjectArray(object? val)
+        {
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return Array.Empty<object>();
+            }
+            try
+            {
+                var arr = JsonSerializer.Deserialize(val.ToString() ?? "", SerializerContext.ObjectArray);
+                if (arr == null)
+                {
+                    return Array.Empty<object>();
+                }
+                Object[] ret = new Object[arr.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Object? ele = arr[i];
+                    ele = ConvertReturnValue(ele);
+                    if (ele != null)
+                    {
+                        ret[i] = ele;
+                    }
+                }
+                return ret;
+            }
+            catch (Exception)
+            {
+                return Array.Empty<object>();
+            }
+        }
+
+        internal T[] ReturnToObjectArray<T>(object? val)
+        {
+            return ReturnToObjectArray<T>(val, null);
+        }
+
+        internal T[] ReturnToObjectArray<T>(object? val, string? typeGuess)
+        {
+            // Use transformArrays=true so that array elements with uuid/name refs are resolved
+            // to their actual data-source objects before we attempt to cast them.
+            val = ConvertReturnValue<T>(val, transformArrays: true);
+
+            if (val == null)
+            {
+                return Array.Empty<T>();
+            }
+            if (val is T[] tArr)
+            {
+                return tArr;
+            }
+            if (val is object[])
+            {
+                return DowncastArray<T>(val);
+            }
+
+            try
+            {
+                var stringVal = val.ToString();
+                if (stringVal == null)
+                {
+                    return Array.Empty<T>();
+                }
+                var arr = JsonSerializer.Deserialize(stringVal, SerializerContext.DictionaryStringObjectArray);
+                if (arr == null)
+                {
+                    return Array.Empty<T>();
+                }
+                T[] ret = new T[arr.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    Object? ele = arr[i];
+                    //Console.WriteLine("converting obj");
+                    //Console.WriteLine(ele);
+                    ele = ConvertReturnValue(ele, false, typeGuess);
+                    if (ele != null)
+                    {
+                        ret[i] = (T)ele;
+                    }
+                }
+                return ret;
+            }
+            catch (Exception)
+            {
+                return Array.Empty<T>();
+            }
+        }
+
+        internal string[]? ReturnToStringArray(object? val)
+        {
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return null;
+            }
+            try
+            {
+                var valStr = val.ToString();
+                if (valStr == null)
+                {
+                    return null;
+                }
+                var arr = JsonSerializer.Deserialize(valStr, SerializerContext.StringArray);
+                if (arr == null)
+                {
+                    return null;
+                }
+                string[] ret = new string[arr.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    // Elements can be JSON nulls; keep them in place.
+                    ret[i] = arr[i];
+                }
+                return ret;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        internal double[]? ReturnToDoubleArray(object? val)
+        {
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return null;
+            }
+            try
+            {
+                var stringVal = val.ToString();
+                if (stringVal == null)
+                {
+                    return null;
+                }
+                var arr = JsonSerializer.Deserialize(stringVal, SerializerContext.ObjectArray);
+                if (arr == null)
+                {
+                    return null;
+                }
+                double[] ret = new double[arr.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    double ele = arr[i] != null ? Convert.ToDouble(arr[i]) : double.NaN;
+                    ret[i] = ele;
+                }
+                return ret;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        internal TValue? ConvertToNumericValue<TValue>(object? value, Type numericType)
+        {
+            if (value is null)
+            {
+                return default;
+            }
+
+            value = ConvertReturnValue(value) ?? value;
+            return (TValue?)Convert.ChangeType(value, numericType, CultureInfo.InvariantCulture);
+        }
+
+        internal void AddNumericValue<TValue>(RendererSerializer serializer, string propertyName, TValue? value)
+        {
+            serializer.AddPrimitiveProp(propertyName, value);
+        }
+
+        internal int[]? ReturnToIntArray(object? val)
+        {
+            val = ConvertReturnValue(val);
+            if (val == null)
+            {
+                return null;
+            }
+            try
+            {
+                var arr = JsonSerializer.Deserialize(val.ToString() ?? "[]", SerializerContext.ObjectArray);
+                if (arr == null)
+                {
+                    return null;
+                }
+                int[] ret = new int[arr.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    int ele = arr[i] != null ? Convert.ToInt32(arr[i]) : int.MinValue;
+                    ret[i] = ele;
+                }
+                return ret;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Converts event json/invoke values to the specified type. Currently used mainly for DateTime/string conversion.
+        /// Note: If you are using this method you probably have a generic type component.
+        /// Make sure to have defined the <see cref="IgbComponentBase.GenericType"/>
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="detailObj"></param>
+        /// <returns></returns>
+        internal TValue? GenericValueFromEventJson<TValue>(object? detailObj)
+        {
+            if (detailObj is null)
+            {
+                return default;
+            }
+
+            if (detailObj is TValue typedValue)
+            {
+                return typedValue;
+            }
+            if (detailObj.GetType() == GenericType)
+            {
+                return (TValue)detailObj;
+            }
+            if (GenericType == typeof(DateTime))
+            {
+                // A cleared value crosses as {retType: 'object', value: null}, which unwraps to null; ReturnToDate would
+                // read that as MinValue, the empty state of a non-nullable date only.
+                var unwrappedDate = ConvertReturnValue(detailObj);
+                return unwrappedDate is null ? default : (TValue)(object)ReturnToDate(unwrappedDate, tryConvertValue: false);
+            }
+            if (GenericType == typeof(string))
+            {
+                // A date crosses the wire wrapped as {retType: 'date'}; unwrap it first, or ToString formats it in the
+                // current culture.
+                var unwrapped = detailObj is DateTime ? detailObj : ConvertReturnValue(detailObj);
+                if (unwrapped is null)
+                {
+                    return default;
+                }
+                if (unwrapped is DateTime dateTime)
+                {
+                    return (TValue)(object)DateToString(dateTime);
+                }
+
+                return (TValue)(object)(unwrapped.ToString() ?? string.Empty);
+            }
+
+            var value = ConvertReturnValue<TValue>(detailObj);
+            // An empty string is the element's empty value, such as a Radio Group with nothing checked.
+            if (value is null or "")
+            {
+                return default;
+            }
+            // An enum crosses as its name, which Convert.ChangeType cannot convert.
+            if (GenericType is { IsEnum: true } enumType)
+            {
+                return (TValue)Enum.Parse(enumType, Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty);
+            }
+
+            return (TValue)Convert.ChangeType(value, GenericType ?? typeof(TValue), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string array conversion.
+        /// </summary>
+        internal TValue[] ConvertToGenericValueArray<TValue>(object? value)
+        {
+            if (value == null)
+            {
+                return [];
+            }
+            else if (GenericType == typeof(DateTime))
+            {
+                if (value is System.Collections.IEnumerable values &&
+                    value is not string &&
+                    value is not System.Collections.IDictionary)
+                {
+                    return values.Cast<object?>()
+                        .Select(item => GenericValueFromEventJson<TValue>(item) ?? default!)
+                        .ToArray();
+                }
+
+                return ReturnToDateArray(value).Select(date => (TValue)(object)date).ToArray();
+            }
+            else if (GenericType == typeof(string))
+            {
+                value = ConvertReturnValue(value) ?? value;
+                if (value is System.Collections.IEnumerable values && value is not string)
+                {
+                    return values.Cast<object?>()
+                        .Select(item => GenericValueFromEventJson<TValue>(item) ?? default!)
+                        .ToArray();
+                }
+
+                return (ReturnToStringArray(value) ?? []).Select(item => (TValue)(object)item).ToArray();
+            }
+
+            return [];
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string conversion.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ser"></param>
+        /// <param name="propName"></param>
+        /// <param name="value"></param>
+        internal void AddGenericValue<TValue>(RendererSerializer ser, string propName, TValue? value)
+        {
+            // Only a non-nullable date has a non-null empty state, its default DateTime.MinValue; 0 or false is a real radio value.
+            if (value is null || (value is DateTime && EqualityComparer<TValue>.Default.Equals(value, default)))
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (value is DateTime dateTime)
+            {
+                ser.AddDateTimeProp(propName, dateTime);
+            }
+            else if (value is string dateString)
+            {
+                ser.AddStringProp(propName, dateString);
+            }
+            else
+            {
+                // Invariant, as GenericValueFromEventJson parses the value back.
+                ser.AddStringProp(propName, value is IFormattable formattable ? formattable.ToString(null, CultureInfo.InvariantCulture) : value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Currently used for DateTime/string array conversion.
+        /// </summary>
+        internal void AddGenericValueArray<TValue>(RendererSerializer ser, string propName, TValue[]? values)
+        {
+            if (values is null)
+            {
+                ser.AddStringProp(propName, null);
+            }
+            else if (GenericType == typeof(DateTime))
+            {
+                ser.AddDateArrayProp(propName, values.Select(value => (DateTime)(object)value!).ToArray());
+            }
+            else if (GenericType == typeof(string))
+            {
+                ser.AddStringArrayProp(propName, values.Select(value => (string)(object)value!).ToArray());
+            }
+        }
+
+        /// <summary>The name the client renderer resolves this component by.</summary>
+        internal string RendererName
+        {
+            get
+            {
+                return "mainControl";
+            }
+        }
+
+        internal void OnElementNameChanged(BaseJsonSerializable element, string oldName, string newName)
+        {
+            List<string> toRename = new List<string>();
+            foreach (var key in _handlers.Keys)
+            {
+                if (key.Contains("/"))
+                {
+                    var parts = key.Split('/');
+                    if (parts[0] == oldName)
+                    {
+                        toRename.Add(key);
+                    }
+                }
+            }
+
+            foreach (var key in toRename)
+            {
+                var handler = _handlers[key];
+                _handlers.Remove(key);
+                var parts = key.Split('/');
+                var newKey = newName + "/" + parts[1];
+                _handlers[newKey] = handler;
+            }
+        }
+
+        /// <summary>
+        /// Observes the task returned by an <see cref="EventCallback.InvokeAsync(object?)"/> so that
+        /// exceptions raised by asynchronous consumer handlers are not silently swallowed.
+        /// Synchronous faults are rethrown to preserve the previous behavior; asynchronous
+        /// faults are surfaced through the same error channel as the interop dispatcher.
+        /// </summary>
+        internal static void ObserveHandlerTask(System.Threading.Tasks.Task task)
+        {
+            if (task == null)
+            {
+                return;
+            }
+            if (task.IsCompleted)
+            {
+                if (task.Exception != null)
+                {
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(task.Exception).Throw();
+                }
+                return;
+            }
+            task.ContinueWith(static t =>
+            {
+                Console.WriteLine(t.Exception);
+            }, System.Threading.CancellationToken.None,
+            System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted | System.Threading.Tasks.TaskContinuationOptions.ExecuteSynchronously,
+            System.Threading.Tasks.TaskScheduler.Default);
+        }
+
+        internal void SetHandler<T>(string name, string propertyName, EventCallback<T>? handler, Action<T>? onArgs = null) where T : BaseJsonSerializable, new()
+        {
+            if (!handler.HasValue)
+            {
+                //Console.WriteLine("clearing handler: " + name + "/" + propertyName);
+                _handlers.Remove(name + "/" + propertyName);
+                return;
+            }
+            var handlerValue = handler.Value;
+            Action<object?, object?> inner = (sender, args) =>
+            {
+                // Native void events (e.g. focus/blur) legitimately deliver null args,
+                // so only bail out when a non-null payload is not the expected dictionary.
+                if (args is not null and not Dictionary<string, object?>)
+                {
+                    return;
+                }
+                var eventArgs = args as Dictionary<string, object?>;
+
+                T a = new T();
+                BaseJsonSerializable ele = (BaseJsonSerializable)a;
+                ele.Parent = this;
+                ele.FromEventJson(this, eventArgs);
+                //Console.WriteLine("invoking async");
+                if (onArgs != null)
+                {
+                    onArgs(a);
+                }
+                var task = handlerValue.InvokeAsync(a);
+                ObserveHandlerTask(task);
+                if (eventArgs != null)
+                {
+                    ele.ToEventJson(this, eventArgs);
+                }
+                ele.Parent = (null);
+            };
+
+            //Console.WriteLine("setting handler: " + name + "/" + propertyName);
+            _handlers[name + "/" + propertyName] = inner;
+        }
+
+        internal void SetHandlerSimple<T>(string name, string propertyName, EventCallback<T>? handler, Func<object, T> getReturn, Action<T>? onArgs = null)
+        {
+            if (!handler.HasValue)
+            {
+                //Console.WriteLine("clearing handler: " + name + "/" + propertyName);
+                _handlers.Remove(name + "/" + propertyName);
+                return;
+            }
+            var callback = handler.Value;
+            Action<object?, object?> inner = (sender, args) =>
+            {
+                T a = getReturn(args!);
+                //Console.WriteLine("invoking async");
+                if (onArgs != null)
+                {
+                    onArgs(a);
+                }
+                var task = callback.InvokeAsync(a);
+                ObserveHandlerTask(task);
+            };
+
+            //Console.WriteLine("setting handler: " + name + "/" + propertyName);
+            _handlers[name + "/" + propertyName] = inner;
+        }
+
+        internal void SetActionHandler<T>(string name, string propertyName, Action<T> handler, Action<T>? onArgs = null) where T : BaseJsonSerializable, new()
+        {
+            if (handler == null)
+            {
+                //Console.WriteLine("clearing handler: " + name + "/" + propertyName);
+                _handlers.Remove(name + "/" + propertyName);
+                return;
+            }
+            Action<object?, object?> inner = (sender, args) =>
+            {
+                // Native void events (e.g. focus/blur) legitimately deliver null args,
+                // so only bail out when a non-null payload is not the expected dictionary.
+                if (args is not null and not Dictionary<string, object?>)
+                {
+                    return;
+                }
+                var eventArgs = args as Dictionary<string, object?>;
+
+                T a = new T();
+                BaseJsonSerializable ele = (BaseJsonSerializable)a;
+                ele.Parent = this;
+                ele.FromEventJson(this, eventArgs);
+                //Console.WriteLine("invoking async");
+                if (onArgs != null)
+                {
+                    onArgs(a);
+                }
+                handler(a);
+                if (eventArgs != null)
+                {
+                    ele.ToEventJson(this, eventArgs);
+                }
+                ele.Parent = (null);
+            };
+
+            //Console.WriteLine("setting handler: " + name + "/" + propertyName);
+            _handlers[name + "/" + propertyName] = inner;
+        }
+
+        internal void SetActionHandlerSimple<T>(string name, string propertyName, Action<T> handler, Func<object, T> getReturn, Action<T>? onArgs = null)
+        {
+            if (handler == null)
+            {
+                //Console.WriteLine("clearing handler: " + name + "/" + propertyName);
+                _handlers.Remove(name + "/" + propertyName);
+                return;
+            }
+            Action<object?, object?> inner = (sender, args) =>
+            {
+                T a = getReturn(args!);
+
+                //Console.WriteLine("invoking async");
+                if (onArgs != null)
+                {
+                    onArgs(a);
+                }
+                handler(a);
+            };
+
+            //Console.WriteLine("setting handler: " + name + "/" + propertyName);
+            _handlers[name + "/" + propertyName] = inner;
+        }
+
+        internal void OnRaiseEvent(string name, string propertyName, string args)
+        {
+            //Console.WriteLine("handler time: " + Name + ", " + GetHashCode().ToString() + ", " + this.GetType().Name);
+            //Console.WriteLine("getting handler: " + name + "/" + propertyName);
+            //Console.WriteLine("_handlers: " + _handlers.Count);
+            if (_handlers.ContainsKey(name + "/" + propertyName))
+            {
+                //Console.WriteLine("got handler");
+                Object? senderObj = null;
+                try
+                {
+                    var obj = JsonSerializer.Deserialize((string)args.ToString(), SerializerContext.DictionaryStringObject);
+                    if (obj == null)
+                    {
+                        return;
+                    }
+                    //Console.WriteLine(args.ToString());
+
+                    object? sender = obj["sender"];
+                    if (sender is JsonElement && ((JsonElement)sender).ValueKind == JsonValueKind.String)
+                    {
+                        var stringVal = ((JsonElement)sender).GetString();
+                        if (stringVal == null)
+                        {
+                            return;
+                        }
+                        sender = JsonSerializer.Deserialize(stringVal, SerializerContext.DictionaryStringObject);
+                    }
+
+                    senderObj = ConvertReturnValue(sender);
+                    if (senderObj is BaseJsonSerializable)
+                    {
+                        var ele = (BaseJsonSerializable)senderObj;
+                        if (ele.Parent == null)
+                        {
+                            ele.TempParent = this;
+                        }
+                    }
+
+                    var argsString = obj["args"] != null ? obj["args"].ToString() : null;
+                    object? val = null;
+
+                    if (argsString != null)
+                    {
+                        var doc = JsonDocument.Parse(argsString);
+                        //Console.WriteLine(argsString);
+                        //Console.WriteLine("here:");
+                        //Console.WriteLine(doc.RootElement.ValueKind.ToString());
+                        if (doc.RootElement.ValueKind == JsonValueKind.Object)
+                        {
+                            var dict = JsonSerializer.Deserialize((string)argsString, SerializerContext.DictionaryStringObject);
+                            val = dict;
+
+                            // Avoid double unwrapping primitive value types. This primarily only applies to events with primitive types for event args which
+                            // there are not many of.
+                            bool needsConversion = true;
+                            if (dict != null && dict.ContainsKey("retType"))
+                            {
+                                var retType = ((JsonElement)dict["retType"]).ToString();
+                                if ("string".Equals(retType) ||
+                                    "number".Equals(retType) ||
+                                    "boolean".Equals(retType) ||
+                                    "date".Equals(retType))
+                                {
+                                    needsConversion = false;
+                                }
+                            }
+
+                            if (needsConversion)
+                                val = ConvertReturnValue(val);
+                        }
+                        else
+                        {
+                            val = JsonSerializer.Deserialize((string)argsString, SerializerContext.Object);
+                        }
+                    }
+                    //Console.WriteLine("calling handler");
+                    _handlers[name + "/" + propertyName](senderObj, val);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+                finally
+                {
+                    if (senderObj is BaseJsonSerializable)
+                    {
+                        var ele = (BaseJsonSerializable)senderObj;
+                        if (ele.Parent == null)
+                        {
+                            ele.TempParent = null;
+                        }
+                    }
+                }
+            }
+        }
+        private bool _shouldReevaluateRuntime = false;
+
+        /// <inheritdoc />
+        public virtual async ValueTask DisposeAsync()
+        {
+            // Published under the queue's lock, so nothing can enqueue once teardown has begun.
+            lock (_messageQueueLock)
+            {
+                if (disposedValue)
+                {
+                    return;
+                }
+                disposedValue = true;
+            }
+
+            _shouldReevaluateRuntime = true;
+
+            try
+            {
+                await TrySendCleanupAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                _shouldReevaluateRuntime = false;
+                _objRef?.Dispose();
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
+        internal void RefreshDynamicContent()
+        {
+            if (Holder != null)
+            {
+                Holder.Refresh();
+            }
+        }
+
+        private async Task TrySendCleanupAsync()
+        {
+            try
+            {
+                if (_igBlazor == null || !Runtime.IsRuntimeValid(_shouldReevaluateRuntime))
+                {
+                    return;
+                }
+
+                RendererMessage m = new RendererMessage();
+                m.Type = ("cleanup");
+
+                lock (_messageQueueLock)
+                {
+                    _messageQueue.Clear();
+                }
+                // Normal sends are already closed by disposal; cleanup intentionally bypasses the disposed guard.
+                await SendJsonImmediate(m).ConfigureAwait(false);
+            }
+            catch (JSDisconnectedException ex)
+            {
+                // The Blazor circuit is gone (browser tab closed, SignalR connection dropped,
+                // or server-side circuit torn down). The JS side has already been discarded,
+                // so there is nothing to clean up — safe to swallow.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: JS circuit disconnected; cleanup skipped. {ex.Message}");
+            }
+            catch (TaskCanceledException ex)
+            {
+                // The interop call was canceled (typically because the circuit/renderer is
+                // shutting down). No further cleanup is possible or required.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: interop task canceled during shutdown. {ex.Message}");
+            }
+            catch (OperationCanceledException ex)
+            {
+                // Cooperative cancellation from the host (e.g. app stopping). Same rationale
+                // as TaskCanceledException — cleanup is moot once the host is tearing down.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: operation canceled during shutdown. {ex.Message}");
+            }
+            catch (ObjectDisposedException ex)
+            {
+                // The underlying JS runtime / DotNetObjectReference was already disposed
+                // (double-dispose race or host-driven teardown). Nothing left to release.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: target already disposed; cleanup skipped. {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Ordered after ObjectDisposedException, which derives from this type. Reached when
+                // the component is disposed before dependency injection assigned IgBlazor: there is
+                // no runtime to send a cleanup message to.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: component never received IgBlazor; cleanup skipped. {ex.Message}");
+            }
+            catch (JSException ex)
+            {
+                // The JS side rejected or errored during cleanup. There is no meaningful
+                // recovery from a JS-side failure in a dispose path, and surfacing it would
+                // either fault the fire-and-forget task or bubble out of DisposeAsync.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: JS interop error during cleanup; ignored. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Final safety net: cleanup is best-effort and must never throw. Anything
+                // reaching here (e.g. reflection failure inside IsRuntimeValid, null-ref from
+                // a partially-initialized component) is logged and swallowed so that neither
+                // the fire-and-forget task nor DisposeAsync can propagate the failure.
+                Debug.WriteLine($"[IgniteUI.Blazor] TrySendCleanupAsync: unexpected error during cleanup; ignored. {ex}");
+            }
+        }
+
+        internal async Task<object?> SetResourceStringAsync(string grouping, string id, string value)
+        {
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            {
+                return null;
+            }
+            return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "set", grouping, id, value });
+        }
+
+        internal async Task<object?> SetResourceStringAsync(string grouping, string json)
+        {
+            if (!Runtime.IsRuntimeValid(_shouldReevaluateRuntime) || JsRuntime == null)
+            {
+                return null;
+            }
+            return await JsRuntime.InvokeAsync<object>("igSetResourceString", new object[] { "register", grouping, "", json });
+        }
+
+        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, JsonElement jsonElement)
+        {
+            System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
+            if (type == null)
+            {
+                type = property.PropertyType;
+            }
+            switch (System.Type.GetTypeCode(type))
+            {
+                case TypeCode.Byte:
+                    property.SetValue(item, jsonElement.GetByte());
+                    break;
+                case TypeCode.SByte:
+                    property.SetValue(item, jsonElement.GetSByte());
+                    break;
+                case TypeCode.UInt16:
+                    property.SetValue(item, jsonElement.GetUInt16());
+                    break;
+                case TypeCode.UInt32:
+                    property.SetValue(item, jsonElement.GetUInt32());
+                    break;
+                case TypeCode.UInt64:
+                    property.SetValue(item, jsonElement.GetUInt64());
+                    break;
+                case TypeCode.Int16:
+                    property.SetValue(item, jsonElement.GetInt16());
+                    break;
+                case TypeCode.Int32:
+                    property.SetValue(item, jsonElement.GetInt32());
+                    break;
+                case TypeCode.Int64:
+                    property.SetValue(item, jsonElement.GetInt64());
+                    break;
+                case TypeCode.Decimal:
+                    property.SetValue(item, jsonElement.GetDecimal());
+                    break;
+                case TypeCode.Double:
+                    property.SetValue(item, jsonElement.GetDouble());
+                    break;
+                case TypeCode.Single:
+                    property.SetValue(item, jsonElement.GetSingle());
+                    break;
+                case TypeCode.String:
+                    property.SetValue(item, jsonElement.GetString());
+                    break;
+                case TypeCode.Boolean:
+                    property.SetValue(item, jsonElement.GetBoolean());
+                    break;
+                case TypeCode.DateTime:
+                    property.SetValue(item, ReturnToDate(jsonElement.ToString()));
+                    break;
+            }
+        }
+        [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "Creates the property's own array PropertyType, which is present in metadata whenever the property exists.")]
+        private void SetPropertyValue(object item, System.Reflection.PropertyInfo property, object value)
+        {
+            System.Type? type = Nullable.GetUnderlyingType(property.PropertyType);
+            if (type == null)
+            {
+                type = property.PropertyType;
+            }
+            else
+            {
+                if (value == null)
+                {
+                    property.SetValue(item, null);
+                    return;
+                }
+            }
+            if (type.IsArray)
+            {
+                var src = (Array)value;
+                var elementType = type.GetElementType() ?? typeof(object);
+                var dest = Array.CreateInstance(elementType, src.Length);
+                Array.Copy(src, dest, src.Length);
+                property.SetValue(item, dest);
+                return;
+            }
+
+            switch (System.Type.GetTypeCode(type))
+            {
+                case TypeCode.Byte:
+                    property.SetValue(item, Convert.ToByte(value));
+                    break;
+                case TypeCode.SByte:
+                    property.SetValue(item, Convert.ToSByte(value));
+                    break;
+                case TypeCode.UInt16:
+                    property.SetValue(item, Convert.ToUInt16(value));
+                    break;
+                case TypeCode.UInt32:
+                    property.SetValue(item, Convert.ToUInt32(value));
+                    break;
+                case TypeCode.UInt64:
+                    property.SetValue(item, Convert.ToUInt64(value));
+                    break;
+                case TypeCode.Int16:
+                    property.SetValue(item, Convert.ToInt16(value));
+                    break;
+                case TypeCode.Int32:
+                    property.SetValue(item, Convert.ToInt32(value));
+                    break;
+                case TypeCode.Int64:
+                    property.SetValue(item, Convert.ToInt64(value));
+                    break;
+                case TypeCode.Decimal:
+                    property.SetValue(item, Convert.ToDecimal(value));
+                    break;
+                case TypeCode.Double:
+                    property.SetValue(item, Convert.ToDouble(value));
+                    break;
+                case TypeCode.Single:
+                    property.SetValue(item, Convert.ToSingle(value));
+                    break;
+                case TypeCode.String:
+                    property.SetValue(item, Convert.ToString(value));
+                    break;
+                case TypeCode.Boolean:
+                    property.SetValue(item, Convert.ToBoolean(value));
+                    break;
+                case TypeCode.DateTime:
+                    property.SetValue(item, Convert.ToDateTime(value));
+                    break;
+                case TypeCode.Object:
+                    property.SetValue(item, value);
+                    break;
+            }
+        }
+    }
+
+    /// <summary>This mirrors the options for System.Text.Json.JsonSerializer that we allow for customization for the component serialization.</summary>
+    public class IgniteUIJsonSerializerOptions
+    {
+        /// <summary>Creates default options.</summary>
+        public IgniteUIJsonSerializerOptions()
+        {
+            MaxDepth = 32;
+        }
+
+        /// <summary>Creates options with <paramref name="maxDepth"/>.</summary>
+        public IgniteUIJsonSerializerOptions(int maxDepth)
+        {
+            MaxDepth = maxDepth;
+        }
+
+        /// <summary>Maximum nesting depth when serializing; 0 uses the serializer default.</summary>
+        public int MaxDepth { get; private set; }
+
+        /// <summary>Copies <paramref name="options"/>.</summary>
+        public IgniteUIJsonSerializerOptions(IgniteUIJsonSerializerOptions options)
+        {
+            MaxDepth = options.MaxDepth;
+        }
+    }
+
+    /// <summary>The Ignite UI for Blazor runtime settings.</summary>
+    public interface IIgniteUIBlazorSettings
+    {
+        /// <summary>Sends bound data to the client as JSON even where a faster in-memory transfer is available.</summary>
+        bool ForceJsonDataMarshalling { get; }
+
+        /// <summary>Options for serializing values sent to the client.</summary>
+        IgniteUIJsonSerializerOptions JsonSerializerOptions { get; }
+
+        /// <summary>Modules whose client resources load at startup.</summary>
+        ReadOnlyCollection<Type>? ModulesToLoad { get; }
+    }
+
+    /// <summary>
+    /// Runtime settings to pass to <c>AddIgniteUIBlazor</c>; immutable, build them with <see cref="Create"/> and the <c>With</c> methods.
+    /// </summary>
+    public class IgniteUIBlazorSettings
+        : IIgniteUIBlazorSettings
+    {
+        /// <inheritdoc />
+        public bool ForceJsonDataMarshalling { get; private set; }
+
+        /// <inheritdoc />
+        public IgniteUIJsonSerializerOptions JsonSerializerOptions { get; private set; }
+
+        /// <inheritdoc />
+        public ReadOnlyCollection<Type>? ModulesToLoad { get; private set; }
+
+        /// <summary>Creates default settings.</summary>
+        public IgniteUIBlazorSettings()
+        {
+            ForceJsonDataMarshalling = false;
+            JsonSerializerOptions = new IgniteUIJsonSerializerOptions();
+            ModulesToLoad = null;
+        }
+
+        /// <summary>Creates default settings.</summary>
+        public static IgniteUIBlazorSettings Create()
+        {
+            return new IgniteUIBlazorSettings();
+        }
+
+        /// <summary>Returns a copy with <see cref="ForceJsonDataMarshalling"/> enabled.</summary>
+        public IgniteUIBlazorSettings ShouldForceJsonDataMarshalling()
+        {
+            var newSettings = new IgniteUIBlazorSettings(this);
+            newSettings.ForceJsonDataMarshalling = true;
+            return newSettings;
+        }
+
+        /// <summary>Returns a copy with <see cref="ForceJsonDataMarshalling"/> set to <paramref name="forceJsonDataMarshalling"/>.</summary>
+        public IgniteUIBlazorSettings WithForceJsonDataMarshalling(bool forceJsonDataMarshalling)
+        {
+            var newSettings = new IgniteUIBlazorSettings(this);
+            newSettings.ForceJsonDataMarshalling = forceJsonDataMarshalling;
+            return newSettings;
+        }
+
+        /// <summary>Returns a copy using <paramref name="options"/>.</summary>
+        public IgniteUIBlazorSettings WithJsonSerializerOptions(IgniteUIJsonSerializerOptions options)
+        {
+            var newSettings = new IgniteUIBlazorSettings(this);
+            newSettings.JsonSerializerOptions = new IgniteUIJsonSerializerOptions(options);
+            return newSettings;
+        }
+
+        /// <summary>Returns a copy that loads <paramref name="modulesToLoad"/> at startup.</summary>
+        public IgniteUIBlazorSettings WithModulesToLoad(ReadOnlyCollection<Type>? modulesToLoad)
+        {
+            var newSettings = new IgniteUIBlazorSettings(this);
+            newSettings.ModulesToLoad = modulesToLoad;
+            return newSettings;
+        }
+
+        internal IgniteUIBlazorSettings(IIgniteUIBlazorSettings settings)
+        {
+            ForceJsonDataMarshalling = settings.ForceJsonDataMarshalling;
+            JsonSerializerOptions = new IgniteUIJsonSerializerOptions(settings.JsonSerializerOptions);
+            ModulesToLoad = settings.ModulesToLoad;
+        }
+    }
+
+    /// <summary>
+    /// The Ignite UI for Blazor runtime service, registered by
+    /// <see cref="Microsoft.Extensions.DependencyInjection.InfragisticsBlazorExtensions.AddIgniteUIBlazor(Microsoft.Extensions.DependencyInjection.IServiceCollection, System.Type[])"/>.
+    /// Inject it and pass it to a module's <see cref="IIgbModule.Register(IIgniteUIBlazor)"/> method to load
+    /// that module's client resources.
+    /// </summary>
+    public interface IIgniteUIBlazor
+    {
+        /// <summary>
+        /// The JS runtime the client resources load through. Supports the product infrastructure and is not
+        /// intended to be used directly from your code.
+        /// </summary>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        IJSRuntime JsRuntime { get; }
+    }
+
+    internal class IgniteUIBlazor : IIgniteUIBlazor, IIgniteUIBlazorRuntime
+    {
+        private bool _isRuntimeValid = false;
+        private bool _isRuntimeChecked = false;
+        private bool _isRemoteRuntime = false;
+        private System.Reflection.PropertyInfo? _remoteRuntimeProp;
+
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Library module types carry [IgbModule<TSelf>], preserving Register whenever the type is kept; third-party module types must be preserved by the app — see docs/TRIMMING.md.")]
+        public IgniteUIBlazor(IJSRuntime runtime, IIgniteUIBlazorSettings settings)
+        {
+            JsRuntime = runtime;
+            Settings = settings;
+            WebCallback = new WebCallback();
+
+            if (IsRuntimeValid())
+            {
+                if (Settings != null)
+                {
+                    if (Settings.ModulesToLoad != null)
+                    {
+                        foreach (var type in Settings.ModulesToLoad)
+                        {
+                            var meth = type.GetMethod("Register", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                            if (meth != null)
+                            {
+                                var parms = meth.GetParameters();
+                                if (parms.Length == 1 && typeof(IIgniteUIBlazor).IsAssignableFrom(parms[0].ParameterType))
+                                {
+                                    meth.Invoke(null, new object[] { this });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public IgniteUIBlazor(IJSRuntime runtime)
+        {
+            JsRuntime = runtime;
+            Settings = new IgniteUIBlazorSettings();
+            WebCallback = new WebCallback();
+        }
+
+        public IJSRuntime JsRuntime { get; private set; }
+        public IIgniteUIBlazorSettings? Settings { get; private set; }
+        public WebCallback WebCallback { get; private set; }
+
+        private ConcurrentDictionary<string, bool> _loadedCache = new ConcurrentDictionary<string, bool>();
+        public void RequestLoad(string moduleName)
+        {
+            if (!IsRuntimeValid() || _loadedCache.ContainsKey(moduleName))
+            {
+                return;
+            }
+            _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
+            JsRuntime.InvokeAsync<object>("igRequestLoad", moduleName);
+        }
+        public bool IsLoadRequested(string moduleName)
+        {
+            if (_loadedCache.ContainsKey(moduleName))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void MarkIsLoadRequested(string moduleName)
+        {
+            if (!IsRuntimeValid() || _loadedCache.ContainsKey(moduleName))
+            {
+                return;
+            }
+            _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
+        }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Probes the optional RemoteJSRuntime.IsInitialized, which does not exist in supported trim targets (WASM, WebView); a string DynamicDependency is not an option — it fails with IL2035 where the Server assembly is absent.")]
+        public bool IsRuntimeValid(bool reevaluate = false)
+        {
+            if (JsRuntime == null)
+                return false;
+
+            if (!_isRuntimeChecked)
+            {
+                var t = JsRuntime.GetType();
+                _remoteRuntimeProp = t.GetProperty("IsInitialized");
+                if (t.Name == "UnsupportedJavaScriptRuntime")
+                {
+                    _isRuntimeValid = false;
+                }
+                else if (_remoteRuntimeProp != null)
+                {
+                    _isRuntimeValid = (bool)(_remoteRuntimeProp.GetValue(JsRuntime) ?? false);
+                    _isRemoteRuntime = true;
+                }
+                else
+                {
+                    _isRuntimeValid = true;
+                }
+
+                _isRuntimeChecked = true;
+            }
+            else
+            {
+                if (reevaluate && _isRemoteRuntime)
+                {
+                    _isRuntimeValid = (bool)(_remoteRuntimeProp?.GetValue(JsRuntime) ?? false);
+                }
+            }
+            return _isRuntimeValid;
+        }
+    }
+
+    internal class SequenceInfo
+    {
+        private ReadOnlyCollection<string>? _attributeKeys = null;
+        public ReadOnlyCollection<string> AttributeKeys
+        {
+            get
+            {
+                if (_attributeKeys == null ||
+                _dirty)
+                {
+                    _dirty = false;
+                    _attributeKeys = new ReadOnlyCollection<string>(_keysList);
+                }
+                return _attributeKeys;
+            }
+        }
+        public int MaxSequence { get { return _currSequence; } }
+
+        private Dictionary<string, int> SequenceMap { get; set; }
+        private int _currSequence = 0;
+        private bool _dirty = true;
+
+        internal SequenceInfo(int startSequence)
+        {
+            _currSequence = startSequence;
+            SequenceMap = new Dictionary<string, int>();
+        }
+
+        internal string TransformKey(string? attributeKey)
+        {
+            if (attributeKey != null && _transforms.ContainsKey(attributeKey))
+            {
+                return _transforms[attributeKey];
+            }
+            return attributeKey ?? "";
+        }
+
+        internal bool IsTransformedEnum(string? attributeKey)
+        {
+            if (attributeKey != null && _enumTransforms.ContainsKey(attributeKey))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        internal string TransformEnumValue(string? attributeKey, string? fieldName)
+        {
+            if (attributeKey != null && fieldName != null && _enumTransforms.ContainsKey(attributeKey))
+            {
+                var d = _enumTransforms[attributeKey];
+                if (d.ContainsKey(fieldName.ToLower()))
+                {
+                    return d[fieldName.ToLower()];
+                }
+            }
+            return fieldName ?? "";
+        }
+
+        internal void AddSequence(string? attributeKey, string? wcName = null, Dictionary<string, string>? wcEnumTransform = null)
+        {
+            if (attributeKey != null && !_keysSet.Contains(attributeKey))
+            {
+                _dirty = true;
+                _keysSet.Add(attributeKey);
+                SequenceMap.Add(attributeKey, _currSequence);
+                _currSequence++;
+                _keysList.Add(attributeKey);
+
+                if (wcName != null)
+                {
+                    _transforms[attributeKey] = wcName;
+                }
+                if (wcEnumTransform != null)
+                {
+                    _enumTransforms[attributeKey] = wcEnumTransform;
+                }
+            }
+        }
+
+        private List<string> _keysList = new List<string>();
+        private HashSet<string> _keysSet = new HashSet<string>();
+
+        private Dictionary<string, string> _transforms = new Dictionary<string, string>();
+        private Dictionary<string, Dictionary<string, string>> _enumTransforms = new Dictionary<string, Dictionary<string, string>>();
+
+        public int GetSequence(string key)
+        {
+            if (_keysSet.Contains(key))
+            {
+                return SequenceMap[key];
+            }
+            return -1;
+        }
+    }
+
+    internal class ModuleLoader
+    {
+        public static void Load(IIgniteUIBlazor runtime, string moduleName)
+        {
+            runtime.AsRuntime().RequestLoad(moduleName);
+            //runtime.JsRuntime.InvokeAsync<object>("igRequestLoad", moduleName);
+        }
+
+        internal static void MarkIsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
+        {
+            runtime.AsRuntime().MarkIsLoadRequested(moduleName);
+        }
+
+        internal static bool IsLoadRequested(IIgniteUIBlazor runtime, string moduleName)
+        {
+            return runtime.AsRuntime().IsLoadRequested(moduleName);
+        }
+    }
+
+}

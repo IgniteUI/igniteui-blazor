@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload of the <see cref="IgbSplitter.ResizeStart"/>, <see cref="IgbSplitter.Resizing"/>
     /// and <see cref="IgbSplitter.ResizeEnd"/> events.
     /// </summary>
-    public partial class IgbSplitterResizeEventArgsDetail : BaseRendererElement
+    public partial class IgbSplitterResizeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSplitterResizeEventArgsDetail"; } }
-
-        private static bool _marshalByValue = true;
+        internal override string RendererType { get { return "WebSplitterResizeEventArgsDetail"; } }
 
         private double _startPanelSize = 0;
 
         /// <summary>
         /// The current size of the start panel in pixels.
         /// </summary>
-        [Parameter]
         public double StartPanelSize
         {
             get { return this._startPanelSize; }
@@ -37,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current size of the end panel in pixels.
         /// </summary>
-        [Parameter]
         public double EndPanelSize
         {
             get { return this._endPanelSize; }
@@ -57,7 +51,6 @@ namespace IgniteUI.Blazor.Controls
         /// The change in size since the resize operation started. Only set for
         /// <see cref="IgbSplitter.Resizing"/> and <see cref="IgbSplitter.ResizeEnd"/>.
         /// </summary>
-        [Parameter]
         public double Delta
         {
             get { return this._delta; }
@@ -70,15 +63,6 @@ namespace IgniteUI.Blazor.Controls
                 this._delta = value;
 
             }
-        }
-
-        public async Task SetNativeElementAsync(Object element)
-        {
-            await InvokeMethod("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
-        }
-        public void SetNativeElement(Object element)
-        {
-            InvokeMethodSync("setNativeElement", new object[] { ObjectToParam(element) }, new string[] { "Json" });
         }
 
         internal override void SerializeCore(RendererSerializer ser)
@@ -95,7 +79,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -109,17 +93,17 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("startPanelSize"))
-            { this.StartPanelSize = ReturnToDouble(args["startPanelSize"]); }
-            if (args.ContainsKey("endPanelSize"))
-            { this.EndPanelSize = ReturnToDouble(args["endPanelSize"]); }
-            if (args.ContainsKey("delta"))
-            { this.Delta = ReturnToDouble(args["delta"]); }
+            if (args != null && args.TryGetValue("startPanelSize", out var startPanelSizeObj))
+            { this.StartPanelSize = ReturnToDouble(startPanelSizeObj); }
+            if (args != null && args.TryGetValue("endPanelSize", out var endPanelSizeObj))
+            { this.EndPanelSize = ReturnToDouble(endPanelSizeObj); }
+            if (args != null && args.TryGetValue("delta", out var deltaObj))
+            { this.Delta = ReturnToDouble(deltaObj); }
 
             this.SuppressParentNotify = false;
         }

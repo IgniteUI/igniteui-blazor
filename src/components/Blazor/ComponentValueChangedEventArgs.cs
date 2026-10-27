@@ -1,25 +1,20 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Event arguments for component events that carry a string payload.
     /// The meaning of <see cref="Detail"/> depends on the event that raises it.
     /// </summary>
-    public partial class IgbComponentValueChangedEventArgs : BaseRendererElement
+    public partial class IgbComponentValueChangedEventArgs : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebComponentValueChangedEventArgs"; } }
+        internal override string RendererType { get { return "WebComponentValueChangedEventArgs"; } }
 
-        private static bool _marshalByValue = true;
-
-        private string _detail;
+        private string? _detail = "";
 
         /// <summary>
         /// The string value carried by the event.
         /// </summary>
-        [Parameter]
-        public string Detail
+        public string? Detail
         {
             get { return this._detail; }
             set
@@ -43,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -53,13 +48,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("detail"))
-            { this.Detail = ReturnToString(args["detail"]); }
+            if (args != null && args.TryGetValue("detail", out var detailObj))
+            { this.Detail = ReturnToString(detailObj); }
 
             this.SuppressParentNotify = false;
         }
