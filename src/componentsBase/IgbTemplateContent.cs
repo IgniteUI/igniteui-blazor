@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace IgniteUI.Blazor.Controls;
 
 internal class IgbTemplateContent<T> : ComponentBase
-    where T : class
 {
     private bool _hasPopulatedContext;
 

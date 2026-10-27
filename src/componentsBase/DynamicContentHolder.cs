@@ -117,6 +117,10 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public string RefName { get; set; }
+
+        /// <summary>The id of the template this content renders, as registered through UpdateTemplate.</summary>
+        public string? TemplateId { get; set; }
+
         public string RefDivName
         {
             get
@@ -248,8 +252,8 @@ namespace IgniteUI.Blazor.Controls
 
     internal class DynamicContentInfo<T>
         : DynamicContentInfo
-        where T : class // reference types only — keeps the MakeGenericType instantiation AOT-shareable
     {
+        [SetsRequiredMembers]
         public DynamicContentInfo()
         {
             ControlType = typeof(IgbTemplateContent<T>);
@@ -322,6 +326,13 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
+            // No context yet: the template content only renders once one arrives, and T may be a
+            // value type that null cannot be unboxed into.
+            if (context == null)
+            {
+                return;
+            }
+
             // Fallback: some web components (e.g. the chat renderers) hand the template
             // context back as a plain property bag (e.g. {"message":{...}}) without a
             // top-level marshal-by-value type, so ConvertReturnValue leaves it as a
@@ -338,7 +349,7 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            Context = (T?)context;
+            Context = (T)context;
         }
     }
 

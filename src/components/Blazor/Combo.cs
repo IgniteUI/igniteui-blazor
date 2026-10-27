@@ -582,7 +582,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("ItemTemplate");
                     this._itemTemplate = value;
                     this._itemTemplateTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._itemTemplateTemplateId, this._itemTemplate, typeof(TItem));
+                    this.UpdateTemplate(this._itemTemplateTemplateId, this._itemTemplate);
                     this.OnRefChanged("ItemTemplate", null, "template:::" + this._itemTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemTemplateRef = refName;
@@ -642,7 +642,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("GroupHeaderTemplate");
                     this._groupHeaderTemplate = value;
                     this._groupHeaderTemplateTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate, typeof(IgbComboGroupHeaderContext));
+                    this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate);
                     this.OnRefChanged("GroupHeaderTemplate", null, "template:::" + this._groupHeaderTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._groupHeaderTemplateRef = refName;

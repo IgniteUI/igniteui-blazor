@@ -36,6 +36,9 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public ElementReference[]? NativeElements { get; set; }
+
+        /// <summary>A refChanged carrying a template or script function.</summary>
+        public bool IsRenderFunctionRef { get; set; }
     }
 
 }

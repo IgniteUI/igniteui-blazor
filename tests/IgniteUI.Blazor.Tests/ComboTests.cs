@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Bunit;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
@@ -241,6 +242,99 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         Assert.Equal(2, result.Length);
         Assert.Same(_valueItem1, result[0]);
         Assert.Same(_valueItem2, result[1]);
+    }
+
+    // The web component invokes both templates with a plain { item } context; the client hosts
+    // each in an <igc-template-content> and batches an Add followed by an Update carrying it.
+    private static string TemplateBatch(string containerId, string templateId, string contentId, string itemJson) =>
+        JsonSerializer.Serialize(new object[]
+        {
+            new { containerId, contentType = "TemplateContent", templateId, contentId, actionType = "Add", args = (string?)null },
+            new
+            {
+                containerId, contentType = "TemplateContent", templateId, contentId, actionType = "Update",
+                args = $$$"""{"retType": "object", "type": "", "value": {"item": {{{itemJson}}}}}""",
+            },
+        });
+
+    private string TemplateId(IRenderedComponent<IComponent> cut, string wireName) =>
+        Interop.FindPropertyUpdate(Interop.ContainerIdOf(cut), wireName)?.GetString()
+            ?? throw new InvalidOperationException($"{wireName} was never transferred.");
+
+    [Fact]
+    public void Combo_ItemTemplate_ReceivesResolvedDataItem()
+    {
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ItemTemplate, (ComboItem item) => b => b.AddContent(0, $"Item: {item.Text}")));
+
+        var containerId = Interop.ContainerIdOf(cut);
+        Interop.AdjustDynamicContentBatch(containerId,
+            TemplateBatch(containerId, TemplateId(cut, "itemTemplate"), "content-1", UuidRef(Interop, cut, 1)));
+
+        cut.WaitForAssertion(() => Assert.Contains("Item: Second", cut.Markup));
+    }
+
+    [Fact]
+    public void Combo_ItemTemplate_ValueTypeItems_ReceiveItem()
+    {
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<int, int>>(ps => ps
+            // A List, as JsonDataSource.Create casts arrays to object[], which an int[] is not.
+            .Add(c => c.Data, new List<int> { 1, 2, 3 })
+            .Add(c => c.ItemTemplate, (int item) => b => b.AddContent(0, $"Number: {item}")));
+
+        // Primitive items cross by value, not as uuid refs.
+        var containerId = Interop.ContainerIdOf(cut);
+        Interop.AdjustDynamicContentBatch(containerId,
+            TemplateBatch(containerId, TemplateId(cut, "itemTemplate"), "content-1", "2"));
+
+        cut.WaitForAssertion(() => Assert.Contains("Number: 2", cut.Markup));
+    }
+
+    [Fact]
+    public void Combo_GroupHeaderTemplate_ReceivesGroupKey()
+    {
+        Interop.PrimeReady();
+        IgbComboGroupHeaderContext? received = null;
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.GroupKey, "Text")
+            .Add(c => c.GroupHeaderTemplate, (IgbComboGroupHeaderContext ctx) => b =>
+            {
+                received = ctx;
+                b.AddContent(0, $"Group: {ctx.Key}");
+            }));
+
+        // The header record is synthetic - { [valueKey]: key, [displayKey]: key, [groupKey]: key } -
+        // not a data item, so it crosses by value rather than as a uuid ref.
+        var containerId = Interop.ContainerIdOf(cut);
+        Interop.AdjustDynamicContentBatch(containerId,
+            TemplateBatch(containerId, TemplateId(cut, "groupHeaderTemplate"), "content-1",
+                """{"retType": "object", "type": "", "value": {"Id": "First", "Text": "First"}}"""));
+
+        cut.WaitForAssertion(() => Assert.Contains("Group: First", cut.Markup));
+        Assert.Equal("First", received?.Key);
+    }
+
+    [Fact]
+    public void Combo_TemplateBatch_UnconvertibleEntryDoesNotDropTheRest()
+    {
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ItemTemplate, (ComboItem item) => b => b.AddContent(0, $"Item: {item.Text}")));
+
+        var containerId = Interop.ContainerIdOf(cut);
+        var templateId = TemplateId(cut, "itemTemplate");
+        // A context that is no ComboItem is not rendered; the entries after it still apply.
+        var bad = JsonSerializer.Deserialize<JsonElement[]>(TemplateBatch(containerId, templateId, "content-bad", "42"))!;
+        var good = JsonSerializer.Deserialize<JsonElement[]>(TemplateBatch(containerId, templateId, "content-good", UuidRef(Interop, cut, 0)))!;
+        Interop.AdjustDynamicContentBatch(containerId, JsonSerializer.Serialize(bad.Concat(good)));
+
+        cut.WaitForAssertion(() => Assert.Contains("Item: First", cut.Markup));
     }
 }
 

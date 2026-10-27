@@ -1,0 +1,57 @@
+@* Razor RenderFragment templates that the web components invoke directly, shared by the
+   InteractiveServer (/templates) and InteractiveWebAssembly (/templates-wasm) pages. *@
+
+<IgbCombo id="cities" TValue="string" TItem="City" Data="_cities" ValueKey="Name" DisplayKey="Name" GroupKey="Country">
+    <ItemTemplate>
+        <span class="tmpl-city">City: @context.Name (@context.Country)</span>
+    </ItemTemplate>
+    <GroupHeaderTemplate>
+        <span class="tmpl-group">Country: @context.Key</span>
+    </GroupHeaderTemplate>
+</IgbCombo>
+
+<IgbCombo id="numbers" TValue="int" TItem="int" Data="_numbers">
+    <ItemTemplate>
+        <span class="tmpl-number">Number: @context</span>
+    </ItemTemplate>
+</IgbCombo>
+
+<IgbChat id="chat" Messages="_messages" Options="_chatOptions" />
+
+@code {
+    public sealed class City
+    {
+        public required string Name { get; init; }
+        public required string Country { get; init; }
+    }
+
+    private readonly City[] _cities =
+    [
+        new() { Name = "Berlin", Country = "Germany" },
+        new() { Name = "Munich", Country = "Germany" },
+        new() { Name = "Sofia", Country = "Bulgaria" },
+        new() { Name = "Plovdiv", Country = "Bulgaria" },
+    ];
+
+    // A List rather than an array: JsonDataSource casts arrays to object[], which an int[] is not.
+    private readonly List<int> _numbers = [1, 2, 3];
+
+    private readonly IgbChatMessage[] _messages =
+    [
+        new() { Id = "1", Sender = "agent", Text = "Hello from Blazor", Timestamp = "2026-01-01T00:00:00.000Z" },
+    ];
+
+    private IgbChatOptions _chatOptions = null!;
+
+    protected override void OnInitialized()
+    {
+        _chatOptions = new IgbChatOptions
+        {
+            CurrentUserId = "user",
+            Renderers = new IgbChatRenderers
+            {
+                MessageContent = ctx => @<span class="tmpl-message">Message: @ctx.Message.Text</span>,
+            },
+        };
+    }
+}

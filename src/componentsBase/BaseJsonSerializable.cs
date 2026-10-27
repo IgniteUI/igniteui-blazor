@@ -239,19 +239,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal void UpdateTemplate(string contentType, object? template, Type type)
+        internal void UpdateTemplate<T>(string contentType, RenderFragment<T>? template)
         {
             Action templateUpdate = () =>
             {
                 if (_parent is IgbComponentBase)
                 {
                     ((IgbComponentBase)_parent).ChildDirty(this);
-                    ((IgbComponentBase)_parent).UpdateTemplate(contentType, template, type);
+                    ((IgbComponentBase)_parent).UpdateTemplate(contentType, template);
                 }
                 else if (_parent is BaseJsonSerializable)
                 {
                     ((BaseJsonSerializable)_parent).ChildDirty(this);
-                    ((BaseJsonSerializable)_parent).UpdateTemplate(contentType, template, type);
+                    ((BaseJsonSerializable)_parent).UpdateTemplate(contentType, template);
                 }
             };
             if (_parent != null)

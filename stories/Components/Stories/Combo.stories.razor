@@ -46,6 +46,25 @@
         </Template>
     </Story>
 
+    <Story Name="Templates">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Cities by country"' />
+            <Arg For="_ => _!.ValueKey" Value='"Id"' />
+            <Arg For="_ => _!.DisplayKey" Value='"Name"' />
+            <Arg For="_ => _!.GroupKey" Value='"Country"' />
+        </Arguments>
+        <Template>
+            <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args">
+                <ItemTemplate Context="city">
+                    <span><strong>@city.Name</strong> <small>(@city.Id)</small></span>
+                </ItemTemplate>
+                <GroupHeaderTemplate Context="group">
+                    <span>🌍 @group.Key</span>
+                </GroupHeaderTemplate>
+            </IgbCombo>
+        </Template>
+    </Story>
+
     <Story Name="Preselected">
         <Arguments>
             <Arg For="_ => _!.Label" Value='"Cities"' />

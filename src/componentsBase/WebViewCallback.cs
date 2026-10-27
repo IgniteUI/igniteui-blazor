@@ -133,7 +133,15 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var currControl = GetControl(currContainer);
                             //Console.WriteLine("found target");
-                            currControl?.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                            try
+                            {
+                                currControl?.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                            }
+                            catch (Exception e)
+                            {
+                                // Keep one bad entry from dropping the rest of the batch and the refresh below.
+                                Console.WriteLine(e.ToString());
+                            }
                         }
                     }
                 }

@@ -554,11 +554,13 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<string, DynamicContentInfo> _dynamicContentInfos = new Dictionary<string, DynamicContentInfo>();
 
         private Dictionary<string, object?> _contentTemplates = new Dictionary<string, object?>();
-        private Dictionary<string, Type> _contentTemplateTypes = new Dictionary<string, Type>();
-        internal void UpdateTemplate(string templateId, object? template, Type type)
+        private Dictionary<string, Func<DynamicContentInfo>> _contentTemplateFactories = new Dictionary<string, Func<DynamicContentInfo>>();
+        internal void UpdateTemplate<T>(string templateId, RenderFragment<T>? template)
         {
             _contentTemplates[templateId] = template;
-            _contentTemplateTypes[templateId] = type;
+            // Captured while T is statically known, so the content holder needs no runtime generic
+            // instantiation - which also keeps value-type contexts AOT-safe.
+            _contentTemplateFactories[templateId] = static () => new DynamicContentInfo<T>();
         }
 
         internal object? FindTemplate(string templateId)
@@ -587,6 +589,7 @@ namespace IgniteUI.Blazor.Controls
                     }
                     dynamicContent.Owner = this;
                     dynamicContent.RefName = contentId;
+                    dynamicContent.TemplateId = templateId;
                     _dynamicContentInfos[contentId] = dynamicContent;
 
                     var template = FindTemplate(templateId);
@@ -632,51 +635,32 @@ namespace IgniteUI.Blazor.Controls
                             var argsDic = JsonSerializer.Deserialize(args, SerializerContext.DictionaryStringObject);
                             context = ConvertReturnValue(argsDic);
                         }
-                        dynamicContent.UpdateContext(context);
+                        dynamicContent.UpdateContext(ConvertTemplateContext(dynamicContent.TemplateId, context));
                     }
                     break;
                 }
             }
         }
 
-        private Type? TemplateContentType(string? templateId)
+        /// <summary>
+        /// Converts the context the client passed to the template <paramref name="templateId"/> into the
+        /// template's context type. Web components that invoke a template directly hand back a plain
+        /// property bag, which only the owning component knows how to map.
+        /// </summary>
+        private protected virtual object? ConvertTemplateContext(string? templateId, object? context)
         {
-            if (templateId == null || !_contentTemplateTypes.ContainsKey(templateId))
+            return context;
+        }
+
+        private DynamicContentInfo? BuildDynamicContentInfo(string? contentType, string? templateId)
+        {
+            //TODO: other content types
+            if (contentType != "TemplateContent" || templateId == null)
             {
                 return null;
             }
 
-            return _contentTemplateTypes[templateId];
-        }
-
-        private Dictionary<Type, Func<DynamicContentInfo?>> _dynamicContentBuilders = new Dictionary<Type, Func<DynamicContentInfo?>>();
-        [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "DynamicContentInfo<T> is class-constrained and templateContentType only ever holds reference types (typeof literals via the internal UpdateTemplate relay), so the instantiation uses AOT shared generics. The net9+ analyzer proves this via the class constraint; this suppression covers the net8 analyzer only.")]
-        private DynamicContentInfo? BuildDynamicContentInfo(string? contentType, string? templateId)
-        {
-            var templateContentType = TemplateContentType(templateId);
-            if (templateContentType != null)
-            {
-                if (!_dynamicContentBuilders.ContainsKey(templateContentType))
-                {
-                    if (contentType == "TemplateContent")
-                    {
-                        var createType = typeof(DynamicContentInfo<>).MakeGenericType(templateContentType);
-                        var nonGen = typeof(DynamicContentInfo);
-                        System.Linq.Expressions.NewExpression newExp = System.Linq.Expressions.Expression.New(createType);
-                        System.Linq.Expressions.UnaryExpression conversion = System.Linq.Expressions.Expression.Convert(newExp, nonGen);
-
-                        var getNew = System.Linq.Expressions.Expression.Lambda<Func<DynamicContentInfo>>(conversion).Compile();
-                        _dynamicContentBuilders[templateContentType] = getNew;
-                    }
-                    else
-                    {
-                        //TODO: other types
-                        _dynamicContentBuilders[templateContentType] = () => null;
-                    }
-                }
-                return _dynamicContentBuilders[templateContentType]();
-            }
-            return null;
+            return _contentTemplateFactories.TryGetValue(templateId, out var factory) ? factory() : null;
         }
 
         private protected virtual bool NeedsDynamicContent
@@ -1324,7 +1308,10 @@ namespace IgniteUI.Blazor.Controls
             }
             else
             {
-                m.SetData("refValue", refValue == null ? "null" : refValue.ToString());
+                var value = refValue?.ToString();
+                m.SetData("refValue", value ?? "null");
+                m.IsRenderFunctionRef = value != null &&
+                    (value.StartsWith("\"template:::", StringComparison.Ordinal) || value.StartsWith("\"script:::", StringComparison.Ordinal));
             }
             SendMessage(m);
         }
@@ -1527,6 +1514,7 @@ namespace IgniteUI.Blazor.Controls
                 }
 
                 //Console.WriteLine("updateing: " + this.GetType().Name + " " + _messageQueue.Count);
+                SendRenderFunctionRefsFirst();
                 while (_messageQueue != null && _messageQueue.First != null && _messageQueue.Count > 0)
                 {
                     RendererMessage m = _messageQueue.First.Value;
@@ -1547,12 +1535,45 @@ namespace IgniteUI.Blazor.Controls
                     return;
                 }
 
+                SendRenderFunctionRefsFirst();
                 while (_messageQueue.Count > 0 && _messageQueue.First != null)
                 {
                     RendererMessage m = _messageQueue.First.Value;
                     _messageQueue.RemoveFirst();
                     ProcessMessageSync(m);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Moves template and script refs queued after a description ahead of it. The client keeps a
+        /// ref value until a description uses it, and the description is serialized when sent, so it
+        /// still reflects every queued change. The component then renders once with its templates in
+        /// place - including nested ones such as the chat renderers, whose late assignment into an
+        /// already rendered component would go unnoticed.
+        /// </summary>
+        private void SendRenderFunctionRefsFirst()
+        {
+            var description = _messageQueue.First;
+            while (description != null && description.Value.Type != _description)
+            {
+                description = description.Next;
+            }
+            if (description == null)
+            {
+                return;
+            }
+
+            var node = description.Next;
+            while (node != null)
+            {
+                var next = node.Next;
+                if (node.Value.IsRenderFunctionRef)
+                {
+                    _messageQueue.Remove(node);
+                    _messageQueue.AddBefore(description, node);
+                }
+                node = next;
             }
         }
 
