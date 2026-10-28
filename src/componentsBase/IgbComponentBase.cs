@@ -555,12 +555,15 @@ namespace IgniteUI.Blazor.Controls
 
         private Dictionary<string, object?> _contentTemplates = new Dictionary<string, object?>();
         private Dictionary<string, Func<DynamicContentInfo>> _contentTemplateFactories = new Dictionary<string, Func<DynamicContentInfo>>();
-        internal void UpdateTemplate<T>(string templateId, RenderFragment<T>? template)
+        // createContext builds the template's context when the client hands it back as a property bag, for
+        // a context type the library builds itself - a factory rather than reflection, so trimming keeps
+        // the type's constructor.
+        internal void UpdateTemplate<T>(string templateId, RenderFragment<T>? template, Func<T>? createContext = null)
         {
             _contentTemplates[templateId] = template;
             // Captured while T is statically known, so the content holder needs no runtime generic
             // instantiation - which also keeps value-type contexts AOT-safe.
-            _contentTemplateFactories[templateId] = static () => new DynamicContentInfo<T>();
+            _contentTemplateFactories[templateId] = () => new DynamicContentInfo<T> { CreateContext = createContext };
         }
 
         internal object? FindTemplate(string templateId)

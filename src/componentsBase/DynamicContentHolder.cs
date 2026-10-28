@@ -259,6 +259,9 @@ namespace IgniteUI.Blazor.Controls
             ControlType = typeof(IgbTemplateContent<T>);
         }
 
+        /// <summary>Creates a context from a property bag; see IgbComponentBase.UpdateTemplate.</summary>
+        public Func<T>? CreateContext { get; init; }
+
         private RenderFragment<T>? _template;
         private T? _context;
 
@@ -315,8 +318,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        [UnconditionalSuppressMessage("Trimming", "IL2087",
-            Justification = "T is always a concrete context type supplied via a generated DynamicContentInfo<TContext> instantiation, so its parameterless constructor is preserved.")]
         public override void UpdateContext(object? context)
         {
             // Fast path: the client already marshalled a strongly typed context across.
@@ -336,13 +337,13 @@ namespace IgniteUI.Blazor.Controls
             // Fallback: some web components (e.g. the chat renderers) hand the template
             // context back as a plain property bag (e.g. {"message":{...}}) without a
             // top-level marshal-by-value type, so ConvertReturnValue leaves it as a
-            // Dictionary. When the context is a serializable element, build it here and
-            // populate it through FromEventJson (the same path used for event args).
+            // Dictionary. When the template registered a factory for its serializable context,
+            // build it here and populate it through FromEventJson (the same path used for event args).
             if (context is Dictionary<string, object?> dict &&
-                typeof(BaseJsonSerializable).IsAssignableFrom(typeof(T)) &&
-                Owner != null)
+                CreateContext != null &&
+                Owner != null &&
+                CreateContext() is BaseJsonSerializable element)
             {
-                var element = (BaseJsonSerializable)Activator.CreateInstance(typeof(T))!;
                 element.TempParent = Owner;
                 element.FromEventJson(Owner, dict);
                 Context = (T)(object)element;
