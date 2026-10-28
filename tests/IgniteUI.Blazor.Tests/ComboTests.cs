@@ -293,6 +293,39 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         cut.WaitForAssertion(() => Assert.Contains("Number: 2", cut.Markup));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Combo_ItemTemplate_ReplacingAClearedScript_KeepsTheTemplate(bool flushSync)
+    {
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ItemTemplateScript, "ItemScript"));
+        Assert.Equal("ItemScript", TemplateId(cut, "itemTemplate"));
+
+        // Both land in one flush, after the description the clear queues: the template ref is sent
+        // ahead of that description, so the clear has to move with it or it overwrites the template.
+        Interop.ClearObserved();
+        Interop.OnDispatcher(() =>
+        {
+            // Set directly so the two land in this order, and in the same flush as the sync call below.
+#pragma warning disable BL0005
+            cut.Instance.ItemTemplateScript = null;
+            cut.Instance.ItemTemplate = item => b => b.AddContent(0, item.Text);
+#pragma warning restore BL0005
+            if (flushSync)
+            {
+                // A sync method call drains the queue through UpdateSync instead of Update.
+                cut.Instance.BlurComponent();
+            }
+        });
+
+        var sent = Interop.FindPropertyUpdate(Interop.ContainerIdOf(cut), "itemTemplate");
+        Assert.Equal(JsonValueKind.String, sent?.ValueKind);
+        Assert.NotEqual("ItemScript", sent?.GetString());
+    }
+
     [Fact]
     public void Combo_GroupHeaderTemplate_ReceivesGroupKey()
     {
@@ -335,6 +368,24 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         Interop.AdjustDynamicContentBatch(containerId, JsonSerializer.Serialize(bad.Concat(good)));
 
         cut.WaitForAssertion(() => Assert.Contains("Item: First", cut.Markup));
+    }
+
+    [Fact]
+    public void Combo_TemplateBatch_SentUnderAnotherComponent_RendersContent()
+    {
+        Interop.PrimeReady();
+        var other = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1 }));
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ItemTemplate, (ComboItem item) => b => b.AddContent(0, $"Item: {item.Text}")));
+
+        // The client sends one batch for every component, under the one that started it.
+        var containerId = Interop.ContainerIdOf(cut);
+        Interop.AdjustDynamicContentBatch(Interop.ContainerIdOf(other),
+            TemplateBatch(containerId, TemplateId(cut, "itemTemplate"), "content-1", UuidRef(Interop, cut, 1)));
+
+        cut.WaitForAssertion(() => Assert.Contains("Item: Second", cut.Markup));
     }
 }
 

@@ -18,6 +18,14 @@
 
 <IgbChat id="chat" Messages="_messages" Options="_chatOptions" />
 
+@* Template replacement and release: the item template can be swapped while the combo shows its
+   items, and items can be dropped; each item's content counts itself in live-count. *@
+<IgbCombo id="live" TValue="string" TItem="City" Data="_liveCities" ValueKey="Name" DisplayKey="Name"
+          ItemTemplate="@(_useAltTemplate ? _altItemTemplate : _liveItemTemplate)" />
+<span id="live-count">@_tracker.Live</span>
+@* Driven by a change event: the combo closes on any click outside it, which would drop its items. *@
+<input id="live-action" @onchange="OnLiveAction" />
+
 @code {
     public sealed class City
     {
@@ -43,8 +51,37 @@
 
     private IgbChatOptions _chatOptions = null!;
 
+    private City[] _liveCities = null!;
+    private readonly TrackedContent.Counter _tracker = new();
+    private bool _useAltTemplate;
+    // Fields, so re-rendering this page hands the combo the same template rather than a new one.
+    private RenderFragment<City> _liveItemTemplate = null!;
+    private RenderFragment<City> _altItemTemplate = null!;
+
+    private void OnLiveAction(ChangeEventArgs e)
+    {
+        switch (e.Value as string)
+        {
+            case "swap-template":
+                _useAltTemplate = true;
+                // The combo re-renders its items, in the hosts already on screen, when its data changes.
+                _liveCities = [.. _liveCities];
+                break;
+            case "drop-cities":
+                _liveCities = _liveCities[..2];
+                break;
+        }
+    }
+
     protected override void OnInitialized()
     {
+        _liveCities = [.. _cities];
+        _tracker.Changed += () => InvokeAsync(StateHasChanged);
+        _liveItemTemplate = city =>
+            @<TrackedContent Tracker="_tracker"><span class="tmpl-live">Live: @city.Name</span></TrackedContent>;
+        _altItemTemplate = city =>
+            @<TrackedContent Tracker="_tracker"><span class="tmpl-alt">Alt: @city.Name</span></TrackedContent>;
+
         _chatOptions = new IgbChatOptions
         {
             CurrentUserId = "user",

@@ -1091,6 +1091,16 @@ function updateAngularElement(element: any) {
                 );
               };
               refValue.___onTemplateTeardown = (template, templateContent) => {
+                if (template.___currentContextMap) {
+                  template.___currentContextMap.delete(templateContent._id);
+                }
+                // The content was moved out of the holder into this host, so the holder dropping it
+                // would leave it here.
+                templateContent.querySelector(`[id="${templateContent._id}"]`)?.remove();
+                // The owner's content goes with it, and its hosts disconnect as it is torn down.
+                if (template.___container.__disposed) {
+                  return;
+                }
                 adjustDynamicContent(
                   template.___containerId,
                   'TemplateContent',

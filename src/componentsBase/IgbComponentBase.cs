@@ -1276,6 +1276,7 @@ namespace IgniteUI.Blazor.Controls
         {
             RendererMessage m = new RendererMessage();
             m.Type = ("refChanged");
+            m.RefName = refName;
             m.SetData("refName", "\"" + refName + "\"");
             if (refValue is IJSDataSource)
             {
@@ -1550,7 +1551,8 @@ namespace IgniteUI.Blazor.Controls
         /// ref value until a description uses it, and the description is serialized when sent, so it
         /// still reflects every queued change. The component then renders once with its templates in
         /// place - including nested ones such as the chat renderers, whose late assignment into an
-        /// already rendered component would go unnoticed.
+        /// already rendered component would go unnoticed. Every other change to such a ref (a clear,
+        /// for instance) moves along with it, so the ref's changes keep their order and the last one wins.
         /// </summary>
         private void SendRenderFunctionRefsFirst()
         {
@@ -1564,16 +1566,30 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
 
-            var node = description.Next;
-            while (node != null)
+            HashSet<string>? hoisted = null;
+            for (var node = description.Next; node != null; node = node.Next)
             {
-                var next = node.Next;
-                if (node.Value.IsRenderFunctionRef)
+                if (node.Value.IsRenderFunctionRef && node.Value.RefName != null)
                 {
-                    _messageQueue.Remove(node);
-                    _messageQueue.AddBefore(description, node);
+                    hoisted ??= new HashSet<string>();
+                    hoisted.Add(node.Value.RefName);
                 }
-                node = next;
+            }
+            if (hoisted == null)
+            {
+                return;
+            }
+
+            var current = description.Next;
+            while (current != null)
+            {
+                var next = current.Next;
+                if (current.Value.RefName != null && hoisted.Contains(current.Value.RefName))
+                {
+                    _messageQueue.Remove(current);
+                    _messageQueue.AddBefore(description, current);
+                }
+                current = next;
             }
         }
 

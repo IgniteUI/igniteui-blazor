@@ -50,6 +50,39 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             await Expect(Template("#chat .tmpl-message", "Message: Hello from Blazor")).ToBeVisibleAsync();
         }
 
+        [Test]
+        public async Task ComboItemTemplate_ReplacedWhileShown_RendersTheNewTemplate()
+        {
+            await OpenComboAsync("live", itemCount: 4);
+            await Expect(Template("#live .tmpl-live", "Live: Berlin")).ToBeVisibleAsync();
+
+            // Replaces the template and refreshes the data, so the combo renders the new template
+            // into the item hosts already on screen.
+            await LiveActionAsync("swap-template");
+
+            await Expect(Template("#live .tmpl-alt", "Alt: Berlin")).ToBeVisibleAsync();
+            await Expect(Page.Locator("#live .tmpl-live")).ToHaveCountAsync(0);
+            // The old template's content was released rather than left alongside the new one.
+            await Expect(Page.Locator("#live-count")).ToHaveTextAsync("4");
+        }
+
+        [Test]
+        public async Task ComboItemTemplate_RemovedItems_ReleaseTheirContent()
+        {
+            await OpenComboAsync("live", itemCount: 4);
+            await Expect(Page.Locator("#live .tmpl-live")).ToHaveCountAsync(4);
+            await Expect(Page.Locator("#live-count")).ToHaveTextAsync("4");
+
+            await LiveActionAsync("drop-cities");
+
+            await Expect(Page.Locator("#live .tmpl-live")).ToHaveCountAsync(2);
+            await Expect(Page.Locator("#live-count")).ToHaveTextAsync("2");
+
+            // Closing drops the rest of the items.
+            await Page.EvaluateAsync("() => document.getElementById('live').hide()");
+            await Expect(Page.Locator("#live-count")).ToHaveTextAsync("0");
+        }
+
         private async Task OpenComboAsync(string id, int itemCount)
         {
             await Page.GotoAsync($"http://localhost:5249/{page}");
@@ -57,6 +90,16 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             await Page.WaitForFunctionAsync($"() => document.getElementById('{id}')?.data?.length === {itemCount}");
             await Page.EvaluateAsync($"() => document.getElementById('{id}').show()");
         }
+
+        // A change event rather than a click: the combo closes on any click outside it.
+        private Task LiveActionAsync(string action)
+            => Page.EvaluateAsync("""
+                action => {
+                    const input = document.getElementById('live-action');
+                    input.value = action;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                """, action);
 
         // Playwright's CSS engine pierces the open shadow roots the templates render into.
         private ILocator Template(string selector, string text)

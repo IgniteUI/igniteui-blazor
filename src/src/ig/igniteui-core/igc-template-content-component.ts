@@ -25,6 +25,10 @@ export class IgcTemplateContentComponent extends IgcHTMLElement {
     }
 
     connectedCallback() {
+        // Moved rather than removed: the disconnect released the content, so bridge it again.
+        if (!this._isBridged && this._template && (this._template as any).___isBridged) {
+            this.setupBridgedTemplate(this._template);
+        }
         this.attachedCallback();
     }
 
@@ -34,10 +38,9 @@ export class IgcTemplateContentComponent extends IgcHTMLElement {
         this.render();
     }
 
-    diconnectedCallBack() {
-        if (this.template && (this.template as any).___isBridged) {
-            this.teardownBridgedTemplate(this.template);
-        }
+    disconnectedCallback() {
+        this._attached = false;
+        this.teardownBridgedTemplate();
     }
 
     private _context: any = null;
@@ -64,18 +67,31 @@ export class IgcTemplateContentComponent extends IgcHTMLElement {
 
     private _id: string = null;
     private _isBridged: boolean = false;
-    private teardownBridgedTemplate(value: TemplateFunction) {
-        (value as any).___onTemplateTeardown(this._template, this, this._template);
+    private _bridgedTemplate: TemplateFunction = null;
+    private teardownBridgedTemplate() {
+        if (!this._isBridged) {
+            return;
+        }
+        const template = this._bridgedTemplate;
+        this._isBridged = false;
+        this._bridgedTemplate = null;
+        (template as any).___onTemplateTeardown(template, this, template);
     }
     private setupBridgedTemplate(value: TemplateFunction) {
         this._id = createGuid();
-        (value as any).___onTemplateInit(this._template, this, this._template);
+        this._isBridged = true;
+        this._bridgedTemplate = value;
+        (value as any).___onTemplateInit(value, this, value);
     }
 
     private onTemplateChanged(oldValue: TemplateFunction, newValue: TemplateFunction) {
+        // A different template (Lit reuses this host when a Razor template is replaced): release the
+        // content the old one rendered here, so the new one gets content of its own.
+        if (this._isBridged && newValue !== this._bridgedTemplate) {
+            this.teardownBridgedTemplate();
+        }
         if (newValue && (newValue as any).___isBridged && !this._isBridged) {
             this.setupBridgedTemplate(newValue);
-            this._isBridged = true;
         }
         if (this._attached) {
             this.render();
