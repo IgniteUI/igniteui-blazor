@@ -290,6 +290,9 @@ public sealed class RendererMessageInteropHarness : InteropHarness
         OnDispatcher(() => _service.WebCallback.OnRaiseEvent(containerId, targetName, eventName, payload));
     }
 
+    public override void AdjustDynamicContentBatch(string containerId, string batchJson) =>
+        OnDispatcher(() => _service.WebCallback.AdjustDynamicContentBatch(containerId, batchJson));
+
     public override void CompleteDeferred(InteropMethodCall call, InteropReturn result) =>
         OnDispatcher(() => _service.WebCallback.OnInvokeReturn(call.ContainerId, call.InvokeId, ToResultPayload(result)));
 

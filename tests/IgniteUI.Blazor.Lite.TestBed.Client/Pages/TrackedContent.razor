@@ -1,0 +1,30 @@
+@* Template content that counts its live instances, so a test can tell content the client
+   released from content left behind in a host that is gone. *@
+@implements IDisposable
+
+@ChildContent
+
+@code {
+    public sealed class Counter
+    {
+        public int Live { get; private set; }
+
+        public event Action? Changed;
+
+        internal void Add(int delta)
+        {
+            Live += delta;
+            Changed?.Invoke();
+        }
+    }
+
+    [Parameter, EditorRequired]
+    public Counter Tracker { get; set; } = null!;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnInitialized() => Tracker.Add(1);
+
+    public void Dispose() => Tracker.Add(-1);
+}

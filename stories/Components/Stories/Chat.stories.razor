@@ -31,6 +31,17 @@
         </Template>
     </Story>
 
+    <Story Name="Razor Templates">
+        <Template>
+            <IgbChat
+                style="--igc-chat-height: calc(100vh - 220px);"
+                Messages="_razorTemplateMessages"
+                Options="_razorTemplateOptions"
+                MessageCreated="OnRazorTemplateMessageCreated">
+            </IgbChat>
+        </Template>
+    </Story>
+
 </Stories>
 
 @code {
@@ -84,6 +95,52 @@
             SuggestionPrefixScript = "ChatStorySuggestionPrefixScript"
         }
     };
+
+    private IgbChatMessage[] _razorTemplateMessages =
+    [
+        NewMessage("r1", "agent", "These messages render through Razor templates set on the chat renderers.", -120),
+        NewMessage("r2", "user", "So the header and bubble content come from my RenderFragments?", -60),
+        NewMessage("r3", "agent", "Exactly - each renderer receives the message it renders as its context.", -30)
+    ];
+
+    private IgbChatOptions _razorTemplateOptions = null!;
+
+    protected override void OnInitialized()
+    {
+        _razorTemplateOptions = new IgbChatOptions
+        {
+            CurrentUserId = "user",
+            HeaderText = "Razor template renderers",
+            InputPlaceholder = "Ask me anything...",
+            Suggestions = InitialSuggestions,
+            Renderers = new IgbChatRenderers
+            {
+                MessageHeader = ctx =>
+                    @<small style="opacity: 0.7">@(ctx.Message.Sender == "user" ? "You" : "Support agent")</small>,
+                MessageContent = ctx =>
+                    @<div style="white-space: pre-wrap">@ctx.Message.Text</div>,
+                SuggestionPrefix = _ =>
+                    @<span>💡</span>
+            }
+        };
+    }
+
+    private async Task OnRazorTemplateMessageCreated(IgbChatMessageEventArgs args)
+    {
+        var userMessage = args.Detail;
+        if (!_razorTemplateMessages.Any(x => x.Id == userMessage.Id))
+        {
+            _razorTemplateMessages = [.. _razorTemplateMessages, userMessage];
+        }
+
+        _razorTemplateOptions.Suggestions = [];
+        _razorTemplateOptions.IsTyping = true;
+
+        await Task.Delay(700);
+
+        _razorTemplateOptions.IsTyping = false;
+        _razorTemplateMessages = [.. _razorTemplateMessages, BuildAgentReply(userMessage.Text)];
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

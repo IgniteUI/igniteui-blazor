@@ -37,5 +37,17 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args != null && args.TryGetValue("instance", out var instanceObj) && ConvertReturnValue(instanceObj, "Chat", true) is IgbChat instance)
+            { this.Instance = instance; }
+
+            this.SuppressParentNotify = false;
+        }
+
     }
 }
