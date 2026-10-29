@@ -245,7 +245,7 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
     }
 
     // The web component invokes both templates with a plain { item } context; the client hosts
-    // each in an <igc-template-content> and batches an Add followed by an Update carrying it.
+    // each in an <igc-lite-template-content> and batches an Add followed by an Update carrying it.
     private static string TemplateBatch(string containerId, string templateId, string contentId, string itemJson) =>
         JsonSerializer.Serialize(new object[]
         {

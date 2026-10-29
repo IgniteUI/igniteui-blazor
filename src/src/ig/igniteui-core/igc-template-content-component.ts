@@ -129,7 +129,7 @@ export class IgcTemplateContentComponent extends IgcHTMLElement {
         this._owner = v;
     }
 
-    public static htmlTagName: string = "igc-template-content";
+    public static htmlTagName: string = "igc-lite-template-content";
     protected static _registered: boolean = false;
     static register(): void {
         if (!IgcTemplateContentComponent._registered) {

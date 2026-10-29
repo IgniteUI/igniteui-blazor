@@ -96,7 +96,7 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
                 () => new Promise(resolve => {
                     const combo = document.getElementById('live');
                     const watch = new MutationObserver(() => {
-                        if (combo.shadowRoot.querySelector('igc-template-content')) {
+                        if (combo.shadowRoot.querySelector('igc-lite-template-content')) {
                             watch.disconnect();
                             combo.hide();
                             resolve();

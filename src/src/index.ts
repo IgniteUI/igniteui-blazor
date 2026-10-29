@@ -8,7 +8,7 @@ import { IgcTemplateContentComponent } from 'igniteui-core/igc-template-content-
 import { refValues, itemMaps } from './refs-state';
 import { _getRegisteredScript, _scriptRegistryEvents } from './api';
 
-// Ensure the <igc-template-content> host element is always defined. Bridged
+// Ensure the <igc-lite-template-content> host element is always defined. Bridged
 // templates invoked directly by a web component (e.g. igc-combo item /
 // group-header templates) rely on this element to satisfy the Blazor template
 // lifecycle contract, and unlike the grid the combo does not pull in the
@@ -962,7 +962,7 @@ function updateAngularElement(element: any) {
                 // invoke the template function directly with a plain `{ item }`
                 // context that lacks the Blazor lifecycle markers (___contentId /
                 // ___immediate) this bridge relies on. In that case, host the template
-                // in an <igc-template-content> element - the same wrapper the grid uses
+                // in an <igc-lite-template-content> element - the same wrapper the grid uses
                 // for EmptyGridTemplate / cell templates - which drives
                 // ___onTemplateInit / ___onTemplateContextChanged and injects
                 // ___contentId onto the context before re-invoking this function (so
@@ -975,10 +975,10 @@ function updateAngularElement(element: any) {
                   !(context.i && context.i.___contentId) &&
                   !(context.i && context.i.nativeElement && context.i.nativeElement.___contentId)
                 ) {
-                  return html`<igc-template-content
+                  return html`<igc-lite-template-content
                     .template=${currTemplate}
                     .context=${context}
-                  ></igc-template-content>`;
+                  ></igc-lite-template-content>`;
                 }
                 let contentId = context.___contentId;
                 if (
