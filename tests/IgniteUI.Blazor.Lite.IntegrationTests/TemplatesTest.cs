@@ -83,6 +83,35 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             await Expect(Page.Locator("#live-count")).ToHaveTextAsync("0");
         }
 
+        [Test]
+        public async Task ComboItemTemplate_ClosedBeforeContentArrives_ReleasesItsHosts()
+        {
+            await TrackHolderObserversAsync();
+            await Page.GotoAsync($"http://localhost:5249/{page}");
+            await Page.WaitForFunctionAsync("() => document.getElementById('live')?.data?.length === 4");
+
+            // Closed as its item hosts are inserted, in the same task: their Add and Remove then reach
+            // .NET in one batch, so their content is never rendered.
+            await Page.EvaluateAsync("""
+                () => new Promise(resolve => {
+                    const combo = document.getElementById('live');
+                    const watch = new MutationObserver(() => {
+                        if (combo.shadowRoot.querySelector('igc-template-content')) {
+                            watch.disconnect();
+                            combo.hide();
+                            resolve();
+                        }
+                    });
+                    watch.observe(combo.shadowRoot, { childList: true, subtree: true });
+                    combo.show();
+                })
+                """);
+
+            // The hosts stopped waiting for their content, which would otherwise keep them alive.
+            await Page.WaitForFunctionAsync($"() => {LiveHolderObservers} === 0", null, new() { Timeout = 5000 });
+            await Expect(Page.Locator("#live-count")).ToHaveTextAsync("0");
+        }
+
         private async Task OpenComboAsync(string id, int itemCount)
         {
             await Page.GotoAsync($"http://localhost:5249/{page}");
@@ -90,6 +119,30 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             await Page.WaitForFunctionAsync($"() => document.getElementById('{id}')?.data?.length === {itemCount}");
             await Page.EvaluateAsync($"() => document.getElementById('{id}').show()");
         }
+
+        // Counts the mutation observers watching #live's content holder: each template host watches
+        // it until its content arrives, so any left over are leaked.
+        private const string LiveHolderObservers =
+            "[...window.__liveObservers].filter(o => o.__target === document.querySelector('#live > .ig-dynamic-content-holder')).length";
+
+        private Task TrackHolderObserversAsync()
+            => Page.AddInitScriptAsync("""
+                (() => {
+                    const live = new Set();
+                    window.__liveObservers = live;
+                    window.MutationObserver = class extends window.MutationObserver {
+                        observe(target, options) {
+                            this.__target = target;
+                            live.add(this);
+                            return super.observe(target, options);
+                        }
+                        disconnect() {
+                            live.delete(this);
+                            return super.disconnect();
+                        }
+                    };
+                })();
+                """);
 
         // A change event rather than a click: the combo closes on any click outside it.
         private Task LiveActionAsync(string action)

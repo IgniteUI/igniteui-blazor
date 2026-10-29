@@ -1039,47 +1039,39 @@ function updateAngularElement(element: any) {
               refValue.___containerId = currentContainerName;
               refValue.___container = currentContainer();
               refValue.___onTemplateInit = (template, templateContent) => {
-                let mut = createMutationObserver((list) => {
+                // One pair of observers per host: a host set up again (reconnected, or given a new
+                // template) drops the pair from its previous setup.
+                templateContent.___disconnectObservers?.();
+                // Waits for the host (this element's render) and the content (the holder's render),
+                // then moves the content into the host.
+                const onChildList = (list: MutationRecord[]) => {
                   for (var mutation of list) {
                     if (mutation.type == 'childList') {
                       var host = templateContent.querySelector('#' + 'host-' + templateContent._id);
                       templateContent.___host = host;
                       if (template.___checkHost(template, templateContent, templateContent.___host)) {
-                        mut.disconnect();
-                        mut = null;
-                        if (mut2) {
-                          mut2.disconnect();
-                          mut2 = null;
-                        }
+                        templateContent.___disconnectObservers();
                       }
                       break;
                     }
                   }
-                });
+                };
+                const mut = createMutationObserver(onChildList);
                 mut.observe(templateContent, {
                   childList: true,
                 });
                 var dynCont = template.___container.querySelector(':scope > .ig-dynamic-content-holder');
-                let mut2 = createMutationObserver((list) => {
-                  for (var mutation of list) {
-                    if (mutation.type == 'childList') {
-                      var host = templateContent.querySelector('#' + 'host-' + templateContent._id);
-                      templateContent.___host = host;
-                      if (template.___checkHost(template, templateContent, templateContent.___host)) {
-                        mut2.disconnect();
-                        mut2 = null;
-                        if (mut) {
-                          mut.disconnect();
-                          mut = null;
-                        }
-                      }
-                      break;
-                    }
-                  }
-                });
+                const mut2 = createMutationObserver(onChildList);
                 mut2.observe(dynCont, {
                   childList: true,
                 });
+                // Also run on teardown: content that never arrives (the host left first) would
+                // otherwise keep the holder's observer, and through it this host, alive.
+                templateContent.___disconnectObservers = () => {
+                  mut.disconnect();
+                  mut2.disconnect();
+                  templateContent.___disconnectObservers = null;
+                };
                 adjustDynamicContent(
                   template.___containerId,
                   'TemplateContent',
@@ -1091,6 +1083,7 @@ function updateAngularElement(element: any) {
                 );
               };
               refValue.___onTemplateTeardown = (template, templateContent) => {
+                templateContent.___disconnectObservers?.();
                 if (template.___currentContextMap) {
                   template.___currentContextMap.delete(templateContent._id);
                 }
