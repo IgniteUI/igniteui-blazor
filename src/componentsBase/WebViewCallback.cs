@@ -117,6 +117,9 @@ namespace IgniteUI.Blazor.Controls
             if (control != null)
             {
                 var arr = control.DeserializeDictionaryArray(batch);
+                // The client batches every component's entries and sends them under the component that
+                // started the batch, so each component an entry targets needs its content refreshed.
+                var touched = new List<IgbComponentBase> { control };
                 if (arr != null)
                 {
                     for (var i = 0; i < arr.Length; i++)
@@ -133,11 +136,26 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var currControl = GetControl(currContainer);
                             //Console.WriteLine("found target");
-                            currControl?.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                            if (currControl != null && !touched.Contains(currControl))
+                            {
+                                touched.Add(currControl);
+                            }
+                            try
+                            {
+                                currControl?.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                            }
+                            catch (Exception e)
+                            {
+                                // Keep one bad entry from dropping the rest of the batch and the refresh below.
+                                Console.WriteLine(e.ToString());
+                            }
                         }
                     }
                 }
-                control.RefreshDynamicContent();
+                foreach (var target in touched)
+                {
+                    target.RefreshDynamicContent();
+                }
             }
         }
     }

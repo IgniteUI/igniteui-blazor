@@ -4,8 +4,16 @@ import { fromSpinal, getAllPropertyNames } from 'igniteui-core/componentUtil';
 import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
+import { IgcTemplateContentComponent } from 'igniteui-core/igc-template-content-component';
 import { refValues, itemMaps } from './refs-state';
 import { _getRegisteredScript, _scriptRegistryEvents } from './api';
+
+// Ensure the <igc-lite-template-content> host element is always defined. Bridged
+// templates invoked directly by a web component (e.g. igc-combo item /
+// group-header templates) rely on this element to satisfy the Blazor template
+// lifecycle contract, and unlike the grid the combo does not pull in the
+// template-container module on its own.
+IgcTemplateContentComponent.register();
 
 let cr = new ComponentRenderer();
 ComponentRenderer.defaultInstance = cr;
@@ -935,6 +943,28 @@ export const sendMessage = function sendMessage(
                 if (!context) {
                   return html`<div></div>`;
                 }
+                // Some web components (e.g. igc-combo item / group-header templates)
+                // invoke the template function directly with a plain `{ item }`
+                // context that lacks the Blazor lifecycle markers (___contentId /
+                // ___immediate) this bridge relies on. In that case, host the template
+                // in an <igc-lite-template-content> element - the same wrapper the grid uses
+                // for EmptyGridTemplate / cell templates - which drives
+                // ___onTemplateInit / ___onTemplateContextChanged and injects
+                // ___contentId onto the context before re-invoking this function (so
+                // there is no recursion on the second pass).
+                if (
+                  !context.___contentId &&
+                  !context.___immediate &&
+                  !(context.i && context.i.___immediate) &&
+                  !(context.i && context.i.nativeElement && context.i.nativeElement.___immediate) &&
+                  !(context.i && context.i.___contentId) &&
+                  !(context.i && context.i.nativeElement && context.i.nativeElement.___contentId)
+                ) {
+                  return html`<igc-lite-template-content
+                    .template=${currTemplate}
+                    .context=${context}
+                  ></igc-lite-template-content>`;
+                }
                 let contentId = context.___contentId;
                 if (
                   context.___immediate ||
@@ -994,47 +1024,39 @@ export const sendMessage = function sendMessage(
               refValue.___containerId = currentContainerName;
               refValue.___container = currentContainer();
               refValue.___onTemplateInit = (template, templateContent) => {
-                let mut = createMutationObserver((list) => {
+                // One pair of observers per host: a host set up again (reconnected, or given a new
+                // template) drops the pair from its previous setup.
+                templateContent.___disconnectObservers?.();
+                // Waits for the host (this element's render) and the content (the holder's render),
+                // then moves the content into the host.
+                const onChildList = (list: MutationRecord[]) => {
                   for (var mutation of list) {
                     if (mutation.type == 'childList') {
                       var host = templateContent.querySelector('#' + 'host-' + templateContent._id);
                       templateContent.___host = host;
                       if (template.___checkHost(template, templateContent, templateContent.___host)) {
-                        mut.disconnect();
-                        mut = null;
-                        if (mut2) {
-                          mut2.disconnect();
-                          mut2 = null;
-                        }
+                        templateContent.___disconnectObservers();
                       }
                       break;
                     }
                   }
-                });
+                };
+                const mut = createMutationObserver(onChildList);
                 mut.observe(templateContent, {
                   childList: true,
                 });
                 var dynCont = template.___container.querySelector(':scope > .ig-dynamic-content-holder');
-                let mut2 = createMutationObserver((list) => {
-                  for (var mutation of list) {
-                    if (mutation.type == 'childList') {
-                      var host = templateContent.querySelector('#' + 'host-' + templateContent._id);
-                      templateContent.___host = host;
-                      if (template.___checkHost(template, templateContent, templateContent.___host)) {
-                        mut2.disconnect();
-                        mut2 = null;
-                        if (mut) {
-                          mut.disconnect();
-                          mut = null;
-                        }
-                      }
-                      break;
-                    }
-                  }
-                });
+                const mut2 = createMutationObserver(onChildList);
                 mut2.observe(dynCont, {
                   childList: true,
                 });
+                // Also run on teardown: content that never arrives (the host left first) would
+                // otherwise keep the holder's observer, and through it this host, alive.
+                templateContent.___disconnectObservers = () => {
+                  mut.disconnect();
+                  mut2.disconnect();
+                  templateContent.___disconnectObservers = null;
+                };
                 adjustDynamicContent(
                   template.___containerId,
                   'TemplateContent',
@@ -1046,6 +1068,17 @@ export const sendMessage = function sendMessage(
                 );
               };
               refValue.___onTemplateTeardown = (template, templateContent) => {
+                templateContent.___disconnectObservers?.();
+                if (template.___currentContextMap) {
+                  template.___currentContextMap.delete(templateContent._id);
+                }
+                // The content was moved out of the holder into this host, so the holder dropping it
+                // would leave it here.
+                templateContent.querySelector(`[id="${templateContent._id}"]`)?.remove();
+                // The owner's content goes with it, and its hosts disconnect as it is torn down.
+                if (template.___container.__disposed) {
+                  return;
+                }
                 adjustDynamicContent(
                   template.___containerId,
                   'TemplateContent',

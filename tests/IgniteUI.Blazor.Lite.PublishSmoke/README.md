@@ -29,11 +29,12 @@ Three gates, in order of what they can see:
 
 | Page section | Expected | A failure means |
 |---|---|---|
-| `ChatModule preloaded:` | `True` | `[IgbModule<TSelf>]` preservation broke — the Type-based module preload silently lost `Register` (IgbChat's component is deliberately never referenced by this app, so nothing else can keep it alive) |
+| `RatingModule preloaded:` | `True` | `[IgbModule<TSelf>]` preservation broke — the Type-based module preload silently lost `Register` (IgbRating's component is deliberately never referenced by this app, so nothing else can keep it alive) |
 | Outlined button + avatar render styled | camelCase enum attributes (`variant="outlined"`, `shape="circle"` in dev tools) | enum fields were trimmed — the enum-preservation justification in `TryGetWCEnumName`/`GetWCEnumTransform` no longer holds |
 | Button group | `selection` is `single-required` in dev tools | enum **field attributes** were trimmed — the `[WCEnumName]` mapping path degraded to camelCase (`singleRequired`) |
 | Combo shows 3 items | `Alpha`, `Beta`, `Gamma` | data-source reflection over the POCO broke — `IgbCombo<TValue, TItem>` must continue to preserve all members of its `TItem` argument |
 | Date range picker present; selecting a range updates the result line | date text below the picker | the event payload path (`IgbDateRangeValue` materialization) broke |
+| Chat message reads `Message: Hello from a trimmed app` | the Razor `MessageContent` renderer's output inside the chat | the renderer context lost its constructor — the library builds `IgbChatMessageRenderContext` itself and the app never does |
 | Browser console | no errors (a stray `favicon` 404 is fine) | anything else: investigate |
 
 The checklist is automated as `TrimmedPublishSmokeTest` in `IgniteUI.Blazor.Lite.IntegrationTests` (`Category=TrimmedPublish`, runs in CI after the publish step). It serves the net10.0 publish output — publishing it on demand if missing — so locally it's just:

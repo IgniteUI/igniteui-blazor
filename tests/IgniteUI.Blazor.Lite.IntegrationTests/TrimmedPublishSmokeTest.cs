@@ -79,8 +79,8 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         }
 
         /// <summary>
-        /// IgbChat's component is never referenced by the app, so its Type-based preload survives
-        /// trimming only through <c>[IgbModule&lt;IgbChatModule&gt;]</c> — the check that catches
+        /// IgbRating's component is never referenced by the app, so its Type-based preload survives
+        /// trimming only through <c>[IgbModule&lt;IgbRatingModule&gt;]</c> — the check that catches
         /// both attribute regressions and linker-behavior changes on SDK updates.
         /// </summary>
         [Test]
@@ -88,7 +88,19 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         {
             var text = await page.Locator("#module-preload-result").TextContentAsync();
 
-            Assert.That(text, Does.Contain("ChatModule preloaded: True"));
+            Assert.That(text, Does.Contain("RatingModule preloaded: True"));
+        }
+
+        /// <summary>
+        /// A chat Razor renderer gets its context built by the library from the property bag the
+        /// chat hands back. The app never constructs that context type, so this fails if the
+        /// library stops keeping the type's constructor alive.
+        /// </summary>
+        [Test]
+        public async Task ChatRazorRenderer_ContextSurvivesTrimming()
+        {
+            await Assertions.Expect(page.Locator("igc-chat .smoke-message"))
+                .ToHaveTextAsync("Message: Hello from a trimmed app", new() { Timeout = 15000 });
         }
 
         /// <summary>
