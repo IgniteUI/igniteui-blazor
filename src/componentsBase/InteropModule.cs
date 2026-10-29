@@ -46,11 +46,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        // Under _lock. A faulted load is replaced, so a later call retries the import; checking the stored task
-        // (instead of resetting it from LoadAsync) also covers an import that fails before LoadAsync yields.
+        // Under _lock. A load that ended without the module (faulted, or canceled as a JS interop timeout is, e.g.
+        // during a reconnect) is replaced, so a later call retries the import; checking the stored task (instead
+        // of resetting it from LoadAsync) also covers an import that fails before LoadAsync yields.
         private Task<IJSObjectReference> StartLoading()
         {
-            if (_loading == null || _loading.IsFaulted)
+            if (_loading == null || (_loading.IsCompleted && !_loading.IsCompletedSuccessfully))
             {
                 _loading = LoadAsync();
             }
