@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.0.1 - 2026-10-29
+
+### Fixed
+
+- **Combo:** `ItemTemplate` and `GroupHeaderTemplate` now work as Razor templates, not only through their `*Script` variants. [#361](https://github.com/IgniteUI/igniteui-blazor/issues/361)
+- **Chat:** the Razor templates in `Options.Renderers` now work. [#398](https://github.com/IgniteUI/igniteui-blazor/pull/398)
+
 ### Changed
 
-- **Interop:** the components reach their client code through the `_content/IgniteUI.Blazor/interop.js` module (JS isolation) instead of functions on `window`. The internal `window.igSendMessage`, `igCheckReady`, `igWaitForLoaded`, `igRequestLoad`, `igSetResourceString`, `igConvertReturnValue` and `igUnmarshalledDataSource*` functions, the unused `igSendMessages` and the `raisingEvent` flag no longer exist. They were never a supported API. On .NET 8 WebAssembly, unmarshalled data now travels on the same path as on .NET 9+. [#255](https://github.com/IgniteUI/igniteui-blazor/issues/255)
+- The remaining library-internal globals on `window` have been removed. They were never a supported API. [#255](https://github.com/IgniteUI/igniteui-blazor/issues/255)
+
 ## 1.0.0 - 2026-10-12
 
 📢 The first stable release: from here on, a breaking change to the public API comes with a major version.
