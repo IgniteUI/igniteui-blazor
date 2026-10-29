@@ -42,16 +42,6 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
-        {
-            base.ToEventJson(control, args);
-
-            if (IsPropDirty("Message"))
-            { args["message"] = ObjectToParam(this._message); }
-
-        }
-
-        /// <inheritdoc />
         internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
