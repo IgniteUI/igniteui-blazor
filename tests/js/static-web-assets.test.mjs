@@ -23,7 +23,7 @@ test('no emitted file inspects its own URL', () => {
   }
 });
 
-test('initializer is a flat import list covering the app entry and api.js', () => {
+test('initializer is a flat import list covering the app entry, api.js and interop.js', () => {
   const lines = read('IgniteUI.Blazor.Lite.lib.module.js').trim().split('\n');
   const imported = lines.map((l) => {
     const m = /^import '\.\/(.+)';$/.exec(l);
@@ -36,6 +36,7 @@ test('initializer is a flat import list covering the app entry and api.js', () =
     'app entry missing',
   );
   assert.ok(imported.includes('api.js'), 'api.js missing');
+  assert.ok(imported.includes('interop.js'), 'interop.js missing');
 });
 
 test('api.js exports everything api.d.ts declares', () => {
@@ -68,6 +69,34 @@ test('no Ignite UI window state', () => {
   assert.match('w.__igLoaded = 1', windowState);
   for (const f of jsFiles) {
     assert.doesNotMatch(read(f), windowState, f);
+  }
+});
+
+test('interop.js exports the client interop the components import', () => {
+  // The .NET side imports this module by path and calls these names (BaseRendererControl, RuntimeHelper, IgniteUIBlazor).
+  assert.deepEqual(exportsOf(read('interop.js')), [
+    'checkReady',
+    'requestLoad',
+    'sendMessage',
+    'setResourceString',
+    'unmarshalledDataSourceClear',
+    'unmarshalledDataSourceCreate',
+    'unmarshalledDataSourceCreateDataIntents',
+    'unmarshalledDataSourceInsert',
+    'unmarshalledDataSourceRemove',
+    'unmarshalledDataSourceUpdate',
+    'waitForLoaded',
+  ]);
+});
+
+test('no interop functions on window', () => {
+  // The interop is reached through interop.js (JS isolation); a second Ignite UI package brings its own module.
+  const interopGlobal =
+    /\big(?:SendMessages?|CheckReady|WaitForLoaded|RequestLoad|SetResourceString|ConvertReturnValue|UnmarshalledDataSource\w*)\b|\braisingEvent\b/;
+  assert.match('window.igSendMessage = f', interopGlobal);
+  assert.doesNotMatch('window.igRegisterScript = f', interopGlobal);
+  for (const f of jsFiles) {
+    assert.doesNotMatch(read(f), interopGlobal, f);
   }
 });
 

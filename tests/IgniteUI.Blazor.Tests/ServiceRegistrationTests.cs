@@ -197,6 +197,7 @@ public class ServiceRegistrationTests
     {
         using var context = new BunitContext();
         context.JSInterop.Mode = JSRuntimeMode.Loose;
+        var module = context.JSInterop.SetupModule(InteropModule.LitePath);
         context.Services.AddScoped<IIgniteUIBlazor>(sp =>
         {
             var runtime = (HandRegisteredRuntime)Activator.CreateInstance(_fullPackageRuntimeType)!;
@@ -206,7 +207,7 @@ public class ServiceRegistrationTests
 
         context.Render<IgbButton>();
 
-        var load = Assert.Single(context.JSInterop.Invocations, v => v.Identifier == "igRequestLoad");
+        var load = Assert.Single(module.Invocations, v => v.Identifier == "requestLoad");
         Assert.Equal("WebButtonModule", load.Arguments[0]);
     }
 
