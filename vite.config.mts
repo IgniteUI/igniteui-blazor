@@ -6,12 +6,14 @@ const outDir = 'src/wwwroot';
 const initializer = 'IgniteUI.Blazor.Lite.lib.module.js';
 const licenseManifest = 'THIRD-PARTY-LICENSES.md';
 /** Public modules keep fixed names so apps can import them and/or import maps can override them. */
-const fixedNames: Record<string, string> = { api: 'api.js', 'lit-html': 'lit-html.js' };
-const entries = { app: 'src/src/index.ts', api: 'src/src/api.ts' };
+const fixedNames: Record<string, string> = { api: 'api.js', interop: 'interop.js', 'lit-html': 'lit-html.js' };
+const entries = { app: 'src/src/index.ts', api: 'src/src/api.ts', interop: 'src/src/interop.ts' };
 
 /**
  * Emits the Blazor JS initializer as a flat list of static imports.
  * Blazor awaits the import, so no startup hooks required for that.
+ * interop.js included so the module the components import is already evaluated: their import() of it resolves to
+ * this instance without another fetch, and nothing about startup depends on window.
  */
 function emitInitializer(): Plugin {
   return {
@@ -30,6 +32,10 @@ function emitInitializer(): Plugin {
       };
       visit(app.fileName);
       visit(fixedNames.api);
+      if (bundle[fixedNames.interop]?.type !== 'chunk') {
+        throw this.error(`no ${fixedNames.interop} entry chunk — cannot emit ${initializer}`);
+      }
+      visit(fixedNames.interop);
       this.emitFile({
         type: 'asset',
         fileName: initializer,

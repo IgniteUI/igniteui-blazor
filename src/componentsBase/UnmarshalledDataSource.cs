@@ -1788,40 +1788,46 @@ namespace IgniteUI.Blazor.Controls
             return l.ToArray();
         }
 
+        // While the client module is still importing, column messages are not queued (the client would read the
+        // value arrays only after later inserts and removes had shifted them). Instead the create is deferred and
+        // reads the data as it is once the module arrives; changes made before then are already part of it, so
+        // their messages are dropped. Keyed by "containerId:refName", holding the latest data intents.
+        private Dictionary<string, string?>? _deferredCreates;
+
         public void SendClear(string containerId, string refName)
         {
-            if (_helper == null)
+            if (_helper == null || !_helper.IsInteropLoaded)
             {
                 return;
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceClear", containerId + ":" + refName, -1, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceClear", containerId + ":" + refName, -1, GetColumns(refName));
         }
 
         public void SendRemove(string containerId, string refName, int index)
         {
-            if (_helper == null)
+            if (_helper == null || !_helper.IsInteropLoaded)
             {
                 return;
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceRemove", containerId + ":" + refName, index, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceRemove", containerId + ":" + refName, index, GetColumns(refName));
         }
 
         public void SendInsert(string containerId, string refName, int index)
         {
-            if (_helper == null)
+            if (_helper == null || !_helper.IsInteropLoaded)
             {
                 return;
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceInsert", containerId + ":" + refName, index, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceInsert", containerId + ":" + refName, index, GetColumns(refName));
         }
 
         public void SendUpdate(string containerId, string refName, int index, bool syncDataOnly)
         {
-            if (_helper == null)
+            if (_helper == null || !_helper.IsInteropLoaded)
             {
                 return;
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceUpdate", containerId + ":" + refName + ":" + (syncDataOnly ? "true" : "false"), index, GetColumns(refName));
+            _helper.SendUnmarshalledColumnMessage("unmarshalledDataSourceUpdate", containerId + ":" + refName + ":" + (syncDataOnly ? "true" : "false"), index, GetColumns(refName));
         }
 
         public void SendCreate(string containerId, string refName, string? dataIntents)
@@ -1830,12 +1836,37 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
+            var target = containerId + ":" + refName;
+            if (_helper.IsInteropLoaded)
+            {
+                SendCreateNow(target, refName, dataIntents);
+                return;
+            }
+
+            var deferred = _deferredCreates ??= new Dictionary<string, string?>();
+            var alreadyDeferred = deferred.ContainsKey(target);
+            deferred[target] = dataIntents;
+            if (alreadyDeferred)
+            {
+                return;
+            }
+            _helper.WhenInteropLoaded(() =>
+            {
+                if (deferred.Remove(target, out var latestIntents))
+                {
+                    SendCreateNow(target, refName, latestIntents);
+                }
+            });
+        }
+
+        private void SendCreateNow(string target, string refName, string? dataIntents)
+        {
             if (dataIntents != null)
             {
                 //Console.WriteLine("sending create data intents");
-                _helper.SendUnmarshalledColumnDataIntentsMessage("igUnmarshalledDataSourceCreateDataIntents", containerId + ":" + refName, dataIntents);
+                _helper!.SendUnmarshalledColumnDataIntentsMessage("unmarshalledDataSourceCreateDataIntents", target, dataIntents);
             }
-            _helper.SendUnmarshalledColumnMessage("igUnmarshalledDataSourceCreate", containerId + ":" + refName, -1, GetColumns(refName));
+            _helper!.SendUnmarshalledColumnMessage("unmarshalledDataSourceCreate", target, -1, GetColumns(refName));
         }
 
         private void OnRemoveId(Guid oldId)
