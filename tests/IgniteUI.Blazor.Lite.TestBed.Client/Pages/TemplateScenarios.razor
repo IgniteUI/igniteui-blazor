@@ -16,7 +16,7 @@
     </ItemTemplate>
 </IgbCombo>
 
-<IgbChat id="chat" Messages="_messages" Options="_chatOptions" />
+<IgbChat id="chat" @ref="_chat" Messages="_messages" Options="_chatOptions" />
 
 @* Template replacement and release: the item template can be swapped while the combo shows its
    items, and items can be dropped; each item's content counts itself in live-count. *@
@@ -49,6 +49,7 @@
         new() { Id = "1", Sender = "agent", Text = "Hello from Blazor", Timestamp = "2026-01-01T00:00:00.000Z" },
     ];
 
+    private IgbChat? _chat;
     private IgbChatOptions _chatOptions = null!;
 
     private City[] _liveCities = null!;
@@ -88,6 +89,7 @@
             Renderers = new IgbChatRenderers
             {
                 MessageContent = ctx => @<span class="tmpl-message">Message: @ctx.Message.Text</span>,
+                SendButton = ctx => @<span class="tmpl-instance">Instance: @(ReferenceEquals(ctx.Instance, _chat) ? "owner" : "other")</span>,
             },
         };
     }

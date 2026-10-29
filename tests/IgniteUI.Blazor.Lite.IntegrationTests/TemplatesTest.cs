@@ -51,6 +51,14 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         }
 
         [Test]
+        public async Task ChatRenderer_InstanceIsTheOwningChat()
+        {
+            await Page.GotoAsync($"http://localhost:5249/{page}");
+
+            await Expect(Template("#chat .tmpl-instance", "Instance: owner")).ToBeVisibleAsync();
+        }
+
+        [Test]
         public async Task ComboItemTemplate_ReplacedWhileShown_RendersTheNewTemplate()
         {
             await OpenComboAsync("live", itemCount: 4);
