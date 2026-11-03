@@ -25,60 +25,60 @@ Release notes are in the [CHANGELOG](CHANGELOG.md) and planned work is in the [R
 
 ### Components in [Ignite UI Blazor Lite](https://www.nuget.org/packages/IgniteUI.Blazor.Lite)
 
-| Components              | Status |         Documentation          | Released Version<br> Ignite UI Blazor |Released Version<br> Ignite UI Blazor Lite |   License   |
-| :---------------------- | :----: | :----------------------------: | :--------------: | :---------: | :---------: |
-| Breadcrumbs             |   ✅   |          Coming soon           |        —         | Unreleased |    [MIT]    |
-| Color Picker            |   ✅   |          Coming soon           |        —         | 0.2.0|    [MIT]    |
-| QR Code                 |   ✅   |          Coming soon           |        —         | 0.2.0|    [MIT]    |
-| Chat (preview)          |   ✅   |       [Docs][Chat Docs]        |     [26.1]       | 0.1.0|    [MIT]    |
-| Splitter                |   ✅   |     [Docs][Splitter Docs]      |     [26.1]       | 0.1.0|    [MIT]    |
-| Highlight               |   ✅   |     [Docs][Highlight Docs]     |     [26.1]       | 0.1.0|    [MIT]    |
-| Theme Provider          |   ✅   |          Coming soon           |     [25.2]       | 0.1.0|    [MIT]    |
-| Date Range Picker       |   ✅   |       [Docs][Date Range]       |     [25.2]       | 0.0.1|    [MIT]    |
-| Tooltip                 |   ✅   |      [Docs][Tooltip Docs]      |     [25.1]       | 0.0.1|    [MIT]    |
-| Tile Manager            |   ✅   |   [Docs][Tile Manager Docs]    |     [25.1]       | 0.0.1|    [MIT]    |
-| Carousel                |   ✅   |     [Docs][Carousel Docs]      |     [24.2]       | 0.0.1|    [MIT]    |
-| Date picker             |   ✅   |    [Docs][Date Picker Docs]    |     [24.1]       | 0.0.1|    [MIT]    |
-| Divider                 |   ✅   |      [Docs][Divider Docs]      |     [24.1]       | 0.0.1|    [MIT]    |
-| Banner                  |   ✅   |      [Docs][Banner Docs]       |     [24.1]       | 0.0.1|    [MIT]    |
-| Combo                   |   ✅   |       [Docs][Combo Docs]       |     [22.2]       | 0.0.1|    [MIT]    |
-| Stepper                 |   ✅   |      [Docs][Stepper Docs]      |     [22.2]       | 0.0.1|    [MIT]    |
-| Select                  |   ✅   |      [Docs][Select Docs]       |     [22.2]       | 0.0.1|    [MIT]    |
-| Dialog                  |   ✅   |      [Docs][Dialog Docs]       |     [22.2]       | 0.0.1|    [MIT]    |
-| Accordion               |   ✅   |     [Docs][Accordion Docs]     |     [22.2]       | 0.0.1|    [MIT]    |
-| Mask Input              |   ✅   |   [Docs][Masked Input Docs]    |     [22.1]       | 0.0.1|    [MIT]    |
-| Drop Down               |   ✅   |     [Docs][Dropdown Docs]      |     [22.1]       | 0.0.1|    [MIT]    |
-| Linear Progress         |   ✅   |  [Docs][Linear Progress Docs]  |     [22.1]       | 0.0.1|    [MIT]    |
-| Circular Progress       |   ✅   | [Docs][Circular Progress Docs] |     [22.1]       | 0.0.1|    [MIT]    |
-| Chip                    |   ✅   |       [Docs][Chip Docs]        |     [22.1]       | 0.0.1|    [MIT]    |
-| Snackbar                |   ✅   |     [Docs][Snackbar Docs]      |     [22.1]       | 0.0.1|    [MIT]    |
-| Toast                   |   ✅   |       [Docs][Toast Docs]       |     [22.1]       | 0.0.1|    [MIT]    |
-| Rating                  |   ✅   |      [Docs][Rating Docs]       |     [22.1]       | 0.0.1|    [MIT]    |
-| Slider                  |   ✅   |      [Docs][Slider Docs]       |     [22.1]       | 0.0.1|    [MIT]    |
-| Range Slider            |   ✅   |      [Docs][Slider Docs]       |     [22.1]       | 0.0.1|    [MIT]    |
-| Avatar                  |   ✅   |      [Docs][Avatar Docs]       |     [21.2]       | 0.0.1|    [MIT]    |
-| Badge                   |   ✅   |       [Docs][Badge Docs]       |     [21.2]       | 0.0.1|    [MIT]    |
-| Button                  |   ✅   |      [Docs][Button Docs]       |     [21.2]       | 0.0.1|    [MIT]    |
-| Button group            |   ✅   |   [Docs][Button Group Docs]    |     [23.2]       | 0.0.1|    [MIT]    |
-| Toggle Button           |   ✅   |   [Docs][Button Group Docs]    |     [23.2]       | 0.0.1|    [MIT]    |
-| Textarea                |   ✅   |     [Docs][Textarea Docs]      |     [23.2]       | 0.0.1|    [MIT]    |
-| Date Time Input         |   ✅   |  [Docs][Date Time Input Docs]  |     [21.2]       | 0.0.1|    [MIT]    |
-| Tabs                    |   ✅   |       [Docs][Tabs Docs]        |     [21.2]       | 0.0.1|    [MIT]    |
-| Expansion Panel         |   ✅   |  [Docs][Expansion Panel Docs]  |     [21.2]       | 0.0.1|    [MIT]    |
-| Tree                    |   ✅   |       [Docs][Tree Docs]        |     [21.2]       | 0.0.1|    [MIT]    |
-| Calendar                |   ✅   |     [Docs][Calendar Docs]      |     [21.2]       | 0.0.1|    [MIT]    |
-| Card                    |   ✅   |       [Docs][Card Docs]        |     [21.2]       | 0.0.1|    [MIT]    |
-| Checkbox                |   ✅   |     [Docs][Checkbox Docs]      |     [21.2]       |  0.0.1|   [MIT]    |
-| Icon                    |   ✅   |       [Docs][Icon Docs]        |     [21.2]       |  0.0.1|   [MIT]    |
-| Icon Button             |   ✅   |    [Docs][Icon Button Docs]    |     [21.2]       | 0.0.1|   [MIT]    |
-| Input                   |   ✅   |       [Docs][Input Docs]       |     [21.2]       |  0.0.1|   [MIT]    |
-| List                    |   ✅   |       [Docs][List Docs]        |     [21.2]       |  0.0.1|   [MIT]    |
-| Navigation Bar (Navbar) |   ✅   |  [Docs][Navigation Bar Docs]   |     [21.2]       |  0.0.1|   [MIT]    |
-| Navigation Drawer       |   ✅   | [Docs][Navigation Drawer Docs] |     [21.2]       |  0.0.1|   [MIT]    |
-| Radio                   |   ✅   |       [Docs][Radio Docs]       |     [21.2]       |  0.0.1|  [MIT]    |
-| Radio Group             |   ✅   |       [Docs][Radio Docs]       |     [21.2]       |  0.0.1|   [MIT]    |
-| Ripple                  |   ✅   |      [Docs][Ripple Docs]       |     [21.2]       |   0.0.1|  [MIT]    |
-| Switch                  |   ✅   |      [Docs][Switch Docs]       |     [21.2]       |   0.0.1|  [MIT]    |
+| Components              | Status |         Documentation          | Released Version<br> Ignite UI Blazor | Released Version<br> Ignite UI Blazor Lite | License |
+| :---------------------- | :----: | :----------------------------: | :----: | :----: | :----: |
+| Breadcrumbs             |   ✅    |          Coming soon           |   —    | 0.4.0  | [MIT]  |
+| Color Picker            |   ✅    |          Coming soon           |   —    | 0.2.0  | [MIT]  |
+| QR Code                 |   ✅    |          Coming soon           |   —    | 0.2.0  | [MIT]  |
+| Chat (preview)          |   ✅    |       [Docs][Chat Docs]        | [26.1] | 0.1.0  | [MIT]  |
+| Splitter                |   ✅    |     [Docs][Splitter Docs]      | [26.1] | 0.1.0  | [MIT]  |
+| Highlight               |   ✅    |     [Docs][Highlight Docs]     | [26.1] | 0.1.0  | [MIT]  |
+| Theme Provider          |   ✅    |          Coming soon           | [25.2] | 0.1.0  | [MIT]  |
+| Date Range Picker       |   ✅    |       [Docs][Date Range]       | [25.2] | 0.0.1  | [MIT]  |
+| Tooltip                 |   ✅    |      [Docs][Tooltip Docs]      | [25.1] | 0.0.1  | [MIT]  |
+| Tile Manager            |   ✅    |   [Docs][Tile Manager Docs]    | [25.1] | 0.0.1  | [MIT]  |
+| Carousel                |   ✅    |     [Docs][Carousel Docs]      | [24.2] | 0.0.1  | [MIT]  |
+| Date Picker             |   ✅    |    [Docs][Date Picker Docs]    | [24.1] | 0.0.1  | [MIT]  |
+| Divider                 |   ✅    |      [Docs][Divider Docs]      | [24.1] | 0.0.1  | [MIT]  |
+| Banner                  |   ✅    |      [Docs][Banner Docs]       | [24.1] | 0.0.1  | [MIT]  |
+| Button Group            |   ✅    |   [Docs][Button Group Docs]    | [23.2] | 0.0.1  | [MIT]  |
+| Toggle Button           |   ✅    |   [Docs][Button Group Docs]    | [23.2] | 0.0.1  | [MIT]  |
+| Textarea                |   ✅    |     [Docs][Textarea Docs]      | [23.2] | 0.0.1  | [MIT]  |
+| Combo                   |   ✅    |       [Docs][Combo Docs]       | [22.2] | 0.0.1  | [MIT]  |
+| Stepper                 |   ✅    |      [Docs][Stepper Docs]      | [22.2] | 0.0.1  | [MIT]  |
+| Select                  |   ✅    |      [Docs][Select Docs]       | [22.2] | 0.0.1  | [MIT]  |
+| Dialog                  |   ✅    |      [Docs][Dialog Docs]       | [22.2] | 0.0.1  | [MIT]  |
+| Accordion               |   ✅    |     [Docs][Accordion Docs]     | [22.2] | 0.0.1  | [MIT]  |
+| Mask Input              |   ✅    |   [Docs][Masked Input Docs]    | [22.1] | 0.0.1  | [MIT]  |
+| Drop Down               |   ✅    |     [Docs][Dropdown Docs]      | [22.1] | 0.0.1  | [MIT]  |
+| Linear Progress         |   ✅    |  [Docs][Linear Progress Docs]  | [22.1] | 0.0.1  | [MIT]  |
+| Circular Progress       |   ✅    | [Docs][Circular Progress Docs] | [22.1] | 0.0.1  | [MIT]  |
+| Chip                    |   ✅    |       [Docs][Chip Docs]        | [22.1] | 0.0.1  | [MIT]  |
+| Snackbar                |   ✅    |     [Docs][Snackbar Docs]      | [22.1] | 0.0.1  | [MIT]  |
+| Toast                   |   ✅    |       [Docs][Toast Docs]       | [22.1] | 0.0.1  | [MIT]  |
+| Rating                  |   ✅    |      [Docs][Rating Docs]       | [22.1] | 0.0.1  | [MIT]  |
+| Slider                  |   ✅    |      [Docs][Slider Docs]       | [22.1] | 0.0.1  | [MIT]  |
+| Range Slider            |   ✅    |      [Docs][Slider Docs]       | [22.1] | 0.0.1  | [MIT]  |
+| Avatar                  |   ✅    |      [Docs][Avatar Docs]       | [21.2] | 0.0.1  | [MIT]  |
+| Badge                   |   ✅    |       [Docs][Badge Docs]       | [21.2] | 0.0.1  | [MIT]  |
+| Button                  |   ✅    |      [Docs][Button Docs]       | [21.2] | 0.0.1  | [MIT]  |
+| Date Time Input         |   ✅    |  [Docs][Date Time Input Docs]  | [21.2] | 0.0.1  | [MIT]  |
+| Tabs                    |   ✅    |       [Docs][Tabs Docs]        | [21.2] | 0.0.1  | [MIT]  |
+| Expansion Panel         |   ✅    |  [Docs][Expansion Panel Docs]  | [21.2] | 0.0.1  | [MIT]  |
+| Tree                    |   ✅    |       [Docs][Tree Docs]        | [21.2] | 0.0.1  | [MIT]  |
+| Calendar                |   ✅    |     [Docs][Calendar Docs]      | [21.2] | 0.0.1  | [MIT]  |
+| Card                    |   ✅    |       [Docs][Card Docs]        | [21.2] | 0.0.1  | [MIT]  |
+| Checkbox                |   ✅    |     [Docs][Checkbox Docs]      | [21.2] | 0.0.1  | [MIT]  |
+| Icon                    |   ✅    |       [Docs][Icon Docs]        | [21.2] | 0.0.1  | [MIT]  |
+| Icon Button             |   ✅    |    [Docs][Icon Button Docs]    | [21.2] | 0.0.1  | [MIT]  |
+| Input                   |   ✅    |       [Docs][Input Docs]       | [21.2] | 0.0.1  | [MIT]  |
+| List                    |   ✅    |       [Docs][List Docs]        | [21.2] | 0.0.1  | [MIT]  |
+| Navigation Bar (Navbar) |   ✅    |  [Docs][Navigation Bar Docs]   | [21.2] | 0.0.1  | [MIT]  |
+| Navigation Drawer       |   ✅    | [Docs][Navigation Drawer Docs] | [21.2] | 0.0.1  | [MIT]  |
+| Radio                   |   ✅    |       [Docs][Radio Docs]       | [21.2] | 0.0.1  | [MIT]  |
+| Radio Group             |   ✅    |       [Docs][Radio Docs]       | [21.2] | 0.0.1  | [MIT]  |
+| Ripple                  |   ✅    |      [Docs][Ripple Docs]       | [21.2] | 0.0.1  | [MIT]  |
+| Switch                  |   ✅    |      [Docs][Switch Docs]       | [21.2] | 0.0.1  | [MIT]  |
 
 ### Grid components in [Ignite UI Blazor](https://www.nuget.org/packages/IgniteUI.Blazor.Trial) & [Ignite UI Blazor Grid Lite](https://www.nuget.org/packages/IgniteUI.Blazor.GridLite)
 
@@ -112,9 +112,9 @@ In order to use the Ignite UI Blazor in your application you should install
 
 There are three ways to install Ignite UI for Blazor using NuGet:
 
-[Using Visual Studio](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-visual-studio)
-[Using the .NET CLI](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-the-net-cli)
-[Using the Package Manager](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-the-package-manager)
+- [Using Visual Studio](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-visual-studio)
+- [Using the .NET CLI](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-the-net-cli)
+- [Using the Package Manager](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor#using-the-package-manager)
 
 Full documentation for [Installing Ignite UI for Blazor](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/general-installing-blazor)
 
