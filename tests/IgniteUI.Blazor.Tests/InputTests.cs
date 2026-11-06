@@ -8,6 +8,9 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
 {
     protected override ComponentContract<IgbInput> InteropContract { get; } = new ComponentContract<IgbInput>()
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: "hello")
+        // A null from the client reads as "" through the non-nullable getter.
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value",
+            returns: InteropReturn.Object("", "null"), expect: "")
         .Method(c => c.StepUpAsync(2), c => c.StepUp(2), "stepUp", args: [2.0], types: ["Number"])
         .Method(c => c.StepDownAsync(2), c => c.StepDown(2), "stepDown", args: [2.0], types: ["Number"])
         .Method(c => c.SelectAsync(), c => c.Select(), "select")
@@ -21,6 +24,13 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
         .Event(c => c.Change,
             argsJson: """{"detail": "new value"}""",
             assert: args => Assert.Equal("new value", args.Detail))
+        // The nullable Detail keeps a null from the client apart from an empty string.
+        .Event(c => c.Change,
+            argsJson: """{"detail": null}""",
+            assert: args => Assert.Null(args.Detail))
+        .Event(c => c.Change,
+            argsJson: """{"detail": ""}""",
+            assert: args => Assert.Equal("", args.Detail))
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
             argsJson: """{"detail": "new value"}""", expect: "new value")
         .Event(c => c.InputOcurred,
