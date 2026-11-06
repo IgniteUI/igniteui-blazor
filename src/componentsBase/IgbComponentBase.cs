@@ -999,6 +999,11 @@ namespace IgniteUI.Blazor.Controls
             m.SetData("types", "[" + String.Join(", ", typeStrings) + "]");
             m.NativeElements = nativeElements;
             var ret = await SendMessageImmediate(m);
+            // Only a sent invocation answers with a string; otherwise no return will arrive.
+            if (!(ret is JsonElement sentElement && sentElement.ValueKind == JsonValueKind.String))
+            {
+                return null;
+            }
 
             TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
             // A return can arrive on the dispatcher while a call made off it is still getting here.
