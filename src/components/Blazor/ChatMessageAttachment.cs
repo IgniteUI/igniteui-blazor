@@ -130,9 +130,9 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("id", out var idObj))
-            { this.Id = ReturnToString(idObj); }
+            { this.Id = ReturnToString(idObj) ?? ""; }
             if (args != null && args.TryGetValue("name", out var nameObj))
-            { this.RendererName = ReturnToString(nameObj); }
+            { this.RendererName = ReturnToString(nameObj) ?? ""; }
             if (args != null && args.TryGetValue("url", out var urlObj))
             { this.Url = ReturnToString(urlObj); }
             if (args != null && args.TryGetValue("attachmentType", out var attachmentTypeObj))

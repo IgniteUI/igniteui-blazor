@@ -724,7 +724,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        internal string ReturnToString(object? val)
+        internal string? ReturnToString(object? val)
         {
             EnsureValid();
             if (CurrParent is BaseJsonSerializable)
@@ -735,7 +735,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 return ((IgbComponentBase)CurrParent).ReturnToString(val);
             }
-            return String.Empty;
+            return val?.ToString();
         }
 
         internal bool ReturnToBoolean(object? val)

@@ -2627,10 +2627,10 @@ namespace IgniteUI.Blazor.Controls
             ObjectToParam(c, val);
         }
 
-        internal string ReturnToString(object? val)
+        internal string? ReturnToString(object? val)
         {
             val = ConvertReturnValue(val);
-            return val?.ToString() ?? String.Empty;
+            return val?.ToString();
         }
 
         internal string? StringToString(object? val)

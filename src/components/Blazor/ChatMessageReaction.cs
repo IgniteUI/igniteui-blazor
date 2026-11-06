@@ -82,7 +82,7 @@ namespace IgniteUI.Blazor.Controls
             if (args != null && args.TryGetValue("message", out var messageObj) && ConvertReturnValue(messageObj, "ChatMessage", true) is IgbChatMessage message)
             { this.Message = message; }
             if (args != null && args.TryGetValue("reaction", out var reactionObj))
-            { this.Reaction = ReturnToString(reactionObj); }
+            { this.Reaction = ReturnToString(reactionObj) ?? ""; }
 
             this.SuppressParentNotify = false;
         }
