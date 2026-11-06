@@ -1401,7 +1401,7 @@ namespace IgniteUI.Blazor.Controls
                 m.SetData("refName", "\"" + refName + "\"");
                 m.SetData("index", index.ToString());
                 m.SetData("oldItem", oldItem == null ? "null" : ((JsonDataSourceItem)oldItem).ToJson());
-                m.SetData("newItem", oldItem == null ? "null" : ((JsonDataSourceItem?)newItem)?.ToJson());
+                m.SetData("newItem", newItem == null ? "null" : ((JsonDataSourceItem)newItem).ToJson());
                 if (!((JsonDataSource)dataSource).DateCacheReady)
                 {
                     m.SetData("dateCache", ((JsonDataSource)dataSource).GetDateCacheAsJson());
