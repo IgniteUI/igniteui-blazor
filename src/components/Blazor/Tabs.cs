@@ -183,7 +183,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<string> GetSelectedAsync()
         {
             var iv = await InvokeMethod("p:Selected", new object?[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ReturnToString(iv) ?? "";
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace IgniteUI.Blazor.Controls
         public string GetSelected()
         {
             var iv = InvokeMethodSync("p:Selected", new object?[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ReturnToString(iv) ?? "";
         }
 
         /// <summary>
