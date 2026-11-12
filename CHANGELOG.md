@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- **Icon:** icons can be registered without an icon instance. `IIgniteUIBlazor` has `RegisterIconAsync`, `RegisterIconFromTextAsync` and `SetIconRefAsync` extension methods, and the JS API (`_content/IgniteUI.Blazor/api.js`) exports `registerIcon`, `registerIconFromText` and `setIconRef`, which can run before any component renders. [#561](https://github.com/IgniteUI/igniteui-blazor/issues/561)
+
+### Deprecated
+
+- **Icon, Icon Button:** the `RegisterIcon`, `RegisterIconFromText` and `SetIconRef` instance methods, async and sync. Use the `IIgniteUIBlazor` extension methods of the same names. [#561](https://github.com/IgniteUI/igniteui-blazor/issues/561)
+
 ## 1.0.1 - 2026-10-29
 
 ### Fixed

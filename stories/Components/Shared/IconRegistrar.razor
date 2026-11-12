@@ -1,26 +1,23 @@
-@* Renders a hidden IgbIcon and registers common Material Design icons on first render. *@
+@* Registers common Material Design icons on first render; renders nothing. *@
 @* Include this component in story templates that use IgbIcon or IgbIconButton. *@
-<IgbIcon @ref="_icon" style="display: none;" />
+@inject IIgniteUIBlazor IgniteUI
 
 @code {
-    private IgbIcon? _icon;
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && _icon is not null)
+        if (firstRender)
         {
-            await _icon.EnsureReady();
-            await _icon.RegisterIconFromTextAsync("home", HomeSvg, "default");
-            await _icon.RegisterIconFromTextAsync("search", SearchSvg, "default");
-            await _icon.RegisterIconFromTextAsync("favorite", FavoriteSvg, "default");
-            await _icon.RegisterIconFromTextAsync("settings", SettingsSvg, "default");
-            await _icon.RegisterIconFromTextAsync("delete", DeleteSvg, "default");
-            await _icon.RegisterIconFromTextAsync("menu", MenuSvg, "default");
-            await _icon.RegisterIconFromTextAsync("people", PeopleSvg, "default");
-            await _icon.RegisterIconFromTextAsync("lock", LockSvg, "default");
-            await _icon.RegisterIconFromTextAsync("folder", FolderSvg, "default");
-            await _icon.RegisterIconFromTextAsync("description", DescriptionSvg, "default");
-            await _icon.RegisterIconFromTextAsync("image", ImageSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("home", HomeSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("search", SearchSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("favorite", FavoriteSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("settings", SettingsSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("delete", DeleteSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("menu", MenuSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("people", PeopleSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("lock", LockSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("folder", FolderSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("description", DescriptionSvg, "default");
+            await IgniteUI.RegisterIconFromTextAsync("image", ImageSvg, "default");
         }
     }
 

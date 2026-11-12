@@ -44,7 +44,28 @@
     <IgbChat Messages="@_messages" Options="@_chatOptions"></IgbChat>
 </section>
 
+@* Icon registry path: IIgniteUIBlazor sends the registration options and the alias target to api.js as objects
+   it builds itself; every member must arrive (the collection, stripMeta, the target's name and collection). *@
+<section id="icon-section">
+    <IgbIcon IconName="smoke" Collection="smoke-icons" />
+    <IgbIcon IconName="smoke-alias" Collection="smoke-icons" />
+</section>
+
 @code {
+    // Kept in sync with TrimmedPublishSmokeTest.
+    private const string SmokeIconPath = "M2 2h20v20H2z";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await IgBlazor.RegisterIconFromTextAsync("smoke",
+                $"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Smoke</title><path d="{SmokeIconPath}"/></svg>""",
+                new IgbRegisterIconOptions { Collection = "smoke-icons", StripMeta = true });
+            await IgBlazor.SetIconRefAsync("smoke-alias", "smoke-icons", new IgbIconMeta { Name = "smoke", Collection = "smoke-icons" });
+        }
+    }
+
     private string _rangeResult = "no range selected";
 
     private readonly IgbChatMessage[] _messages =
