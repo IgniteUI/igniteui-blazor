@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload of the <see cref="IgbSplitter.LayoutChanged"/> event:
     /// a full snapshot of the current layout (pane sizes and collapsed states).
     /// </summary>
-    public partial class IgbSplitterLayoutChangedEventArgsDetail : BaseRendererElement
+    public partial class IgbSplitterLayoutChangedEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSplitterLayoutChangedEventArgsDetail"; } }
-
-        private static readonly bool _marshalByValue = true;
+        internal override string RendererType { get { return "WebSplitterLayoutChangedEventArgsDetail"; } }
 
         private string? _startSize;
 
         /// <summary>
         /// The current size of the start pane.
         /// </summary>
-        [Parameter]
         public string? StartSize
         {
             get { return this._startSize; }
@@ -37,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The current size of the end pane.
         /// </summary>
-        [Parameter]
         public string? EndSize
         {
             get { return this._endSize; }
@@ -56,7 +50,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Whether the start pane is currently collapsed.
         /// </summary>
-        [Parameter]
         public bool StartCollapsed
         {
             get { return this._startCollapsed; }
@@ -75,7 +68,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Whether the end pane is currently collapsed.
         /// </summary>
-        [Parameter]
         public bool EndCollapsed
         {
             get { return this._endCollapsed; }
@@ -106,7 +98,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -122,7 +114,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;

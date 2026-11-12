@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -7,12 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// a request for more data, emitted when the rendered window comes near the
     /// end of the loaded items.
     /// </summary>
-    public partial class IgbVirtualScrollDataRequestEventArgsDetail : BaseRendererElement
+    public partial class IgbVirtualScrollDataRequestEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebVirtualScrollDataRequestEventArgsDetail"; } }
-
-        private static bool _marshalByValue = true;
+        internal override string RendererType { get { return "WebVirtualScrollDataRequestEventArgsDetail"; } }
 
         private double _startIndex = 0;
 
@@ -20,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
         /// The first index that does not yet have data.
         /// Append at least <see cref="Count"/> more items starting here.
         /// </summary>
-        [Parameter]
         public double StartIndex
         {
             get { return this._startIndex; }
@@ -39,7 +34,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Number of items being requested.
         /// </summary>
-        [Parameter]
         public double Count
         {
             get { return this._count; }
@@ -66,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -78,15 +72,15 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("startIndex"))
-            { this.StartIndex = ReturnToDouble(args["startIndex"]); }
-            if (args.ContainsKey("count"))
-            { this.Count = ReturnToDouble(args["count"]); }
+            if (args != null && args.TryGetValue("startIndex", out var startIndex))
+            { this.StartIndex = ReturnToDouble(startIndex); }
+            if (args != null && args.TryGetValue("count", out var count))
+            { this.Count = ReturnToDouble(count); }
 
             this.SuppressParentNotify = false;
         }

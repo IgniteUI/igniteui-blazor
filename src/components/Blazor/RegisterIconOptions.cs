@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Options controlling how an icon is registered, passed to the
     /// <c>RegisterIcon</c> and <c>RegisterIconFromText</c> methods of <see cref="IgbIcon"/>.
     /// </summary>
-    public partial class IgbRegisterIconOptions : BaseRendererElement
+    public partial class IgbRegisterIconOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRegisterIconOptions"; } }
-
-        private static readonly bool _marshalByValue = true;
+        internal override string RendererType { get { return "WebRegisterIconOptions"; } }
 
         private string? _collection;
 
         /// <summary>
         /// The collection to register the icon in. Defaults to <c>default</c>.
         /// </summary>
-        [Parameter]
         public string? Collection
         {
             get { return this._collection; }
@@ -39,7 +34,6 @@ namespace IgniteUI.Blazor.Controls
         /// before storing it. This prevents the native browser tooltip on hover; the title text stays
         /// available as the <c>aria-label</c> of the host icon element.
         /// </summary>
-        [Parameter]
         public bool StripMeta
         {
             get { return this._stripMeta; }

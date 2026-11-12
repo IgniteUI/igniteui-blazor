@@ -7,7 +7,6 @@ Eight stylesheets under `_content/IgniteUI.Blazor/themes/`: `{light|dark}/{boots
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
 <link href="css/app.css" rel="stylesheet" />
-<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
 ```
 
 .NET 9+ Web App projects can use the fingerprinted asset collection:
@@ -22,7 +21,7 @@ If the page hosts any full-featured grid, add the grid stylesheet in the **same 
 <link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />
 ```
 
-`IgbGridLite` replaces both with its own: `_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css`.
+`IgbGridLite` replaces both with its own: `_content/IgniteUI.Blazor.GridLite/themes/light/bootstrap.css`.
 
 ## Switching theme at runtime
 

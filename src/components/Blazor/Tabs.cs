@@ -9,10 +9,10 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTab"/> children.
     /// It supports keyboard navigation and provides API methods to control the selected tab.
     /// </summary>
-    public partial class IgbTabs : BaseRendererControl
+    public partial class IgbTabs : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTabs"; } }
+        internal override string RendererType { get { return "WebTabs"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -24,13 +24,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -39,16 +33,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -57,13 +42,13 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
 
         /// <inheritdoc />
-        protected override string ParentTypeName
+        private protected override string ParentTypeName
         {
             get
             {
@@ -75,7 +60,7 @@ namespace IgniteUI.Blazor.Controls
         private IgbTabs_TabCollection? _allTabsCollection;
         private IgbTabs_TabCollection? _contentTabsCollection = null;
 
-        public IgbTabs_TabCollection ContentTabsCollection
+        internal IgbTabs_TabCollection ContentTabsCollection
         {
 
             get
@@ -89,7 +74,7 @@ namespace IgniteUI.Blazor.Controls
         }
         private IgbTabs_TabCollection? _actualTabsCollection = null;
 
-        public IgbTabs_TabCollection ActualTabsCollection
+        internal IgbTabs_TabCollection ActualTabsCollection
         {
 
             get
@@ -127,7 +112,7 @@ namespace IgniteUI.Blazor.Controls
 
         private IgbTabs_TabCollection? _tabsCollection = null;
 
-        public IgbTabs_TabCollection TabsCollection
+        internal IgbTabs_TabCollection TabsCollection
         {
 
             get
@@ -138,7 +123,7 @@ namespace IgniteUI.Blazor.Controls
                 }
                 return this._tabsCollection;
             }
-            protected set
+            private set
             {
                 if (this._tabsCollection != value || !IsPropDirty("TabsCollection"))
                 {
@@ -252,7 +237,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        public override object? FindByName(string name)
+        private protected override object? FindByName(string name)
         {
             var baseResult = base.FindByName(name);
             if (baseResult != null)
@@ -288,8 +273,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ChangeScript
@@ -332,7 +318,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbTabComponentEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             SyncSelectedTab(args);
                         });
@@ -346,7 +332,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbTabComponentEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbTabComponentEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

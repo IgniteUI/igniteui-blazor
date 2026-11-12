@@ -23,6 +23,14 @@ export class WebDatePickerDescription extends WebComboBoxBaseLikeDescription {
 		this._label = value;
 		this.markDirty("Label");
 	}
+	private _formName: string = null;
+	get formName(): string {
+		return this._formName;
+	}
+	set formName(value: string) {
+		this._formName = value;
+		this.markDirty("FormName");
+	}
 	private _mode: string = null;
 	get mode(): string {
 		return this._mode;

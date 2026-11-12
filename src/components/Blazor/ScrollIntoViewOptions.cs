@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
@@ -7,20 +5,17 @@ namespace IgniteUI.Blazor.Controls
     /// <c>ScrollToIndex</c> methods of <see cref="IgbVirtualScroll"/>.
     /// Mirrors the browser scroll-into-view options.
     /// </summary>
-    public partial class IgbScrollIntoViewOptions : BaseRendererElement
+    public partial class IgbScrollIntoViewOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebScrollIntoViewOptions"; } }
+        internal override string RendererType { get { return "WebScrollIntoViewOptions"; } }
 
-        private static bool _marshalByValue = true;
-
-        private string _behavior;
+        private string? _behavior;
 
         /// <summary>
         /// The scroll behavior: <c>auto</c> or <c>smooth</c>.
         /// </summary>
-        [Parameter]
-        public string Behavior
+        public string? Behavior
         {
             get { return this._behavior; }
             set
@@ -33,14 +28,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _block;
+        private string? _block;
 
         /// <summary>
         /// The vertical alignment of the item in the viewport: <c>start</c>, <c>center</c>,
         /// <c>end</c> or <c>nearest</c>.
         /// </summary>
-        [Parameter]
-        public string Block
+        public string? Block
         {
             get { return this._block; }
             set
@@ -53,14 +47,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _inline;
+        private string? _inline;
 
         /// <summary>
         /// The horizontal alignment of the item in the viewport: <c>start</c>, <c>center</c>,
         /// <c>end</c> or <c>nearest</c>.
         /// </summary>
-        [Parameter]
-        public string Inline
+        public string? Inline
         {
             get { return this._inline; }
             set

@@ -140,6 +140,8 @@ public sealed class StatePropContractSpec<TComponent> where TComponent : ICompon
 {
     public required string WireName { get; init; }
     public required Action<ComponentParameterCollectionBuilder<TComponent>> Set { get; init; }
+    public required Func<TComponent, object?> Get { get; init; }
+    public object? ExpectedMemberValue { get; init; }
     /// <summary>The transmitted value, settled against the render when the spec declared it late.</summary>
     public FromRender<object?> ExpectedValue { get; init; }
 
@@ -254,8 +256,7 @@ public sealed class BindContractSpec<TComponent> where TComponent : IComponent
 /// method identifiers, argument serialization and type tags, return decoding, and
 /// event names + args deserialization. Runs through the <see cref="InteropHarness"/>
 /// seam, so the same contract verifies the component before and after it migrates to
-/// a new interop stack (see <see cref="InteropHarnessRegistry"/>). Authoring guide:
-/// skills/igniteui-blazor-lite-testing/references/interop-contracts.md.
+/// a new interop stack (see <see cref="InteropHarnessRegistry"/>).
 /// </summary>
 public sealed class ComponentContract<TComponent> where TComponent : IComponent
 {
@@ -688,6 +689,8 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
         {
             WireName = wireName ?? WirePropertyName(member),
             Set = ps => ps.Add(member, value),
+            Get = PropertyGetterOf(member),
+            ExpectedMemberValue = value,
             ExpectedValue = wire,
             Arrange = arrange,
             Source = new SpecSource(atFile, atLine),
@@ -915,6 +918,13 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     {
         var get = member.Compile();
         return c => get(c).HasHandler();
+    }
+
+    /// <summary>The property read half of a prop spec, boxed for the shared runner.</summary>
+    private static Func<TComponent, object?> PropertyGetterOf<TValue>(Expression<Func<TComponent, TValue>> member)
+    {
+        var get = member.Compile();
+        return c => get(c);
     }
 
     /// <summary>Derives the wire return kind from the .NET return type; exotic shapes use the InteropReturn overloads.</summary>

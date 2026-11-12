@@ -268,9 +268,9 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// Runner for the contract's <c>.Prop</c> specs — expose it on the suite as
     /// <c>[Fact] public void Props_FollowContract() => VerifyPropContract();</c>.
     /// Renders a fresh instance per spec with the parameter (plus any arrangement) set,
-    /// then asserts a property update carrying the expected wire value was transmitted —
-    /// on whichever channel the current stack uses (the harness abstracts state
-    /// descriptions vs. ref transfers).
+    /// then asserts the component property reads back the assigned parameter value and
+    /// a property update carrying the expected wire value was transmitted — on whichever
+    /// channel the current stack uses (the harness abstracts state descriptions vs. ref transfers).
     /// </summary>
     /// <exception cref="ContractViolationException">
     /// Any spec failure, naming the violated member and carrying the declaring contract
@@ -289,6 +289,8 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                     prop.Arrange?.Invoke(ps);
                     prop.Set(ps);
                 });
+
+                Assert.Equal(prop.ExpectedMemberValue, prop.Get(cut.Instance));
 
                 var actual = harness.FindPropertyUpdate(harness.ContainerIdOf(cut), prop.WireName);
 
@@ -684,21 +686,19 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
 
     /// <summary>
     /// One decoded date: stated by the spec as the UTC instant that crossed the wire, and required
-    /// to arrive as the local rendering of it — reading *and* <see cref="DateTimeKind"/>. Asserting
-    /// the kind is what pins the conversion in every timezone, including the one where local and
-    /// UTC coincide and a plain instant comparison could not tell the two apart.
+    /// to arrive with the same reading and <see cref="DateTimeKind.Utc"/>. Asserting the kind pins
+    /// the conversion even when a plain value comparison would not distinguish UTC from local.
     /// </summary>
     private static void AssertDecodedDate(DateTime expectedInstant, object? actual)
     {
-        if (expectedInstant.Kind == DateTimeKind.Unspecified)
+        if (expectedInstant.Kind != DateTimeKind.Utc)
         {
             throw new XunitException(
-                $"expected date {expectedInstant:o} has Kind=Unspecified — state the instant explicitly " +
-                "(DateTimeKind.Utc), since ToLocalTime and ToUniversalTime read an unspecified kind in " +
-                "opposite directions and would shift it silently");
+                $"expected date {expectedInstant:o} has Kind={expectedInstant.Kind} — state the instant " +
+                "explicitly with DateTimeKind.Utc");
         }
         var actualDate = Assert.IsType<DateTime>(actual);
-        Assert.Equal(expectedInstant.ToLocalTime(), actualDate);
-        Assert.Equal(DateTimeKind.Local, actualDate.Kind);
+        Assert.Equal(expectedInstant, actualDate);
+        Assert.Equal(DateTimeKind.Utc, actualDate.Kind);
     }
 }

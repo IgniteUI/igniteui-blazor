@@ -101,33 +101,23 @@ input[type='number'] {
   height: 320px;
 }
 
-/* The wrapper renders a container div (the class lands there) with the
-   igc-virtual-scroll element created inside it by the client. */
+/* The class lands on the igc-virtual-scroll element itself, which is already
+   display: block with its own overflow. */
 .list-igb {
-  display: block;
   height: 480px;
   border: 1px solid #d4d4d8;
   border-radius: 6px;
 }
 
-.list-igb-short {
+.list-igb.list-igb-short {
   height: 320px;
 }
 
 .list-igb-horizontal {
-  display: block;
   height: 110px;
   max-width: 100%;
   border: 1px solid #d4d4d8;
   border-radius: 6px;
-}
-
-.list-igb igc-component-renderer-container,
-.list-igb igc-virtual-scroll,
-.list-igb-horizontal igc-component-renderer-container,
-.list-igb-horizontal igc-virtual-scroll {
-  display: block;
-  height: 100%;
 }
 
 .status-line {

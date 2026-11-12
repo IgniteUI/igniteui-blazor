@@ -1,5 +1,4 @@
 @page "/"
-@inject IJSRuntime JS
 
 <PageTitle>Virtualization Comparison</PageTitle>
 
@@ -64,13 +63,10 @@
             <code>OverScan="@Overscan"</code>, <code>ScrollToIndexAsync(index, options)</code> with
             alignment + smooth behavior. Initial index is simulated with a scroll call on first render.
         </p>
-        @if (_templatesReady)
-        {
-            <IgbVirtualScroll @ref="_igbList" Data="_rows" EstimatedItemSize="48" OverScan="Overscan"
-                              ItemTemplateScript="ComparisonItemTemplate"
-                              StateChange="OnIgbStateChange"
-                              class="list-igb" />
-        }
+        <IgbVirtualScroll @ref="_igbList" Data="_rows" EstimatedItemSize="48" OverScan="Overscan"
+                          ItemTemplateScript="ComparisonItemTemplate"
+                          StateChange="OnIgbStateChange"
+                          class="list-igb" />
         <div class="status-line">@_igbWindowInfo</div>
     </div>
 </section>
@@ -84,7 +80,7 @@
             400 ms latency; placeholders render while a page loads. <code>RefreshDataAsync()</code> re-queries.
         </p>
         <div class="list-shell list-shell-short">
-            <Virtualize @ref="_blazorLazyList" ItemsProvider="LoadRows" ItemSize="48f">
+            <Virtualize @ref="_blazorLazyList" ItemsProvider="LoadRows" ItemComparer="RowIdComparer.Instance" ItemSize="48f">
                 <ItemContent>
                     <div style="@RowStyle"><span style="@IdStyle">#@context.Id</span> @context.Text</div>
                 </ItemContent>
@@ -104,14 +100,11 @@
             Open-ended list: the component raises <code>DataRequest</code> when the user scrolls past the
             loaded items and the handler appends a new chunk (no placeholder concept, no known total).
         </p>
-        @if (_templatesReady)
-        {
-            <IgbVirtualScroll Data="_lazyRows" EstimatedItemSize="48"
-                              ItemTemplateScript="ComparisonItemTemplate"
-                              DataRequest="OnIgbDataRequest"
-                              StateChange="OnIgbLazyStateChange"
-                              class="list-igb list-igb-short" />
-        }
+        <IgbVirtualScroll Data="_lazyRows" EstimatedItemSize="48"
+                          ItemTemplateScript="ComparisonItemTemplate"
+                          DataRequest="OnIgbDataRequest"
+                          StateChange="OnIgbLazyStateChange"
+                          class="list-igb list-igb-short" />
         <div class="status-line">Loaded: @_lazyRows.Length.ToString("N0") items &nbsp;|&nbsp; @_igbLazyWindowInfo</div>
     </div>
 </section>
@@ -124,12 +117,9 @@
     </div>
     <div class="panel">
         <h3><code>IgbVirtualScroll</code> with <code>Orientation="Horizontal"</code></h3>
-        @if (_templatesReady)
-        {
-            <IgbVirtualScroll Data="_rows" Orientation="ContentOrientation.Horizontal" EstimatedItemSize="140"
-                              ItemTemplateScript="ComparisonCardTemplate"
-                              class="list-igb-horizontal" />
-        }
+        <IgbVirtualScroll Data="_rows" Orientation="ContentOrientation.Horizontal" EstimatedItemSize="140"
+                          ItemTemplateScript="ComparisonCardTemplate"
+                          class="list-igb-horizontal" />
     </div>
 </section>
 
@@ -212,6 +202,17 @@
         public string Text { get; set; } = string.Empty;
     }
 
+    // Identifies rows by Id so Virtualize keeps measured sizes and anchoring stable across
+    // re-queries, where the provider hands back new Row instances.
+    private sealed class RowIdComparer : IEqualityComparer<Row>
+    {
+        public static readonly RowIdComparer Instance = new();
+
+        public bool Equals(Row? x, Row? y) => x?.Id == y?.Id;
+
+        public int GetHashCode(Row obj) => obj.Id;
+    }
+
     private static readonly string[] Fragments =
     [
         "The quick brown fox jumps over the lazy dog while the band plays on.",
@@ -240,8 +241,6 @@
     private Virtualize<Row>? _blazorLazyList;
     private IgbVirtualScroll? _igbList;
 
-    private bool _templatesReady;
-    private bool _igbInitialScrollDone;
     private int _jumpIndex = 25000;
     private string _jumpBlock = "start";
     private string _jumpBehavior = "auto";
@@ -253,34 +252,14 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            // The client-side item templates must exist before IgbVirtualScroll first renders,
-            // so the components are held back until registration completes.
-            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./templates.js");
-            await module.InvokeVoidAsync("registerComparisonTemplates");
-            _templatesReady = true;
-            StateHasChanged();
-        }
-        else if (_templatesReady && !_igbInitialScrollDone && _igbList is not null)
+        if (firstRender && _igbList is not null)
         {
             // IgbVirtualScroll has no InitialItemIndex equivalent: the closest match is a
             // scroll call once the component is live, which is what this simulates. The
-            // client element connects asynchronously after the first render, so retry
-            // until the interop accepts the call — itself a data point for the comparison.
-            _igbInitialScrollDone = true;
-            for (var attempt = 0; attempt < 20; attempt++)
-            {
-                try
-                {
-                    await _igbList.ScrollToIndexAsync(InitialIndex);
-                    break;
-                }
-                catch (Exception)
-                {
-                    await Task.Delay(150);
-                }
-            }
+            // client element connects asynchronously after the first render, and a method
+            // call before then throws, so wait for it with EnsureReady first.
+            await _igbList.EnsureReady();
+            await _igbList.ScrollToIndexAsync(InitialIndex);
         }
     }
 

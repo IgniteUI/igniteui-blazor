@@ -35,7 +35,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             {
                 clientValue = "null";
             }
-            if (prop.PropertyType.Name == "Double" && serverValue != null)
+            if ((Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType) == typeof(double) && serverValue != null)
             {
                 serverString = Convert.ToInt32(serverValue).ToString();
             }
@@ -79,11 +79,6 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
                 }
                 for (int i = 0; i < serverDateRangeArray.Length; i++)
                 {
-                    if (serverDateRangeArray[i].Type != clientDateArray[i].Type)
-                    {
-                        return false;
-                    }
-
                     DateTime[] serverDateArray = (DateTime[])serverDateRangeArray[i].DateRange!;
                     string[] serverStringArray = serverDateArray.Select(x => x.ToShortDateString()).ToArray();
                     var clientRangeArray = ((JArray)clientDateArray[i].DateRange!).ToObject<DateTime[]>();

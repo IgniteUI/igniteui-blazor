@@ -1,21 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// A predefined date range with label for <see cref="IgbDateRangePicker.CustomRanges"/>.
+    /// A predefined date range with label for <see cref="IgbDateRangePicker{TValue}.CustomRanges"/>.
     /// </summary>
-    public partial class IgbCustomDateRange : BaseRendererElement
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbDateRangePicker{TValue}"/> the range is for.</typeparam>
+    public partial class IgbCustomDateRange<TValue> : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCustomDateRange"; } }
+        internal override string RendererType { get { return "WebCustomDateRange"; } }
 
         private string _label = string.Empty;
 
         /// <summary>
         /// The text rendered in the chip for this range.
         /// </summary>
-        [Parameter]
         public required string Label
         {
             get { return this._label; }
@@ -29,13 +27,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbDateRangeValue _dateRange = new IgbDateRangeValue();
+        private IgbDateRangeValue<TValue> _dateRange = new();
 
         /// <summary>
         /// The date range applied when the chip is selected.
         /// </summary>
-        [Parameter]
-        public required IgbDateRangeValue DateRange
+        public required IgbDateRangeValue<TValue> DateRange
         {
             get { return this._dateRange; }
             set
@@ -53,7 +50,6 @@ namespace IgniteUI.Blazor.Controls
             }
 
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

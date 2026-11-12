@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents a navigation drawer header item.
     /// </summary>
-    public partial class IgbNavDrawerHeaderItem : BaseRendererControl
+    public partial class IgbNavDrawerHeaderItem : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebNavDrawerHeaderItem"; } }
+        internal override string RendererType { get { return "WebNavDrawerHeaderItem"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -18,13 +18,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -33,16 +27,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -51,11 +36,10 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
-
 
     }
 }

@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbSnackbar : IgbBaseAlertLike
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSnackbar"; } }
+        internal override string RendererType { get { return "WebSnackbar"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -26,13 +26,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -41,16 +35,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -85,8 +70,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Action"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ActionScript
@@ -129,7 +115,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_action))
                     {
                         _action = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Action", value);
                         this.OnRefChanged("Action", null, "event:::Action", true, false, (refName, oldValue, newValue) =>
                         {
                             this._actionRef = refName;
@@ -140,7 +126,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _action = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Action", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Action", null);
                     this.OnRefChanged("Action", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._actionRef = null;

@@ -1,21 +1,18 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The context object for renderers that deal with a specific chat message.
     /// </summary>
-    public partial class IgbChatMessageRenderContext : BaseRendererElement
+    public partial class IgbChatMessageRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatMessageRenderContext"; } }
+        internal override string RendererType { get { return "WebChatMessageRenderContext"; } }
 
         private IgbChatMessage _message = new IgbChatMessage();
 
         /// <summary>
         /// The specific chat message being rendered.
         /// </summary>
-        [Parameter]
         public IgbChatMessage Message
         {
             get { return this._message; }
@@ -35,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -43,6 +39,18 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Message"))
             { ser.AddSerializableProp("message", this._message); }
 
+        }
+
+        /// <inheritdoc />
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args != null && args.TryGetValue("message", out var messageObj) && ConvertReturnValue(messageObj, "ChatMessage", true) is IgbChatMessage message)
+            { this.Message = message; }
+
+            this.SuppressParentNotify = false;
         }
 
     }

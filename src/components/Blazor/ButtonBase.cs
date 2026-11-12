@@ -5,46 +5,13 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbButton"/> and <see cref="IgbIconButton"/>.
     /// </summary>
-    public partial class IgbButtonBase : BaseRendererControl
+    public partial class IgbButtonBase : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebButtonBase"; } }
+        internal override string RendererType { get { return "WebButtonBase"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-button-base";
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -120,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private ButtonBaseTarget _target = ButtonBaseTarget._blank;
+        private ButtonBaseTarget _target = ButtonBaseTarget._self;
 
         /// <summary>
         /// Where to open the linked document. Only effective when <see cref="Href"/> is set.
@@ -293,8 +260,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? FocusScript
@@ -337,7 +305,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -348,7 +316,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _focus = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", null);
                     this.OnRefChanged("Focus", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._focusRef = null;
@@ -365,8 +333,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? BlurScript
@@ -409,7 +378,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -420,7 +389,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _blur = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", null);
                     this.OnRefChanged("Blur", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._blurRef = null;

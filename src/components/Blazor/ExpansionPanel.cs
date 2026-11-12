@@ -7,10 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// compact summary view containing title and description and expanded detail view containing
     /// additional content to the summary header.
     /// </summary>
-    public partial class IgbExpansionPanel : BaseRendererControl
+    public partial class IgbExpansionPanel : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebExpansionPanel"; } }
+        internal override string RendererType { get { return "WebExpansionPanel"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -22,13 +22,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -37,16 +31,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -55,7 +40,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -188,8 +173,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? OpeningScript
@@ -232,7 +218,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", value);
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -243,7 +229,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opening = null;
-                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opening", null);
+                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Opening", null);
                     this.OnRefChanged("Opening", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openingRef = null;
@@ -260,8 +246,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? OpenedScript
@@ -304,7 +291,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", value);
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -315,7 +302,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opened = null;
-                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Opened", null);
+                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Opened", null);
                     this.OnRefChanged("Opened", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openedRef = null;
@@ -332,8 +319,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ClosingScript
@@ -376,7 +364,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", value);
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -387,7 +375,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closing = null;
-                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closing", null);
+                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Closing", null);
                     this.OnRefChanged("Closing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closingRef = null;
@@ -404,8 +392,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ClosedScript
@@ -448,7 +437,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", value);
+                        this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -459,7 +448,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closed = null;
-                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.Name, "Closed", null);
+                    this.SetHandler<IgbExpansionPanelComponentEventArgs>(this.RendererName, "Closed", null);
                     this.OnRefChanged("Closed", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closedRef = null;

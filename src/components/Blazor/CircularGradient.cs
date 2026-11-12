@@ -9,10 +9,10 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="Color"/>, <see cref="Offset"/> and <see cref="Opacity"/> are applied as the
     /// <c>stop-color</c>, <c>offset</c> and <c>stop-opacity</c> of that stop without further validation.
     /// </summary>
-    public partial class IgbCircularGradient : BaseRendererControl
+    public partial class IgbCircularGradient : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCircularGradient"; } }
+        internal override string RendererType { get { return "WebCircularGradient"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -24,13 +24,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -39,16 +33,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -57,7 +42,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -119,7 +104,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

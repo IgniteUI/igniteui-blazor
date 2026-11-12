@@ -3,30 +3,16 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class for <see cref="IgbDateTimeInput"/>.
+    /// Base class for <see cref="IgbDateTimeInput{TValue}"/>.
     /// </summary>
-    public partial class IgbDateTimeInputBase : BaseRendererControl
+    /// <typeparam name="TValue">The <c>TValue</c> of the <see cref="IgbDateTimeInput{TValue}"/>.</typeparam>
+    public partial class IgbDateTimeInputBase<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDateTimeInputBase"; } }
+        internal override string RendererType { get { return "WebDateTimeInputBase"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
@@ -88,6 +74,25 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
+
+            }
+        }
         private string? _inputFormat;
 
         /// <summary>
@@ -107,18 +112,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _min = DateTime.MinValue;
+        private TValue? _min = default!;
 
         /// <summary>
         /// The minimum value required for the input to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Min
+        public TValue? Min
         {
             get { return this._min; }
             set
             {
-                if (this._min != value || !IsPropDirty("Min"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._min, value) || !IsPropDirty("Min"))
                 {
                     MarkPropDirty("Min");
                 }
@@ -126,18 +131,18 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private DateTime? _max = DateTime.MinValue;
+        private TValue? _max = default!;
 
         /// <summary>
         /// The maximum value required for the input to remain valid.
         /// </summary>
         [Parameter]
-        public DateTime? Max
+        public TValue? Max
         {
             get { return this._max; }
             set
             {
-                if (this._max != value || !IsPropDirty("Max"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._max, value) || !IsPropDirty("Max"))
                 {
                     MarkPropDirty("Max");
                 }
@@ -504,12 +509,14 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddStringProp("placeholder", this._placeholder); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("InputFormat"))
             { ser.AddStringProp("inputFormat", this._inputFormat); }
             if (IsPropDirty("Min"))
-            { ser.AddDateTimeProp("min", this._min); }
+            { AddGenericValue(ser, "min", this._min); }
             if (IsPropDirty("Max"))
-            { ser.AddDateTimeProp("max", this._max); }
+            { AddGenericValue(ser, "max", this._max); }
             if (IsPropDirty("DisplayFormat"))
             { ser.AddStringProp("displayFormat", this._displayFormat); }
             if (IsPropDirty("SpinDelta"))

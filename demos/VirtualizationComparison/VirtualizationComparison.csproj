@@ -4,6 +4,8 @@
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- The repo-wide EnforceCodeStyleInBuild needs it to run IDE0005 on build. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Virtualize.AnchorMode is marked experimental in the .NET 11 RC. -->
     <NoWarn>$(NoWarn);ASP0030</NoWarn>
   </PropertyGroup>

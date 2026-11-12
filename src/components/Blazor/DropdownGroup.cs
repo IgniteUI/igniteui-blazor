@@ -3,10 +3,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A container for a group of dropdown items.
     /// </summary>
-    public partial class IgbDropdownGroup : BaseRendererControl
+    public partial class IgbDropdownGroup : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebDropdownGroup"; } }
+        internal override string RendererType { get { return "WebDropdownGroup"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -18,13 +18,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -33,16 +27,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -51,11 +36,10 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
-
 
     }
 }

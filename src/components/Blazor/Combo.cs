@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The Combo component is similar to <see cref="IgbSelect"/> in that it provides a list of options
+    /// The Combo component is similar to <see cref="IgbSelect{TValue}"/> in that it provides a list of options
     /// from which the user can make a selection.
     /// In contrast to the Select component, the Combo component displays all options in a virtualized
     /// list of items, meaning the combo box can simultaneously show thousands of options, where one or
@@ -12,10 +13,14 @@ namespace IgniteUI.Blazor.Controls
     /// The Combo component features case-sensitive filtering, grouping, complex data binding,
     /// dynamic addition of values and more.
     /// </summary>
-    public partial class IgbCombo<T> : IgbBaseComboBox
+    /// <typeparam name="TValue">The type of the selected values: the <c>ValueKey</c> field of the data items, or the items themselves when <c>ValueKey</c> is not set.</typeparam>
+    /// <typeparam name="TItem">The type of the items in the data; <c>object</c> with <see cref="DataJson"/>, whose items arrive as <see cref="System.Text.Json.JsonElement"/> values.</typeparam>
+    public partial class IgbCombo<
+        TValue,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TItem> : IgbBaseComboBox, IDataSourceNotifications, IJsonDataBinding
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCombo"; } }
+        internal override string RendererType { get { return "WebCombo"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -27,28 +32,23 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override string DirectRenderElementName
         {
             get
             {
-                return true;
+                return "igc-combo";
             }
         }
 
         private string? _dataRef;
-        private Object? _data;
+        private IEnumerable<TItem>? _data;
 
         /// <summary>
         /// The data source used to generate the list of options.
+        /// For data that is already JSON, or that the client fetches itself, see <see cref="DataJson"/>.
         /// </summary>
         [Parameter]
-        public Object? Data
+        public IEnumerable<TItem>? Data
         {
             get { return this._data; }
 
@@ -85,6 +85,30 @@ namespace IgniteUI.Blazor.Controls
                     this._dataScript = value;
                     MarkPropDirty("Data");
                     this.OnRefChanged("Data", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
+                    {
+                        this._dataRef = refName;
+                        this.MarkPropDirty("DataRef");
+                    });
+                }
+            }
+        }
+
+        private IJsonData? _dataJson;
+
+        /// <inheritdoc />
+        [Parameter]
+        public IJsonData? DataJson
+        {
+            get { return _dataJson; }
+
+            set
+            {
+                var oldValue = this._dataJson;
+                if (oldValue != value || !IsPropDirty("Data"))
+                {
+                    this._dataJson = value;
+                    MarkPropDirty("Data");
+                    this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._dataRef = refName;
                         this.MarkPropDirty("DataRef");
@@ -203,6 +227,25 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Label");
                 }
                 this._label = value;
+
+            }
+        }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
 
             }
         }
@@ -401,7 +444,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private T[] _value = Array.Empty<T>();
+        private TValue[] _value = Array.Empty<TValue>();
 
         /// <summary>
         /// The value of the control, that is the currently selected items.
@@ -410,7 +453,7 @@ namespace IgniteUI.Blazor.Controls
         /// of <see cref="ValueKey"/>.
         /// </summary>
         [Parameter]
-        public T[] Value
+        public TValue[] Value
         {
             get { return this._value; }
             set
@@ -428,41 +471,40 @@ namespace IgniteUI.Blazor.Controls
         /// Returns the current value of the combo.
         /// </summary>
         /// <returns>The selected values, represented by <see cref="ValueKey"/> when provided.</returns>
-        public async Task<T[]> GetCurrentValueAsync()
+        public async Task<TValue[]> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv).Cast<T>().ToArray();
+            return ReturnToObjectArray<TValue>(iv);
         }
 
         /// <summary>
         /// Returns the current value of the combo.
         /// </summary>
         /// <returns>The selected values, represented by <see cref="ValueKey"/> when provided.</returns>
-        public T[] GetCurrentValue()
+        public TValue[] GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv).Cast<T>().ToArray();
+            return ReturnToObjectArray<TValue>(iv);
         }
-        private string? _selectionRef;
 
         /// <summary>
         /// Returns the current selection of the combo.
         /// </summary>
         /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
-        public async Task<object[]> GetSelectionAsync()
+        public async Task<TItem[]> GetSelectionAsync()
         {
             var iv = await InvokeMethod("p:Selection", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv);
+            return ReturnToObjectArray<TItem>(iv);
         }
 
         /// <summary>
         /// Returns the current selection of the combo.
         /// </summary>
         /// <returns>The selected items as provided in the <see cref="Data"/> source.</returns>
-        public object[] GetSelection()
+        public TItem[] GetSelection()
         {
             var iv = InvokeMethodSync("p:Selection", new object?[] { }, new string[] { });
-            return ReturnToObjectArray(iv);
+            return ReturnToObjectArray<TItem>(iv);
         }
         private bool _disabled = false;
 
@@ -522,13 +564,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _itemTemplateRef;
-        private RenderFragment<object>? _itemTemplate;
+        private RenderFragment<TItem>? _itemTemplate;
 
         /// <summary>
         /// The template used for the content of each combo item.
         /// </summary>
         [Parameter]
-        public RenderFragment<object>? ItemTemplate
+        public RenderFragment<TItem>? ItemTemplate
         {
             get { return this._itemTemplate; }
 
@@ -540,7 +582,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("ItemTemplate");
                     this._itemTemplate = value;
                     this._itemTemplateTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._itemTemplateTemplateId, this._itemTemplate, typeof(object));
+                    this.UpdateTemplate(this._itemTemplateTemplateId, this._itemTemplate);
                     this.OnRefChanged("ItemTemplate", null, "template:::" + this._itemTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemTemplateRef = refName;
@@ -557,8 +599,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the template used for the content of each combo item.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? ItemTemplateScript
@@ -581,13 +624,13 @@ namespace IgniteUI.Blazor.Controls
             }
         }
         private string? _groupHeaderTemplateRef;
-        private RenderFragment<object>? _groupHeaderTemplate;
+        private RenderFragment<IgbComboGroupHeaderContext>? _groupHeaderTemplate;
 
         /// <summary>
         /// The template used for the content of each combo group header.
         /// </summary>
         [Parameter]
-        public RenderFragment<object>? GroupHeaderTemplate
+        public RenderFragment<IgbComboGroupHeaderContext>? GroupHeaderTemplate
         {
             get { return this._groupHeaderTemplate; }
 
@@ -599,7 +642,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("GroupHeaderTemplate");
                     this._groupHeaderTemplate = value;
                     this._groupHeaderTemplateTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate, typeof(object));
+                    this.UpdateTemplate(this._groupHeaderTemplateTemplateId, this._groupHeaderTemplate);
                     this.OnRefChanged("GroupHeaderTemplate", null, "template:::" + this._groupHeaderTemplateTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._groupHeaderTemplateRef = refName;
@@ -616,8 +659,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the template used for the content of each combo group header.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
         public string? GroupHeaderTemplateScript
@@ -681,9 +725,8 @@ namespace IgniteUI.Blazor.Controls
         /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
         /// If no items are provided all items are selected.
         /// </summary>
-        /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
-        /// the corresponding value should be used in place of the item reference.</param>
-        public async Task SelectAsync(object[] items)
+        /// <param name="items">One or more items to be selected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
+        public async Task SelectAsync(TValue[] items)
         {
             await InvokeMethod("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
@@ -692,9 +735,8 @@ namespace IgniteUI.Blazor.Controls
         /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
         /// If no items are provided all items are selected.
         /// </summary>
-        /// <param name="items">One or more items to be selected. When <see cref="ValueKey"/> is specified,
-        /// the corresponding value should be used in place of the item reference.</param>
-        public void Select(object[] items)
+        /// <param name="items">One or more items to be selected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
+        public void Select(TValue[] items)
         {
             InvokeMethodSync("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
@@ -703,9 +745,8 @@ namespace IgniteUI.Blazor.Controls
         /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
         /// If no items are provided all items are deselected.
         /// </summary>
-        /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
-        /// the corresponding value should be used in place of the item reference.</param>
-        public async Task DeselectAsync(object[] items)
+        /// <param name="items">One or more items to be deselected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
+        public async Task DeselectAsync(TValue[] items)
         {
             await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
@@ -714,12 +755,12 @@ namespace IgniteUI.Blazor.Controls
         /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
         /// If no items are provided all items are deselected.
         /// </summary>
-        /// <param name="items">One or more items to be deselected. When <see cref="ValueKey"/> is specified,
-        /// the corresponding value should be used in place of the item reference.</param>
-        public void Deselect(object[] items)
+        /// <param name="items">One or more items to be deselected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
+        public void Deselect(TValue[] items)
         {
             InvokeMethodSync("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
         }
+
         /// <summary>
         /// Checks for validity of the control and shows the browser message if it's invalid.
         /// </summary>
@@ -772,18 +813,18 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
-        private EventCallback<T[]>? _valueChanged = null;
+        private EventCallback<TValue[]>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the Value property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<T[]> ValueChanged
+        public EventCallback<TValue[]> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<T[]>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue[]>.Empty;
             }
             set
             {
@@ -810,8 +851,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ChangeScript
@@ -835,17 +877,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComboChangeEventArgs>? _change = null;
+        private EventCallback<IgbComboChangeEventArgs<TValue, TItem>>? _change = null;
 
         /// <summary>
         /// Emitted when the control's selection has changed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComboChangeEventArgs> Change
+        public EventCallback<IgbComboChangeEventArgs<TValue, TItem>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbComboChangeEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbComboChangeEventArgs<TValue, TItem>>.Empty;
             }
             set
             {
@@ -854,12 +896,12 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComboChangeEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComboChangeEventArgs<TValue, TItem>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(T[]);
+                            var newValueValue = default(TValue[]);
 
                             {
-                                newValueValue = (T[])(DowncastArray<T>(args.Detail.NewValue));
+                                newValueValue = (TValue[])(DowncastArray<TValue>(args.Detail.NewValue));
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -869,16 +911,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<T[]>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue[]>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -892,7 +931,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComboChangeEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComboChangeEventArgs<TValue, TItem>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -903,9 +942,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbComboChangeEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbComboChangeEventArgs<TValue, TItem>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbComboChangeEventArgs>(null, (Action<IgbComboChangeEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbComboChangeEventArgs<TValue, TItem>>(null, (Action<IgbComboChangeEventArgs<TValue, TItem>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -917,8 +956,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? FocusScript
@@ -961,7 +1001,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -972,7 +1012,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _focus = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", null);
                     this.OnRefChanged("Focus", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._focusRef = null;
@@ -989,8 +1029,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? BlurScript
@@ -1033,7 +1074,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -1044,7 +1085,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _blur = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", null);
                     this.OnRefChanged("Blur", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._blurRef = null;
@@ -1061,8 +1102,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? OpeningScript
@@ -1105,7 +1147,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -1116,7 +1158,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opening = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opening", null);
                     this.OnRefChanged("Opening", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openingRef = null;
@@ -1133,8 +1175,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? OpenedScript
@@ -1177,7 +1220,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -1188,7 +1231,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opened = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opened", null);
                     this.OnRefChanged("Opened", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openedRef = null;
@@ -1205,8 +1248,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ClosingScript
@@ -1249,7 +1293,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -1260,7 +1304,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closing = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", null);
                     this.OnRefChanged("Closing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closingRef = null;
@@ -1277,8 +1321,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ClosedScript
@@ -1321,7 +1366,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -1332,7 +1377,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closed = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", null);
                     this.OnRefChanged("Closed", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closedRef = null;
@@ -1341,6 +1386,79 @@ namespace IgniteUI.Blazor.Controls
                 }
             }
         }
+
+        #region IDataSourceNotifications
+
+        /// <inheritdoc />
+        public void NotifyInsertItem(object dataSource, int index, object refItem)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifyInsertItem(refName, index, refItem);
+            }
+        }
+
+        /// <inheritdoc />
+        public void NotifyRemoveItem(object dataSource, int index, object oldItem)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifyRemoveItem(refName, index, oldItem);
+            }
+        }
+
+        /// <inheritdoc />
+        public void NotifyClearItems(object dataSource)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifyClearItems(refName);
+            }
+        }
+
+        /// <inheritdoc />
+        public void NotifySetItem(object dataSource, int index, object oldItem, object newItem)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifySetItem(refName, index, oldItem, newItem);
+            }
+        }
+
+        /// <inheritdoc />
+        public void NotifyUpdateItem(object dataSource, int index, object refItem, bool syncDataOnly = false)
+        {
+            if (TryGetDataSourceRef(dataSource, out var manager, out var refName))
+            {
+                manager.NotifyUpdateItem(refName, index, refItem, syncDataOnly);
+            }
+        }
+
+        /// <inheritdoc />
+        public void SuspendNotifications(object dataSource)
+        {
+            DataSourceManager?.SuspendNotifications(dataSource);
+        }
+
+        /// <inheritdoc />
+        public void ResumeNotifications(object dataSource, bool notify = true)
+        {
+            DataSourceManager?.ResumeNotifications(dataSource, notify);
+        }
+
+        private bool TryGetDataSourceRef(object dataSource, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out DataSourceManager? manager, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? refName)
+        {
+            manager = DataSourceManager;
+            if (manager == null || !manager.HasRefId(dataSource))
+            {
+                refName = null;
+                return false;
+            }
+            refName = manager.GetRefId(dataSource);
+            return true;
+        }
+
+        #endregion IDataSourceNotifications
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -1360,6 +1478,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddStringProp("locale", this._locale); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Placeholder"))
             { ser.AddStringProp("placeholder", this._placeholder); }
             if (IsPropDirty("PlaceholderSearch"))

@@ -17,7 +17,6 @@
        explicitly, so the nuspec is never the only thing that differs between the two. -->
   <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,9 +24,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- The codebase carries nullable annotations but is not warning-clean; newer SDKs (11+)
-         default the full analysis on and escalate its diagnostics, so pin annotations-only. -->
-    <Nullable>annotations</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>IgniteUI.Blazor$(PackageIdSuffix)</PackageId>
@@ -38,11 +34,17 @@
     <PackageProjectUrl>https://www.infragistics.com/products/ignite-ui-blazor</PackageProjectUrl>
     <Description>Ignite UI for Blazor Lite is a library of UI components, giving you the ability to build modern web applications.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>IgniteUI.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/IgniteUI/igniteui-blazor</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <!-- Trim-analysis diagnostics build as errors (.editorconfig, category-Trimming); suppression policy: docs/TRIMMING.md. -->
+    <!-- Trim/single-file/AOT diagnostics build as errors (.editorconfig category rules); suppression policy: docs/TRIMMING.md.
+         The code is AOT-clean, but the public IsAotCompatible claim waits for the platform: Blazor itself is not
+         AOT-compatible yet (Microsoft.AspNetCore.Components ships IsTrimmable only; dotnet/aspnetcore#51598) —
+         replace these three with <IsAotCompatible>true</IsAotCompatible> when that lands. -->
     <IsTrimmable>true</IsTrimmable>
+    <EnableAotAnalyzer>true</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -67,6 +69,8 @@
 
   <ItemGroup Condition="'$(ExposeInternalsToTests)' != 'false'">
     <InternalsVisibleTo Include="IgniteUI.Blazor.Tests" />
+    <InternalsVisibleTo Include="IgniteUI.Blazor.Lite.AotSmoke" />
+    <InternalsVisibleTo Include="IgniteUI.Blazor.Lite.PublishSmoke" />
   </ItemGroup>
 
   <ItemGroup>
@@ -89,6 +93,18 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Remove="IgniteUI.png" />
+    <None Include="IgniteUI.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <!-- Written by `npm run build` (vite build.license): every bundled JS dependency's license. Pack runs in the
+         outer multi-target build, where the SDK's default None glob is not evaluated, so the file is added explicitly. -->
+    <None Remove="THIRD-PARTY-LICENSES.md" />
+    <None Include="THIRD-PARTY-LICENSES.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -99,7 +115,7 @@
   </ItemGroup>
 
   <!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm run build &amp;&amp; npm run copythemes" />
+    <Exec Command="npm run build" />
   </Target>-->
 
 </Project>

@@ -1,18 +1,14 @@
-using System;
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Options controlling how a QR code is exported to an image file,
     /// passed to the <c>ToImage</c> methods of <see cref="IgbQrCode"/>.
     /// </summary>
-    public partial class IgbQrCodeExportOptions : BaseRendererElement
+    public partial class IgbQrCodeExportOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebQrCodeExportOptions"; } }
+        internal override string RendererType { get { return "WebQrCodeExportOptions"; } }
 
-        private static readonly bool _marshalByValue = true;
         private const double ScaleComparisonEpsilon = 1e-9;
 
         private static bool AreDoublesEqual(double left, double right)
@@ -26,7 +22,6 @@ namespace IgniteUI.Blazor.Controls
         /// The name of the exported file. The extension of the format is appended when the name
         /// does not end with it. Defaults to <c>qr-code</c>.
         /// </summary>
-        [Parameter]
         public string? FileName
         {
             get { return this._fileName; }
@@ -45,7 +40,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The output format.
         /// </summary>
-        [Parameter]
         public QrCodeExportFormat Format
         {
             get { return this._format; }
@@ -67,7 +61,6 @@ namespace IgniteUI.Blazor.Controls
         /// the multiplier applies to the <c>width</c> and <c>height</c> attributes while the
         /// <c>viewBox</c> is unchanged.
         /// </summary>
-        [Parameter]
         public double Scale
         {
             get { return this._scale; }
@@ -78,25 +71,6 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Scale");
                 }
                 this._scale = value;
-
-            }
-        }
-        private bool _download = false;
-
-        /// <summary>
-        /// Whether to open the browser download dialog for the exported file.
-        /// </summary>
-        [Parameter]
-        public bool Download
-        {
-            get { return this._download; }
-            set
-            {
-                if (this._download != value || !IsPropDirty("Download"))
-                {
-                    MarkPropDirty("Download");
-                }
-                this._download = value;
 
             }
         }
@@ -111,8 +85,9 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddEnumProp("format", this._format); }
             if (IsPropDirty("Scale"))
             { ser.AddNumberProp("scale", this._scale); }
-            if (IsPropDirty("Download"))
-            { ser.AddBooleanProp("download", this._download); }
+            // The exported file cannot be handed back to .NET, so the export always
+            // goes through the browser download dialog.
+            ser.AddBooleanProp("download", true);
 
         }
 

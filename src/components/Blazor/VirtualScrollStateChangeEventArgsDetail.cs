@@ -1,24 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The payload of the <see cref="IgbVirtualScroll.StateChange"/> event:
     /// a snapshot of the currently rendered virtual window.
     /// </summary>
-    public partial class IgbVirtualScrollStateChangeEventArgsDetail : BaseRendererElement
+    public partial class IgbVirtualScrollStateChangeEventArgsDetail : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebVirtualScrollStateChangeEventArgsDetail"; } }
-
-        private static bool _marshalByValue = true;
+        internal override string RendererType { get { return "WebVirtualScrollStateChangeEventArgsDetail"; } }
 
         private double _startIndex = 0;
 
         /// <summary>
         /// The index of the first item currently rendered in the viewport.
         /// </summary>
-        [Parameter]
         public double StartIndex
         {
             get { return this._startIndex; }
@@ -37,7 +32,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The index of the last item currently rendered in the viewport (inclusive).
         /// </summary>
-        [Parameter]
         public double EndIndex
         {
             get { return this._endIndex; }
@@ -56,7 +50,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The size of the viewport in pixels.
         /// </summary>
-        [Parameter]
         public double ViewportSize
         {
             get { return this._viewportSize; }
@@ -75,7 +68,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// The total size of the virtual scroll content in pixels.
         /// </summary>
-        [Parameter]
         public double TotalSize
         {
             get { return this._totalSize; }
@@ -106,7 +98,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -122,19 +114,19 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object> args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
 
-            if (args.ContainsKey("startIndex"))
-            { this.StartIndex = ReturnToDouble(args["startIndex"]); }
-            if (args.ContainsKey("endIndex"))
-            { this.EndIndex = ReturnToDouble(args["endIndex"]); }
-            if (args.ContainsKey("viewportSize"))
-            { this.ViewportSize = ReturnToDouble(args["viewportSize"]); }
-            if (args.ContainsKey("totalSize"))
-            { this.TotalSize = ReturnToDouble(args["totalSize"]); }
+            if (args != null && args.TryGetValue("startIndex", out var startIndex))
+            { this.StartIndex = ReturnToDouble(startIndex); }
+            if (args != null && args.TryGetValue("endIndex", out var endIndex))
+            { this.EndIndex = ReturnToDouble(endIndex); }
+            if (args != null && args.TryGetValue("viewportSize", out var viewportSize))
+            { this.ViewportSize = ReturnToDouble(viewportSize); }
+            if (args != null && args.TryGetValue("totalSize", out var totalSize))
+            { this.TotalSize = ReturnToDouble(totalSize); }
 
             this.SuppressParentNotify = false;
         }

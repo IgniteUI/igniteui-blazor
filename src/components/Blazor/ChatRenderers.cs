@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Optional render templates that replace the default rendering of parts of the <see cref="IgbChat"/> UI.
     /// </summary>
-    public partial class IgbChatRenderers : BaseRendererElement
+    public partial class IgbChatRenderers : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatRenderers"; } }
+        internal override string RendererType { get { return "WebChatRenderers"; } }
 
         private string? _attachmentRef;
         private RenderFragment<IgbChatAttachmentRenderContext>? _attachment;
@@ -16,7 +16,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for a single chat message attachment.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatAttachmentRenderContext>? Attachment
         {
             get { return this._attachment; }
@@ -29,7 +28,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Attachment");
                     this._attachment = value;
                     this._attachmentTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._attachmentTemplateId, this._attachment, typeof(IgbChatAttachmentRenderContext));
+                    this.UpdateTemplate(this._attachmentTemplateId, this._attachment, static () => new IgbChatAttachmentRenderContext());
                     this.OnRefChanged("Attachment", null, "template:::" + this._attachmentTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentRef = refName;
@@ -46,10 +45,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders a single chat message attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? AttachmentScript
         {
             get { return _attachmentScript; }
@@ -75,7 +74,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the content of an attachment.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatAttachmentRenderContext>? AttachmentContent
         {
             get { return this._attachmentContent; }
@@ -88,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("AttachmentContent");
                     this._attachmentContent = value;
                     this._attachmentContentTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._attachmentContentTemplateId, this._attachmentContent, typeof(IgbChatAttachmentRenderContext));
+                    this.UpdateTemplate(this._attachmentContentTemplateId, this._attachmentContent, static () => new IgbChatAttachmentRenderContext());
                     this.OnRefChanged("AttachmentContent", null, "template:::" + this._attachmentContentTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentContentRef = refName;
@@ -105,10 +103,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the content of an attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? AttachmentContentScript
         {
             get { return _attachmentContentScript; }
@@ -134,7 +132,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the header of an attachment.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatAttachmentRenderContext>? AttachmentHeader
         {
             get { return this._attachmentHeader; }
@@ -147,7 +144,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("AttachmentHeader");
                     this._attachmentHeader = value;
                     this._attachmentHeaderTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._attachmentHeaderTemplateId, this._attachmentHeader, typeof(IgbChatAttachmentRenderContext));
+                    this.UpdateTemplate(this._attachmentHeaderTemplateId, this._attachmentHeader, static () => new IgbChatAttachmentRenderContext());
                     this.OnRefChanged("AttachmentHeader", null, "template:::" + this._attachmentHeaderTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._attachmentHeaderRef = refName;
@@ -164,10 +161,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the header of an attachment.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? AttachmentHeaderScript
         {
             get { return _attachmentHeaderScript; }
@@ -193,7 +190,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the main chat input field.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatInputRenderContext>? Input
         {
             get { return this._input; }
@@ -206,7 +202,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Input");
                     this._input = value;
                     this._inputTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._inputTemplateId, this._input, typeof(IgbChatInputRenderContext));
+                    this.UpdateTemplate(this._inputTemplateId, this._input, static () => new IgbChatInputRenderContext());
                     this.OnRefChanged("Input", null, "template:::" + this._inputTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputRef = refName;
@@ -223,10 +219,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the main chat input field.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? InputScript
         {
             get { return _inputScript; }
@@ -252,7 +248,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the actions container within the input area.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? InputActions
         {
             get { return this._inputActions; }
@@ -265,7 +260,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("InputActions");
                     this._inputActions = value;
                     this._inputActionsTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._inputActionsTemplateId, this._inputActions, typeof(IgbChatRenderContext));
+                    this.UpdateTemplate(this._inputActionsTemplateId, this._inputActions, static () => new IgbChatRenderContext());
                     this.OnRefChanged("InputActions", null, "template:::" + this._inputActionsTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsRef = refName;
@@ -282,10 +277,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions container within the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? InputActionsScript
         {
             get { return _inputActionsScript; }
@@ -311,7 +306,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the actions at the end of the input area.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? InputActionsEnd
         {
             get { return this._inputActionsEnd; }
@@ -324,7 +318,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("InputActionsEnd");
                     this._inputActionsEnd = value;
                     this._inputActionsEndTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._inputActionsEndTemplateId, this._inputActionsEnd, typeof(IgbChatRenderContext));
+                    this.UpdateTemplate(this._inputActionsEndTemplateId, this._inputActionsEnd, static () => new IgbChatRenderContext());
                     this.OnRefChanged("InputActionsEnd", null, "template:::" + this._inputActionsEndTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsEndRef = refName;
@@ -341,10 +335,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions at the end of the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? InputActionsEndScript
         {
             get { return _inputActionsEndScript; }
@@ -370,7 +364,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the actions at the start of the input area.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? InputActionsStart
         {
             get { return this._inputActionsStart; }
@@ -383,7 +376,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("InputActionsStart");
                     this._inputActionsStart = value;
                     this._inputActionsStartTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._inputActionsStartTemplateId, this._inputActionsStart, typeof(IgbChatRenderContext));
+                    this.UpdateTemplate(this._inputActionsStartTemplateId, this._inputActionsStart, static () => new IgbChatRenderContext());
                     this.OnRefChanged("InputActionsStart", null, "template:::" + this._inputActionsStartTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._inputActionsStartRef = refName;
@@ -400,10 +393,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the actions at the start of the input area.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? InputActionsStartScript
         {
             get { return _inputActionsStartScript; }
@@ -429,7 +422,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for an entire chat message bubble.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? Message
         {
             get { return this._message; }
@@ -442,7 +434,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Message");
                     this._message = value;
                     this._messageTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._messageTemplateId, this._message, typeof(IgbChatMessageRenderContext));
+                    this.UpdateTemplate(this._messageTemplateId, this._message, static () => new IgbChatMessageRenderContext());
                     this.OnRefChanged("Message", null, "template:::" + this._messageTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageRef = refName;
@@ -459,10 +451,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders an entire chat message bubble.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageScript
         {
             get { return _messageScript; }
@@ -488,7 +480,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for message-specific actions (e.g. reply or delete buttons).
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? MessageActions
         {
             get { return this._messageActions; }
@@ -501,7 +492,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("MessageActions");
                     this._messageActions = value;
                     this._messageActionsTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._messageActionsTemplateId, this._messageActions, typeof(IgbChatMessageRenderContext));
+                    this.UpdateTemplate(this._messageActionsTemplateId, this._messageActions, static () => new IgbChatMessageRenderContext());
                     this.OnRefChanged("MessageActions", null, "template:::" + this._messageActionsTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageActionsRef = refName;
@@ -518,10 +509,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders message-specific actions (e.g. reply or delete buttons).
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageActionsScript
         {
             get { return _messageActionsScript; }
@@ -547,7 +538,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the attachments associated with a message.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? MessageAttachments
         {
             get { return this._messageAttachments; }
@@ -560,7 +550,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("MessageAttachments");
                     this._messageAttachments = value;
                     this._messageAttachmentsTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._messageAttachmentsTemplateId, this._messageAttachments, typeof(IgbChatMessageRenderContext));
+                    this.UpdateTemplate(this._messageAttachmentsTemplateId, this._messageAttachments, static () => new IgbChatMessageRenderContext());
                     this.OnRefChanged("MessageAttachments", null, "template:::" + this._messageAttachmentsTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageAttachmentsRef = refName;
@@ -577,10 +567,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the attachments associated with a message.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageAttachmentsScript
         {
             get { return _messageAttachmentsScript; }
@@ -606,7 +596,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the main text and content of a message.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? MessageContent
         {
             get { return this._messageContent; }
@@ -619,7 +608,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("MessageContent");
                     this._messageContent = value;
                     this._messageContentTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._messageContentTemplateId, this._messageContent, typeof(IgbChatMessageRenderContext));
+                    this.UpdateTemplate(this._messageContentTemplateId, this._messageContent, static () => new IgbChatMessageRenderContext());
                     this.OnRefChanged("MessageContent", null, "template:::" + this._messageContentTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageContentRef = refName;
@@ -636,10 +625,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the main text and content of a message.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageContentScript
         {
             get { return _messageContentScript; }
@@ -665,7 +654,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the header of a message, including sender and timestamp.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatMessageRenderContext>? MessageHeader
         {
             get { return this._messageHeader; }
@@ -678,7 +666,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("MessageHeader");
                     this._messageHeader = value;
                     this._messageHeaderTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._messageHeaderTemplateId, this._messageHeader, typeof(IgbChatMessageRenderContext));
+                    this.UpdateTemplate(this._messageHeaderTemplateId, this._messageHeader, static () => new IgbChatMessageRenderContext());
                     this.OnRefChanged("MessageHeader", null, "template:::" + this._messageHeaderTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._messageHeaderRef = refName;
@@ -695,10 +683,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the header of a message, including sender and timestamp.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? MessageHeaderScript
         {
             get { return _messageHeaderScript; }
@@ -724,7 +712,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the message send button.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? SendButton
         {
             get { return this._sendButton; }
@@ -737,7 +724,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("SendButton");
                     this._sendButton = value;
                     this._sendButtonTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._sendButtonTemplateId, this._sendButton, typeof(IgbChatRenderContext));
+                    this.UpdateTemplate(this._sendButtonTemplateId, this._sendButton, static () => new IgbChatRenderContext());
                     this.OnRefChanged("SendButton", null, "template:::" + this._sendButtonTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._sendButtonRef = refName;
@@ -754,10 +741,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the message send button.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? SendButtonScript
         {
             get { return _sendButtonScript; }
@@ -783,7 +770,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Custom renderer for the prefix text shown before suggestions.
         /// </summary>
-        [Parameter]
         public RenderFragment<IgbChatRenderContext>? SuggestionPrefix
         {
             get { return this._suggestionPrefix; }
@@ -796,7 +782,7 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("SuggestionPrefix");
                     this._suggestionPrefix = value;
                     this._suggestionPrefixTemplateId = Guid.NewGuid().ToString();
-                    this.UpdateTemplate(this._suggestionPrefixTemplateId, this._suggestionPrefix, typeof(IgbChatRenderContext));
+                    this.UpdateTemplate(this._suggestionPrefixTemplateId, this._suggestionPrefix, static () => new IgbChatRenderContext());
                     this.OnRefChanged("SuggestionPrefix", null, "template:::" + this._suggestionPrefixTemplateId, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._suggestionPrefixRef = refName;
@@ -813,10 +799,10 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that renders the prefix text shown before suggestions.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
-        [Parameter]
         public string? SuggestionPrefixScript
         {
             get { return _suggestionPrefixScript; }

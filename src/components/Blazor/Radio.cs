@@ -5,10 +5,13 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The radio component allows the user to select a single option from an available set of options that are listed side by side.
     /// </summary>
-    public partial class IgbRadio : BaseRendererControl
+    /// <typeparam name="TValue"><c>string</c>, <c>char</c>, <c>bool</c>, an enum, or a numeric type such as <c>int</c> or <c>double</c>, or their nullable forms.</typeparam>
+    public partial class IgbRadio<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebRadio"; } }
+        internal override string RendererType { get { return "WebRadio"; } }
+
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +23,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +32,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -53,7 +41,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -77,22 +65,41 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string? _value;
+        private TValue? _value;
 
         /// <summary>
         /// The value of the control.
         /// </summary>
         [Parameter]
-        public string? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!EqualityComparer<TValue?>.Default.Equals(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
                 this._value = value;
+
+            }
+        }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name. Radios with the same name form one group, of which one can be checked.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
 
             }
         }
@@ -332,8 +339,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ChangeScript
@@ -357,17 +365,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbRadioChangeEventArgs>? _change = null;
+        private EventCallback<IgbRadioChangeEventArgs<TValue>>? _change = null;
 
         /// <summary>
         /// Emitted when the control's checked state changes.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbRadioChangeEventArgs> Change
+        public EventCallback<IgbRadioChangeEventArgs<TValue>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbRadioChangeEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbRadioChangeEventArgs<TValue>>.Empty;
             }
             set
             {
@@ -376,7 +384,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbRadioChangeEventArgs<TValue>>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueChecked = default(bool);
 
@@ -391,16 +399,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._checked = newValueChecked;
                                 }
-                                OnPropertyPropagatedOut(Name, "Checked");
+                                OnPropertyPropagatedOut(RendererName, "Checked");
                             }
 
                             if (!EventCallback<bool>.Empty.Equals(CheckedChanged))
                             {
                                 var task = CheckedChanged.InvokeAsync(newValueChecked);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -414,7 +419,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbRadioChangeEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbRadioChangeEventArgs<TValue>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -425,9 +430,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbRadioChangeEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbRadioChangeEventArgs<TValue>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbRadioChangeEventArgs>(null, (Action<IgbRadioChangeEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbRadioChangeEventArgs<TValue>>(null, (Action<IgbRadioChangeEventArgs<TValue>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -439,8 +444,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Focus"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? FocusScript
@@ -483,7 +489,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_focus))
                     {
                         _focus = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", value);
                         this.OnRefChanged("Focus", null, "nativeEvent:::Focus", true, false, (refName, oldValue, newValue) =>
                         {
                             this._focusRef = refName;
@@ -494,7 +500,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _focus = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Focus", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Focus", null);
                     this.OnRefChanged("Focus", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._focusRef = null;
@@ -511,8 +517,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Blur"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? BlurScript
@@ -555,7 +562,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_blur))
                     {
                         _blur = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", value);
                         this.OnRefChanged("Blur", null, "nativeEvent:::Blur", true, false, (refName, oldValue, newValue) =>
                         {
                             this._blurRef = refName;
@@ -566,7 +573,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _blur = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Blur", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Blur", null);
                     this.OnRefChanged("Blur", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._blurRef = null;
@@ -583,7 +590,9 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Required"))
             { ser.AddBooleanProp("required", this._required); }
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", this._value); }
+            { AddGenericValue(ser, "value", this._value); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Checked"))
             { ser.AddBooleanProp("checked", this._checked); }
             if (IsPropDirty("LabelPosition"))

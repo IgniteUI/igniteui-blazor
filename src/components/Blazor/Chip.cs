@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Chips help people enter information, make selections, filter content, or trigger actions.
     /// </summary>
-    public partial class IgbChip : BaseRendererControl
+    public partial class IgbChip : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChip"; } }
+        internal override string RendererType { get { return "WebChip"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +20,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +29,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -53,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -152,13 +137,13 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("p:Selected", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
-        private StyleVariant _variant = StyleVariant.Primary;
+        private StyleVariant? _variant;
 
         /// <summary>
-        /// A property that sets the color variant of the chip component.
+        /// A property that sets the color variant of the chip component. When <c>null</c>, the chip has no color variant.
         /// </summary>
         [Parameter]
-        public StyleVariant Variant
+        public StyleVariant? Variant
         {
             get { return this._variant; }
             set
@@ -190,7 +175,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         private EventCallback<bool>? _selectedChanged = null;
 
@@ -230,8 +214,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Remove"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? RemoveScript
@@ -274,7 +259,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_remove))
                     {
                         _remove = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Remove", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Remove", value);
                         this.OnRefChanged("Remove", null, "event:::Remove", true, false, (refName, oldValue, newValue) =>
                         {
                             this._removeRef = refName;
@@ -285,7 +270,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _remove = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Remove", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Remove", null);
                     this.OnRefChanged("Remove", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._removeRef = null;
@@ -302,8 +287,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? SelectScript
@@ -347,7 +333,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_select))
                     {
                         _select = value;
-                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Select", value, (args) =>
+                        this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.RendererName, "Select", value, (args) =>
                         {
                             var newValueSelected = default(bool);
 
@@ -362,16 +348,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._selected = newValueSelected;
                                 }
-                                OnPropertyPropagatedOut(Name, "Selected");
+                                OnPropertyPropagatedOut(RendererName, "Selected");
                             }
 
                             if (!EventCallback<bool>.Empty.Equals(SelectedChanged))
                             {
                                 var task = SelectedChanged.InvokeAsync(newValueSelected);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -385,7 +368,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _select = null;
-                    this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.Name, "Select", null);
+                    this.SetHandler<IgbComponentBoolValueChangedEventArgs>(this.RendererName, "Select", null);
                     this.OnRefChanged("Select", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._selectRef = null;

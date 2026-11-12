@@ -49,7 +49,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
     public void Input_TypeMetadata_IsCorrect()
     {
         var input = new IgbInput();
-        Assert.Equal("WebInput", input.Type);
+        Assert.Equal("WebInput", input.RendererType);
     }
 
     [Fact]
@@ -59,6 +59,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Value, "hello"));
 
         var element = cut.Find("igc-input");
+        Assert.Equal("hello", cut.Instance.Value);
         Assert.Equal("hello", element.GetAttribute("value"));
     }
 
@@ -69,6 +70,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.DisplayType, InputType.Email));
 
         var element = cut.Find("igc-input");
+        Assert.Equal(InputType.Email, cut.Instance.DisplayType);
         Assert.Equal("email", element.GetAttribute("type"));
     }
 
@@ -89,6 +91,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Placeholder, "Enter text..."));
 
         var element = cut.Find("igc-input");
+        Assert.Equal("Enter text...", cut.Instance.Placeholder);
         Assert.Equal("Enter text...", element.GetAttribute("placeholder"));
     }
 
@@ -99,6 +102,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-input");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -109,6 +113,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Required, true));
 
         var element = cut.Find("igc-input");
+        Assert.True(cut.Instance.Required);
         Assert.NotNull(element.GetAttribute("required"));
     }
 
@@ -119,6 +124,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.ReadOnly, true));
 
         var element = cut.Find("igc-input");
+        Assert.True(cut.Instance.ReadOnly);
         Assert.NotNull(element.GetAttribute("readonly"));
     }
 
@@ -129,6 +135,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.MinLength, 3.0));
 
         var element = cut.Find("igc-input");
+        Assert.Equal(3.0, cut.Instance.MinLength);
         Assert.Equal("3", element.GetAttribute("minlength"));
     }
 
@@ -139,6 +146,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.MaxLength, 100.0));
 
         var element = cut.Find("igc-input");
+        Assert.Equal(100.0, cut.Instance.MaxLength);
         Assert.Equal("100", element.GetAttribute("maxlength"));
     }
 
@@ -149,6 +157,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Autofocus, true));
 
         var element = cut.Find("igc-input");
+        Assert.True(cut.Instance.Autofocus);
         Assert.NotNull(element.GetAttribute("autofocus"));
     }
 
@@ -159,6 +168,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Pattern, "[A-Za-z]+"));
 
         var element = cut.Find("igc-input");
+        Assert.Equal("[A-Za-z]+", cut.Instance.Pattern);
         Assert.Equal("[A-Za-z]+", element.GetAttribute("pattern"));
     }
 
@@ -169,7 +179,20 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Label, "Username"));
 
         var element = cut.Find("igc-input");
+        Assert.Equal("Username", cut.Instance.Label);
         Assert.Equal("Username", element.GetAttribute("label"));
+    }
+
+    [Fact]
+    public void Input_Name_RendersAttribute()
+    {
+        var cut = Render<IgbInput>(parameters =>
+            parameters.Add(p => p.Name, "field"));
+
+        var element = cut.Find("igc-input");
+        Assert.Equal("field", cut.Instance.Name);
+        Assert.Equal("field", Assert.Single(element.Attributes, a => a.Name == "name").Value);
+        Assert.Null(element.GetAttribute("form-name"));
     }
 
     [Fact]
@@ -179,6 +202,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Outlined, true));
 
         var element = cut.Find("igc-input");
+        Assert.True(cut.Instance.Outlined);
         Assert.NotNull(element.GetAttribute("outlined"));
     }
 
@@ -189,6 +213,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Invalid, true));
 
         var element = cut.Find("igc-input");
+        Assert.True(cut.Instance.Invalid);
         Assert.NotNull(element.GetAttribute("invalid"));
     }
 
@@ -199,6 +224,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Min, 0));
 
         var element = cut.Find("igc-input");
+        Assert.Equal(0.0, cut.Instance.Min);
         Assert.Equal("0", element.GetAttribute("min"));
     }
 
@@ -209,6 +235,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Max, 100));
 
         var element = cut.Find("igc-input");
+        Assert.Equal(100.0, cut.Instance.Max);
         Assert.Equal("100", element.GetAttribute("max"));
     }
 
@@ -219,7 +246,27 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Step, 5));
 
         var element = cut.Find("igc-input");
+        Assert.Equal(5.0, cut.Instance.Step);
         Assert.Equal("5", element.GetAttribute("step"));
+    }
+
+    [Fact]
+    public void Input_Constraints_Unset_RenderNoAttributes()
+    {
+        var cut = Render<IgbInput>();
+
+        // Unset: no constraint. 0 is a real min or length limit, so the wrapper must not report it here.
+        var element = cut.Find("igc-input");
+        Assert.Null(cut.Instance.MinLength);
+        Assert.Null(cut.Instance.MaxLength);
+        Assert.Null(cut.Instance.Min);
+        Assert.Null(cut.Instance.Max);
+        Assert.Null(cut.Instance.Step);
+        Assert.Null(element.GetAttribute("minlength"));
+        Assert.Null(element.GetAttribute("maxlength"));
+        Assert.Null(element.GetAttribute("min"));
+        Assert.Null(element.GetAttribute("max"));
+        Assert.Null(element.GetAttribute("step"));
     }
 
     [Fact]
@@ -229,6 +276,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.Autocomplete, "email"));
 
         var element = cut.Find("igc-input");
+        Assert.Equal("email", cut.Instance.Autocomplete);
         Assert.Equal("email", element.GetAttribute("autocomplete"));
     }
 
@@ -239,6 +287,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.InputMode, "numeric"));
 
         var element = cut.Find("igc-input");
+        Assert.Equal("numeric", cut.Instance.InputMode);
         Assert.Equal("numeric", element.GetAttribute("inputmode"));
     }
 
@@ -249,6 +298,7 @@ public class InputTests : ComponentWithContractTestBase<IgbInput>
             parameters.Add(p => p.ValidateOnly, true));
 
         var element = cut.Find("igc-input");
+        Assert.True(cut.Instance.ValidateOnly);
         Assert.NotNull(element.GetAttribute("validate-only"));
     }
 }

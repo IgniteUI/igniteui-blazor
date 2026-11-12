@@ -3,21 +3,15 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class shared by <see cref="IgbCombo{T}"/> and <see cref="IgbComboBoxBaseLike"/>.
+    /// Base class shared by <see cref="IgbCombo{TValue, TItem}"/> and <see cref="IgbComboBoxBaseLike"/>.
     /// </summary>
-    public partial class IgbBaseComboBox : BaseRendererControl
+    public partial class IgbBaseComboBox : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBaseComboBox"; } }
+        internal override string RendererType { get { return "WebBaseComboBox"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Queued; }
         }
@@ -38,6 +32,25 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Open");
                 }
                 this._open = value;
+
+            }
+        }
+        private PopoverScrollStrategy _scrollStrategy = PopoverScrollStrategy.Hide;
+
+        /// <summary>
+        /// Sets the behavior of the component when a parent container scrolls.
+        /// </summary>
+        [Parameter]
+        public PopoverScrollStrategy ScrollStrategy
+        {
+            get { return this._scrollStrategy; }
+            set
+            {
+                if (this._scrollStrategy != value || !IsPropDirty("ScrollStrategy"))
+                {
+                    MarkPropDirty("ScrollStrategy");
+                }
+                this._scrollStrategy = value;
 
             }
         }
@@ -110,6 +123,8 @@ namespace IgniteUI.Blazor.Controls
 
             if (IsPropDirty("Open"))
             { ser.AddBooleanProp("open", this._open); }
+            if (IsPropDirty("ScrollStrategy"))
+            { ser.AddEnumProp("scrollStrategy", this._scrollStrategy); }
 
         }
 

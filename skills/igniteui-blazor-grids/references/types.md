@@ -12,7 +12,7 @@ builder.Services.AddIgniteUIBlazor(typeof(IgbGridLiteModule));
 ```
 
 ```html
-<link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
+<link href="_content/IgniteUI.Blazor.GridLite/themes/light/bootstrap.css" rel="stylesheet" />
 ```
 
 ```razor

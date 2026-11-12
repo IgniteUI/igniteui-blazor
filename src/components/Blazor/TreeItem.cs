@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The tree-item component represents a child item of the tree component or another tree item.
     /// </summary>
-    public partial class IgbTreeItem : BaseRendererControl
+    public partial class IgbTreeItem : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebTreeItem"; } }
+        internal override string RendererType { get { return "WebTreeItem"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +20,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +29,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -53,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

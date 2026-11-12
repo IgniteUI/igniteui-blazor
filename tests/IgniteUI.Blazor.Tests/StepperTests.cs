@@ -60,14 +60,31 @@ public class StepperTests : ComponentWithContractTestBase<IgbStepper>
     public void Stepper_TypeMetadata_IsCorrect()
     {
         var stepper = new IgbStepper();
-        Assert.Equal("WebStepper", stepper.Type);
+        Assert.Equal("WebStepper", stepper.RendererType);
     }
 
     [Fact]
-    public void Stepper_InheritsFromBaseRendererControl()
+    public void Stepper_LayoutParameters_RenderAttributes()
     {
-        Assert.True(typeof(IgbStepper).IsSubclassOf(typeof(BaseRendererControl)));
+        var cut = Render<IgbStepper>(parameters =>
+        {
+            parameters.Add(p => p.Orientation, StepperOrientation.Vertical);
+            parameters.Add(p => p.StepType, StepperStepType.Full);
+            parameters.Add(p => p.TitlePosition, StepperTitlePosition.End);
+            parameters.Add(p => p.ContentTop, true);
+        });
+
+        var element = cut.Find("igc-stepper");
+        Assert.Equal(StepperOrientation.Vertical, cut.Instance.Orientation);
+        Assert.Equal(StepperStepType.Full, cut.Instance.StepType);
+        Assert.Equal(StepperTitlePosition.End, cut.Instance.TitlePosition);
+        Assert.True(cut.Instance.ContentTop);
+        Assert.Equal("vertical", element.GetAttribute("orientation"));
+        Assert.Equal("full", element.GetAttribute("step-type"));
+        Assert.Equal("end", element.GetAttribute("title-position"));
+        Assert.NotNull(element.GetAttribute("content-top"));
     }
+
 }
 
 public class StepTests : BlazorComponentTestBase
@@ -83,7 +100,7 @@ public class StepTests : BlazorComponentTestBase
     public void Step_TypeMetadata_IsCorrect()
     {
         var step = new IgbStep();
-        Assert.Equal("WebStep", step.Type);
+        Assert.Equal("WebStep", step.RendererType);
     }
 
     [Fact]
@@ -93,6 +110,7 @@ public class StepTests : BlazorComponentTestBase
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-step");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 

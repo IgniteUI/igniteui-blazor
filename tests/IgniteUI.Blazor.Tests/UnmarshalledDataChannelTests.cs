@@ -1,3 +1,8 @@
+// The harness records column messages through a module double (IUnmarshalledColumnSink) that takes the
+// column arrays themselves, on every target framework: the shipping channel is the same on all of them.
+// The pointer transport is covered in the browser by the ComboDataTest integration suite; it cannot be
+// covered here, because RuntimeHelper truncates the pointer to int (valid under wasm's 32-bit address
+// space, unrecoverable in a 64-bit test host).
 using System.Collections.ObjectModel;
 using Bunit;
 using IgniteUI.Blazor.Controls;
@@ -100,27 +105,54 @@ public class UnmarshalledDataChannelTests : BunitContext
         RenderScenario(scenario);
 
         items.Add(ComboDataScenarios.AddedProduct());
-        var insert = WaitFor("igUnmarshalledDataSourceInsert");
+        var insert = WaitFor("unmarshalledDataSourceInsert");
         Assert.Equal(3, insert.Index);
         Assert.Equal(4, Column(insert, "Name").ActualCount);
         Assert.Equal("Added", Column(insert, "Name").StringValues[3]);
 
         items.RemoveAt(0);
-        var remove = WaitFor("igUnmarshalledDataSourceRemove");
+        var remove = WaitFor("unmarshalledDataSourceRemove");
         Assert.Equal(0, remove.Index);
         Assert.Equal(3, Column(remove, "Name").ActualCount);
         Assert.Equal("Chang", Column(remove, "Name").StringValues[0]);
 
         // A replace crosses as remove + insert at the same index, not as an update message.
         items[0] = ComboDataScenarios.ReplacementProduct();
-        var replaceInsert = WaitFor("igUnmarshalledDataSourceInsert",
+        var replaceInsert = WaitFor("unmarshalledDataSourceInsert",
             m => m.Index == 0 && Column(m, "Name").StringValues[0] == "Replaced");
         Assert.Equal(3, Column(replaceInsert, "Name").ActualCount);
 
         // Clear resets the source's columns; the message itself carries none.
         items.Clear();
-        var clear = WaitFor("igUnmarshalledDataSourceClear");
+        var clear = WaitFor("unmarshalledDataSourceClear");
         Assert.Empty(clear.Columns!);
+    }
+
+    [Fact]
+    public void MutationsWhileTheModuleImports_ArriveAsOneCreateOfTheCurrentData()
+    {
+        var release = _interop.HoldModuleImport();
+        var scenario = ComboDataScenarios.Get("observable-products");
+        var items = (ObservableCollection<ComboDataScenarios.Product>)scenario.Data;
+        _interop.PrimeReady();
+        Render<IgbCombo<object, object>>(ps => ps
+            .Add(c => c.Data, scenario.Data)
+            .Add(c => c.ValueKey, scenario.ValueKey)
+            .Add(c => c.DisplayKey, scenario.DisplayKey));
+
+        // Both inserts shift the shared value arrays; a queued create or insert would replay shifted values.
+        items.Insert(0, ComboDataScenarios.AddedProduct());
+        items.Insert(0, ComboDataScenarios.ReplacementProduct());
+        Assert.Empty(_interop.UnmarshalledColumnMessages);
+
+        release();
+        _interop.MakeReady();
+        var create = WaitFor("unmarshalledDataSourceCreate");
+
+        var name = Column(create, "Name");
+        Assert.Equal(5, name.ActualCount);
+        Assert.Equal(new[] { "Replaced", "Added" }, name.StringValues.Take(2));
+        Assert.DoesNotContain(_interop.UnmarshalledColumnMessages, m => m.MethodName == "unmarshalledDataSourceInsert");
     }
 
     private UnmarshalledColumnMessage RenderScenario(string scenario) =>
@@ -129,12 +161,12 @@ public class UnmarshalledDataChannelTests : BunitContext
     private UnmarshalledColumnMessage RenderScenario(ComboDataScenarios.Scenario scenario)
     {
         _interop.PrimeReady();
-        Render<IgbCombo<object>>(ps => ps
+        Render<IgbCombo<object, object>>(ps => ps
             .Add(c => c.Data, scenario.Data)
             .Add(c => c.ValueKey, scenario.ValueKey)
             .Add(c => c.DisplayKey, scenario.DisplayKey));
         _interop.MakeReady();
-        return WaitFor("igUnmarshalledDataSourceCreate");
+        return WaitFor("unmarshalledDataSourceCreate");
     }
 
     private UnmarshalledColumnMessage WaitFor(string methodName, Func<UnmarshalledColumnMessage, bool>? match = null) =>

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace IgniteUI.Blazor.Controls
 {
 
-    public class DynamicContentHolder : ComponentBase
+    internal class DynamicContentHolder : ComponentBase
     {
         public DynamicContentHolder()
         {
@@ -107,7 +107,7 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public abstract class DynamicContentInfo
+    internal abstract class DynamicContentInfo
     {
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public required Type ControlType { get; set; }
@@ -117,6 +117,10 @@ namespace IgniteUI.Blazor.Controls
         }
 
         public string RefName { get; set; }
+
+        /// <summary>The id of the template this content renders, as registered through UpdateTemplate.</summary>
+        public string? TemplateId { get; set; }
+
         public string RefDivName
         {
             get
@@ -140,7 +144,7 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        public BaseRendererControl? Owner { get; internal set; }
+        public IgbComponentBase? Owner { get; internal set; }
 
         protected virtual void OnComponentChanged(object? oldValue, object? component)
         {
@@ -158,7 +162,7 @@ namespace IgniteUI.Blazor.Controls
         }
     }
 
-    public class TypedDynamicContent
+    internal class TypedDynamicContent
         : DynamicContentInfo
     {
         public TypedDynamicContent([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type t)
@@ -238,21 +242,25 @@ namespace IgniteUI.Blazor.Controls
         public event DynamicComponentChangingEventHandler? OnComponentChanging;
     }
 
-    public delegate void DynamicComponentChangingEventHandler(object sender, DynamicComponentChangingEventArgs e);
+    internal delegate void DynamicComponentChangingEventHandler(object sender, DynamicComponentChangingEventArgs e);
 
-    public class DynamicComponentChangingEventArgs
+    internal class DynamicComponentChangingEventArgs
     {
         public object? OldComponent { get; internal set; }
         public object? NewComponent { get; internal set; }
     }
 
-    public class DynamicContentInfo<T>
+    internal class DynamicContentInfo<T>
         : DynamicContentInfo
     {
+        [SetsRequiredMembers]
         public DynamicContentInfo()
         {
             ControlType = typeof(IgbTemplateContent<T>);
         }
+
+        /// <summary>Creates a context from a property bag; see IgbComponentBase.UpdateTemplate.</summary>
+        public Func<T>? CreateContext { get; init; }
 
         private RenderFragment<T>? _template;
         private T? _context;
@@ -299,13 +307,7 @@ namespace IgniteUI.Blazor.Controls
             if (Component is IgbTemplateContent<T>)
             {
                 var template = (IgbTemplateContent<T>)Component;
-
-                if (_hasPopulatedContext && Context != null)
-                {
-                    template.Context = Context;
-                }
-                template.Template = Template;
-                template.Update();
+                template.UpdateContent(Context, Template, _hasPopulatedContext);
             }
         }
 
@@ -318,7 +320,37 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         public override void UpdateContext(object? context)
         {
-            Context = (T?)context;
+            // Fast path: the client already marshalled a strongly typed context across.
+            if (context is T typed)
+            {
+                Context = typed;
+                return;
+            }
+
+            // No context yet: the template content only renders once one arrives, and T may be a
+            // value type that null cannot be unboxed into.
+            if (context == null)
+            {
+                return;
+            }
+
+            // Fallback: some web components (e.g. the chat renderers) hand the template
+            // context back as a plain property bag (e.g. {"message":{...}}) without a
+            // top-level marshal-by-value type, so ConvertReturnValue leaves it as a
+            // Dictionary. When the template registered a factory for its serializable context,
+            // build it here and populate it through FromEventJson (the same path used for event args).
+            if (context is Dictionary<string, object?> dict &&
+                CreateContext != null &&
+                Owner != null &&
+                CreateContext() is BaseJsonSerializable element)
+            {
+                element.TempParent = Owner;
+                element.FromEventJson(Owner, dict);
+                Context = (T)(object)element;
+                return;
+            }
+
+            Context = (T)context;
         }
     }
 

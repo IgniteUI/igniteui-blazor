@@ -2,26 +2,8 @@ using Microsoft.JSInterop;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public class WebCallback
+    internal class WebCallback
     {
-        //private WebCallback() { }
-        //private static WebCallback _instance;
-        //public static WebCallback Instance {
-        //    get
-        //    {
-        //        if (_instance == null)
-        //        {
-        //            _instance = new WebCallback();                 
-        //        }                    
-
-        //        return _instance;
-        //    }
-        //    private set
-        //    {
-        //        _instance = value;
-        //    } 
-        //}
-
         public bool IsReady
         {
             get
@@ -39,13 +21,13 @@ namespace IgniteUI.Blazor.Controls
             ForControls((c) => c.OnReady());
         }
 
-        private void ForControls(Action<BaseRendererControl> act)
+        private void ForControls(Action<IgbComponentBase> act)
         {
             List<string>? toRemove = null;
             foreach (var controlKey in _controlsMap.Keys)
             {
                 var control = _controlsMap[controlKey];
-                BaseRendererControl? target;
+                IgbComponentBase? target;
                 if (control.TryGetTarget(out target))
                 {
                     target.OnReady();
@@ -69,12 +51,12 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseRendererControl? GetControl(string key)
+        private IgbComponentBase? GetControl(string key)
         {
             if (_controlsMap.ContainsKey(key))
             {
                 var control = _controlsMap[key];
-                BaseRendererControl? target;
+                IgbComponentBase? target;
                 if (control.TryGetTarget(out target))
                 {
                     return target;
@@ -88,10 +70,10 @@ namespace IgniteUI.Blazor.Controls
             return null;
         }
 
-        private Dictionary<string, WeakReference<BaseRendererControl>> _controlsMap = new Dictionary<string, WeakReference<BaseRendererControl>>();
-        public void Register(BaseRendererControl control)
+        private readonly Dictionary<string, WeakReference<IgbComponentBase>> _controlsMap = new Dictionary<string, WeakReference<IgbComponentBase>>();
+        public void Register(IgbComponentBase control)
         {
-            _controlsMap.Add(control.ContainerId, new WeakReference<BaseRendererControl>(control));
+            _controlsMap.Add(control.ContainerId, new WeakReference<IgbComponentBase>(control));
         }
 
         [JSInvokable]
@@ -135,6 +117,9 @@ namespace IgniteUI.Blazor.Controls
             if (control != null)
             {
                 var arr = control.DeserializeDictionaryArray(batch);
+                // The client batches every component's entries and sends them under the component that
+                // started the batch, so each component an entry targets needs its content refreshed.
+                var touched = new List<IgbComponentBase> { control };
                 if (arr != null)
                 {
                     for (var i = 0; i < arr.Length; i++)
@@ -151,11 +136,26 @@ namespace IgniteUI.Blazor.Controls
                         {
                             var currControl = GetControl(currContainer);
                             //Console.WriteLine("found target");
-                            currControl?.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                            if (currControl != null && !touched.Contains(currControl))
+                            {
+                                touched.Add(currControl);
+                            }
+                            try
+                            {
+                                currControl?.AdjustDynamicContent(containerId, contentType, templateId, contentId, actionType, args);
+                            }
+                            catch (Exception e)
+                            {
+                                // Keep one bad entry from dropping the rest of the batch and the refresh below.
+                                Console.WriteLine(e.ToString());
+                            }
                         }
                     }
                 }
-                control.RefreshDynamicContent();
+                foreach (var target in touched)
+                {
+                    target.RefreshDynamicContent();
+                }
             }
         }
     }

@@ -30,7 +30,7 @@ public class BannerTests : ComponentWithContractTestBase<IgbBanner>
     public void Banner_TypeMetadata_IsCorrect()
     {
         var banner = new IgbBanner();
-        Assert.Equal("WebBanner", banner.Type);
+        Assert.Equal("WebBanner", banner.RendererType);
     }
 
     [Fact]
@@ -40,6 +40,7 @@ public class BannerTests : ComponentWithContractTestBase<IgbBanner>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-banner");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -61,9 +62,4 @@ public class BannerTests : ComponentWithContractTestBase<IgbBanner>
         Assert.Contains("Important notice", cut.Find("igc-banner").InnerHtml);
     }
 
-    [Fact]
-    public void Banner_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbBanner).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

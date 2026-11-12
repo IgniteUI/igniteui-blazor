@@ -125,6 +125,20 @@ export class Loader {
         break;
       }
 
+      case 'WebBreadcrumbsModule': {
+        let { IgcBreadcrumbsComponent } = await import('igniteui-webcomponents');
+        let { WebBreadcrumbsDescriptionModule } = await import('igniteui-core/WebBreadcrumbsDescriptionModule');
+
+        this._loadingSet.delete(module);
+
+        IgcBreadcrumbsComponent.register();
+        TypeRegistrar.registerCons('IgcBreadcrumbsComponent', IgcBreadcrumbsComponent);
+
+        WebBreadcrumbsDescriptionModule.register(cr.context);
+        this.checkDone();
+        break;
+      }
+
       case 'WebButtonGroupModule': {
         let { IgcButtonGroupComponent } = await import('igniteui-webcomponents');
         let { WebButtonGroupDescriptionModule } = await import('igniteui-core/WebButtonGroupDescriptionModule');
@@ -393,15 +407,6 @@ export class Loader {
         break;
       }
 
-      case 'FormatSpecifierModule':
-        let { IgcFormatSpecifierModule } = await import('igniteui-core/igc-format-specifier-module');
-        let { FormatSpecifierDescriptionModule } = await import('igniteui-core/FormatSpecifierDescriptionModule');
-        this._loadingSet.delete(module);
-        ModuleManager.register(IgcFormatSpecifierModule);
-        FormatSpecifierDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
-
       case 'WebHighlightModule': {
         let { IgcHighlightComponent } = await import('igniteui-webcomponents');
         let { WebHighlightDescriptionModule } = await import('igniteui-core/WebHighlightDescriptionModule');
@@ -527,16 +532,6 @@ export class Loader {
         this.checkDone();
         break;
       }
-
-      case 'NumberFormatSpecifierModule':
-        let { IgcNumberFormatSpecifierModule } = await import('igniteui-core/igc-number-format-specifier-module');
-        let { NumberFormatSpecifierDescriptionModule } =
-          await import('igniteui-core/NumberFormatSpecifierDescriptionModule');
-        this._loadingSet.delete(module);
-        ModuleManager.register(IgcNumberFormatSpecifierModule);
-        NumberFormatSpecifierDescriptionModule.register(cr.context);
-        this.checkDone();
-        break;
 
       case 'WebQrCodeModule': {
         let { IgcQrCodeComponent } = await import('igniteui-webcomponents');
@@ -878,9 +873,8 @@ export class Loader {
       Loader.marshalByValueSet = new Set<string>();
       //@@MarshalByValue
       Loader.marshalByValueSet.add('CalendarFormatOptions');
-      Loader.marshalByValueSet.add('FocusOptions');
-      Loader.marshalByValueSet.add('FormatSpecifier');
-      Loader.marshalByValueSet.add('NumberFormatSpecifier');
+      Loader.marshalByValueSet.add('WebFocusOptions');
+      Loader.marshalByValueSet.add('NumberFormatOptions');
       Loader.marshalByValueSet.add('QrCodeExportOptions');
       Loader.marshalByValueSet.add('WebQrCodeExportOptions');
       Loader.marshalByValueSet.add('RegisterIconOptions');

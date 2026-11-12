@@ -146,7 +146,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
     public void Dropdown_TypeMetadata_IsCorrect()
     {
         var dropdown = new IgbDropdown();
-        Assert.Equal("WebDropdown", dropdown.Type);
+        Assert.Equal("WebDropdown", dropdown.RendererType);
     }
 
     [Fact]
@@ -156,6 +156,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             parameters.Add(p => p.Open, true));
 
         var element = cut.Find("igc-dropdown");
+        Assert.True(cut.Instance.Open);
         Assert.NotNull(element.GetAttribute("open"));
     }
 
@@ -166,6 +167,7 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
             parameters.Add(p => p.KeepOpenOnSelect, true));
 
         var element = cut.Find("igc-dropdown");
+        Assert.True(cut.Instance.KeepOpenOnSelect);
         Assert.NotNull(element.GetAttribute("keep-open-on-select"));
     }
 
@@ -178,11 +180,6 @@ public class DropdownTests : ComponentWithContractTestBase<IgbDropdown>
         Assert.Contains("Item", cut.Find("igc-dropdown").InnerHtml);
     }
 
-    [Fact]
-    public void Dropdown_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbDropdown).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }
 
 public class DropdownItemTests : BlazorComponentTestBase
@@ -198,7 +195,7 @@ public class DropdownItemTests : BlazorComponentTestBase
     public void DropdownItem_TypeMetadata_IsCorrect()
     {
         var item = new IgbDropdownItem();
-        Assert.Equal("WebDropdownItem", item.Type);
+        Assert.Equal("WebDropdownItem", item.RendererType);
     }
 
     [Fact]

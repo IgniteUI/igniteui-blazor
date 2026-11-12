@@ -91,6 +91,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTileManager>(p =>
             p.Add(x => x.ColumnCount, 4));
 
+        Assert.Equal(4.0, cut.Instance.ColumnCount);
         Assert.Equal("4", cut.Find("igc-tile-manager").GetAttribute("column-count"));
     }
 
@@ -100,6 +101,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTileManager>(p =>
             p.Add(x => x.ResizeMode, TileManagerResizeMode.Hover));
 
+        Assert.Equal(TileManagerResizeMode.Hover, cut.Instance.ResizeMode);
         Assert.Equal("hover", cut.Find("igc-tile-manager").GetAttribute("resize-mode"));
     }
 
@@ -118,6 +120,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTileManager>(p =>
             p.Add(x => x.DragMode, TileManagerDragMode.Tile));
 
+        Assert.Equal(TileManagerDragMode.Tile, cut.Instance.DragMode);
         Assert.Equal("tile", cut.Find("igc-tile-manager").GetAttribute("drag-mode"));
     }
 
@@ -136,6 +139,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTileManager>(p =>
             p.Add(x => x.MinColumnWidth, "200px"));
 
+        Assert.Equal("200px", cut.Instance.MinColumnWidth);
         Assert.Equal("200px", cut.Find("igc-tile-manager").GetAttribute("min-column-width"));
     }
 
@@ -145,6 +149,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTileManager>(p =>
             p.Add(x => x.MinRowHeight, "150px"));
 
+        Assert.Equal("150px", cut.Instance.MinRowHeight);
         Assert.Equal("150px", cut.Find("igc-tile-manager").GetAttribute("min-row-height"));
     }
 
@@ -161,6 +166,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTile>(p =>
             p.Add(x => x.ColSpan, 2));
 
+        Assert.Equal(2.0, cut.Instance.ColSpan);
         Assert.Equal("2", cut.Find("igc-tile").GetAttribute("col-span"));
     }
 
@@ -170,6 +176,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTile>(p =>
             p.Add(x => x.RowSpan, 3));
 
+        Assert.Equal(3.0, cut.Instance.RowSpan);
         Assert.Equal("3", cut.Find("igc-tile").GetAttribute("row-span"));
     }
 
@@ -179,6 +186,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTile>(p =>
             p.Add(x => x.ColStart, 1));
 
+        Assert.Equal(1.0, cut.Instance.ColStart);
         Assert.Equal("1", cut.Find("igc-tile").GetAttribute("col-start"));
     }
 
@@ -188,6 +196,7 @@ public class TileManagerTests : ComponentWithContractTestBase<IgbTileManager>
         var cut = Render<IgbTile>(p =>
             p.Add(x => x.RowStart, 2));
 
+        Assert.Equal(2.0, cut.Instance.RowStart);
         Assert.Equal("2", cut.Find("igc-tile").GetAttribute("row-start"));
     }
 

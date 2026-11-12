@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -8,10 +7,10 @@ namespace IgniteUI.Blazor.Controls
     /// The component renders an SVG representation of the QR code, which can be
     /// customized using various properties.
     /// </summary>
-    public partial class IgbQrCode : BaseRendererControl
+    public partial class IgbQrCode : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebQrCode"; } }
+        internal override string RendererType { get { return "WebQrCode"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -23,13 +22,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -38,16 +31,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -56,7 +40,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -102,16 +86,17 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private QrErrorCorrectionLevel _errorLevel = QrErrorCorrectionLevel.Medium;
+        private QrErrorCorrectionLevel? _errorLevel;
 
         /// <summary>
         /// The error correction level for the QR code, which determines the QR code's ability to be read
         /// if it is partially obscured or damaged.
         /// <see cref="QrErrorCorrectionLevel.Low"/> provides the lowest level of error correction
         /// and <see cref="QrErrorCorrectionLevel.High"/> provides the highest level.
+        /// When <c>null</c>, the web component's default level applies.
         /// </summary>
         [Parameter]
-        public QrErrorCorrectionLevel ErrorLevel
+        public QrErrorCorrectionLevel? ErrorLevel
         {
             get { return this._errorLevel; }
             set
@@ -274,13 +259,13 @@ namespace IgniteUI.Blazor.Controls
         /// component: a 256px QR code exported with a scale of 2 produces a 512x512 image.
         /// </summary>
         /// <remarks>
-        /// The exported file stays on the client - set <see cref="IgbQrCodeExportOptions.Download"/> to
-        /// <see langword="true"/> to open the browser download dialog and deliver it to the user.
+        /// The exported file stays on the client - it is delivered to the user through the browser
+        /// download dialog and cannot be read back into .NET.
         /// The export fails when the component has no <see cref="Value"/>, when the format is not
         /// supported by the browser, when the scale is not a positive finite number, or when the
         /// resulting image exceeds the maximum canvas size.
         /// </remarks>
-        /// <param name="options">Options controlling the file name, format, scale and download behavior.</param>
+        /// <param name="options">Options controlling the file name, format and scale of the exported image.</param>
         public async Task ToImageAsync(IgbQrCodeExportOptions options)
         {
             await InvokeMethod("toImage", new object[] { ObjectToParam(options) }, new string[] { "Json" });
@@ -292,13 +277,13 @@ namespace IgniteUI.Blazor.Controls
         /// component: a 256px QR code exported with a scale of 2 produces a 512x512 image.
         /// </summary>
         /// <remarks>
-        /// The exported file stays on the client - set <see cref="IgbQrCodeExportOptions.Download"/> to
-        /// <see langword="true"/> to open the browser download dialog and deliver it to the user.
+        /// The exported file stays on the client - it is delivered to the user through the browser
+        /// download dialog and cannot be read back into .NET.
         /// The export fails when the component has no <see cref="Value"/>, when the format is not
         /// supported by the browser, when the scale is not a positive finite number, or when the
         /// resulting image exceeds the maximum canvas size.
         /// </remarks>
-        /// <param name="options">Options controlling the file name, format, scale and download behavior.</param>
+        /// <param name="options">Options controlling the file name, format and scale of the exported image.</param>
         public void ToImage(IgbQrCodeExportOptions options)
         {
             InvokeMethodSync("toImage", new object[] { ObjectToParam(options) }, new string[] { "Json" });

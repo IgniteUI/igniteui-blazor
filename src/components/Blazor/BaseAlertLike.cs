@@ -5,46 +5,13 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbSnackbar"/> and <see cref="IgbToast"/>.
     /// </summary>
-    public partial class IgbBaseAlertLike : BaseRendererControl
+    public partial class IgbBaseAlertLike : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebBaseAlertLike"; } }
+        internal override string RendererType { get { return "WebBaseAlertLike"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-base-alert-like";
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }

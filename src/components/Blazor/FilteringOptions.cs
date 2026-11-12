@@ -1,21 +1,18 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Filtering options for the <see cref="IgbCombo{T}"/> component.
+    /// Filtering options for the <see cref="IgbCombo{TValue, TItem}"/> component.
     /// </summary>
-    public partial class IgbFilteringOptions : BaseRendererElement
+    public partial class IgbFilteringOptions : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebFilteringOptions"; } }
+        internal override string RendererType { get { return "WebFilteringOptions"; } }
 
         private string? _filterKey;
 
         /// <summary>
         /// The key in the data source used when filtering the list of options.
         /// </summary>
-        [Parameter]
         public string? FilterKey
         {
             get { return this._filterKey; }
@@ -34,7 +31,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Determines whether the filtering operation should be case sensitive.
         /// </summary>
-        [Parameter]
         public bool CaseSensitive
         {
             get { return this._caseSensitive; }
@@ -53,7 +49,6 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// When <see langword="true"/>, the filter distinguishes between accented letters and their base letters.
         /// </summary>
-        [Parameter]
         public bool MatchDiacritics
         {
             get { return this._matchDiacritics; }
@@ -67,7 +62,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

@@ -1,22 +1,19 @@
-using Microsoft.AspNetCore.Components;
-
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The base context object passed to custom renderers, containing the
     /// <see cref="IgbChat"/> component instance.
     /// </summary>
-    public partial class IgbChatRenderContext : BaseRendererElement
+    public partial class IgbChatRenderContext : BaseJsonSerializable
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebChatRenderContext"; } }
+        internal override string RendererType { get { return "WebChatRenderContext"; } }
 
         private IgbChat _instance = new IgbChat();
 
         /// <summary>
         /// The instance of the <see cref="IgbChat"/> component.
         /// </summary>
-        [Parameter]
         public IgbChat Instance
         {
             get { return this._instance; }
@@ -31,7 +28,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         internal override void SerializeCore(RendererSerializer ser)
         {
             base.SerializeCore(ser);
@@ -39,6 +35,18 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Instance"))
             { ser.AddSerializableProp("instance", this._instance); }
 
+        }
+
+        /// <inheritdoc />
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args != null && args.TryGetValue("instance", out var instanceObj) && ConvertReturnValue(instanceObj, "Chat", true) is IgbChat instance)
+            { this.Instance = instance; }
+
+            this.SuppressParentNotify = false;
         }
 
     }

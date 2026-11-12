@@ -5,10 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A stepper component that provides a wizard-like workflow by dividing content into logical steps.
     /// </summary>
-    public partial class IgbStepper : BaseRendererControl
+    public partial class IgbStepper : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebStepper"; } }
+        internal override string RendererType { get { return "WebStepper"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -20,13 +20,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -35,16 +29,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -53,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -64,13 +49,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<IgbStep[]> GetStepsAsync()
         {
             var iv = await InvokeMethod("p:Steps", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbStep>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbStep>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbStep>(iv);
         }
 
         /// <summary>
@@ -79,13 +58,7 @@ namespace IgniteUI.Blazor.Controls
         public IgbStep[] GetSteps()
         {
             var iv = InvokeMethodSync("p:Steps", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbStep>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbStep>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbStep>(iv);
         }
         private StepperOrientation _orientation = StepperOrientation.Horizontal;
 
@@ -308,8 +281,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="ActiveStepChanging"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ActiveStepChangingScript
@@ -352,7 +326,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_activeStepChanging))
                     {
                         _activeStepChanging = value;
-                        this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", value);
+                        this.SetHandler<IgbActiveStepChangingEventArgs>(this.RendererName, "ActiveStepChanging", value);
                         this.OnRefChanged("ActiveStepChanging", null, "event:::ActiveStepChanging", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangingRef = refName;
@@ -363,7 +337,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _activeStepChanging = null;
-                    this.SetHandler<IgbActiveStepChangingEventArgs>(this.Name, "ActiveStepChanging", null);
+                    this.SetHandler<IgbActiveStepChangingEventArgs>(this.RendererName, "ActiveStepChanging", null);
                     this.OnRefChanged("ActiveStepChanging", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._activeStepChangingRef = null;
@@ -380,8 +354,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="ActiveStepChanged"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ActiveStepChangedScript
@@ -424,7 +399,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_activeStepChanged))
                     {
                         _activeStepChanged = value;
-                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", value);
+                        this.SetHandler<IgbActiveStepChangedEventArgs>(this.RendererName, "ActiveStepChanged", value);
                         this.OnRefChanged("ActiveStepChanged", null, "event:::ActiveStepChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._activeStepChangedRef = refName;
@@ -435,7 +410,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _activeStepChanged = null;
-                    this.SetHandler<IgbActiveStepChangedEventArgs>(this.Name, "ActiveStepChanged", null);
+                    this.SetHandler<IgbActiveStepChangedEventArgs>(this.RendererName, "ActiveStepChanged", null);
                     this.OnRefChanged("ActiveStepChanged", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._activeStepChangedRef = null;

@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Client;
 /// </summary>
 public static class ComboDataScenarios
 {
-    public sealed record Scenario(object Data, string? ValueKey, string? DisplayKey);
+    public sealed record Scenario(IEnumerable<object> Data, string? ValueKey, string? DisplayKey);
 
     public static Scenario Get(string name) => name switch
     {

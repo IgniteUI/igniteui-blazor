@@ -55,7 +55,7 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
     public void Accordion_TypeMetadata_IsCorrect()
     {
         var accordion = new IgbAccordion();
-        Assert.Equal("WebAccordion", accordion.Type);
+        Assert.Equal("WebAccordion", accordion.RendererType);
     }
 
     [Fact]
@@ -65,6 +65,7 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
             parameters.Add(p => p.SingleExpand, true));
 
         var element = cut.Find("igc-accordion");
+        Assert.True(cut.Instance.SingleExpand);
         Assert.NotNull(element.GetAttribute("single-expand"));
     }
 
@@ -84,12 +85,6 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
             parameters.AddChildContent("Accordion content"));
 
         Assert.Contains("Accordion content", cut.Markup);
-    }
-
-    [Fact]
-    public void Accordion_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbAccordion).IsSubclassOf(typeof(BaseRendererControl)));
     }
 
     #region Child collection lifecycle

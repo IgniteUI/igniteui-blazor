@@ -3,48 +3,15 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class shared by <see cref="IgbRangeSlider"/> and <see cref="IgbSlider"/>.
+    /// Base class shared by <see cref="IgbRangeSlider"/> and <see cref="IgbSlider{TValue}"/>.
     /// </summary>
-    public partial class IgbSliderBase : BaseRendererControl
+    public partial class IgbSliderBase : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebSliderBase"; } }
+        internal override string RendererType { get { return "WebSliderBase"; } }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-slider-base";
-            }
-        }
-
-        /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -96,13 +63,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _lowerBound = 0;
+        private double? _lowerBound;
 
         /// <summary>
         /// The lower bound of the slider value. If not set, the <see cref="Min"/> value is applied.
         /// </summary>
         [Parameter]
-        public double LowerBound
+        public double? LowerBound
         {
             get { return this._lowerBound; }
             set
@@ -115,13 +82,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _upperBound = 0;
+        private double? _upperBound;
 
         /// <summary>
         /// The upper bound of the slider value. If not set, the <see cref="Max"/> value is applied.
         /// </summary>
         [Parameter]
-        public double UpperBound
+        public double? UpperBound
         {
             get { return this._upperBound; }
             set
@@ -367,13 +334,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private IgbNumberFormatSpecifier? _valueFormatOptions;
+        private IgbNumberFormatOptions? _valueFormatOptions;
 
         /// <summary>
         /// Number format options used for the thumb and tick label values in the slider.
         /// </summary>
         [Parameter]
-        public IgbNumberFormatSpecifier? ValueFormatOptions
+        public IgbNumberFormatOptions? ValueFormatOptions
         {
             get { return this._valueFormatOptions; }
             set
@@ -386,7 +353,6 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-
 
         internal override void SerializeCore(RendererSerializer ser)
         {

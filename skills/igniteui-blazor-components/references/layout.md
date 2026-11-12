@@ -92,6 +92,20 @@ Tab headers come from the `Label` string or from children in the `label` slot; e
 
 Purely slot-driven: `start`, default (title), `end`. Icons must be registered before they display — see [`data-display.md`](./data-display.md).
 
+## Breadcrumbs
+
+```razor
+<nav aria-label="Breadcrumb">
+    <IgbBreadcrumbs Separator="chevron_right">
+        <IgbBreadcrumb><a href="/">Home</a></IgbBreadcrumb>
+        <IgbBreadcrumb><a href="/products">Products</a></IgbBreadcrumb>
+        <IgbBreadcrumb Current="true"><a href="/products/laptop">Laptop</a></IgbBreadcrumb>
+    </IgbBreadcrumbs>
+</nav>
+```
+
+`IgbBreadcrumbs` is the ARIA `list`; wrap it in `<nav aria-label="...">` — the label belongs on the landmark, not on the list. `Separator` is an icon name from the built-in `default` collection (`tree_expand` when unset, e.g. `chevron_right`, `arrow_next`), and no icon registration is needed for those. Each `IgbBreadcrumb` takes its content, usually an anchor, in the default slot, plus `prefix` / `suffix` slots and a `separator` slot that replaces the icon after that one item. `Current` sets `aria-current="page"`; `Disabled` sets `aria-disabled` and takes the slotted link out of the tab sequence. There are no events — handle navigation on the anchors.
+
 ## Navigation Drawer
 
 ```razor
@@ -205,13 +219,15 @@ Width comes from the `--menu-full-width` custom property (default `15rem`); the 
 }
 ```
 
-Renders only the items in the viewport plus `OverScan`, so an unbounded list stays cheap. The item template is a **client-side** function registered before the component renders — typically from a JS module loaded in `OnAfterRenderAsync` — which receives the item context (`value`, `index`, `count`) and returns a template built with `window.igTemplating.html`:
+Renders only the items in the viewport plus `OverScan`, so an unbounded list stays cheap. The item template is a **client-side** function (see [`client-scripts.md`](./client-scripts.md)) that receives the item context (`value`, `index`, `count`) and returns an `html` template:
 
 ```js
-window.igRegisterScript('MyItemTemplate', (ctx) => {
-    const html = window.igTemplating.html;
-    return html`<div style="padding: 8px;">${ctx.value.Name}</div>`;
-}, false);
+// wwwroot/my-scripts.js, loaded with <script type="module" src="my-scripts.js"></script>
+import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';
+
+registerScript('MyItemTemplate', (ctx) => html`<div style="padding: 8px;">${ctx.value.Name}</div>`);
 ```
+
+`igc-virtual-scroll` is `display: block` with a default height of `18.75rem`; set the height on the component itself (`style` or a `class`), since `class` and `style` land on the `igc-virtual-scroll` element. Methods such as `ScrollToIndexAsync` throw until the client element is live — `await EnsureReady()` first when calling one from `OnAfterRenderAsync(firstRender)`.
 
 `Data` is compared by reference — assign a new collection instead of mutating in place, or the rendered window will not update. `ScrollToIndexAsync(index)` scrolls to an item, optionally with `IgbScrollIntoViewOptions` for alignment and behavior. `StateChange` reports the rendered window (`StartIndex`, `EndIndex`, `ViewportSize`, `TotalSize`) and `DataRequest` asks for items not yet loaded. `Orientation` is `ContentOrientation.Vertical | Horizontal`, RTL is supported, and item sizes are measured after first render — `EstimatedItemSize` only seeds the initial scrollbar.

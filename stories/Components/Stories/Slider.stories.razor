@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/Slider")]
 
-<Stories TComponent="IgbSlider">
+<Stories TComponent="IgbSlider<double>">
 
     <ArgType For="_ => _!.TickOrientation" Control="ControlType.Radio" />
 
@@ -14,7 +14,7 @@
         </Arguments>
         <Template>
             <div style="padding: 3rem 1.5rem;">
-                <IgbSlider @attributes="context.Args" />
+                <IgbSlider TValue="double" @attributes="context.Args" />
             </div>
         </Template>
     </Story>
@@ -24,15 +24,15 @@
             <div style="display: flex; flex-direction: column; gap: 1rem;">
                 <label style="font-size: 0.875rem; font-weight: 600;">Primary ticks (end)</label>
                 <div style="padding-inline: 1.5rem; padding-block: 3.5rem;">
-                    <IgbSlider Value="40" PrimaryTicks="5" />
+                    <IgbSlider TValue="double" Value="40" PrimaryTicks="5" />
                 </div>
                 <label style="font-size: 0.875rem; font-weight: 600;">Primary + secondary ticks (mirror)</label>
                 <div style="padding-inline: 1.5rem; padding-block: 3.5rem;">
-                    <IgbSlider Value="40" PrimaryTicks="5" SecondaryTicks="4" TickOrientation="SliderTickOrientation.Mirror" />
+                    <IgbSlider TValue="double" Value="40" PrimaryTicks="5" SecondaryTicks="4" TickOrientation="SliderTickOrientation.Mirror" />
                 </div>
                 <label style="font-size: 0.875rem; font-weight: 600;">Discrete track with ticks</label>
                 <div style="padding-inline: 1.5rem; padding-block: 3.5rem;">
-                    <IgbSlider Value="40" Step="10" DiscreteTrack="true" PrimaryTicks="2" SecondaryTicks="4" />
+                    <IgbSlider TValue="double" Value="40" Step="10" DiscreteTrack="true" PrimaryTicks="2" SecondaryTicks="4" />
                 </div>
             </div>
         </Template>
@@ -41,7 +41,7 @@
     <Story Name="Labels">
         <Template>
             <div style="padding: 2.5rem 1.5rem;">
-                <IgbSlider DiscreteTrack="true" PrimaryTicks="1" style="max-width: 300px;">
+                <IgbSlider TValue="double" DiscreteTrack="true" PrimaryTicks="1" style="max-width: 300px;">
                     <IgbSliderLabel>Low</IgbSliderLabel>
                     <IgbSliderLabel>Medium</IgbSliderLabel>
                     <IgbSliderLabel>High</IgbSliderLabel>
@@ -57,7 +57,7 @@
         </Arguments>
         <Template>
             <div style="padding: 3rem 1.5rem;">
-                <IgbSlider @attributes="context.Args" />
+                <IgbSlider TValue="double" @attributes="context.Args" />
             </div>
         </Template>
     </Story>

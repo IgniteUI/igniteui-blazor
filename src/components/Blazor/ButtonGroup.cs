@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// Groups a series of <see cref="IgbToggleButton"/> components together, exposing features
     /// such as layout and selection.
     /// </summary>
-    public partial class IgbButtonGroup : BaseRendererControl
+    public partial class IgbButtonGroup : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebButtonGroup"; } }
+        internal override string RendererType { get { return "WebButtonGroup"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,13 +21,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -36,16 +30,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -54,7 +39,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -136,7 +121,6 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-
         private string? _selectRef = null;
         private string? _selectScript = null;
 
@@ -144,8 +128,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Select"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? SelectScript
@@ -188,7 +173,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_select))
                     {
                         _select = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", value);
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Select", value);
                         this.OnRefChanged("Select", null, "event:::Select", true, false, (refName, oldValue, newValue) =>
                         {
                             this._selectRef = refName;
@@ -199,7 +184,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _select = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Select", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Select", null);
                     this.OnRefChanged("Select", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._selectRef = null;
@@ -216,8 +201,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Deselect"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? DeselectScript
@@ -260,7 +246,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_deselect))
                     {
                         _deselect = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", value);
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Deselect", value);
                         this.OnRefChanged("Deselect", null, "event:::Deselect", true, false, (refName, oldValue, newValue) =>
                         {
                             this._deselectRef = refName;
@@ -271,7 +257,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _deselect = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Deselect", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Deselect", null);
                     this.OnRefChanged("Deselect", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._deselectRef = null;

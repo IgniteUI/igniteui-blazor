@@ -2,11 +2,8 @@
 # default (--ignore-path defaults to ['.gitignore', '.prettierignore']), so
 # build output, node_modules, obj/bin etc. are already excluded.
 
-# Generated (committed) TS interop sources — see FORMATTING.md
+# Generated (committed) TS interop sources
 src/src/ig/
-
-# Project templates contain placeholder tokens — leave untouched
-templates/
 
 # Lockfile
 package-lock.json

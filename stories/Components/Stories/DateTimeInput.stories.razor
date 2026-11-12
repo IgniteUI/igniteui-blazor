@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/DateTimeInput")]
 
-<Stories TComponent="IgbDateTimeInput">
+<Stories TComponent="IgbDateTimeInput<DateTime>">
 
     <Story Name="Default">
         <Arguments>
@@ -8,7 +8,7 @@
             <Arg For="_ => _!.SpinLoop" Value="true" />
         </Arguments>
         <Template>
-            <IgbDateTimeInput @attributes="context.Args" />
+            <IgbDateTimeInput TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 

@@ -10,16 +10,10 @@ Each skill is a `SKILL.md` routing hub with `references/` sub-files. The agent r
 
 | Skill | Covers |
 |---|---|
-| [`igniteui-blazor-components`](./igniteui-blazor-components/SKILL.md) | Every non-grid component: setup, form controls, layout and navigation, data display, overlays, Tile/Dock Manager, and charts, gauges, maps, sparklines |
+| [`igniteui-blazor-components`](./igniteui-blazor-components/SKILL.md) | Every non-grid component: setup, form controls, layout and navigation, data display, overlays, Tile/Dock Manager, charts, gauges, maps, sparklines, and client-side `*Script` templates and handlers |
 | [`igniteui-blazor-grids`](./igniteui-blazor-grids/SKILL.md) | `IgbGridLite`, `IgbGrid`, `IgbTreeGrid`, `IgbHierarchicalGrid`, `IgbPivotGrid` — columns, editing, features, paging and remote data, sizing, state, migration |
 | [`igniteui-blazor-theming`](./igniteui-blazor-theming/SKILL.md) | Built-in themes, `IgbThemeProvider`, palettes, component design tokens, CSS parts, dark mode, layout tokens |
 | [`igniteui-blazor-generate-from-image-design`](./igniteui-blazor-generate-from-image-design/SKILL.md) | End-to-end workflow for implementing a view from a design image; composes the three skills above |
-
-## Skill for working *on* this repository
-
-| Skill | Covers |
-|---|---|
-| [`igniteui-blazor-lite-testing`](./igniteui-blazor-lite-testing/SKILL.md) | The bUnit unit suite and Playwright integration suite under `tests/`, and how to author interop wire contracts |
 
 ## MCP servers
 

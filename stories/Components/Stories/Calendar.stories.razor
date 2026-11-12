@@ -1,6 +1,6 @@
 @attribute [Stories("Forms/Calendar")]
 
-<Stories TComponent="IgbCalendar">
+<Stories TComponent="IgbCalendar<DateTime>">
 
     <ArgType For="_ => _!.Selection" Control="ControlType.Radio" />
     <ArgType For="_ => _!.HeaderOrientation" Control="ControlType.Radio" />
@@ -14,7 +14,7 @@
             <Arg For="_ => _!.HideOutsideDays" Value="false" />
         </Arguments>
         <Template>
-            <IgbCalendar @attributes="context.Args" />
+            <IgbCalendar TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -23,7 +23,7 @@
             <Arg For="_ => _!.Selection" Value="CalendarSelection.Multiple" />
         </Arguments>
         <Template>
-            <IgbCalendar @attributes="context.Args" />
+            <IgbCalendar TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -32,7 +32,7 @@
             <Arg For="_ => _!.Selection" Value="CalendarSelection.Range" />
         </Arguments>
         <Template>
-            <IgbCalendar @attributes="context.Args" />
+            <IgbCalendar TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -41,7 +41,7 @@
             <Arg For="_ => _!.ShowWeekNumbers" Value="true" />
         </Arguments>
         <Template>
-            <IgbCalendar @attributes="context.Args" />
+            <IgbCalendar TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 
@@ -51,7 +51,7 @@
             <Arg For="_ => _!.Orientation" Value="ContentOrientation.Horizontal" />
         </Arguments>
         <Template>
-            <IgbCalendar @attributes="context.Args" />
+            <IgbCalendar TValue="DateTime" @attributes="context.Args" />
         </Template>
     </Story>
 

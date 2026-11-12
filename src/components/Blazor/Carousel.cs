@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// Presents a set of <see cref="IgbCarouselSlide"/> components by sequentially displaying
     /// a subset of one or more slides.
     /// </summary>
-    public partial class IgbCarousel : BaseRendererControl
+    public partial class IgbCarousel : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCarousel"; } }
+        internal override string RendererType { get { return "WebCarousel"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,13 +21,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -36,16 +30,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {
@@ -54,7 +39,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override ControlEventBehavior DefaultEventBehavior
+        private protected override ControlEventBehavior DefaultEventBehavior
         {
             get { return ControlEventBehavior.Immediate; }
         }
@@ -215,13 +200,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _interval = 0;
+        private double? _interval;
 
         /// <summary>
-        /// The duration in milliseconds between changing the active slide.
+        /// The duration in milliseconds between changing the active slide. When <c>null</c>, the carousel does not play automatically.
         /// </summary>
         [Parameter]
-        public double Interval
+        public double? Interval
         {
             get { return this._interval; }
             set
@@ -453,8 +438,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="SlideChanged"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? SlideChangedScript
@@ -497,7 +483,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_slideChanged))
                     {
                         _slideChanged = value;
-                        this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", value);
+                        this.SetHandler<IgbNumberEventArgs>(this.RendererName, "SlideChanged", value);
                         this.OnRefChanged("SlideChanged", null, "event:::SlideChanged", true, false, (refName, oldValue, newValue) =>
                         {
                             this._slideChangedRef = refName;
@@ -508,7 +494,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _slideChanged = null;
-                    this.SetHandler<IgbNumberEventArgs>(this.Name, "SlideChanged", null);
+                    this.SetHandler<IgbNumberEventArgs>(this.RendererName, "SlideChanged", null);
                     this.OnRefChanged("SlideChanged", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._slideChangedRef = null;
@@ -525,8 +511,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Playing"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? PlayingScript
@@ -569,7 +556,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_playing))
                     {
                         _playing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Playing", value);
                         this.OnRefChanged("Playing", null, "event:::Playing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._playingRef = refName;
@@ -580,7 +567,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _playing = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Playing", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Playing", null);
                     this.OnRefChanged("Playing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._playingRef = null;
@@ -597,8 +584,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Paused"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? PausedScript
@@ -641,7 +629,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_paused))
                     {
                         _paused = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Paused", value);
                         this.OnRefChanged("Paused", null, "event:::Paused", true, false, (refName, oldValue, newValue) =>
                         {
                             this._pausedRef = refName;
@@ -652,7 +640,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _paused = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Paused", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Paused", null);
                     this.OnRefChanged("Paused", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._pausedRef = null;

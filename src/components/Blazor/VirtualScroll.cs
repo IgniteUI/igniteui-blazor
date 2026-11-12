@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// A virtual scroll component for large lists. Only the items visible in the
     /// viewport, plus a configurable overscan, are rendered.
     /// </summary>
-    public partial class IgbVirtualScroll : BaseRendererControl
+    public partial class IgbVirtualScroll : IgbComponentBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebVirtualScroll"; } }
+        internal override string RendererType { get { return "WebVirtualScroll"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,22 +21,16 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override string DirectRenderElementName
         {
             get
             {
-                return true;
+                return "igc-virtual-scroll";
             }
         }
 
-        private string _dataRef;
-        private Object _data;
+        private string? _dataRef;
+        private object? _data;
 
         /// <summary>
         /// The array of items to virtualize.
@@ -44,7 +38,7 @@ namespace IgniteUI.Blazor.Controls
         /// collection instead. The <see cref="DataRequest"/> flow also expects a new collection.
         /// </summary>
         [Parameter]
-        public Object Data
+        public object? Data
         {
             get { return this._data; }
 
@@ -56,7 +50,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     MarkPropDirty("Data");
                     this._data = value;
-                    this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._dataRef = refName;
                         this.MarkPropDirty("DataRef");
@@ -65,11 +59,11 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _dataScript;
+        private string? _dataScript;
 
         ///<summary>Provides a means of setting Data in the JavaScript environment.</summary>
         [Parameter]
-        public string DataScript
+        public string? DataScript
         {
             get { return _dataScript; }
 
@@ -80,7 +74,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._dataScript = value;
                     MarkPropDirty("Data");
-                    this.OnRefChanged("Data", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("Data", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._dataRef = refName;
                         this.MarkPropDirty("DataRef");
@@ -147,21 +141,22 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private string _itemTemplateRef;
-        private string _itemTemplateScript;
+        private string? _itemTemplateRef;
+        private string? _itemTemplateScript;
 
         /// <summary>
         /// Name of a client-side function that renders the template used for the content
         /// of each item in the virtual scroll list. The function receives the item context
         /// (<c>value</c>, <c>index</c>, <c>count</c>) and returns a template built with
-        /// <c>window.igTemplating.html</c>. Without a template, nothing is rendered.
+        /// <c>html</c>. Without a template, nothing is rendered.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyTemplate", function (ctx) { return ...; }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyTemplate", (ctx) => html`...`)</c>.
         /// </remarks>
         [Parameter]
-        public string ItemTemplateScript
+        public string? ItemTemplateScript
         {
             get { return _itemTemplateScript; }
 
@@ -172,7 +167,7 @@ namespace IgniteUI.Blazor.Controls
                 {
                     this._itemTemplateScript = value;
                     MarkPropDirty("ItemTemplate");
-                    this.OnRefChanged("ItemTemplate", oldValue, value, true, false, (string refName, object old, object newValue) =>
+                    this.OnRefChanged("ItemTemplate", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
                     {
                         this._itemTemplateRef = refName;
                         this.MarkPropDirty("ItemTemplateRef");
@@ -218,18 +213,19 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("scrollToIndex", new object[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
         }
 
-        private string _stateChangeRef = null;
-        private string _stateChangeScript = null;
+        private string? _stateChangeRef = null;
+        private string? _stateChangeScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="StateChange"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string StateChangeScript
+        public string? StateChangeScript
         {
 
             set
@@ -237,7 +233,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._stateChangeScript)
                 {
                     this._stateChangeScript = value;
-                    this.OnRefChanged("StateChange", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("StateChange", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._stateChangeRef = refName;
                         this.MarkPropDirty("StateChangeRef");
@@ -270,7 +266,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_stateChange))
                     {
                         _stateChange = value;
-                        this.SetHandler<IgbVirtualScrollStateChangeEventArgs>(this.Name, "StateChange", value);
+                        this.SetHandler<IgbVirtualScrollStateChangeEventArgs>(this.RendererName, "StateChange", value);
                         this.OnRefChanged("StateChange", null, "event:::StateChange", true, false, (refName, oldValue, newValue) =>
                         {
                             this._stateChangeRef = refName;
@@ -281,7 +277,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _stateChange = null;
-                    this.SetHandler<IgbVirtualScrollStateChangeEventArgs>(this.Name, "StateChange", null);
+                    this.SetHandler<IgbVirtualScrollStateChangeEventArgs>(this.RendererName, "StateChange", null);
                     this.OnRefChanged("StateChange", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._stateChangeRef = null;
@@ -291,18 +287,19 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private string _dataRequestRef = null;
-        private string _dataRequestScript = null;
+        private string? _dataRequestRef = null;
+        private string? _dataRequestScript = null;
 
         /// <summary>
         /// Name of a client-side function that handles the <see cref="DataRequest"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
-        public string DataRequestScript
+        public string? DataRequestScript
         {
 
             set
@@ -310,7 +307,7 @@ namespace IgniteUI.Blazor.Controls
                 if (value != this._dataRequestScript)
                 {
                     this._dataRequestScript = value;
-                    this.OnRefChanged("DataRequest", null, value, true, false, (string refName, object oldValue, object newValue) =>
+                    this.OnRefChanged("DataRequest", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
                     {
                         this._dataRequestRef = refName;
                         this.MarkPropDirty("DataRequestRef");
@@ -344,7 +341,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_dataRequest))
                     {
                         _dataRequest = value;
-                        this.SetHandler<IgbVirtualScrollDataRequestEventArgs>(this.Name, "DataRequest", value);
+                        this.SetHandler<IgbVirtualScrollDataRequestEventArgs>(this.RendererName, "DataRequest", value);
                         this.OnRefChanged("DataRequest", null, "event:::DataRequest", true, false, (refName, oldValue, newValue) =>
                         {
                             this._dataRequestRef = refName;
@@ -355,7 +352,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _dataRequest = null;
-                    this.SetHandler<IgbVirtualScrollDataRequestEventArgs>(this.Name, "DataRequest", null);
+                    this.SetHandler<IgbVirtualScrollDataRequestEventArgs>(this.RendererName, "DataRequest", null);
                     this.OnRefChanged("DataRequest", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._dataRequestRef = null;

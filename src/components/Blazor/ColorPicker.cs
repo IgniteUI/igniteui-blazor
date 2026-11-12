@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using System.Drawing;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -9,10 +10,21 @@ namespace IgniteUI.Blazor.Controls
     /// or a named CSS color. Supports pre-defined swatches and the native EyeDropper
     /// API, where the browser provides one.
     /// </summary>
-    public partial class IgbColorPicker : IgbBaseComboBox
+    /// <typeparam name="TValue"><c>string</c> or <see cref="Color"/>, either nullable.</typeparam>
+    public partial class IgbColorPicker<TValue> : IgbBaseComboBox
     {
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
+
+        /// <summary>Constructs a color picker for string or <see cref="Color"/> values.</summary>
+        public IgbColorPicker()
+        {
+            if (GenericType != typeof(string) && GenericType != typeof(Color))
+            {
+                throw new InvalidOperationException($"Unsupported {GetType()} type param '{GenericType}'.");
+            }
+        }
         /// <inheritdoc />
-        public override string Type { get { return "WebColorPicker"; } }
+        internal override string RendererType { get { return "WebColorPicker"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -24,33 +36,43 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override string DirectRenderElementName
         {
             get
             {
-                return true;
+                return "igc-color-picker";
             }
         }
 
-        private string? _value;
+        private TValue? _value;
+
+        private static bool ColorValuesEqual(TValue? left, TValue? right)
+        {
+            if (left is Color leftColor && right is Color rightColor)
+            {
+                // Color's own equality also compares names, so Color.Red would differ from red parsed back from the
+                // element. ToArgb alone cannot tell Color.Empty, which clears the element, from transparent black.
+                return leftColor.IsEmpty == rightColor.IsEmpty && leftColor.ToArgb() == rightColor.ToArgb();
+            }
+
+            return EqualityComparer<TValue?>.Default.Equals(left, right);
+        }
 
         /// <summary>
-        /// The value of the component as a CSS color string. Accepts hex, rgb(a),
-        /// hsl(a) and named colors. An empty, whitespace-only or invalid string clears the value.
+        /// The selected color.
+        /// As a <c>string</c>, a CSS color: hex, rgb(a), hsl(a) or a named color. An empty or invalid string clears the
+        /// picker, which reports its color in the <see cref="Format"/> notation, or <c>""</c> when cleared.
+        /// As a <see cref="Color"/>, <c>null</c> or <see cref="Color.Empty"/> clears the picker, which reports the same
+        /// when cleared. In <see cref="ColorFormat.Hsl"/> the picker reports whole-number hue, saturation and lightness,
+        /// so the <see cref="Color"/> can be a unit or two per channel off the picked color.
         /// </summary>
         [Parameter]
-        public string? Value
+        public TValue? Value
         {
             get { return this._value; }
             set
             {
-                if (this._value != value || !IsPropDirty("Value"))
+                if (!ColorValuesEqual(this._value, value) || !IsPropDirty("Value"))
                 {
                     MarkPropDirty("Value");
                 }
@@ -62,19 +84,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Returns the current value of the component.
         /// </summary>
-        public async Task<string?> GetCurrentValueAsync()
+        public async Task<TValue?> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ColorPickerColorConverter.FromCss<TValue>(ReturnToString(iv));
         }
 
         /// <summary>
         /// Returns the current value of the component.
         /// </summary>
-        public string? GetCurrentValue()
+        public TValue? GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ColorPickerColorConverter.FromCss<TValue>(ReturnToString(iv));
         }
         private string? _label;
 
@@ -94,6 +116,25 @@ namespace IgniteUI.Blazor.Controls
                     MarkPropDirty("Label");
                 }
                 this._label = value;
+
+            }
+        }
+        private string? _name;
+
+        /// <summary>
+        /// The name of the control, under which its value is submitted with its form. Forms posted to the server, as in static server rendering, bind fields by this name.
+        /// </summary>
+        [Parameter]
+        public string? Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this._name != value || !IsPropDirty("Name"))
+                {
+                    MarkPropDirty("Name");
+                }
+                this._name = value;
 
             }
         }
@@ -307,18 +348,18 @@ namespace IgniteUI.Blazor.Controls
             InvokeMethodSync("setCustomValidity", new object?[] { StringToString(message) }, new string[] { "String" });
         }
 
-        private EventCallback<string?>? _valueChanged = null;
+        private EventCallback<TValue?>? _valueChanged = null;
 
         /// <summary>
         /// Emitted when the <see cref="Value"/> property changes.
         /// Enables two-way binding through <c>@bind-Value</c>.
         /// </summary>
         [Parameter]
-        public EventCallback<string?> ValueChanged
+        public EventCallback<TValue?> ValueChanged
         {
             get
             {
-                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<string?>.Empty;
+                return this._valueChanged != null ? this._valueChanged.Value : EventCallback<TValue?>.Empty;
             }
             set
             {
@@ -345,8 +386,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ChangeScript
@@ -370,17 +412,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentValueChangedEventArgs>? _change = null;
+        private EventCallback<IgbColorPickerValueEventArgs<TValue?>>? _change = null;
 
         /// <summary>
         /// Emitted when the value of the component is committed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentValueChangedEventArgs> Change
+        public EventCallback<IgbColorPickerValueEventArgs<TValue?>> Change
         {
             get
             {
-                return this._change != null ? this._change.Value : EventCallback<IgbComponentValueChangedEventArgs>.Empty;
+                return this._change != null ? this._change.Value : EventCallback<IgbColorPickerValueEventArgs<TValue?>>.Empty;
             }
             set
             {
@@ -389,12 +431,11 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbColorPickerValueEventArgs<TValue?>>(this.RendererName, "Change", value, (args) =>
                         {
-                            var newValueValue = default(string?);
+                            var newValueValue = args.Detail;
 
                             {
-                                newValueValue = (string?)(args.Detail);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -404,16 +445,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
-                            if (!EventCallback<string?>.Empty.Equals(ValueChanged))
+                            if (!EventCallback<TValue?>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -427,7 +465,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbColorPickerValueEventArgs<TValue?>>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;
@@ -438,9 +476,9 @@ namespace IgniteUI.Blazor.Controls
         }
         internal void EnsureChangeHandled()
         {
-            if (EventCallback<IgbComponentValueChangedEventArgs>.Empty.Equals(this.Change))
+            if (EventCallback<IgbColorPickerValueEventArgs<TValue?>>.Empty.Equals(this.Change))
             {
-                this.Change = new EventCallback<IgbComponentValueChangedEventArgs>(null, (Action<IgbComponentValueChangedEventArgs>)((e) => { }));
+                this.Change = new EventCallback<IgbColorPickerValueEventArgs<TValue?>>(null, (Action<IgbColorPickerValueEventArgs<TValue?>>)((e) => { }));
                 this._change = null;
             }
         }
@@ -452,8 +490,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Input"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? InputScript
@@ -477,17 +516,17 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbComponentValueChangedEventArgs>? _input = null;
+        private EventCallback<IgbColorPickerValueEventArgs<TValue?>>? _input = null;
 
         /// <summary>
         /// Emitted when the value of the component is changed.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbComponentValueChangedEventArgs> Input
+        public EventCallback<IgbColorPickerValueEventArgs<TValue?>> Input
         {
             get
             {
-                return this._input != null ? this._input.Value : EventCallback<IgbComponentValueChangedEventArgs>.Empty;
+                return this._input != null ? this._input.Value : EventCallback<IgbColorPickerValueEventArgs<TValue?>>.Empty;
             }
             set
             {
@@ -496,7 +535,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_input))
                     {
                         _input = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Input", value);
+                        this.SetHandler<IgbColorPickerValueEventArgs<TValue?>>(this.RendererName, "Input", value);
                         this.OnRefChanged("Input", null, "event:::Input", true, false, (refName, oldValue, newValue) =>
                         {
                             this._inputRef = refName;
@@ -507,7 +546,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _input = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Input", null);
+                    this.SetHandler<IgbColorPickerValueEventArgs<TValue?>>(this.RendererName, "Input", null);
                     this.OnRefChanged("Input", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._inputRef = null;
@@ -524,8 +563,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Opening"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? OpeningScript
@@ -568,7 +608,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opening))
                     {
                         _opening = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opening", value);
                         this.OnRefChanged("Opening", null, "event:::Opening", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openingRef = refName;
@@ -579,7 +619,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opening = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Opening", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opening", null);
                     this.OnRefChanged("Opening", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openingRef = null;
@@ -596,8 +636,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Opened"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? OpenedScript
@@ -640,7 +681,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_opened))
                     {
                         _opened = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opened", value);
                         this.OnRefChanged("Opened", null, "event:::Opened", true, false, (refName, oldValue, newValue) =>
                         {
                             this._openedRef = refName;
@@ -651,7 +692,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _opened = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Opened", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Opened", null);
                     this.OnRefChanged("Opened", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._openedRef = null;
@@ -668,8 +709,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Closing"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ClosingScript
@@ -712,7 +754,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -723,7 +765,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closing = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Closing", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", null);
                     this.OnRefChanged("Closing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closingRef = null;
@@ -740,8 +782,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Closed"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ClosedScript
@@ -784,7 +827,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", value);
+                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -795,7 +838,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closed = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.Name, "Closed", null);
+                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", null);
                     this.OnRefChanged("Closed", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closedRef = null;
@@ -810,9 +853,11 @@ namespace IgniteUI.Blazor.Controls
             base.SerializeCore(ser);
 
             if (IsPropDirty("Value"))
-            { ser.AddStringProp("value", this._value); }
+            { ser.AddStringProp("value", ColorPickerColorConverter.ToCss(this._value)); }
             if (IsPropDirty("Label"))
             { ser.AddStringProp("label", this._label); }
+            if (IsPropDirty("Name"))
+            { ser.AddStringProp("formName", this._name); }
             if (IsPropDirty("Format"))
             { ser.AddEnumProp("format", this._format); }
             if (IsPropDirty("HideFormats"))

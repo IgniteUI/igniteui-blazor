@@ -2,7 +2,7 @@
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTab : BaseRendererControl
+    public partial class IgbTab : IgbComponentBase
     {
         private EventCallback<bool>? _selectedChanged = null;
 

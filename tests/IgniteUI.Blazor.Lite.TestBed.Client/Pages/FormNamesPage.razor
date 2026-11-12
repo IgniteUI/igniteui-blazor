@@ -1,0 +1,40 @@
+@page "/form-names"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+@* Form-associated components inside a real form, so a test can read what the browser would
+   submit. The labels give the test a signal that the client renderer has applied each
+   component's properties. *@
+
+<form id="unnamed">
+    <IgbColorPicker TValue="string" Label="ColorPicker" />
+    <IgbCombo TValue="object" TItem="object" Label="Combo" />
+    <IgbDatePicker TValue="DateTime" Label="DatePicker" />
+    <IgbDateRangePicker TValue="DateTime" Label="DateRangePicker" />
+    <IgbDateTimeInput TValue="DateTime" Label="DateTimeInput" />
+    <IgbMaskInput Label="MaskInput" />
+</form>
+
+@* Every component with a Name parameter, each named "f-" + its element tag. *@
+<form id="named">
+    <IgbCheckbox Name="f-igc-checkbox" />
+    <IgbSwitch Name="f-igc-switch" />
+    <IgbInput Name="f-igc-input" Value="a" />
+    <IgbRadio TValue="string" Name="f-igc-radio" Value='"r"'>Radio</IgbRadio>
+    <IgbRadioGroup TValue="string" Name="f-igc-radio-group">
+        <IgbRadio Value='"x"'>X</IgbRadio>
+    </IgbRadioGroup>
+    <IgbRating TValue="double" Name="f-igc-rating" />
+    <IgbSelect TValue="string" Name="f-igc-select" />
+    <IgbSlider TValue="double" Name="f-igc-slider" />
+    <IgbTextarea Name="f-igc-textarea" />
+    <IgbColorPicker TValue="string" Name="f-igc-color-picker" />
+    <IgbCombo TValue="object" TItem="object" Name="f-igc-combo" />
+    <IgbDatePicker TValue="DateTime" Name="f-igc-date-picker" />
+    <IgbDateRangePicker TValue="DateTime" Name="f-igc-date-range-picker" />
+    <IgbDateTimeInput TValue="DateTime?" Name="f-igc-date-time-input" Value="@_date" />
+    <IgbMaskInput Name="f-igc-mask-input" />
+</form>
+
+@code {
+    private readonly DateTime? _date = new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc);
+}

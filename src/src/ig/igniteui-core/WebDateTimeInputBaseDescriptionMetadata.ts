@@ -2,6 +2,7 @@ import { Base, String_$type, Type, markType } from "./type";
 import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { DatePartDeltasDescriptionMetadata } from "./DatePartDeltasDescriptionMetadata";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 
 /**
  * @hidden 
@@ -19,6 +20,7 @@ export class WebDateTimeInputBaseDescriptionMetadata extends Base {
 		}
 		context.markSeen(WebDateTimeInputBaseDescriptionMetadata._metadata);
 		DatePartDeltasDescriptionMetadata.register(context);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:DateTimeInputBase");
@@ -27,6 +29,7 @@ export class WebDateTimeInputBaseDescriptionMetadata extends Base {
 		metadata.item("Outlined", "Boolean");
 		metadata.item("Placeholder", "String");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("InputFormat", "String");
 		metadata.item("Min", "Date");
 		metadata.item("Max", "Date");
@@ -40,7 +43,6 @@ export class WebDateTimeInputBaseDescriptionMetadata extends Base {
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");
 	}
 	static register(context: TypeDescriptionContext): void {

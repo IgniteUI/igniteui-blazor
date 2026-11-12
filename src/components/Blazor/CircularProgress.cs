@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     public partial class IgbCircularProgress : IgbProgressBase
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebCircularProgress"; } }
+        internal override string RendererType { get { return "WebCircularProgress"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -19,13 +19,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override bool UseDirectRender
         {
             get
             {
@@ -34,16 +28,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        protected override string DirectRenderElementName
+        private protected override string DirectRenderElementName
         {
             get
             {

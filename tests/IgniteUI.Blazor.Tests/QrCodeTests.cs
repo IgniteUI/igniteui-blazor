@@ -7,9 +7,14 @@ namespace IgniteUI.Blazor.Tests;
 public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
 {
     protected override ComponentContract<IgbQrCode> InteropContract { get; } = new ComponentContract<IgbQrCode>()
-        .Method(c => c.ToImageAsync(new IgbQrCodeExportOptions { FileName = "my-code", Format = QrCodeExportFormat.Png, Scale = 2, Download = true }),
-            c => c.ToImage(new IgbQrCodeExportOptions { FileName = "my-code", Format = QrCodeExportFormat.Png, Scale = 2, Download = true }), "toImage",
-            args: [new JsonSubset("""{"fileName": "my-code", "format": "png", "scale": 2, "download": true}""")], types: ["Json"]);
+        .Method(c => c.ToImageAsync(new IgbQrCodeExportOptions { FileName = "my-code", Format = QrCodeExportFormat.Png, Scale = 2 }),
+            c => c.ToImage(new IgbQrCodeExportOptions { FileName = "my-code", Format = QrCodeExportFormat.Png, Scale = 2 }), "toImage",
+            args: [new JsonSubset("""{"fileName": "my-code", "format": "png", "scale": 2, "download": true}""")], types: ["Json"])
+        // The exported file cannot be handed back to .NET, so the export always downloads,
+        // even when the options carry nothing else.
+        .Method(c => c.ToImageAsync(new IgbQrCodeExportOptions()),
+            c => c.ToImage(new IgbQrCodeExportOptions()), "toImage",
+            args: [new JsonSubset("""{"download": true}""")], types: ["Json"]);
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
@@ -25,7 +30,7 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
     public void QrCode_TypeMetadata_IsCorrect()
     {
         var qrCode = new IgbQrCode();
-        Assert.Equal("WebQrCode", qrCode.Type);
+        Assert.Equal("WebQrCode", qrCode.RendererType);
     }
 
     [Fact]
@@ -53,6 +58,17 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
             p.Add(x => x.ErrorLevel, QrErrorCorrectionLevel.High));
 
         Assert.Equal("H", cut.Find("igc-qr-code").GetAttribute("error-level"));
+    }
+
+    [Fact]
+    public void QrCode_ErrorLevel_SetToNull_RemovesAttribute()
+    {
+        var cut = Render<IgbQrCode>(p =>
+            p.Add(x => x.ErrorLevel, QrErrorCorrectionLevel.High));
+
+        cut.Render(p => p.Add(x => x.ErrorLevel, (QrErrorCorrectionLevel?)null));
+
+        Assert.Null(cut.Find("igc-qr-code").GetAttribute("error-level"));
     }
 
     [Fact]
@@ -128,7 +144,8 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
         var qrCode = new IgbQrCode();
 
         Assert.Null(qrCode.Version);
-        Assert.Equal(QrErrorCorrectionLevel.Medium, qrCode.ErrorLevel);
+        // Unset: the web component's default level applies.
+        Assert.Null(qrCode.ErrorLevel);
         Assert.Equal(128, qrCode.Size);
         Assert.Equal(4, qrCode.Margin);
         Assert.Equal(0.4, qrCode.LogoSize);
@@ -137,9 +154,4 @@ public class QrCodeTests : ComponentWithContractTestBase<IgbQrCode>
         Assert.Equal(QrCornerSquareStyle.Square, qrCode.SquareStyle);
     }
 
-    [Fact]
-    public void QrCode_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbQrCode).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

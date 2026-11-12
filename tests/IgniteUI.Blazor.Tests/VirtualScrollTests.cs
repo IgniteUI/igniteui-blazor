@@ -56,18 +56,18 @@ public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
 
-    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+    [Fact]
     public void VirtualScroll_RendersCorrectElement()
     {
         var cut = Render<IgbVirtualScroll>();
-        Assert.NotNull(cut.Find("igc-virtual-scroll"));
+        Assert.True(cut.Find("igc-virtual-scroll").HasAttribute("data-ig-root"));
     }
 
     [Fact]
     public void VirtualScroll_TypeMetadata_IsCorrect()
     {
         var virtualScroll = new IgbVirtualScroll();
-        Assert.Equal("WebVirtualScroll", virtualScroll.Type);
+        Assert.Equal("WebVirtualScroll", virtualScroll.RendererType);
     }
 
     /// <summary>
@@ -85,8 +85,8 @@ public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll
     }
 
     [Fact]
-    public void VirtualScroll_InheritsFromBaseRendererControl()
+    public void VirtualScroll_InheritsFromIgbComponentBase()
     {
-        Assert.True(typeof(IgbVirtualScroll).IsSubclassOf(typeof(BaseRendererControl)));
+        Assert.True(typeof(IgbVirtualScroll).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

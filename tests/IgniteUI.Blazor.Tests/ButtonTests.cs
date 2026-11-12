@@ -44,6 +44,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
             parameters.Add(p => p.Variant, ButtonVariant.Flat));
 
         var element = cut.Find("igc-button");
+        Assert.Equal(ButtonVariant.Flat, cut.Instance.Variant);
         Assert.Equal("flat", element.GetAttribute("variant"));
     }
 
@@ -64,6 +65,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
             parameters.Add(p => p.Disabled, true));
 
         var element = cut.Find("igc-button");
+        Assert.True(cut.Instance.Disabled);
         Assert.NotNull(element.GetAttribute("disabled"));
     }
 
@@ -79,13 +81,36 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     }
 
     [Fact]
-    public void Button_Href_RendersAttribute()
+    public void Button_LinkAttributes_RenderAttributes()
+    {
+        var cut = Render<IgbButton>(parameters =>
+        {
+            parameters.Add(p => p.Href, "https://example.com");
+            parameters.Add(p => p.Target, ButtonBaseTarget._blank);
+            parameters.Add(p => p.Rel, "noopener");
+            parameters.Add(p => p.Download, "file.pdf");
+        });
+
+        var element = cut.Find("igc-button");
+        Assert.Equal("https://example.com", cut.Instance.Href);
+        Assert.Equal(ButtonBaseTarget._blank, cut.Instance.Target);
+        Assert.Equal("noopener", cut.Instance.Rel);
+        Assert.Equal("file.pdf", cut.Instance.Download);
+        Assert.Equal("https://example.com", element.GetAttribute("href"));
+        Assert.Equal("_blank", element.GetAttribute("target"));
+        Assert.Equal("noopener", element.GetAttribute("rel"));
+        Assert.Equal("file.pdf", element.GetAttribute("download"));
+    }
+
+    [Fact]
+    public void Button_DefaultTarget_IsSelf()
     {
         var cut = Render<IgbButton>(parameters =>
             parameters.Add(p => p.Href, "https://example.com"));
 
-        var element = cut.Find("igc-button");
-        Assert.Equal("https://example.com", element.GetAttribute("href"));
+        // Unset: the client renders no target, so the browser opens the link in the current context.
+        Assert.Equal(ButtonBaseTarget._self, cut.Instance.Target);
+        Assert.Null(cut.Find("igc-button").GetAttribute("target"));
     }
 
     [Fact]
@@ -101,7 +126,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     public void Button_TypeMetadata_IsCorrect()
     {
         var button = new IgbButton();
-        Assert.Equal("WebButton", button.Type);
+        Assert.Equal("WebButton", button.RendererType);
     }
 
     [Fact]
@@ -117,6 +142,7 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
             parameters.Add(p => p.DisplayType, ButtonBaseType.Submit));
 
         var element = cut.Find("igc-button");
+        Assert.Equal(ButtonBaseType.Submit, cut.Instance.DisplayType);
         Assert.Equal("submit", element.GetAttribute("type"));
     }
 }

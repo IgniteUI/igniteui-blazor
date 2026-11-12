@@ -21,5 +21,5 @@ dotnet run
 Then open <http://localhost:5300>.
 
 The project targets `net11.0`, references `src/IgniteUI.Blazor.Lite.csproj`
-directly and is intentionally **not** part of `IgniteUI.Blazor.Lite.sln`, so CI
+directly and is intentionally **not** part of `IgniteUI.Blazor.Lite.slnx`, so CI
 and the main solution keep building with the SDK 10 pin.

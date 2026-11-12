@@ -157,6 +157,13 @@ public abstract class InteropHarness
     public abstract void SetupMethodResult(string methodName, InteropReturn result);
 
     /// <summary>
+    /// Leaves invocations of <paramref name="methodName"/> unanswered until the returned action is
+    /// called with a reply. Until then the caller stays suspended on its send, so a test can
+    /// deliver something else - a return of its own, say - before the call resumes.
+    /// </summary>
+    public abstract Action<InteropReturn> WithholdMethodReply(string methodName);
+
+    /// <summary>
     /// Stubs the JS-side value for current-state reads of <paramref name="propertyName"/>.
     /// How a read travels is implementation-specific (a <c>"p:Name"</c> method message
     /// today; possibly a dedicated interop call with different arguments later).
@@ -172,6 +179,13 @@ public abstract class InteropHarness
     /// (e.g. <c>{"detail": true}</c>); the harness applies any wire framing.
     /// </summary>
     public abstract void RaiseEvent(string containerId, string eventName, string argsJson = "{}", string targetName = "mainControl");
+
+    /// <summary>
+    /// Dispatches a batch of client-side template content changes (Add / Update / Remove) into .NET,
+    /// as the client does when a web component renders a bridged template.
+    /// <paramref name="batchJson"/> is the JSON array of entries the client batches up.
+    /// </summary>
+    public abstract void AdjustDynamicContentBatch(string containerId, string batchJson);
 
     /// <summary>Completes a method invocation that was answered with <see cref="InteropReturn.Deferred"/>.</summary>
     public abstract void CompleteDeferred(InteropMethodCall call, InteropReturn result);

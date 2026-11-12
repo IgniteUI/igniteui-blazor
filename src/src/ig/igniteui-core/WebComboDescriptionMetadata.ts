@@ -39,6 +39,7 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("AutofocusList", "Boolean");
 		metadata.item("Locale", "String");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("Placeholder", "String");
 		metadata.item("PlaceholderSearch", "String");
 		metadata.item("ValueKey", "String");
@@ -55,7 +56,6 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");
 		metadata.item("ItemTemplateRef", "(w:ItemTemplate,p:ItemTemplate)TemplateRef::object");
 		metadata.item("GroupHeaderTemplateRef", "(w:GroupHeaderTemplate,p:GroupHeaderTemplate)TemplateRef::object");

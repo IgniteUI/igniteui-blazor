@@ -83,11 +83,11 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
 
-    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+    [Fact]
     public void Chat_RendersCorrectElement()
     {
         var cut = Render<IgbChat>();
-        Assert.NotNull(cut.Find("igc-chat"));
+        Assert.True(cut.Find("igc-chat").HasAttribute("data-ig-root"));
     }
 
     [Fact]
@@ -99,26 +99,35 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
         Assert.True(chat.Options.DisableInputAttachments);
     }
 
+    /// <summary>
+    /// Only assigned options are sent, so an unassigned one must report the web component's own default.
+    /// </summary>
+    [Fact]
+    public void ChatOptions_DefaultValues_MatchWebComponent()
+    {
+        var options = new IgbChatOptions();
+
+        Assert.Equal("user", options.CurrentUserId);
+        Assert.Equal(ChatSuggestionsPosition.BelowMessages, options.SuggestionsPosition);
+        Assert.Equal(3000, options.StopTypingDelay);
+    }
+
     [Fact]
     public void Chat_Options_SetToNull_ReplacedWithDefaultAndAttachmentsDisabled()
     {
-        var chat = new IgbChat();
+        var chat = Render<IgbChat>(parameters => parameters.Add(x => x.Options, null));
 
-        chat.Options = null;
-
-        Assert.NotNull(chat.Options);
-        Assert.True(chat.Options.DisableInputAttachments);
+        Assert.NotNull(chat.Instance.Options);
+        Assert.True(chat.Instance.Options.DisableInputAttachments);
     }
 
     [Fact]
     public void Chat_Options_Assigned_AlwaysDisableInputAttachments()
     {
-        var chat = new IgbChat();
         var options = new IgbChatOptions { DisableInputAttachments = false };
+        var chat = Render<IgbChat>(parameters => parameters.Add(x => x.Options, options));
 
-        chat.Options = options;
-
-        Assert.NotNull(chat.Options);
-        Assert.True(chat.Options.DisableInputAttachments);
+        Assert.NotNull(chat.Instance.Options);
+        Assert.True(chat.Instance.Options.DisableInputAttachments);
     }
 }

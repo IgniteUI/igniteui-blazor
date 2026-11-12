@@ -43,7 +43,13 @@
 
     <Story Name="With Constraints">
         <Template>
-            <IgbSplitter @ref="_constrainedSplitter" style="height: 400px;">
+            <IgbSplitter @ref="_constrainedSplitter" style="height: 400px;"
+                StartSize="@_startSize"
+                EndSize="@_endSize"
+                StartMinSize="@_startMinSize"
+                StartMaxSize="@_startMaxSize"
+                EndMinSize="@_endMinSize"
+                EndMaxSize="@_endMaxSize">
                 <div slot="start" style="padding: 1rem; box-sizing: border-box;">
                     <strong>Start panel</strong>
                     <p>@_lorem</p>
@@ -143,6 +149,13 @@
     private IgbSplitter? _constrainedSplitter;
     private IgbSplitter? _toggleSplitter;
 
+    private string _startSize = "auto";
+    private string _endSize = "auto";
+    private string? _startMinSize = null;
+    private string? _startMaxSize = null;
+    private string? _endMinSize = null;
+    private string? _endMaxSize = null;
+
     private void ApplyPxConstraints()
     {
         if (_constrainedSplitter == null)
@@ -150,10 +163,10 @@
             return;
         }
 
-        _constrainedSplitter.StartMinSize = "50px";
-        _constrainedSplitter.StartMaxSize = "200px";
-        _constrainedSplitter.EndMinSize = "100px";
-        _constrainedSplitter.EndMaxSize = "300px";
+        _startMinSize = "50px";
+        _startMaxSize = "200px";
+        _endMinSize = "100px";
+        _endMaxSize = "300px";
     }
 
     private void ApplyPercentConstraints()
@@ -163,12 +176,12 @@
             return;
         }
 
-        _constrainedSplitter.StartMinSize = "10%";
-        _constrainedSplitter.StartMaxSize = "80%";
-        _constrainedSplitter.EndMinSize = "20%";
-        _constrainedSplitter.EndMaxSize = "90%";
-        _constrainedSplitter.StartSize = "30%";
-        _constrainedSplitter.EndSize = "70%";
+        _startMinSize = "10%";
+        _startMaxSize = "80%";
+        _endMinSize = "20%";
+        _endMaxSize = "90%";
+        _startSize = "30%";
+        _endSize = "70%";
     }
 
     private void ClearConstraints()
@@ -178,12 +191,12 @@
             return;
         }
 
-        _constrainedSplitter.StartMinSize = null;
-        _constrainedSplitter.StartMaxSize = null;
-        _constrainedSplitter.EndMinSize = null;
-        _constrainedSplitter.EndMaxSize = null;
-        _constrainedSplitter.StartSize = "auto";
-        _constrainedSplitter.EndSize = "auto";
+        _startMinSize = null;
+        _startMaxSize = null;
+        _endMinSize = null;
+        _endMaxSize = null;
+        _startSize = "auto";
+        _endSize = "auto";
     }
 
     private async Task TogglePane(PanePosition position)

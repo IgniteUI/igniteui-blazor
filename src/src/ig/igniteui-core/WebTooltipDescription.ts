@@ -47,6 +47,14 @@ export class WebTooltipDescription extends Description {
 		this._placement = value;
 		this.markDirty("Placement");
 	}
+	private _scrollStrategy: string = null;
+	get scrollStrategy(): string {
+		return this._scrollStrategy;
+	}
+	set scrollStrategy(value: string) {
+		this._scrollStrategy = value;
+		this.markDirty("ScrollStrategy");
+	}
 	private _anchor: string = null;
 	get anchor(): string {
 		return this._anchor;

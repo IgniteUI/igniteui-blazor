@@ -32,6 +32,9 @@ export class WebTooltipDescriptionMetadata extends Base {
 		metadata.item("Placement", "ExportedType:string:PopoverPlacement");
 		metadata.item("Placement@stringUnion", "WebComponents;React");
 		metadata.item("Placement@names", "Top;TopStart;TopEnd;Bottom;BottomStart;BottomEnd;Right;RightStart;RightEnd;Left;LeftStart;LeftEnd");
+		metadata.item("ScrollStrategy", "ExportedType:string:PopoverScrollStrategy");
+		metadata.item("ScrollStrategy@stringUnion", "WebComponents;React");
+		metadata.item("ScrollStrategy@names", "Scroll;Hide;Close");
 		metadata.item("Anchor", "String");
 		metadata.item("ShowTriggers", "String");
 		metadata.item("HideTriggers", "String");

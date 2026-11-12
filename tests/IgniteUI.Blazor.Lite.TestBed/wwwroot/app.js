@@ -142,13 +142,18 @@ function Spy(obj, method) {
   return Object.freeze(spy);
 }
 
-function generateClientTmpl(name) {
-  igRegisterScript(
-    name,
-    function TmplHandler(ctx) {
-      var html = window.igTemplating.html;
-      return html`<div>Template</div>`;
-    },
-    false,
-  );
+// Classic script, so the public module is reached with a dynamic import (already loaded by the initializer).
+async function generateClientTmpl(name) {
+  const { registerScript, html } = await import('./_content/IgniteUI.Blazor/api.js');
+  registerScript(name, function TmplHandler(ctx) {
+    return html`<div>Template</div>`;
+  });
+}
+
+// Registers an event handler that reports each call on the console for the test to wait on.
+async function generateClientHandler(name) {
+  const { registerScript } = await import('./_content/IgniteUI.Blazor/api.js');
+  registerScript(name, function Handler(evt) {
+    console.log(`[TestBed] script '${name}' handled ${evt.type}`);
+  });
 }

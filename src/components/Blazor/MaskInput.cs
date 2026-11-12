@@ -6,10 +6,10 @@ namespace IgniteUI.Blazor.Controls
     /// A masked input is an input field where a developer can control user input and format the visible value,
     /// based on configurable rules.
     /// </summary>
-    public partial class IgbMaskInput : IgbInputBase
+    public partial class IgbMaskInput : IgbInputBase<string>
     {
         /// <inheritdoc />
-        public override string Type { get { return "WebMaskInput"; } }
+        internal override string RendererType { get { return "WebMaskInput"; } }
 
         /// <inheritdoc />
         protected override void EnsureModulesLoaded()
@@ -21,17 +21,11 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        protected override bool SupportsVisualChildren
+        private protected override string DirectRenderElementName
         {
             get
             {
-                return true;
+                return "igc-mask-input";
             }
         }
 
@@ -232,8 +226,9 @@ namespace IgniteUI.Blazor.Controls
         /// Name of a client-side function that handles the <see cref="Change"/> event in the browser instead.
         /// </summary>
         /// <remarks>
-        /// Register the function on the client like
-        /// <c>igRegisterScript("MyHandler", function (args) { }, false)</c>.
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
         /// </remarks>
         [Parameter]
         public string? ChangeScript
@@ -276,7 +271,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", value, (args) =>
+                        this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(string);
 
@@ -291,16 +286,13 @@ namespace IgniteUI.Blazor.Controls
                                 {
                                     this._value = newValueValue;
                                 }
-                                OnPropertyPropagatedOut(Name, "Value");
+                                OnPropertyPropagatedOut(RendererName, "Value");
                             }
 
                             if (!EventCallback<string>.Empty.Equals(ValueChanged))
                             {
                                 var task = ValueChanged.InvokeAsync(newValueValue);
-                                if (task.Exception != null)
-                                {
-                                    throw task.Exception;
-                                }
+                                ObserveHandlerTask(task);
                             }
 
                         });
@@ -314,7 +306,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _change = null;
-                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.Name, "Change", null);
+                    this.SetHandler<IgbComponentValueChangedEventArgs>(this.RendererName, "Change", null);
                     this.OnRefChanged("Change", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._changeRef = null;

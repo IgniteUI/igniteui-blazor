@@ -3,6 +3,7 @@ import { TypeDescriptionContext } from "./TypeDescriptionContext";
 import { Dictionary$2 } from "./Dictionary$2";
 import { WebComponentValueChangedEventArgsDescriptionMetadata } from "./WebComponentValueChangedEventArgsDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
+import { WebFocusOptionsDescriptionMetadata } from "./WebFocusOptionsDescriptionMetadata";
 
 /**
  * @hidden 
@@ -21,6 +22,7 @@ export class WebInputBaseDescriptionMetadata extends Base {
 		context.markSeen(WebInputBaseDescriptionMetadata._metadata);
 		WebComponentValueChangedEventArgsDescriptionMetadata.register(context);
 		VoidEventArgsDescriptionMetadata.register(context);
+		WebFocusOptionsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__qualifiedNameTS", "String:InputBase");
@@ -29,10 +31,10 @@ export class WebInputBaseDescriptionMetadata extends Base {
 		metadata.item("Outlined", "Boolean");
 		metadata.item("Placeholder", "String");
 		metadata.item("Label", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
 		metadata.item("Invalid", "Boolean");
 		metadata.item("InputOcurredRef", "EventRef:ComponentValueChangedEventHandler:inputOcurred");
 		metadata.item("InputOcurredRef@args", "ComponentValueChangedEventArgs");
