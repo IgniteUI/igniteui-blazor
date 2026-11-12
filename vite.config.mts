@@ -8,8 +8,6 @@ const licenseManifest = 'THIRD-PARTY-LICENSES.md';
 /** Public modules keep fixed names so apps can import them and/or import maps can override them. */
 const fixedNames: Record<string, string> = { api: 'api.js', interop: 'interop.js', 'lit-html': 'lit-html.js' };
 const entries = { app: 'src/src/index.ts', api: 'src/src/api.ts', interop: 'src/src/interop.ts' };
-/** Kept in sync with the same path in tsconfig.json. */
-const iconRegistry = 'igniteui-webcomponents/components/icon/icon.registry.js';
 
 /**
  * Emits the Blazor JS initializer as a flat list of static imports.
@@ -65,12 +63,9 @@ export default defineConfig(({ mode }) => {
     // Satisfies lib-mode validation; the build uses rolldownOptions.input below.
     input: entries,
     resolve: {
-      alias: {
-        'igniteui-core': resolve(import.meta.dirname, 'src/src/ig/igniteui-core'),
-        // api.js re-exports the icon registry functions. The package index would pull every component into api.js (loaded
-        // eagerly by the initializer), so the registry module is imported directly; it is not in the package exports map.
-        [iconRegistry]: resolve(import.meta.dirname, 'node_modules', iconRegistry),
-      },
+      // The paths of tsconfig.json, e.g. the igniteui-webcomponents modules api.js imports directly.
+      tsconfigPaths: true,
+      alias: { 'igniteui-core': resolve(import.meta.dirname, 'src/src/ig/igniteui-core') },
     },
     plugins: [emitInitializer(), copyThemes()],
     build: {
