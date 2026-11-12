@@ -8,6 +8,8 @@ const licenseManifest = 'THIRD-PARTY-LICENSES.md';
 /** Public modules keep fixed names so apps can import them and/or import maps can override them. */
 const fixedNames: Record<string, string> = { api: 'api.js', interop: 'interop.js', 'lit-html': 'lit-html.js' };
 const entries = { app: 'src/src/index.ts', api: 'src/src/api.ts', interop: 'src/src/interop.ts' };
+/** Kept in sync with the same path in tsconfig.json. */
+const themeConfig = 'igniteui-webcomponents/theming/config.js';
 
 /**
  * Emits the Blazor JS initializer as a flat list of static imports.
@@ -62,7 +64,14 @@ export default defineConfig(({ mode }) => {
   return {
     // Satisfies lib-mode validation; the build uses rolldownOptions.input below.
     input: entries,
-    resolve: { alias: { 'igniteui-core': resolve(import.meta.dirname, 'src/src/ig/igniteui-core') } },
+    resolve: {
+      alias: {
+        'igniteui-core': resolve(import.meta.dirname, 'src/src/ig/igniteui-core'),
+        // api.js re-exports configureTheme. The package index would pull every component into api.js (loaded eagerly
+        // by the initializer), so its module is imported directly; it is not in the package exports map.
+        [themeConfig]: resolve(import.meta.dirname, 'node_modules', themeConfig),
+      },
+    },
     plugins: [emitInitializer(), copyThemes()],
     build: {
       target: 'es2022',
@@ -91,6 +100,22 @@ export default defineConfig(({ mode }) => {
               // One igniteui-core chunk. Dependencies are not followed: template.ts imports lit-html,
               // which would otherwise be folded in and turn lit-html.js into a facade of this chunk.
               { name: 'igniteui-core', test: /[\/]igniteui-core[\/]/, includeDependenciesRecursively: false },
+
+              // The theme state configureTheme sets, which api.js re-exports, kept out of that public module along with the
+              // code it shares with the components. Dependencies not followed, as for igniteui-core: lit would fold this
+              // chunk into lit-html.js.
+              {
+                name: 'theme-config',
+                test: /[\/]igniteui-webcomponents[\/]theming[\/](config|theming-event)\.js$/,
+                includeDependenciesRecursively: false,
+              },
+              // ...and the part of lit it reaches through lit's index (lit-html keeps its own entry). Only those modules:
+              // the rest of lit (directives, decorators) imports modules of the components chunk.
+              {
+                name: 'lit',
+                test: /[\/]node_modules[\/](lit[\/]index|lit-element[\/]lit-element|@lit[\/]reactive-element[\/](reactive-element|css-tag)|lit-html[\/]is-server)\.js$/,
+                includeDependenciesRecursively: false,
+              },
 
               // Knob: only the runtime the initializer reaches statically goes in one `core` chunk; per-component descriptions
               // keep rolldown's default splitting and load lazily (~32 KB gzip deferred, one extra request per component type).

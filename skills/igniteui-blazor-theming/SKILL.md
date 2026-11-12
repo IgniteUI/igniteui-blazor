@@ -21,6 +21,7 @@ Blazor theming is **CSS-first**: a built-in theme stylesheet plus CSS custom pro
 |---|---|
 | Baseline look | One built-in theme stylesheet: Bootstrap, Material, Fluent, Indigo × light, dark |
 | Theme for a page region | `IgbThemeProvider` component |
+| Whole-page theme switch at runtime | Stylesheet swap + `ConfigureThemeAsync` on `IIgniteUIBlazor` |
 | Global colors | Palette CSS custom properties in `:root` (`create_palette`) |
 | One component's appearance | Component design tokens (`get_component_design_tokens` → `create_component_theme`) |
 | Internal parts a token doesn't cover | `::part()` — only after confirming the part name |
@@ -39,7 +40,7 @@ Paths are `_content/IgniteUI.Blazor/themes/{light|dark}/{bootstrap|material|flue
 
 ## Scoped theming with `IgbThemeProvider`
 
-`IgbThemeProvider` applies a theme and variant to its subtree, overriding the global theme for those components. It is the built-in way to preview themes, theme one region differently, or switch theme at runtime without swapping stylesheets.
+`IgbThemeProvider` applies a theme and variant to its subtree, overriding the global theme for those components. It is the built-in way to preview themes or theme one region differently. It sets the components' structural styles only; the colors come from the theme stylesheet.
 
 ```razor
 <IgbThemeProvider Theme="Theme.Bootstrap" Variant="ThemeVariant.Dark">
@@ -50,9 +51,9 @@ Paths are `_content/IgniteUI.Blazor/themes/{light|dark}/{bootstrap|material|flue
 </IgbThemeProvider>
 ```
 
-`Theme`: `Material` (default), `Bootstrap`, `Indigo`, `Fluent`. `ThemeVariant`: `Light`, `Dark`. Register `IgbThemeProviderModule`. Bind the parameters to fields for a runtime theme switcher — no JS interop and no stylesheet juggling.
+`Theme`: `Material` (default), `Bootstrap`, `Indigo`, `Fluent`. `ThemeVariant`: `Light`, `Dark`. Register `IgbThemeProviderModule`. Bind the parameters to fields to switch a region at runtime.
 
-Use it when the change is scoped or interactive. Use a different stylesheet when the whole application should ship with one theme.
+Use it when the change is scoped. Use a different stylesheet when the whole application should ship with one theme; to switch the whole page at runtime, swap the stylesheet and call `ConfigureThemeAsync` with the same theme and variant (see [Switching theme at runtime](references/common-patterns.md#switching-theme-at-runtime)).
 
 ## Palettes
 

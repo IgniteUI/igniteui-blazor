@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- **Theming:** the theme can be configured page-wide. `IIgniteUIBlazor` has a `ConfigureThemeAsync(Theme, ThemeVariant)` extension method, and the JS API (`_content/IgniteUI.Blazor/api.js`) exports `configureTheme`. Paired with a stylesheet swap, it switches the theme at runtime, structural styles included. [#562](https://github.com/IgniteUI/igniteui-blazor/issues/562)
+
 ## 1.0.1 - 2026-10-29
 
 ### Fixed
