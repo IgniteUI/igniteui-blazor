@@ -35,6 +35,7 @@ Three gates, in order of what they can see:
 | Combo shows 3 items | `Alpha`, `Beta`, `Gamma` | data-source reflection over the POCO broke — `IgbCombo<TValue, TItem>` must continue to preserve all members of its `TItem` argument |
 | Date range picker present; selecting a range updates the result line | date text below the picker | the event payload path (`IgbDateRangeValue` materialization) broke |
 | Chat message reads `Message: Hello from a trimmed app` | the Razor `MessageContent` renderer's output inside the chat | the renderer context lost its constructor — the library builds `IgbChatMessageRenderContext` itself and the app never does |
+| Two square icons at the bottom; no `Smoke` tooltip on hover | both render the registered square | the objects `IIgniteUIBlazor` sends to `api.js` lost members — the collection or `stripMeta` of the options, or the name and collection of the alias target |
 | Browser console | no errors (a stray `favicon` 404 is fine) | anything else: investigate |
 
 The checklist is automated as `TrimmedPublishSmokeTest` in `IgniteUI.Blazor.Lite.IntegrationTests` (`Category=TrimmedPublish`, runs in CI after the publish step). It serves the net10.0 publish output — publishing it on demand if missing — so locally it's just:

@@ -12,29 +12,59 @@ namespace IgniteUI.Blazor.Controls
     public static class IgniteUIBlazorIconExtensions
     {
         /// <summary>
-        /// Registers an icon by fetching it from a URL.
+        /// Registers an icon in the <c>default</c> collection by fetching it from a URL. Completes once the icon is
+        /// fetched and registered.
         /// </summary>
         /// <param name="igniteUI">The Ignite UI service.</param>
-        /// <param name="name">The unique name for the icon.</param>
-        /// <param name="url">The URL to fetch the SVG icon from.</param>
-        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        /// <returns>A task that completes once the icon is fetched and registered.</returns>
-        public static ValueTask RegisterIconAsync(this IIgniteUIBlazor igniteUI, string name, string url, string? collection = null)
+        /// <param name="name">The unique name of the icon.</param>
+        /// <param name="url">The URL of the SVG icon.</param>
+        /// <returns>A <see cref="ValueTask"/> representing the completion of the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="igniteUI"/>, <paramref name="name"/> or <paramref name="url"/> is <see langword="null"/>.
+        /// </exception>
+        public static ValueTask RegisterIconAsync(this IIgniteUIBlazor igniteUI, string name, string url)
         {
             ArgumentNullException.ThrowIfNull(igniteUI);
             ArgumentNullException.ThrowIfNull(name);
             ArgumentNullException.ThrowIfNull(url);
+            return Api(igniteUI).InvokeVoidAsync("registerIcon", name, url);
+        }
+
+        /// <summary>
+        /// Registers an icon in a collection by fetching it from a URL. Completes once the icon is fetched and
+        /// registered.
+        /// </summary>
+        /// <param name="igniteUI">The Ignite UI service.</param>
+        /// <param name="name">The unique name of the icon.</param>
+        /// <param name="url">The URL of the SVG icon.</param>
+        /// <param name="collection">The collection to register the icon in.</param>
+        /// <returns>A <see cref="ValueTask"/> representing the completion of the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="igniteUI"/>, <paramref name="name"/>, <paramref name="url"/> or <paramref name="collection"/>
+        /// is <see langword="null"/>.
+        /// </exception>
+        public static ValueTask RegisterIconAsync(this IIgniteUIBlazor igniteUI, string name, string url, string collection)
+        {
+            ArgumentNullException.ThrowIfNull(igniteUI);
+            ArgumentNullException.ThrowIfNull(name);
+            ArgumentNullException.ThrowIfNull(url);
+            ArgumentNullException.ThrowIfNull(collection);
             return Api(igniteUI).InvokeVoidAsync("registerIcon", name, url, collection);
         }
 
         /// <summary>
-        /// Registers an icon by fetching it from a URL.
+        /// Registers an icon by fetching it from a URL, with options for the collection and SVG meta stripping.
+        /// Completes once the icon is fetched and registered.
         /// </summary>
         /// <param name="igniteUI">The Ignite UI service.</param>
-        /// <param name="name">The unique name for the icon.</param>
-        /// <param name="url">The URL to fetch the SVG icon from.</param>
-        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
-        /// <returns>A task that completes once the icon is fetched and registered.</returns>
+        /// <param name="name">The unique name of the icon.</param>
+        /// <param name="url">The URL of the SVG icon.</param>
+        /// <param name="options">The registration options.</param>
+        /// <returns>A <see cref="ValueTask"/> representing the completion of the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="igniteUI"/>, <paramref name="name"/>, <paramref name="url"/> or <paramref name="options"/>
+        /// is <see langword="null"/>.
+        /// </exception>
         public static ValueTask RegisterIconAsync(this IIgniteUIBlazor igniteUI, string name, string url, IgbRegisterIconOptions options)
         {
             ArgumentNullException.ThrowIfNull(igniteUI);
@@ -45,29 +75,56 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <summary>
-        /// Registers an icon from SVG text content.
+        /// Registers an icon in the <c>default</c> collection from SVG text.
         /// </summary>
         /// <param name="igniteUI">The Ignite UI service.</param>
-        /// <param name="name">The unique name for the icon.</param>
-        /// <param name="iconText">The SVG markup as a string.</param>
-        /// <param name="collection">The collection to register the icon in. Defaults to <c>default</c>.</param>
-        /// <returns>A task that completes once the icon is registered.</returns>
-        public static ValueTask RegisterIconFromTextAsync(this IIgniteUIBlazor igniteUI, string name, string iconText, string? collection = null)
+        /// <param name="name">The unique name of the icon.</param>
+        /// <param name="iconText">The SVG markup of the icon.</param>
+        /// <returns>A <see cref="ValueTask"/> representing the completion of the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="igniteUI"/>, <paramref name="name"/> or <paramref name="iconText"/> is <see langword="null"/>.
+        /// </exception>
+        public static ValueTask RegisterIconFromTextAsync(this IIgniteUIBlazor igniteUI, string name, string iconText)
         {
             ArgumentNullException.ThrowIfNull(igniteUI);
             ArgumentNullException.ThrowIfNull(name);
             ArgumentNullException.ThrowIfNull(iconText);
+            return Api(igniteUI).InvokeVoidAsync("registerIconFromText", name, iconText);
+        }
+
+        /// <summary>
+        /// Registers an icon in a collection from SVG text.
+        /// </summary>
+        /// <param name="igniteUI">The Ignite UI service.</param>
+        /// <param name="name">The unique name of the icon.</param>
+        /// <param name="iconText">The SVG markup of the icon.</param>
+        /// <param name="collection">The collection to register the icon in.</param>
+        /// <returns>A <see cref="ValueTask"/> representing the completion of the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="igniteUI"/>, <paramref name="name"/>, <paramref name="iconText"/> or
+        /// <paramref name="collection"/> is <see langword="null"/>.
+        /// </exception>
+        public static ValueTask RegisterIconFromTextAsync(this IIgniteUIBlazor igniteUI, string name, string iconText, string collection)
+        {
+            ArgumentNullException.ThrowIfNull(igniteUI);
+            ArgumentNullException.ThrowIfNull(name);
+            ArgumentNullException.ThrowIfNull(iconText);
+            ArgumentNullException.ThrowIfNull(collection);
             return Api(igniteUI).InvokeVoidAsync("registerIconFromText", name, iconText, collection);
         }
 
         /// <summary>
-        /// Registers an icon from SVG text content.
+        /// Registers an icon from SVG text, with options for the collection and SVG meta stripping.
         /// </summary>
         /// <param name="igniteUI">The Ignite UI service.</param>
-        /// <param name="name">The unique name for the icon.</param>
-        /// <param name="iconText">The SVG markup as a string.</param>
-        /// <param name="options">Options controlling the collection and SVG meta stripping.</param>
-        /// <returns>A task that completes once the icon is registered.</returns>
+        /// <param name="name">The unique name of the icon.</param>
+        /// <param name="iconText">The SVG markup of the icon.</param>
+        /// <param name="options">The registration options.</param>
+        /// <returns>A <see cref="ValueTask"/> representing the completion of the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="igniteUI"/>, <paramref name="name"/>, <paramref name="iconText"/> or
+        /// <paramref name="options"/> is <see langword="null"/>.
+        /// </exception>
         public static ValueTask RegisterIconFromTextAsync(this IIgniteUIBlazor igniteUI, string name, string iconText, IgbRegisterIconOptions options)
         {
             ArgumentNullException.ThrowIfNull(igniteUI);
@@ -81,10 +138,14 @@ namespace IgniteUI.Blazor.Controls
         /// Sets an icon reference (an alias) that points to another icon.
         /// </summary>
         /// <param name="igniteUI">The Ignite UI service.</param>
-        /// <param name="name">The alias name.</param>
-        /// <param name="collection">The collection for the alias.</param>
-        /// <param name="icon">The target icon metadata (name and collection).</param>
-        /// <returns>A task that completes once the reference is set.</returns>
+        /// <param name="name">The name of the alias.</param>
+        /// <param name="collection">The collection of the alias.</param>
+        /// <param name="icon">The name and collection of the icon the alias points to.</param>
+        /// <returns>A <see cref="ValueTask"/> representing the completion of the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="igniteUI"/>, <paramref name="name"/>, <paramref name="collection"/> or
+        /// <paramref name="icon"/> is <see langword="null"/>.
+        /// </exception>
         public static ValueTask SetIconRefAsync(this IIgniteUIBlazor igniteUI, string name, string collection, IgbIconMeta icon)
         {
             ArgumentNullException.ThrowIfNull(igniteUI);
@@ -100,12 +161,18 @@ namespace IgniteUI.Blazor.Controls
 
         // The client option objects, as dictionaries of primitives: JS interop serializes them without reflecting over
         // library types, which stays trim-safe and leaves out the bookkeeping members of the BaseJsonSerializable types.
-        private static Dictionary<string, object?> ToClient(IgbRegisterIconOptions options) => new Dictionary<string, object?>
+        // An unset member is left out rather than sent as null, so the client applies its own default.
+        private static Dictionary<string, object?> ToClient(IgbRegisterIconOptions options)
         {
-            ["collection"] = options.Collection,
-            ["stripMeta"] = options.StripMeta,
-        };
+            var client = new Dictionary<string, object?> { ["stripMeta"] = options.StripMeta };
+            if (options.Collection != null)
+            {
+                client["collection"] = options.Collection;
+            }
+            return client;
+        }
 
+        // Both members are required on the client; a null one is the caller's to answer for, as with any member.
         private static Dictionary<string, object?> ToClient(IgbIconMeta icon) => new Dictionary<string, object?>
         {
             ["name"] = icon.Name,
