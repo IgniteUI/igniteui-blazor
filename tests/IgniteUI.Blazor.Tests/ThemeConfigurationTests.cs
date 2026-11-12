@@ -32,12 +32,12 @@ public class ThemeConfigurationTests : BunitContext
     }
 
     [Fact]
-    public async Task ConfigureThemeAsync_WithoutVariant_UsesLight()
+    public async Task ConfigureThemeAsync_WithoutVariant_LeavesItOut_SoTheClientDefaultsToLight()
     {
         await _igniteUI.ConfigureThemeAsync(Theme.Material);
 
         var call = Assert.Single(_api.Invocations["configureTheme"]);
-        Assert.Equal(["material", "light"], call.Arguments);
+        Assert.Equal(["material"], call.Arguments);
     }
 
     [Fact]
