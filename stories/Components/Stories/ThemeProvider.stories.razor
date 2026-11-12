@@ -1,5 +1,6 @@
 @attribute [Stories("Theming/Theme Provider")]
 @inject IWebHostEnvironment Env
+@inject IIgniteUIBlazor IgniteUI
 
 <Stories TComponent="IgbThemeProvider">
 
@@ -163,9 +164,44 @@
         </Template>
     </Story>
 
+    @* The page-wide equivalent of a provider around the whole UI, without the provider. *@
+    <Story Name="Page-wide Theme">
+        <Arguments></Arguments>
+        <Template>
+            <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 32rem;">
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    @foreach (var theme in Enum.GetValues<Theme>())
+                    {
+                        <IgbButton Variant="@(theme == _pageTheme ? ButtonVariant.Contained : ButtonVariant.Outlined)"
+                                   @onclick="() => SetPageThemeAsync(theme)">@theme</IgbButton>
+                    }
+                </div>
+                <p style="margin: 0;">
+                    ConfigureThemeAsync(Theme.@_pageTheme, ThemeVariant.Dark) switches the structural styles of every component
+                    on the page. The colors stay: they come from the theme stylesheet, which it does not swap.
+                </p>
+                <IgbInput Label="Username" Placeholder="Enter username..." Outlined="true" />
+                <IgbCheckbox>Remember me</IgbCheckbox>
+                <div style="display: flex; gap: 0.5rem;">
+                    <IgbButton>Sign In</IgbButton>
+                    <IgbButton Variant="ButtonVariant.Outlined">Cancel</IgbButton>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
 </Stories>
 
 @code {
+    // The stories load the dark Bootstrap stylesheet.
+    private Theme _pageTheme = Theme.Bootstrap;
+
+    private async Task SetPageThemeAsync(Theme theme)
+    {
+        _pageTheme = theme;
+        await IgniteUI.ConfigureThemeAsync(theme, ThemeVariant.Dark);
+    }
+
     private string bootstrapLightScopedCSS = string.Empty;
     protected override async Task OnInitializedAsync()
     {

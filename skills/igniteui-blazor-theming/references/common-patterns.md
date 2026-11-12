@@ -25,21 +25,7 @@ If the page hosts any full-featured grid, add the grid stylesheet in the **same 
 
 ## Switching theme at runtime
 
-### `IgbThemeProvider` — preferred
-
-Bind the parameters to state; no JS interop, no stylesheet swapping, and it can theme one region rather than the whole page.
-
-```razor
-<IgbSwitch @bind-Checked="IsDark">Dark mode</IgbSwitch>
-
-<IgbThemeProvider Theme="Theme.Bootstrap" Variant="@(IsDark ? ThemeVariant.Dark : ThemeVariant.Light)">
-    @Body
-</IgbThemeProvider>
-
-@code { bool IsDark; }
-```
-
-Register `IgbThemeProviderModule`. Providers nest — an inner one overrides the outer for its subtree.
+A theme has two parts: the stylesheet (palette and other CSS variables) and the structural styles each component picks for the active theme and variant, read from the stylesheet once and then cached. A runtime switch changes both: swap the stylesheet, and tell the components — page-wide with `ConfigureThemeAsync`, or for a subtree with `IgbThemeProvider`. Swapping only the stylesheet gives the new colors on the old shapes; telling only the components gives the new shapes in the old colors.
 
 ### Swapping the stylesheet
 
@@ -54,6 +40,7 @@ Use this when the whole document, including your own CSS that reads palette vari
 
 ```razor
 @inject IJSRuntime JS
+@inject IIgniteUIBlazor IgniteUI
 
 @code {
     bool IsDark;
@@ -63,9 +50,13 @@ Use this when the whole document, including your own CSS that reads palette vari
         IsDark = !IsDark;
         var variant = IsDark ? "dark" : "light";
         await JS.InvokeVoidAsync("setIgTheme", $"_content/IgniteUI.Blazor/themes/{variant}/bootstrap.css");
+        // The structural styles of every component on the page, for the same theme and variant.
+        await IgniteUI.ConfigureThemeAsync(Theme.Bootstrap, IsDark ? ThemeVariant.Dark : ThemeVariant.Light);
     }
 }
 ```
+
+`ConfigureThemeAsync` is the page-wide equivalent of an `IgbThemeProvider` around the whole UI, without the wrapper; components inside a provider follow the provider. It is JS interop, so call it after the component is interactive, not during prerendering. From JS, `configureTheme('bootstrap', 'dark')` imported from `_content/IgniteUI.Blazor/api.js` does the same.
 
 Preloading both stylesheets and toggling their `disabled` flags avoids the fetch flash:
 
@@ -77,6 +68,22 @@ window.toggleDarkMode = isDark => {
 ```
 
 Remember to swap the grid stylesheet variant too when a full grid is on the page.
+
+### `IgbThemeProvider` — for a region
+
+Bind the parameters to state; it sets the structural styles of its subtree only, so it can theme one region rather than the whole page. The colors still come from the page's stylesheet: around the whole UI, pair it with a stylesheet swap as above (in place of `ConfigureThemeAsync`); for a region in another variant, scope that variant's palette to it as well.
+
+```razor
+<IgbSwitch @bind-Checked="IsDark">Dark mode</IgbSwitch>
+
+<IgbThemeProvider Theme="Theme.Bootstrap" Variant="@(IsDark ? ThemeVariant.Dark : ThemeVariant.Light)">
+    @Body
+</IgbThemeProvider>
+
+@code { bool IsDark; }
+```
+
+Register `IgbThemeProviderModule`. Providers nest — an inner one overrides the outer for its subtree.
 
 ## CSS custom properties (design tokens)
 
