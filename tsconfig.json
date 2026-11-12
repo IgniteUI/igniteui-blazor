@@ -17,8 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "igniteui-core/*": ["src/src/ig/igniteui-core/*"],
-      // Not in the package exports map; aliased in vite.config.mts.
-      "igniteui-webcomponents/theming/config.js": ["node_modules/igniteui-webcomponents/theming/config.d.ts"]
+      // igniteui-webcomponents modules api.js imports directly, as the package index would pull every component into it
+      // (loaded eagerly by the initializer). Not in the package exports map; vite resolves them from here as well.
+      "igniteui-webcomponents/theming/config.js": ["node_modules/igniteui-webcomponents/theming/config.js"]
     }
   },
   "exclude": ["node_modules", "src/dist", "src/wwwroot", "vite.config.mts"]
