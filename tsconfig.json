@@ -16,7 +16,11 @@
     "removeComments": true,
     "baseUrl": ".",
     "paths": {
-      "igniteui-core/*": ["src/src/ig/igniteui-core/*"]
+      "igniteui-core/*": ["src/src/ig/igniteui-core/*"],
+      // Not in the package exports map; aliased in vite.config.mts.
+      "igniteui-webcomponents/components/icon/icon.registry.js": [
+        "node_modules/igniteui-webcomponents/components/icon/icon.registry.d.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "src/dist", "src/wwwroot", "vite.config.mts"]

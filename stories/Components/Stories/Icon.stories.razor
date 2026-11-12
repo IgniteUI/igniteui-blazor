@@ -1,4 +1,5 @@
 @attribute [Stories("Data Display/Icon")]
+@inject IIgniteUIBlazor IgniteUI
 
 <Stories TComponent="IgbIcon">
 
@@ -26,4 +27,49 @@
         </Template>
     </Story>
 
+    @* The icons are registered in OnAfterRenderAsync below. *@
+    <Story Name="Registering Icons">
+        <Template>
+            <div style="display: flex; gap: 32px; font-size: 13px; text-align: center;">
+                <div>
+                    <IgbIcon IconName="heart" Collection="story" />
+                    <div>From text</div>
+                </div>
+                <div>
+                    <IgbIcon IconName="verified" Collection="story" />
+                    <div>From text, StripMeta<br />(no tooltip on hover)</div>
+                </div>
+                <div>
+                    <IgbIcon IconName="star" Collection="story" />
+                    <div>From a URL</div>
+                </div>
+                <div>
+                    <IgbIcon IconName="done" Collection="story" />
+                    <div>Alias of "verified"<br />(SetIconRef)</div>
+                </div>
+            </div>
+        </Template>
+    </Story>
+
 </Stories>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // The registry is global: no icon instance (and so no EnsureReady) is needed to register.
+            // Icons that rendered before their registration update once it is done.
+            await IgniteUI.RegisterIconFromTextAsync("heart", HeartSvg, "story");
+            await IgniteUI.RegisterIconFromTextAsync("verified", VerifiedSvg, new IgbRegisterIconOptions { Collection = "story", StripMeta = true });
+            await IgniteUI.RegisterIconAsync("star", "icons/star.svg", "story");
+            await IgniteUI.SetIconRefAsync("done", "story", new IgbIconMeta { Name = "verified", Collection = "story" });
+        }
+    }
+
+    private const string HeartSvg =
+        """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>""";
+
+    private const string VerifiedSvg =
+        """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Verified</title><path d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z"/></svg>""";
+}
