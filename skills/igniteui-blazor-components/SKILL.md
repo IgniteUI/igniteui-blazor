@@ -54,7 +54,7 @@ All four use the `IgniteUI.Blazor.Controls` namespace and serve static assets fr
 
 ## MCP server (optional)
 
-`igniteui-cli` provides `list_components`, `get_doc`, `search_docs`, `search_api`, `get_api_reference`, all taking `framework: "blazor"`. To enable it, add to `.vscode/mcp.json` (VS Code, key `servers`):
+`@igniteui/mcp-server` provides `list_components`, `get_doc`, `search_docs`, `search_api`, `get_api_reference`, all taking `framework: "blazor"`. To enable it, add to `.vscode/mcp.json` (VS Code, key `servers`):
 
 ```json
 { "servers": { "igniteui-cli": { "command": "npx", "args": ["-y", "@igniteui/mcp-server"] } } }
