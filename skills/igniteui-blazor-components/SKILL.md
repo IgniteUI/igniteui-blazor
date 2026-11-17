@@ -57,16 +57,16 @@ All four use the `IgniteUI.Blazor.Controls` namespace and serve static assets fr
 `igniteui-cli` provides `list_components`, `get_doc`, `search_docs`, `search_api`, `get_api_reference`, all taking `framework: "blazor"`. To enable it, add to `.vscode/mcp.json` (VS Code, key `servers`):
 
 ```json
-{ "servers": { "igniteui-cli": { "command": "npx", "args": ["-y", "igniteui-cli", "mcp"] } } }
+{ "servers": { "igniteui-cli": { "command": "npx", "args": ["-y", "@igniteui/mcp-server"] } } }
 ```
 
 Or `.cursor/mcp.json` / `claude_desktop_config.json` (key `mcpServers`):
 
 ```json
-{ "mcpServers": { "igniteui-cli": { "command": "npx", "args": ["-y", "igniteui-cli", "mcp"] } } }
+{ "mcpServers": { "igniteui-cli": { "command": "npx", "args": ["-y", "@igniteui/mcp-server"] } } }
 ```
 
-Reload the editor afterwards. JetBrains: **Settings → Tools → AI Assistant → MCP Servers**, command `npx`, arguments `igniteui-cli mcp`.
+Reload the editor afterwards. JetBrains: **Settings → Tools → AI Assistant → MCP Servers**, command `npx`, arguments `@igniteui/mcp-server`.
 
 ## Related skills
 
