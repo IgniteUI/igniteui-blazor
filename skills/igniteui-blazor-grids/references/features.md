@@ -95,13 +95,14 @@ Put only the built-in action components in `IgbGridToolbarActions`, and declare 
 }
 
 /* The box keeps empty igc-portal-* elements, so :empty never matches and an
-   "empty" box still takes space. Hide it when it holds nothing else. */
+   "empty" box still takes space. Hide it when it holds no other element.
+   It checks element children only: wrap text in an element (see below). */
 .employees ::deep .igx-grid-toolbar__custom-content:not(:has(> :not(igc-portal-exit, igc-portal-entrance))) {
     display: none;
 }
 ```
 
-`order` changes only the visual order; keyboard focus still reaches custom content first. `IgbGridToolbarTitle` also keeps an empty `igc-portal-exit` before its content: if the title content is `display: inline-flex`, the title stops painting once the toolbar wraps ([#497](https://github.com/IgniteUI/igniteui-blazor/issues/497)). Use `display: flex` for the title content, or hide the element with `.igx-grid-toolbar__title > igc-portal-exit { display: none; }`.
+The hiding rule sees only element children, and Blazor moves bare text into the box as text nodes — so custom content that is only text (`@selectedCount selected`) is hidden with it. Wrap such text in an element (`<span>@selectedCount selected</span>`) before using the rule. `order` changes only the visual order; keyboard focus still reaches custom content first. `IgbGridToolbarTitle` also keeps an empty `igc-portal-exit` before its content: if the title content is `display: inline-flex`, the title stops painting once the toolbar wraps ([#497](https://github.com/IgniteUI/igniteui-blazor/issues/497)). Use `display: flex` for the title content, or hide the element with `.igx-grid-toolbar__title > igc-portal-exit { display: none; }`.
 
 ## Export
 
