@@ -65,9 +65,10 @@
         </p>
         <IgbVirtualScroll @ref="_igbList" Data="_rows" EstimatedItemSize="48" OverScan="Overscan"
                           ItemTemplateScript="ComparisonItemTemplate"
-                          StateChange="OnIgbStateChange"
+                          KeyFunctionScript="ComparisonRowKey"
+                          StateChange="_igbStateChange"
                           class="list-igb" />
-        <div class="status-line">@_igbWindowInfo</div>
+        <div class="status-line"><StatusLine @ref="_igbStatus" Initial="Scroll to see the rendered window." /></div>
     </div>
 </section>
 
@@ -102,10 +103,14 @@
         </p>
         <IgbVirtualScroll Data="_lazyRows" EstimatedItemSize="48"
                           ItemTemplateScript="ComparisonItemTemplate"
+                          KeyFunctionScript="ComparisonRowKey"
                           DataRequest="OnIgbDataRequest"
-                          StateChange="OnIgbLazyStateChange"
+                          StateChange="_igbLazyStateChange"
                           class="list-igb list-igb-short" />
-        <div class="status-line">Loaded: @_lazyRows.Length.ToString("N0") items &nbsp;|&nbsp; @_igbLazyWindowInfo</div>
+        <div class="status-line">
+            Loaded: @_lazyRows.Length.ToString("N0") items &nbsp;|&nbsp;
+            <StatusLine @ref="_igbLazyStatus" Initial="Scroll to load more." />
+        </div>
     </div>
 </section>
 
@@ -117,7 +122,7 @@
     </div>
     <div class="panel">
         <h3><code>IgbVirtualScroll</code> with <code>Orientation="Horizontal"</code></h3>
-        <IgbVirtualScroll Data="_rows" Orientation="ContentOrientation.Horizontal" EstimatedItemSize="140"
+        <IgbVirtualScroll Data="_cards" Orientation="ContentOrientation.Horizontal" EstimatedItemSize="140"
                           ItemTemplateScript="ComparisonCardTemplate"
                           class="list-igb-horizontal" />
     </div>
@@ -167,12 +172,17 @@
         <tr>
             <td>Item templates</td>
             <td>Razor <code>RenderFragment</code> — full C# closure over server state</td>
-            <td>Client-side JS template via <code>igRegisterScript</code> / <code>ItemTemplateScript</code>; Razor fragments not supported</td>
+            <td>Client-side JS template via <code>registerScript</code> from <code>_content/IgniteUI.Blazor/api.js</code> / <code>ItemTemplateScript</code>; Razor fragments not supported</td>
         </tr>
         <tr>
             <td>Data change detection</td>
             <td>Re-reads <code>Items</code> on re-render</td>
-            <td><code>Data</code> compared by reference — a new collection instance is required</td>
+            <td><code>Data</code> compared by reference — a new collection instance is required, and the whole collection crosses interop again; unchanged leading items keep their measured sizes</td>
+        </tr>
+        <tr>
+            <td>Item identity on insert / sort</td>
+            <td><code>ItemComparer</code> (<code>ItemsProvider</code>) / <code>@@key</code> in the item content</td>
+            <td><code>KeyFunctionScript</code> — a client-side key function; without it items are keyed by index</td>
         </tr>
         <tr>
             <td>Scroll container</td>
@@ -236,19 +246,33 @@
 
     private Row[] _rows = MakeRows(0, InitialRowCount);
     private Row[] _lazyRows = MakeRows(0, 60);
+    // Its own collection, so prepend/append/reset of _rows does not re-send it to this list too.
+    private readonly Row[] _cards = MakeRows(0, 10000);
 
     private Virtualize<Row>? _blazorList;
     private Virtualize<Row>? _blazorLazyList;
-    private IgbVirtualScroll? _igbList;
+    private IgbVirtualScroll<Row>? _igbList;
+    private StatusLine? _igbStatus;
+    private StatusLine? _igbLazyStatus;
+
+    // StateChange fires on every rendered-window change while scrolling. A callback with no
+    // receiver does not re-render this page (and both Virtualize lists) for each event; the
+    // handlers push their text to a StatusLine, which re-renders only itself.
+    private EventCallback<IgbVirtualScrollStateChangeEventArgs> _igbStateChange;
+    private EventCallback<IgbVirtualScrollStateChangeEventArgs> _igbLazyStateChange;
 
     private int _jumpIndex = 25000;
     private string _jumpBlock = "start";
     private string _jumpBehavior = "auto";
     private string _anchorModeName = "Start";
-    private string _igbWindowInfo = "Scroll to see the rendered window.";
-    private string _igbLazyWindowInfo = "Scroll to load more.";
 
     private VirtualizeAnchorMode _anchorMode => Enum.Parse<VirtualizeAnchorMode>(_anchorModeName);
+
+    protected override void OnInitialized()
+    {
+        _igbStateChange = new(null, (Action<IgbVirtualScrollStateChangeEventArgs>)OnIgbStateChange);
+        _igbLazyStateChange = new(null, (Action<IgbVirtualScrollStateChangeEventArgs>)OnIgbLazyStateChange);
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -279,18 +303,22 @@
 
     private async Task JumpBoth()
     {
+        // Same clamped index for both, and both scrolls start together so they can be compared.
+        var index = Math.Clamp(_jumpIndex, 0, Math.Max(_rows.Length - 1, 0));
+        var scrolls = new List<Task>();
         if (_blazorList is not null)
         {
-            await _blazorList.ScrollToItemAsync(Math.Clamp(_jumpIndex, 0, _rows.Length - 1));
+            scrolls.Add(_blazorList.ScrollToItemAsync(index));
         }
         if (_igbList is not null)
         {
-            await _igbList.ScrollToIndexAsync(_jumpIndex, new IgbScrollIntoViewOptions
+            scrolls.Add(_igbList.ScrollToIndexAsync(index, new IgbScrollIntoViewOptions
             {
                 Behavior = _jumpBehavior,
                 Block = _jumpBlock,
-            });
+            }));
         }
+        await Task.WhenAll(scrolls);
     }
 
     private async ValueTask<ItemsProviderResult<Row>> LoadRows(ItemsProviderRequest request)
@@ -319,12 +347,12 @@
     private void OnIgbStateChange(IgbVirtualScrollStateChangeEventArgs args)
     {
         var d = args.Detail;
-        _igbWindowInfo = $"StateChange — window: {d.StartIndex}–{d.EndIndex} | viewport: {d.ViewportSize}px | total: {d.TotalSize}px";
+        _igbStatus?.Show($"StateChange — window: {d.StartIndex}–{d.EndIndex} | viewport: {d.ViewportSize}px | total: {d.TotalSize}px");
     }
 
     private void OnIgbLazyStateChange(IgbVirtualScrollStateChangeEventArgs args)
     {
         var d = args.Detail;
-        _igbLazyWindowInfo = $"window: {d.StartIndex}–{d.EndIndex}";
+        _igbLazyStatus?.Show($"window: {d.StartIndex}–{d.EndIndex}");
     }
 }

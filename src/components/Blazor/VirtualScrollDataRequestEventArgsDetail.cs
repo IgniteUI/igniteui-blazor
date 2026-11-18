@@ -1,7 +1,9 @@
+using System.Globalization;
+
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The payload of the <see cref="IgbVirtualScroll.DataRequest"/> event:
+    /// The payload of the <see cref="IgbVirtualScroll{TItem}.DataRequest"/> event:
     /// a request for more data, emitted when the rendered window comes near the
     /// end of the loaded items.
     /// </summary>
@@ -65,9 +67,9 @@ namespace IgniteUI.Blazor.Controls
             base.ToEventJson(control, args);
 
             if (IsPropDirty("StartIndex"))
-            { args["startIndex"] = (this._startIndex).ToString(); }
+            { args["startIndex"] = (this._startIndex).ToString(CultureInfo.InvariantCulture); }
             if (IsPropDirty("Count"))
-            { args["count"] = (this._count).ToString(); }
+            { args["count"] = (this._count).ToString(CultureInfo.InvariantCulture); }
 
         }
 

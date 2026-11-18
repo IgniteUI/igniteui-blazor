@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `IgbVirtualScroll` - Renders large or unbounded lists efficiently by rendering only the items in the viewport plus a configurable `OverScan`. Supports vertical and horizontal `Orientation`, `EstimatedItemSize` with automatic item measurement, `ScrollToIndexAsync` with configurable alignment and behavior through `IgbScrollIntoViewOptions`, a `DataRequest` event for infinite scroll and remote data, and a `StateChange` event reporting the rendered window. Item content is rendered through a client-side template registered with `registerScript` from `api.js` and assigned via `ItemTemplateScript`. [#2222](https://github.com/IgniteUI/igniteui-webcomponents/pull/2222)
+- `IgbVirtualScroll<TItem>` - Renders large or unbounded lists efficiently by rendering only the items in the viewport plus a configurable `OverScan`. `Data` is an `IEnumerable<TItem>`, with `DataJson` for data that is already JSON, and `KeyFunctionScript` keys items for insert, prepend and sort. Supports vertical and horizontal `Orientation`, `EstimatedItemSize` with automatic item measurement, `ScrollToIndexAsync` with configurable alignment and behavior through `IgbScrollIntoViewOptions`, a `DataRequest` event for infinite scroll and remote data, and a `StateChange` event reporting the rendered window. Item content is rendered through a client-side template registered with `registerScript` from `api.js` and assigned via `ItemTemplateScript`. [#2222](https://github.com/IgniteUI/igniteui-webcomponents/pull/2222)
 
 ## 1.0.1 - 2026-10-29
 

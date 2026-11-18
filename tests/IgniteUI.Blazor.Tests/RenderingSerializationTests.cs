@@ -745,7 +745,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void VirtualScroll_RendersAllAttributes()
     {
-        var cut = Render<IgbVirtualScroll>(p => p
+        var cut = Render<IgbVirtualScroll<object>>(p => p
             .Add(x => x.Orientation, ContentOrientation.Horizontal)
             .Add(x => x.OverScan, 5)
             .Add(x => x.EstimatedItemSize, 32));

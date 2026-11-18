@@ -14,6 +14,9 @@ registerScript('ComparisonItemTemplate', (ctx) => {
   `;
 });
 
+// Keys rows by Id, so a prepend or insert keeps each rendered element with its own row.
+registerScript('ComparisonRowKey', (item) => item.Id);
+
 registerScript('ComparisonCardTemplate', (ctx) => {
   return html`
     <div

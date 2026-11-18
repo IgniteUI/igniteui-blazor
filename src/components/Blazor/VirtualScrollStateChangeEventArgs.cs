@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbVirtualScroll.StateChange"/> event.
+    /// Event arguments for the <see cref="IgbVirtualScroll{TItem}.StateChange"/> event.
     /// </summary>
     public partial class IgbVirtualScrollStateChangeEventArgs : BaseJsonSerializable
     {

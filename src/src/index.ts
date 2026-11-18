@@ -84,6 +84,68 @@ cr.addPropertyUpdatingListener('options', (p, t, v) => {
   }
 });
 
+/* igc-virtual-scroll keeps the measured sizes of the leading items that are the same objects as in
+ * its previous data (an identity check), and re-estimates everything after the first changed one.
+ * Data crossing interop is a freshly parsed array every time, so without this an append resets
+ * every measured size and the scroll position drifts. Reuse the previous objects for the leading
+ * items that are structurally unchanged. Each transfer stamps its items with new ___id keys, which
+ * map a client item back to its .NET item, so a reused object takes the new key and replaces the
+ * new object in the ref's item map.
+ */
+cr.addPropertyUpdatingListener('data', (p, t, v) => {
+  if (t?.tagName !== 'IGC-VIRTUAL-SCROLL' || !Array.isArray(v)) {
+    return;
+  }
+  const previous = t.data;
+  if (!Array.isArray(previous) || previous === v) {
+    return;
+  }
+  const shared = Math.min(previous.length, v.length);
+  let itemMap: Map<string, any> | undefined;
+  for (let i = 0; i < shared && sameJsonValue(previous[i], v[i]); i++) {
+    const next = v[i];
+    const reused = previous[i];
+    if (next !== reused && next !== null && typeof next === 'object' && next.___id !== undefined) {
+      itemMap ??= findItemMap(next);
+      reused.___id = next.___id;
+      itemMap?.set(next.___id, reused);
+    }
+    v[i] = reused;
+  }
+});
+
+function findItemMap(item: any): Map<string, any> | undefined {
+  for (const map of itemMaps.values()) {
+    if (map.get(item.___id) === item) {
+      return map;
+    }
+  }
+  return undefined;
+}
+
+/** Deep equality of JSON-parsed values, ignoring the per-transfer ___id keys. */
+function sameJsonValue(a: any, b: any): boolean {
+  if (a === b) {
+    return true;
+  }
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
+    return false;
+  }
+  if (Array.isArray(a) !== Array.isArray(b)) {
+    return false;
+  }
+  const keys = Object.keys(a).filter((key) => key !== '___id');
+  if (keys.length !== Object.keys(b).filter((key) => key !== '___id').length) {
+    return false;
+  }
+  for (const key of keys) {
+    if (!Object.prototype.hasOwnProperty.call(b, key) || !sameJsonValue(a[key], b[key])) {
+      return false;
+    }
+  }
+  return true;
+}
+
 cr.addReferenceLookupListener((container, refType, value) => {
   if (refType == 'uuid') {
     var retVal = null;

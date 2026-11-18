@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// Options controlling how an item is scrolled into view, passed to the
-    /// <c>ScrollToIndex</c> methods of <see cref="IgbVirtualScroll"/>.
+    /// <c>ScrollToIndex</c> methods of <see cref="IgbVirtualScroll{TItem}"/>.
     /// Mirrors the browser scroll-into-view options.
     /// </summary>
     public partial class IgbScrollIntoViewOptions : BaseJsonSerializable

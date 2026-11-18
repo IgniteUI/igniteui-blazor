@@ -4,15 +4,15 @@ using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll>
+public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll<VirtualScrollTests.ScrollItem>>
 {
-    private class ScrollItem
+    public class ScrollItem
     {
         public int Id { get; set; }
         public string Text { get; set; } = string.Empty;
     }
 
-    protected override ComponentContract<IgbVirtualScroll> InteropContract { get; } = new ComponentContract<IgbVirtualScroll>()
+    protected override ComponentContract<IgbVirtualScroll<VirtualScrollTests.ScrollItem>> InteropContract { get; } = new ComponentContract<IgbVirtualScroll<VirtualScrollTests.ScrollItem>>()
         .Method(c => c.ScrollToIndexAsync(3), c => c.ScrollToIndex(3), "scrollToIndex",
             args: [3.0], types: ["Number"])
         .Method(c => c.ScrollToIndexAsync(5, new IgbScrollIntoViewOptions { Behavior = "smooth", Block = "center" }),
@@ -27,6 +27,13 @@ public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll
             // Data source: crosses as a refChanged transfer under a generated ref id that the
             // description advertises as "dataRef" (JSON marshalling channel, as on Blazor Server).
             wire: new JsonSubset("""[{"Id": 1, "Text": "First"}, {"Id": 2, "Text": "Second"}]"""))
+        // The JSON escape hatches ride the same data ref as Data.
+        .Prop(c => c.DataJson, LocalJson.From("""[{"Id": 1, "Text": "First"}]"""),
+            wireName: "data",
+            wire: new JsonSubset("""[{"Id": 1, "Text": "First"}]"""))
+        .Prop(c => c.DataJson, RemoteJson.From("https://example.test/items.json"),
+            wireName: "data",
+            wire: "https://example.test/items.json")
         .Prop(c => c.Orientation, ContentOrientation.Horizontal, wire: "horizontal")
         .Prop(c => c.OverScan, 5.0)
         .Prop(c => c.EstimatedItemSize, 32.0)
@@ -59,14 +66,14 @@ public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll
     [Fact]
     public void VirtualScroll_RendersCorrectElement()
     {
-        var cut = Render<IgbVirtualScroll>();
+        var cut = Render<IgbVirtualScroll<VirtualScrollTests.ScrollItem>>();
         Assert.True(cut.Find("igc-virtual-scroll").HasAttribute("data-ig-root"));
     }
 
     [Fact]
     public void VirtualScroll_TypeMetadata_IsCorrect()
     {
-        var virtualScroll = new IgbVirtualScroll();
+        var virtualScroll = new IgbVirtualScroll<ScrollItem>();
         Assert.Equal("WebVirtualScroll", virtualScroll.RendererType);
     }
 
@@ -77,7 +84,7 @@ public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll
     [Fact]
     public void VirtualScroll_DefaultValues_MatchWebComponent()
     {
-        var virtualScroll = new IgbVirtualScroll();
+        var virtualScroll = new IgbVirtualScroll<ScrollItem>();
 
         Assert.Equal(ContentOrientation.Vertical, virtualScroll.Orientation);
         Assert.Equal(2, virtualScroll.OverScan);
@@ -87,6 +94,6 @@ public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll
     [Fact]
     public void VirtualScroll_InheritsFromIgbComponentBase()
     {
-        Assert.True(typeof(IgbVirtualScroll).IsSubclassOf(typeof(IgbComponentBase)));
+        Assert.True(typeof(IgbVirtualScroll<ScrollItem>).IsSubclassOf(typeof(IgbComponentBase)));
     }
 }

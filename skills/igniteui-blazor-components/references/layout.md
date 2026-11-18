@@ -226,8 +226,11 @@ Renders only the items in the viewport plus `OverScan`, so an unbounded list sta
 import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';
 
 registerScript('MyItemTemplate', (ctx) => html`<div style="padding: 8px;">${ctx.value.Name}</div>`);
+registerScript('MyItemKey', (item) => item.Id);
 ```
+
+`IgbVirtualScroll<TItem>` infers `TItem` from `Data`; name it (`TItem="Item"`) for an `@ref` field or with `DataJson` (`TItem="object"`). Set `KeyFunctionScript` (above: `MyItemKey`) when items move within `Data` — prepend, insert, sort, remove — so each rendered element stays with its item; without it items are keyed by index.
 
 `igc-virtual-scroll` is `display: block` with a default height of `18.75rem`; set the height on the component itself (`style` or a `class`), since `class` and `style` land on the `igc-virtual-scroll` element. Methods such as `ScrollToIndexAsync` throw until the client element is live — `await EnsureReady()` first when calling one from `OnAfterRenderAsync(firstRender)`.
 
-`Data` is compared by reference — assign a new collection instead of mutating in place, or the rendered window will not update. `ScrollToIndexAsync(index)` scrolls to an item, optionally with `IgbScrollIntoViewOptions` for alignment and behavior. `StateChange` reports the rendered window (`StartIndex`, `EndIndex`, `ViewportSize`, `TotalSize`) and `DataRequest` asks for items not yet loaded. `Orientation` is `ContentOrientation.Vertical | Horizontal`, RTL is supported, and item sizes are measured after first render — `EstimatedItemSize` only seeds the initial scrollbar.
+`Data` is compared by reference — assign a new collection instead of mutating in place, or the rendered window will not update. The whole collection crosses to the client on each assignment; leading items that are unchanged keep their measured sizes, so appending keeps the scroll position stable. `ScrollToIndexAsync(index)` scrolls to an item, optionally with `IgbScrollIntoViewOptions` for alignment and behavior. `StateChange` reports the rendered window (`StartIndex`, `EndIndex`, `ViewportSize`, `TotalSize`) and `DataRequest` asks for items not yet loaded. `Orientation` is `ContentOrientation.Vertical | Horizontal`, RTL is supported, and item sizes are measured after first render — `EstimatedItemSize` only seeds the initial scrollbar.

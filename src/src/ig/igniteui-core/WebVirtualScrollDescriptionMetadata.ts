@@ -37,6 +37,7 @@ export class WebVirtualScrollDescriptionMetadata extends Base {
 		metadata.item("OverScan", "Number:double");
 		metadata.item("EstimatedItemSize", "Number:double");
 		metadata.item("ItemTemplateRef", "(w:ItemTemplate,p:ItemTemplate)TemplateRef::object");
+		metadata.item("KeyFunctionRef", "(w:KeyFunction,p:KeyFunction)MethodRef::object");
 		metadata.item("StateChangeRef", "EventRef:VirtualScrollStateChangeEventHandler:stateChange");
 		metadata.item("StateChangeRef@args", "VirtualScrollStateChangeEventArgs");
 		metadata.item("DataRequestRef", "EventRef:VirtualScrollDataRequestEventHandler:dataRequest");

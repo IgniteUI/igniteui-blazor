@@ -55,6 +55,14 @@ export class WebVirtualScrollDescription extends Description {
 		this._itemTemplate = value;
 		this.markDirty("ItemTemplateRef");
 	}
+	private _keyFunction: string = null;
+	get keyFunctionRef(): string {
+		return this._keyFunction;
+	}
+	set keyFunctionRef(value: string) {
+		this._keyFunction = value;
+		this.markDirty("KeyFunctionRef");
+	}
 	private _stateChange: string = null;
 	get stateChangeRef(): string {
 		return this._stateChange;

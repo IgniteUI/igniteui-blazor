@@ -1,7 +1,9 @@
+using System.Globalization;
+
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The payload of the <see cref="IgbVirtualScroll.StateChange"/> event:
+    /// The payload of the <see cref="IgbVirtualScroll{TItem}.StateChange"/> event:
     /// a snapshot of the currently rendered virtual window.
     /// </summary>
     public partial class IgbVirtualScrollStateChangeEventArgsDetail : BaseJsonSerializable
@@ -103,13 +105,13 @@ namespace IgniteUI.Blazor.Controls
             base.ToEventJson(control, args);
 
             if (IsPropDirty("StartIndex"))
-            { args["startIndex"] = (this._startIndex).ToString(); }
+            { args["startIndex"] = (this._startIndex).ToString(CultureInfo.InvariantCulture); }
             if (IsPropDirty("EndIndex"))
-            { args["endIndex"] = (this._endIndex).ToString(); }
+            { args["endIndex"] = (this._endIndex).ToString(CultureInfo.InvariantCulture); }
             if (IsPropDirty("ViewportSize"))
-            { args["viewportSize"] = (this._viewportSize).ToString(); }
+            { args["viewportSize"] = (this._viewportSize).ToString(CultureInfo.InvariantCulture); }
             if (IsPropDirty("TotalSize"))
-            { args["totalSize"] = (this._totalSize).ToString(); }
+            { args["totalSize"] = (this._totalSize).ToString(CultureInfo.InvariantCulture); }
 
         }
 

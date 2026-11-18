@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -6,7 +7,9 @@ namespace IgniteUI.Blazor.Controls
     /// A virtual scroll component for large lists. Only the items visible in the
     /// viewport, plus a configurable overscan, are rendered.
     /// </summary>
-    public partial class IgbVirtualScroll : IgbComponentBase
+    /// <typeparam name="TItem">The type of the items in the data; <c>object</c> with <see cref="DataJson"/>. Its public members are preserved under trimming, so they reach the client item template.</typeparam>
+    public partial class IgbVirtualScroll<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TItem> : IgbComponentBase, IJsonDataBinding
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebVirtualScroll"; } }
@@ -30,15 +33,18 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private string? _dataRef;
-        private object? _data;
+        private IEnumerable<TItem>? _data;
 
         /// <summary>
-        /// The array of items to virtualize.
+        /// The items to virtualize.
         /// Compared by reference: a mutation in place causes no update; assign a new
         /// collection instead. The <see cref="DataRequest"/> flow also expects a new collection.
+        /// Items that are unchanged at the start of the new collection keep their measured sizes,
+        /// so appending keeps the scroll position stable.
+        /// For data that is already JSON, or that the client fetches itself, see <see cref="DataJson"/>.
         /// </summary>
         [Parameter]
-        public object? Data
+        public IEnumerable<TItem>? Data
         {
             get { return this._data; }
 
@@ -75,6 +81,30 @@ namespace IgniteUI.Blazor.Controls
                     this._dataScript = value;
                     MarkPropDirty("Data");
                     this.OnRefChanged("Data", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
+                    {
+                        this._dataRef = refName;
+                        this.MarkPropDirty("DataRef");
+                    });
+                }
+            }
+        }
+
+        private IJsonData? _dataJson;
+
+        /// <inheritdoc />
+        [Parameter]
+        public IJsonData? DataJson
+        {
+            get { return _dataJson; }
+
+            set
+            {
+                var oldValue = this._dataJson;
+                if (oldValue != value || !IsPropDirty("Data"))
+                {
+                    this._dataJson = value;
+                    MarkPropDirty("Data");
+                    this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
                     {
                         this._dataRef = refName;
                         this.MarkPropDirty("DataRef");
@@ -171,6 +201,42 @@ namespace IgniteUI.Blazor.Controls
                     {
                         this._itemTemplateRef = refName;
                         this.MarkPropDirty("ItemTemplateRef");
+                    });
+                }
+            }
+        }
+
+        private string? _keyFunctionRef;
+        private string? _keyFunctionScript;
+
+        /// <summary>
+        /// Name of a client-side function that returns a unique key for an item. It receives the
+        /// item and its index in the data. An item keeps its rendered element while its key stays
+        /// in the rendered window. Without it the index is the key, so after a data change an index
+        /// keeps its element and shows its new item. Set it when items move within the data, for
+        /// example on sort, insert, prepend or remove, so element state stays with its item.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyKey", (item, index) => item.Id)</c>.
+        /// </remarks>
+        [Parameter]
+        public string? KeyFunctionScript
+        {
+            get { return _keyFunctionScript; }
+
+            set
+            {
+                var oldValue = this._keyFunctionScript;
+                if (oldValue != value || !IsPropDirty("KeyFunction"))
+                {
+                    this._keyFunctionScript = value;
+                    MarkPropDirty("KeyFunction");
+                    this.OnRefChanged("KeyFunction", oldValue, value, true, false, (string refName, object? old, object? newValue) =>
+                    {
+                        this._keyFunctionRef = refName;
+                        this.MarkPropDirty("KeyFunctionRef");
                     });
                 }
             }
@@ -376,6 +442,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddNumberProp("estimatedItemSize", this._estimatedItemSize); }
             if (IsPropDirty("ItemTemplateRef"))
             { ser.AddStringProp("itemTemplateRef", this._itemTemplateRef); }
+            if (IsPropDirty("KeyFunctionRef"))
+            { ser.AddStringProp("keyFunctionRef", this._keyFunctionRef); }
             if (IsPropDirty("StateChangeRef"))
             { ser.AddStringProp("stateChangeRef", this._stateChangeRef); }
             if (IsPropDirty("DataRequestRef"))
