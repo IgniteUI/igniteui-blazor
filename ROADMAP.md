@@ -10,6 +10,7 @@
 4. **[DONE]** Aligned to `igniteui-webcomponents@7.3.2` - QR code image export, Chip `Outlined`, Splitter collapsed panes and `LayoutChanged`, Tabs `SelectedTab`, Icon registration options
 5. **[DONE]** `IgbBreadcrumbs` - navigation trail of `IgbBreadcrumb` items with a configurable separator icon
 6. **[DONE]** Aligned to `igniteui-webcomponents@7.4.1` - popup `ScrollStrategy` on Combo, Select, Dropdown, Date Picker, Date Range Picker, Color Picker and Tooltip, native CSS anchor positioning, Button Group radio keyboard pattern
+7. **[DONE]** Aligned to `igniteui-webcomponents@7.5.0` - Combo remote data (server search and paging), select all, group selection and confirm selection mode
 
 ## Going down the road
 

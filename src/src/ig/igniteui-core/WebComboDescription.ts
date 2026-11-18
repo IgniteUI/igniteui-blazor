@@ -158,6 +158,46 @@ export class WebComboDescription extends WebBaseComboBoxDescription {
 		this._disableClear = value;
 		this.markDirty("DisableClear");
 	}
+	private _totalItemCount: number = 0;
+	get totalItemCount(): number {
+		return this._totalItemCount;
+	}
+	set totalItemCount(value: number) {
+		this._totalItemCount = value;
+		this.markDirty("TotalItemCount");
+	}
+	private _loading: boolean = false;
+	get loading(): boolean {
+		return this._loading;
+	}
+	set loading(value: boolean) {
+		this._loading = value;
+		this.markDirty("Loading");
+	}
+	private _showSelectAll: boolean = false;
+	get showSelectAll(): boolean {
+		return this._showSelectAll;
+	}
+	set showSelectAll(value: boolean) {
+		this._showSelectAll = value;
+		this.markDirty("ShowSelectAll");
+	}
+	private _groupSelection: boolean = false;
+	get groupSelection(): boolean {
+		return this._groupSelection;
+	}
+	set groupSelection(value: boolean) {
+		this._groupSelection = value;
+		this.markDirty("GroupSelection");
+	}
+	private _selectionCommit: string = null;
+	get selectionCommit(): string {
+		return this._selectionCommit;
+	}
+	set selectionCommit(value: string) {
+		this._selectionCommit = value;
+		this.markDirty("SelectionCommit");
+	}
 	private _value: any[] = null;
 	get value(): any[] {
 		return this._value;
@@ -269,6 +309,30 @@ export class WebComboDescription extends WebBaseComboBoxDescription {
 	set closedRef(value: string) {
 		this._closed = value;
 		this.markDirty("ClosedRef");
+	}
+	private _pendingChange: string = null;
+	get pendingChangeRef(): string {
+		return this._pendingChange;
+	}
+	set pendingChangeRef(value: string) {
+		this._pendingChange = value;
+		this.markDirty("PendingChangeRef");
+	}
+	private _searchInput: string = null;
+	get searchInputRef(): string {
+		return this._searchInput;
+	}
+	set searchInputRef(value: string) {
+		this._searchInput = value;
+		this.markDirty("SearchInputRef");
+	}
+	private _dataRequest: string = null;
+	get dataRequestRef(): string {
+		return this._dataRequest;
+	}
+	set dataRequestRef(value: string) {
+		this._dataRequest = value;
+		this.markDirty("DataRequestRef");
 	}
 }
 

@@ -35,6 +35,9 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
     internal static string UuidRef(InteropHarness interop, IRenderedComponent<IComponent> cut, int index) =>
         $$"""{"refType": "uuid", "id": "{{DataItemId(interop, cut, index)}}"}""";
 
+    internal static string ClosingDetail(string trigger) =>
+        $$$$"""{"detail": {"retType": "object", "type": "WebComboClosingEventArgsDetail", "value": {"trigger": "{{{{trigger}}}}"}}}""";
+
     internal static string ChangeDetail(string newValues, string items, string type = "selection") =>
         $$$$"""{"detail": {"retType": "object", "type": "WebComboChangeEventArgsDetail", "value": {"newValue": {"retType": "Array", "type": "", "value": [{{{{newValues}}}}]}, "items": {"retType": "Array", "type": "", "value": [{{{{items}}}}]}, "type": "{{{{type}}}}"}}}""";
 
@@ -51,6 +54,12 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         .Method(c => c.DeselectAsync([_valueItem1]), c => c.Deselect([_valueItem1]), "deselect",
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             args: [FromRender.Of<object?>((interop, cut) => new RawJson($"[{UuidRef(interop, cut, 0)}]"))], types: [""])
+        .Method(c => c.SelectAllItemsAsync(false), c => c.SelectAllItems(false), "selectAllItems", args: [false], types: ["Boolean"])
+        .Method(c => c.SelectAllItemsAsync(true), c => c.SelectAllItems(true), "selectAllItems", args: [true], types: ["Boolean"])
+        .Method(c => c.DeselectAllItemsAsync(false), c => c.DeselectAllItems(false), "deselectAllItems", args: [false], types: ["Boolean"])
+        .Method(c => c.DeselectAllItemsAsync(true), c => c.DeselectAllItems(true), "deselectAllItems", args: [true], types: ["Boolean"])
+        .Method(c => c.CommitSelectionAsync(), c => c.CommitSelection(), "commitSelection")
+        .Method(c => c.CancelSelectionAsync(), c => c.CancelSelection(), "cancelSelection")
         .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
         .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("invalid entry"), c => c.SetCustomValidity("invalid entry"), "setCustomValidity",
@@ -60,6 +69,11 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(
                 $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 0)}}"}]""")),
             assert: (cut, result) => Assert.Same(_valueItem1, Assert.Single(result)))
+        .Getter(c => c.GetPendingValueAsync(), c => c.GetPendingValue(), "PendingValue",
+            arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array(
+                $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 1)}}"}]""")),
+            assert: (cut, result) => Assert.Same(_valueItem2, Assert.Single(result)))
         .Getter(c => c.GetSelectionAsync(), c => c.GetSelection(), "Selection",
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(
@@ -108,8 +122,30 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         .Event(c => c.Blur)
         .Event(c => c.Opening)
         .Event(c => c.Opened)
-        .Event(c => c.Closing)
-        .Event(c => c.Closed)
+        .Event(c => c.Closing,
+            argsJson: ClosingDetail("outside-click"),
+            assert: (cut, args) => Assert.Equal(ComboCloseTrigger.OutsideClick, args.Detail.Trigger))
+        .Event(c => c.Closed,
+            argsJson: ClosingDetail("apply"),
+            assert: (cut, args) => Assert.Equal(ComboCloseTrigger.Apply, args.Detail.Trigger))
+        .Event(c => c.PendingChange,
+            arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
+            argsJson: FromRender.Of((interop, cut) => ChangeDetail(UuidRef(interop, cut, 1), UuidRef(interop, cut, 1))),
+            assert: (cut, args) =>
+            {
+                Assert.Same(_valueItem2, Assert.Single(args.Detail.NewValue));
+                Assert.Equal(ComboChangeType.Selection, args.Detail.ChangeType);
+            })
+        .Event(c => c.SearchInput,
+            argsJson: """{"detail": {"retType": "object", "type": "WebComboSearchInputEventArgsDetail", "value": {"searchText": "sec"}}}""",
+            assert: (cut, args) => Assert.Equal("sec", args.Detail.SearchText))
+        .Event(c => c.DataRequest,
+            argsJson: """{"detail": {"retType": "object", "type": "WebVirtualScrollDataRequestEventArgsDetail", "value": {"startIndex": 50, "count": 25}}}""",
+            assert: (cut, args) =>
+            {
+                Assert.Equal(50, args.Detail.StartIndex);
+                Assert.Equal(25, args.Detail.Count);
+            })
         .Prop(c => c.Open, true)
         .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Prop(c => c.Outlined, true)
@@ -134,9 +170,17 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
                 MatchDiacritics = true,
             },
             wire: new JsonSubset("""{"filterKey": "text", "caseSensitive": true, "matchDiacritics": true}"""))
+        .Prop(c => c.FilteringOptions,
+            new IgbFilteringOptions { Mode = ComboFilteringMode.Remote },
+            wire: new JsonSubset("""{"mode": "remote"}"""))
         .Prop(c => c.CaseSensitiveIcon, true)
         .Prop(c => c.DisableFiltering, true)
         .Prop(c => c.DisableClear, true)
+        .Prop(c => c.TotalItemCount, 250.0)
+        .Prop(c => c.Loading, true)
+        .Prop(c => c.ShowSelectAll, true)
+        .Prop(c => c.GroupSelection, true)
+        .Prop(c => c.SelectionCommit, ComboSelectionCommit.Confirm, wire: "confirm")
         .Prop(c => c.Disabled, true)
         .Prop(c => c.Required, true)
         .Prop(c => c.Invalid, true)
@@ -350,6 +394,53 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
 
         cut.WaitForAssertion(() => Assert.Contains("Group: First", cut.Markup));
         Assert.Equal("First", received?.Key);
+    }
+
+    [Fact]
+    public void Combo_GroupHeaderTemplate_ReceivesKeyOfContext()
+    {
+        Interop.PrimeReady();
+        IgbComboGroupHeaderContext? received = null;
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.GroupKey, "Text")
+            .Add(c => c.GroupHeaderTemplate, (IgbComboGroupHeaderContext ctx) => b =>
+            {
+                received = ctx;
+                b.AddContent(0, $"Group: {ctx.Key}");
+            }));
+
+        // Since 7.5 the web component passes { key, item }; key wins over the synthetic record.
+        var containerId = Interop.ContainerIdOf(cut);
+        var templateId = TemplateId(cut, "groupHeaderTemplate");
+        var batch = JsonSerializer.Serialize(new object[]
+        {
+            new { containerId, contentType = "TemplateContent", templateId, contentId = "content-1", actionType = "Add", args = (string?)null },
+            new
+            {
+                containerId, contentType = "TemplateContent", templateId, contentId = "content-1", actionType = "Update",
+                args = """{"retType": "object", "type": "", "value": {"key": "Other", "item": {"retType": "object", "type": "", "value": {"Text": "Ignored"}}}}""",
+            },
+        });
+        Interop.AdjustDynamicContentBatch(containerId, batch);
+
+        cut.WaitForAssertion(() => Assert.Contains("Group: Other", cut.Markup));
+        Assert.Equal("Other", received?.Key);
+    }
+
+    [Fact]
+    public void Combo_ClosingHandlerTakingVoidEventArgs_StillBinds()
+    {
+        Interop.PrimeReady();
+        IgbVoidEventArgs? received = null;
+        void OnClosing(IgbVoidEventArgs args) => received = args;
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Closing, (Action<IgbVoidEventArgs>)OnClosing));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Closing", ClosingDetail("escape"));
+
+        var args = Assert.IsType<IgbComboClosingEventArgs>(received);
+        Assert.Equal(ComboCloseTrigger.Escape, args.Detail.Trigger);
     }
 
     [Fact]

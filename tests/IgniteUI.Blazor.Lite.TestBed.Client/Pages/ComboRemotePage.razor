@@ -1,0 +1,103 @@
+@page "/combo-remote"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@implements IDisposable
+@inject IJSRuntime JS
+
+@* Combo features of igniteui-webcomponents 7.5: remote filtering (SearchInput / DataRequest),
+   the close trigger of Closing / Closed, and the confirm selection mode (PendingChange, a
+   single "commit" Change). The handlers record what .NET receives; tests read it through
+   window.clientPageRef.GetLog(). Prerender is off, so the combos existing means WASM is live. *@
+
+<div id="container">
+    <IgbCombo id="remote" TValue="int" TItem="ComboDataScenarios.Product"
+              ValueKey="Id" DisplayKey="Name"
+              FilteringOptions="_remoteFiltering"
+              Data="_remoteItems"
+              TotalItemCount="_remoteTotal"
+              SearchInput="OnSearchInput"
+              DataRequest="OnDataRequest"
+              Closing="OnClosing"
+              Closed="OnClosed" />
+
+    <IgbCombo id="confirm" TValue="int" TItem="ComboDataScenarios.Product"
+              ValueKey="Id" DisplayKey="Name"
+              Data="_confirmItems"
+              SelectionCommit="ComboSelectionCommit.Confirm"
+              PendingChange="OnPendingChange"
+              Change="OnChange" />
+</div>
+
+@code {
+    private static readonly List<ComboDataScenarios.Product> _catalog = Enumerable.Range(1, 500)
+        .Select(i => new ComboDataScenarios.Product { Id = i, Name = $"Product {i:000}", Price = i, Restocked = new DateTime(2026, 1, 1) })
+        .ToList();
+
+    private readonly IgbFilteringOptions _remoteFiltering = new() { Mode = ComboFilteringMode.Remote };
+    private List<ComboDataScenarios.Product> _remoteItems = _catalog.Take(20).ToList();
+    private double? _remoteTotal = _catalog.Count;
+    private string _search = "";
+    private readonly List<ComboDataScenarios.Product> _confirmItems = _catalog.Take(5).ToList();
+
+    private readonly List<string> _searchTexts = new();
+    private readonly List<string> _requests = new();
+    private readonly List<string> _closing = new();
+    private readonly List<string> _closed = new();
+    private readonly List<string> _pending = new();
+    private readonly List<string> _changes = new();
+    private DotNetObjectReference<ComboRemotePage>? _selfRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _selfRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("registerClientPageRef", _selfRef);
+        }
+    }
+
+    public void Dispose()
+    {
+        _selfRef?.Dispose();
+    }
+
+    private IEnumerable<ComboDataScenarios.Product> Matches() =>
+        _catalog.Where(p => p.Name.Contains(_search, StringComparison.OrdinalIgnoreCase));
+
+    private void OnSearchInput(IgbComboSearchInputEventArgs args)
+    {
+        _search = args.Detail.SearchText ?? "";
+        _searchTexts.Add(_search);
+        var matches = Matches().ToList();
+        _remoteItems = matches.Take(20).ToList();
+        _remoteTotal = matches.Count;
+    }
+
+    private void OnDataRequest(IgbVirtualScrollDataRequestEventArgs args)
+    {
+        var start = (int)args.Detail.StartIndex;
+        var count = (int)args.Detail.Count;
+        _requests.Add($"{start}:{count}");
+        _remoteItems = _remoteItems.Take(start).Concat(Matches().Skip(start).Take(count)).ToList();
+    }
+
+    private void OnClosing(IgbComboClosingEventArgs args) => _closing.Add(args.Detail.Trigger.ToString());
+
+    private void OnClosed(IgbComboClosingEventArgs args) => _closed.Add(args.Detail.Trigger.ToString());
+
+    private void OnPendingChange(IgbComboChangeEventArgs<int, ComboDataScenarios.Product> args) =>
+        _pending.Add($"{args.Detail.ChangeType}:{string.Join(",", args.Detail.NewValue)}");
+
+    private void OnChange(IgbComboChangeEventArgs<int, ComboDataScenarios.Product> args) =>
+        _changes.Add($"{args.Detail.ChangeType}:{string.Join(",", args.Detail.NewValue)}");
+
+    [JSInvokable]
+    public object GetLog() => new
+    {
+        SearchTexts = _searchTexts,
+        Requests = _requests,
+        Closing = _closing,
+        Closed = _closed,
+        Pending = _pending,
+        Changes = _changes,
+    };
+}

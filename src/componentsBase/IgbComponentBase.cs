@@ -2662,6 +2662,11 @@ namespace IgniteUI.Blazor.Controls
 
         internal string? EnumToString<T>(T val) where T : struct
         {
+            if (Utils.TryGetWCEnumName(typeof(T), val.ToString(), out var wcName))
+            {
+                return wcName;
+            }
+
             if (UseCamelEnumValues)
             {
                 return Camelize(val.ToString());
@@ -2680,6 +2685,11 @@ namespace IgniteUI.Blazor.Controls
             var str = val.ToString();
             T ret;
             if (Enum.TryParse<T>(str, true, out ret))
+            {
+                return ret;
+            }
+            // Kebab-case web component values, such as "outside-click", map to [WCEnumName] members.
+            if (str != null && str.Contains('-') && Enum.TryParse<T>(str.Replace("-", ""), true, out ret))
             {
                 return ret;
             }

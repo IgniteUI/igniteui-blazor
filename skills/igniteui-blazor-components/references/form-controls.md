@@ -63,6 +63,39 @@ Icons in `prefix` / `suffix` slots must be `IgbIcon`. A `<span class="material-i
 
 The combo is generic over its value type: the `ValueKey` property's type (here `City.Id`, `string`), or the item type when there is no `ValueKey`. `Value` is an array of it, even with `SingleSelect`. The full `IgniteUI.Blazor` names it `T`; `IgniteUI.Blazor.Lite` names it `TValue` and adds `TItem`, the item type `Data` takes. Razor infers them from `@bind-Value` and `Data`, so the example sets neither. Set them when there is nothing to infer them from, and in Lite whenever the combo has a `Change` handler, as its args are `IgbComboChangeEventArgs<TValue, TItem>`: `<IgbCombo T="string" …>` in the full product, `<IgbCombo TValue="string" TItem="City" …>` in Lite. `IgbCombo` does not participate in a plain HTML `<form>`; bind its value explicitly.
 
+In `IgniteUI.Blazor.Lite` (on `igniteui-webcomponents` 7.5), the combo can search and page on the server:
+
+```razor
+<IgbCombo TValue="int" TItem="Product" ValueKey="Id" DisplayKey="Name"
+          FilteringOptions="_remote" Data="_items" TotalItemCount="_total" Loading="_loading"
+          SearchInput="OnSearch" DataRequest="OnMore" />
+
+@code {
+    private readonly IgbFilteringOptions _remote = new() { Mode = ComboFilteringMode.Remote };
+    private List<Product> _items = [];
+    private double? _total;
+    private bool _loading;
+    private string _search = "";
+
+    private async Task OnSearch(IgbComboSearchInputEventArgs e)
+    {
+        _search = e.Detail.SearchText ?? "";
+        _loading = true;
+        (_items, _total) = await Api.SearchAsync(_search, skip: 0, take: 50);
+        _loading = false;
+    }
+
+    private async Task OnMore(IgbVirtualScrollDataRequestEventArgs e)
+    {
+        var (page, total) = await Api.SearchAsync(_search, (int)e.Detail.StartIndex, (int)e.Detail.Count);
+        _items = [.. _items.Take((int)e.Detail.StartIndex), .. page];   // assign a new list; the combo sees the longer data
+        _total = total;
+    }
+}
+```
+
+Without `Mode = Remote` the combo filters `Data` itself and `DataRequest` never fires. A new `Data` keeps the selection, so set `Value` to `[]` to clear it with the data. Other Lite options: `ShowSelectAll` and `GroupSelection` (with `GroupKey`) add select-all options in multiple selection; `SelectionCommit="ComboSelectionCommit.Confirm"` holds the user's changes until Enter or Apply, emitting `PendingChange` per toggle and one `Change` of `ComboChangeType.Commit`; `Closing` / `Closed` carry `IgbComboClosingEventArgs` with `Detail.Trigger`.
+
 ## Select
 
 ```razor

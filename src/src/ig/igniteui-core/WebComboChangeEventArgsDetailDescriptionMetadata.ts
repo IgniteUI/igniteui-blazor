@@ -29,7 +29,7 @@ export class WebComboChangeEventArgsDetailDescriptionMetadata extends Base {
 		metadata.item("ItemsRef", "(w:Items,p:Items)DataRef:object");
 		metadata.item("ChangeType", "(wc:Type)ExportedType:string:ComboChangeType");
 		metadata.item("ChangeType@stringUnion", "WebComponents;React");
-		metadata.item("ChangeType@names", "Selection;Deselection;Addition");
+		metadata.item("ChangeType@names", "Selection;Deselection;Addition;Commit");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebComboChangeEventArgsDetailDescriptionMetadata.ensureMetadata(context);

@@ -64,6 +64,24 @@ namespace IgniteUI.Blazor.Controls
                 case "ComboChangeEventArgsDetail":
                 case "WebComboChangeEventArgsDetail":
                     return true;
+                case "ComboClosingEventArgs":
+                case "WebComboClosingEventArgs":
+                    return true;
+                case "ComboClosingEventArgsDetail":
+                case "WebComboClosingEventArgsDetail":
+                    return true;
+                case "ComboSearchInputEventArgs":
+                case "WebComboSearchInputEventArgs":
+                    return true;
+                case "ComboSearchInputEventArgsDetail":
+                case "WebComboSearchInputEventArgsDetail":
+                    return true;
+                case "VirtualScrollDataRequestEventArgs":
+                case "WebVirtualScrollDataRequestEventArgs":
+                    return true;
+                case "VirtualScrollDataRequestEventArgsDetail":
+                case "WebVirtualScrollDataRequestEventArgsDetail":
+                    return true;
                 case "ComponentBoolValueChangedEventArgs":
                 case "WebComponentBoolValueChangedEventArgs":
                     return true;
@@ -212,6 +230,24 @@ namespace IgniteUI.Blazor.Controls
                 case "ComboChangeEventArgsDetail":
                 case "WebComboChangeEventArgsDetail":
                     return new IgbComboChangeEventArgsDetail<TValue, TItem>();
+                case "ComboClosingEventArgs":
+                case "WebComboClosingEventArgs":
+                    return new IgbComboClosingEventArgs();
+                case "ComboClosingEventArgsDetail":
+                case "WebComboClosingEventArgsDetail":
+                    return new IgbComboClosingEventArgsDetail();
+                case "ComboSearchInputEventArgs":
+                case "WebComboSearchInputEventArgs":
+                    return new IgbComboSearchInputEventArgs();
+                case "ComboSearchInputEventArgsDetail":
+                case "WebComboSearchInputEventArgsDetail":
+                    return new IgbComboSearchInputEventArgsDetail();
+                case "VirtualScrollDataRequestEventArgs":
+                case "WebVirtualScrollDataRequestEventArgs":
+                    return new IgbVirtualScrollDataRequestEventArgs();
+                case "VirtualScrollDataRequestEventArgsDetail":
+                case "WebVirtualScrollDataRequestEventArgsDetail":
+                    return new IgbVirtualScrollDataRequestEventArgsDetail();
                 case "ComponentBoolValueChangedEventArgs":
                 case "WebComponentBoolValueChangedEventArgs":
                     return new IgbComponentBoolValueChangedEventArgs();

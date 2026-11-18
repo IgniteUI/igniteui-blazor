@@ -18,11 +18,24 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        // The web component calls both templates with a plain { item } context, which arrives
-        // here as a property bag whose item entry is still unresolved.
+        // The web component calls the item template with a plain { item } context and the group
+        // header template with { key, item }, which arrive here as property bags whose entries
+        // are still unresolved.
         private protected override object? ConvertTemplateContext(string? templateId, object? context)
         {
-            if (context is not Dictionary<string, object?> args || !args.TryGetValue("item", out var item))
+            if (context is not Dictionary<string, object?> args)
+            {
+                return base.ConvertTemplateContext(templateId, context);
+            }
+
+            if (templateId != null && templateId == _groupHeaderTemplateTemplateId && args.TryGetValue("key", out var keyValue))
+            {
+                // Since 7.5 the web component gives the group value directly; "Other" stands for
+                // the items without a value in the GroupKey field.
+                return new IgbComboGroupHeaderContext { Key = ToKey(ConvertReturnValue(keyValue)) };
+            }
+
+            if (!args.TryGetValue("item", out var item))
             {
                 return base.ConvertTemplateContext(templateId, context);
             }
@@ -44,20 +57,25 @@ namespace IgniteUI.Blazor.Controls
                     ConvertReturnValue(item) is Dictionary<string, object?> record &&
                     record.TryGetValue(GroupKey, out var keyObj))
                 {
-                    key = ConvertReturnValue(keyObj);
-                    if (key is JsonElement { ValueKind: JsonValueKind.True or JsonValueKind.False } boolKey)
-                    {
-                        key = boolKey.GetBoolean();
-                    }
-                    else if (key is JsonElement { ValueKind: JsonValueKind.Null })
-                    {
-                        key = null;
-                    }
+                    key = ToKey(ConvertReturnValue(keyObj));
                 }
                 return new IgbComboGroupHeaderContext { Key = key };
             }
 
             return base.ConvertTemplateContext(templateId, context);
+        }
+
+        private static object? ToKey(object? key)
+        {
+            if (key is JsonElement { ValueKind: JsonValueKind.True or JsonValueKind.False } boolKey)
+            {
+                return boolKey.GetBoolean();
+            }
+            if (key is JsonElement { ValueKind: JsonValueKind.Null })
+            {
+                return null;
+            }
+            return key;
         }
 
         private static object? ToItem(object? value)
