@@ -98,3 +98,5 @@ registerScript('OnDialogClosing', (evt) => {
 ```
 
 The function is attached as a listener for the matching `igc*` DOM event on the component's element. `evt.detail` holds the event arguments where the event has any; cancelable events (`Opening`/`Closing` on dialogs, dropdowns and the like, `ActiveStepChanging` on the stepper, tree expand/collapse and selection changes, `Change` on some inputs) are cancelled with `evt.preventDefault()`.
+
+A script handler that calls back into .NET (`dotNetRef.invokeMethodAsync('Method', …)`) lands in a `[JSInvokable]` method, and Blazor does not re-render after it. End that method with one `StateHasChanged()` when it changes what the page shows — no `InvokeAsync` is needed, the call already runs on the renderer's dispatcher. Prefer the C# event when you don't need the script's synchronous `preventDefault()`: its handler re-renders automatically.

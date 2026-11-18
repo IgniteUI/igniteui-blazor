@@ -94,7 +94,7 @@ Row data inside a body template is `cell.Cell.Row.Data`. Editors use `InlineEdit
 
 ## Remote data
 
-Grid Lite drives server-side work through `DataPipelineConfiguration`. `IgbGrid` uses events instead — handle `SortingDone` / `FilteringDone` / `PageChange` and reload `Data` yourself:
+Grid Lite drives server-side work through `DataPipelineConfiguration`. `IgbGrid` uses events instead — handle `SortingDone` / `FilteringDone` / the paginator's `PagingDone` and reload `Data` yourself:
 
 ```razor
 <IgbGrid @ref="grid" Data="@data" PrimaryKey="Id" Height="600px"
@@ -104,7 +104,7 @@ Grid Lite drives server-side work through `DataPipelineConfiguration`. `IgbGrid`
     private async Task OnSortingDone(IgbSortingExpressionEventArgs args)
     {
         data = await DataService.SortAsync(args.Detail);
-        StateHasChanged();
+        // No StateHasChanged(): SortingDone is an EventCallback, so the page re-renders when this Task completes.
     }
 }
 ```

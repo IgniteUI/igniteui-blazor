@@ -26,19 +26,20 @@ Paging is not a grid parameter — place an `IgbPaginator` **inside** the grid a
 | `TotalRecords` | `double` | — | Server-side total; required for remote paging |
 | `SelectOptions` | `double[]` | `[5, 10, 15, 25, 50]` | Page-size dropdown |
 
-Events: `PageChange` and `PerPageChange` (`IgbNumberEventArgs`), `PagingDone` (`IgbPageEventArgs`).
+Events: `PageChange` and `PerPageChange` (`IgbNumberEventArgs`), `PagingDone` (`IgbPageEventArgs`; `Detail.Previous` / `Detail.Current`). Drive page loads from **`PagingDone`, not `PageChange`**: when the page size changes on a later page, the paginator resets to page 0 and raises a `PageChange` the Blazor wrapper fails to convert — an `InvalidCastException` is logged to the console (as `console.log`) and the handler never runs. `PagingDone` fires for user navigation and for that reset.
 
 The Pivot Grid does not support paging.
 
 ## Remote paging
 
-Bind `Data` to just the current page and tell the paginator the true total.
+Bind `Data` to just the current page, set `PagingMode="GridPagingMode.Remote"`, and tell the paginator the true total.
 
 ```razor
-<IgbGrid Data="currentPageData" PrimaryKey="Id" AutoGenerate="false" Width="100%" Height="500px">
+<IgbGrid Data="currentPageData" PrimaryKey="Id" AutoGenerate="false" Width="100%" Height="500px"
+         PagingMode="GridPagingMode.Remote">
     <IgbColumn Field="Name" Header="Name" />
     <IgbPaginator PerPage="@pageSize" TotalRecords="@totalRecords"
-                  PageChange="OnPageChange" PerPageChange="OnPerPageChange" />
+                  PagingDone="OnPagingDone" PerPageChange="OnPerPageChange" />
 </IgbGrid>
 
 @code {
@@ -48,9 +49,11 @@ Bind `Data` to just the current page and tell the paginator the true total.
 
     protected override Task OnInitializedAsync() => LoadPageAsync();
 
-    private Task OnPageChange(IgbNumberEventArgs args)
+    private Task OnPagingDone(IgbPageEventArgs args)
     {
-        currentPage = (int)args.Detail;
+        var page = (int)args.Detail.Current;
+        if (page == currentPage) return Task.CompletedTask;   // the reset after a page-size change is already loaded
+        currentPage = page;
         return LoadPageAsync();
     }
 
@@ -61,17 +64,18 @@ Bind `Data` to just the current page and tell the paginator the true total.
         return LoadPageAsync();
     }
 
+    // No StateHasChanged(): the event handlers and OnInitializedAsync return this Task,
+    // and the component re-renders when it completes.
     private async Task LoadPageAsync()
     {
         var result = await Api.GetEmployeesPagedAsync(currentPage, pageSize);
         currentPageData = result.Items;
         totalRecords = result.TotalCount;
-        StateHasChanged();
     }
 }
 ```
 
-Without `TotalRecords` the paginator cannot compute the page count and paging silently misbehaves.
+Without `PagingMode="GridPagingMode.Remote"` the grid pages only the rows it holds and overrides `TotalRecords`: the pager shows "1 of 1" and no paging event fires. Without `TotalRecords` the paginator cannot compute the page count.
 
 ## Remote sorting and filtering
 
@@ -79,10 +83,12 @@ Handle `SortingDone` and `FilteringDone`, translate the expressions into a serve
 
 ```razor
 <IgbGrid Data="data" PrimaryKey="Id" Height="600px" AllowFiltering="true"
+         PagingMode="GridPagingMode.Remote"
          SortingDone="OnSortingDone" FilteringDone="OnFilteringDone">
     <IgbColumn Field="Name" Sortable="true" Filterable="true" />
     <IgbColumn Field="Salary" Sortable="true" DataType="GridColumnDataType.Number" />
-    <IgbPaginator PerPage="@pageSize" TotalRecords="@totalRecords" PageChange="OnPageChange" />
+    <IgbPaginator PerPage="@pageSize" TotalRecords="@totalRecords"
+                  PagingDone="OnPagingDone" PerPageChange="OnPerPageChange" />
 </IgbGrid>
 
 @code {
@@ -106,9 +112,18 @@ Handle `SortingDone` and `FilteringDone`, translate the expressions into a serve
         return LoadDataAsync();
     }
 
-    private Task OnPageChange(IgbNumberEventArgs args)
+    private Task OnPagingDone(IgbPageEventArgs args)
     {
-        currentPage = (int)args.Detail;
+        var page = (int)args.Detail.Current;
+        if (page == currentPage) return Task.CompletedTask;
+        currentPage = page;
+        return LoadDataAsync();
+    }
+
+    private Task OnPerPageChange(IgbNumberEventArgs args)
+    {
+        pageSize = (int)args.Detail;
+        currentPage = 0;
         return LoadDataAsync();
     }
 
@@ -125,7 +140,6 @@ Handle `SortingDone` and `FilteringDone`, translate the expressions into a serve
 
         data = result.Items;
         totalRecords = result.TotalCount;
-        StateHasChanged();
     }
 }
 ```
@@ -146,5 +160,6 @@ Two requirements:
 ## Rules
 
 - `IgbPaginator` is a **child** of the grid, not a sibling.
-- Always call `StateHasChanged()` after reassigning `Data` from an async operation.
+- For remote paging set `PagingMode="GridPagingMode.Remote"` on the grid.
+- Don't call `StateHasChanged()` after reassigning `Data` in an `EventCallback` handler (`PagingDone`, `PerPageChange`, `SortingDone`, `FilteringDone`, …) or in `OnInitializedAsync` / `OnParametersSetAsync`: the component re-renders when the returned `Task` completes, and an extra call inside an Ignite UI callback renders immediately, adding a render each time. Call it once only when `Data` changes outside those paths — a timer, a service event, a `[JSInvokable]` method, or an `Action<T>` event (`RowAdded`, `RowDeleted`, `CellEditDone`).
 - `Data` must be a materialized `List<T>` or `T[]` — do not hand the grid an `IQueryable` and expect it to compose `Skip`/`Take`.

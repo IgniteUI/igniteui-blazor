@@ -36,13 +36,25 @@ Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Bo
         }
     }
 
-    private async Task OnCellEditDone(IgbGridEditDoneEventArgs args)
-        => await EmployeeService.UpdateFieldAsync(
-            args.Detail.RowData,
-            args.Detail.Column.Field,
-            args.Detail.NewValue);
+    // CellEditDone is an Action<T>, not an EventCallback: the handler must return void
+    // (an async Task handler fails with CS0407) and gets no automatic re-render.
+    private void OnCellEditDone(IgbGridEditDoneEventArgs args)
+    {
+        var edit = args.Detail;
+        _ = SaveAsync(() => EmployeeService.UpdateFieldAsync(edit.RowData, edit.Column.Field, edit.NewValue));
+    }
+
+    private async Task SaveAsync(Func<Task> save)
+    {
+        try { await save(); }
+        catch (Exception ex) { Logger.LogError(ex, "Saving the cell edit failed"); }
+    }
 }
 ```
+
+`CellEditDone`, `RowAdded` and `RowDeleted` are `Action<T>` parameters: return `void`, and call `StateHasChanged()` yourself if the page shows something they change (or forward to an `EventCallback` of a parent component, which re-renders that parent). Check other events' parameter type with `get_api_reference` before writing an `async Task` handler.
+
+`RowDeleted` delivers `IgbRowDataEventArgs`: read the key from `Detail.RowKey` (`Detail.PrimaryKey` is obsolete; a numeric key arrives as `double`). When it fires, the grid's built-in delete has **already removed the row from the bound `List<T>`** — don't count deletes by removing from that same list.
 
 Double-click, or Enter on a focused cell, enters edit mode. The editor follows the column's `DataType`: text box, numeric input, date picker, or checkbox.
 
