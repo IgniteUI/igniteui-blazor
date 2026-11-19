@@ -22,6 +22,26 @@ namespace IgniteUI.Blazor.Controls
         private Dictionary<object, string> _idLookup = new Dictionary<object, string>();
         private Dictionary<string, bool> _suspensionLookup = new Dictionary<string, bool>();
 
+        /// <summary>
+        /// Called with the uuid and the item of each item that leaves a data source of this manager, by a
+        /// removal or because the data source is released. Set by a component that holds items past its
+        /// data, as a combo holds its selection; without it, nothing is tracked.
+        /// </summary>
+        internal Action<Guid, object>? ItemReleased { get; set; }
+
+        private Guid ReleasableId(IJSDataSource dataSource, object? item)
+        {
+            return ItemReleased != null && item != null && dataSource.HasOriginal(item) ? dataSource.IdFromOriginal(item) : Guid.Empty;
+        }
+
+        private void OnItemReleased(IJSDataSource dataSource, Guid id, object? item)
+        {
+            if (id != Guid.Empty && item != null && !dataSource.HasId(id))
+            {
+                ItemReleased?.Invoke(id, item);
+            }
+        }
+
         public object? FindItem(Guid id)
         {
             foreach (var data in
@@ -162,6 +182,13 @@ namespace IgniteUI.Blazor.Controls
                     {
                         _idLookup.Remove(_refsById[id]);
                     }
+                    if (ItemReleased != null && data is IJSDataSource released)
+                    {
+                        foreach (var entry in released.GetOriginals().ToList())
+                        {
+                            ItemReleased(entry.Key, entry.Value);
+                        }
+                    }
                     _dataSources.Remove(id);
                     _refsById.Remove(id);
                     _refSink?.OnRefChanged(id, null);
@@ -207,7 +234,9 @@ namespace IgniteUI.Blazor.Controls
                     return;
                 }
 
+                Guid releasedId = ReleasableId(dataSource, oldItem);
                 IJSDataSourceItem? oldItemJson = dataSource.NotifyRemoveItem(data, index, oldItem);
+                OnItemReleased(dataSource, releasedId, oldItem);
                 _refSink?.OnRefNotifyRemoveItem(dataSource, refName, index, oldItemJson);
             }
         }
@@ -227,7 +256,15 @@ namespace IgniteUI.Blazor.Controls
                     return;
                 }
 
+                var cleared = ItemReleased != null ? dataSource.GetOriginals().ToList() : null;
                 dataSource.NotifyClearItems(data);
+                if (cleared != null)
+                {
+                    foreach (var entry in cleared)
+                    {
+                        OnItemReleased(dataSource, entry.Key, entry.Value);
+                    }
+                }
                 _refSink?.OnRefNotifyClearItems(dataSource, refName, dataSource);
             }
         }
@@ -247,7 +284,9 @@ namespace IgniteUI.Blazor.Controls
                 }
 
                 IJSDataSourceItem? oldItemJson = dataSource.DataSourceType == JSDataSourceType.Json ? ((JsonDataSource)dataSource)[index] : null;
+                Guid releasedId = ReleasableId(dataSource, oldItem);
                 IJSDataSourceItem? newItemJson = dataSource.NotifySetItem(data, index, oldItem, newItem);
+                OnItemReleased(dataSource, releasedId, oldItem);
                 _refSink?.OnRefNotifySetItem(dataSource, refName, index, oldItemJson, newItemJson);
             }
         }

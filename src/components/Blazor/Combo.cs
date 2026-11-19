@@ -58,11 +58,8 @@ namespace IgniteUI.Blazor.Controls
 
                 if (oldValue != value || !IsPropDirty("Data"))
                 {
-                    if (oldValue != value)
-                    {
-                        // Before the old data source goes: its selected items stay resolvable.
-                        RetainSelectedItems(oldValue);
-                    }
+                    // Before the old data source goes: the items that leave it stay resolvable while the client holds them.
+                    EnsureItemReleaseTracking();
                     MarkPropDirty("Data");
                     this._data = value;
                     this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
@@ -853,42 +850,50 @@ namespace IgniteUI.Blazor.Controls
 
         /// <summary>
         /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are selected.
+        /// If no items are provided all items are selected. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="items">One or more items to be selected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public async Task SelectAsync(TValue[] items)
         {
             await InvokeMethod("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+            await SyncValueFromClientAsync();
         }
 
         /// <summary>
         /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are selected.
+        /// If no items are provided all items are selected. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="items">One or more items to be selected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public void Select(TValue[] items)
         {
             InvokeMethodSync("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+            SyncValueFromClient();
         }
 
         /// <summary>
         /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are deselected.
+        /// If no items are provided all items are deselected. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="items">One or more items to be deselected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public async Task DeselectAsync(TValue[] items)
         {
             await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+            await SyncValueFromClientAsync();
         }
 
         /// <summary>
         /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are deselected.
+        /// If no items are provided all items are deselected. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="items">One or more items to be deselected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public void Deselect(TValue[] items)
         {
             InvokeMethodSync("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+            SyncValueFromClient();
         }
 
         /// <summary>

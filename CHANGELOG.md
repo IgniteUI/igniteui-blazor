@@ -25,8 +25,8 @@ Updated to `igniteui-webcomponents` 7.5.0. Its [changelog](https://github.com/Ig
 ### Fixed
 
 - **Combo:** `Select` and `Deselect` with data items, not `ValueKey` values, now select and deselect those items. They sent references that the browser did not resolve.
-- **Combo:** the selected items of an earlier `Data` still resolve in `Change`, `GetSelection` and `Deselect` after `Data` is replaced, instead of coming back as `null`.
-- **Combo:** `Value` and `@bind-Value` follow `SelectAllItems`, `DeselectAllItems` and `CommitSelection`, which change the selection without a `Change` event.
+- **Combo:** selected and pending items that leave the data still resolve in `Change`, `GetSelection` and `Deselect`, instead of coming back as `null`. That covers a replaced `Data` and items removed from a bound `ObservableCollection`, with or without a `Change` handler and whatever the type of the `ValueKey` member.
+- **Combo:** `Value` and `@bind-Value` follow `Select`, `Deselect`, `SelectAllItems`, `DeselectAllItems` and `CommitSelection`, which change the selection without a `Change` event.
 - Changes to an `ObservableCollection` bound as `Data` now re-render the combo and the other components that render their data themselves, not only reach their data array.
 
 ### Changed
@@ -34,7 +34,7 @@ Updated to `igniteui-webcomponents` 7.5.0. Its [changelog](https://github.com/Ig
 - **Combo:** `Closing` and `Closed` take `IgbComboClosingEventArgs`, not `IgbVoidEventArgs`. It derives from `IgbVoidEventArgs`, so handler methods and untyped lambdas still bind; a lambda that declares its parameter as `IgbVoidEventArgs` must declare `IgbComboClosingEventArgs` instead.
 - **Combo:** a new `Data` keeps the selection, and a selected value that the data does not hold stays selected until it is deselected. To clear the selection with the data, as in cascading combos, set `Value` to an empty array.
 - **Combo:** the events of its inner inputs and list no longer leave the combo. Handle `SearchInput` for the search text.
-- **Range Slider:** `Upper` defaults to `100`, not `0`. Until it is set, the upper thumb follows `UpperBound`, or `Max` without a bound, so the default range covers the full scale.
+- **Range Slider:** until it is set, `Upper` returns the position of the upper thumb, which follows `UpperBound`, or `Max` without a bound, so the default range covers the full scale. It was `0`.
 - **Combo:** `GroupHeaderTemplate` takes `Key` from the group value that the web component now passes. Items without a value in the `GroupKey` field fall under `Other`.
 
 ## 1.0.1 - 2026-10-29

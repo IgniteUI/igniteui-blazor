@@ -160,6 +160,9 @@ namespace IgniteUI.Blazor.Controls
         }
 
         private bool _ready = false;
+
+        /// <summary>Whether the client-side component exists, so methods can be invoked on it.</summary>
+        private protected bool IsReady => _ready;
         private Dictionary<string, Action<object?, object?>> _handlers = new Dictionary<string, Action<object?, object?>>();
         private bool _updateQueued = false;
 

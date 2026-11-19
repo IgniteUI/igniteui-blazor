@@ -2317,6 +2317,11 @@ namespace IgniteUI.Blazor.Controls
             return _originalToUuid.ContainsKey(item);
         }
 
+        public IEnumerable<KeyValuePair<Guid, object>> GetOriginals()
+        {
+            return _uuidToOriginal;
+        }
+
         public static IJSDataSource? Create(Object data, DataSourceManager manager, RuntimeHelper helper)
         {
             if (data == null)

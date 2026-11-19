@@ -5,7 +5,7 @@ import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
 import { IgcTemplateContentComponent } from 'igniteui-core/igc-template-content-component';
-import { refValues, itemMaps, retireItem, retireItemMap, findItem } from './refs-state';
+import { refValues, itemMaps, findItem, heldItemIds } from './refs-state';
 import { _getRegisteredScript, _scriptRegistryEvents } from './api';
 
 // Ensure the <igc-lite-template-content> host element is always defined. Bridged
@@ -159,7 +159,6 @@ cr.addCleanupListener((container, refId) => {
     refValues.delete(refId);
   }
   if (itemMaps && itemMaps.has(refId)) {
-    retireItemMap(itemMaps.get(refId));
     itemMaps.delete(refId);
   }
 });
@@ -730,20 +729,49 @@ function ensureExternalObject(target: any) {
   return target;
 }
 
+// The metadata that the data ref code keeps on a data array, which a copy of the array carries over.
+const dataArrayMetadataKeys = ['__dataIntents', '__dateColumnsCache'];
+
+// Lit elements with a data ref refresh queued, and the refs to refresh, per element.
+const pendingRefRefreshes: Map<any, { container: any; refNames: Set<string> }> = new Map();
+
 // After a change inside a data ref's array: Angular elements re-check it, and Lit elements, which
-// re-render only on a new property value, get a copy of the array in place of the old one.
+// re-render only on a new property value, get a copy of the array in place of the old one. The copy
+// is made once, after the current task: a burst of changes, such as a page of items added one by one,
+// gives the element one new array, not one per item. refValues keeps the array that the changes edit.
 function refreshRefTarget(element: any, refName: string) {
   updateAngularElement(element);
-  if (element && !element.markForCheck && typeof element.requestUpdate === 'function') {
-    const refValue: any = refValues.get(refName);
-    if (Array.isArray(refValue)) {
-      const copy: any = refValue.slice();
-      if ((refValue as any).__dateColumnsCache) {
-        copy.__dateColumnsCache = (refValue as any).__dateColumnsCache;
-      }
-      cr.provideRefValue(currentContainer(), refName, copy);
-    }
+  if (!element || element.markForCheck || typeof element.requestUpdate !== 'function') {
+    return;
   }
+  let pending = pendingRefRefreshes.get(element);
+  if (!pending) {
+    const queued: { container: any; refNames: Set<string> } = {
+      container: currentContainer(),
+      refNames: new Set<string>(),
+    };
+    pending = queued;
+    pendingRefRefreshes.set(element, queued);
+    queueMicrotask(() => {
+      pendingRefRefreshes.delete(element);
+      if (!queued.container || queued.container.__disposed) {
+        return;
+      }
+      for (const name of queued.refNames) {
+        const refValue: any = refValues.get(name);
+        if (Array.isArray(refValue)) {
+          const copy: any = refValue.slice();
+          for (const key of dataArrayMetadataKeys) {
+            if (refValue[key] !== undefined) {
+              copy[key] = refValue[key];
+            }
+          }
+          cr.provideRefValue(queued.container, name, copy);
+        }
+      }
+    });
+  }
+  pending.refNames.add(refName);
 }
 
 function updateAngularElement(element: any) {
@@ -1317,6 +1345,10 @@ export const sendMessage = function sendMessage(
 
         child = ensureExternalObject(child);
 
+        // Not a member of the component: the uuids of the data items that it holds past its data,
+        // which the .NET side keeps resolvable while the component holds them (IgbCombo).
+        const isHeldItemIds = methodName == '___heldItemIds';
+
         var isPropGet = false;
         if (methodName.indexOf('p:') == 0) {
           isPropGet = true;
@@ -1324,7 +1356,7 @@ export const sendMessage = function sendMessage(
           methodName = methodName.substr(0, 1).toLowerCase() + methodName.substring(1);
         }
 
-        if (!hasProp(child, methodName)) {
+        if (!isHeldItemIds && !hasProp(child, methodName)) {
           if (methodName.endsWith('Component')) {
             methodName = methodName.substr(0, methodName.length - 'Component'.length);
           } else if (methodName.startsWith('perform')) {
@@ -1341,7 +1373,9 @@ export const sendMessage = function sendMessage(
           }
         }
 
-        if (isPropGet) {
+        if (isHeldItemIds) {
+          retVal = heldItemIds(child);
+        } else if (isPropGet) {
           retVal = child[methodName];
         } else {
           if (child[methodName]) {
@@ -1441,8 +1475,6 @@ export const sendMessage = function sendMessage(
         if (itemMaps.has(refName)) {
           let map = itemMaps.get(refName);
           if (oldItem.___id) {
-            retireItem(oldItem.___id, oldItem);
-
             map.delete(oldItem.___id);
           }
         }
@@ -1470,8 +1502,6 @@ export const sendMessage = function sendMessage(
           for (let i = 0; i < refValue.length; i++) {
             let child = refValue[i];
             if (child.___id) {
-              retireItem(child.___id, child);
-
               map.delete(child.___id);
             }
           }
@@ -1513,8 +1543,6 @@ export const sendMessage = function sendMessage(
         if (itemMaps.has(refName)) {
           let map = itemMaps.get(refName);
           if (oldItem.___id) {
-            retireItem(oldItem.___id, oldItem);
-
             map.delete(oldItem.___id);
           }
         }
@@ -2253,8 +2281,6 @@ function createOrUpdateUnmarshalledDataSource(refName: string, data: any[], colu
   if (oldData) {
     for (var i = 0; i < oldData.length; i++) {
       if (oldData[i].___id && !newMap.has(oldData[i].___id)) {
-        retireItem(oldData[i].___id, oldData[i]);
-
         itemMap.delete(oldData[i].___id);
       }
     }
@@ -2291,8 +2317,6 @@ function createOrUpdateUnmarshalledItem(refName: string, item: any, columns: Unm
     }
   }
   if (item.___id && item.___id != idColumn.stringValue) {
-    retireItem(item.___id, item);
-
     itemMap.delete(item.___id);
     item = {};
   }
@@ -2397,8 +2421,6 @@ export const unmarshalledDataSourceCreate = function unmarshalledDataSourceCreat
       for (let i = 0; i < oldData.length; i++) {
         let child = oldData[i];
         if (child.___id) {
-          retireItem(child.___id, child);
-
           map.delete(child.___id);
         }
       }

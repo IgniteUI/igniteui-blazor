@@ -20,80 +20,80 @@ namespace IgniteUI.Blazor.Controls
         }
 
         // A new Data keeps the selection (igniteui-webcomponents 7.5), as in remote filtering, where each
-        // search replaces the data. Replacing Data releases the old data source and its uuid -> item map,
-        // so the selected items of the old data would come back from the client as null. Keep the map
-        // entries of the items that are still in Value; the entries go once their items leave Value.
+        // search replaces the data, and the web component also keeps selected items that are removed
+        // from the data. When an item leaves the data source, .NET forgets its uuid, so a selected or
+        // pending item that the client sends back would resolve to null. Keep every item that leaves the
+        // data, then ask the client which of them it still holds (its selection and the pending selection
+        // of the confirm mode) and drop the rest.
         private readonly Dictionary<Guid, TItem> _retainedItems = new();
-        private string? _valueKeyMemberName;
-        private Func<TItem, object?>? _valueKeyReader;
+        private readonly Dictionary<object, Guid> _retainedIds = new(ReferenceEqualityComparer.Instance);
+        private bool _pruneScheduled;
 
-        private void RetainSelectedItems(IEnumerable<TItem>? oldData)
+        private void EnsureItemReleaseTracking()
         {
             var manager = DataSourceManager;
-            var selected = new HashSet<object>(_value.Where(v => v is not null).Cast<object>());
-
-            foreach (var entry in _retainedItems.Where(e => !IsSelected(selected, e.Value)).ToList())
+            if (manager != null && manager.ItemReleased == null)
             {
-                _retainedItems.Remove(entry.Key);
+                manager.ItemReleased = OnItemReleased;
             }
+        }
 
-            if (oldData == null || manager == null || selected.Count == 0)
+        private void OnItemReleased(Guid id, object item)
+        {
+            // Primitive items cross by value, not as uuid refs, so they need no mapping.
+            if (item is not TItem typed || Type.GetTypeCode(item.GetType()) != TypeCode.Object)
             {
                 return;
             }
-
-            foreach (var item in oldData)
+            if (_retainedIds.TryGetValue(item, out var oldId) && oldId != id)
             {
-                if (item is not null && IsSelected(selected, item))
+                _retainedItems.Remove(oldId);
+            }
+            _retainedItems[id] = typed;
+            _retainedIds[item] = id;
+            SchedulePruneRetainedItems();
+        }
+
+        private void SchedulePruneRetainedItems()
+        {
+            if (_pruneScheduled)
+            {
+                return;
+            }
+            _pruneScheduled = true;
+            _ = PruneRetainedItemsAsync();
+        }
+
+        private async Task PruneRetainedItemsAsync()
+        {
+            try
+            {
+                // Let the change that released the items reach the client first.
+                await Task.Yield();
+                _pruneScheduled = false;
+                if (!IsReady)
                 {
-                    var id = manager.FindItemId(item);
-                    if (id != Guid.Empty)
+                    // Before the client component exists, it holds nothing yet; the next release tries again.
+                    return;
+                }
+                var candidates = _retainedItems.Keys.ToList();
+                var held = ReturnToObjectArray<string>(await InvokeMethod("___heldItemIds", Array.Empty<object?>(), Array.Empty<string>()));
+                var heldIds = new HashSet<string>(held.Where(id => id != null), StringComparer.OrdinalIgnoreCase);
+                // Only the items retained before the query: the ones released since then wait for the next one.
+                foreach (var id in candidates)
+                {
+                    if (!heldIds.Contains(id.ToString()) && _retainedItems.Remove(id, out var item) && item is not null)
                     {
-                        _retainedItems[id] = item;
+                        _retainedIds.Remove(item);
                     }
                 }
             }
-        }
-
-        private bool IsSelected(HashSet<object> selected, TItem item)
-        {
-            var value = ValueOf(item);
-            return value is not null && selected.Contains(value);
-        }
-
-        // The value an item selects: its ValueKey member, or the item itself without a ValueKey.
-        private object? ValueOf(TItem item)
-        {
-            if (string.IsNullOrEmpty(ValueKey))
+            catch (Exception)
             {
-                return item;
+                // Best effort, in the background: the component is gone or the circuit is down. Keep the
+                // items; the next release tries again.
+                _pruneScheduled = false;
             }
-
-            if (_valueKeyMemberName != ValueKey)
-            {
-                _valueKeyMemberName = ValueKey;
-                _valueKeyReader = CreateMemberReader(ValueKey);
-            }
-            return _valueKeyReader?.Invoke(item);
-        }
-
-        private static Func<TItem, object?>? CreateMemberReader(string name)
-        {
-            // TItem carries DynamicallyAccessedMembers.All, so its members survive trimming.
-            const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance;
-            var property = typeof(TItem).GetProperty(name, flags)
-                ?? typeof(TItem).GetProperty(name, flags | System.Reflection.BindingFlags.IgnoreCase);
-            if (property != null && property.GetIndexParameters().Length == 0)
-            {
-                return item => property.GetValue(item);
-            }
-            var field = typeof(TItem).GetField(name, flags)
-                ?? typeof(TItem).GetField(name, flags | System.Reflection.BindingFlags.IgnoreCase);
-            if (field != null)
-            {
-                return item => field.GetValue(item);
-            }
-            return null;
         }
 
         private protected override object? FindRetainedItem(Guid id)
@@ -103,14 +103,7 @@ namespace IgniteUI.Blazor.Controls
 
         private protected override Guid FindRetainedItemId(object item)
         {
-            foreach (var entry in _retainedItems)
-            {
-                if (ReferenceEquals(entry.Value, item))
-                {
-                    return entry.Key;
-                }
-            }
-            return Guid.Empty;
+            return _retainedIds.TryGetValue(item, out var id) ? id : Guid.Empty;
         }
 
         // The web component calls the item template with a plain { item } context and the group

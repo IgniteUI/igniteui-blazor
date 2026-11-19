@@ -460,6 +460,33 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
     }
 
     [Fact]
+    public async Task Combo_SelectAndDeselect_PushTheNewValueToValueChanged()
+    {
+        // select() and deselect() do not emit igcChange either.
+        Interop.PrimeReady();
+        int[]? bound = null;
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.ValueChanged, (int[] v) => bound = v));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[1]"));
+        await cut.InvokeAsync(() => cut.Instance.SelectAsync([1]));
+
+        Assert.Equal([1], bound!);
+        Assert.Equal([1], cut.Instance.Value);
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[]"));
+        await cut.InvokeAsync(() => cut.Instance.DeselectAsync([1]));
+
+        Assert.Empty(bound!);
+    }
+
+    // The client's answer to which released items it still holds: its selection and pending selection.
+    private void SetupHeldItems(params string[] ids) =>
+        Interop.SetupMethodResult("___heldItemIds", InteropReturn.Array("[" + string.Join(", ", ids.Select(id => $"\"{id}\"")) + "]"));
+
+    [Fact]
     public void Combo_NewData_SelectedItemOfTheOldDataStillResolves()
     {
         // A new Data keeps the selection on the client, so its events still name the old item.
@@ -472,20 +499,72 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
             .Add(c => c.Change, (IgbComboChangeEventArgs<int, ComboItem> args) => received = args));
 
         var oldRef = UuidRef(Interop, cut, 0);
-        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("1", oldRef));
-        Assert.Equal([1], cut.Instance.Value);
+        SetupHeldItems(DataItemId(Interop, cut, 0));
 
         var newItem = new ComboItem { Id = 3, Text = "Third" };
         cut.Render(ps => ps.Add(c => c.Data, new[] { newItem }));
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
 
         // Deselecting the old item: Items names it by the uuid of the released data.
         Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("", oldRef, "deselection"));
         Assert.Same(_valueItem1, Assert.Single(received!.Detail.Items));
 
-        // Once it left Value, a later Data swap drops it.
+        // Once the client no longer holds it, the next release drops it.
+        SetupHeldItems();
         cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem2 }));
+        cut.WaitForAssertion(() =>
+        {
+            Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("", oldRef, "deselection"));
+            Assert.Null(Assert.Single(received!.Detail.Items));
+        });
+    }
+
+    [Fact]
+    public async Task Combo_NewData_WithoutChangeHandler_SelectionOfTheOldDataStillResolves()
+    {
+        // No Change handler, so .NET never learns the value; a long key for an int member. Retention
+        // follows what the client holds, not Value or ValueKey.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<long, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ValueKey, "Id"));
+
+        var oldRef = UuidRef(Interop, cut, 0);
+        SetupHeldItems(DataItemId(Interop, cut, 0));
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { new ComboItem { Id = 3, Text = "Third" } }));
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.SetupPropertyRead("Selection", InteropReturn.Array($"[{oldRef}]"));
+        var selection = await cut.InvokeAsync(() => cut.Instance.GetSelectionAsync());
+
+        Assert.Same(_valueItem1, Assert.Single(selection));
+    }
+
+    [Fact]
+    public void Combo_ObservableCollectionCleared_SelectedItemStillResolves()
+    {
+        // Clearing the bound collection in place releases its items, as a new Data does.
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs<int, ComboItem>? received = null;
+        var items = new System.Collections.ObjectModel.ObservableCollection<ComboItem> { _valueItem1, _valueItem2 };
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.Data, items)
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.Change, (IgbComboChangeEventArgs<int, ComboItem> args) => received = args));
+
+        var oldRef = UuidRef(Interop, cut, 0);
+        SetupHeldItems(DataItemId(Interop, cut, 0));
+
+        cut.InvokeAsync(() =>
+        {
+            items.Clear();
+            items.Add(new ComboItem { Id = 3, Text = "Third" });
+        });
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
         Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("", oldRef, "deselection"));
-        Assert.Null(Assert.Single(received!.Detail.Items));
+        Assert.Same(_valueItem1, Assert.Single(received!.Detail.Items));
     }
 
     [Theory]
