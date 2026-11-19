@@ -27,7 +27,8 @@ A selection reference, not an API reference. Confirm exact parameters with `get_
 | KPI / stat tile row | plain HTML in CSS Grid | compose Ignite UI primitives (icon, badge, progress) inside your own containers |
 | Avatar | `IgbAvatar` | `Shape` (`Circle`/`Rounded`/`Square`), `Initials`, `Src` |
 | Status badge / count | `IgbBadge` | `Variant` (`StyleVariant`), `Shape`, `Dot`, `Outlined` |
-| Filter tag, removable pill | `IgbChip` | `Removable`, `Selectable`, `Variant` |
+| Label: category, role, read-only tag | `IgbBadge` | set `role` to fit the context (default `status`) |
+| Filter tag, action, selectable or removable pill | `IgbChip` | `Removable`, `Selectable`, `Variant`; renders a button |
 | Icon | `IgbIcon` | `IconName` + `Collection`; register before first render |
 | Progress bar / ring | `IgbLinearProgress` / `IgbCircularProgress` | `Value`, `Max`, `Indeterminate` — not for data viz |
 | Tree view | `IgbTree` + `IgbTreeItem` | `Label`, `Expanded`, `Selection` |
