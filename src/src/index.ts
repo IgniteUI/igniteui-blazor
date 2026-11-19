@@ -5,7 +5,7 @@ import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
 import { IgcTemplateContentComponent } from 'igniteui-core/igc-template-content-component';
-import { refValues, itemMaps } from './refs-state';
+import { refValues, itemMaps, findItem, heldItemIds } from './refs-state';
 import { _getRegisteredScript, _scriptRegistryEvents } from './api';
 
 // Ensure the <igc-lite-template-content> host element is always defined. Bridged
@@ -152,14 +152,7 @@ function sameJsonValue(a: any, b: any): boolean {
 
 cr.addReferenceLookupListener((container, refType, value) => {
   if (refType == 'uuid') {
-    var retVal = null;
-    itemMaps.forEach((v, k, map) => {
-      if (v.has(value)) {
-        retVal = v.get(value);
-        return false;
-      }
-    });
-    return retVal;
+    return findItem(value) ?? null;
   } else {
     findByName(container, value);
   }
@@ -740,6 +733,51 @@ function ensureExternalObject(target: any) {
   return target;
 }
 
+// The metadata that the data ref code keeps on a data array, which a copy of the array carries over.
+const dataArrayMetadataKeys = ['__dataIntents', '__dateColumnsCache'];
+
+// Lit elements with a data ref refresh queued, and the refs to refresh, per element.
+const pendingRefRefreshes: Map<any, { container: any; refNames: Set<string> }> = new Map();
+
+// After a change inside a data ref's array: Angular elements re-check it, and Lit elements, which
+// re-render only on a new property value, get a copy of the array in place of the old one. The copy
+// is made once, after the current task: a burst of changes, such as a page of items added one by one,
+// gives the element one new array, not one per item. refValues keeps the array that the changes edit.
+function refreshRefTarget(element: any, refName: string) {
+  updateAngularElement(element);
+  if (!element || element.markForCheck || typeof element.requestUpdate !== 'function') {
+    return;
+  }
+  let pending = pendingRefRefreshes.get(element);
+  if (!pending) {
+    const queued: { container: any; refNames: Set<string> } = {
+      container: currentContainer(),
+      refNames: new Set<string>(),
+    };
+    pending = queued;
+    pendingRefRefreshes.set(element, queued);
+    queueMicrotask(() => {
+      pendingRefRefreshes.delete(element);
+      if (!queued.container || queued.container.__disposed) {
+        return;
+      }
+      for (const name of queued.refNames) {
+        const refValue: any = refValues.get(name);
+        if (Array.isArray(refValue)) {
+          const copy: any = refValue.slice();
+          for (const key of dataArrayMetadataKeys) {
+            if (refValue[key] !== undefined) {
+              copy[key] = refValue[key];
+            }
+          }
+          cr.provideRefValue(queued.container, name, copy);
+        }
+      }
+    });
+  }
+  pending.refNames.add(refName);
+}
+
 function updateAngularElement(element: any) {
   if (element.markForCheck) {
     element.markForCheck();
@@ -1258,15 +1296,27 @@ export const sendMessage = function sendMessage(
               }
             } else if (args[i] && args[i].refType) {
               if (args[i].refType == 'uuid') {
-                itemMaps.forEach((value: any, key: string) => {
-                  if (value.has(args[i].id)) {
-                    args[i] = value.get(args[i].id);
-                  }
-                });
+                const found = findItem(args[i].id);
+                if (found !== undefined) {
+                  args[i] = found;
+                }
               } else if (args[i].refType == 'name') {
                 args[i] = findByName(getMainTarget(), args[i].id);
               }
             }
+          }
+          if (!t) {
+            // Untyped arguments, such as the items of a combo's select() and deselect(), carry
+            // data items as uuid refs; pass the items themselves, which the component compares by
+            // reference. An unknown uuid stays a ref, as before.
+            const resolveRef = (value: any) => {
+              if (value && value.refType == 'uuid') {
+                const found = findItem(value.id);
+                return found !== undefined ? found : value;
+              }
+              return value;
+            };
+            args[i] = Array.isArray(args[i]) ? args[i].map(resolveRef) : resolveRef(args[i]);
           }
           if (t == 'Component') {
             if (args[i] != null) {
@@ -1299,6 +1349,10 @@ export const sendMessage = function sendMessage(
 
         child = ensureExternalObject(child);
 
+        // Not a member of the component: the uuids of the data items that it holds past its data,
+        // which the .NET side keeps resolvable while the component holds them (IgbCombo).
+        const isHeldItemIds = methodName == '___heldItemIds';
+
         var isPropGet = false;
         if (methodName.indexOf('p:') == 0) {
           isPropGet = true;
@@ -1306,7 +1360,7 @@ export const sendMessage = function sendMessage(
           methodName = methodName.substr(0, 1).toLowerCase() + methodName.substring(1);
         }
 
-        if (!hasProp(child, methodName)) {
+        if (!isHeldItemIds && !hasProp(child, methodName)) {
           if (methodName.endsWith('Component')) {
             methodName = methodName.substr(0, methodName.length - 'Component'.length);
           } else if (methodName.startsWith('perform')) {
@@ -1323,7 +1377,9 @@ export const sendMessage = function sendMessage(
           }
         }
 
-        if (isPropGet) {
+        if (isHeldItemIds) {
+          retVal = heldItemIds(child);
+        } else if (isPropGet) {
           retVal = child[methodName];
         } else {
           if (child[methodName]) {
@@ -1407,7 +1463,7 @@ export const sendMessage = function sendMessage(
             child.notifyInsertItem(refValue, index, newItem);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -1433,7 +1489,7 @@ export const sendMessage = function sendMessage(
             child.notifyRemoveItem(refValue, index, oldItem);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -1479,7 +1535,7 @@ export const sendMessage = function sendMessage(
             child.notifyClearItems(refValue);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -1518,7 +1574,7 @@ export const sendMessage = function sendMessage(
             child.notifySetItem(refValue, index, oldItem, newItem);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -1549,7 +1605,7 @@ export const sendMessage = function sendMessage(
             child.notifySetItem(refValue, index, oldItem, oldItem);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -2454,7 +2510,7 @@ export const unmarshalledDataSourceInsert = function unmarshalledDataSourceInser
             child.notifyInsertItem(refValue, index, item);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
         isSyncMethodInvoke = false;
       }
@@ -2496,7 +2552,7 @@ export const unmarshalledDataSourceUpdate = function unmarshalledDataSourceUpdat
           child.notifySetItem(refValue, index, oldVal, currVal);
         }
       } else {
-        updateAngularElement(child);
+        refreshRefTarget(child, refName);
       }
       isSyncMethodInvoke = false;
     }
@@ -2530,7 +2586,7 @@ export const unmarshalledDataSourceRemove = function unmarshalledDataSourceRemov
           child.notifyRemoveItem(refValue, index, oldVAl);
         }
       } else {
-        updateAngularElement(child);
+        refreshRefTarget(child, refName);
       }
       isSyncMethodInvoke = false;
     }
@@ -2564,8 +2620,8 @@ export const unmarshalledDataSourceClear = function unmarshalledDataSourceClear(
         } else {
           child.notifyClearItems(refValue);
         }
-      } else if (child.markForCheck) {
-        updateAngularElement(child);
+      } else {
+        refreshRefTarget(child, refName);
       }
       isSyncMethodInvoke = false;
     }

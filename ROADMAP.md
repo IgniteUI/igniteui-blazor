@@ -11,6 +11,7 @@
 5. **[DONE]** `IgbBreadcrumbs` - navigation trail of `IgbBreadcrumb` items with a configurable separator icon
 6. **[DONE]** Aligned to `igniteui-webcomponents@7.4.1` - popup `ScrollStrategy` on Combo, Select, Dropdown, Date Picker, Date Range Picker, Color Picker and Tooltip, native CSS anchor positioning, Button Group radio keyboard pattern
 7. **[DONE]** `IgbVirtualScroll` - virtualization container that renders only the visible items of large or unbounded lists
+8. **[DONE]** Aligned to `igniteui-webcomponents@7.5.0` - Combo remote data (server search and paging), select all, group selection and confirm selection mode
 
 ## Going down the road
 

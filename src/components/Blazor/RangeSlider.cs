@@ -56,15 +56,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _upper = 0;
+        private double? _upper;
 
         /// <summary>
         /// The current value of the upper thumb.
         /// </summary>
+        /// <remarks>
+        /// Until it is set, the upper thumb follows <see cref="IgbSliderBase.UpperBound"/>, or <see cref="IgbSliderBase.Max"/>
+        /// without a bound, so the default range covers the full scale, and the getter returns that value.
+        /// </remarks>
         [Parameter]
         public double Upper
         {
-            get { return this._upper; }
+            get { return this._upper ?? DefaultUpper; }
             set
             {
                 if (this._upper != value || !IsPropDirty("Upper"))
@@ -73,6 +77,17 @@ namespace IgniteUI.Blazor.Controls
                 }
                 this._upper = value;
 
+            }
+        }
+
+        // The web component's upper thumb before it is set: its upperBound, which is UpperBound clamped
+        // between LowerBound (or Min) and Max, or Max without a bound.
+        private double DefaultUpper
+        {
+            get
+            {
+                var lower = Math.Max(LowerBound ?? Min, Min);
+                return Math.Min(Math.Max(UpperBound ?? Max, lower), Max);
             }
         }
         private string? _thumbLabelLower;
@@ -267,7 +282,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Lower"))
             { ser.AddNumberProp("lower", this._lower); }
             if (IsPropDirty("Upper"))
-            { ser.AddNumberProp("upper", this._upper); }
+            { ser.AddNumberProp("upper", this.Upper); }
             if (IsPropDirty("ThumbLabelLower"))
             { ser.AddStringProp("thumbLabelLower", this._thumbLabelLower); }
             if (IsPropDirty("ThumbLabelUpper"))

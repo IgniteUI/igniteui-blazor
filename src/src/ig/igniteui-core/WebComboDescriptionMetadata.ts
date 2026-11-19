@@ -4,6 +4,9 @@ import { Dictionary$2 } from "./Dictionary$2";
 import { WebFilteringOptionsDescriptionMetadata } from "./WebFilteringOptionsDescriptionMetadata";
 import { WebComboChangeEventArgsDescriptionMetadata } from "./WebComboChangeEventArgsDescriptionMetadata";
 import { VoidEventArgsDescriptionMetadata } from "./VoidEventArgsDescriptionMetadata";
+import { WebComboClosingEventArgsDescriptionMetadata } from "./WebComboClosingEventArgsDescriptionMetadata";
+import { WebComboSearchInputEventArgsDescriptionMetadata } from "./WebComboSearchInputEventArgsDescriptionMetadata";
+import { WebVirtualScrollDataRequestEventArgsDescriptionMetadata } from "./WebVirtualScrollDataRequestEventArgsDescriptionMetadata";
 import { WebBaseComboBoxDescriptionMetadata } from "./WebBaseComboBoxDescriptionMetadata";
 import { WebComboDescription } from "./WebComboDescription";
 
@@ -25,6 +28,9 @@ export class WebComboDescriptionMetadata extends Base {
 		WebFilteringOptionsDescriptionMetadata.register(context);
 		WebComboChangeEventArgsDescriptionMetadata.register(context);
 		VoidEventArgsDescriptionMetadata.register(context);
+		WebComboClosingEventArgsDescriptionMetadata.register(context);
+		WebComboSearchInputEventArgsDescriptionMetadata.register(context);
+		WebVirtualScrollDataRequestEventArgsDescriptionMetadata.register(context);
 	}
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		WebBaseComboBoxDescriptionMetadata.fillMetadata(metadata);
@@ -52,6 +58,13 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("CaseSensitiveIcon", "Boolean");
 		metadata.item("DisableFiltering", "Boolean");
 		metadata.item("DisableClear", "Boolean");
+		metadata.item("TotalItemCount", "Number:double");
+		metadata.item("Loading", "Boolean");
+		metadata.item("ShowSelectAll", "Boolean");
+		metadata.item("GroupSelection", "Boolean");
+		metadata.item("SelectionCommit", "ExportedType:string:ComboSelectionCommit");
+		metadata.item("SelectionCommit@stringUnion", "WebComponents;React");
+		metadata.item("SelectionCommit@names", "Immediate;Confirm");
 		metadata.item("Value", "Array:object");
 		metadata.item("Disabled", "Boolean");
 		metadata.item("Required", "Boolean");
@@ -61,6 +74,8 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("GroupHeaderTemplateRef", "(w:GroupHeaderTemplate,p:GroupHeaderTemplate)TemplateRef::object");
 		metadata.item("ChangeRef", "EventRef:ComboChangeEventHandler:change");
 		metadata.item("ChangeRef@args", "ComboChangeEventArgs");
+		metadata.item("PendingChangeRef", "EventRef:ComboChangeEventHandler:pendingChange");
+		metadata.item("PendingChangeRef@args", "ComboChangeEventArgs");
 		metadata.item("FocusRef", "EventRef:VoidHandler:focus:skipWCPrefix");
 		metadata.item("FocusRef@args", "VoidEventArgs");
 		metadata.item("BlurRef", "EventRef:VoidHandler:blur:skipWCPrefix");
@@ -69,10 +84,14 @@ export class WebComboDescriptionMetadata extends Base {
 		metadata.item("OpeningRef@args", "VoidEventArgs");
 		metadata.item("OpenedRef", "EventRef:VoidHandler:opened");
 		metadata.item("OpenedRef@args", "VoidEventArgs");
-		metadata.item("ClosingRef", "EventRef:VoidHandler:closing");
-		metadata.item("ClosingRef@args", "VoidEventArgs");
-		metadata.item("ClosedRef", "EventRef:VoidHandler:closed");
-		metadata.item("ClosedRef@args", "VoidEventArgs");
+		metadata.item("ClosingRef", "EventRef:ComboClosingEventHandler:closing");
+		metadata.item("ClosingRef@args", "ComboClosingEventArgs");
+		metadata.item("ClosedRef", "EventRef:ComboClosingEventHandler:closed");
+		metadata.item("ClosedRef@args", "ComboClosingEventArgs");
+		metadata.item("SearchInputRef", "EventRef:ComboSearchInputEventHandler:searchInput");
+		metadata.item("SearchInputRef@args", "ComboSearchInputEventArgs");
+		metadata.item("DataRequestRef", "EventRef:VirtualScrollDataRequestEventHandler:dataRequest");
+		metadata.item("DataRequestRef@args", "VirtualScrollDataRequestEventArgs");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebBaseComboBoxDescriptionMetadata.register(context);

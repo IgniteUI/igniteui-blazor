@@ -7,9 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+Updated to `igniteui-webcomponents` 7.5.0. Its [changelog](https://github.com/IgniteUI/igniteui-webcomponents/blob/master/CHANGELOG.md#750---2026-11-16) lists the behavior changes that reach Blazor apps through the web components, such as the native dialog `::backdrop`, the surface color roles of the themes, and Enter submitting a form through its first submit button.
+
 ### Added
 
 - `IgbVirtualScroll<TItem>` - Renders large or unbounded lists efficiently by rendering only the items in the viewport plus a configurable `OverScan`. `Data` is an `IEnumerable<TItem>`, with `DataJson` for data that is already JSON, and `KeyFunctionScript` keys items for insert, prepend and sort. Supports vertical and horizontal `Orientation`, `EstimatedItemSize` with automatic item measurement, `ScrollToIndexAsync` with configurable alignment and behavior through `IgbScrollIntoViewOptions`, a `DataRequest` event for infinite scroll and remote data, and a `StateChange` event reporting the rendered window. Item content is rendered through a client-side template registered with `registerScript` from `api.js` and assigned via `ItemTemplateScript`. [#2222](https://github.com/IgniteUI/igniteui-webcomponents/pull/2222)
+- **Combo:** remote data. Set `FilteringOptions.Mode` to `ComboFilteringMode.Remote` to stop the local filter, handle `SearchInput` to set `Data` to the results of a server search, and handle `DataRequest` to append the `Count` items it asks for at `StartIndex` when the user scrolls near the end. `TotalItemCount` gives the size of the remote source, so the list shows a placeholder for each item that is not loaded, and `Loading` shows a spinner in place of the toggle icon.
+- **Combo:** `ShowSelectAll` adds a "Select all" option in multiple selection, and `GroupSelection` makes each group header select or deselect the shown items of its group. `SelectAllItems` and `DeselectAllItems` do the same from code; pass `ignoreFilter: true` to act on all the data.
+- **Combo:** `SelectionCommit="ComboSelectionCommit.Confirm"` holds the user's changes while the list is open. Each toggle emits `PendingChange`, and Enter or the Apply button applies them with one `Change` of `ComboChangeType.Commit`. For a custom footer, use `GetPendingValue`, `CommitSelection` and `CancelSelection`.
+- **Combo:** `Closing` and `Closed` give the user action that closes the list in `Detail.Trigger`, such as `ComboCloseTrigger.Escape`, `OutsideClick` or `Apply`, or `null` for a trigger that this version does not know. To keep the list open, cancel the event in a `ClosingScript`.
+
+### Fixed
+
+- **Combo:** `Select` and `Deselect` with data items, not `ValueKey` values, now select and deselect those items. They sent references that the browser did not resolve.
+- **Combo:** selected and pending items that leave the data still resolve in `Change`, `GetSelection` and `Deselect`, instead of coming back as `null`. That covers a replaced `Data` and items removed from a bound `ObservableCollection`, with or without a `Change` handler and whatever the type of the `ValueKey` member.
+- **Combo:** `Value` and `@bind-Value` follow `Select`, `Deselect`, `SelectAllItems`, `DeselectAllItems` and `CommitSelection`, which change the selection without a `Change` event.
+- Changes to an `ObservableCollection` bound as `Data` now re-render the combo and the other components that render their data themselves, not only reach their data array.
+
+### Changed
+
+- **Combo:** `Closing` and `Closed` take `IgbComboClosingEventArgs`, not `IgbVoidEventArgs`. It derives from `IgbVoidEventArgs`, so handler methods and untyped lambdas still bind; a lambda that declares its parameter as `IgbVoidEventArgs` must declare `IgbComboClosingEventArgs` instead.
+- **Combo:** a new `Data` keeps the selection, and a selected value that the data does not hold stays selected until it is deselected. To clear the selection with the data, as in cascading combos, set `Value` to an empty array.
+- **Combo:** the events of its inner inputs and list no longer leave the combo. Handle `SearchInput` for the search text.
+- **Range Slider:** until it is set, `Upper` returns the position of the upper thumb, which follows `UpperBound`, or `Max` without a bound, so the default range covers the full scale. It was `0`.
+- **Combo:** `GroupHeaderTemplate` takes `Key` from the group value that the web component now passes. Items without a value in the `GroupKey` field fall under `Other`.
 
 ## 1.0.1 - 2026-10-29
 

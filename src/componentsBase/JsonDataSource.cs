@@ -21,6 +21,8 @@ namespace IgniteUI.Blazor.Controls
         object? LookupOriginal(string id);
         bool HasOriginal(object item);
         Guid IdFromOriginal(object item);
+        /// <summary>The uuid and original item of each item that the data source maps.</summary>
+        IEnumerable<KeyValuePair<Guid, object>> GetOriginals();
         IJSDataSourceItem? NotifyInsertItem(object data, int index, Object? item);
         IJSDataSourceItem? NotifyRemoveItem(object data, int index, object? oldItem);
         void NotifyClearItems(Object data);
@@ -242,6 +244,17 @@ namespace IgniteUI.Blazor.Controls
         public bool HasOriginal(object item)
         {
             return _originalToItem.ContainsKey(item);
+        }
+
+        public IEnumerable<KeyValuePair<Guid, object>> GetOriginals()
+        {
+            foreach (var entry in _uuidToItem)
+            {
+                if (_itemToOriginal.TryGetValue(entry.Value, out var original))
+                {
+                    yield return new KeyValuePair<Guid, object>(entry.Key, original);
+                }
+            }
         }
 
         public Guid IdFromOriginal(object item)

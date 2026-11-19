@@ -911,6 +911,14 @@ export class Loader {
       Loader.marshalByValueSet.add('WebComboChangeEventArgs');
       Loader.marshalByValueSet.add('ComboChangeEventArgsDetail');
       Loader.marshalByValueSet.add('WebComboChangeEventArgsDetail');
+      Loader.marshalByValueSet.add('ComboClosingEventArgs');
+      Loader.marshalByValueSet.add('WebComboClosingEventArgs');
+      Loader.marshalByValueSet.add('ComboClosingEventArgsDetail');
+      Loader.marshalByValueSet.add('WebComboClosingEventArgsDetail');
+      Loader.marshalByValueSet.add('ComboSearchInputEventArgs');
+      Loader.marshalByValueSet.add('WebComboSearchInputEventArgs');
+      Loader.marshalByValueSet.add('ComboSearchInputEventArgsDetail');
+      Loader.marshalByValueSet.add('WebComboSearchInputEventArgsDetail');
       Loader.marshalByValueSet.add('ComponentBoolValueChangedEventArgs');
       Loader.marshalByValueSet.add('WebComponentBoolValueChangedEventArgs');
       Loader.marshalByValueSet.add('ComponentDateValueChangedEventArgs');

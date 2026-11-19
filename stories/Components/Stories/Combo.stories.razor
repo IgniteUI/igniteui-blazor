@@ -1,9 +1,11 @@
 @attribute [Stories("Forms/Combo")]
+@using System.Collections.ObjectModel
 
 <Stories TComponent="IgbCombo<string, City>">
 
     <ArgType For="_ => _!.GroupSorting" Control="ControlType.Radio" />
     <ArgType For="_ => _!.ScrollStrategy" Control="ControlType.Radio" />
+    <ArgType For="_ => _!.SelectionCommit" Control="ControlType.Radio" />
 
     <Story Name="Default">
         <Arguments>
@@ -88,9 +90,139 @@
             <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args" />
         </Template>
     </Story>
+
+    <Story Name="Select All">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Cities by country"' />
+            <Arg For="_ => _!.ValueKey" Value='"Id"' />
+            <Arg For="_ => _!.DisplayKey" Value='"Name"' />
+            <Arg For="_ => _!.GroupKey" Value='"Country"' />
+            <Arg For="_ => _!.ShowSelectAll" Value="true" />
+            <Arg For="_ => _!.GroupSelection" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args" />
+        </Template>
+    </Story>
+
+    <Story Name="Confirm Selection">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Cities"' />
+            <Arg For="_ => _!.ValueKey" Value='"Id"' />
+            <Arg For="_ => _!.DisplayKey" Value='"Name"' />
+            <Arg For="_ => _!.SelectionCommit" Value="ComboSelectionCommit.Confirm" />
+            <Arg For="_ => _!.ShowSelectAll" Value="true" />
+        </Arguments>
+        <Template>
+            <IgbCombo TValue="string" TItem="City" Data="_cities" @attributes="context.Args"
+                      PendingChange="OnPendingChange" Change="OnConfirmedChange" Closed="OnConfirmClosed" />
+            <p>@_confirmLog</p>
+        </Template>
+    </Story>
+
+    <Story Name="Remote Data">
+        <Arguments>
+            <Arg For="_ => _!.Label" Value='"Products (server search, 50 per page)"' />
+            <Arg For="_ => _!.ValueKey" Value='"Id"' />
+            <Arg For="_ => _!.DisplayKey" Value='"Name"' />
+            <Arg For="_ => _!.Placeholder" Value='"Type to search the server"' />
+        </Arguments>
+        <Template>
+            <IgbCombo TValue="int" TItem="Product" @attributes="context.Args"
+                      FilteringOptions="_remoteFiltering"
+                      Data="_remoteItems"
+                      TotalItemCount="_remoteTotal"
+                      Loading="_remoteLoading"
+                      SearchInput="OnRemoteSearch"
+                      DataRequest="OnRemoteDataRequest" />
+            <p>@_remoteLog</p>
+        </Template>
+    </Story>
 </Stories>
 
 @code {
+    private string _confirmLog = "Toggle items, then press Enter or Apply.";
+
+    private void OnPendingChange(IgbComboChangeEventArgs<string, City> args) =>
+        _confirmLog = $"Pending: {args.Detail.ChangeType} {string.Join(", ", args.Detail.Items.Select(c => c.Name))}";
+
+    private void OnConfirmedChange(IgbComboChangeEventArgs<string, City> args) =>
+        _confirmLog = $"Applied ({args.Detail.ChangeType}): {string.Join(", ", args.Detail.NewValue)}";
+
+    private void OnConfirmClosed(IgbComboClosingEventArgs args) =>
+        _confirmLog += $" — closed by {args.Detail.Trigger}";
+
+    // A fake server: 2,000 products that it searches and pages.
+    private static readonly Product[] _catalog = Enumerable.Range(1, 2000)
+        .Select(i => new Product(i, $"Product {i:0000} {(ProductKind)(i % 5)}"))
+        .ToArray();
+
+    private readonly IgbFilteringOptions _remoteFiltering = new() { Mode = ComboFilteringMode.Remote };
+    // A search replaces the collection; a page is appended to it, so only the new items go to the client.
+    private ObservableCollection<Product> _remoteItems = new(_catalog.Take(50));
+    private double? _remoteTotal = _catalog.Length;
+    private bool _remoteLoading;
+    private string _remoteSearch = "";
+    private string _remoteLog = "";
+    // Bumped by each search, so a reply to an older search or its pages is dropped.
+    private int _remoteVersion;
+
+    private async Task OnRemoteSearch(IgbComboSearchInputEventArgs args)
+    {
+        var search = args.Detail.SearchText ?? "";
+        var version = ++_remoteVersion;
+        _remoteSearch = search;
+        _remoteLoading = true;
+        try
+        {
+            var (page, total) = await QueryServer(search, 0, 50);
+            if (version != _remoteVersion)
+            {
+                return; // A newer search has started.
+            }
+            _remoteItems = new(page);
+            _remoteTotal = total;
+            _remoteLog = $"Search \"{search}\": {total} matches, {page.Count} loaded.";
+        }
+        finally
+        {
+            if (version == _remoteVersion)
+            {
+                _remoteLoading = false;
+            }
+        }
+    }
+
+    private async Task OnRemoteDataRequest(IgbVirtualScrollDataRequestEventArgs args)
+    {
+        var version = _remoteVersion;
+        var search = _remoteSearch;
+        var (page, total) = await QueryServer(search, (int)args.Detail.StartIndex, (int)args.Detail.Count);
+        if (version != _remoteVersion)
+        {
+            return; // The page belongs to an older search.
+        }
+        // Another request may have loaded part of this page already: append only what is new.
+        var skip = _remoteItems.Count - (int)args.Detail.StartIndex;
+        foreach (var product in page.Skip(Math.Max(0, skip)))
+        {
+            _remoteItems.Add(product);
+        }
+        _remoteTotal = total;
+        _remoteLog = $"Requested {args.Detail.Count} at {args.Detail.StartIndex}: {_remoteItems.Count} of {total} loaded.";
+    }
+
+    private static async Task<(List<Product> Page, int Total)> QueryServer(string search, int skip, int take)
+    {
+        await Task.Delay(300);
+        var matches = _catalog.Where(p => p.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToArray();
+        return (matches.Skip(skip).Take(take).ToList(), matches.Length);
+    }
+
+    private enum ProductKind { Bolt, Nut, Washer, Screw, Rivet }
+
+    private record Product(int Id, string Name);
+
     private readonly string[] _selectedCities = ["BG01", "US01"];
 
     private readonly City[] _cities =

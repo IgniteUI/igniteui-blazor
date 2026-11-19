@@ -39,6 +39,14 @@ export class WebFilteringOptionsDescription extends Description {
 		this._matchDiacritics = value;
 		this.markDirty("MatchDiacritics");
 	}
+	private _mode: string = null;
+	get mode(): string {
+		return this._mode;
+	}
+	set mode(value: string) {
+		this._mode = value;
+		this.markDirty("Mode");
+	}
 }
 
 
