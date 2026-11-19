@@ -21,25 +21,31 @@ Module for every component below is `Igb<Name>Module`. `IgbButton` and `IgbIconB
 ## Icon & Icon Button
 
 ```razor
-<IgbIcon @ref="MyIcon" IconName="home" Collection="material" />
+@inject IIgniteUIBlazor IgniteUI
+
+<IgbIcon IconName="home" Collection="material" />
 <IgbIconButton IconName="menu" Collection="material" Variant="IconButtonVariant.Flat" Mirrored="false" />
 
 @code {
-    IgbIcon MyIcon { get; set; } = default!;
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && MyIcon is not null)
+        if (firstRender)
         {
-            await MyIcon.EnsureReady();
-            await MyIcon.RegisterIconFromTextAsync("home", "<svg>...</svg>", "material");
-            // or: await MyIcon.RegisterIconAsync("home", "/icons/home.svg", "material");
+            await IgniteUI.RegisterIconFromTextAsync("home", "<svg>...</svg>", "material");
+            await IgniteUI.RegisterIconAsync("menu", "/icons/menu.svg", "material");
         }
     }
 }
 ```
 
-The parameter is **`IconName`**, not `Name` (`Name` is the framework element identity on every component). Icons are keyed by name + collection and must be registered before they render — always in `OnAfterRenderAsync(firstRender)` after `await EnsureReady()`. Reuse one collection name across the app.
+The parameter is **`IconName`**, not `Name` (`Name` is the framework element identity on every component). Icons are keyed by name + collection. The registry is global: register through the injected `IIgniteUIBlazor` (`RegisterIconAsync`, `RegisterIconFromTextAsync`, `SetIconRefAsync`), with no icon instance and no `EnsureReady()`. It is JS interop, so call it from `OnAfterRenderAsync`, not during prerendering. An icon rendered before its registration updates once it is registered. Reuse one collection name across the app. The `IgbIcon` / `IgbIconButton` instance methods of the same names are obsolete.
+
+To register before any component renders, without a .NET round-trip, import the same functions from JS (e.g. in a JS initializer):
+
+```js
+import { registerIconFromText } from './_content/IgniteUI.Blazor/api.js';
+registerIconFromText('home', '<svg>...</svg>', 'material');
+```
 
 ## Card
 

@@ -4,6 +4,9 @@ using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
+// The instance registry methods are obsolete (see IgniteUIBlazorIconExtensions) but still supported until removed.
+#pragma warning disable CS0618
+
 public class IconTests : ComponentWithContractTestBase<IgbIcon>
 {
     protected override ComponentContract<IgbIcon> InteropContract { get; } = new ComponentContract<IgbIcon>()

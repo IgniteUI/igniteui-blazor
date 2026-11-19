@@ -148,6 +148,29 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             Assert.That(text, Does.Contain("2026"));
         }
 
+        /// <summary>
+        /// Icons registered through <c>IIgniteUIBlazor</c> with options and an alias: the objects the library
+        /// builds for api.js must keep every member under trimming, and on WebAssembly.
+        /// </summary>
+        [Test]
+        public async Task IconRegistry_RegistrationsArriveWithEveryMember()
+        {
+            // The path of the icon the app registers (App.razor).
+            const string SmokeIconPath = "M2 2h20v20H2z";
+
+            // The collection came from the options, the alias target from the icon meta.
+            foreach (var name in new[] { "smoke", "smoke-alias" })
+            {
+                await page.WaitForFunctionAsync(
+                    "([name, path]) => document.querySelector(`igc-icon[name='${name}']`)?.shadowRoot?.querySelector('svg path')?.getAttribute('d') === path",
+                    new[] { name, SmokeIconPath });
+            }
+
+            // StripMeta arrived: the stored SVG lost its <title>.
+            var hasTitle = await page.EvaluateAsync<bool>("() => !!document.querySelector(\"igc-icon[name='smoke']\").shadowRoot.querySelector('svg title')");
+            Assert.That(hasTitle, Is.False, "the <title> is still in the icon, so stripMeta did not reach the client");
+        }
+
         [Test]
         public void CleanLoad_NoErrorsOrFailedRequests()
         {
