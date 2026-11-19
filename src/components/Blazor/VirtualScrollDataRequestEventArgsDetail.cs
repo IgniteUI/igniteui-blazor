@@ -3,9 +3,10 @@ using System.Globalization;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The payload of the <see cref="IgbCombo{TValue, TItem}.DataRequest"/> event:
-    /// a request for more data, emitted when the rendered window comes near the
-    /// end of the loaded items. In the combo, append the requested items to its data.
+    /// The payload of the <see cref="IgbVirtualScroll{TItem}.DataRequest"/> and
+    /// <see cref="IgbCombo{TValue, TItem}.DataRequest"/> events: a request for more
+    /// data, emitted when the rendered window comes near the end of the loaded items.
+    /// In the combo, append the requested items to its data.
     /// </summary>
     public partial class IgbVirtualScrollDataRequestEventArgsDetail : BaseJsonSerializable
     {

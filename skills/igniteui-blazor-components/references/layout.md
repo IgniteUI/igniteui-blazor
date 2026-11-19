@@ -198,3 +198,39 @@ Width comes from the `--menu-full-width` custom property (default `15rem`); the 
 
 `IgbSplitter`: `Orientation`, `StartSize` / `EndSize`, `StartMinSize` / `StartMaxSize` / `EndMinSize` / `EndMaxSize` (all CSS lengths — `280px`, `30%`), `StartCollapsed` / `EndCollapsed`, `DisableResize`, `DisableCollapse`, `HideDragHandle`, `HideCollapseButtons`, `ToggleAsync(PanePosition)`. `LayoutChanged` fires after a user resize or collapse with a full snapshot (`StartSize`, `EndSize`, `StartCollapsed`, `EndCollapsed`); `ResizeStart` / `Resizing` / `ResizeEnd` report pixel sizes during a drag.
 `IgbDivider`: `Vertical`, `Middle`, `LineType`.
+
+## Virtual Scroll
+
+```razor
+<IgbVirtualScroll Data="Items" EstimatedItemSize="40"
+                  ItemTemplateScript="MyItemTemplate"
+                  DataRequest="OnDataRequest"
+                  style="height: 400px;" />
+
+@code {
+    Item[] Items { get; set; } = LoadFirstPage();
+
+    void OnDataRequest(IgbVirtualScrollDataRequestEventArgs e)
+    {
+        // Infinite scroll: append at least e.Detail.Count items from e.Detail.StartIndex,
+        // assigning a NEW collection reference.
+        Items = [.. Items, .. LoadMore((int)e.Detail.StartIndex, (int)e.Detail.Count)];
+    }
+}
+```
+
+Renders only the items in the viewport plus `OverScan`, so an unbounded list stays cheap. The item template is a **client-side** function (see [`client-scripts.md`](./client-scripts.md)) that receives the item context (`value`, `index`, `count`) and returns an `html` template:
+
+```js
+// wwwroot/my-scripts.js, loaded with <script type="module" src="my-scripts.js"></script>
+import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';
+
+registerScript('MyItemTemplate', (ctx) => html`<div style="padding: 8px;">${ctx.value.Name}</div>`);
+registerScript('MyItemKey', (item) => item.Id);
+```
+
+`IgbVirtualScroll<TItem>` infers `TItem` from `Data`; name it (`TItem="Item"`) for an `@ref` field or with `DataJson` (`TItem="object"`). Set `KeyFunctionScript` (above: `MyItemKey`) when items move within `Data` — prepend, insert, sort, remove — so each rendered element stays with its item; without it items are keyed by index.
+
+`igc-virtual-scroll` is `display: block` with a default height of `18.75rem`; set the height on the component itself (`style` or a `class`), since `class` and `style` land on the `igc-virtual-scroll` element. Methods such as `ScrollToIndexAsync` throw until the client element is live — `await EnsureReady()` first when calling one from `OnAfterRenderAsync(firstRender)`.
+
+`Data` is compared by reference — assign a new collection instead of mutating in place, or the rendered window will not update. The whole collection crosses to the client on each assignment; leading items that are unchanged keep their measured sizes, so appending keeps the scroll position stable. `ScrollToIndexAsync(index)` scrolls to an item, optionally with `IgbScrollIntoViewOptions` for alignment and behavior. `StateChange` reports the rendered window (`StartIndex`, `EndIndex`, `ViewportSize`, `TotalSize`) and `DataRequest` asks for items not yet loaded. `Orientation` is `ContentOrientation.Vertical | Horizontal`, RTL is supported, and item sizes are measured after first render — `EstimatedItemSize` only seeds the initial scrollbar.

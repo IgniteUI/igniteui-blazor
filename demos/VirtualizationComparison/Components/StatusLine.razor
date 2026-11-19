@@ -1,0 +1,21 @@
+@* Text a parent pushes through Show() without re-rendering itself, so a high-frequency event
+   such as StateChange re-renders only this line. *@
+<span>@_text</span>
+
+@code {
+    private string _text = string.Empty;
+
+    /// <summary>The text shown until the first <see cref="Show"/> call.</summary>
+    [Parameter]
+    public string Initial { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    protected override void OnInitialized() => _text = Initial;
+
+    /// <summary>Replaces the text and re-renders this component only.</summary>
+    public void Show(string text)
+    {
+        _text = text;
+        _ = InvokeAsync(StateHasChanged);
+    }
+}

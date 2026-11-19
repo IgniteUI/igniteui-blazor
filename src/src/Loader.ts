@@ -799,6 +799,20 @@ export class Loader {
         break;
       }
 
+      case 'WebVirtualScrollModule': {
+        let { IgcVirtualScrollComponent } = await import('igniteui-webcomponents');
+        let { WebVirtualScrollDescriptionModule } = await import('igniteui-core/WebVirtualScrollDescriptionModule');
+
+        this._loadingSet.delete(module);
+
+        IgcVirtualScrollComponent.register();
+        TypeRegistrar.registerCons('IgcVirtualScrollComponent', IgcVirtualScrollComponent);
+
+        WebVirtualScrollDescriptionModule.register(cr.context);
+        this.checkDone();
+        break;
+      }
+
       //@@ModuleLoadingEnd
     }
   }
@@ -865,6 +879,8 @@ export class Loader {
       Loader.marshalByValueSet.add('WebQrCodeExportOptions');
       Loader.marshalByValueSet.add('RegisterIconOptions');
       Loader.marshalByValueSet.add('WebRegisterIconOptions');
+      Loader.marshalByValueSet.add('ScrollIntoViewOptions');
+      Loader.marshalByValueSet.add('WebScrollIntoViewOptions');
       Loader.marshalByValueSet.add('ActiveStepChangedEventArgs');
       Loader.marshalByValueSet.add('WebActiveStepChangedEventArgs');
       Loader.marshalByValueSet.add('ActiveStepChangedEventArgsDetail');
@@ -903,10 +919,6 @@ export class Loader {
       Loader.marshalByValueSet.add('WebComboSearchInputEventArgs');
       Loader.marshalByValueSet.add('ComboSearchInputEventArgsDetail');
       Loader.marshalByValueSet.add('WebComboSearchInputEventArgsDetail');
-      Loader.marshalByValueSet.add('VirtualScrollDataRequestEventArgs');
-      Loader.marshalByValueSet.add('WebVirtualScrollDataRequestEventArgs');
-      Loader.marshalByValueSet.add('VirtualScrollDataRequestEventArgsDetail');
-      Loader.marshalByValueSet.add('WebVirtualScrollDataRequestEventArgsDetail');
       Loader.marshalByValueSet.add('ComponentBoolValueChangedEventArgs');
       Loader.marshalByValueSet.add('WebComponentBoolValueChangedEventArgs');
       Loader.marshalByValueSet.add('ComponentDateValueChangedEventArgs');
@@ -957,6 +969,14 @@ export class Loader {
       Loader.marshalByValueSet.add('WebTreeSelectionEventArgs');
       Loader.marshalByValueSet.add('TreeSelectionEventArgsDetail');
       Loader.marshalByValueSet.add('WebTreeSelectionEventArgsDetail');
+      Loader.marshalByValueSet.add('VirtualScrollDataRequestEventArgs');
+      Loader.marshalByValueSet.add('WebVirtualScrollDataRequestEventArgs');
+      Loader.marshalByValueSet.add('VirtualScrollDataRequestEventArgsDetail');
+      Loader.marshalByValueSet.add('WebVirtualScrollDataRequestEventArgsDetail');
+      Loader.marshalByValueSet.add('VirtualScrollStateChangeEventArgs');
+      Loader.marshalByValueSet.add('WebVirtualScrollStateChangeEventArgs');
+      Loader.marshalByValueSet.add('VirtualScrollStateChangeEventArgsDetail');
+      Loader.marshalByValueSet.add('WebVirtualScrollStateChangeEventArgsDetail');
 
       //@@MarshalByValueEnd
     }

@@ -27,6 +27,7 @@ Release notes are in the [CHANGELOG](CHANGELOG.md) and planned work is in the [R
 
 | Components              | Status |         Documentation          | Released Version<br> Ignite UI Blazor | Released Version<br> Ignite UI Blazor Lite | License |
 | :---------------------- | :----: | :----------------------------: | :----: | :----: | :----: |
+| Virtual Scroll          |   ✅    |          Coming soon           |   —    | Unreleased | [MIT]  |
 | Breadcrumbs             |   ✅    |          Coming soon           |   —    | 0.4.0  | [MIT]  |
 | Color Picker            |   ✅    |          Coming soon           |   —    | 0.2.0  | [MIT]  |
 | QR Code                 |   ✅    |          Coming soon           |   —    | 0.2.0  | [MIT]  |
