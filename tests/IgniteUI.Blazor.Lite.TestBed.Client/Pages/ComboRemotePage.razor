@@ -10,7 +10,7 @@
    window.clientPageRef.GetLog(). Prerender is off, so the combos existing means WASM is live. *@
 
 <div id="container">
-    <IgbCombo id="remote" TValue="int" TItem="ComboDataScenarios.Product"
+    <IgbCombo @ref="_remote" id="remote" TValue="int" TItem="ComboDataScenarios.Product"
               ValueKey="Id" DisplayKey="Name"
               FilteringOptions="_remoteFiltering"
               Data="_remoteItems"
@@ -43,7 +43,8 @@
     private ObservableCollection<ComboDataScenarios.Product> _remoteItems = new(_catalog.Take(20));
     private double? _remoteTotal = _catalog.Count;
     private string _search = "";
-    private readonly List<ComboDataScenarios.Product> _confirmItems = _catalog.Take(5).ToList();
+    private List<ComboDataScenarios.Product> _confirmItems = _catalog.Take(5).ToList();
+    private IgbCombo<int, ComboDataScenarios.Product>? _remote;
 
     private readonly List<string> _searchTexts = new();
     private readonly List<string> _requests = new();
@@ -51,6 +52,7 @@
     private readonly List<string> _closed = new();
     private readonly List<string> _pending = new();
     private readonly List<string> _changes = new();
+    private readonly List<string> _changeItems = new();
     private readonly List<string> _noKeyChanges = new();
     private List<ComboDataScenarios.Product> _noKeyItems = FreshProducts(1, 5);
     private IgbCombo<ComboDataScenarios.Product, ComboDataScenarios.Product>? _noKey;
@@ -77,6 +79,25 @@
     public async Task DeselectFirstNoKeyItem()
     {
         await _noKey!.DeselectAsync([_noKeyValue[0]]);
+    }
+
+    /// <summary>The remote combo's selection as .NET reads it back. It has no Change handler, so .NET never learns its value.</summary>
+    [JSInvokable]
+    public async Task<string> GetRemoteSelection()
+    {
+        var selection = await _remote!.GetSelectionAsync();
+        return string.Join(",", selection.Select(p => p?.Name ?? "<null>"));
+    }
+
+    /// <summary>New data for the confirm combo that does not hold its first five items, while its list is open.</summary>
+    [JSInvokable]
+    public async Task ReplaceConfirmData()
+    {
+        await InvokeAsync(() =>
+        {
+            _confirmItems = FreshProducts(6, 5);
+            StateHasChanged();
+        });
     }
 
     [JSInvokable]
@@ -135,8 +156,11 @@
     private void OnPendingChange(IgbComboChangeEventArgs<int, ComboDataScenarios.Product> args) =>
         _pending.Add($"{args.Detail.ChangeType}:{string.Join(",", args.Detail.NewValue)}");
 
-    private void OnChange(IgbComboChangeEventArgs<int, ComboDataScenarios.Product> args) =>
+    private void OnChange(IgbComboChangeEventArgs<int, ComboDataScenarios.Product> args)
+    {
         _changes.Add($"{args.Detail.ChangeType}:{string.Join(",", args.Detail.NewValue)}");
+        _changeItems.Add(string.Join(",", args.Detail.Items.Select(p => p?.Name ?? "<null>")));
+    }
 
     [JSInvokable]
     public object GetLog() => new
@@ -147,6 +171,7 @@
         Closed = _closed,
         Pending = _pending,
         Changes = _changes,
+        ChangeItems = _changeItems,
         NoKeyChanges = _noKeyChanges,
     };
 }

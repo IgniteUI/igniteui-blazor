@@ -129,6 +129,45 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             await Page.WaitForFunctionAsync($"() => {NoKey}.value.length === 1 && {NoKey}.value[0].Name === 'Product 006'");
         }
 
+        [Test]
+        public async Task RemoteSearch_WithoutChangeHandler_KeepsTheSelectedItem()
+        {
+            await OpenAsync();
+
+            await Page.EvaluateAsync($"() => {Remote}.show()");
+            await Page.WaitForFunctionAsync($"() => {Remote}.shadowRoot.querySelector('igc-combo-item') !== null");
+            await Page.EvaluateAsync($"() => {Remote}.shadowRoot.querySelectorAll('igc-combo-item')[0].click()");
+            await Page.WaitForFunctionAsync($"() => {Remote}.value.length === 1");
+
+            // The search replaces the data with results that do not hold the selected item.
+            await Page.Locator("#remote").Locator("[part~='search-input'] input").FillAsync("12");
+            await Page.WaitForFunctionAsync($"() => {Remote}.data.length > 0 && {Remote}.data.every(p => p.Name.includes('12'))");
+
+            var selection = await Page.EvaluateAsync<string>("() => window.clientPageRef.invokeMethodAsync('GetRemoteSelection')");
+            Assert.That(selection, Is.EqualTo("Product 001"));
+        }
+
+        [Test]
+        public async Task ConfirmMode_NewData_AppliesThePendingItemOfTheOldData()
+        {
+            await OpenAsync();
+
+            await Page.EvaluateAsync($"() => {Confirm}.show()");
+            await Page.WaitForFunctionAsync($"() => {Confirm}.shadowRoot.querySelector('igc-combo-item') !== null");
+            await Page.EvaluateAsync($"() => {Confirm}.shadowRoot.querySelectorAll('igc-combo-item')[1].click()");
+            await WaitForLogAsync("pending", 1);
+
+            // New data while the list is open: the pending item is only in the old data.
+            await Page.EvaluateAsync("() => window.clientPageRef.invokeMethodAsync('ReplaceConfirmData')");
+            await Page.WaitForFunctionAsync($"() => {Confirm}.data[0].Name === 'Product 006'");
+
+            await Page.EvaluateAsync($"() => {Confirm}.shadowRoot.querySelector('[part~=\"apply-button\"]').click()");
+
+            await WaitForLogAsync("changes", 1);
+            var log = await LogAsync();
+            Assert.That(log.GetProperty("changeItems")[0].GetString(), Is.EqualTo("Product 002"));
+        }
+
         private async Task OpenAsync()
         {
             await Page.GotoAsync("http://localhost:5249/combo-remote");

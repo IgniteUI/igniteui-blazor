@@ -134,5 +134,31 @@ public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
 
         Assert.Equal(100, slider.Max);
         Assert.Equal(1, slider.Step);
+        Assert.Equal(100, slider.Upper);
+    }
+
+    [Theory]
+    [InlineData(10, null, 10)]
+    [InlineData(100, 50.0, 50)]
+    [InlineData(10, 50.0, 10)]
+    public void RangeSlider_UnsetUpper_FollowsUpperBoundOrMax(double max, double? upperBound, double expected)
+    {
+        // Until Upper is set, the web component's upper thumb sits at its upperBound, or at Max without one.
+        var cut = Render<IgbRangeSlider>(p => p
+            .Add(x => x.Max, max)
+            .Add(x => x.UpperBound, upperBound));
+
+        Assert.Equal(expected, cut.Instance.Upper);
+        Assert.Null(Interop.FindPropertyUpdate(Interop.ContainerIdOf(cut), "upper"));
+    }
+
+    [Fact]
+    public void RangeSlider_SetUpper_IsKept()
+    {
+        var cut = Render<IgbRangeSlider>(p => p
+            .Add(x => x.Max, 10)
+            .Add(x => x.Upper, 3));
+
+        Assert.Equal(3, cut.Instance.Upper);
     }
 }
