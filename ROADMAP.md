@@ -10,6 +10,7 @@
 4. **[DONE]** Aligned to `igniteui-webcomponents@7.3.2` - QR code image export, Chip `Outlined`, Splitter collapsed panes and `LayoutChanged`, Tabs `SelectedTab`, Icon registration options
 5. **[DONE]** `IgbBreadcrumbs` - navigation trail of `IgbBreadcrumb` items with a configurable separator icon
 6. **[DONE]** Aligned to `igniteui-webcomponents@7.4.1` - popup `ScrollStrategy` on Combo, Select, Dropdown, Date Picker, Date Range Picker, Color Picker and Tooltip, native CSS anchor positioning, Button Group radio keyboard pattern
+8. **[DONE]** .NET 11 support - the library targets `net10.0` and `net11.0`; `net8.0` and `net9.0` are dropped with their end of support
 7. **[DONE]** `IgbVirtualScroll` - virtualization container that renders only the visible items of large or unbounded lists
 8. **[DONE]** Aligned to `igniteui-webcomponents@7.5.0` - Combo remote data (server search and paging), select all, group selection and confirm selection mode
 

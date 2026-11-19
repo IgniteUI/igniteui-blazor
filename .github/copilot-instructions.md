@@ -76,7 +76,7 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 
 ## Build & Tooling
 
-- **Multi-target**: `net8.0`, `net9.0`, `net10.0`
+- **Multi-target**: `net10.0`, `net11.0`
 - **C# build**: `dotnet build` - produces the Razor class library
 - **TS build**: `npm run build` - type-checks and bundles the JS interop (vite, ESM) into static web assets; `npm test` checks the built output
 

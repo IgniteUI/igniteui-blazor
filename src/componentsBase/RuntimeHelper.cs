@@ -5,8 +5,10 @@ namespace IgniteUI.Blazor.Controls
 {
     // Sends unmarshalled data (WebAssembly) to the component's client interop module: a synchronous in-process call
     // that passes the address of the local holding the columns array, which the client reads off the heap for the
-    // duration of the call. The same path on every target framework (the net8-only InvokeUnmarshalled fast path
-    // needed a window global).
+    // duration of the call. The same path on every target framework.
+    // The calls are in-process (WebAssembly, no circuit to lose): a client error reaches the code that changed
+    // the data, so they are not wrapped in try/catch.
+#pragma warning disable BL0016 // JS interop call is not guarded with a try/catch block
     internal class RuntimeHelper
     {
         private readonly IIgniteUIBlazorRuntime? _igBlazor;
@@ -67,6 +69,7 @@ namespace IgniteUI.Blazor.Controls
         public bool IsInproc { get; private set; }
         public bool IsForcedJsonDataMarshalling { get { return _igBlazor?.Settings?.ForceJsonDataMarshalling ?? false; } }
     }
+#pragma warning restore BL0016
 
     /// <summary>
     /// A module that takes the column arrays themselves instead of their address, which only a WebAssembly heap
