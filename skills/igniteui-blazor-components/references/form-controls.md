@@ -17,24 +17,33 @@ The examples compile in both packages, and the types shown are the full `IgniteU
 
 ## Text inputs
 
-`IgbInput` and `IgbTextarea` share a base: `Label`, `Placeholder`, `Outlined`, `Disabled`, `Required`, `Invalid`, plus `Value` / `ValueChanged`.
+`IgbInput` and `IgbTextarea` are separate components (`IgbTextarea` does not derive from `IgbInputBase`), but both take `Label`, `Placeholder`, `Outlined`, `Disabled`, `Required`, `Invalid`, `ReadOnly`, `MinLength` / `MaxLength`, plus `Value` / `ValueChanged`. Their typing events have **different names**.
 
 ```razor
 <IgbInput @bind-Value="UserName" Label="Username" Placeholder="e.g. John Doe">
     <IgbIcon slot="prefix" IconName="person" Collection="material" />
 </IgbInput>
 
-<IgbTextarea @bind-Value="Notes" Label="Notes" Rows="4" Resize="TextareaResize.Vertical" />
+<IgbTextarea @bind-Value="Notes" Label="Notes" Rows="4" Resize="TextareaResize.Vertical" Input="OnNotesInput" />
+
+@code {
+    string? UserName { get; set; }
+    string? Notes { get; set; }
+    void OnNotesInput(IgbComponentValueChangedEventArgs e) => Console.WriteLine(e.Detail);
+}
 ```
 
 | Member | Type | Notes |
 |---|---|---|
-| `Value` / `@bind-Value` | `string` | The correct way to read and write the value |
+| `Value` / `@bind-Value` | `string` | The correct way to read and write the value. On `IgbTextarea` the bound value updates on commit (blur), not per keystroke |
 | `DisplayType` | `InputType` | `IgbInput` only — text, password, email, number, … |
-| `InputOcurred` | `EventCallback<IgbComponentValueChangedEventArgs>` | Fires while typing (name is spelled with one `c`) |
+| `InputOcurred` | `EventCallback<IgbComponentValueChangedEventArgs>` | `IgbInput` only — fires while typing (name is spelled with one `c`) |
+| `Input` | `EventCallback<IgbComponentValueChangedEventArgs>` | `IgbTextarea` only — fires on every keystroke; `Detail` is the current text |
 | `Change` | `EventCallback<IgbComponentValueChangedEventArgs>` | Fires on commit / blur |
 | `Focus`, `Blur` | `EventCallback<IgbVoidEventArgs>` | |
-| `Rows`, `Resize`, `Wrap`, `MaxLength` | | `IgbTextarea` only |
+| `Rows`, `Resize`, `Wrap` | | `IgbTextarea` only |
+
+A wrong event name does not fail the build: the unmatched attribute is passed to the element as text. `<IgbTextarea InputOcurred="OnInput" />` compiles without a warning, and the handler never runs.
 
 `IgbInput` has **no** `GetValueAsync()`. Bind with `@bind-Value` instead of reading imperatively.
 

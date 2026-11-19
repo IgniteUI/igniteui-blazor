@@ -1,7 +1,7 @@
 ---
 license: MIT
 name: igniteui-blazor-grids
-description: "Covers all Ignite UI for Blazor data grids (Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, Pivot Grid): setup, columns and templates, sorting, filtering, selection, cell and row editing, grouping, summaries, toolbar, Excel/CSV export, paging, remote and server-side data, virtualization, sizing, state persistence, and migrating Grid Lite to IgbGrid. WHEN TO USE: grids, tables, tabular data, cell editing, row selection, column pinning or hiding, grouped rows, pivot tables, tree or hierarchical data, master-detail views, grid export, or choosing a grid type. WHEN NOT TO USE: non-grid components such as lists, the tree view, or charts (use igniteui-blazor-components), grid colors, themes, or design tokens (use igniteui-blazor-theming), or building a whole view from a design image (use igniteui-blazor-generate-from-image-design)."
+description: "Covers all Ignite UI for Blazor data grids (Grid Lite, Flat Grid, Tree Grid, Hierarchical Grid, Pivot Grid): setup, columns and templates, sorting, filtering, selection, cell and row editing, grouping, summaries, toolbar, Excel/CSV/PDF export, paging, remote and server-side data, virtualization, sizing, state persistence, and migrating Grid Lite to IgbGrid. WHEN TO USE: grids, tables, tabular data, cell editing, row selection, column pinning or hiding, grouped rows, pivot tables, tree or hierarchical data, master-detail views, grid export, or choosing a grid type. WHEN NOT TO USE: non-grid components such as lists, the tree view, or charts (use igniteui-blazor-components), grid colors, themes, or design tokens (use igniteui-blazor-theming), or building a whole view from a design image (use igniteui-blazor-generate-from-image-design)."
 user-invocable: true
 ---
 
@@ -21,7 +21,7 @@ user-invocable: true
 | Task | Read |
 |---|---|
 | Quick start, columns, data types, cell/header/editor templates, column groups, multi-row layout, pinning, sorting UI, filtering UI, selection | [`references/structure.md`](./references/structure.md) |
-| Grouping, summaries, cell merging, toolbar, Excel/CSV export, virtualization, row drag, action strip, master-detail, clipboard | [`references/features.md`](./references/features.md) |
+| Grouping, summaries, cell merging, toolbar, Excel/CSV/PDF export, virtualization, row drag, action strip, master-detail, clipboard | [`references/features.md`](./references/features.md) |
 | Grid Lite, Tree Grid, Hierarchical Grid, Pivot Grid specifics | [`references/types.md`](./references/types.md) |
 | Programmatic sort / filter / group, `@ref` access, custom strategies | [`references/data-operations.md`](./references/data-operations.md) |
 | Cell editing, row editing, validation, custom editors, add/delete rows | [`references/editing.md`](./references/editing.md) |

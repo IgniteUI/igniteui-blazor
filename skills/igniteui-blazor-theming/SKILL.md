@@ -15,7 +15,13 @@ Blazor theming is **CSS-first**: a built-in theme stylesheet plus CSS custom pro
 2. For anything version-specific (palette variables, component token names, layout token CSS), call the `igniteui-theming` MCP tools rather than writing names from memory. Token names are not guessable from component names.
 3. Read [`references/common-patterns.md`](./references/common-patterns.md) for theme switching, dark mode, scoped overrides, and `::part()` recipes.
 
-**Without the MCP server this skill still works** for theme selection, `IgbThemeProvider`, dark mode, and CSS structure. What it cannot give you is the exact set of `--ig-<component>-<token>` names — in that case say the token list was not verified, or read the generated theme CSS in `_content/IgniteUI.Blazor/themes/` to confirm. Do not configure MCP unprompted; see [MCP server (optional)](#mcp-server-optional).
+**Without the MCP server this skill still works** for theme selection, `IgbThemeProvider`, dark mode, and CSS structure. What it cannot give you is the exact set of `--ig-<component>-<token>` names, and the theme stylesheets in `_content/IgniteUI.Blazor/themes/` don't have them either — they hold only global variables (palette, typography, elevation, spacing, size, scrollbar). Each `igc-*` component reads its tokens in its own styles, which ship in the package's `igniteui-webcomponents.*.bundle.js`. List them from the NuGet cache, using the package id and version from the `.csproj`:
+
+```bash
+grep -ohE 'var\(--ig-card-[a-z0-9-]+' ~/.nuget/packages/igniteui.blazor.lite/1.0.1/staticwebassets/igniteui-webcomponents.*.bundle.js | sed 's/^var(//' | sort -u
+```
+
+The prefix is not always the tag name: `igc-button` reads `--ig-contained-button-*` (or `flat-`, `outlined-`, `fab-`), `igc-input` reads `--ig-input-group-*`, and `igc-linear-progress` reads `--ig-linear-bar-*`. Grid tokens (`--ig-grid-*`) are in `themes/grid/<variant>/<theme>.css`. Token sets can differ between packages — e.g. the chip reads 50 tokens in `IgniteUI.Blazor.Lite` 1.0.1 (including `--ig-chip-outlined-*`) and 31 in `IgniteUI.Blazor` 26.1.98. If you cannot run the lookup, say the token list was not verified. Do not configure MCP unprompted; see [MCP server (optional)](#mcp-server-optional).
 
 | Layer | Mechanism |
 |---|---|
