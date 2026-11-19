@@ -43,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("value", out var valueObj))
-            { this.Value = ReturnToString(valueObj); }
+            { this.Value = ReturnToString(valueObj) ?? ""; }
 
             this.SuppressParentNotify = false;
         }

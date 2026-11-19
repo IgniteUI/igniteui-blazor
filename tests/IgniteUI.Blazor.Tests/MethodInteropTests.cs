@@ -1,3 +1,4 @@
+using System.Reflection;
 using IgniteUI.Blazor.Controls;
 using IgniteUI.Blazor.Tests.Interop;
 
@@ -46,5 +47,33 @@ public class MethodInteropTests : BlazorComponentTestBase
             await Task.WhenAny(pending, Task.Delay(TimeSpan.FromSeconds(10))) == pending,
             "the call never completed - the return that arrived before it registered was dropped");
         Assert.True(await pending);
+    }
+
+    [Fact]
+    public async Task CallThatIsNeverSent_CompletesWithoutAReturn()
+    {
+        Interop.PrimeReady();
+        var cut = Render<IgbBanner>();
+        // Still ready, but disposal stops every send, so no reply and no return will ever arrive.
+        await cut.Instance.DisposeAsync();
+        Interop.ClearObserved();
+
+        var pending = Interop.OnDispatcher(cut.Instance.ToggleAsync);
+
+        // A call waiting on a return that never comes never completes, so this is bounded to fail rather than hang the run.
+        Assert.True(
+            await Task.WhenAny(pending, Task.Delay(TimeSpan.FromSeconds(10))) == pending,
+            "the call never completed - it waited for a return to an invocation that was never sent");
+        Assert.False(await pending);
+        Assert.Empty(Interop.MethodCalls);
+        Assert.Equal(0, PendingMethodTasks(cut.Instance));
+    }
+
+    /// <summary>Calls still registered to receive a return; nothing else exposes them.</summary>
+    private static int PendingMethodTasks(IgbComponentBase component)
+    {
+        var field = typeof(IgbComponentBase).GetField("_methodTasks", BindingFlags.NonPublic | BindingFlags.Instance)
+            ?? throw new InvalidOperationException("IgbComponentBase no longer has _methodTasks - update this test.");
+        return ((System.Collections.IDictionary)field.GetValue(component)!).Count;
     }
 }

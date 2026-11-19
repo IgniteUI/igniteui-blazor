@@ -86,7 +86,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<string> GetCurrentValueAsync()
         {
             var iv = await InvokeMethod("p:Value", new object?[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ReturnToString(iv) ?? "";
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace IgniteUI.Blazor.Controls
         public string GetCurrentValue()
         {
             var iv = InvokeMethodSync("p:Value", new object?[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ReturnToString(iv) ?? "";
         }
         private string _mask = "CCCCCCCCCC";
 

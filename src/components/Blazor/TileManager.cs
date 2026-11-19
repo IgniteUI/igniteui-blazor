@@ -214,7 +214,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<String> SaveLayoutAsync()
         {
             var iv = await InvokeMethod("saveLayout", new object?[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ReturnToString(iv) ?? "";
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace IgniteUI.Blazor.Controls
         public String SaveLayout()
         {
             var iv = InvokeMethodSync("saveLayout", new object?[] { }, new string[] { });
-            return ReturnToString(iv);
+            return ReturnToString(iv) ?? "";
         }
         /// <summary>
         /// Restores a previously serialized state produced by <see cref="SaveLayout"/>.
