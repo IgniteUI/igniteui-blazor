@@ -80,14 +80,14 @@ Full rules are in the theming skill's [`common-patterns.md`](../../igniteui-blaz
 |---|---|
 | `--ig-*` design tokens | **primary** — whenever a token exists for the property |
 | `::part(name)` | only when no token covers it, and only after confirming the part name |
-| `::deep` | only in `.razor.css`, only on `igc-*` selectors |
+| `::deep` | only in `.razor.css`, only on `igc-*` selectors or on a `class` you set on an `Igb*` component (it lands on the `igc-*` element, which has no scope attribute) |
 
 ```css
 /* app.css — global, no ::deep */
 igc-chip { --ig-chip-background: var(--ig-primary-500); }
 igc-dialog::part(footer) { border-top: 1px solid var(--ig-gray-200); }
 
-/* MyView.razor.css — ::deep on igc-*, never on your own class selectors */
+/* MyView.razor.css — ::deep on igc-* (and classes set on Igb* components), never on your own HTML's class selectors */
 ::deep igc-chip { --ig-chip-background: var(--ig-primary-500); }
 .dashboard-shell { display: grid; grid-template-columns: 260px 1fr; }
 ```

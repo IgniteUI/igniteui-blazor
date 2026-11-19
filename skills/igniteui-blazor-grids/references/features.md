@@ -83,16 +83,25 @@ Merges visually identical adjacent cells. Sort by the merged columns first, or t
 
 ## Export
 
+`IgbGridToolbarExporter` offers Export to Excel, CSV **and PDF** by default (`ExportExcel`, `ExportCSV`, `ExportPDF` all default to `true` in the component; the C# properties read `false` until you set them); set the unwanted ones to `false` — Excel only is `ExportCSV="false" ExportPDF="false"`. PDF needs no extra module or script. `Filename` defaults to `ExportedData`.
+
 ```razor
-<IgbGridToolbarExporter @ref="exporter" ExportExcel="true" ExportCSV="true" Filename="employees" />
+@inject IJSRuntime JS
+
+<IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" ExportPDF="false" Filename="employees" />
 
 @code {
-    private IgbGridToolbarExporter exporter = default!;
-
-    private Task ExportToExcel() => exporter.ExportGridAsync(GridToolbarExporterType.Excel);
-    private Task ExportToCsv()   => exporter.ExportGridAsync(GridToolbarExporterType.CSV);
+    private async Task ExportToExcel() => await JS.InvokeVoidAsync("exportGrid", "excel");
+    private async Task ExportToCsv()   => await JS.InvokeVoidAsync("exportGrid", "csv");
 }
 ```
+
+```js
+// wwwroot script: export() on the first toolbar exporter of the page — "excel" | "csv" | "pdf"
+window.exportGrid = (type) => document.querySelector('igc-grid-toolbar-exporter').export(type);
+```
+
+To export from code, call the element's `export()` through JS interop as above — this needs an `IgbGridToolbarExporter` on the page (hide the format you don't want, but keep the exporter): in `IgniteUI.Blazor` 26.1.x the C# `ExportGridAsync` / `ExportGrid` fail (`target doesn't have prop: export` in the console, a `JsonException` in .NET, nothing downloads). The `GridToolbarExporterType` values are `Excel`, `Csv`, `Pdf` — not `CSV`. `ExportStarted` / `ExportEnded` fire for every export, but the C# `ExportStarted` args carry no `Options` and setting `Cancel` there does not stop the download.
 
 Configure or cancel an export from the grid's `ToolbarExporting` event. In Blazor the practical hook is the JS variant, because the exporter's own per-column and per-row events are only reachable from script:
 
@@ -154,7 +163,23 @@ Row and column virtualization are on by default once the grid has a fixed `Heigh
 </IgbGrid>
 ```
 
-`IgbGridEditingActions` renders edit/delete (plus add-row when `AddRow="true"`) and needs `RowEditable="true"` on the grid to function. `IgbGridPinningActions` renders row pin/unpin. Extra buttons can be placed inside `IgbActionStrip` alongside them.
+`IgbGridEditingActions` shows Edit and Delete by default (`EditRow` and `DeleteRow` default to `true` in the component; the C# properties read `false` until you set them). `AddRow="true"` adds an Add button on root rows; on `IgbTreeGrid`, `AddChild="true"` adds an Add Child button. Set `EditRow="false"` or `DeleteRow="false"` to hide one. What each needs:
+
+- **Delete** removes the row by key — it needs `PrimaryKey`, not `RowEditable`; without `PrimaryKey` it silently does nothing. It also removes the row from the bound `List<T>` instance itself (not from a list that one was copied from), but the page does not re-render: `RowDeleted` is an `Action<T>`, so call `StateHasChanged()` in its handler when something else on the page (a count, a summary) depends on the list.
+- **Edit** enters row editing with `RowEditable="true"` (which also makes the non-key columns editable), or cell editing on the first `Editable="true"` column without it. With no editable column it silently does nothing.
+- **Add / Add Child** need `RowEditable="true"`; otherwise they only log a console warning.
+
+`IgbGridPinningActions` renders row pin/unpin and needs neither. `AsMenuItems="true"` on an actions component moves its buttons into a "More" (⋮) menu. Extra buttons can be placed inside `IgbActionStrip` alongside them.
+
+```razor
+@* delete-only strip, no row editing *@
+<IgbGrid Data="data" PrimaryKey="Id">
+    <IgbColumn Field="Name" />
+    <IgbActionStrip>
+        <IgbGridEditingActions EditRow="false" />
+    </IgbActionStrip>
+</IgbGrid>
+```
 
 ## Master-detail — `IgbGrid` only
 

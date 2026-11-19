@@ -44,21 +44,30 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 ## Card
 
 ```razor
-<IgbCard style="width: 350px;">
-    <IgbCardMedia><img src="photo.jpg" alt="Card image" /></IgbCardMedia>
-    <IgbCardHeader>
-        <h3 slot="title">Jane Doe</h3>
-        <span slot="subtitle">Photographer</span>
-    </IgbCardHeader>
-    <IgbCardContent><p>A short description.</p></IgbCardContent>
-    <IgbCardActions>
-        <IgbButton slot="start" Variant="ButtonVariant.Flat">Like</IgbButton>
-        <IgbButton slot="end" Variant="ButtonVariant.Contained">Buy Now</IgbButton>
-    </IgbCardActions>
-</IgbCard>
+<div class="card-row">
+    <IgbCard>
+        <IgbCardMedia><img src="photo.jpg" alt="Card image" /></IgbCardMedia>
+        <IgbCardHeader>
+            <h3 slot="title">Jane Doe</h3>
+            <span slot="subtitle">Photographer</span>
+        </IgbCardHeader>
+        <IgbCardContent><p>A short description.</p></IgbCardContent>
+        <IgbCardActions>
+            <IgbButton slot="start" Variant="ButtonVariant.Flat">Like</IgbButton>
+            <IgbButton slot="end" Variant="ButtonVariant.Contained">Buy Now</IgbButton>
+        </IgbCardActions>
+    </IgbCard>
+</div>
 ```
 
-`IgbCard` has no default width — always give it one.
+```css
+/* MyView.razor.css */
+.card-row ::deep igc-card {
+    width: 350px;
+}
+```
+
+`IgbCard` has no width of its own — it stretches to fill its container — so give it one from CSS, not a `style` attribute. In a `.razor.css` file, use `::deep` under an element the view renders itself: `igc-card` carries no CSS-isolation attribute, so a plain `.my-card { … }` rule there never matches, even with `class="my-card"` on the `IgbCard`. In `app.css`, a `class` plus a plain rule works. `IgbCard` has no width parameter (the full package's inherited `Width` does not size it).
 
 ## List
 
@@ -89,18 +98,39 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 <IgbBadge Variant="StyleVariant.Primary">5</IgbBadge>
 <IgbBadge Variant="StyleVariant.Danger" Shape="BadgeShape.Square" Dot="true" />
 
-<IgbChip Selectable="true" Removable="true" Variant="StyleVariant.Info" Remove="OnChipRemoved">
-    <IgbIcon slot="start" IconName="star" Collection="material" />
-    Blazor
-</IgbChip>
-<IgbChip Outlined="true" Variant="StyleVariant.Primary">Outlined</IgbChip>
+<div class="chip-row">
+    <IgbChip Selectable="true" Removable="true" Variant="StyleVariant.Info" @bind-Selected="BlazorSelected" Remove="OnChipRemoved">
+        <IgbIcon slot="start" IconName="star" Collection="material" />
+        Blazor
+    </IgbChip>
+    <IgbChip class="chip-outline">Outlined</IgbChip>
+</div>
 
 @code {
-    void OnChipRemoved(IgbVoidEventArgs e) { }
+    bool BlazorSelected { get; set; }
+    void OnChipRemoved() { }   // the chip does not remove itself: drop it from your data here
 }
 ```
 
-`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`; a chip without `Variant` has no color variant. `IgbChip` also has `Outlined`, `Selected` / `SelectedChanged` and a `Select` event.
+```css
+/* MyView.razor.css */
+.chip-row ::deep igc-chip.chip-outline::part(base) {
+    background: transparent;
+    border: 1px solid var(--ig-primary-500);
+    color: var(--ig-primary-700);
+}
+```
+
+The chip API differs between the packages:
+
+| | `IgniteUI.Blazor.Lite` | `IgniteUI.Blazor` (26.1.x) |
+|---|---|---|
+| `Remove` | `EventCallback<IgbVoidEventArgs>` | `EventCallback<IgbComponentBoolValueChangedEventArgs>` |
+| `Outlined` | `bool` parameter | none — `Outlined="true"` still compiles (unknown attributes pass through to `igc-chip`) but the chip stays filled |
+
+A `Remove` handler without parameters, as above, compiles in both. For an outlined chip in either package, style `::part(base)` on a chip without `Variant`, as above — tokens alone (`--ig-chip-background`, `--ig-chip-border-color`) are not enough, because the Lite chip has no border unless `Outlined` is set. That rule's `background` also overrides the selected fill, so a selected outlined chip is told apart only by its check icon. In Lite, `Outlined="true"` (with a `Variant` for color) gives an outlined chip without CSS. `IgbChip` also has `Selected` / `SelectedChanged` (`@bind-Selected`) and a `Select` event (`IgbComponentBoolValueChangedEventArgs`; `Detail` is the new state).
+
+`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`; a chip without `Variant` has no color variant.
 
 ## Progress
 

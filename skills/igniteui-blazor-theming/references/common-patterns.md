@@ -80,9 +80,9 @@ Remember to swap the grid stylesheet variant too when a full grid is on the page
 
 ## CSS custom properties (design tokens)
 
-Every visual attribute is a CSS custom property. Tokens are the **primary** customization layer — reach for `::part()` only when no token covers the property.
+Most visual attributes are CSS custom properties (some, such as a chip label's font size or padding, are not). Tokens are the **primary** customization layer — reach for `::part()` only when no token covers the property.
 
-1. Call `get_component_design_tokens("<component-or-variant>")` — never guess names.
+1. Call `get_component_design_tokens("<component-or-variant>")` — never guess names. Without the MCP server, list the names the component actually reads from the package's `igniteui-webcomponents.*.bundle.js` (see [SKILL.md](../SKILL.md)); the theme CSS files don't contain component tokens.
 2. Override the ones you need in a rule matching the component's scope.
 
 ```css
@@ -107,11 +107,12 @@ igc-chip {
 
 ## `::deep` — what it does and does not do
 
-`::deep` is Blazor's CSS-isolation combinator, not a shadow-DOM piercer. It only applies in `.razor.css` files, and only when Blazor's scope attribute sits on a parent **above** the target.
+`::deep` is Blazor's CSS-isolation combinator, not a shadow-DOM piercer. It only applies in `.razor.css` files, and only when Blazor's scope attribute sits on a parent **above** the target. `.razor.css` rules load only if the host page links the `<AssemblyName>.styles.css` bundle — `dotnet new blazorwasm --empty` ships that link commented out in `index.html`.
 
 | Do | Don't |
 |---|---|
-| `::deep igc-chip { … }` | `::deep .my-class { … }` — plain class selectors are already scoped |
+| `::deep igc-chip { … }` | `::deep .my-class { … }` on your own HTML — plain class selectors are already scoped there |
+| `.wrapper ::deep .my-card { … }` for a `class` set on an `Igb*` component — the class lands on the `igc-*` element, which has no scope attribute | Plain `.my-card { … }` for that class — it never matches |
 | `::deep igc-dialog::part(footer) { … }` | `::deep :root { … }` — never scope a `:root` block |
 | Plain `.layout { … }` for your own HTML | `::deep` on the component's own root element — no scoped parent exists above it |
 
@@ -186,7 +187,7 @@ A single generated surface color rarely covers a design with a darker sidebar an
 
 1. One built-in theme stylesheet at a time.
 2. Selectors use `igc-*` tag names, never Razor component names.
-3. Call `get_component_design_tokens` before writing any `--ig-<component>-*` name.
+3. Call `get_component_design_tokens` (or, without MCP, look the name up in the package's web-components bundle) before writing any `--ig-<component>-*` name.
 4. Load your overrides after the built-in theme so the cascade favors them.
 5. Once a palette exists, use its tokens instead of raw hex — hardcoded colors break theme switching. Charts and other DV components are the exception; they need resolved color values.
 6. Blazor theming is plain CSS. There is no Sass pipeline.
