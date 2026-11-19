@@ -1,7 +1,8 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Event arguments for the <see cref="IgbCombo{TValue, TItem}.DataRequest"/> event.
+    /// Event arguments for the <see cref="IgbVirtualScroll{TItem}.DataRequest"/> and
+    /// <see cref="IgbCombo{TValue, TItem}.DataRequest"/> events.
     /// </summary>
     public partial class IgbVirtualScrollDataRequestEventArgs : BaseJsonSerializable
     {
