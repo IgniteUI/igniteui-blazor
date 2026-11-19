@@ -11,7 +11,7 @@ Three test projects under `tests/`, two suites:
 
 | Project | Suite | What it is |
 |---|---|---|
-| `IgniteUI.Blazor.Tests` | **Unit** | xUnit + bUnit, multi-targeted `net8.0`/`net9.0`/`net10.0`; renders components in-process with a recording JS runtime — no browser |
+| `IgniteUI.Blazor.Tests` | **Unit** | xUnit + bUnit, multi-targeted `net10.0`/`net11.0`; renders components in-process with a recording JS runtime — no browser |
 | `IgniteUI.Blazor.Lite.IntegrationTests` | **Integration** | NUnit + Playwright; one generated test fixture per component |
 | `IgniteUI.Blazor.Lite.TestBed` | (integration host) | Blazor app the integration tests drive; renders one component per run and sweeps its surface |
 
@@ -41,10 +41,10 @@ The suites overlap on purpose but answer different questions. Integration proves
 ### Running
 
 ```
-dotnet test tests/IgniteUI.Blazor.Tests -f net10.0 --nologo --filter "FullyQualifiedName~<Name>Tests"
+dotnet test tests/IgniteUI.Blazor.Tests -f net11.0 --nologo --filter "FullyQualifiedName~<Name>Tests"
 ```
 
-- Iterate on one TFM (`-f net10.0`); finish with a full run on all TFMs (drop `-f`).
+- Iterate on one TFM (`-f net11.0`); finish with a full run on all TFMs (drop `-f`).
 - Contract failure stacks carry the violated contract line as the top frame — the test UI navigates to the spec, not the shared runner.
 
 ### Conventions

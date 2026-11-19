@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Breaking Changes
+
+- The library targets `net10.0` and `net11.0`. It no longer targets `net8.0` and `net9.0`, which reach the end of support with the release of .NET 11. Apps on .NET 8 or 9 stay on 1.0.x; to update, retarget the app to .NET 10 or later.
+- Apps on .NET 11 WebAssembly need a browser that supports WebAssembly exception handling (`exnref`); see the [Blazor supported platforms](https://learn.microsoft.com/aspnet/core/blazor/supported-platforms). The .NET 11 runtime does not start in older browsers. This is a requirement of .NET 11, not of the library.
+
 ## 1.0.1 - 2026-10-29
 
 ### Fixed

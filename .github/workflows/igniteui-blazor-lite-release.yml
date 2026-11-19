@@ -11,7 +11,7 @@ concurrency:
 
 env:
   BUILD_CONFIGURATION: Release
-  DOTNET_VERSION: "10.0.x"
+  DOTNET_VERSION: "11.0.x"
   NODE_VERSION: "22"
   VERSION: ${{ github.ref_name }}
   PACKAGE_ID: IgniteUI.Blazor.Lite

@@ -13,7 +13,7 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
     /// </summary>
     internal sealed class TrimmedPublishServer : IAsyncDisposable
     {
-        private const string Tfm = "net10.0";
+        private const string Tfm = "net11.0";
 
         private readonly WebApplication app;
 
