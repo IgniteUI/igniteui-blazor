@@ -79,6 +79,33 @@ namespace IgniteUI.Blazor.Controls
             call(module);
         }
 
+        /// <summary>
+        /// Posts a call that nothing awaits, such as a message to the client. Its failure when the circuit goes
+        /// away is expected and dropped; any other failure stays unobserved, as a discarded task's would.
+        /// </summary>
+        internal void PostVoid(string identifier, params object?[]? args)
+        {
+            Post(module => _ = InvokeAndForgetAsync(module, identifier, args));
+        }
+
+        private static async Task InvokeAndForgetAsync(IJSObjectReference module, string identifier, object?[]? args)
+        {
+            try
+            {
+                await module.InvokeVoidAsync(identifier, args).ConfigureAwait(false);
+            }
+            catch (JSDisconnectedException)
+            {
+                // The circuit is gone; there is no client left to update.
+            }
+            catch (OperationCanceledException)
+            {
+                // The call was canceled with the circuit or runtime.
+            }
+        }
+
+        // Awaited calls: the caller gets the failure, so it can handle it as its own.
+#pragma warning disable BL0016 // JS interop call is not guarded with a try/catch block
         internal async ValueTask<TValue> InvokeAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)] TValue>(string identifier, params object?[]? args)
         {
             var module = _module ?? await GetAsync().ConfigureAwait(false);
@@ -90,6 +117,7 @@ namespace IgniteUI.Blazor.Controls
             var module = _module ?? await GetAsync().ConfigureAwait(false);
             await module.InvokeVoidAsync(identifier, args).ConfigureAwait(false);
         }
+#pragma warning restore BL0016
 
         private async Task<IJSObjectReference> LoadAsync()
         {

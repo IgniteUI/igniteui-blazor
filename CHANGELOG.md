@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Updated to `igniteui-webcomponents` 7.5.0. Its [changelog](https://github.com/IgniteUI/igniteui-webcomponents/blob/master/CHANGELOG.md#750---2026-11-16) lists the behavior changes that reach Blazor apps through the web components, such as the native dialog `::backdrop`, the surface color roles of the themes, and Enter submitting a form through its first submit button.
 
+### Breaking Changes
+
+- The library targets `net10.0` and `net11.0`. It no longer targets `net8.0` and `net9.0`, which reach the end of support with the release of .NET 11. Apps on .NET 8 or 9 stay on 1.0.x; to update, retarget the app to .NET 10 or later.
+- Apps on .NET 11 WebAssembly need a browser that supports WebAssembly exception handling (`exnref`); see the [Blazor supported platforms](https://learn.microsoft.com/aspnet/core/blazor/supported-platforms). The .NET 11 runtime does not start in older browsers. This is a requirement of .NET 11, not of the library.
+
 ### Added
 
 - **Combo:** remote data. Set `FilteringOptions.Mode` to `ComboFilteringMode.Remote` to stop the local filter, handle `SearchInput` to set `Data` to the results of a server search, and handle `DataRequest` to append the `Count` items it asks for at `StartIndex` when the user scrolls near the end. `TotalItemCount` gives the size of the remote source, so the list shows a placeholder for each item that is not loaded, and `Loading` shows a spinner in place of the toggle icon.
