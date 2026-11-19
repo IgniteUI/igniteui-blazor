@@ -1,4 +1,5 @@
 @attribute [Stories("Forms/Combo")]
+@using System.Collections.ObjectModel
 
 <Stories TComponent="IgbCombo<string, City>">
 
@@ -157,43 +158,58 @@
         .ToArray();
 
     private readonly IgbFilteringOptions _remoteFiltering = new() { Mode = ComboFilteringMode.Remote };
-    private List<Product> _remoteItems = _catalog.Take(50).ToList();
+    // A search replaces the collection; a page is appended to it, so only the new items go to the client.
+    private ObservableCollection<Product> _remoteItems = new(_catalog.Take(50));
     private double? _remoteTotal = _catalog.Length;
     private bool _remoteLoading;
     private string _remoteSearch = "";
     private string _remoteLog = "";
+    // Bumped by each search, so a reply to an older search or its pages is dropped.
     private int _remoteVersion;
 
     private async Task OnRemoteSearch(IgbComboSearchInputEventArgs args)
     {
-        _remoteSearch = args.Detail.SearchText ?? "";
+        var search = args.Detail.SearchText ?? "";
         var version = ++_remoteVersion;
+        _remoteSearch = search;
         _remoteLoading = true;
-        var (page, total) = await QueryServer(_remoteSearch, 0, 50);
-        if (version != _remoteVersion)
+        try
         {
-            return; // A newer search has started.
+            var (page, total) = await QueryServer(search, 0, 50);
+            if (version != _remoteVersion)
+            {
+                return; // A newer search has started.
+            }
+            _remoteItems = new(page);
+            _remoteTotal = total;
+            _remoteLog = $"Search \"{search}\": {total} matches, {page.Count} loaded.";
         }
-        _remoteItems = page;
-        _remoteTotal = total;
-        _remoteLoading = false;
-        _remoteLog = $"Search \"{_remoteSearch}\": {total} matches, {page.Count} loaded.";
+        finally
+        {
+            if (version == _remoteVersion)
+            {
+                _remoteLoading = false;
+            }
+        }
     }
 
     private async Task OnRemoteDataRequest(IgbVirtualScrollDataRequestEventArgs args)
     {
         var version = _remoteVersion;
-        var start = (int)args.Detail.StartIndex;
-        _remoteLoading = true;
-        var (page, total) = await QueryServer(_remoteSearch, start, Math.Max(50, (int)args.Detail.Count));
+        var search = _remoteSearch;
+        var (page, total) = await QueryServer(search, (int)args.Detail.StartIndex, (int)args.Detail.Count);
         if (version != _remoteVersion)
         {
-            return;
+            return; // The page belongs to an older search.
         }
-        _remoteItems = _remoteItems.Take(start).Concat(page).ToList();
+        // Another request may have loaded part of this page already: append only what is new.
+        var skip = _remoteItems.Count - (int)args.Detail.StartIndex;
+        foreach (var product in page.Skip(Math.Max(0, skip)))
+        {
+            _remoteItems.Add(product);
+        }
         _remoteTotal = total;
-        _remoteLoading = false;
-        _remoteLog = $"Requested {args.Detail.Count} at {start}: {_remoteItems.Count} of {total} loaded.";
+        _remoteLog = $"Requested {args.Detail.Count} at {args.Detail.StartIndex}: {_remoteItems.Count} of {total} loaded.";
     }
 
     private static async Task<(List<Product> Page, int Total)> QueryServer(string search, int skip, int take)

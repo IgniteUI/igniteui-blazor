@@ -14,13 +14,21 @@ Updated to `igniteui-webcomponents` 7.5.0. Its [changelog](https://github.com/Ig
 - **Combo:** remote data. Set `FilteringOptions.Mode` to `ComboFilteringMode.Remote` to stop the local filter, handle `SearchInput` to set `Data` to the results of a server search, and handle `DataRequest` to append the `Count` items it asks for at `StartIndex` when the user scrolls near the end. `TotalItemCount` gives the size of the remote source, so the list shows a placeholder for each item that is not loaded, and `Loading` shows a spinner in place of the toggle icon.
 - **Combo:** `ShowSelectAll` adds a "Select all" option in multiple selection, and `GroupSelection` makes each group header select or deselect the shown items of its group. `SelectAllItems` and `DeselectAllItems` do the same from code; pass `ignoreFilter: true` to act on all the data.
 - **Combo:** `SelectionCommit="ComboSelectionCommit.Confirm"` holds the user's changes while the list is open. Each toggle emits `PendingChange`, and Enter or the Apply button applies them with one `Change` of `ComboChangeType.Commit`. For a custom footer, use `GetPendingValue`, `CommitSelection` and `CancelSelection`.
-- **Combo:** `Closing` and `Closed` give the user action that closes the list in `Detail.Trigger`, such as `ComboCloseTrigger.Escape`, `OutsideClick` or `Apply`.
+- **Combo:** `Closing` and `Closed` give the user action that closes the list in `Detail.Trigger`, such as `ComboCloseTrigger.Escape`, `OutsideClick` or `Apply`, or `null` for a trigger that this version does not know. To keep the list open, cancel the event in a `ClosingScript`.
+
+### Fixed
+
+- **Combo:** `Select` and `Deselect` with data items, not `ValueKey` values, now select and deselect those items. They sent references that the browser did not resolve.
+- **Combo:** the selected items of an earlier `Data` still resolve in `Change`, `GetSelection` and `Deselect` after `Data` is replaced, instead of coming back as `null`.
+- **Combo:** `Value` and `@bind-Value` follow `SelectAllItems`, `DeselectAllItems` and `CommitSelection`, which change the selection without a `Change` event.
+- Changes to an `ObservableCollection` bound as `Data` now re-render the combo and the other components that render their data themselves, not only reach their data array.
 
 ### Changed
 
 - **Combo:** `Closing` and `Closed` take `IgbComboClosingEventArgs`, not `IgbVoidEventArgs`. It derives from `IgbVoidEventArgs`, so handler methods and untyped lambdas still bind; a lambda that declares its parameter as `IgbVoidEventArgs` must declare `IgbComboClosingEventArgs` instead.
 - **Combo:** a new `Data` keeps the selection, and a selected value that the data does not hold stays selected until it is deselected. To clear the selection with the data, as in cascading combos, set `Value` to an empty array.
 - **Combo:** the events of its inner inputs and list no longer leave the combo. Handle `SearchInput` for the search text.
+- **Range Slider:** `Upper` defaults to `100`, not `0`. Until it is set, the upper thumb follows `UpperBound`, or `Max` without a bound, so the default range covers the full scale.
 - **Combo:** `GroupHeaderTemplate` takes `Key` from the group value that the web component now passes. Items without a value in the `GroupKey` field fall under `Other`.
 
 ## 1.0.1 - 2026-10-29

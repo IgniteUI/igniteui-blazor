@@ -45,6 +45,11 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             Assert.That(first, Does.StartWith("20:"), "the request should start after the loaded items");
             var name = await Page.EvaluateAsync<string>($"() => {Remote}.data[20].Name");
             Assert.That(name, Is.EqualTo("Product 021"));
+
+            // The appended items render, not only reach the data array.
+            await Page.EvaluateAsync($"() => {Remote}.shadowRoot.querySelector('igc-virtual-scroll').scrollToIndex(30)");
+            await Page.WaitForFunctionAsync(
+                $"() => [...{Remote}.shadowRoot.querySelectorAll('igc-combo-item')].some(i => i.textContent.includes('Product 031'))");
         }
 
         [Test]
@@ -88,6 +93,40 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
                 Assert.That(log.GetProperty("pending")[0].GetString(), Is.EqualTo("Selection:2"));
                 Assert.That(log.GetProperty("changes")[0].GetString(), Is.EqualTo("Commit:2"));
             });
+        }
+
+        [Test]
+        public async Task NewData_KeepsTheSelectedItemsOfTheOldData()
+        {
+            const string NoKey = "document.getElementById('nokey')";
+            await OpenAsync();
+            await Page.WaitForFunctionAsync($"() => {NoKey}?.data?.length === 5");
+
+            await Page.EvaluateAsync($"() => {NoKey}.show()");
+            await Page.WaitForFunctionAsync($"() => {NoKey}.shadowRoot.querySelector('igc-combo-item') !== null");
+            await Page.EvaluateAsync($"() => {NoKey}.shadowRoot.querySelectorAll('igc-combo-item')[0].click()");
+            await WaitForLogAsync("noKeyChanges", 1);
+
+            // As after a remote search: new data that does not hold the selected item.
+            await Page.EvaluateAsync("() => window.clientPageRef.invokeMethodAsync('ReplaceNoKeyData')");
+            await Page.WaitForFunctionAsync($"() => {NoKey}.data[0].Name === 'Product 006'");
+            await Page.WaitForFunctionAsync($"() => {NoKey}.shadowRoot.querySelector('igc-combo-item')?.textContent.includes('006')");
+            await Page.EvaluateAsync($"() => {NoKey}.shadowRoot.querySelectorAll('igc-combo-item')[0].click()");
+            await WaitForLogAsync("noKeyChanges", 2);
+
+            var log = await LogAsync();
+            Assert.Multiple(() =>
+            {
+                Assert.That(log.GetProperty("noKeyChanges")[0].GetString(), Is.EqualTo("Product 001"));
+                Assert.That(log.GetProperty("noKeyChanges")[1].GetString(), Is.EqualTo("Product 001,Product 006"));
+            });
+
+            // .NET reads the selection back, and names the old item in a method call.
+            var selection = await Page.EvaluateAsync<string>("() => window.clientPageRef.invokeMethodAsync('GetNoKeySelection')");
+            Assert.That(selection, Is.EqualTo("Product 001,Product 006"));
+
+            await Page.EvaluateAsync("() => window.clientPageRef.invokeMethodAsync('DeselectFirstNoKeyItem')");
+            await Page.WaitForFunctionAsync($"() => {NoKey}.value.length === 1 && {NoKey}.value[0].Name === 'Product 006'");
         }
 
         private async Task OpenAsync()

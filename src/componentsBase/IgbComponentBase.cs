@@ -1916,7 +1916,7 @@ namespace IgniteUI.Blazor.Controls
                             else
                             {
                                 Guid uuid = Guid.Parse(id);
-                                returnValue = _dataSourceManager?.FindItem(uuid);
+                                returnValue = _dataSourceManager?.FindItem(uuid) ?? FindRetainedItem(uuid);
                             }
                         }
                         else
@@ -2371,6 +2371,15 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
+        /// <summary>
+        /// Resolves a uuid ref whose data source the component has released, for an item the
+        /// component keeps on purpose, such as a combo's selection after its data is replaced.
+        /// </summary>
+        private protected virtual object? FindRetainedItem(Guid id) => null;
+
+        /// <summary>The uuid of an item that <see cref="FindRetainedItem"/> resolves, or <see cref="Guid.Empty"/>.</summary>
+        private protected virtual Guid FindRetainedItemId(object item) => Guid.Empty;
+
         internal void ObjectToParam(SerializationContext? context, object? val)
         {
             ArgumentNullException.ThrowIfNull(context);
@@ -2381,6 +2390,10 @@ namespace IgniteUI.Blazor.Controls
             }
             var w = context.Writer;
             Guid id = _dataSourceManager?.FindItemId(val) ?? Guid.Empty;
+            if (id == Guid.Empty)
+            {
+                id = FindRetainedItemId(val);
+            }
 
             var typeName = "";
 
@@ -2492,6 +2505,10 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             Guid id = _dataSourceManager?.FindItemId(val) ?? Guid.Empty;
+            if (id == Guid.Empty)
+            {
+                id = FindRetainedItemId(val);
+            }
 
             string typeName = "";
             if (val is JsonSerializable)
@@ -2684,12 +2701,13 @@ namespace IgniteUI.Blazor.Controls
             }
             var str = val.ToString();
             T ret;
-            if (Enum.TryParse<T>(str, true, out ret))
+            // Web component values that differ from the member name, such as "outside-click" or "90",
+            // come from [WCEnumName]; match those first so a numeric value is not taken as an ordinal.
+            if (Utils.TryGetEnumMemberName(typeof(T), str, out var memberName) && Enum.TryParse<T>(memberName, false, out ret))
             {
                 return ret;
             }
-            // Kebab-case web component values, such as "outside-click", map to [WCEnumName] members.
-            if (str != null && str.Contains('-') && Enum.TryParse<T>(str.Replace("-", ""), true, out ret))
+            if (Enum.TryParse<T>(str, true, out ret))
             {
                 return ret;
             }

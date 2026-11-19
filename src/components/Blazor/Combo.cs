@@ -58,6 +58,11 @@ namespace IgniteUI.Blazor.Controls
 
                 if (oldValue != value || !IsPropDirty("Data"))
                 {
+                    if (oldValue != value)
+                    {
+                        // Before the old data source goes: its selected items stay resolvable.
+                        RetainSelectedItems(oldValue);
+                    }
                     MarkPropDirty("Data");
                     this._data = value;
                     this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
@@ -888,58 +893,66 @@ namespace IgniteUI.Blazor.Controls
 
         /// <summary>
         /// Selects all the items that the list shows. It does not emit <see cref="Change"/>,
-        /// and does nothing in single selection mode.
+        /// and does nothing in single selection mode. <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="ignoreFilter">Whether to select all the items of the data, not only the ones that the filter shows.</param>
         public async Task SelectAllItemsAsync(bool ignoreFilter = false)
         {
             await InvokeMethod("selectAllItems", new object?[] { ignoreFilter }, new string[] { "Boolean" });
+            await SyncValueFromClientAsync();
         }
 
         /// <summary>
         /// Selects all the items that the list shows. It does not emit <see cref="Change"/>,
-        /// and does nothing in single selection mode.
+        /// and does nothing in single selection mode. <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="ignoreFilter">Whether to select all the items of the data, not only the ones that the filter shows.</param>
         public void SelectAllItems(bool ignoreFilter = false)
         {
             InvokeMethodSync("selectAllItems", new object?[] { ignoreFilter }, new string[] { "Boolean" });
+            SyncValueFromClient();
         }
 
         /// <summary>
-        /// Deselects all the items that the list shows. It does not emit <see cref="Change"/>.
+        /// Deselects all the items that the list shows. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="ignoreFilter">Whether to deselect all the items, not only the ones that the filter shows.</param>
         public async Task DeselectAllItemsAsync(bool ignoreFilter = false)
         {
             await InvokeMethod("deselectAllItems", new object?[] { ignoreFilter }, new string[] { "Boolean" });
+            await SyncValueFromClientAsync();
         }
 
         /// <summary>
-        /// Deselects all the items that the list shows. It does not emit <see cref="Change"/>.
+        /// Deselects all the items that the list shows. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="ignoreFilter">Whether to deselect all the items, not only the ones that the filter shows.</param>
         public void DeselectAllItems(bool ignoreFilter = false)
         {
             InvokeMethodSync("deselectAllItems", new object?[] { ignoreFilter }, new string[] { "Boolean" });
+            SyncValueFromClient();
         }
 
         /// <summary>
         /// Applies the pending selection of <see cref="ComboSelectionCommit.Confirm"/> mode to the value.
-        /// It does not emit <see cref="Change"/> or close the list.
+        /// It does not emit <see cref="Change"/> or close the list; <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         public async Task CommitSelectionAsync()
         {
             await InvokeMethod("commitSelection", new object?[] { }, new string[] { });
+            await SyncValueFromClientAsync();
         }
 
         /// <summary>
         /// Applies the pending selection of <see cref="ComboSelectionCommit.Confirm"/> mode to the value.
-        /// It does not emit <see cref="Change"/> or close the list.
+        /// It does not emit <see cref="Change"/> or close the list; <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         public void CommitSelection()
         {
             InvokeMethodSync("commitSelection", new object?[] { }, new string[] { });
+            SyncValueFromClient();
         }
 
         /// <summary>
@@ -1479,6 +1492,11 @@ namespace IgniteUI.Blazor.Controls
         /// Emitted just before the user closes the list of options.
         /// <see cref="IgbComboClosingEventArgsDetail.Trigger"/> gives the user action that closes it.
         /// </summary>
+        /// <remarks>
+        /// The web component event is cancelable, but a .NET handler runs after it has been dispatched and
+        /// cannot keep the list open. To cancel the close, handle it on the client with <see cref="ClosingScript"/>
+        /// and call <c>preventDefault()</c>, for example when <c>args.detail.trigger</c> is <c>'outside-click'</c>.
+        /// </remarks>
         [Parameter]
         public EventCallback<IgbComboClosingEventArgs> Closing
         {

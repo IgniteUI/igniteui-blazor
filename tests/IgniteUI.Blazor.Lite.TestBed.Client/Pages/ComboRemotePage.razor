@@ -1,5 +1,6 @@
 @page "/combo-remote"
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using System.Collections.ObjectModel
 @implements IDisposable
 @inject IJSRuntime JS
 
@@ -25,6 +26,11 @@
               SelectionCommit="ComboSelectionCommit.Confirm"
               PendingChange="OnPendingChange"
               Change="OnChange" />
+
+    <IgbCombo @ref="_noKey" id="nokey" TValue="ComboDataScenarios.Product" TItem="ComboDataScenarios.Product"
+              DisplayKey="Name"
+              Data="_noKeyItems"
+              Change="OnNoKeyChange" />
 </div>
 
 @code {
@@ -33,7 +39,8 @@
         .ToList();
 
     private readonly IgbFilteringOptions _remoteFiltering = new() { Mode = ComboFilteringMode.Remote };
-    private List<ComboDataScenarios.Product> _remoteItems = _catalog.Take(20).ToList();
+    // A search replaces the collection; a page appends to it, so only the new items cross.
+    private ObservableCollection<ComboDataScenarios.Product> _remoteItems = new(_catalog.Take(20));
     private double? _remoteTotal = _catalog.Count;
     private string _search = "";
     private readonly List<ComboDataScenarios.Product> _confirmItems = _catalog.Take(5).ToList();
@@ -44,6 +51,43 @@
     private readonly List<string> _closed = new();
     private readonly List<string> _pending = new();
     private readonly List<string> _changes = new();
+    private readonly List<string> _noKeyChanges = new();
+    private List<ComboDataScenarios.Product> _noKeyItems = FreshProducts(1, 5);
+    private IgbCombo<ComboDataScenarios.Product, ComboDataScenarios.Product>? _noKey;
+    private ComboDataScenarios.Product[] _noKeyValue = [];
+
+    // A server returns new instances on each call, as a deserializer does.
+    private static List<ComboDataScenarios.Product> FreshProducts(int first, int count) => Enumerable.Range(first, count)
+        .Select(i => new ComboDataScenarios.Product { Id = i, Name = $"Product {i:000}", Price = i, Restocked = new DateTime(2026, 1, 1) })
+        .ToList();
+
+    private void OnNoKeyChange(IgbComboChangeEventArgs<ComboDataScenarios.Product, ComboDataScenarios.Product> args) =>
+        _noKeyChanges.Add(string.Join(",", (_noKeyValue = args.Detail.NewValue).Select(p => p?.Name ?? "<null>")));
+
+    /// <summary>The selection as .NET reads it back: names, and whether they are the bound instances.</summary>
+    [JSInvokable]
+    public async Task<string> GetNoKeySelection()
+    {
+        var selection = await _noKey!.GetSelectionAsync();
+        return string.Join(",", selection.Select(p => p?.Name ?? "<null>"));
+    }
+
+    /// <summary>Deselects, from .NET, the first selected item: one the current data no longer holds.</summary>
+    [JSInvokable]
+    public async Task DeselectFirstNoKeyItem()
+    {
+        await _noKey!.DeselectAsync([_noKeyValue[0]]);
+    }
+
+    [JSInvokable]
+    public async Task ReplaceNoKeyData()
+    {
+        await InvokeAsync(() =>
+        {
+            _noKeyItems = FreshProducts(6, 5);
+            StateHasChanged();
+        });
+    }
     private DotNetObjectReference<ComboRemotePage>? _selfRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -68,7 +112,7 @@
         _search = args.Detail.SearchText ?? "";
         _searchTexts.Add(_search);
         var matches = Matches().ToList();
-        _remoteItems = matches.Take(20).ToList();
+        _remoteItems = new(matches.Take(20));
         _remoteTotal = matches.Count;
     }
 
@@ -77,12 +121,16 @@
         var start = (int)args.Detail.StartIndex;
         var count = (int)args.Detail.Count;
         _requests.Add($"{start}:{count}");
-        _remoteItems = _remoteItems.Take(start).Concat(Matches().Skip(start).Take(count)).ToList();
+        // Append from the items already loaded: an earlier request can have covered part of this one.
+        foreach (var item in Matches().Skip(_remoteItems.Count).Take(start + count - _remoteItems.Count))
+        {
+            _remoteItems.Add(item);
+        }
     }
 
-    private void OnClosing(IgbComboClosingEventArgs args) => _closing.Add(args.Detail.Trigger.ToString());
+    private void OnClosing(IgbComboClosingEventArgs args) => _closing.Add(args.Detail.Trigger?.ToString() ?? "<null>");
 
-    private void OnClosed(IgbComboClosingEventArgs args) => _closed.Add(args.Detail.Trigger.ToString());
+    private void OnClosed(IgbComboClosingEventArgs args) => _closed.Add(args.Detail.Trigger?.ToString() ?? "<null>");
 
     private void OnPendingChange(IgbComboChangeEventArgs<int, ComboDataScenarios.Product> args) =>
         _pending.Add($"{args.Detail.ChangeType}:{string.Join(",", args.Detail.NewValue)}");
@@ -99,5 +147,6 @@
         Closed = _closed,
         Pending = _pending,
         Changes = _changes,
+        NoKeyChanges = _noKeyChanges,
     };
 }

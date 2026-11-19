@@ -72,29 +72,47 @@ In `IgniteUI.Blazor.Lite` (on `igniteui-webcomponents` 7.5), the combo can searc
 
 @code {
     private readonly IgbFilteringOptions _remote = new() { Mode = ComboFilteringMode.Remote };
-    private List<Product> _items = [];
+    private ObservableCollection<Product> _items = [];   // System.Collections.ObjectModel
     private double? _total;
     private bool _loading;
     private string _search = "";
+    private int _version;   // bumped per search; replies to an older search are dropped
 
     private async Task OnSearch(IgbComboSearchInputEventArgs e)
     {
-        _search = e.Detail.SearchText ?? "";
+        var search = e.Detail.SearchText ?? "";
+        var version = ++_version;
+        _search = search;
         _loading = true;
-        (_items, _total) = await Api.SearchAsync(_search, skip: 0, take: 50);
-        _loading = false;
+        try
+        {
+            var (page, total) = await Api.SearchAsync(search, skip: 0, take: 50);
+            if (version != _version) return;          // a newer search is running
+            _items = new(page);                        // a search replaces the data
+            _total = total;
+        }
+        finally
+        {
+            if (version == _version) _loading = false;
+        }
     }
 
     private async Task OnMore(IgbVirtualScrollDataRequestEventArgs e)
     {
-        var (page, total) = await Api.SearchAsync(_search, (int)e.Detail.StartIndex, (int)e.Detail.Count);
-        _items = [.. _items.Take((int)e.Detail.StartIndex), .. page];   // assign a new list; the combo sees the longer data
+        var version = _version;
+        var start = (int)e.Detail.StartIndex;
+        var (page, total) = await Api.SearchAsync(_search, start, (int)e.Detail.Count);
+        if (version != _version) return;              // the page belongs to an older search
+        foreach (var p in page.Skip(Math.Max(0, _items.Count - start)))
+        {
+            _items.Add(p);                             // appends send only the new items to the client
+        }
         _total = total;
     }
 }
 ```
 
-Without `Mode = Remote` the combo filters `Data` itself and `DataRequest` never fires. A new `Data` keeps the selection, so set `Value` to `[]` to clear it with the data. Other Lite options: `ShowSelectAll` and `GroupSelection` (with `GroupKey`) add select-all options in multiple selection; `SelectionCommit="ComboSelectionCommit.Confirm"` holds the user's changes until Enter or Apply, emitting `PendingChange` per toggle and one `Change` of `ComboChangeType.Commit`; `Closing` / `Closed` carry `IgbComboClosingEventArgs` with `Detail.Trigger`.
+Without `Mode = Remote` the combo filters `Data` itself and `DataRequest` never fires. Append pages to an `ObservableCollection` rather than assigning a new list: a new `Data` re-sends every item. A new `Data` keeps the selection, so set `Value` to `[]` to clear it with the data; the selected items of earlier data still resolve in `Change`, `GetSelectionAsync()` and `DeselectAsync()`. Other Lite options: `ShowSelectAll` and `GroupSelection` (with `GroupKey`) add select-all options in multiple selection; `SelectionCommit="ComboSelectionCommit.Confirm"` holds the user's changes until Enter or Apply, emitting `PendingChange` per toggle and one `Change` of `ComboChangeType.Commit`; `Closing` / `Closed` carry `IgbComboClosingEventArgs` with `Detail.Trigger`.
 
 ## Select
 

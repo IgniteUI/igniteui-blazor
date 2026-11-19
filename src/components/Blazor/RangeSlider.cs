@@ -56,11 +56,15 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _upper = 0;
+        private double _upper = 100;
 
         /// <summary>
         /// The current value of the upper thumb.
         /// </summary>
+        /// <remarks>
+        /// Until it is set, the upper thumb follows <see cref="IgbSliderBase.UpperBound"/>, or <see cref="IgbSliderBase.Max"/>
+        /// without a bound, so the default range covers the full scale. The default of 100 is the default <see cref="IgbSliderBase.Max"/>.
+        /// </remarks>
         [Parameter]
         public double Upper
         {

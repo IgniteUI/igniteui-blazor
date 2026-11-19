@@ -5,7 +5,7 @@ import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
 import { IgcTemplateContentComponent } from 'igniteui-core/igc-template-content-component';
-import { refValues, itemMaps } from './refs-state';
+import { refValues, itemMaps, retireItem, retireItemMap, findItem } from './refs-state';
 import { _getRegisteredScript, _scriptRegistryEvents } from './api';
 
 // Ensure the <igc-lite-template-content> host element is always defined. Bridged
@@ -86,14 +86,7 @@ cr.addPropertyUpdatingListener('options', (p, t, v) => {
 
 cr.addReferenceLookupListener((container, refType, value) => {
   if (refType == 'uuid') {
-    var retVal = null;
-    itemMaps.forEach((v, k, map) => {
-      if (v.has(value)) {
-        retVal = v.get(value);
-        return false;
-      }
-    });
-    return retVal;
+    return findItem(value) ?? null;
   } else {
     findByName(container, value);
   }
@@ -104,6 +97,7 @@ cr.addCleanupListener((container, refId) => {
     refValues.delete(refId);
   }
   if (itemMaps && itemMaps.has(refId)) {
+    retireItemMap(itemMaps.get(refId));
     itemMaps.delete(refId);
   }
 });
@@ -674,6 +668,22 @@ function ensureExternalObject(target: any) {
   return target;
 }
 
+// After a change inside a data ref's array: Angular elements re-check it, and Lit elements, which
+// re-render only on a new property value, get a copy of the array in place of the old one.
+function refreshRefTarget(element: any, refName: string) {
+  updateAngularElement(element);
+  if (element && !element.markForCheck && typeof element.requestUpdate === 'function') {
+    const refValue: any = refValues.get(refName);
+    if (Array.isArray(refValue)) {
+      const copy: any = refValue.slice();
+      if ((refValue as any).__dateColumnsCache) {
+        copy.__dateColumnsCache = (refValue as any).__dateColumnsCache;
+      }
+      cr.provideRefValue(currentContainer(), refName, copy);
+    }
+  }
+}
+
 function updateAngularElement(element: any) {
   if (element.markForCheck) {
     element.markForCheck();
@@ -1192,15 +1202,27 @@ export const sendMessage = function sendMessage(
               }
             } else if (args[i] && args[i].refType) {
               if (args[i].refType == 'uuid') {
-                itemMaps.forEach((value: any, key: string) => {
-                  if (value.has(args[i].id)) {
-                    args[i] = value.get(args[i].id);
-                  }
-                });
+                const found = findItem(args[i].id);
+                if (found !== undefined) {
+                  args[i] = found;
+                }
               } else if (args[i].refType == 'name') {
                 args[i] = findByName(getMainTarget(), args[i].id);
               }
             }
+          }
+          if (!t) {
+            // Untyped arguments, such as the items of a combo's select() and deselect(), carry
+            // data items as uuid refs; pass the items themselves, which the component compares by
+            // reference. An unknown uuid stays a ref, as before.
+            const resolveRef = (value: any) => {
+              if (value && value.refType == 'uuid') {
+                const found = findItem(value.id);
+                return found !== undefined ? found : value;
+              }
+              return value;
+            };
+            args[i] = Array.isArray(args[i]) ? args[i].map(resolveRef) : resolveRef(args[i]);
           }
           if (t == 'Component') {
             if (args[i] != null) {
@@ -1341,7 +1363,7 @@ export const sendMessage = function sendMessage(
             child.notifyInsertItem(refValue, index, newItem);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -1357,6 +1379,8 @@ export const sendMessage = function sendMessage(
         if (itemMaps.has(refName)) {
           let map = itemMaps.get(refName);
           if (oldItem.___id) {
+            retireItem(oldItem.___id, oldItem);
+
             map.delete(oldItem.___id);
           }
         }
@@ -1367,7 +1391,7 @@ export const sendMessage = function sendMessage(
             child.notifyRemoveItem(refValue, index, oldItem);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -1384,6 +1408,8 @@ export const sendMessage = function sendMessage(
           for (let i = 0; i < refValue.length; i++) {
             let child = refValue[i];
             if (child.___id) {
+              retireItem(child.___id, child);
+
               map.delete(child.___id);
             }
           }
@@ -1413,7 +1439,7 @@ export const sendMessage = function sendMessage(
             child.notifyClearItems(refValue);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -1425,6 +1451,8 @@ export const sendMessage = function sendMessage(
         if (itemMaps.has(refName)) {
           let map = itemMaps.get(refName);
           if (oldItem.___id) {
+            retireItem(oldItem.___id, oldItem);
+
             map.delete(oldItem.___id);
           }
         }
@@ -1452,7 +1480,7 @@ export const sendMessage = function sendMessage(
             child.notifySetItem(refValue, index, oldItem, newItem);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -1483,7 +1511,7 @@ export const sendMessage = function sendMessage(
             child.notifySetItem(refValue, index, oldItem, oldItem);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
       }
       break;
@@ -2163,6 +2191,8 @@ function createOrUpdateUnmarshalledDataSource(refName: string, data: any[], colu
   if (oldData) {
     for (var i = 0; i < oldData.length; i++) {
       if (oldData[i].___id && !newMap.has(oldData[i].___id)) {
+        retireItem(oldData[i].___id, oldData[i]);
+
         itemMap.delete(oldData[i].___id);
       }
     }
@@ -2199,6 +2229,8 @@ function createOrUpdateUnmarshalledItem(refName: string, item: any, columns: Unm
     }
   }
   if (item.___id && item.___id != idColumn.stringValue) {
+    retireItem(item.___id, item);
+
     itemMap.delete(item.___id);
     item = {};
   }
@@ -2303,6 +2335,8 @@ export const unmarshalledDataSourceCreate = function unmarshalledDataSourceCreat
       for (let i = 0; i < oldData.length; i++) {
         let child = oldData[i];
         if (child.___id) {
+          retireItem(child.___id, child);
+
           map.delete(child.___id);
         }
       }
@@ -2388,7 +2422,7 @@ export const unmarshalledDataSourceInsert = function unmarshalledDataSourceInser
             child.notifyInsertItem(refValue, index, item);
           }
         } else {
-          updateAngularElement(child);
+          refreshRefTarget(child, refName);
         }
         isSyncMethodInvoke = false;
       }
@@ -2430,7 +2464,7 @@ export const unmarshalledDataSourceUpdate = function unmarshalledDataSourceUpdat
           child.notifySetItem(refValue, index, oldVal, currVal);
         }
       } else {
-        updateAngularElement(child);
+        refreshRefTarget(child, refName);
       }
       isSyncMethodInvoke = false;
     }
@@ -2464,7 +2498,7 @@ export const unmarshalledDataSourceRemove = function unmarshalledDataSourceRemov
           child.notifyRemoveItem(refValue, index, oldVAl);
         }
       } else {
-        updateAngularElement(child);
+        refreshRefTarget(child, refName);
       }
       isSyncMethodInvoke = false;
     }
@@ -2498,8 +2532,8 @@ export const unmarshalledDataSourceClear = function unmarshalledDataSourceClear(
         } else {
           child.notifyClearItems(refValue);
         }
-      } else if (child.markForCheck) {
-        updateAngularElement(child);
+      } else {
+        refreshRefTarget(child, refName);
       }
       isSyncMethodInvoke = false;
     }
