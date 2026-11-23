@@ -37,6 +37,8 @@ test('initializer is a flat import list covering the app entry, api.js and inter
   );
   assert.ok(imported.includes('api.js'), 'api.js missing');
   assert.ok(imported.includes('interop.js'), 'interop.js missing');
+  // api.js re-exports the icon registry: the components it shares a package with must still load lazily.
+  assert.ok(!imported.some((f) => f.startsWith('igniteui-webcomponents.')), 'the components bundle is loaded eagerly');
 });
 
 test('api.js exports everything api.d.ts declares', () => {
@@ -134,8 +136,9 @@ test('legal notices survive: in-source ones inline, dependencies via the license
 });
 
 test('api.js registers and removes scripts, defaulting shouldCall to false', async () => {
-  // lit-html touches document at module scope.
+  // lit-html touches document at module scope, lit's element base class HTMLElement (through the icon registry).
   globalThis.document ??= { createTreeWalker: () => ({}), createComment: () => ({}), createElement: () => ({}) };
+  globalThis.HTMLElement ??= class {};
   const api = await import(new URL(`../../${wwwroot}/api.js`, import.meta.url));
   const fn = () => 'value';
   api.registerScript('default', fn);
@@ -146,4 +149,13 @@ test('api.js registers and removes scripts, defaulting shouldCall to false', asy
   api.removeScript('default');
   assert.equal(api._getRegisteredScript('default'), undefined);
   assert.equal(typeof api.html, 'function');
+});
+
+test('api.js exports the icon registry functions', async () => {
+  globalThis.document ??= { createTreeWalker: () => ({}), createComment: () => ({}), createElement: () => ({}) };
+  globalThis.HTMLElement ??= class {};
+  const api = await import(new URL(`../../${wwwroot}/api.js`, import.meta.url));
+  for (const name of ['registerIcon', 'registerIconFromText', 'setIconRef']) {
+    assert.equal(typeof api[name], 'function', name);
+  }
 });

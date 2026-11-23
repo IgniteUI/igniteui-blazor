@@ -16,6 +16,9 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>The interop module of this package.</summary>
         internal const string LitePath = "./_content/IgniteUI.Blazor/interop.js";
 
+        /// <summary>The public JS API of this package, for the .NET methods that mirror its exports.</summary>
+        internal const string ApiPath = "./_content/IgniteUI.Blazor/api.js";
+
         private readonly IJSRuntime _jsRuntime;
         private readonly object _lock = new object();
         private readonly List<Action<IJSObjectReference>> _pending = new List<Action<IJSObjectReference>>();

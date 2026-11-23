@@ -16,7 +16,12 @@
     "removeComments": true,
     "baseUrl": ".",
     "paths": {
-      "igniteui-core/*": ["src/src/ig/igniteui-core/*"]
+      "igniteui-core/*": ["src/src/ig/igniteui-core/*"],
+      // igniteui-webcomponents modules api.js imports directly, as the package index would pull every component into it
+      // (loaded eagerly by the initializer). Not in the package exports map; vite resolves them from here as well.
+      "igniteui-webcomponents/components/icon/icon.registry.js": [
+        "node_modules/igniteui-webcomponents/components/icon/icon.registry.js"
+      ]
     }
   },
   "exclude": ["node_modules", "src/dist", "src/wwwroot", "vite.config.mts"]
