@@ -102,6 +102,8 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 
 `AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`; a chip without `Variant` has no color variant. `IgbChip` also has `Outlined`, `Selected` / `SelectedChanged` and a `Select` event.
 
+`IgbBadge` is a non-interactive visual notification, such as a status or a count. It also works as a label, such as a category, a role ("Maintainer") or a tag. It defaults to `role="status"`. For a label, set a `role` that fits the context, for example `role="listitem"` in a `role="list"` row. `IgbChip` is interactive: a filter, a contextual action, or an item the user selects or removes. It renders a `<button>`, so it is focusable and has hover and pressed states.
+
 ## Progress
 
 `IgbCircularProgress` and `IgbLinearProgress` share `Value`, `Max`, `Variant` (`StyleVariant`), `Indeterminate`, `HideLabel`, `LabelFormat`, `AnimationDuration`.
