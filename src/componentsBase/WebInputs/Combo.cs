@@ -80,9 +80,9 @@ namespace IgniteUI.Blazor.Controls
                 var held = ReturnToObjectArray<string>(await InvokeMethod("___heldItemIds", Array.Empty<object?>(), Array.Empty<string>()));
                 var heldIds = new HashSet<string>(held.Where(id => id != null), StringComparer.OrdinalIgnoreCase);
                 // Only the items retained before the query: the ones released since then wait for the next one.
-                foreach (var id in candidates)
+                foreach (var id in candidates.Where(id => !heldIds.Contains(id.ToString())))
                 {
-                    if (!heldIds.Contains(id.ToString()) && _retainedItems.Remove(id, out var item) && item is not null)
+                    if (_retainedItems.Remove(id, out var item) && item is not null)
                     {
                         _retainedIds.Remove(item);
                     }
