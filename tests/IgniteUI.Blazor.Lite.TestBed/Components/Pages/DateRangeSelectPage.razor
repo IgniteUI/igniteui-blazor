@@ -1,0 +1,31 @@
+@page "/date-range-select"
+@rendermode InteractiveServer
+@using IgniteUI.Blazor.Controls
+@inject IJSRuntime JS
+
+<div id="container">
+    <IgbDateRangePicker TValue="DateTime" @ref="_picker" />
+    <button id="select" @onclick="SelectRange">Select</button>
+</div>
+
+@code {
+    private IgbDateRangePicker<DateTime> _picker = default!;
+
+    private async Task SelectRange()
+    {
+        await _picker.EnsureReady();
+        await _picker.SelectAsync(new IgbDateRangeValue<DateTime>
+        {
+            Start = new DateTime(2026, 3, 1),
+            End = new DateTime(2026, 3, 10),
+        });
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("onAfterRender");
+        }
+    }
+}
