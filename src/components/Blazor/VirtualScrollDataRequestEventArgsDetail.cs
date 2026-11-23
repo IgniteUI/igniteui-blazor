@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 
 namespace IgniteUI.Blazor.Controls
@@ -24,7 +25,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._startIndex; }
             set
             {
-                if (this._startIndex != value || !IsPropDirty("StartIndex"))
+                if (Math.Abs(this._startIndex - value) > double.Epsilon || !IsPropDirty("StartIndex"))
                 {
                     MarkPropDirty("StartIndex");
                 }
@@ -42,7 +43,7 @@ namespace IgniteUI.Blazor.Controls
             get { return this._count; }
             set
             {
-                if (this._count != value || !IsPropDirty("Count"))
+                if (Math.Abs(this._count - value) > double.Epsilon || !IsPropDirty("Count"))
                 {
                     MarkPropDirty("Count");
                 }
