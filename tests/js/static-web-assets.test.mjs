@@ -37,6 +37,8 @@ test('initializer is a flat import list covering the app entry, api.js and inter
   );
   assert.ok(imported.includes('api.js'), 'api.js missing');
   assert.ok(imported.includes('interop.js'), 'interop.js missing');
+  // api.js re-exports configureTheme: the components it shares a package with must still load lazily.
+  assert.ok(!imported.some((f) => f.startsWith('igniteui-webcomponents.')), 'the components bundle is loaded eagerly');
 });
 
 test('api.js exports everything api.d.ts declares', () => {
@@ -133,9 +135,18 @@ test('legal notices survive: in-source ones inline, dependencies via the license
   walk('src/src');
 });
 
-test('api.js registers and removes scripts, defaulting shouldCall to false', async () => {
-  // lit-html touches document at module scope.
+// What api.js touches at module scope: document (lit-html), HTMLElement (lit's element base class) and window events
+// (the theme state, through configureTheme). Events dispatched on window are recorded.
+const dispatched = [];
+const stubBrowserGlobals = () => {
   globalThis.document ??= { createTreeWalker: () => ({}), createComment: () => ({}), createElement: () => ({}) };
+  globalThis.HTMLElement ??= class {};
+  globalThis.addEventListener ??= () => {};
+  globalThis.dispatchEvent ??= (event) => dispatched.push(event);
+};
+
+test('api.js registers and removes scripts, defaulting shouldCall to false', async () => {
+  stubBrowserGlobals();
   const api = await import(new URL(`../../${wwwroot}/api.js`, import.meta.url));
   const fn = () => 'value';
   api.registerScript('default', fn);
@@ -146,4 +157,19 @@ test('api.js registers and removes scripts, defaulting shouldCall to false', asy
   api.removeScript('default');
   assert.equal(api._getRegisteredScript('default'), undefined);
   assert.equal(typeof api.html, 'function');
+});
+
+test('api.js configureTheme announces the theme page-wide, defaulting the variant to light', async () => {
+  stubBrowserGlobals();
+  const api = await import(new URL(`../../${wwwroot}/api.js`, import.meta.url));
+  dispatched.length = 0;
+  api.configureTheme('material', 'dark');
+  api.configureTheme('fluent');
+  assert.deepEqual(
+    dispatched.map((e) => [e.type, e.detail]),
+    [
+      ['igc-change-theme', { theme: 'material', themeVariant: 'dark' }],
+      ['igc-change-theme', { theme: 'fluent', themeVariant: 'light' }],
+    ],
+  );
 });
