@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {
@@ -248,7 +249,7 @@ namespace IgniteUI.Blazor.Controls
 
         public IEnumerable<KeyValuePair<Guid, object>> GetOriginals()
         {
-            foreach (var entry in _uuidToItem)
+            foreach (var entry in _uuidToItem.Where(entry => _itemToOriginal.ContainsKey(entry.Value)))
             {
                 if (_itemToOriginal.TryGetValue(entry.Value, out var original))
                 {
