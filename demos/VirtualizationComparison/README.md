@@ -1,14 +1,14 @@
 # Virtualization Comparison
 
 Side-by-side evaluation of the built-in Blazor `<Virtualize>` component from the
-**.NET 11 RC 1** SDK against **`IgbVirtualScroll`** (the wrapper over the
+**.NET 11** SDK against **`IgbVirtualScroll`** (the wrapper over the
 `igniteui-webcomponents` virtualization container), so the two can be compared
 feature by feature: variable-height items, scroll-to-index, initial position,
 viewport anchoring on prepend/append, lazy loading, orientation and templating.
 
 ## Requirements
 
-- .NET 11 RC 1 SDK (`11.0.100-rc.1` or later prerelease) — pinned by the local
+- .NET 11 SDK (`11.0.100` or a later feature band) — pinned by the local
   `global.json`, which overrides the repository root pin to SDK 10.
 - The client bundle built at least once from the repository root (`npm run build:dev`).
 

@@ -123,13 +123,17 @@ function findItemMap(item: any): Map<string, any> | undefined {
   return undefined;
 }
 
-/** Deep equality of JSON-parsed values, ignoring the per-transfer ___id keys. */
+/** Deep equality of JSON-parsed values (plus expanded Dates), ignoring the per-transfer ___id keys. */
 function sameJsonValue(a: any, b: any): boolean {
   if (a === b) {
     return true;
   }
   if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
     return false;
+  }
+  // expandDateColumns turns date fields into Date objects, which have no enumerable keys.
+  if (a instanceof Date || b instanceof Date) {
+    return a instanceof Date && b instanceof Date && a.getTime() === b.getTime();
   }
   if (Array.isArray(a) !== Array.isArray(b)) {
     return false;

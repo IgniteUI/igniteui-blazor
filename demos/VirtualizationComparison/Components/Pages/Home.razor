@@ -268,23 +268,14 @@
 
     private VirtualizeAnchorMode _anchorMode => Enum.Parse<VirtualizeAnchorMode>(_anchorModeName);
 
+    // IgbVirtualScroll has no InitialItemIndex equivalent: the closest match is a scroll call
+    // once the component has its data, which is what this simulates (see OnIgbStateChange).
+    private bool _initialScrollPending = true;
+
     protected override void OnInitialized()
     {
-        _igbStateChange = new(null, (Action<IgbVirtualScrollStateChangeEventArgs>)OnIgbStateChange);
+        _igbStateChange = new(null, (Func<IgbVirtualScrollStateChangeEventArgs, Task>)OnIgbStateChange);
         _igbLazyStateChange = new(null, (Action<IgbVirtualScrollStateChangeEventArgs>)OnIgbLazyStateChange);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && _igbList is not null)
-        {
-            // IgbVirtualScroll has no InitialItemIndex equivalent: the closest match is a
-            // scroll call once the component is live, which is what this simulates. The
-            // client element connects asynchronously after the first render, and a method
-            // call before then throws, so wait for it with EnsureReady first.
-            await _igbList.EnsureReady();
-            await _igbList.ScrollToIndexAsync(InitialIndex);
-        }
     }
 
     private void PrependRows(int count)
@@ -344,10 +335,22 @@
         _lazyRows = [.. _lazyRows, .. MakeRows(start, count)];
     }
 
-    private void OnIgbStateChange(IgbVirtualScrollStateChangeEventArgs args)
+    private Task OnIgbStateChange(IgbVirtualScrollStateChangeEventArgs args)
     {
         var d = args.Detail;
         _igbStatus?.Show($"StateChange — window: {d.StartIndex}–{d.EndIndex} | viewport: {d.ViewportSize}px | total: {d.TotalSize}px");
+
+        // EnsureReady() completes before the queued Data is sent, and scrollToIndex clamps to
+        // the data the client holds at call time, so scrolling straight after it can land on 0.
+        // The client raises StateChange when its total size changes, so the first event with a
+        // non-zero TotalSize means the rows have arrived.
+        if (_initialScrollPending && d.TotalSize > 0 && _igbList is not null)
+        {
+            _initialScrollPending = false;
+            return _igbList.ScrollToIndexAsync(InitialIndex);
+        }
+
+        return Task.CompletedTask;
     }
 
     private void OnIgbLazyStateChange(IgbVirtualScrollStateChangeEventArgs args)
