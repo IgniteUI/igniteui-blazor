@@ -5,20 +5,13 @@
 Paging is not a grid parameter — place an `IgbPaginator` **inside** the grid as a child component.
 
 ```razor
-<IgbGrid @ref="grid" Data="data" PrimaryKey="Id" Width="100%" Height="500px">
+<IgbGrid Data="data" PrimaryKey="Id" Width="100%" Height="500px">
     <IgbColumn Field="Name" Header="Name" />
-    <IgbPaginator @ref="paginator" PerPage="10" />
+    <IgbPaginator PerPage="10" />
 </IgbGrid>
-
-@code {
-    private IgbGrid grid = default!;
-    private IgbPaginator paginator = default!;
-
-    private Task First() => paginator.PaginateAsync(0);   // 0-based page index
-    private Task Next()  => paginator.NextPageAsync();
-    private Task Prev()  => paginator.PreviousPageAsync();
-}
 ```
+
+Users page with the paginator's built-in controls. Changing the page from code does not work: `PaginateAsync`, `NextPageAsync` and `PreviousPageAsync` fail (`target doesn't have prop: paginate` in the console; the `Task` faults) and a bound `Page` is applied only the first time it changes ([#569](https://github.com/IgniteUI/igniteui-blazor/issues/569)). Don't build custom First / Next / Previous buttons on them.
 
 | Parameter | Type | Default | Purpose |
 |---|---|---|---|
@@ -26,7 +19,7 @@ Paging is not a grid parameter — place an `IgbPaginator` **inside** the grid a
 | `TotalRecords` | `double` | — | Server-side total; required for remote paging |
 | `SelectOptions` | `double[]` | `[5, 10, 15, 25, 50]` | Page-size dropdown |
 
-Events: `PageChange` and `PerPageChange` (`IgbNumberEventArgs`), `PagingDone` (`IgbPageEventArgs`; `Detail.Previous` / `Detail.Current`). Drive page loads from **`PagingDone`, not `PageChange`**: when the page size changes on a later page, the paginator resets to page 0 and raises a `PageChange` the Blazor wrapper fails to convert — an `InvalidCastException` is logged to the console (as `console.log`) and the handler never runs. `PagingDone` fires for user navigation and for that reset.
+Events: `PageChange` and `PerPageChange` (`IgbNumberEventArgs`), `PagingDone` (`IgbPageEventArgs`; `Detail.Previous` / `Detail.Current`). Drive page loads from **`PagingDone`, not `PageChange`**: a `PageChange` to page 0 — the first-page button, Previous back to the first page, or the reset after a page-size change — never reaches the handler, and nothing is logged ([#171](https://github.com/IgniteUI/igniteui-blazor/issues/171)), so the grid keeps showing the old page. `PagingDone` fires for every page change, including that reset.
 
 The Pivot Grid does not support paging.
 

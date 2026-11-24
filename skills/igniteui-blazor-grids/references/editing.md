@@ -41,7 +41,8 @@ Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Bo
     private void OnCellEditDone(IgbGridEditDoneEventArgs args)
     {
         var edit = args.Detail;
-        _ = SaveAsync(() => EmployeeService.UpdateFieldAsync(edit.RowData, edit.Column.Field, edit.NewValue));
+        if (edit.Column?.Field is not { } field) return;   // Column and Field are nullable
+        _ = SaveAsync(() => EmployeeService.UpdateFieldAsync(edit.RowData, field, edit.NewValue));
     }
 
     private async Task SaveAsync(Func<Task> save)

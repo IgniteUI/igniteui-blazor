@@ -28,7 +28,7 @@ Module for every component below is `Igb<Name>Module`. `IgbExpansionPanel` ships
 
 Tab headers come from the `Label` string or from children in the `label` slot; everything left in the default slot is the panel body. There is **no** `IgbTabPanel` component. `IgbTab` has `Label`, `Selected`, `Disabled`. `IgbTabs` has `Alignment`, `Activation`, `SelectAsync(id)`, `GetSelectedAsync()`.
 
-**Alignment and panel width before igniteui-webcomponents 7.5.0** (`IgniteUI.Blazor.Lite` 1.0.x bundles 7.4.1; `IgniteUI.Blazor` 26.1.x bundles 7.2.4). With the Material, Fluent or Indigo theme the tabs' `inner` part is only as wide as the headers: `Alignment` `Center` / `End` / `Justify` look like `Start`, and the panel is only as wide as the header row. Bootstrap is not affected. Add this rule to global CSS, or to the page's `.razor.css` as `::deep igc-tabs::part(inner)` — scoped `::deep` needs an HTML element the page renders itself (e.g. a wrapper `div`) as an ancestor of the tabs:
+**Alignment and panel width before igniteui-webcomponents 7.5.0** (`IgniteUI.Blazor.Lite` 1.0.x bundles 7.4.1, and `IgniteUI.Blazor` 26.2.x takes its tabs from that Lite dependency). With the Material, Fluent or Indigo theme the tabs' `inner` part is only as wide as the headers: `Alignment` `Center` / `End` / `Justify` look like `Start`, and the panel is only as wide as the header row. Bootstrap is not affected. Add this rule to global CSS, or to the page's `.razor.css` as `::deep igc-tabs::part(inner)` — scoped `::deep` needs an HTML element the page renders itself (e.g. a wrapper `div`) as an ancestor of the tabs:
 
 ```css
 igc-tabs::part(inner) { flex-grow: 1; }
