@@ -82,7 +82,7 @@ Remember to swap the grid stylesheet variant too when a full grid is on the page
 
 Most visual attributes are CSS custom properties (some, such as a chip label's font size or padding, are not). Tokens are the **primary** customization layer — reach for `::part()` only when no token covers the property.
 
-1. Call `get_component_design_tokens("<component-or-variant>")` — never guess names. Without the MCP server, list the names the component actually reads from the package's `igniteui-webcomponents.*.bundle.js` (see [SKILL.md](../SKILL.md)); the theme CSS files don't contain component tokens.
+1. Call `get_component_design_tokens("<component-or-variant>")` — never guess names. Without the MCP server, list the names the component actually reads from the `IgniteUI.Blazor.Lite` package's `igniteui-webcomponents.*.bundle.js` (see [SKILL.md](../SKILL.md)); the theme CSS files don't contain component tokens.
 2. Override the ones you need in a rule matching the component's scope.
 
 ```css
@@ -187,7 +187,7 @@ A single generated surface color rarely covers a design with a darker sidebar an
 
 1. One built-in theme stylesheet at a time.
 2. Selectors use `igc-*` tag names, never Razor component names.
-3. Call `get_component_design_tokens` (or, without MCP, look the name up in the package's web-components bundle) before writing any `--ig-<component>-*` name.
+3. Call `get_component_design_tokens` (or, without MCP, look the name up in the `IgniteUI.Blazor.Lite` web-components bundle) before writing any `--ig-<component>-*` name.
 4. Load your overrides after the built-in theme so the cascade favors them.
 5. Once a palette exists, use its tokens instead of raw hex — hardcoded colors break theme switching. Charts and other DV components are the exception; they need resolved color values.
 6. Blazor theming is plain CSS. There is no Sass pipeline.
