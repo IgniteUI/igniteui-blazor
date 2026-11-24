@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Specialized;
-using System.Linq;
 
 namespace IgniteUI.Blazor.Controls
 {

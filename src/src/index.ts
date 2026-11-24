@@ -741,8 +741,10 @@ const pendingRefRefreshes: Map<any, { container: any; refNames: Set<string> }> =
 
 // After a change inside a data ref's array: Angular elements re-check it, and Lit elements, which
 // re-render only on a new property value, get a copy of the array in place of the old one. The copy
-// is made once, after the current task: a burst of changes, such as a page of items added one by one,
-// gives the element one new array, not one per item. refValues keeps the array that the changes edit.
+// is made once, in a later task: a burst of changes, such as a page of items added one by one, gives
+// the element one new array, not one per item. A macrotask, not a microtask: under Blazor Server each
+// interop message is its own task, so microtasks would flush between the messages of one burst.
+// refValues keeps the array that the changes edit.
 function refreshRefTarget(element: any, refName: string) {
   updateAngularElement(element);
   if (!element || element.markForCheck || typeof element.requestUpdate !== 'function') {
@@ -756,7 +758,7 @@ function refreshRefTarget(element: any, refName: string) {
     };
     pending = queued;
     pendingRefRefreshes.set(element, queued);
-    queueMicrotask(() => {
+    setTimeout(() => {
       pendingRefRefreshes.delete(element);
       if (!queued.container || queued.container.__disposed) {
         return;

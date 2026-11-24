@@ -153,7 +153,7 @@ namespace IgniteUI.Blazor.Controls
         private void ApplyValueFromClient(TValue[]? value)
         {
             value ??= Array.Empty<TValue>();
-            if (_value.SequenceEqual(value))
+            if ((_value ?? Array.Empty<TValue>()).SequenceEqual(value))
             {
                 return;
             }

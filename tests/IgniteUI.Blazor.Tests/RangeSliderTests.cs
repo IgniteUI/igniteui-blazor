@@ -153,6 +153,23 @@ public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
     }
 
     [Fact]
+    public void RangeSlider_Change_CopiesThumbsBack()
+    {
+        Interop.PrimeReady();
+        IgbRangeSliderValueEventArgs? received = null;
+        var cut = Render<IgbRangeSlider>(p => p
+            .Add(x => x.Max, 100)
+            .Add(x => x.Change, (IgbRangeSliderValueEventArgs args) => received = args));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change",
+            """{"detail": {"retType": "object", "type": "", "value": {"lower": 10, "upper": 40}}}""");
+
+        Assert.NotNull(received);
+        Assert.Equal(10, cut.Instance.Lower);
+        Assert.Equal(40, cut.Instance.Upper);
+    }
+
+    [Fact]
     public void RangeSlider_SetUpper_IsKept()
     {
         var cut = Render<IgbRangeSlider>(p => p

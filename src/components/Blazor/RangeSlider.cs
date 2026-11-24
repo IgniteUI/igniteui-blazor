@@ -254,7 +254,19 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Change", value);
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Change", value, (args) =>
+                        {
+                            // Copy the committed thumbs back, as IgbSlider does for Value, so Lower and
+                            // Upper report where the user left them, not the bound or default values.
+                            var detail = args.Detail;
+                            if (detail != null)
+                            {
+                                this.Lower = detail.Lower;
+                                this.Upper = detail.Upper;
+                                OnPropertyPropagatedOut(RendererName, "Lower");
+                                OnPropertyPropagatedOut(RendererName, "Upper");
+                            }
+                        });
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {
                             this._changeRef = refName;

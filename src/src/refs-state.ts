@@ -38,20 +38,41 @@ export function heldItemIds(element: any): string[] {
   return ids;
 }
 
-function findHeldItem(id: string): any {
-  if (typeof document === 'undefined') {
-    return undefined;
-  }
-  const combos = document.querySelectorAll('igc-combo');
+function findHeldItemIn(combos: ArrayLike<Element>, id: string): any {
   for (let i = 0; i < combos.length; i++) {
-    const element = combos[i];
-    for (const item of heldItems(element)) {
+    for (const item of heldItems(combos[i])) {
       if (item !== null && typeof item === 'object' && item.___id === id) {
         return item;
       }
     }
   }
   return undefined;
+}
+
+// The combos inside the open shadow roots under root, at any depth. A combo that another web
+// component renders lives in that component's shadow root, out of reach of document.querySelectorAll.
+function shadowCombos(root: Document | ShadowRoot, out: Element[]): Element[] {
+  const elements = root.querySelectorAll('*');
+  for (let i = 0; i < elements.length; i++) {
+    const shadow = elements[i].shadowRoot;
+    if (shadow) {
+      const combos = shadow.querySelectorAll('igc-combo');
+      for (let j = 0; j < combos.length; j++) {
+        out.push(combos[j]);
+      }
+      shadowCombos(shadow, out);
+    }
+  }
+  return out;
+}
+
+function findHeldItem(id: string): any {
+  if (typeof document === 'undefined') {
+    return undefined;
+  }
+  // The light DOM first, which is where a combo rendered by Blazor lives; walk the shadow roots,
+  // which costs a pass over every element, only when it does not hold the item.
+  return findHeldItemIn(document.querySelectorAll('igc-combo'), id) ?? findHeldItemIn(shadowCombos(document, []), id);
 }
 
 /**
