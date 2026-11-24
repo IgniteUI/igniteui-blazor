@@ -40,7 +40,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
              { "LoadLayoutAsync", ["[]"] },
              // Targets the index-only overload; the ScrollIntoViewOptions overload takes CSS enum
              // strings the generic sweep cannot generate, so it is covered by the unit contract.
-             { "ScrollToIndexAsync", [1.0] },
+             { "ScrollToIndexAsync", [1] },
         };
 
         public static readonly Dictionary<string, object> PredefinedPropertyValues = new Dictionary<string, object>
