@@ -88,17 +88,28 @@ Merges visually identical adjacent cells. Sort by the merged columns first, or t
 ```razor
 @inject IJSRuntime JS
 
-<IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" ExportPDF="false" Filename="employees" />
+<div @ref="employeesHost">
+    <IgbGrid Data="employees" PrimaryKey="Id">
+        <IgbGridToolbar>
+            <IgbGridToolbarActions>
+                <IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" ExportPDF="false" Filename="employees" />
+            </IgbGridToolbarActions>
+        </IgbGridToolbar>
+        …
+    </IgbGrid>
+</div>
 
 @code {
-    private async Task ExportToExcel() => await JS.InvokeVoidAsync("exportGrid", "excel");
-    private async Task ExportToCsv()   => await JS.InvokeVoidAsync("exportGrid", "csv");
+    private ElementReference employeesHost;   // one host per grid, so each export targets its own grid
+
+    private async Task ExportToExcel() => await JS.InvokeVoidAsync("exportGrid", employeesHost, "excel");
+    private async Task ExportToCsv()   => await JS.InvokeVoidAsync("exportGrid", employeesHost, "csv");
 }
 ```
 
 ```js
-// wwwroot/js/export-grid.js — export() on the first toolbar exporter of the page: "excel" | "csv" | "pdf"
-window.exportGrid = (type) => document.querySelector('igc-grid-toolbar-exporter').export(type);
+// wwwroot/js/export-grid.js — export() on the toolbar exporter inside the host element: "excel" | "csv" | "pdf"
+window.exportGrid = (host, type) => host.querySelector('igc-grid-toolbar-exporter').export(type);
 ```
 
 ```html
@@ -106,7 +117,7 @@ window.exportGrid = (type) => document.querySelector('igc-grid-toolbar-exporter'
 <script src="js/export-grid.js"></script>
 ```
 
-To export from code, call the element's `export()` through JS interop as above — this needs an `IgbGridToolbarExporter` on the page (hide the format you don't want, but keep the exporter). The C# `ExportGridAsync` / `ExportGrid` fail: the console logs `target doesn't have prop: export`, .NET throws an `InvalidOperationException`, and nothing downloads. The `GridToolbarExporterType` values are `Excel`, `Csv`, `Pdf` — not `CSV`. `ExportStarted` / `ExportEnded` fire for every export, but the C# `ExportStarted` args carry no `Options` and cannot cancel the export (`IgbExporterEventArgsDetail` has no `Cancel`).
+To export from code, call the element's `export()` through JS interop as above — this needs an `IgbGridToolbarExporter` in the grid's toolbar (hide the format you don't want, but keep the exporter), and passing the grid's host element keeps the export on that grid when the page has several. The C# `ExportGridAsync` / `ExportGrid` fail: the console logs `target doesn't have prop: export`, .NET throws an `InvalidOperationException`, and nothing downloads. The `GridToolbarExporterType` values are `Excel`, `Csv`, `Pdf` — not `CSV`. `ExportStarted` / `ExportEnded` fire for every export, but the C# `ExportStarted` args carry no `Options` and cannot cancel the export (`IgbExporterEventArgsDetail` has no `Cancel`).
 
 Configure or cancel an export from the grid's `ToolbarExporting` event. In Blazor the practical hook is the JS variant, because the exporter's own per-column and per-row events are only reachable from script:
 
