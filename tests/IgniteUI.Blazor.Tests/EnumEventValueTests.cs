@@ -16,12 +16,11 @@ public class EnumEventValueTests
         var data = new TheoryData<Type, string, string>();
         foreach (var type in typeof(WCEnumNameAttribute).Assembly.GetTypes().Where(t => t.IsEnum && t.IsPublic))
         {
-            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static))
+            foreach (var x in type.GetFields(BindingFlags.Public | BindingFlags.Static)
+                .Select(field => new { field, wc = field.GetCustomAttribute<WCEnumNameAttribute>() })
+                .Where(x => x.wc is not null))
             {
-                if (field.GetCustomAttribute<WCEnumNameAttribute>() is { } wc)
-                {
-                    data.Add(type, field.Name, wc.Name);
-                }
+                data.Add(type, x.field.Name, x.wc!.Name);
             }
         }
         return data;
