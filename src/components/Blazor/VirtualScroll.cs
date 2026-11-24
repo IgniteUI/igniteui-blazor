@@ -131,14 +131,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _overScan = 2;
+        private int _overScan = 2;
 
         /// <summary>
         /// Number of extra items to render beyond the visible area of the viewport.
         /// Higher values reduce blank flashes during fast scrolling but can lower performance.
         /// </summary>
         [Parameter]
-        public double OverScan
+        public int OverScan
         {
             get { return this._overScan; }
             set
@@ -151,14 +151,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _estimatedItemSize = 50;
+        private int _estimatedItemSize = 50;
 
         /// <summary>
         /// Estimated item size in pixels, used before an item is measured in the DOM.
         /// After the first render of an item, the component replaces the estimate with the measured size.
         /// </summary>
         [Parameter]
-        public double EstimatedItemSize
+        public int EstimatedItemSize
         {
             get { return this._estimatedItemSize; }
             set
