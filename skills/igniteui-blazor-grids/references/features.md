@@ -97,8 +97,13 @@ Merges visually identical adjacent cells. Sort by the merged columns first, or t
 ```
 
 ```js
-// wwwroot script: export() on the first toolbar exporter of the page — "excel" | "csv" | "pdf"
+// wwwroot/js/export-grid.js — export() on the first toolbar exporter of the page: "excel" | "csv" | "pdf"
 window.exportGrid = (type) => document.querySelector('igc-grid-toolbar-exporter').export(type);
+```
+
+```html
+<!-- host page (wwwroot/index.html, or App.razor in a Blazor Web App) -->
+<script src="js/export-grid.js"></script>
 ```
 
 To export from code, call the element's `export()` through JS interop as above — this needs an `IgbGridToolbarExporter` on the page (hide the format you don't want, but keep the exporter). The C# `ExportGridAsync` / `ExportGrid` fail: the console logs `target doesn't have prop: export`, .NET throws an `InvalidOperationException`, and nothing downloads. The `GridToolbarExporterType` values are `Excel`, `Csv`, `Pdf` — not `CSV`. `ExportStarted` / `ExportEnded` fire for every export, but the C# `ExportStarted` args carry no `Options` and cannot cancel the export (`IgbExporterEventArgsDetail` has no `Cancel`).
