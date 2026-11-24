@@ -248,9 +248,9 @@ namespace IgniteUI.Blazor.Controls
         /// measures the items at the landing point and corrects the scroll position until
         /// the offset is stable.
         /// </summary>
-        public async Task ScrollToIndexAsync(double index)
+        public async Task ScrollToIndexAsync(int index)
         {
-            await InvokeMethod("scrollToIndex", new object[] { index }, new string[] { "Number" });
+            await InvokeMethod("scrollToIndex", [index], ["Number"]);
         }
 
         /// <summary>
@@ -259,24 +259,24 @@ namespace IgniteUI.Blazor.Controls
         /// measures the items at the landing point and corrects the scroll position until
         /// the offset is stable.
         /// </summary>
-        public void ScrollToIndex(double index)
+        public void ScrollToIndex(int index)
         {
-            InvokeMethodSync("scrollToIndex", new object[] { index }, new string[] { "Number" });
+            InvokeMethodSync("scrollToIndex", [index], ["Number"]);
         }
         /// <summary>
         /// Scrolls to the specified item index, with a configurable alignment and scroll behavior.
         /// </summary>
-        public async Task ScrollToIndexAsync(double index, IgbScrollIntoViewOptions options)
+        public async Task ScrollToIndexAsync(int index, IgbScrollIntoViewOptions options)
         {
-            await InvokeMethod("scrollToIndex", new object[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
+            await InvokeMethod("scrollToIndex", [index, ObjectToParam(options)], ["Number", "Json"]);
         }
 
         /// <summary>
         /// Scrolls to the specified item index, with a configurable alignment and scroll behavior.
         /// </summary>
-        public void ScrollToIndex(double index, IgbScrollIntoViewOptions options)
+        public void ScrollToIndex(int index, IgbScrollIntoViewOptions options)
         {
-            InvokeMethodSync("scrollToIndex", new object[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
+            InvokeMethodSync("scrollToIndex", [index, ObjectToParam(options)], ["Number", "Json"]);
         }
 
         private string? _stateChangeRef = null;
