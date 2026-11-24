@@ -16,6 +16,7 @@ Updated to `igniteui-webcomponents` 7.5.0. Its [changelog](https://github.com/Ig
 - **Combo:** `ShowSelectAll` adds a "Select all" option in multiple selection, and `GroupSelection` makes each group header select or deselect the shown items of its group. `SelectAllItems` and `DeselectAllItems` do the same from code; pass `ignoreFilter: true` to act on all the data.
 - **Combo:** `SelectionCommit="ComboSelectionCommit.Confirm"` holds the user's changes while the list is open. Each toggle emits `PendingChange`, and Enter or the Apply button applies them with one `Change` of `ComboChangeType.Commit`. For a custom footer, use `GetPendingValue`, `CommitSelection` and `CancelSelection`.
 - **Combo:** `Closing` and `Closed` give the user action that closes the list in `Detail.Trigger`, such as `ComboCloseTrigger.Escape`, `OutsideClick` or `Apply`, or `null` for a trigger that this version does not know. To keep the list open, cancel the event in a `ClosingScript`.
+- **Range Slider:** `LowerChanged` and `UpperChanged` raise the committed thumb values, so `@bind-Lower` and `@bind-Upper` keep the bound values in step with the thumbs.
 
 ### Fixed
 

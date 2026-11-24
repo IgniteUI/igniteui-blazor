@@ -90,6 +90,75 @@ namespace IgniteUI.Blazor.Controls
                 return Math.Min(Math.Max(UpperBound ?? Max, lower), Max);
             }
         }
+
+        private EventCallback<double>? _lowerChanged = null;
+
+        /// <summary>
+        /// Emitted when the user commits a new <see cref="Lower"/> value.
+        /// Enables two-way binding through <c>@bind-Lower</c>.
+        /// </summary>
+        [Parameter]
+        public EventCallback<double> LowerChanged
+        {
+            get
+            {
+                return this._lowerChanged != null ? this._lowerChanged.Value : EventCallback<double>.Empty;
+            }
+            set
+            {
+                if (value.HasHandler())
+                {
+                    if (!value.EqualsCompat(_lowerChanged))
+                    {
+                        this.EnsureChangeHandled();
+                        _lowerChanged = value;
+                    }
+                }
+                else
+                {
+                    _lowerChanged = null;
+                }
+            }
+        }
+
+        private EventCallback<double>? _upperChanged = null;
+
+        /// <summary>
+        /// Emitted when the user commits a new <see cref="Upper"/> value.
+        /// Enables two-way binding through <c>@bind-Upper</c>.
+        /// </summary>
+        [Parameter]
+        public EventCallback<double> UpperChanged
+        {
+            get
+            {
+                return this._upperChanged != null ? this._upperChanged.Value : EventCallback<double>.Empty;
+            }
+            set
+            {
+                if (value.HasHandler())
+                {
+                    if (!value.EqualsCompat(_upperChanged))
+                    {
+                        this.EnsureChangeHandled();
+                        _upperChanged = value;
+                    }
+                }
+                else
+                {
+                    _upperChanged = null;
+                }
+            }
+        }
+
+        internal void EnsureChangeHandled()
+        {
+            if (EventCallback<IgbRangeSliderValueEventArgs>.Empty.Equals(this.Change))
+            {
+                this.Change = new EventCallback<IgbRangeSliderValueEventArgs>(null, (Action<IgbRangeSliderValueEventArgs>)((e) => { }));
+                this._change = null;
+            }
+        }
         private string? _thumbLabelLower;
 
         /// <summary>
@@ -258,13 +327,26 @@ namespace IgniteUI.Blazor.Controls
                         {
                             // Copy the committed thumbs back, as IgbSlider does for Value, so Lower and
                             // Upper report where the user left them, not the bound or default values.
+                            // Lower and Upper render as attributes, so a parent that passes them one-way
+                            // and re-renders with its unchanged values diffs to no update and leaves the
+                            // thumbs where the user put them; LowerChanged and UpperChanged let it bind.
                             var detail = args.Detail;
                             if (detail != null)
                             {
+                                var lowerChanged = this.Lower != detail.Lower;
+                                var upperChanged = this.Upper != detail.Upper;
                                 this.Lower = detail.Lower;
                                 this.Upper = detail.Upper;
                                 OnPropertyPropagatedOut(RendererName, "Lower");
                                 OnPropertyPropagatedOut(RendererName, "Upper");
+                                if (lowerChanged && !EventCallback<double>.Empty.Equals(LowerChanged))
+                                {
+                                    ObserveHandlerTask(LowerChanged.InvokeAsync(detail.Lower));
+                                }
+                                if (upperChanged && !EventCallback<double>.Empty.Equals(UpperChanged))
+                                {
+                                    ObserveHandlerTask(UpperChanged.InvokeAsync(detail.Upper));
+                                }
                             }
                         });
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>

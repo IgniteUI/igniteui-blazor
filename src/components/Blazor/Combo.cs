@@ -1116,6 +1116,7 @@ namespace IgniteUI.Blazor.Controls
                         this.SetHandler<IgbComboChangeEventArgs<TValue, TItem>>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(TValue[]);
+                            OnClientSelectionChanged();
 
                             {
                                 newValueValue = (TValue[])(DowncastArray<TValue>(args.Detail.NewValue));

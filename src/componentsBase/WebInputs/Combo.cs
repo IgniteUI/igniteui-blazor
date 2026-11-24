@@ -25,9 +25,23 @@ namespace IgniteUI.Blazor.Controls
         // pending item that the client sends back would resolve to null. Keep every item that leaves the
         // data, then ask the client which of them it still holds (its selection and the pending selection
         // of the confirm mode) and drop the rest.
+        //
+        // The same item can come back in the new data under a new uuid, as when a remote search returns
+        // instances of an in-memory list again. The web component compares items by reference, so the
+        // client then holds two objects for it: the selected one under the old uuid, and the one in the
+        // list under the new uuid. An item the client is confirmed to hold therefore goes to the client
+        // under its old uuid, so Deselect reaches the object in the selection.
+        //
+        // Releases come from whatever thread changes the bound collection, and the prune continues on the
+        // thread pool without a sync context, so every access to this state goes through _retainedLock.
+        private readonly object _retainedLock = new();
+        // Every retained uuid; an item released more than once has one per release.
         private readonly Dictionary<Guid, TItem> _retainedItems = new();
+        // The uuid of the latest release of each retained item.
         private readonly Dictionary<object, Guid> _retainedIds = new(ReferenceEqualityComparer.Instance);
-        private bool _pruneScheduled;
+        // The uuid under which the client held each retained item at the last prune.
+        private readonly Dictionary<object, Guid> _heldIds = new(ReferenceEqualityComparer.Instance);
+        private int _pruneScheduled;
 
         private void EnsureItemReleaseTracking()
         {
@@ -45,22 +59,35 @@ namespace IgniteUI.Blazor.Controls
             {
                 return;
             }
-            if (_retainedIds.TryGetValue(item, out var oldId) && oldId != id)
+            // An earlier uuid of the item stays: the client may still hold the item under it.
+            lock (_retainedLock)
             {
-                _retainedItems.Remove(oldId);
+                _retainedItems[id] = typed;
+                _retainedIds[item] = id;
             }
-            _retainedItems[id] = typed;
-            _retainedIds[item] = id;
             SchedulePruneRetainedItems();
+        }
+
+        // The client's selection changed, so the retained items it holds may have too.
+        private void OnClientSelectionChanged()
+        {
+            bool any;
+            lock (_retainedLock)
+            {
+                any = _retainedItems.Count > 0;
+            }
+            if (any)
+            {
+                SchedulePruneRetainedItems();
+            }
         }
 
         private void SchedulePruneRetainedItems()
         {
-            if (_pruneScheduled)
+            if (Interlocked.Exchange(ref _pruneScheduled, 1) == 1)
             {
                 return;
             }
-            _pruneScheduled = true;
             _ = PruneRetainedItemsAsync();
         }
 
@@ -70,21 +97,42 @@ namespace IgniteUI.Blazor.Controls
             {
                 // Let the change that released the items reach the client first.
                 await Task.Yield();
-                _pruneScheduled = false;
+                Interlocked.Exchange(ref _pruneScheduled, 0);
                 if (!IsReady)
                 {
                     // Before the client component exists, it holds nothing yet; the next release tries again.
                     return;
                 }
-                var candidates = _retainedItems.Keys.ToList();
+                List<Guid> candidates;
+                lock (_retainedLock)
+                {
+                    candidates = _retainedItems.Keys.ToList();
+                }
                 var held = ReturnToObjectArray<string>(await InvokeMethod("___heldItemIds", Array.Empty<object?>(), Array.Empty<string>()));
                 var heldIds = new HashSet<string>(held.Where(id => id != null), StringComparer.OrdinalIgnoreCase);
                 // Only the items retained before the query: the ones released since then wait for the next one.
-                foreach (var id in candidates.Where(id => !heldIds.Contains(id.ToString())))
+                lock (_retainedLock)
                 {
-                    if (_retainedItems.Remove(id, out var item) && item is not null)
+                    foreach (var id in candidates)
                     {
-                        _retainedIds.Remove(item);
+                        if (!_retainedItems.TryGetValue(id, out var item) || item is null)
+                        {
+                            continue;
+                        }
+                        if (heldIds.Contains(id.ToString()))
+                        {
+                            _heldIds[item] = id;
+                            continue;
+                        }
+                        _retainedItems.Remove(id);
+                        if (_retainedIds.TryGetValue(item, out var latestId) && latestId == id)
+                        {
+                            _retainedIds.Remove(item);
+                        }
+                        if (_heldIds.TryGetValue(item, out var heldId) && heldId == id)
+                        {
+                            _heldIds.Remove(item);
+                        }
                     }
                 }
             }
@@ -92,18 +140,37 @@ namespace IgniteUI.Blazor.Controls
             {
                 // Best effort, in the background: the component is gone or the circuit is down. Keep the
                 // items; the next release tries again.
-                _pruneScheduled = false;
+                Interlocked.Exchange(ref _pruneScheduled, 0);
             }
         }
 
         private protected override object? FindRetainedItem(Guid id)
         {
-            return _retainedItems.TryGetValue(id, out var item) ? item : null;
+            lock (_retainedLock)
+            {
+                return _retainedItems.TryGetValue(id, out var item) ? item : null;
+            }
         }
 
-        private protected override Guid FindRetainedItemId(object item)
+        private protected override Guid FindClientItemId(object item)
         {
-            return _retainedIds.TryGetValue(item, out var id) ? id : Guid.Empty;
+            lock (_retainedLock)
+            {
+                // The object the client holds for an item that is also in the current data is the old one.
+                if (_heldIds.TryGetValue(item, out var heldId))
+                {
+                    return heldId;
+                }
+            }
+            var id = base.FindClientItemId(item);
+            if (id != Guid.Empty)
+            {
+                return id;
+            }
+            lock (_retainedLock)
+            {
+                return _retainedIds.TryGetValue(item, out var retainedId) ? retainedId : Guid.Empty;
+            }
         }
 
         // The web component calls the item template with a plain { item } context and the group
@@ -152,6 +219,7 @@ namespace IgniteUI.Blazor.Controls
 
         private void ApplyValueFromClient(TValue[]? value)
         {
+            OnClientSelectionChanged();
             value ??= Array.Empty<TValue>();
             if ((_value ?? Array.Empty<TValue>()).SequenceEqual(value))
             {

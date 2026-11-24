@@ -542,6 +542,86 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
     }
 
     [Fact]
+    public async Task Combo_NewDataWithTheSelectedInstance_DeselectNamesTheHeldObject()
+    {
+        // A remote search over an in-memory list: the new data holds the selected instance again, under
+        // a new uuid. Without a ValueKey the client compares by reference, and its selection holds the
+        // object of the old data, so Deselect must name the old uuid.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+
+        var oldId = DataItemId(Interop, cut, 0);
+        SetupHeldItems(oldId);
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem1, new ComboItem { Id = 3, Text = "Third" } }));
+        var newId = DataItemId(Interop, cut, 0);
+        Assert.NotEqual(oldId, newId);
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[]"));
+        // The prune that confirms the client holds the old object finishes in the background.
+        var arg = "";
+        for (var attempt = 0; attempt < 100; attempt++)
+        {
+            await cut.InvokeAsync(() => cut.Instance.DeselectAsync([_valueItem1]));
+            arg = Interop.RequireCall("deselect").Arguments[0].GetRawText();
+            if (arg.Contains(oldId, StringComparison.OrdinalIgnoreCase))
+            {
+                break;
+            }
+            await Task.Delay(10);
+        }
+        Assert.Contains(oldId, arg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(newId, arg, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Combo_NewDataWithoutHeldItems_SelectNamesTheCurrentObject()
+    {
+        // The client holds nothing of the old data, so the item goes by its uuid in the current data.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+
+        var oldId = DataItemId(Interop, cut, 0);
+        SetupHeldItems();
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem1 }));
+        var newId = DataItemId(Interop, cut, 0);
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[]"));
+        await cut.InvokeAsync(() => cut.Instance.SelectAsync([_valueItem1]));
+        var arg = Interop.RequireCall("select").Arguments[0].GetRawText();
+        Assert.Contains(newId, arg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(oldId, arg, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Combo_ItemReleasedTwice_TheUuidTheClientHoldsStillResolves()
+    {
+        // The selected instance comes back in a new data and leaves again with its second uuid; the
+        // client still holds the object of the first data, so the first uuid must keep resolving.
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs<int, ComboItem>? received = null;
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.Change, (IgbComboChangeEventArgs<int, ComboItem> args) => received = args));
+
+        var oldRef = UuidRef(Interop, cut, 0);
+        SetupHeldItems(DataItemId(Interop, cut, 0));
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem1 }));
+        cut.Render(ps => ps.Add(c => c.Data, new[] { new ComboItem { Id = 3, Text = "Third" } }));
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("", oldRef, "deselection"));
+        Assert.Same(_valueItem1, Assert.Single(received!.Detail.Items));
+    }
+
+    [Fact]
     public void Combo_ObservableCollectionCleared_SelectedItemStillResolves()
     {
         // Clearing the bound collection in place releases its items, as a new Data does.

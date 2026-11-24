@@ -2380,8 +2380,12 @@ namespace IgniteUI.Blazor.Controls
         /// </summary>
         private protected virtual object? FindRetainedItem(Guid id) => null;
 
-        /// <summary>The uuid of an item that <see cref="FindRetainedItem"/> resolves, or <see cref="Guid.Empty"/>.</summary>
-        private protected virtual Guid FindRetainedItemId(object item) => Guid.Empty;
+        /// <summary>
+        /// The uuid that names <paramref name="item"/> to the client: by default its uuid in the component's
+        /// data, or <see cref="Guid.Empty"/>. A component that keeps items past its data overrides it, for an
+        /// item the client may hold under a uuid of a released data source.
+        /// </summary>
+        private protected virtual Guid FindClientItemId(object item) => _dataSourceManager?.FindItemId(item) ?? Guid.Empty;
 
         internal void ObjectToParam(SerializationContext? context, object? val)
         {
@@ -2392,11 +2396,7 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             var w = context.Writer;
-            Guid id = _dataSourceManager?.FindItemId(val) ?? Guid.Empty;
-            if (id == Guid.Empty)
-            {
-                id = FindRetainedItemId(val);
-            }
+            Guid id = FindClientItemId(val);
 
             var typeName = "";
 
@@ -2507,11 +2507,7 @@ namespace IgniteUI.Blazor.Controls
                 w.WriteNull(propertyName);
                 return;
             }
-            Guid id = _dataSourceManager?.FindItemId(val) ?? Guid.Empty;
-            if (id == Guid.Empty)
-            {
-                id = FindRetainedItemId(val);
-            }
+            Guid id = FindClientItemId(val);
 
             string typeName = "";
             if (val is JsonSerializable)

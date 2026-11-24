@@ -170,6 +170,28 @@ public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
     }
 
     [Fact]
+    public void RangeSlider_Change_RaisesLowerChangedAndUpperChanged()
+    {
+        // @bind-Lower and @bind-Upper without a Change handler: binding alone listens to Change.
+        Interop.PrimeReady();
+        double? lower = null;
+        double? upper = null;
+        var cut = Render<IgbRangeSlider>(p => p
+            .Add(x => x.Lower, 10)
+            .Add(x => x.Upper, 80)
+            .Add(x => x.LowerChanged, (double v) => lower = v)
+            .Add(x => x.UpperChanged, (double v) => upper = v));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change",
+            """{"detail": {"retType": "object", "type": "", "value": {"lower": 10, "upper": 50}}}""");
+
+        // Only the thumb that moved reports a change.
+        Assert.Null(lower);
+        Assert.Equal(50, upper);
+        Assert.Equal(50, cut.Instance.Upper);
+    }
+
+    [Fact]
     public void RangeSlider_SetUpper_IsKept()
     {
         var cut = Render<IgbRangeSlider>(p => p
