@@ -11,12 +11,12 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebVirtualScrollStateChangeEventArgsDetail"; } }
 
-        private double _startIndex = 0;
+        private int _startIndex = 0;
 
         /// <summary>
         /// The index of the first item currently rendered in the viewport.
         /// </summary>
-        public double StartIndex
+        public int StartIndex
         {
             get { return this._startIndex; }
             set
@@ -29,12 +29,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _endIndex = 0;
+        private int _endIndex = 0;
 
         /// <summary>
         /// The index of the last item currently rendered in the viewport (inclusive).
         /// </summary>
-        public double EndIndex
+        public int EndIndex
         {
             get { return this._endIndex; }
             set
@@ -47,12 +47,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _viewportSize = 0;
+        private int _viewportSize = 0;
 
         /// <summary>
         /// The size of the viewport in pixels.
         /// </summary>
-        public double ViewportSize
+        public int ViewportSize
         {
             get { return this._viewportSize; }
             set
@@ -65,12 +65,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _totalSize = 0;
+        private int _totalSize = 0;
 
         /// <summary>
         /// The total size of the virtual scroll content in pixels.
         /// </summary>
-        public double TotalSize
+        public int TotalSize
         {
             get { return this._totalSize; }
             set
@@ -122,13 +122,13 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("startIndex", out var startIndex))
-            { this.StartIndex = ReturnToDouble(startIndex); }
+            { this.StartIndex = ReturnToInt(startIndex); }
             if (args != null && args.TryGetValue("endIndex", out var endIndex))
-            { this.EndIndex = ReturnToDouble(endIndex); }
+            { this.EndIndex = ReturnToInt(endIndex); }
             if (args != null && args.TryGetValue("viewportSize", out var viewportSize))
-            { this.ViewportSize = ReturnToDouble(viewportSize); }
+            { this.ViewportSize = ReturnToInt(viewportSize); }
             if (args != null && args.TryGetValue("totalSize", out var totalSize))
-            { this.TotalSize = ReturnToDouble(totalSize); }
+            { this.TotalSize = ReturnToInt(totalSize); }
 
             this.SuppressParentNotify = false;
         }

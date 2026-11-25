@@ -13,13 +13,13 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebVirtualScrollDataRequestEventArgsDetail"; } }
 
-        private double _startIndex = 0;
+        private int _startIndex = 0;
 
         /// <summary>
         /// The first index that does not yet have data.
         /// Append at least <see cref="Count"/> more items starting here.
         /// </summary>
-        public double StartIndex
+        public int StartIndex
         {
             get { return this._startIndex; }
             set
@@ -32,12 +32,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _count = 0;
+        private int _count = 0;
 
         /// <summary>
         /// Number of items being requested.
         /// </summary>
-        public double Count
+        public int Count
         {
             get { return this._count; }
             set
@@ -81,9 +81,9 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("startIndex", out var startIndex))
-            { this.StartIndex = ReturnToDouble(startIndex); }
+            { this.StartIndex = ReturnToInt(startIndex); }
             if (args != null && args.TryGetValue("count", out var count))
-            { this.Count = ReturnToDouble(count); }
+            { this.Count = ReturnToInt(count); }
 
             this.SuppressParentNotify = false;
         }
