@@ -26,7 +26,7 @@ public static class DateRangePickerTests
                 .Method(c => c.ToggleAsync(), c => c.Toggle(), "toggle", returns: true)
                 .Method(c => c.ClearAsync(), c => c.Clear(), "clear")
                 .Method(c => c.SelectAsync(selectValue), c => c.Select(selectValue), "select",
-                    args: [new RawJson($$"""{"refType": "name", "id": "{{selectValue.RendererName}}"}""")],
+                    args: [new JsonSubset("""{"___byValue": true, "start": "2026-03-01T00:00:00.0000000Z", "end": "2026-03-10T00:00:00.0000000Z"}""")],
                     types: ["Json"])
                 .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
                 .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- **Date Range Picker:** `Select` and `SelectAsync` now apply the range they are given, instead of clearing the picker's value. [#174](https://github.com/IgniteUI/igniteui-blazor/issues/174)
+
 ## 1.0.1 - 2026-10-29
 
 ### Fixed
