@@ -7,7 +7,7 @@ Every component parameter ending in `Script` takes the **name** of a JavaScript 
 | Template | `ItemTemplateScript`, `GroupHeaderTemplateScript`, `MessageHeaderScript`, … | a context object | an `html` template result, a string, a primitive — anything lit can render |
 | Event handler | `ChangeScript`, `ClosingScript`, `FocusScript`, … — one per C# event | the DOM `CustomEvent` | nothing |
 
-**Package scope.** On `IgniteUI.Blazor.Lite`, register through the `api.js` module below; the `igRegisterScript` / `igRemoveScript` / `igTemplating` window globals no longer exist there. The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial` 26.2, grids, charts, Dock Manager) serves the same `api.js` through its Lite dependency, and `registerScript` works for its `*Script` parameters too. Its older `igRegisterScript(name, fn, shouldCall)` window global is deprecated: it logs a warning on every call and exists only when the page loads `_content/IgniteUI.Blazor/app.bundle.js` (otherwise `ReferenceError`, and the script is never registered). If you keep it, pass `shouldCall = false` for handlers and templates.
+**Package scope.** On `IgniteUI.Blazor.Lite`, register through the `api.js` module below; the `igRegisterScript` / `igRemoveScript` / `igTemplating` window globals no longer exist there. The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`, grids, charts, Dock Manager) does not ship `api.js` yet: register there through the `igRegisterScript(name, fn, shouldCall)` window global, which its `app.bundle.js` script tag installs. Its `shouldCall` defaults to `true`, so pass `false` for handlers and templates.
 
 ## Registering
 
