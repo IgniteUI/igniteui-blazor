@@ -11,7 +11,7 @@ Paging is not a grid parameter — place an `IgbPaginator` **inside** the grid a
 </IgbGrid>
 ```
 
-Users page with the paginator's built-in controls. Changing the page from code does not work: `PaginateAsync`, `NextPageAsync` and `PreviousPageAsync` fail (`target doesn't have prop: paginate` in the console; the `Task` faults) and a bound `Page` is applied only the first time it changes ([#569](https://github.com/IgniteUI/igniteui-blazor/issues/569)). Don't build custom First / Next / Previous buttons on them.
+Users page with the paginator's built-in controls. Changing the page from code does not work: `PaginateAsync`, `NextPageAsync` and `PreviousPageAsync` fail (`target doesn't have prop: paginate` in the console; the `Task` faults), and a bound `Page` is applied unreliably: after the user pages with the paginator's buttons, setting it (for example back to `0`) often has no effect ([#569](https://github.com/IgniteUI/igniteui-blazor/issues/569)). Don't build custom First / Next / Previous buttons on them.
 
 | Parameter | Type | Default | Purpose |
 |---|---|---|---|
@@ -57,52 +57,69 @@ Bind `Data` to just the current page, set `PagingMode="GridPagingMode.Remote"`, 
         return LoadPageAsync();
     }
 
+    private int loadVersion;
+
     // No StateHasChanged(): the event handlers and OnInitializedAsync return this Task,
     // and the component re-renders when it completes.
     private async Task LoadPageAsync()
     {
+        var version = ++loadVersion;
         var result = await Api.GetEmployeesPagedAsync(currentPage, pageSize);
+        if (version != loadVersion) return;   // a newer request started (fast clicks): drop this stale page
         currentPageData = result.Items;
         totalRecords = result.TotalCount;
     }
 }
 ```
 
-Without `PagingMode="GridPagingMode.Remote"` the grid pages only the rows it holds and overrides `TotalRecords`: the pager shows "1 of 1" and no paging event fires. Without `TotalRecords` the paginator cannot compute the page count.
+Without `PagingMode="GridPagingMode.Remote"` the grid pages only the rows it holds and overrides `TotalRecords`: the pager shows "1 of 1" and neither `PageChange` nor `PagingDone` fires. Without `TotalRecords` the paginator cannot compute the page count.
 
 ## Remote sorting and filtering
 
-Handle `SortingDone` and `FilteringDone`, translate the expressions into a server query, and reassign `Data`. In production, fold paging, sorting, and filtering into one request rather than reloading per event.
+Reload from the server when the sort or filter changes, and fold paging, sorting and filtering into one request. Three things differ from what the event names suggest:
+
+- **Sorting:** handle `SortingExpressionsChange`. Its `Detail` holds every sorted column in order. `SortingDone` carries only the column just clicked, so storing it loses multi-column sorting (the default). Sorting does not move the paginator, and the page can't be changed from code ([#569](https://github.com/IgniteUI/igniteui-blazor/issues/569)), so reload the **current** page rather than page 0.
+- **Filtering:** the C# filter events (`FilteringDone`, `Filtering`, `FilteringExpressionsTreeChange`) deliver a tree with the right `FieldName` but **no operands** — no condition, no search value. Use the event only as the trigger and read the grid's `filteringExpressionsTree` through JS interop. Filtering moves the paginator back to the first page, so load page 0.
+- **Local pass:** the grid still sorts and filters the rows it holds, even with `PagingMode="GridPagingMode.Remote"`, and has no parameter to turn that off. With a server that applies the same sort and filter, this pass changes nothing.
 
 ```razor
-<IgbGrid Data="data" PrimaryKey="Id" Height="600px" AllowFiltering="true"
-         PagingMode="GridPagingMode.Remote"
-         SortingDone="OnSortingDone" FilteringDone="OnFilteringDone">
-    <IgbColumn Field="Name" Sortable="true" Filterable="true" />
-    <IgbColumn Field="Salary" Sortable="true" DataType="GridColumnDataType.Number" />
-    <IgbPaginator PerPage="@pageSize" TotalRecords="@totalRecords"
-                  PagingDone="OnPagingDone" PerPageChange="OnPerPageChange" />
-</IgbGrid>
+@inject IJSRuntime JS
+
+<div @ref="gridHost">
+    <IgbGrid Data="data" PrimaryKey="Id" Height="600px" AllowFiltering="true"
+             PagingMode="GridPagingMode.Remote"
+             SortingExpressionsChange="OnSortingChanged" FilteringDone="OnFilteringDone">
+        <IgbColumn Field="Name" Sortable="true" Filterable="true" />
+        <IgbColumn Field="Salary" Sortable="true" DataType="GridColumnDataType.Number" />
+        <IgbPaginator PerPage="@pageSize" TotalRecords="@totalRecords"
+                      PagingDone="OnPagingDone" PerPageChange="OnPerPageChange" />
+    </IgbGrid>
+</div>
 
 @code {
+    private ElementReference gridHost;
     private List<Employee> data = new();
-    private int totalRecords, currentPage;
+    private int totalRecords, currentPage, loadVersion;
     private int pageSize = 20;
-    private IgbSortingExpression[]? currentSort;
-    private IgbFilteringExpressionsTree? currentFilter;
+    private IgbSortingExpression[] currentSort = [];
+    private GridFilter[] currentFilter = [];
 
-    private Task OnSortingDone(IgbSortingExpressionEventArgs args)
+    public record GridFilter(string Field, string Condition, System.Text.Json.JsonElement Value);
+
+    protected override Task OnInitializedAsync() => LoadDataAsync();
+
+    private Task OnSortingChanged(IgbSortingExpressionEventArgs args)
     {
-        currentSort = args.Detail;
-        currentPage = 0;
-        return LoadDataAsync();
+        currentSort = args.Detail ?? [];   // all sorted columns, in order
+        return LoadDataAsync();            // the paginator stays on its page
     }
 
-    private Task OnFilteringDone(IgbFilteringExpressionsTreeEventArgs args)
+    private async Task OnFilteringDone(IgbFilteringExpressionsTreeEventArgs args)
     {
-        currentFilter = args.Detail;
-        currentPage = 0;
-        return LoadDataAsync();
+        // args.Detail has no operands: read the grid's tree instead
+        currentFilter = await JS.InvokeAsync<GridFilter[]>("readGridFilter", gridHost);
+        currentPage = 0;                   // the paginator went back to the first page
+        await LoadDataAsync();
     }
 
     private Task OnPagingDone(IgbPageEventArgs args)
@@ -122,22 +139,32 @@ Handle `SortingDone` and `FilteringDone`, translate the expressions into a serve
 
     private async Task LoadDataAsync()
     {
-        var result = await Api.QueryAsync(new QueryRequest
-        {
-            Page = currentPage,
-            PageSize = pageSize,
-            SortField = currentSort?.FirstOrDefault()?.FieldName,
-            SortDirection = currentSort?.FirstOrDefault()?.Dir.ToString(),
-            Filter = Translate(currentFilter)
-        });
-
+        var version = ++loadVersion;
+        var result = await Api.QueryAsync(currentPage, pageSize, currentSort, currentFilter);
+        if (version != loadVersion) return;   // a newer request started: drop this stale result
         data = result.Items;
         totalRecords = result.TotalCount;
     }
 }
 ```
 
-The grid still renders sort and filter UI while you own the actual data transformation. To stop it re-sorting or re-filtering the page it already has, assign noop sorting/filtering strategies on the grid — check `get_api_reference` for the current strategy types.
+```js
+// wwwroot/js/grid-filter.js — flattens the grid's filter tree into { field, condition, value } items
+window.readGridFilter = host => {
+    const flatten = tree => tree.filteringOperands.flatMap(o => o.filteringOperands
+        ? flatten(o)
+        : [{ field: o.fieldName, condition: o.condition?.name ?? o.conditionName, value: o.searchVal ?? null }]);
+    const tree = host.querySelector('igc-grid').filteringExpressionsTree;
+    return tree ? flatten(tree) : [];
+};
+```
+
+```html
+<!-- host page (wwwroot/index.html, or App.razor in a Blazor Web App) -->
+<script src="js/grid-filter.js"></script>
+```
+
+`flatten` drops the and/or grouping between conditions; keep the tree structure if your server needs it. `Condition` is the condition name (`contains`, `equals`, `greaterThan`, …), and `Value` is a `JsonElement` because its type depends on the column.
 
 `IgbGridLite` handles remote operations differently, through `DataPipelineConfiguration` rather than events — see [`types.md`](./types.md).
 

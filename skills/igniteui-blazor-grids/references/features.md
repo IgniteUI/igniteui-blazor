@@ -73,7 +73,7 @@ Merges visually identical adjacent cells. Sort by the merged columns first, or t
                 <IgbGridToolbarHiding />
                 <IgbGridToolbarPinning />
                 <IgbGridToolbarAdvancedFiltering />
-                <IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" Filename="employees" />
+                <IgbGridToolbarExporter ExportPDF="false" Filename="employees" />   @* Excel and CSV *@
             </IgbGridToolbarActions>
         </IgbGridToolbar>
         …
@@ -102,7 +102,7 @@ Put only the built-in action components in `IgbGridToolbarActions`, and declare 
 }
 ```
 
-The hiding rule sees only element children, and Blazor moves bare text into the box as text nodes — so custom content that is only text (`@selectedCount selected`) is hidden with it. Wrap such text in an element (`<span>@selectedCount selected</span>`) before using the rule. `order` changes only the visual order; keyboard focus still reaches custom content first. `IgbGridToolbarTitle` also keeps an empty `igc-portal-exit` before its content: if the title content is `display: inline-flex`, the title stops painting once the toolbar wraps ([#497](https://github.com/IgniteUI/igniteui-blazor/issues/497)). Use `display: flex` for the title content, or hide the element with `.igx-grid-toolbar__title > igc-portal-exit { display: none; }`.
+The hiding rule sees only element children, and Blazor moves bare text into the box as text nodes — so custom content that is only text (`@selectedCount selected`) is hidden with it. Wrap such text in an element (`<span>@selectedCount selected</span>`) before using the rule. `order` changes only the visual order; keyboard focus still reaches custom content first. `IgbGridToolbarTitle` also keeps an empty `igc-portal-exit` before its content: if the title content is `display: inline-flex`, the title stops painting whenever that content is wider than the title area — the title is capped at 320px and shrinks further when the actions need room, for example once the toolbar wraps ([#497](https://github.com/IgniteUI/igniteui-blazor/issues/497)). Use `display: flex` for the title content, or hide the element with `.igx-grid-toolbar__title > igc-portal-exit { display: none; }`.
 
 ## Export
 

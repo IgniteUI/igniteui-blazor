@@ -122,7 +122,7 @@ See [`paging-remote.md`](./paging-remote.md) for the combined paging + sorting +
             <IgbGridToolbarHiding />
             <IgbGridToolbarPinning />
             <IgbGridToolbarAdvancedFiltering />
-            <IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" />
+            <IgbGridToolbarExporter ExportPDF="false" />
         </IgbGridToolbarActions>
     </IgbGridToolbar>
     <IgbColumn Field="Name" Editable="true" />

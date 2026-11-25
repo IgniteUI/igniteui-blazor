@@ -16,6 +16,9 @@ Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Bo
 ## Cell editing
 
 ```razor
+@inject EmployeeService EmployeeService
+@inject ILogger<Employees> Logger
+
 <IgbGrid Data="@employees" PrimaryKey="Id" AutoGenerate="false"
          CellEdit="OnCellEdit" CellEditDone="OnCellEditDone">
     <IgbColumn Field="Id" Header="ID" Editable="false" />
@@ -28,7 +31,7 @@ Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Bo
 @code {
     private void OnCellEdit(IgbGridEditEventArgs args)
     {
-        if (args.Detail.Column.Field == "Salary" && Convert.ToDecimal(args.Detail.NewValue) < 0)
+        if (args.Detail.Column?.Field == "Salary" && Convert.ToDecimal(args.Detail.NewValue) < 0)
         {
 #pragma warning disable BL0005
             args.Detail.Valid = false;   // reject before commit
@@ -52,6 +55,8 @@ Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Bo
     }
 }
 ```
+
+In `CellEditDone`, `Detail.RowData` is your row object, already updated in the bound list, and `Detail.RowKey` is its key (a numeric key arrives as `double`). The fire-and-forget save runs on the renderer's dispatcher, and so does the code after its `await`. To show a save status, set a field there and call `StateHasChanged()` directly.
 
 `CellEditDone`, `RowAdded` and `RowDeleted` are `Action<T>` parameters: return `void`, and call `StateHasChanged()` yourself if the page shows something they change (or forward to an `EventCallback` of a parent component, which re-renders that parent). Check other events' parameter type with `get_api_reference` before writing an `async Task` handler.
 
