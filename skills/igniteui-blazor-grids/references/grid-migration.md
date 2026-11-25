@@ -90,7 +90,7 @@ Grid Lite has no templates at all. `IgbColumn` adds Blazor render fragments — 
 </IgbColumn>
 ```
 
-Row data inside a body template is `cell.Cell.Row.Data`. Editors use `InlineEditorTemplate` bound to `cell.Cell.EditValue`. Full detail in [`structure.md`](./structure.md) and [`editing.md`](./editing.md).
+Inside a body template the cell value is `cell.Cell.Value`, and `cell.Cell.Id.RowID` is the row's primary key (there is no `cell.Cell.Row`). Editors use `InlineEditorTemplate` bound to `cell.Cell.EditValue`. Full detail in [`structure.md`](./structure.md) and [`editing.md`](./editing.md).
 
 ## Remote data
 

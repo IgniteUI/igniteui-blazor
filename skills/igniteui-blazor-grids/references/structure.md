@@ -71,7 +71,9 @@ Leave `Width` unset unless the user asks for fixed sizing — see [`sizing.md`](
 
 ## Templates
 
-Templates are Blazor render fragments on `IgbColumn`, and the `context` needs a cast.
+A column template is either a Blazor render fragment (`BodyTemplate`, below) or a JavaScript function named in `BodyTemplateScript` ([JavaScript cell templates](#javascript-cell-templates-bodytemplatescript)). Each render of a render-fragment cell goes through .NET, so for grids with live data, heavy scrolling, or Blazor Server, prefer the JavaScript template ([`features.md`](./features.md#virtualization--performance)).
+
+In a render fragment the `context` needs a cast.
 
 ```razor
 <IgbColumn Field="Salary" Header="Salary" DataType="GridColumnDataType.Currency" Editable="true">
@@ -102,12 +104,130 @@ Templates are Blazor render fragments on `IgbColumn`, and the `context` needs a 
 
 | Fragment | Context type | Reaches |
 |---|---|---|
-| `BodyTemplate` | `IgbCellTemplateContext` | `cell.Cell.Value`, `cell.Cell.Row.Data` |
+| `BodyTemplate` | `IgbCellTemplateContext` | `cell.Cell.Value`, `cell.Cell.Id.RowID` (the row's `PrimaryKey` value, which arrives as a `string` even for an `int` key). There is no `cell.Cell.Row`, so look the row up in your own list by that key |
 | `HeaderTemplate` | `IgbColumnTemplateContext` | `ctx.Column.Header` |
 | `InlineEditorTemplate` | `IgbCellTemplateContext` | `cell.Cell.EditValue` |
 | `ErrorTemplate` | `IgbCellTemplateContext` | validation message slot |
 
 Inside `IgbIcon`, the parameter is `IconName` — `Name` is the framework element identity, not the glyph.
+
+### JavaScript cell templates (`BodyTemplateScript`)
+
+`BodyTemplateScript` names a function registered on the client. The grid calls it in the browser with no .NET round trip, and it returns lit markup. Register it at the top level of a script that the host page loads before Blazor starts. The API depends on the package version:
+
+- **26.2 and later** (in beta at the time of writing): `registerScript` and `html` from `_content/IgniteUI.Blazor/api.js`, in a module script.
+- **26.1.x**: there is no `api.js` (it returns 404). Use the `igRegisterScript` and `window.igTemplating` globals that the `app.bundle.js` script tag installs, from a script placed after that tag.
+
+```html
+<!-- 26.2+: in <head> of wwwroot/index.html (WebAssembly) or App.razor (Blazor Web App), after the import map -->
+<script type="importmap"></script>   <!-- App.razor: <ImportMap /> -->
+<script type="module" src="grid-templates.js"></script>
+
+<!-- 26.1.x: after <script src="_content/IgniteUI.Blazor/app.bundle.js"></script> -->
+<script src="grid-templates.js"></script>
+```
+
+```js
+// wwwroot/grid-templates.js, 26.2+
+import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';
+
+registerScript('PriceCell', (ctx) => {
+    const row = ctx.cell.row.data;            // read ctx.cell once: every read builds a new object
+    return html`<span class="price-cell ${row.Change < 0 ? 'down' : 'up'}">${Number(ctx.implicit).toFixed(2)}</span>`;
+});
+```
+
+```js
+// wwwroot/grid-templates.js, 26.1.x (classic script: wrap it so its names stay out of the global scope)
+(() => {
+    const html = window.igTemplating.html;
+    igRegisterScript('PriceCell', (ctx) => {
+        const row = ctx.cell.row.data;
+        return html`<span class="price-cell ${row.Change < 0 ? 'down' : 'up'}">${Number(ctx.implicit).toFixed(2)}</span>`;
+    }, false);                                // false: igRegisterScript's shouldCall defaults to true
+})();
+```
+
+```razor
+<IgbColumn Field="Price" DataType="GridColumnDataType.Number" BodyTemplateScript="PriceCell" />
+```
+
+- **Register before the grid renders.** A name that is missing at render time logs `[Ignite UI] script 'PriceCell' is not registered …`, and registering it later does not apply it. A module script that the host page loads is in place in time.
+- **`shouldCall`, the third argument, decides whether the registered function is the script (`false`) or is called once to produce it (`true`).** It defaults to `false` in `registerScript` but to **`true`** in `igRegisterScript`. Templates, `FormatterScript` and event `*Script` handlers need `false`. `CellClassesScript`, `RowClassesScript`, `CellStylesScript` and `RowStylesScript` take an object that maps a class name or CSS property to a function. Register that object directly (any flag), or a factory that returns it with `true`:
+
+  ```js
+  registerScript('PriceClasses', { 'is-down': (rowData, columnKey, cellValue, rowIndex) => rowData.Change < 0 });
+  registerScript('PriceStyles', () => ({ 'font-weight': (rowData, columnKey, cellValue) => cellValue > 100 ? '700' : '400' }), true);
+  ```
+
+  A wrong flag mostly fails silently: a template or handler registered with `true` is called once with no arguments and never applied, a factory registered without `true` is never applied, and a formatter registered with `true` breaks the grid (`TypeError: this.formatter is not a function`).
+- **26.2 keeps the globals** for existing code: `igRegisterScript` and `window.igTemplating.html` still work, but each logs a deprecation warning. A name missing at render time logs the warning above on 26.2 and nothing on 26.1. Classic scripts share one global scope, so two of them declaring the same top-level `const` throw `SyntaxError: Identifier '…' has already been declared`. Wrap them as above, or use module scripts.
+- **Markup.** `html` is lit-html 3's template tag. Attribute, `.property`, `?boolean` and `@event` bindings work, and a template can return `html` markup, a string, a number, an array, or `''`/`null` for an empty cell. Strings are escaped, never parsed as HTML. No lit directives ship (`classMap`, `repeat`, `keyed`, …): build class strings by hand. An `@click` inside a cell still activates and selects the cell, even with `stopPropagation()`. `igc-*` elements need their module registered in `Program.cs` ([client scripts](../../igniteui-blazor-components/references/client-scripts.md#templates)).
+
+**Context.** `ctx` is a proxy, so `Object.keys(ctx)`, `{...ctx}` and `JSON.stringify(ctx)` all come back empty. Parameter destructuring (`({ implicit, cell }) =>`) does work.
+
+| Expression | Value |
+|---|---|
+| `ctx.implicit` | the cell value (`row.data[field]`) |
+| `ctx.cell` | a getter that builds a new cell object on every read. Read it once into a variable |
+| `ctx.cell.row.data` | the grid's own record: the same object as the entry in the `igc-grid` element's `data` array, plus an internal `___id` |
+| `ctx.cell.row.index`, `ctx.cell.id.rowID`, `ctx.cell.column.field` | row index, primary-key value, column field |
+| `ctx.cell.active`, `.selected`, `.editMode` | cell state |
+| `ctx.cell.grid` | the grid's internal component, not the element. The element is `ctx.cell.grid.nativeElement` |
+
+**When a template runs again.** The cell re-renders only when one of its own inputs changes, so a template that also reads *other* fields of the row is not re-run when only those fields change, and shows stale values. Show only the column's own field (plus fields that always change with it). Otherwise, replace the changed row's record with a copy before assigning the new array (`data[i] = { ...data[i] }`), which re-renders that row only. Or call `markForCheck()` on the `igc-grid` element (C#: `await grid.MarkForCheckAsync()`), which re-runs every rendered cell, synchronously.
+
+| Change | Templates that run again |
+|---|---|
+| JS: a field of a record in `grid.data` changes, then `grid.data = grid.data.slice()` | only the cells of that field's column, in that row |
+| JS: a record object is replaced | that row's cells |
+| JS: a field changes with no new array, or the same array is assigned again | none |
+| C#: any `Data` assignment, even of the same objects | every rendered cell (the list is re-serialized, so every record is a new JS object) |
+| C#: `NotifyUpdateItem` / `NotifySetItem`, `UpdateCellAsync` / `UpdateRowAsync` | every rendered cell, on **each** call |
+| Scrolling | the rows that come into view |
+| Active cell moves (click, arrow keys) | the cell that gains and the cell that loses the active state |
+| Sorting, filtering, `markForCheck()` | every rendered cell |
+| Hover, row selection | none |
+
+**DOM and CSS.** The template's root element is a flex item of the cell (`.igx-grid__td`, which is `display: flex; align-items: center`), behind a `display: contents` wrapper. It is vertically centered but shrinks to its content, so give it `flex: 1 1 auto; min-width: 0` (or `width: 100%`) to fill the cell. Ellipsis needs `overflow: hidden; text-overflow: ellipsis; white-space: nowrap`, and a filled number cell needs `text-align: right`. Text that wraps makes the grid measure a taller row, and all rows share that height. Template markup carries no Blazor CSS-isolation attribute, so style it from global CSS, or in `.razor.css` with `::deep` under an element the component renders (`.grid-host ::deep .price-cell`).
+
+```css
+/* wwwroot/css/app.css */
+.price-cell { flex: 1 1 auto; min-width: 0; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.price-cell.down { color: var(--ig-error-500); }
+```
+
+Render-fragment `BodyTemplate`s are laid out differently: their content is inside `div#host-<guid>` wrappers. CSS written for one shape does not carry over to the other.
+
+**Gotchas.**
+- **There is no way back to the default cell template.** Setting the `igc-column` element's `bodyTemplate` to `null` throws `Cannot read properties of null (reading '___isBridged')` and leaves the cells empty (#484), and binding `BodyTemplateScript` to `null` from C# keeps the old template (26.2) or throws during rendering (26.1). Switch between registered names instead. For a plain look, register a pass-through template, `registerScript('PlainCell', (ctx) => ctx.implicit ?? '')`. Unlike the default cell, it wraps long text instead of truncating it. Likewise, don't bind `BodyTemplate` to `null` to switch a render fragment off: the column's cells go blank.
+- **Blazor Server: arrays of primitives in `Data` arrive as `null`.** That includes `double[]`, `List<double>` and `string[]`, so a template that reads them gets nothing (#479). Send them as JSON text and `JSON.parse` them in the template, or as a list of objects.
+- **`igc-sparkline` rendered from a template must be `destroy()`ed** when the grid discards its cell (#480). Until then it polls its size every 100 ms, also after its column is hidden, its row is filtered out, or the page is left. Watch the grid for removed nodes and destroy the disconnected sparklines:
+
+  ```js
+  // wwwroot/grid-live.js (features.md, "Live data", shows how it is attached to the grid and released)
+  function watchSparklines(grid) {
+      const destroyed = new WeakSet();
+      const destroy = (sparkline) => { if (!destroyed.has(sparkline)) { destroyed.add(sparkline); sparkline.destroy(); } };
+      const onRemoved = (records) => {
+          for (const record of records)
+              for (const node of record.removedNodes) {
+                  if (node.nodeType !== Node.ELEMENT_NODE) continue;
+                  const found = node.localName === 'igc-sparkline' ? [node] : node.getElementsByTagName('igc-sparkline');
+                  for (const sparkline of found) if (!sparkline.isConnected) destroy(sparkline);
+              }
+      };
+      const observer = new MutationObserver(onRemoved);
+      observer.observe(grid, { childList: true, subtree: true });
+      return () => {
+          onRemoved(observer.takeRecords());
+          observer.disconnect();
+          for (const sparkline of grid.getElementsByTagName('igc-sparkline')) destroy(sparkline);
+      };
+  }
+  ```
+
+  The Blazor `IgbSparkline` inside a render-fragment `BodyTemplate` is disposed with its cell.
 
 ## Column groups & multi-row layout
 
@@ -169,7 +289,7 @@ Inside `IgbIcon`, the parameter is `IconName` — `Name` is the framework elemen
 }
 ```
 
-`SortingOptionsMode` is `Single` (default) or `Multiple`. `FieldName` is case-sensitive and must match the C# property exactly.
+`SortingOptionsMode` is `Single` or `Multiple` (default: a second clicked column sorts within the first, so set `Single` when each click should replace the sort). `FieldName` is case-sensitive and must match the C# property exactly.
 
 ## Filtering
 

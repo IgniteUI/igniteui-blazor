@@ -28,6 +28,7 @@ user-invocable: true
 | Paging, remote data, server-side operations, virtual scrolling | [`references/paging-remote.md`](./references/paging-remote.md) |
 | State persistence (`IgbGridState`, save/restore) | [`references/state.md`](./references/state.md) |
 | Grid width/height, column sizing, row height, density | [`references/sizing.md`](./references/sizing.md) |
+| Performance, live/real-time data, JavaScript cell templates (`BodyTemplateScript`) | [`references/features.md`](./references/features.md#virtualization--performance), [`references/structure.md`](./references/structure.md#javascript-cell-templates-bodytemplatescript), [`references/sizing.md`](./references/sizing.md#live-data-give-the-grid-element-a-pixel-height) |
 | Migrating `IgbGridLite` → `IgbGrid` | [`references/grid-migration.md`](./references/grid-migration.md) |
 
 ## Choosing a grid type
@@ -93,7 +94,7 @@ The grid-specific stylesheet is easy to miss and is required whenever any full-f
 ## Grid-wide rules
 
 - **Set `PrimaryKey`.** Selection, editing, row-targeted APIs, and state persistence all depend on it.
-- **Set `Height`.** Row virtualization only activates with a fixed height; without one every row renders to the DOM.
+- **Set `Height`**, as a CSS length or as `100%` of a parent with a definite height. Unset, the grid is about 10 rows tall whatever its container ([`sizing.md`](./references/sizing.md)).
 - **Prefer `AutoGenerate="false"`** so column order, types, and templates are explicit.
 - **Set `DataType` on every column** — it drives the filter conditions, sort comparison, editor, and formatting.
 - **`Data` must be a materialized collection** (`List<T>`, `T[]`), not `IQueryable` or JSON.
