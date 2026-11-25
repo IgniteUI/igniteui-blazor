@@ -40,7 +40,7 @@ jobs:
       - name: Install wasm-tools workload
         run: dotnet workload install wasm-tools
 
-      # Restore ignores --framework, and restoring net10 with AOT on needs wasm-tools-net10.
+      # Restore ignores --framework, and restoring net11 with AOT on needs wasm-tools-net11.
       # TargetFrameworks limits restore to net11.
       - name: Publish smoke app with AOT compilation
         run: dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net11.0 -p:TargetFrameworks=net11.0 -p:RunAOTCompilation=true
