@@ -97,8 +97,10 @@ Row data inside a body template is `cell.Cell.Row.Data`. Editors use `InlineEdit
 Grid Lite drives server-side work through `DataPipelineConfiguration`. `IgbGrid` uses events instead: reload `Data` on `SortingExpressionsChange` (its `Detail` holds every sorted column; `SortingDone` has only the column just clicked), on `FilteringDone` after reading the grid's filter tree through JS interop (the C# tree has no operands), and on the paginator's `PagingDone`:
 
 ```razor
-<IgbGrid Data="@data" PrimaryKey="Id" Height="600px"
-         SortingExpressionsChange="OnSortingChanged" />
+<IgbGrid Data="@data" PrimaryKey="Id" Height="600px" AutoGenerate="false"
+         SortingExpressionsChange="OnSortingChanged">
+    <IgbColumn Field="Name" Sortable="true" />
+</IgbGrid>
 
 @code {
     private async Task OnSortingChanged(IgbSortingExpressionEventArgs args)
