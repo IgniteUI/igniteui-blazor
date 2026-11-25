@@ -177,13 +177,18 @@ Reload from the server when the sort or filter changes, and fold paging, sorting
 // wwwroot/js/grid-filter.js — converts the grid's filter trees into { operator, conditions, groups } groups
 window.readGridFilter = host => {
     const grid = host.querySelector('igc-grid');
-    // a date is a Date at local midnight: send the calendar date, not the UTC instant
-    const day = v => v instanceof Date ? v.toLocaleDateString('sv') : v;
-    const isDate = field => ['date', 'dateTime'].includes(grid.getColumnByName(field)?.dataType);
-    // the Excel-style list's "in" condition holds a Set (date columns: toDateString() strings)
-    const value = o => o.searchVal instanceof Set
-        ? [...o.searchVal].map(v => isDate(o.fieldName) && typeof v === 'string' ? new Date(v).toLocaleDateString('sv') : day(v))
-        : day(o.searchVal ?? null);
+    const kind = field => grid.getColumnByName(field)?.dataType;   // 'date' | 'dateTime' | 'time' | 'string' | …
+    // send local wall-clock text, not UTC instants: yyyy-MM-dd, yyyy-MM-dd HH:mm:ss or HH:mm:ss by column type
+    const text = (d, k) => k === 'dateTime' ? d.toLocaleString('sv') : k === 'time' ? d.toLocaleTimeString('sv') : d.toLocaleDateString('sv');
+    // the Excel-style list's "in" Set holds strings: toDateString() (date), ISO instants (dateTime), display text (time)
+    const parse = (s, k) => new Date(k === 'time' ? `1970-01-01 ${s}` : s);
+    const one = (v, k) => v instanceof Date ? text(v, k)
+        : typeof v === 'string' && ['date', 'dateTime', 'time'].includes(k) && !isNaN(parse(v, k)) ? text(parse(v, k), k)
+        : v;
+    const value = o => {
+        const k = kind(o.fieldName);
+        return o.searchVal instanceof Set ? [...o.searchVal].map(v => one(v, k)) : one(o.searchVal ?? null, k);
+    };
     const group = tree => ({
         operator: tree.operator === 1 ? 'or' : 'and',
         conditions: tree.filteringOperands.filter(o => !o.filteringOperands).map(o => ({
@@ -211,7 +216,7 @@ window.watchGridFilterClear = (host, dotNetRef) => host.addEventListener('filter
 <script src="js/grid-filter.js"></script>
 ```
 
-A row matches a group when all (`and`) or any (`or`) of its conditions and subgroups match; groups nest, e.g. `an OR (ri AND x)` from a filter row with mixed operators. `Condition` is the condition name (`contains`, `equals`, `in`, `greaterThan`, `before`, `true`, …), and `Value` is a `JsonElement` because its type depends on the column and condition: a string, a number, a date as `yyyy-MM-dd`, an array of those for `in`, or `null` for unary conditions such as `empty` or `thisYear`.
+A row matches a group when all (`and`) or any (`or`) of its conditions and subgroups match; groups nest, e.g. `an OR (ri AND x)` from a filter row with mixed operators. `Condition` is the condition name (`contains`, `equals`, `in`, `greaterThan`, `before`, `true`, …), and `Value` is a `JsonElement` because its type depends on the column and condition: a string, a number, local wall-clock text for date columns (`yyyy-MM-dd` for `Date`, `yyyy-MM-dd HH:mm:ss` for `DateTime`, `HH:mm:ss` for `Time`), an array of those for `in`, or `null` for unary conditions such as `empty` or `thisYear`. A `Time` column's `in` values come from display text such as `8:00:00 AM`; if that text can't be parsed in the grid's locale, it is passed through unchanged.
 
 `IgbGridLite` handles remote operations differently, through `DataPipelineConfiguration` rather than events — see [`types.md`](./types.md).
 
@@ -228,5 +233,5 @@ Two requirements:
 
 - `IgbPaginator` is a **child** of the grid, not a sibling.
 - For remote paging set `PagingMode="GridPagingMode.Remote"` on the grid.
-- Don't call `StateHasChanged()` after reassigning `Data` in an `EventCallback` handler (`PagingDone`, `PerPageChange`, `SortingDone`, `FilteringDone`, …) or in `OnInitializedAsync` / `OnParametersSetAsync`: the component re-renders when the returned `Task` completes, and an extra call inside an Ignite UI callback renders immediately, adding a render each time. Call it once only when `Data` changes outside those paths. In a `[JSInvokable]` method or an `Action<T>` event (`RowAdded`, `RowDeleted`, `CellEditDone`) call it directly — they already run on the renderer's dispatcher. From a timer or a service event, wrap the update and the call: `await InvokeAsync(() => { Data = fresh; StateHasChanged(); });` — on Blazor Server those callbacks run off the dispatcher, and a direct `StateHasChanged()` throws `InvalidOperationException`.
+- Don't call `StateHasChanged()` after the final `Data` assignment in an `EventCallback` handler (`PagingDone`, `PerPageChange`, `SortingDone`, `FilteringDone`, …) or in `OnInitializedAsync` / `OnParametersSetAsync`: the component re-renders when the returned `Task` completes, and an extra call inside an Ignite UI callback renders immediately, adding a render each time. The automatic renders come only at the first `await` and at completion, so an intermediate state set between two later `await`s (a "Saving…" message, the first of two loads) needs its own `StateHasChanged()`. Call it once also when `Data` changes outside those paths. In a `[JSInvokable]` method or an `Action<T>` event (`RowAdded`, `RowDeleted`, `CellEditDone`) call it directly — they already run on the renderer's dispatcher. From a timer or a service event, wrap the update and the call: `await InvokeAsync(() => { Data = fresh; StateHasChanged(); });` — on Blazor Server those callbacks run off the dispatcher, and a direct `StateHasChanged()` throws `InvalidOperationException`.
 - `Data` must be a materialized `List<T>` or `T[]` — do not hand the grid an `IQueryable` and expect it to compose `Skip`/`Take`.
