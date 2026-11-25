@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- **Date Range Picker:** `Select` and `SelectAsync` now apply the range they are given, instead of clearing the picker's value. [#174](https://github.com/IgniteUI/igniteui-blazor/issues/174)
+
 ### Breaking Changes
 
 - The library targets `net10.0` and `net11.0`. It no longer targets `net8.0` and `net9.0`, which reach the end of support with the release of .NET 11. Apps on .NET 8 or 9 stay on 1.0.x; to update, retarget the app to .NET 10 or later.
