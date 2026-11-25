@@ -86,7 +86,7 @@ The grid-specific stylesheet is easy to miss and is required whenever any full-f
 | State persistence | ❌ | ✅ | ✅ | ✅ | ✅ |
 | Virtualization | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Load on demand | ❌ | ❌ | ✅ via `LoadChildrenOnDemandScript` | ✅ via `GridCreatedScript` | ❌ |
-| Remote data ops | `DataPipelineConfiguration` | events + noop strategies | events + noop strategies | events + noop strategies | ❌ |
+| Remote data ops | `DataPipelineConfiguration` | events (see `paging-remote.md`) | events | events | ❌ |
 
 **Batch editing is not available in Blazor** on any grid type. Supported editing modes are cell editing and row editing only — never generate batch-editing code.
 

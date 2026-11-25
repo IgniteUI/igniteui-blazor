@@ -11,7 +11,7 @@ Paging is not a grid parameter — place an `IgbPaginator` **inside** the grid a
 </IgbGrid>
 ```
 
-Users page with the paginator's built-in controls. Changing the page from code does not work: `PaginateAsync`, `NextPageAsync` and `PreviousPageAsync` fail (`target doesn't have prop: paginate` in the console; the `Task` faults), and a bound `Page` is applied unreliably: after the user pages with the paginator's buttons, setting it (for example back to `0`) often has no effect ([#569](https://github.com/IgniteUI/igniteui-blazor/issues/569)). Don't build custom First / Next / Previous buttons on them.
+Users page with the paginator's built-in controls. Changing the page from code does not work: `PaginateAsync`, `NextPageAsync` and `PreviousPageAsync` fail (`target doesn't have prop: paginate` in the console; the `Task` faults), and a bound `Page` is ignored whenever the new value equals the last value set from code, even after the user has paged away (so setting it back to `0` a second time does nothing) ([#569](https://github.com/IgniteUI/igniteui-blazor/issues/569)). Don't build custom First / Next / Previous buttons on them.
 
 | Parameter | Type | Default | Purpose |
 |---|---|---|---|
@@ -79,8 +79,9 @@ Without `PagingMode="GridPagingMode.Remote"` the grid pages only the rows it hol
 Reload from the server when the sort or filter changes, and fold paging, sorting and filtering into one request. Three things differ from what the event names suggest:
 
 - **Sorting:** handle `SortingExpressionsChange`. Its `Detail` holds every sorted column in order. `SortingDone` carries only the column just clicked, so storing it loses multi-column sorting (the default). Sorting does not move the paginator, and the page can't be changed from code ([#569](https://github.com/IgniteUI/igniteui-blazor/issues/569)), so reload the **current** page rather than page 0.
-- **Filtering:** the C# filter events (`FilteringDone`, `Filtering`, `FilteringExpressionsTreeChange`) deliver a tree with the right `FieldName` but **no operands** — no condition, no search value. Use the event only as the trigger and read the grid's `filteringExpressionsTree` through JS interop. Filtering moves the paginator back to the first page, so load page 0.
-- **Local pass:** the grid still sorts and filters the rows it holds, even with `PagingMode="GridPagingMode.Remote"`, and has no parameter to turn that off. With a server that applies the same sort and filter, this pass changes nothing.
+- **Filtering:** the C# filter events (`FilteringDone`, `Filtering`, `FilteringExpressionsTreeChange`) deliver a tree with the right `FieldName` but **no operands** — no condition, no search value. Use `FilteringDone` only as the trigger and read the grid's filter trees through JS interop. Keep the and/or structure: the filter row's operator, the Excel-style value list (an `or` group of `equals`) and its custom dialog all produce `or` groups. The advanced-filtering dialog keeps its conditions in a separate tree (`advancedFilteringExpressionsTree`), and also raises `FilteringDone`.
+- **Paging after a filter:** adding or changing a condition moves the paginator to the first page and raises `PagingDone` before `FilteringDone`; clearing a filter or applying the advanced filter leaves it on its page. Keep `currentPage` as `PagingDone` leaves it, and don't reset it in the filter handler.
+- **Local pass:** the grid still sorts and filters the rows it holds, even with `PagingMode="GridPagingMode.Remote"`, and has no parameter to turn that off. It compares strings case-insensitively by character code and dates in local time. A server that sorts culture-aware or case-sensitively gets rows reordered within the page, and one that matches accents loosely (SQL `*_CI_AI` collations) returns rows the local pass then hides ("No records found" under a non-zero total). Match these rules on the server. The Excel-style value list shows only the current page's values.
 
 ```razor
 @inject IJSRuntime JS
@@ -102,9 +103,10 @@ Reload from the server when the sort or filter changes, and fold paging, sorting
     private int totalRecords, currentPage, loadVersion;
     private int pageSize = 20;
     private IgbSortingExpression[] currentSort = [];
-    private GridFilter[] currentFilter = [];
+    private GridFilter[] currentFilter = [];   // every group must match
 
-    public record GridFilter(string Field, string Condition, System.Text.Json.JsonElement Value);
+    public record GridFilter(string Operator, GridCondition[] Conditions, GridFilter[] Groups);   // Operator: "and" | "or"
+    public record GridCondition(string Field, string Condition, System.Text.Json.JsonElement Value);
 
     protected override Task OnInitializedAsync() => LoadDataAsync();
 
@@ -116,9 +118,9 @@ Reload from the server when the sort or filter changes, and fold paging, sorting
 
     private async Task OnFilteringDone(IgbFilteringExpressionsTreeEventArgs args)
     {
-        // args.Detail has no operands: read the grid's tree instead
+        // args.Detail has no operands: read the grid's trees instead.
+        // No currentPage = 0: when the grid resets the paginator, PagingDone has already set it.
         currentFilter = await JS.InvokeAsync<GridFilter[]>("readGridFilter", gridHost);
-        currentPage = 0;                   // the paginator went back to the first page
         await LoadDataAsync();
     }
 
@@ -149,13 +151,23 @@ Reload from the server when the sort or filter changes, and fold paging, sorting
 ```
 
 ```js
-// wwwroot/js/grid-filter.js — flattens the grid's filter tree into { field, condition, value } items
+// wwwroot/js/grid-filter.js — converts the grid's filter trees into { operator, conditions, groups } groups
 window.readGridFilter = host => {
-    const flatten = tree => tree.filteringOperands.flatMap(o => o.filteringOperands
-        ? flatten(o)
-        : [{ field: o.fieldName, condition: o.condition?.name ?? o.conditionName, value: o.searchVal ?? null }]);
-    const tree = host.querySelector('igc-grid').filteringExpressionsTree;
-    return tree ? flatten(tree) : [];
+    const grid = host.querySelector('igc-grid');
+    const group = tree => ({
+        operator: tree.operator === 1 ? 'or' : 'and',
+        conditions: tree.filteringOperands.filter(o => !o.filteringOperands).map(o => ({
+            field: o.fieldName,
+            condition: o.condition?.name ?? o.conditionName,
+            // a date is a Date at local midnight: send the calendar date, not the UTC instant
+            value: o.searchVal instanceof Date ? o.searchVal.toLocaleDateString('sv') : o.searchVal ?? null
+        })),
+        groups: tree.filteringOperands.filter(o => o.filteringOperands).map(group)
+    });
+    // the filter row / Excel-style menu and the advanced-filtering dialog keep separate trees; a row must match both
+    return [grid.filteringExpressionsTree, grid.advancedFilteringExpressionsTree]
+        .filter(tree => tree?.filteringOperands?.length)
+        .map(group);
 };
 ```
 
@@ -164,7 +176,7 @@ window.readGridFilter = host => {
 <script src="js/grid-filter.js"></script>
 ```
 
-`flatten` drops the and/or grouping between conditions; keep the tree structure if your server needs it. `Condition` is the condition name (`contains`, `equals`, `greaterThan`, …), and `Value` is a `JsonElement` because its type depends on the column.
+A row matches a group when all (`and`) or any (`or`) of its conditions and subgroups match; groups nest, e.g. `an OR (ri AND x)` from a filter row with mixed operators. `Condition` is the condition name (`contains`, `equals`, `greaterThan`, `before`, `true`, …), and `Value` is a `JsonElement` because its type depends on the column: a string, a number, a date as `yyyy-MM-dd`, or `null` for unary conditions such as `empty` or `thisYear`.
 
 `IgbGridLite` handles remote operations differently, through `DataPipelineConfiguration` rather than events — see [`types.md`](./types.md).
 
