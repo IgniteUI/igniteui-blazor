@@ -55,7 +55,7 @@ dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net11.0 -p:
 dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=TrimmedPublish --settings .runsettings
 ```
 
-Restore ignores `-f`, and restoring net10 with AOT on needs `wasm-tools-net10`. `-p:TargetFrameworks=net11.0` limits restore to net11.
+Restore ignores `-f`, and restoring net11 with AOT on needs `wasm-tools-net11`. `-p:TargetFrameworks=net11.0` limits restore to net11.
 
 Wasm AOT is Mono AOT with the interpreter retained — it validates the product path but emits no NativeAOT diagnostics; that gate is `tests/IgniteUI.Blazor.Lite.AotSmoke` (per-PR CI).
 
