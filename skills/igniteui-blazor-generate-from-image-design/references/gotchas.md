@@ -87,7 +87,7 @@ Full rules are in the theming skill's [`common-patterns.md`](../../igniteui-blaz
 igc-chip { --ig-chip-background: var(--ig-primary-500); }
 igc-dialog::part(footer) { border-top: 1px solid var(--ig-gray-200); }
 
-/* MyView.razor.css — ::deep on igc-* (and classes set on Igb* components), never on your own HTML's class selectors */
+/* MyView.razor.css — ::deep before igc-* selectors (and classes set on Igb* components); a plain .my-class for your own HTML */
 ::deep igc-chip { --ig-chip-background: var(--ig-primary-500); }
 .dashboard-shell { display: grid; grid-template-columns: 260px 1fr; }
 ```
