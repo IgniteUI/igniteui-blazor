@@ -67,7 +67,7 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 }
 ```
 
-`IgbCard` has no width of its own — it stretches to fill its container — so give it one from CSS, not a `style` attribute. In a `.razor.css` file, use `::deep` under an element the view renders itself: `igc-card` carries no CSS-isolation attribute, so a plain `.my-card { … }` rule there never matches, even with `class="my-card"` on the `IgbCard`. In `app.css`, a `class` plus a plain rule works. `IgbCard` has no `Width` parameter: `Width="350px"` compiles, but only renders a `width` attribute on `igc-card`, which does not size it.
+`IgbCard` has no width of its own — in a block container it stretches to the container's width, in a flex row it shrinks to its content — so give it one from CSS, not a `style` attribute. In a `.razor.css` file, use `::deep` under an element the view renders itself: `igc-card` carries no CSS-isolation attribute, so a plain `.my-card { … }` rule there never matches, even with `class="my-card"` on the `IgbCard`. In `app.css`, a `class` plus a plain rule works. `IgbCard` has no `Width` parameter: `Width="350px"` compiles, but only renders a `width` attribute on `igc-card`, which does not size it.
 
 ## List
 
@@ -110,7 +110,9 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 }
 ```
 
-`Remove` is an `EventCallback<IgbVoidEventArgs>`. `Outlined="true"` gives a transparent chip with a 1px border in the `Variant` color (without a `Variant`, border and text use the default text color). Selecting a chip adds a check icon but does not change its fill, and an outlined chip stays transparent when selected unless you set `--ig-chip-selected-outlined-background`. Restyle an outlined chip with `--ig-chip-outlined-background`, `--ig-chip-outlined-text-color` and `--ig-chip-border-color`. Tokens alone do not outline a chip without `Outlined` (it gets no border), and on a chip with a `Variant` the variant colors win over `--ig-chip-background` / `--ig-chip-text-color`. `IgbChip` also has `Selected` / `SelectedChanged` (`@bind-Selected`) and a `Select` event (`IgbComponentBoolValueChangedEventArgs`; `Detail` is the new state).
+`Remove` is an `EventCallback<IgbVoidEventArgs>`. `Outlined="true"` gives a transparent chip with a 1px border; with a `Variant` the border takes the variant color and the text keeps the default text color (Indigo gives an outlined chip without `Variant` a light fill and a grey border). Selecting a chip adds a check icon. In Bootstrap and Material that is all it changes; Fluent and Indigo also fill a selected, non-outlined chip with the primary color. An outlined chip stays transparent when selected.
+
+Chip tokens apply only when no `Variant` is set. Without one, restyle an outlined chip with `--ig-chip-outlined-background`, `--ig-chip-outlined-text-color`, `--ig-chip-border-color` and `--ig-chip-selected-outlined-background`. With a `Variant`, the variant rules win over all of these and over `--ig-chip-background` / `--ig-chip-text-color`; style the part instead, e.g. `.chips ::deep igc-chip[selected]::part(base) { background: …; }` in the view's `.razor.css`, where `.chips` is an element the view renders. Tokens alone do not outline a chip without `Outlined` (it gets no border). `IgbChip` also has `Selected` / `SelectedChanged` (`@bind-Selected`) and a `Select` event (`IgbComponentBoolValueChangedEventArgs`; `Detail` is the new state).
 
 `AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`; a chip without `Variant` has no color variant.
 

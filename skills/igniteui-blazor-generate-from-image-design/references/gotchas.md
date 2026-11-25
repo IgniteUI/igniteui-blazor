@@ -92,7 +92,7 @@ igc-dialog::part(footer) { border-top: 1px solid var(--ig-gray-200); }
 .dashboard-shell { display: grid; grid-template-columns: 260px 1fr; }
 ```
 
-`::deep` does **not** work on the component's own root element — Blazor puts the scope attribute there, so there is no scoped parent above it. Never add `::deep` to a `:root {}` block. `create_component_theme` emits global CSS; use it verbatim in `app.css`. Blazor projects have no Sass step.
+`::deep` does **not** work on the component's own root element — Blazor puts the scope attribute there, so there is no scoped parent above it. For the same reason `::deep igc-chip` matches only chips inside an HTML element the view renders; a chip at the top level of the view needs a wrapper element. Never add `::deep` to a `:root {}` block. `create_component_theme` emits global CSS; use it verbatim in `app.css`. Blazor projects have no Sass step.
 
 ## Charts
 

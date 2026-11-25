@@ -35,7 +35,7 @@ The examples compile in both packages, and the types shown are the full `IgniteU
 
 | Member | Type | Notes |
 |---|---|---|
-| `Value` / `@bind-Value` | `string` | The correct way to read and write the value. On `IgbTextarea` the bound value updates on commit (blur), not per keystroke |
+| `Value` / `@bind-Value` | `string` | The correct way to read and write the value. On both `IgbInput` and `IgbTextarea` the bound value updates on commit (blur / `Change`), not per keystroke; for live text handle `InputOcurred` (`IgbInput`) or `Input` (`IgbTextarea`) |
 | `DisplayType` | `InputType` | `IgbInput` only — text, password, email, number, … |
 | `InputOcurred` | `EventCallback<IgbComponentValueChangedEventArgs>` | `IgbInput` only — fires while typing (name is spelled with one `c`) |
 | `Input` | `EventCallback<IgbComponentValueChangedEventArgs>` | `IgbTextarea` only — fires on every keystroke; `Detail` is the current text |
