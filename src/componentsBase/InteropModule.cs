@@ -88,7 +88,8 @@ namespace IgniteUI.Blazor.Controls
             Post(module => _ = InvokeAndForgetAsync(module, identifier, args));
         }
 
-        private static async Task InvokeAndForgetAsync(IJSObjectReference module, string identifier, object?[]? args)
+        // Internal so tests can await the task that PostVoid discards and check which failures are dropped.
+        internal static async Task InvokeAndForgetAsync(IJSObjectReference module, string identifier, object?[]? args)
         {
             try
             {

@@ -95,6 +95,115 @@ public class InteropModuleTests
         Assert.Null(interop.Loaded);
     }
 
+    [Fact]
+    public async Task PostVoid_WhileImporting_InvokesInCallOrderWithArguments()
+    {
+        var js = new FakeJSRuntime();
+        var interop = new InteropModule(js, "./m.js");
+
+        interop.PostVoid("first", 1, "a");
+        interop.PostVoid("second");
+        Assert.Empty(js.Module.Invocations);
+
+        js.CompleteImport();
+        await interop.GetAsync();
+
+        Assert.Collection(js.Module.Invocations,
+            i => { Assert.Equal("first", i.Identifier); Assert.Equal(new object?[] { 1, "a" }, i.Args); },
+            i => { Assert.Equal("second", i.Identifier); Assert.Empty(i.Args!); });
+    }
+
+    [Fact]
+    public async Task PostVoid_AfterImport_InvokesImmediately()
+    {
+        var js = new FakeJSRuntime();
+        var interop = new InteropModule(js, "./m.js");
+        var load = interop.GetAsync();
+        js.CompleteImport();
+        await load;
+
+        interop.PostVoid("send", "msg");
+
+        var invocation = Assert.Single(js.Module.Invocations);
+        Assert.Equal("send", invocation.Identifier);
+        Assert.Equal(new object?[] { "msg" }, invocation.Args);
+    }
+
+    public static TheoryData<string> FailureModes => new TheoryData<string>
+    {
+        "throws", "faults", "disconnects", "cancels",
+    };
+
+    [Theory]
+    [MemberData(nameof(FailureModes))]
+    public async Task PostVoid_InvocationFailing_DoesNotStopLaterCalls(string failure)
+    {
+        var js = new FakeJSRuntime();
+        var interop = new InteropModule(js, "./m.js");
+        js.Module.Behavior = (identifier, _) => identifier == "bad" ? Fail(failure) : default;
+
+        // Queued: dispatched by the import's drain loop.
+        interop.PostVoid("bad");
+        interop.PostVoid("good", 1);
+        js.CompleteImport();
+        await interop.GetAsync();
+        Assert.NotNull(interop.Loaded);
+
+        // Already loaded: dispatched directly.
+        interop.PostVoid("bad");
+        interop.PostVoid("good", 2);
+
+        Assert.Equal(new[] { "bad", "good", "bad", "good" }, js.Module.Invocations.Select(i => i.Identifier));
+    }
+
+    [Theory]
+    [InlineData("disconnects")]
+    [InlineData("cancels")]
+    public async Task InvokeAndForgetAsync_CircuitGone_CompletesSuccessfully(string failure)
+    {
+        var module = new FakeModule { Behavior = (_, _) => Fail(failure) };
+
+        var task = InteropModule.InvokeAndForgetAsync(module, "send", new object?[] { "msg" });
+        await task;
+
+        Assert.True(task.IsCompletedSuccessfully);
+        Assert.Equal("send", Assert.Single(module.Invocations).Identifier);
+    }
+
+    [Theory]
+    [InlineData("throws")]
+    [InlineData("faults")]
+    public async Task InvokeAndForgetAsync_OtherFailure_FaultsTheTask(string failure)
+    {
+        var module = new FakeModule { Behavior = (_, _) => Fail(failure) };
+
+        var task = InteropModule.InvokeAndForgetAsync(module, "send", null);
+
+        await Assert.ThrowsAsync<JSException>(() => task);
+        Assert.True(task.IsFaulted);
+    }
+
+    private static ValueTask Fail(string failure) => failure switch
+    {
+        "throws" => throw new JSException("boom"),
+        "faults" => FaultLater(new JSException("boom")),
+        "disconnects" => FaultLater(new JSDisconnectedException("gone")),
+        "cancels" => CancelLater(),
+        _ => throw new ArgumentOutOfRangeException(nameof(failure)),
+    };
+
+    private static async ValueTask FaultLater(Exception ex)
+    {
+        await Task.Yield();
+        throw ex;
+    }
+
+    private static async ValueTask CancelLater()
+    {
+        await Task.Yield();
+        throw new TaskCanceledException();
+    }
+
     private sealed class FakeJSRuntime : IJSRuntime
     {
         private TaskCompletionSource<IJSObjectReference>? _import;
@@ -131,14 +240,30 @@ public class InteropModuleTests
     {
         public bool Disposed { get; private set; }
 
+        public List<(string Identifier, object?[]? Args)> Invocations { get; } = new();
+
+        // What an invocation does; it may throw synchronously, as a real call can before its task is created.
+        public Func<string, object?[]?, ValueTask> Behavior { get; set; } = (_, _) => default;
+
         public ValueTask DisposeAsync()
         {
             Disposed = true;
             return ValueTask.CompletedTask;
         }
 
-        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => default;
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
+        {
+            Invocations.Add((identifier, args));
+            return Result<TValue>(Behavior(identifier, args));
+        }
 
-        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => default;
+        private static async ValueTask<TValue> Result<TValue>(ValueTask call)
+        {
+            await call;
+            return default!;
+        }
+
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
+            => InvokeAsync<TValue>(identifier, args);
     }
 }
