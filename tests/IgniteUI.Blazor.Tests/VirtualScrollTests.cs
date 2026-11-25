@@ -35,8 +35,8 @@ public class VirtualScrollTests : ComponentWithContractTestBase<IgbVirtualScroll
             wireName: "data",
             wire: "https://example.test/items.json")
         .Prop(c => c.Orientation, ContentOrientation.Horizontal, wire: "horizontal")
-        .Prop(c => c.OverScan, 5.0)
-        .Prop(c => c.EstimatedItemSize, 32.0)
+        .Prop(c => c.OverScan, 5)
+        .Prop(c => c.EstimatedItemSize, 32)
         .Event(c => c.StateChange,
             argsJson: """{"detail": {"retType": "object", "type": "", "value": {"startIndex": 10, "endIndex": 24, "viewportSize": 600, "totalSize": 50000}}}""",
             assert: args =>

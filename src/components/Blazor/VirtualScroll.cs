@@ -131,14 +131,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _overScan = 2;
+        private int _overScan = 2;
 
         /// <summary>
         /// Number of extra items to render beyond the visible area of the viewport.
         /// Higher values reduce blank flashes during fast scrolling but can lower performance.
         /// </summary>
         [Parameter]
-        public double OverScan
+        public int OverScan
         {
             get { return this._overScan; }
             set
@@ -151,14 +151,14 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _estimatedItemSize = 50;
+        private int _estimatedItemSize = 50;
 
         /// <summary>
         /// Estimated item size in pixels, used before an item is measured in the DOM.
         /// After the first render of an item, the component replaces the estimate with the measured size.
         /// </summary>
         [Parameter]
-        public double EstimatedItemSize
+        public int EstimatedItemSize
         {
             get { return this._estimatedItemSize; }
             set
@@ -248,9 +248,9 @@ namespace IgniteUI.Blazor.Controls
         /// measures the items at the landing point and corrects the scroll position until
         /// the offset is stable.
         /// </summary>
-        public async Task ScrollToIndexAsync(double index)
+        public async Task ScrollToIndexAsync(int index)
         {
-            await InvokeMethod("scrollToIndex", new object[] { index }, new string[] { "Number" });
+            await InvokeMethod("scrollToIndex", [index], ["Number"]);
         }
 
         /// <summary>
@@ -259,24 +259,24 @@ namespace IgniteUI.Blazor.Controls
         /// measures the items at the landing point and corrects the scroll position until
         /// the offset is stable.
         /// </summary>
-        public void ScrollToIndex(double index)
+        public void ScrollToIndex(int index)
         {
-            InvokeMethodSync("scrollToIndex", new object[] { index }, new string[] { "Number" });
+            InvokeMethodSync("scrollToIndex", [index], ["Number"]);
         }
         /// <summary>
         /// Scrolls to the specified item index, with a configurable alignment and scroll behavior.
         /// </summary>
-        public async Task ScrollToIndexAsync(double index, IgbScrollIntoViewOptions options)
+        public async Task ScrollToIndexAsync(int index, IgbScrollIntoViewOptions options)
         {
-            await InvokeMethod("scrollToIndex", new object[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
+            await InvokeMethod("scrollToIndex", [index, ObjectToParam(options)], ["Number", "Json"]);
         }
 
         /// <summary>
         /// Scrolls to the specified item index, with a configurable alignment and scroll behavior.
         /// </summary>
-        public void ScrollToIndex(double index, IgbScrollIntoViewOptions options)
+        public void ScrollToIndex(int index, IgbScrollIntoViewOptions options)
         {
-            InvokeMethodSync("scrollToIndex", new object[] { index, ObjectToParam(options) }, new string[] { "Number", "Json" });
+            InvokeMethodSync("scrollToIndex", [index, ObjectToParam(options)], ["Number", "Json"]);
         }
 
         private string? _stateChangeRef = null;
