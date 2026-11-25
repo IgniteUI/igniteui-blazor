@@ -12,7 +12,7 @@ Three test projects under `tests/`, two suites:
 | Project | Suite | What it is |
 |---|---|---|
 | `IgniteUI.Blazor.Tests` | **Unit** | xUnit + bUnit, multi-targeted `net10.0`/`net11.0`; renders components in-process with a recording JS runtime — no browser |
-| `IgniteUI.Blazor.Lite.IntegrationTests` | **Integration** | NUnit + Playwright; one generated test fixture per component |
+| `IgniteUI.Blazor.Lite.IntegrationTests` | **Integration** | NUnit + Playwright; one generated test fixture per component; multi-targeted `net10.0`/`net11.0` (with the TestBed), the TFMs run one after another since the TestBed uses a fixed port |
 | `IgniteUI.Blazor.Lite.TestBed` | (integration host) | Blazor app the integration tests drive; renders one component per run and sweeps its surface |
 
 ## How the suites divide the work

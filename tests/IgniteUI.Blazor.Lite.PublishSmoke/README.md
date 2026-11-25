@@ -37,7 +37,7 @@ Three gates, in order of what they can see:
 | Chat message reads `Message: Hello from a trimmed app` | the Razor `MessageContent` renderer's output inside the chat | the renderer context lost its constructor — the library builds `IgbChatMessageRenderContext` itself and the app never does |
 | Browser console | no errors (a stray `favicon` 404 is fine) | anything else: investigate |
 
-The checklist is automated as `TrimmedPublishSmokeTest` in `IgniteUI.Blazor.Lite.IntegrationTests` (`Category=TrimmedPublish`, runs in CI after the publish step). It serves the net11.0 publish output — publishing it on demand if missing — so locally it's just:
+The checklist is automated as `TrimmedPublishSmokeTest` in `IgniteUI.Blazor.Lite.IntegrationTests` (`Category=TrimmedPublish`, runs in CI after the publish step). Each TFM run of the suite serves the publish output for its own TFM — publishing it on demand if missing — so locally it's just:
 
 ```bash
 dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=TrimmedPublish --settings .runsettings
