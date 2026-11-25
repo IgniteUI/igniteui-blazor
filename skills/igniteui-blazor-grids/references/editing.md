@@ -123,7 +123,7 @@ igRegisterScript("ValidateTaskDates", (evt) => {
 
 Editing any cell opens a row overlay with Done and Cancel, and the whole row is editable at once. Each cell you leave (Tab, click) is written to the bound item immediately; Cancel, Esc and a rejected Done restore only the grid's display, not your object, and the C# `RowEdit` / `RowEditExit` args carry no original values (`RowData`, `OldValue` and `NewValue` are all the updated object). Hence the copy in `RowEditEnter`: without it, a rejected value stays in your object and the next valid Done on that row persists it. Persist in `RowEditDone`. Events mirror the cell ones: `RowEditEnter`, `RowEdit`, `RowEditDone`, `RowEditExit`.
 
-`IgbGridEditingActions` inside an `IgbActionStrip` adds per-row edit, delete, and (with `AddRow="true"`) add buttons.
+`IgbGridEditingActions` inside an `IgbActionStrip` adds per-row edit, delete, and (with `AddRow="true"`) add buttons. Rows added with `AddRow` arrive in the `RowEdit*` events as a `Dictionary<string, object>`, not your type, so the `RowEditDone` above doesn't save them (and `ValidateTaskDates` accepts their empty dates); persist new rows from `RowAdded` (an `Action<T>`), or drop `AddRow="true"`.
 
 ## Adding and deleting rows from code
 
@@ -144,7 +144,7 @@ Editing any cell opens a row overlay with Done and Cancel, and the whole row is 
 
 ## Validation
 
-The C# `CellEdit` / `RowEdit` events arrive after the grid has committed the value, so setting `args.Detail.Valid = false` there changes nothing. To block a commit, handle `CellEditScript` / `RowEditScript` as shown above and set `evt.detail.cancel = true`; `evt.preventDefault()` and `evt.detail.valid = false` have no effect. The cell or row stays in edit mode. Esc restores a cell's old value; in row editing it restores only the grid's display (see the copy-and-restore above). The `igRegisterScript` global exists only after the `app.bundle.js` tag, so load it before your script on every hosting model, standalone WebAssembly included; without it the script is never registered and nothing is validated:
+The C# `CellEdit` / `RowEdit` events arrive after the grid has committed the value, so setting `args.Detail.Valid = false` there changes nothing. To block a commit, handle `CellEditScript` / `RowEditScript` as shown above and set `evt.detail.cancel = true`; `evt.preventDefault()` and `evt.detail.valid = false` have no effect. The cell or row stays in edit mode. Esc restores a cell's old value; in row editing it restores only the grid's display (see the copy-and-restore above). A script that runs at page load, like this one, finds the `igRegisterScript` global only when the `app.bundle.js` tag comes before it (without the tag, Blazor installs the global a moment after startup, too late). Add the tag on every hosting model, standalone WebAssembly included; without it the script is never registered and nothing is validated:
 
 ```html
 <!-- host page (wwwroot/index.html, or App.razor in a Blazor Web App), before the Blazor script -->
