@@ -191,7 +191,7 @@ Pivot-table analytics. Register `IgbPivotGridModule`. **Read-only** — no cell,
 
 `IgbPivotConfiguration` holds `Rows`, `Columns`, `Values`, `Filters`.
 `IgbPivotDimension`: `MemberName`, `Enabled`, `DisplayName`, `ChildLevel` (nested hierarchy), `SortDirection`.
-`IgbPivotValue`: `Member`, `Aggregate`, `Enabled`, `DisplayName`, `FormatterScript` (a JS function registered via `igRegisterScript`).
+`IgbPivotValue`: `Member`, `Aggregate`, `Enabled`, `DisplayName`, `FormatterScript` (the name of a formatter function registered with `registerScript` from `api.js`; `igRegisterScript` on 26.1.x and earlier).
 `PivotAggregationType`: `SUM`, `COUNT`, `MIN`, `MAX`, `AVG`, `EARLIEST`, `LATEST`.
 
 Sorting and filtering are dimension-based and configured through `IgbPivotConfiguration` — not through `SortAsync` / `FilterAsync`. `IgbPivotDataSelector` adds the drag-and-drop panel for reshaping at runtime.
