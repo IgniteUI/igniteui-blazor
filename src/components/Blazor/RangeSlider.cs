@@ -1,4 +1,4 @@
-using System;
+
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
