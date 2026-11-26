@@ -466,7 +466,7 @@
                     break;
                 }
 
-                await JS.InvokeAsync<object>("triggerEvent", evtName, argDetailToSend, detailType == typeof(DateTime));
+                await JS.InvokeVoidAsync("triggerEvent", evtName, argDetailToSend, detailType == typeof(DateTime));
             }
 
             if (eventMessage != evt.Name)

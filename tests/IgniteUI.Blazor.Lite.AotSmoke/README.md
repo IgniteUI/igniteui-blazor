@@ -18,7 +18,7 @@ Main must not construct any ComponentBase-derived type (components, event args):
 # Real thing (CI runs this on linux-x64; locally needs the native toolchain —
 # VS "Desktop development with C++" on Windows, clang + zlib1g-dev on Linux):
 dotnet publish tests/IgniteUI.Blazor.Lite.AotSmoke -c Release -r win-x64
-tests/IgniteUI.Blazor.Lite.AotSmoke/bin/Release/net10.0/win-x64/publish/IgniteUI.Blazor.Lite.AotSmoke.exe
+tests/IgniteUI.Blazor.Lite.AotSmoke/bin/Release/net11.0/win-x64/publish/IgniteUI.Blazor.Lite.AotSmoke.exe
 
 # No native toolchain: run on CoreCLR with dynamic code disabled — forces the same
 # interpreter paths ILC uses at runtime (does NOT validate ILC analysis or codegen):

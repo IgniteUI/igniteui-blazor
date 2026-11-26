@@ -7,7 +7,7 @@ changes; if they disagree with this file, they win.
 
 ## Stack
 
-- Language: C# (nullable annotations), multi-targeted `net8.0`, `net9.0`, `net10.0`; SDK pinned
+- Language: C# (nullable annotations), multi-targeted `net10.0`, `net11.0`; SDK pinned
   in `global.json`
 - Framework: Blazor Razor class library (`IgniteUI.Blazor.Lite`) wrapping the
   `igniteui-webcomponents` custom elements
