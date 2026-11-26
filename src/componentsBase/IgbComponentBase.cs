@@ -1787,20 +1787,11 @@ namespace IgniteUI.Blazor.Controls
             // reported with the call that raised it.
             try
             {
-                if (nativeElements != null)
-                {
-                    return module.Invoke<object>("sendMessage",
-                        new object[] {
-                        this._containerId, json,
-                        GetObjectRef(), nativeElements });
-                }
-                else
-                {
-                    return module.Invoke<object>("sendMessage",
-                        new object[] {
-                        this._containerId, json,
-                        GetObjectRef() });
-                }
+                var args = nativeElements != null
+                    ? new object[] { this._containerId, json, GetObjectRef(), nativeElements }
+                    : new object[] { this._containerId, json, GetObjectRef() };
+
+                return module.Invoke<object>("sendMessage", args);
             }
             catch (JSException ex)
             {
