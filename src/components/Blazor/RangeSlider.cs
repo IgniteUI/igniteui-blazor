@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -333,8 +334,8 @@ namespace IgniteUI.Blazor.Controls
                             var detail = args.Detail;
                             if (detail != null)
                             {
-                                var lowerChanged = this.Lower != detail.Lower;
-                                var upperChanged = this.Upper != detail.Upper;
+                                var lowerChanged = Math.Abs(this.Lower - detail.Lower) > double.Epsilon;
+                                var upperChanged = Math.Abs(this.Upper - detail.Upper) > double.Epsilon;
                                 this.Lower = detail.Lower;
                                 this.Upper = detail.Upper;
                                 OnPropertyPropagatedOut(RendererName, "Lower");
