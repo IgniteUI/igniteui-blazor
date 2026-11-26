@@ -214,7 +214,19 @@ namespace IgniteUI.Blazor.Controls
                     }
                 }
             }
-            catch (Exception)
+            catch (TaskCanceledException)
+            {
+                // Best effort, in the background: the component is gone or the circuit is down. Keep the
+                // items; the next release tries again.
+                Interlocked.Exchange(ref _pruneScheduled, 0);
+            }
+            catch (ObjectDisposedException)
+            {
+                // Best effort, in the background: the component is gone or the circuit is down. Keep the
+                // items; the next release tries again.
+                Interlocked.Exchange(ref _pruneScheduled, 0);
+            }
+            catch (InvalidOperationException)
             {
                 // Best effort, in the background: the component is gone or the circuit is down. Keep the
                 // items; the next release tries again.
