@@ -250,6 +250,10 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             {
                 value = 1.0;
             }
+            else if (type == typeof(int))
+            {
+                value = 1;
+            }
             else if (type == typeof(DateTime))
             {
                 value = (DateTime.Parse("11/11/2011")).ToUniversalTime();
@@ -265,7 +269,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         {
             // A null enum or number leaves the value to the client, which then reports one it derives itself
             // (e.g. a week start from the locale, a slider bound from Min), so sample a value instead.
-            if (Nullable.GetUnderlyingType(type) is { } underlying && (underlying.IsEnum || underlying == typeof(double)))
+            if (Nullable.GetUnderlyingType(type) is { } underlying && (underlying.IsEnum || underlying == typeof(double) || underlying == typeof(int)))
             {
                 type = underlying;
             }
