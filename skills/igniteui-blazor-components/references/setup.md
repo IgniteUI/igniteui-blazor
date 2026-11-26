@@ -62,10 +62,12 @@ Add it to both `_Imports.razor` files in split Blazor Web App solutions.
 
 Host page is `wwwroot/index.html` (WASM/MAUI), `Pages/_Host.cshtml` (Server), or `Components/App.razor` (Web App).
 
-For `IgniteUI.Blazor.Lite` the theme stylesheet is the only required tag — without it components render unstyled. The full product also needs a script tag in Blazor Web Apps so the library's client resources initialize correctly (below).
+For `IgniteUI.Blazor.Lite` the theme stylesheet is the only required tag — without it components render unstyled. The full product also needs a script tag in Blazor Web Apps so the library's client resources initialize correctly (below). The `ig-typography` class on `<body>` gives the app's own headings and paragraphs the theme's type scale; the theming skill's [Typography](../../igniteui-blazor-theming/SKILL.md#typography) section has the matching `font-family` rule.
 
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
+...
+<body class="ig-typography">
 ...
 <script src="_framework/blazor.web.js"></script>   <!-- or blazor.server.js / blazor.webassembly.js / blazor.webview.js -->
 ```
