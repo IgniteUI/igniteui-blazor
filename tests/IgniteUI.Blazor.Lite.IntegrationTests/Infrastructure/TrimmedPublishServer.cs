@@ -13,7 +13,12 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests.Infrastructure
     /// </summary>
     internal sealed class TrimmedPublishServer : IAsyncDisposable
     {
+        // The PublishSmoke output for the TFM this run targets.
+#if NET11_0
+        private const string Tfm = "net11.0";
+#else
         private const string Tfm = "net10.0";
+#endif
 
         private readonly WebApplication app;
 

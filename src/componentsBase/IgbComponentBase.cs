@@ -1719,7 +1719,7 @@ namespace IgniteUI.Blazor.Controls
             var args = nativeElements != null
                 ? new object[] { this._containerId, json, GetObjectRef(), nativeElements }
                 : new object[] { this._containerId, json, GetObjectRef() };
-            Interop.Post(module => _ = module.InvokeAsync<object>("sendMessage", args));
+            Interop.PostVoid("sendMessage", args);
         }
 
         internal void AttachChild(BaseJsonSerializable child)
@@ -1786,19 +1786,19 @@ namespace IgniteUI.Blazor.Controls
             }
             var module = Interop.LoadedInProcess
                 ?? throw new InvalidOperationException("The Ignite UI client interop module is not loaded yet; await EnsureReady() or use the async method.");
-            if (nativeElements != null)
+            // A sync method call: its caller gets the failure, as it would from the web component method itself,
+            // reported with the call that raised it.
+            try
             {
-                return module.Invoke<object>("sendMessage",
-                    new object[] {
-                    this._containerId, json,
-                    GetObjectRef(), nativeElements });
+                var args = nativeElements != null
+                    ? new object[] { this._containerId, json, GetObjectRef(), nativeElements }
+                    : new object[] { this._containerId, json, GetObjectRef() };
+
+                return module.Invoke<object>("sendMessage", args);
             }
-            else
+            catch (JSException ex)
             {
-                return module.Invoke<object>("sendMessage",
-                    new object[] {
-                    this._containerId, json,
-                    GetObjectRef() });
+                throw InteropModule.CallFailed("sendMessage", ex);
             }
         }
 
@@ -3888,7 +3888,7 @@ namespace IgniteUI.Blazor.Controls
                 return;
             }
             _loadedCache.AddOrUpdate(moduleName, true, (name, oldValue) => true);
-            GetInteropModule(InteropModule.LitePath).Post(module => _ = module.InvokeVoidAsync("requestLoad", moduleName));
+            GetInteropModule(InteropModule.LitePath).PostVoid("requestLoad", moduleName);
         }
 
         private readonly ConcurrentDictionary<string, InteropModule> _interopModules = new ConcurrentDictionary<string, InteropModule>();

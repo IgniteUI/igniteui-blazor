@@ -22,14 +22,13 @@ jobs:
         uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: |
-            8.0.x
-            9.0.x
             10.0.x
+            11.0.x
 
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22
+          node-version: 26
           cache: npm
 
       - name: Install npm dependencies
@@ -41,21 +40,23 @@ jobs:
       - name: Install wasm-tools workload
         run: dotnet workload install wasm-tools
 
-      # Restore ignores --framework, and restoring net8/net9 with AOT on needs wasm-tools-net8/-net9.
-      # TargetFrameworks limits restore to net10.
+      # Restore ignores --framework, and restoring net11 with AOT on needs wasm-tools-net11.
+      # TargetFrameworks limits restore to net11.
       - name: Publish smoke app with AOT compilation
-        run: dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net10.0 -p:TargetFrameworks=net10.0 -p:RunAOTCompilation=true
+        run: dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net11.0 -p:TargetFrameworks=net11.0 -p:RunAOTCompilation=true
 
+      # The suite multi-targets; only its net11.0 run serves the AOT output published above
+      # (a net10.0 run would publish and test a non-AOT net10 build instead).
       - name: Build integration tests
-        run: dotnet build tests/IgniteUI.Blazor.Lite.IntegrationTests --configuration Release
+        run: dotnet build tests/IgniteUI.Blazor.Lite.IntegrationTests --configuration Release --framework net11.0
 
       - name: Install Playwright
         shell: pwsh
-        run: ./tests/IgniteUI.Blazor.Lite.IntegrationTests/bin/Release/net10.0/playwright.ps1 install
+        run: ./tests/IgniteUI.Blazor.Lite.IntegrationTests/bin/Release/net11.0/playwright.ps1 install
 
       # The TrimmedPublish fixture serves whatever publish output exists — here, the AOT-compiled one.
       - name: Run browser checks against the AOT publish
         run: >
           dotnet test ./tests/IgniteUI.Blazor.Lite.IntegrationTests/IgniteUI.Blazor.Lite.IntegrationTests.csproj
-          --settings ./.runsettings --no-build --configuration Release
+          --settings ./.runsettings --no-build --configuration Release --framework net11.0
           --filter Category=TrimmedPublish

@@ -94,6 +94,9 @@ namespace IgniteUI.Blazor.Controls
                 case "DateRangeValueEventArgs":
                 case "WebDateRangeValueEventArgs":
                     return true;
+                case "DateRangeValue":
+                case "WebDateRangeValue":
+                    return true;
                 case "DropdownItemComponentEventArgs":
                 case "WebDropdownItemComponentEventArgs":
                     return true;
