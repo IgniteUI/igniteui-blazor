@@ -1,7 +1,7 @@
 ---
 license: MIT
 name: igniteui-blazor-theming
-description: "Covers theming and visual customization for Ignite UI for Blazor: choosing and switching the built-in Bootstrap, Material, Fluent and Indigo themes in light or dark, scoping a theme to part of the page with IgbThemeProvider, generating palettes and component design tokens with the igniteui-theming MCP server, overriding CSS custom properties, CSS shadow parts, dark mode, and global roundness, spacing and size tokens. WHEN TO USE: changing the look and feel of Ignite UI Blazor components, applying a color scheme or brand palette, switching themes at runtime, or writing component CSS in app.css or .razor.css files. WHEN NOT TO USE: component configuration, parameters, or events, or styling charts, maps, and gauges, which have no design tokens (use igniteui-blazor-components), grid data features (use igniteui-blazor-grids), or building a whole view from a design image (use igniteui-blazor-generate-from-image-design, which applies this skill)."
+description: "Covers theming and visual customization for Ignite UI for Blazor: choosing and switching the built-in Bootstrap, Material, Fluent and Indigo themes in light or dark, scoping a theme to part of the page with IgbThemeProvider, applying the theme's typography with the ig-typography class, generating palettes and component design tokens with the igniteui-theming MCP server, overriding CSS custom properties, CSS shadow parts, dark mode, and global roundness, spacing and size tokens. WHEN TO USE: changing the look and feel of Ignite UI Blazor components, applying a color scheme or brand palette, switching themes at runtime, or writing component CSS in app.css or .razor.css files. WHEN NOT TO USE: component configuration, parameters, or events, or styling charts, maps, and gauges, which have no design tokens (use igniteui-blazor-components), grid data features (use igniteui-blazor-grids), or building a whole view from a design image (use igniteui-blazor-generate-from-image-design, which applies this skill)."
 user-invocable: true
 ---
 
@@ -20,6 +20,7 @@ Blazor theming is **CSS-first**: a built-in theme stylesheet plus CSS custom pro
 | Layer | Mechanism |
 |---|---|
 | Baseline look | One built-in theme stylesheet: Bootstrap, Material, Fluent, Indigo × light, dark |
+| Fonts and type scale | `ig-typography` class on `<body>` + `--ig-font-family` / `--ig-h1-font-size`-style variables |
 | Theme for a page region | `IgbThemeProvider` component |
 | Global colors | Palette CSS custom properties in `:root` (`create_palette`) |
 | One component's appearance | Component design tokens (`get_component_design_tokens` → `create_component_theme`) |
@@ -36,6 +37,24 @@ Link exactly **one** stylesheet in the host page; loading two conflicts.
 ```
 
 Paths are `_content/IgniteUI.Blazor/themes/{light|dark}/{bootstrap|material|fluent|indigo}.css`. Any full-featured grid needs the grid stylesheet in the same variant as well (`themes/grid/light/bootstrap.css`); `IgbGridLite` uses its own package path instead.
+
+## Typography
+
+The theme stylesheet defines the type scale as CSS variables, but applies it only inside an element with the `ig-typography` class. Every app gets the class on `<body>` in the host page (`wwwroot/index.html`, `Components/App.razor`, or `Pages/_Host.cshtml`), plus the theme font on `body` in the global stylesheet:
+
+```html
+<body class="ig-typography">
+```
+
+```css
+/* app.css */
+body { font-family: var(--ig-font-family); }
+```
+
+- `ig-typography` styles `h1`–`h6` and `p`. Other text (`div`, `span`, `li`) inherits from `body`, which is what the `font-family` rule is for.
+- To scope the type scale to one region instead, put the class on the element that wraps the Ignite UI content, e.g. the layout's root `<div>`.
+- To give another element a step of the scale, add a helper class inside that region: `ig-typography__h1` … `__h6`, `__subtitle-1`, `__subtitle-2`, `__body-1`, `__body-2`, `__button`, `__caption`, `__overline`.
+- To change the font or the scale, override `--ig-font-family` or a per-step variable (`--ig-h1-font-size`, `--ig-body-1-line-height`, …) in `:root`, after the theme.
 
 ## Scoped theming with `IgbThemeProvider`
 
