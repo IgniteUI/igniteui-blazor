@@ -183,6 +183,42 @@ public class InteropModuleTests
         Assert.True(task.IsFaulted);
     }
 
+    [Theory]
+    [InlineData("throws")]
+    [InlineData("faults")]
+    public async Task AwaitedCalls_ClientError_ReportedWithTheCall(string failure)
+    {
+        var js = new FakeJSRuntime();
+        var interop = new InteropModule(js, "./m.js");
+        js.Module.Behavior = (_, _) => Fail(failure);
+        var import = interop.GetAsync();
+        js.CompleteImport();
+        await import;
+
+        var voidError = await Assert.ThrowsAsync<JSException>(() => interop.InvokeVoidAsync("send").AsTask());
+        var valueError = await Assert.ThrowsAsync<JSException>(() => interop.InvokeAsync<bool>("check").AsTask());
+
+        Assert.Contains("'send'", voidError.Message);
+        Assert.Equal("boom", Assert.IsType<JSException>(voidError.InnerException).Message);
+        Assert.Contains("'check'", valueError.Message);
+        Assert.Equal("boom", Assert.IsType<JSException>(valueError.InnerException).Message);
+    }
+
+    [Fact]
+    public async Task AwaitedCalls_CircuitGone_ReachesTheCallerUnchanged()
+    {
+        var js = new FakeJSRuntime();
+        var interop = new InteropModule(js, "./m.js");
+        js.Module.Behavior = (_, _) => Fail("disconnects");
+        var import = interop.GetAsync();
+        js.CompleteImport();
+        await import;
+
+        var error = await Assert.ThrowsAsync<JSDisconnectedException>(() => interop.InvokeVoidAsync("send").AsTask());
+
+        Assert.Equal("gone", error.Message);
+    }
+
     private static ValueTask Fail(string failure) => failure switch
     {
         "throws" => throw new JSException("boom"),

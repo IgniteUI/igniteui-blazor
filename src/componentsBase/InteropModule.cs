@@ -105,20 +105,43 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        // Awaited calls: the caller gets the failure, so it can handle it as its own.
-#pragma warning disable BL0016 // JS interop call is not guarded with a try/catch block
+        // Awaited calls: the caller gets the failure, so it can handle it as its own. A client error is reported
+        // with the call that raised it; the circuit going away or a canceled call reaches the caller unchanged.
         internal async ValueTask<TValue> InvokeAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)] TValue>(string identifier, params object?[]? args)
         {
             var module = _module ?? await GetAsync().ConfigureAwait(false);
-            return await module.InvokeAsync<TValue>(identifier, args).ConfigureAwait(false);
+            try
+            {
+                return await module.InvokeAsync<TValue>(identifier, args).ConfigureAwait(false);
+            }
+            catch (JSException ex)
+            {
+                throw CallFailed(identifier, ex);
+            }
         }
 
         internal async ValueTask InvokeVoidAsync(string identifier, params object?[]? args)
         {
             var module = _module ?? await GetAsync().ConfigureAwait(false);
-            await module.InvokeVoidAsync(identifier, args).ConfigureAwait(false);
+            try
+            {
+                await module.InvokeVoidAsync(identifier, args).ConfigureAwait(false);
+            }
+            catch (JSException ex)
+            {
+                throw CallFailed(identifier, ex);
+            }
         }
-#pragma warning restore BL0016
+
+        /// <summary>
+        /// The failure of client call <paramref name="identifier"/>, naming the call. It is still a
+        /// <see cref="JSException"/>, so code that handles client errors keeps handling it, and it keeps the
+        /// client's error as its inner exception.
+        /// </summary>
+        internal static JSException CallFailed(string identifier, JSException error)
+        {
+            return new JSException($"The Ignite UI client call '{identifier}' failed: {error.Message}", error);
+        }
 
         private async Task<IJSObjectReference> LoadAsync()
         {

@@ -1783,23 +1783,29 @@ namespace IgniteUI.Blazor.Controls
             }
             var module = Interop.LoadedInProcess
                 ?? throw new InvalidOperationException("The Ignite UI client interop module is not loaded yet; await EnsureReady() or use the async method.");
-            // A sync method call: its caller gets the failure, as it would from the web component method itself.
-#pragma warning disable BL0016 // JS interop call is not guarded with a try/catch block
-            if (nativeElements != null)
+            // A sync method call: its caller gets the failure, as it would from the web component method itself,
+            // reported with the call that raised it.
+            try
             {
-                return module.Invoke<object>("sendMessage",
-                    new object[] {
-                    this._containerId, json,
-                    GetObjectRef(), nativeElements });
+                if (nativeElements != null)
+                {
+                    return module.Invoke<object>("sendMessage",
+                        new object[] {
+                        this._containerId, json,
+                        GetObjectRef(), nativeElements });
+                }
+                else
+                {
+                    return module.Invoke<object>("sendMessage",
+                        new object[] {
+                        this._containerId, json,
+                        GetObjectRef() });
+                }
             }
-            else
+            catch (JSException ex)
             {
-                return module.Invoke<object>("sendMessage",
-                    new object[] {
-                    this._containerId, json,
-                    GetObjectRef() });
+                throw InteropModule.CallFailed("sendMessage", ex);
             }
-#pragma warning restore BL0016
         }
 
         internal object? ReturnToPrimitive(object? returnValue)
