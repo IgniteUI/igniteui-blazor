@@ -28,6 +28,14 @@ Module for every component below is `Igb<Name>Module`. `IgbExpansionPanel` ships
 
 Tab headers come from the `Label` string or from children in the `label` slot; everything left in the default slot is the panel body. There is **no** `IgbTabPanel` component. `IgbTab` has `Label`, `Selected`, `Disabled`. `IgbTabs` has `Alignment`, `Activation`, `SelectAsync(id)`, `GetSelectedAsync()`.
 
+**Alignment and panel width before igniteui-webcomponents 7.5.0** (`IgniteUI.Blazor.Lite` 1.0.x bundles 7.4.1, and `IgniteUI.Blazor` 26.2.x takes its tabs from that Lite dependency). With the Material, Fluent or Indigo theme the tabs' `inner` part is only as wide as the headers: `Alignment` `Center` / `End` / `Justify` look like `Start`, and the panel is only as wide as the header row. Bootstrap is not affected. Add this rule to global CSS, or to the page's `.razor.css` as `::deep igc-tabs::part(inner)` — scoped `::deep` needs an HTML element the page renders itself (e.g. a wrapper `div`) as an ancestor of the tabs:
+
+```css
+igc-tabs::part(inner) { flex-grow: 1; }
+```
+
+It is the rule 7.5.0 moves into the base styles, so it changes nothing on Bootstrap or after the update. Do **not** use `width: 100%` on that part — once the headers overflow and a later tab is selected, the panel (and in some layouts the start scroll button) scrolls out of view. `igc-tab { width: 100%; }` has no effect (slotted tabs are `display: contents`). Before 7.5.0, `Justify` headers with labels of different lengths grow but are not equal-width. The rule also reaches `igc-tabs` rendered by JS templates in the page's light DOM, but not inside another shadow root.
+
 ## Stepper
 
 ```razor

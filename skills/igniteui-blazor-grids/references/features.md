@@ -64,22 +64,45 @@ Merges visually identical adjacent cells. Sort by the merged columns first, or t
 ## Toolbar
 
 ```razor
-<IgbGrid Data="data" PrimaryKey="Id">
-    <IgbGridToolbar>
-        <IgbGridToolbarTitle>Employees</IgbGridToolbarTitle>
-        <IgbGridToolbarActions>
-            <IgbGridToolbarHiding />
-            <IgbGridToolbarPinning />
-            <IgbGridToolbarAdvancedFiltering />
-            <IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" Filename="employees" />
+<div class="employees">
+    <IgbGrid Data="data" PrimaryKey="Id">
+        <IgbGridToolbar>
+            <IgbGridToolbarTitle>Employees</IgbGridToolbarTitle>
             <IgbButton @onclick="RefreshData">Refresh</IgbButton>
-        </IgbGridToolbarActions>
-    </IgbGridToolbar>
-    …
-</IgbGrid>
+            <IgbGridToolbarActions>
+                <IgbGridToolbarHiding />
+                <IgbGridToolbarPinning />
+                <IgbGridToolbarAdvancedFiltering />
+                <IgbGridToolbarExporter ExportPDF="false" Filename="employees" />   @* Excel and CSV *@
+            </IgbGridToolbarActions>
+        </IgbGridToolbar>
+        …
+    </IgbGrid>
+</div>
 ```
 
-`IgbGridToolbarActions` accepts arbitrary content alongside the built-in action components.
+Put only the built-in action components in `IgbGridToolbarActions`, and declare your own buttons and inputs directly in `IgbGridToolbar`. Blazor renders every other child into `div.igx-grid-toolbar__custom-content`, **including children declared inside `IgbGridToolbarActions`**. That box sits between the title and `igc-grid-toolbar-actions.igx-grid-toolbar__actions`, so custom content always appears *before* the built-in actions, whatever the declaration order. Event handlers such as `@onclick` keep working.
+
+- Style custom content through `.igx-grid-toolbar__custom-content` — `.igx-grid-toolbar__actions igc-button` never matches it.
+- In a `.razor.css` file, put `::deep` after an element the page renders itself (the wrapper `div` above). `class` on `IgbGrid` lands on a wrapper `div`, not on `igc-grid`, so `igc-grid.my-grid` matches nothing.
+
+```css
+/* Employees.razor.css — show custom content after the built-in actions */
+.employees ::deep .igx-grid-toolbar__custom-content {
+    order: 1;
+    flex-grow: 0;          /* without it the actions jump next to the title */
+    margin-inline: 1rem 0;
+}
+
+/* The box keeps empty igc-portal-* elements, so :empty never matches and an
+   "empty" box still takes space. Hide it when it holds no other element.
+   It checks element children only: wrap text in an element (see below). */
+.employees ::deep .igx-grid-toolbar__custom-content:not(:has(> :not(igc-portal-exit, igc-portal-entrance))) {
+    display: none;
+}
+```
+
+The hiding rule sees only element children, and Blazor moves bare text into the box as text nodes — so custom content that is only text (`@selectedCount selected`) is hidden with it. Wrap such text in an element (`<span>@selectedCount selected</span>`) before using the rule. `order` changes only the visual order; keyboard focus still reaches custom content first. `IgbGridToolbarTitle` also keeps an empty `igc-portal-exit` before its content: if the title content is `display: inline-flex`, the title stops painting whenever that content is wider than the title area — the title is capped at 320px and shrinks further when the actions need room, for example once the toolbar wraps ([#497](https://github.com/IgniteUI/igniteui-blazor/issues/497)). Use `display: flex` for the title content, or hide the element with `.igx-grid-toolbar__title > igc-portal-exit { display: none; }`.
 
 ## Export
 

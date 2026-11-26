@@ -94,17 +94,19 @@ Row data inside a body template is `cell.Cell.Row.Data`. Editors use `InlineEdit
 
 ## Remote data
 
-Grid Lite drives server-side work through `DataPipelineConfiguration`. `IgbGrid` uses events instead — handle `SortingDone` / `FilteringDone` / `PageChange` and reload `Data` yourself:
+Grid Lite drives server-side work through `DataPipelineConfiguration`. `IgbGrid` uses events instead: reload `Data` on `SortingExpressionsChange` (its `Detail` holds every sorted column; `SortingDone` has only the column just clicked), on `FilteringDone` after reading the grid's filter tree through JS interop (the C# tree has no operands), and on the paginator's `PagingDone`:
 
 ```razor
-<IgbGrid @ref="grid" Data="@data" PrimaryKey="Id" Height="600px"
-         SortingDone="OnSortingDone" FilteringDone="OnFilteringDone" />
+<IgbGrid Data="@data" PrimaryKey="Id" Height="600px" AutoGenerate="false"
+         SortingExpressionsChange="OnSortingChanged">
+    <IgbColumn Field="Name" Sortable="true" />
+</IgbGrid>
 
 @code {
-    private async Task OnSortingDone(IgbSortingExpressionEventArgs args)
+    private async Task OnSortingChanged(IgbSortingExpressionEventArgs args)
     {
-        data = await DataService.SortAsync(args.Detail);
-        StateHasChanged();
+        data = await DataService.SortAsync(args.Detail ?? []);
+        // No StateHasChanged(): this is an EventCallback, so the page re-renders when this Task completes.
     }
 }
 ```
@@ -122,7 +124,7 @@ See [`paging-remote.md`](./paging-remote.md) for the combined paging + sorting +
             <IgbGridToolbarHiding />
             <IgbGridToolbarPinning />
             <IgbGridToolbarAdvancedFiltering />
-            <IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" />
+            <IgbGridToolbarExporter ExportPDF="false" />
         </IgbGridToolbarActions>
     </IgbGridToolbar>
     <IgbColumn Field="Name" Editable="true" />

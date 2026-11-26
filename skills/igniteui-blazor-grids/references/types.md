@@ -48,7 +48,7 @@ Grid Lite specifics that trip people up:
 - **`Field` on columns, `Key` in expressions.** `IgbGridLiteSortingExpression` and `IgbGridLiteFilterExpression` identify the field with `Key`.
 - Change the column set with `@if` — there is no `UpdateColumnsAsync()`.
 - Tri-state sorting (asc → desc → none) is always on and cannot be disabled.
-- Remote operations go through `DataPipelineConfiguration`, not events + noop strategies.
+- Remote operations go through `DataPipelineConfiguration`, not the events the full grids use.
 
 ## Tree Grid (`IgbTreeGrid`)
 

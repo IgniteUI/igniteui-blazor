@@ -108,6 +108,28 @@ The data source must expose `Open`, `High`, `Low`, `Close` (and usually `Volume`
 
 Binding shapes differ enough between these that guessing fails: read `get_doc` for `treemap-chart`, the geographic-map series types, the specific gauge, or `dashboard-tile` before writing markup. Map series (`IgbGeographicSymbolSeries`, `IgbGeographicShapeSeries`, `IgbGeographicPolylineSeries`, `IgbGeographicProportionalSymbolSeries`) are declared as child components, not added from code, and do not follow Data Chart axis conventions.
 
+## Tooltips
+
+Tooltip support differs per component:
+
+| Component | Tooltip on hover | How to get one |
+|---|---|---|
+| `IgbCategoryChart`, `IgbFinancialChart` | Yes, by default | `ToolTipType`: `Data` (default), `Item`, `Category`, `Default`, `None` |
+| `IgbDataPieChart` | Yes, by default | Built-in tooltip only — it has `ToolTipType` but **no** `TooltipTemplate`; `DataToolTipUnitsText="%"` appends a unit to the value |
+| `IgbDataChart` series | No | `ShowDefaultTooltip="true"` or a `TooltipTemplate` on each series, **and** `IgbDataChartInteractivityModule` registered — without the module nothing shows and nothing is logged |
+| `IgbPieChart` | No tooltip API | Handle `SliceHover` and position your own element at `e.Position`, which is relative to the chart element (wrap the chart in a `position: relative` element). `SliceEnter` / `SliceLeave` give the slice but no position (`e.Position` is `NaN`): use them to pick and hide the content, and show it once `SliceHover` supplies a position. Moving onto a new slice raises `SliceLeave` (old) and `SliceEnter` (new); `SliceHover` comes only with the next move |
+| `IgbDoughnutChart` | No tooltip API; a template set from JS throws on hover ([#491](https://github.com/IgniteUI/igniteui-blazor/issues/491)) | For a ring with tooltips use `IgbDataPieChart` with `InnerExtent` (built-in tooltip; its `InnerExtent` scale differs from the doughnut's — about `0.35` gives a typical donut, `0.55` a thin ring), or `IgbPieChart` with `InnerExtent` plus the `SliceHover` approach above |
+| `IgbSparkline`, `IgbRadialGauge` | No working tooltip | — |
+| `IgbLinearGauge`, `IgbBulletGraph` | `ShowToolTip="true"` shows only an empty box | Wrap the gauge in an element with an `id` and anchor an `IgbTooltip` to it (see `data-display.md`) |
+
+- **`TooltipTemplate` on `IgbCategoryChart`** (a child `<TooltipTemplate>` `RenderFragment<IgbDataContext>`; `context.Item` is your record) is used only with `ToolTipType` `Item`, `Category` or `Default`. With the default `Data` it is ignored and the built-in tooltip shows; with `None` nothing shows.
+- **Guard the template context.** With `ToolTipType.Default`, and for an `IgbDataChart` series `TooltipTemplate`, the template is also rendered with a `null` `context`: `context.Item` then throws a `NullReferenceException` and Blazor shows its error UI. Write `@if (context?.Item is MyRecord row) { … }`.
+- **Wrapper.** With `ToolTipType.Default` and on `IgbDataChart` series, the template sits in a `div.ui-tooltip-container` with a white background, a 1px `#666` border and 5px padding; `--tooltip-container-background-color` and `--tooltip-container-border-color` set on `:root` recolor it. With `Item` / `Category`, and with a tooltip layer, the wrapper is transparent over the canvas callout.
+- **Placement.** `Data`, `Item` and `Category` tooltips render in a `div.ui-chart-pointer-tooltip-container` appended to `<body>`, outside the chart. `IgbDataChart` series tooltips are a `<body>`-level popover unless the series sets `AttachTooltipToRoot="false"` (ignored once a tooltip layer is present). Only `ToolTipType.Default` and `AttachTooltipToRoot="false"` keep the tooltip inside the chart element.
+- **Styling templates.** Inline styles and global CSS always work. A plain selector in the page's `.razor.css` (`.tip`) matches a Razor `TooltipTemplate` wherever it renders, because the template's elements keep the scope attribute. In a `<body>`-level tooltip, `::deep .x` reaches only elements nested inside the template's root, and selectors that start from a page element (`.page .tip`, `.page ::deep .tip`) match nothing; those work only when the tooltip stays inside the chart (`ToolTipType.Default`, or `AttachTooltipToRoot="false"` without a tooltip layer). A template set from JS (`series.tooltipTemplate = …`, for example in a `SeriesAddedScript` handler) carries no scope attribute: use global CSS or inline styles.
+- **The `Data` tooltip is drawn on a canvas** — CSS cannot reach its text; use the `DataToolTip*` text parameters.
+- **Callout box.** `Data`, `Item` and `Category` tooltips sit on a canvas callout (white fill, grey border) whose colors come from built-in defaults: no token or CSS rule sets them, and `IgbCategoryChart` / `IgbFinancialChart` have no parameter for it ([#493](https://github.com/IgniteUI/igniteui-blazor/issues/493)). In `IgbDataChart`, add an `IgbItemToolTipLayer` or `IgbCategoryToolTipLayer` and set `ToolTipBackground`, `ToolTipBorderBrush`, `ToolTipBorderThickness` (corner radius is not settable). A layer shows only series that have `ShowDefaultTooltip="true"` or a `TooltipTemplate`, and it also needs `IgbDataChartInteractivityModule`.
+
 ## Cross-cutting rules
 
 **Explicit `Width` and `Height` are mandatory** — charts do not size to their container on their own. Inside a CSS Grid track also set `min-height: 0` on the cell and `Height="100%"` on the chart, or the track collapses to zero.
@@ -124,4 +146,4 @@ Binding shapes differ enough between these that guessing fails: read `get_doc` f
 
 **Set visual parameters inline in markup, not via `@ref` in `OnAfterRenderAsync`** — assigning them to a component reference raises Blazor warning **BL0005** (component parameter set outside its component).
 
-**Other common parameters:** default tooltips appear on hover with no configuration (`TooltipTemplate` replaces them); `IsTransitionInEnabled` / `TransitionInDuration` animate entry; `IsSeriesHighlightingEnabled` with `HighlightingMode` / `HighlightingBehavior` controls hover emphasis; `IsHorizontalZoomEnabled` / `IsVerticalZoomEnabled` and `CrosshairsDisplayMode` handle zoom and crosshairs.
+**Other common parameters:** `IsTransitionInEnabled` / `TransitionInDuration` animate entry; `IsSeriesHighlightingEnabled` with `HighlightingMode` / `HighlightingBehavior` controls hover emphasis; `IsHorizontalZoomEnabled` / `IsVerticalZoomEnabled` and `CrosshairsDisplayMode` handle zoom and crosshairs.

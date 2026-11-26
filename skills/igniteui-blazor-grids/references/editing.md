@@ -16,8 +16,11 @@ Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Bo
 ## Cell editing
 
 ```razor
+@inject EmployeeService EmployeeService
+@inject ILogger<Employees> Logger
+
 <IgbGrid Data="@employees" PrimaryKey="Id" AutoGenerate="false"
-         CellEdit="OnCellEdit" CellEditDone="OnCellEditDone">
+         CellEditScript="RejectNegativeSalary" CellEditDone="OnCellEditDone">
     <IgbColumn Field="Id" Header="ID" Editable="false" />
     <IgbColumn Field="Name" Header="Name" Editable="true" DataType="GridColumnDataType.String" />
     <IgbColumn Field="Salary" Header="Salary" Editable="true" DataType="GridColumnDataType.Currency" />
@@ -26,30 +29,45 @@ Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Bo
 </IgbGrid>
 
 @code {
-    private void OnCellEdit(IgbGridEditEventArgs args)
+    // CellEditDone is an Action<T>, not an EventCallback: the handler must return void
+    // (an async Task handler fails with CS0407) and gets no automatic re-render.
+    private void OnCellEditDone(IgbGridEditDoneEventArgs args)
     {
-        if (args.Detail.Column.Field == "Salary" && Convert.ToDecimal(args.Detail.NewValue) < 0)
-        {
-#pragma warning disable BL0005
-            args.Detail.Valid = false;   // reject before commit
-#pragma warning restore BL0005
-        }
+        var edit = args.Detail;
+        if (edit.Column?.Field is not { } field || edit.RowData is not Employee row) return;   // both are nullable
+        _ = SaveAsync(() => EmployeeService.UpdateFieldAsync(row, field, edit.NewValue));
     }
 
-    private async Task OnCellEditDone(IgbGridEditDoneEventArgs args)
-        => await EmployeeService.UpdateFieldAsync(
-            args.Detail.RowData,
-            args.Detail.Column.Field,
-            args.Detail.NewValue);
+    private async Task SaveAsync(Func<Task> save)
+    {
+        try { await save(); }
+        catch (Exception ex) { Logger.LogError(ex, "Saving the cell edit failed"); }
+    }
 }
 ```
+
+```js
+// wwwroot/js/grid-validation.js, loaded after the app.bundle.js tag (see Validation below)
+igRegisterScript("RejectNegativeSalary", (evt) => {
+    const d = evt.detail;   // column, rowKey, rowData, oldValue, newValue, cancel
+    if (d.column.field === "Salary" && Number(d.newValue) < 0) {
+        d.cancel = true;    // the cell stays in edit mode; Esc restores the old value
+    }
+}, false);
+```
+
+In `CellEditDone`, `Detail.RowData` is your row object, already updated in the bound list, and `Detail.RowKey` is its key (a numeric key arrives as `double`). The fire-and-forget save runs on the renderer's dispatcher, and so does the code after its `await`. To show a save status, set a field there and call `StateHasChanged()` directly.
+
+`CellEditDone`, `RowAdded` and `RowDeleted` are `Action<T>` parameters: return `void`, and call `StateHasChanged()` yourself if the page shows something they change (or forward to an `EventCallback` of a parent component, which re-renders that parent). Check other events' parameter type with `get_api_reference` before writing an `async Task` handler.
+
+`RowDeleted` delivers `IgbRowDataEventArgs`: read the key from `Detail.RowKey` (`Detail.PrimaryKey` is obsolete; a numeric key arrives as `double`). When it fires, the grid's built-in delete has **already removed the row from the bound `List<T>`** — don't count deletes by removing from that same list.
 
 Double-click, or Enter on a focused cell, enters edit mode. The editor follows the column's `DataType`: text box, numeric input, date picker, or checkbox.
 
 | Event | Args | Fires |
 |---|---|---|
 | `CellEditEnter` | `IgbGridEditEventArgs` | entering edit mode |
-| `CellEdit` | `IgbGridEditEventArgs` | before commit — set `args.Detail.Valid = false` to reject |
+| `CellEdit` | `IgbGridEditEventArgs` | on commit; the C# handler runs after the value is committed, so reject from `CellEditScript` |
 | `CellEditDone` | `IgbGridEditDoneEventArgs` | after commit — persist here |
 | `CellEditExit` | `IgbGridEditDoneEventArgs` | leaving edit mode |
 
@@ -57,7 +75,8 @@ Double-click, or Enter on a focused cell, enters edit mode. The editor follows t
 
 ```razor
 <IgbGrid Data="@projectTasks" PrimaryKey="Id" RowEditable="true" AutoGenerate="false"
-         RowEdit="OnRowEdit" RowEditDone="OnRowEditDone">
+         RowEditScript="ValidateTaskDates" RowEditEnter="OnRowEditEnter"
+         RowEditDone="OnRowEditDone" RowEditExit="OnRowEditExit">
     <IgbColumn Field="Id" Header="ID" Editable="false" />
     <IgbColumn Field="Name" Header="Name" Editable="true" />
     <IgbColumn Field="StartDate" Header="Start" Editable="true" DataType="GridColumnDataType.Date" />
@@ -68,24 +87,43 @@ Double-click, or Enter on a focused cell, enters edit mode. The editor follows t
 </IgbGrid>
 
 @code {
-    private void OnRowEdit(IgbGridEditEventArgs args)
+    private ProjectTask? original;   // copy taken when the row enters edit mode
+
+    private void OnRowEditEnter(IgbGridEditEventArgs args)
     {
-    if (args.Detail.RowData is ProjectTask task && task.EndDate < task.StartDate)
-    {
-#pragma warning disable BL0005
-        args.Detail.Valid = false;   // cross-field validation
-#pragma warning restore BL0005
-    }
+        if (args.Detail.RowData is ProjectTask t)
+            original = new ProjectTask { Id = t.Id, Name = t.Name, StartDate = t.StartDate, EndDate = t.EndDate };
     }
 
     private Task OnRowEditDone(IgbGridEditDoneEventArgs args)
-    => ProjectTaskService.UpdateAsync(args.Detail.RowData);
+    {
+        original = null;   // committed: keep the edited values
+        return args.Detail.RowData is ProjectTask task ? ProjectTaskService.UpdateAsync(task) : Task.CompletedTask;
+    }
+
+    // Cancel, Esc, or leaving after a rejected Done: put the object back
+    private void OnRowEditExit(IgbGridEditDoneEventArgs args)
+    {
+        if (original is { } o && projectTasks.Find(t => t.Id == o.Id) is { } item)
+            (item.Name, item.StartDate, item.EndDate) = (o.Name, o.StartDate, o.EndDate);
+        original = null;
+    }
 }
 ```
 
-Editing any cell opens a row overlay with Done and Cancel; the whole row is editable at once and nothing reaches the data source until Done. Events mirror the cell ones: `RowEditEnter`, `RowEdit` (cancellable), `RowEditDone`, `RowEditExit`.
+```js
+// wwwroot/js/grid-validation.js (continued)
+igRegisterScript("ValidateTaskDates", (evt) => {
+    const row = evt.detail.newValue;   // the edited row; evt.detail.rowData is the original
+    if (new Date(row.EndDate) < new Date(row.StartDate)) {
+        evt.detail.cancel = true;      // Done is refused and the row stays in edit mode
+    }
+}, false);
+```
 
-`IgbGridEditingActions` inside an `IgbActionStrip` adds per-row edit, delete, and (with `AddRow="true"`) add buttons.
+Editing any cell opens a row overlay with Done and Cancel, and the whole row is editable at once. Each cell you leave (Tab, click) is written to the bound item immediately; Cancel, Esc and a rejected Done restore only the grid's display, not your object, and the C# `RowEdit` / `RowEditExit` args carry no original values (`RowData`, `OldValue` and `NewValue` are all the updated object). Hence the copy in `RowEditEnter`: without it, a rejected value stays in your object and the next valid Done on that row persists it. Persist in `RowEditDone`. Events mirror the cell ones: `RowEditEnter`, `RowEdit`, `RowEditDone`, `RowEditExit`.
+
+`IgbGridEditingActions` inside an `IgbActionStrip` adds per-row edit, delete, and (with `AddRow="true"`) add buttons. Rows added with `AddRow` arrive in the `RowEdit*` events and in `RowAdded` as a `Dictionary<string, object>`, not your type, so the `RowEditDone` above doesn't save them (and `ValidateTaskDates` accepts their empty dates). When `RowAdded` (an `Action<T>`) fires, the grid has already added an instance of your type to the bound list: find it by `Detail.RowKey` (a `double`) and persist that, or drop `AddRow="true"`. With a read-only key column the new row's key is a grid-generated placeholder (`-1`), so let the server assign the real `Id`.
 
 ## Adding and deleting rows from code
 
@@ -106,7 +144,15 @@ Editing any cell opens a row overlay with Done and Cancel; the whole row is edit
 
 ## Validation
 
-Validate in `CellEdit` / `RowEdit` and set `args.Detail.Valid = false` to block the commit. Because `Valid` is generated as a component parameter, suppress `BL0005` only around that assignment, as shown above; do not disable it project-wide. In row editing, the row cannot be confirmed while a validation error stands. Show the message with `ErrorTemplate` on the column:
+The C# `CellEdit` / `RowEdit` events arrive after the grid has committed the value, so setting `args.Detail.Valid = false` there changes nothing. To block a commit, handle `CellEditScript` / `RowEditScript` as shown above and set `evt.detail.cancel = true`; `evt.preventDefault()` and `evt.detail.valid = false` have no effect. The cell or row stays in edit mode. Esc restores a cell's old value; in row editing it restores only the grid's display (see the copy-and-restore above). A script that runs at page load, like this one, finds the `igRegisterScript` global only when the `app.bundle.js` tag comes before it (without the tag, Blazor installs the global a moment after startup, too late). Add the tag on every hosting model, standalone WebAssembly included; without it the script is never registered and nothing is validated:
+
+```html
+<!-- host page (wwwroot/index.html, or App.razor in a Blazor Web App), before the Blazor script -->
+<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>
+<script src="js/grid-validation.js"></script>
+```
+
+A value rejected with `evt.detail.cancel` shows no message; show your own (for example through a `[JSInvokable]` call). `ErrorTemplate` on a column renders only for the grid's own validators, which Blazor reaches only through `FormGroupCreatedScript` (`evt.detail.formGroup.get('Age').addValidators(…)`); they mark the cell invalid but do not block the commit:
 
 ```razor
 <IgbColumn Field="Age" Editable="true" DataType="GridColumnDataType.Number">
