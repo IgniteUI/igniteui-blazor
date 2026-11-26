@@ -27,6 +27,9 @@ export class WebFilteringOptionsDescriptionMetadata extends Base {
 		metadata.item("FilterKey", "String");
 		metadata.item("CaseSensitive", "Boolean");
 		metadata.item("MatchDiacritics", "Boolean");
+		metadata.item("Mode", "ExportedType:string:ComboFilteringMode");
+		metadata.item("Mode@stringUnion", "WebComponents;React");
+		metadata.item("Mode@names", "Local;Remote");
 	}
 	static register(context: TypeDescriptionContext): void {
 		WebFilteringOptionsDescriptionMetadata.ensureMetadata(context);

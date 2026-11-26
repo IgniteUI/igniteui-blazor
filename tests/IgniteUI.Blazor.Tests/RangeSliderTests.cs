@@ -134,5 +134,70 @@ public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
 
         Assert.Equal(100, slider.Max);
         Assert.Equal(1, slider.Step);
+        Assert.Equal(100, slider.Upper);
+    }
+
+    [Theory]
+    [InlineData(10, null, 10)]
+    [InlineData(100, 50.0, 50)]
+    [InlineData(10, 50.0, 10)]
+    public void RangeSlider_UnsetUpper_FollowsUpperBoundOrMax(double max, double? upperBound, double expected)
+    {
+        // Until Upper is set, the web component's upper thumb sits at its upperBound, or at Max without one.
+        var cut = Render<IgbRangeSlider>(p => p
+            .Add(x => x.Max, max)
+            .Add(x => x.UpperBound, upperBound));
+
+        Assert.Equal(expected, cut.Instance.Upper);
+        Assert.Null(Interop.FindPropertyUpdate(Interop.ContainerIdOf(cut), "upper"));
+    }
+
+    [Fact]
+    public void RangeSlider_Change_CopiesThumbsBack()
+    {
+        Interop.PrimeReady();
+        IgbRangeSliderValueEventArgs? received = null;
+        var cut = Render<IgbRangeSlider>(p => p
+            .Add(x => x.Max, 100)
+            .Add(x => x.Change, (IgbRangeSliderValueEventArgs args) => received = args));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change",
+            """{"detail": {"retType": "object", "type": "", "value": {"lower": 10, "upper": 40}}}""");
+
+        Assert.NotNull(received);
+        Assert.Equal(10, cut.Instance.Lower);
+        Assert.Equal(40, cut.Instance.Upper);
+    }
+
+    [Fact]
+    public void RangeSlider_Change_RaisesLowerChangedAndUpperChanged()
+    {
+        // @bind-Lower and @bind-Upper without a Change handler: binding alone listens to Change.
+        Interop.PrimeReady();
+        double? lower = null;
+        double? upper = null;
+        var cut = Render<IgbRangeSlider>(p => p
+            .Add(x => x.Lower, 10)
+            .Add(x => x.Upper, 80)
+            .Add(x => x.LowerChanged, (double v) => lower = v)
+            .Add(x => x.UpperChanged, (double v) => upper = v));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change",
+            """{"detail": {"retType": "object", "type": "", "value": {"lower": 10, "upper": 50}}}""");
+
+        // Only the thumb that moved reports a change.
+        Assert.Null(lower);
+        Assert.Equal(50, upper);
+        Assert.Equal(50, cut.Instance.Upper);
+    }
+
+    [Fact]
+    public void RangeSlider_SetUpper_IsKept()
+    {
+        var cut = Render<IgbRangeSlider>(p => p
+            .Add(x => x.Max, 10)
+            .Add(x => x.Upper, 3));
+
+        Assert.Equal(3, cut.Instance.Upper);
     }
 }

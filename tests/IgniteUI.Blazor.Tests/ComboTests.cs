@@ -35,6 +35,9 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
     internal static string UuidRef(InteropHarness interop, IRenderedComponent<IComponent> cut, int index) =>
         $$"""{"refType": "uuid", "id": "{{DataItemId(interop, cut, index)}}"}""";
 
+    internal static string ClosingDetail(string trigger) =>
+        $$$$"""{"detail": {"retType": "object", "type": "WebComboClosingEventArgsDetail", "value": {"trigger": "{{{{trigger}}}}"}}}""";
+
     internal static string ChangeDetail(string newValues, string items, string type = "selection") =>
         $$$$"""{"detail": {"retType": "object", "type": "WebComboChangeEventArgsDetail", "value": {"newValue": {"retType": "Array", "type": "", "value": [{{{{newValues}}}}]}, "items": {"retType": "Array", "type": "", "value": [{{{{items}}}}]}, "type": "{{{{type}}}}"}}}""";
 
@@ -51,6 +54,12 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         .Method(c => c.DeselectAsync([_valueItem1]), c => c.Deselect([_valueItem1]), "deselect",
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             args: [FromRender.Of<object?>((interop, cut) => new RawJson($"[{UuidRef(interop, cut, 0)}]"))], types: [""])
+        .Method(c => c.SelectAllItemsAsync(false), c => c.SelectAllItems(false), "selectAllItems", args: [false], types: ["Boolean"])
+        .Method(c => c.SelectAllItemsAsync(true), c => c.SelectAllItems(true), "selectAllItems", args: [true], types: ["Boolean"])
+        .Method(c => c.DeselectAllItemsAsync(false), c => c.DeselectAllItems(false), "deselectAllItems", args: [false], types: ["Boolean"])
+        .Method(c => c.DeselectAllItemsAsync(true), c => c.DeselectAllItems(true), "deselectAllItems", args: [true], types: ["Boolean"])
+        .Method(c => c.CommitSelectionAsync(), c => c.CommitSelection(), "commitSelection")
+        .Method(c => c.CancelSelectionAsync(), c => c.CancelSelection(), "cancelSelection")
         .Method(c => c.ReportValidityAsync(), c => c.ReportValidity(), "reportValidity", returns: false)
         .Method(c => c.CheckValidityAsync(), c => c.CheckValidity(), "checkValidity", returns: true)
         .Method(c => c.SetCustomValidityAsync("invalid entry"), c => c.SetCustomValidity("invalid entry"), "setCustomValidity",
@@ -60,6 +69,11 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(
                 $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 0)}}"}]""")),
             assert: (cut, result) => Assert.Same(_valueItem1, Assert.Single(result)))
+        .Getter(c => c.GetPendingValueAsync(), c => c.GetPendingValue(), "PendingValue",
+            arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
+            returns: FromRender.Of((interop, cut) => InteropReturn.Array(
+                $$"""[{"refType": "uuid", "id": "{{DataItemId(interop, cut, 1)}}"}]""")),
+            assert: (cut, result) => Assert.Same(_valueItem2, Assert.Single(result)))
         .Getter(c => c.GetSelectionAsync(), c => c.GetSelection(), "Selection",
             arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
             returns: FromRender.Of((interop, cut) => InteropReturn.Array(
@@ -108,8 +122,30 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         .Event(c => c.Blur)
         .Event(c => c.Opening)
         .Event(c => c.Opened)
-        .Event(c => c.Closing)
-        .Event(c => c.Closed)
+        .Event(c => c.Closing,
+            argsJson: ClosingDetail("outside-click"),
+            assert: (cut, args) => Assert.Equal(ComboCloseTrigger.OutsideClick, args.Detail.Trigger))
+        .Event(c => c.Closed,
+            argsJson: ClosingDetail("apply"),
+            assert: (cut, args) => Assert.Equal(ComboCloseTrigger.Apply, args.Detail.Trigger))
+        .Event(c => c.PendingChange,
+            arrange: ps => ps.Add(c => c.Data, new[] { _valueItem1, _valueItem2 }),
+            argsJson: FromRender.Of((interop, cut) => ChangeDetail(UuidRef(interop, cut, 1), UuidRef(interop, cut, 1))),
+            assert: (cut, args) =>
+            {
+                Assert.Same(_valueItem2, Assert.Single(args.Detail.NewValue));
+                Assert.Equal(ComboChangeType.Selection, args.Detail.ChangeType);
+            })
+        .Event(c => c.SearchInput,
+            argsJson: """{"detail": {"retType": "object", "type": "WebComboSearchInputEventArgsDetail", "value": {"searchText": "sec"}}}""",
+            assert: (cut, args) => Assert.Equal("sec", args.Detail.SearchText))
+        .Event(c => c.DataRequest,
+            argsJson: """{"detail": {"retType": "object", "type": "WebVirtualScrollDataRequestEventArgsDetail", "value": {"startIndex": 50, "count": 25}}}""",
+            assert: (cut, args) =>
+            {
+                Assert.Equal(50, args.Detail.StartIndex);
+                Assert.Equal(25, args.Detail.Count);
+            })
         .Prop(c => c.Open, true)
         .Prop(c => c.ScrollStrategy, PopoverScrollStrategy.Close, wire: "close")
         .Prop(c => c.Outlined, true)
@@ -134,9 +170,17 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
                 MatchDiacritics = true,
             },
             wire: new JsonSubset("""{"filterKey": "text", "caseSensitive": true, "matchDiacritics": true}"""))
+        .Prop(c => c.FilteringOptions,
+            new IgbFilteringOptions { Mode = ComboFilteringMode.Remote },
+            wire: new JsonSubset("""{"mode": "remote"}"""))
         .Prop(c => c.CaseSensitiveIcon, true)
         .Prop(c => c.DisableFiltering, true)
         .Prop(c => c.DisableClear, true)
+        .Prop(c => c.TotalItemCount, 250.0)
+        .Prop(c => c.Loading, true)
+        .Prop(c => c.ShowSelectAll, true)
+        .Prop(c => c.GroupSelection, true)
+        .Prop(c => c.SelectionCommit, ComboSelectionCommit.Confirm, wire: "confirm")
         .Prop(c => c.Disabled, true)
         .Prop(c => c.Required, true)
         .Prop(c => c.Invalid, true)
@@ -341,15 +385,370 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
                 b.AddContent(0, $"Group: {ctx.Key}");
             }));
 
-        // The header record is synthetic - { [valueKey]: key, [displayKey]: key, [groupKey]: key } -
-        // not a data item, so it crosses by value rather than as a uuid ref.
+        // The context is { key, item }; item is a synthetic record, not a data item, and is ignored.
         var containerId = Interop.ContainerIdOf(cut);
-        Interop.AdjustDynamicContentBatch(containerId,
-            TemplateBatch(containerId, TemplateId(cut, "groupHeaderTemplate"), "content-1",
-                """{"retType": "object", "type": "", "value": {"Id": "First", "Text": "First"}}"""));
+        var templateId = TemplateId(cut, "groupHeaderTemplate");
+        var batch = JsonSerializer.Serialize(new object[]
+        {
+            new { containerId, contentType = "TemplateContent", templateId, contentId = "content-1", actionType = "Add", args = (string?)null },
+            new
+            {
+                containerId, contentType = "TemplateContent", templateId, contentId = "content-1", actionType = "Update",
+                args = """{"retType": "object", "type": "", "value": {"key": true, "item": {"retType": "object", "type": "", "value": {"Id": true, "Text": true}}}}""",
+            },
+        });
+        Interop.AdjustDynamicContentBatch(containerId, batch);
 
-        cut.WaitForAssertion(() => Assert.Contains("Group: First", cut.Markup));
-        Assert.Equal("First", received?.Key);
+        // A boolean group value arrives as a bool, not a JsonElement.
+        cut.WaitForAssertion(() => Assert.Contains("Group: True", cut.Markup));
+        Assert.Equal(true, received?.Key);
+    }
+
+    [Fact]
+    public void Combo_GroupHeaderTemplate_ReceivesKeyOfContext()
+    {
+        Interop.PrimeReady();
+        IgbComboGroupHeaderContext? received = null;
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.GroupKey, "Text")
+            .Add(c => c.GroupHeaderTemplate, (IgbComboGroupHeaderContext ctx) => b =>
+            {
+                received = ctx;
+                b.AddContent(0, $"Group: {ctx.Key}");
+            }));
+
+        // Since 7.5 the web component passes { key, item }; key wins over the synthetic record.
+        var containerId = Interop.ContainerIdOf(cut);
+        var templateId = TemplateId(cut, "groupHeaderTemplate");
+        var batch = JsonSerializer.Serialize(new object[]
+        {
+            new { containerId, contentType = "TemplateContent", templateId, contentId = "content-1", actionType = "Add", args = (string?)null },
+            new
+            {
+                containerId, contentType = "TemplateContent", templateId, contentId = "content-1", actionType = "Update",
+                args = """{"retType": "object", "type": "", "value": {"key": "Other", "item": {"retType": "object", "type": "", "value": {"Text": "Ignored"}}}}""",
+            },
+        });
+        Interop.AdjustDynamicContentBatch(containerId, batch);
+
+        cut.WaitForAssertion(() => Assert.Contains("Group: Other", cut.Markup));
+        Assert.Equal("Other", received?.Key);
+    }
+
+    [Fact]
+    public async Task Combo_SelectionMethods_PushTheNewValueToValueChanged()
+    {
+        // selectAllItems / commitSelection change the value without igcChange; the wrapper reads it back.
+        Interop.PrimeReady();
+        int[]? bound = null;
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.ValueChanged, (int[] v) => bound = v));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[1, 2]"));
+        await cut.InvokeAsync(() => cut.Instance.SelectAllItemsAsync());
+
+        Assert.Equal([1, 2], bound!);
+        Assert.Equal([1, 2], cut.Instance.Value);
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[2]"));
+        await cut.InvokeAsync(() => cut.Instance.CommitSelectionAsync());
+
+        Assert.Equal([2], bound!);
+    }
+
+    [Fact]
+    public async Task Combo_SelectAndDeselect_PushTheNewValueToValueChanged()
+    {
+        // select() and deselect() do not emit igcChange either.
+        Interop.PrimeReady();
+        int[]? bound = null;
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.ValueChanged, (int[] v) => bound = v));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[1]"));
+        await cut.InvokeAsync(() => cut.Instance.SelectAsync([1]));
+
+        Assert.Equal([1], bound!);
+        Assert.Equal([1], cut.Instance.Value);
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[]"));
+        await cut.InvokeAsync(() => cut.Instance.DeselectAsync([1]));
+
+        Assert.Empty(bound!);
+    }
+
+    // The client's answer to which released items it still holds: its selection and pending selection.
+    private void SetupHeldItems(params string[] ids) =>
+        Interop.SetupMethodResult("___heldItemIds", InteropReturn.Array("[" + string.Join(", ", ids.Select(id => $"\"{id}\"")) + "]"));
+
+    [Fact]
+    public void Combo_NewData_SelectedItemOfTheOldDataStillResolves()
+    {
+        // A new Data keeps the selection on the client, so its events still name the old item.
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs<int, ComboItem>? received = null;
+        var oldData = new[] { _valueItem1, _valueItem2 };
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.Data, oldData)
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.Change, (IgbComboChangeEventArgs<int, ComboItem> args) => received = args));
+
+        var oldRef = UuidRef(Interop, cut, 0);
+        SetupHeldItems(DataItemId(Interop, cut, 0));
+
+        var newItem = new ComboItem { Id = 3, Text = "Third" };
+        cut.Render(ps => ps.Add(c => c.Data, new[] { newItem }));
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        // Deselecting the old item: Items names it by the uuid of the released data.
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("", oldRef, "deselection"));
+        Assert.Same(_valueItem1, Assert.Single(received!.Detail.Items));
+
+        // Once the client no longer holds it, the next release drops it.
+        SetupHeldItems();
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem2 }));
+        cut.WaitForAssertion(() =>
+        {
+            Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("", oldRef, "deselection"));
+            Assert.Null(Assert.Single(received!.Detail.Items));
+        });
+    }
+
+    [Fact]
+    public async Task Combo_NewData_WithoutChangeHandler_SelectionOfTheOldDataStillResolves()
+    {
+        // No Change handler, so .NET never learns the value; a long key for an int member. Retention
+        // follows what the client holds, not Value or ValueKey.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<long, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ValueKey, "Id"));
+
+        var oldRef = UuidRef(Interop, cut, 0);
+        SetupHeldItems(DataItemId(Interop, cut, 0));
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { new ComboItem { Id = 3, Text = "Third" } }));
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.SetupPropertyRead("Selection", InteropReturn.Array($"[{oldRef}]"));
+        var selection = await cut.InvokeAsync(() => cut.Instance.GetSelectionAsync());
+
+        Assert.Same(_valueItem1, Assert.Single(selection));
+    }
+
+    [Fact]
+    public async Task Combo_NewDataWithTheSelectedInstance_DeselectNamesTheHeldObject()
+    {
+        // A remote search over an in-memory list: the new data holds the selected instance again, under
+        // a new uuid. Without a ValueKey the client compares by reference, and its selection holds the
+        // object of the old data, so Deselect must name the old uuid.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+
+        var oldId = DataItemId(Interop, cut, 0);
+        SetupHeldItems(oldId);
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem1, new ComboItem { Id = 3, Text = "Third" } }));
+        var newId = DataItemId(Interop, cut, 0);
+        Assert.NotEqual(oldId, newId);
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[]"));
+        // The prune that confirms the client holds the old object finishes in the background.
+        var arg = "";
+        for (var attempt = 0; attempt < 100; attempt++)
+        {
+            await cut.InvokeAsync(() => cut.Instance.DeselectAsync([_valueItem1]));
+            arg = Interop.RequireCall("deselect").Arguments[0].GetRawText();
+            if (arg.Contains(oldId, StringComparison.OrdinalIgnoreCase))
+            {
+                break;
+            }
+            await Task.Delay(10);
+        }
+        Assert.Contains(oldId, arg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(newId, arg, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Combo_NewDataWithoutHeldItems_SelectNamesTheCurrentObject()
+    {
+        // The client holds nothing of the old data, so the item goes by its uuid in the current data.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+
+        var oldId = DataItemId(Interop, cut, 0);
+        SetupHeldItems();
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem1 }));
+        var newId = DataItemId(Interop, cut, 0);
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[]"));
+        await cut.InvokeAsync(() => cut.Instance.SelectAsync([_valueItem1]));
+        var arg = Interop.RequireCall("select").Arguments[0].GetRawText();
+        Assert.Contains(newId, arg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(oldId, arg, StringComparison.OrdinalIgnoreCase);
+    }
+
+    // Replaces the data with one that holds _valueItem1 again under a new uuid, while the client's
+    // selection holds the object of the old data, and waits until Deselect names the old uuid.
+    private async Task<(string OldId, string NewId)> HoldFirstItemOfTheOldData(IRenderedComponent<IgbCombo<ComboItem, ComboItem>> cut)
+    {
+        var oldId = DataItemId(Interop, cut, 0);
+        SetupHeldItems(oldId);
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem1, new ComboItem { Id = 3, Text = "Third" } }));
+        var newId = DataItemId(Interop, cut, 0);
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[]"));
+        for (var attempt = 0; attempt < 100; attempt++)
+        {
+            await cut.InvokeAsync(() => cut.Instance.DeselectAsync([_valueItem1]));
+            if (Interop.RequireCall("deselect").Arguments[0].GetRawText().Contains(oldId, StringComparison.OrdinalIgnoreCase))
+            {
+                return (oldId, newId);
+            }
+            await Task.Delay(10);
+        }
+        throw new Xunit.Sdk.XunitException("Deselect never named the held uuid.");
+    }
+
+    [Fact]
+    public async Task Combo_DeselectThenSelectTheHeldItem_SelectNamesTheCurrentObject()
+    {
+        // After the deselect the client no longer holds the old object, so a Select right after it
+        // must name the item by its uuid in the current data, not by the uuid of the old data.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+        var (oldId, newId) = await HoldFirstItemOfTheOldData(cut);
+
+        SetupHeldItems();
+        await cut.InvokeAsync(async () =>
+        {
+            await cut.Instance.DeselectAsync([_valueItem1]);
+            await cut.Instance.SelectAsync([_valueItem1]);
+        });
+
+        var arg = Interop.RequireCall("select").Arguments[0].GetRawText();
+        Assert.Contains(newId, arg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(oldId, arg, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Combo_ChangeDeselectsTheHeldItem_SelectInTheHandlerNamesTheCurrentObject()
+    {
+        // A user's deselection reaches .NET as a Change; a Select made by its handler runs before the
+        // background prune and must not name the old uuid, which the client no longer resolves.
+        Interop.PrimeReady();
+        Task? select = null;
+        IRenderedComponent<IgbCombo<ComboItem, ComboItem>>? cut = null;
+        cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.Change, (IgbComboChangeEventArgs<ComboItem, ComboItem> args) =>
+            {
+                select = cut!.Instance.SelectAsync([_valueItem1]);
+            }));
+        var (oldId, newId) = await HoldFirstItemOfTheOldData(cut);
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change",
+            ChangeDetail("", $$"""{"refType": "uuid", "id": "{{oldId}}"}""", "deselection"));
+        await cut.InvokeAsync(() => select!);
+
+        var arg = Interop.RequireCall("select").Arguments[0].GetRawText();
+        Assert.Contains(newId, arg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(oldId, arg, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Combo_ItemReleasedTwice_TheUuidTheClientHoldsStillResolves()
+    {
+        // The selected instance comes back in a new data and leaves again with its second uuid; the
+        // client still holds the object of the first data, so the first uuid must keep resolving.
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs<int, ComboItem>? received = null;
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.Change, (IgbComboChangeEventArgs<int, ComboItem> args) => received = args));
+
+        var oldRef = UuidRef(Interop, cut, 0);
+        SetupHeldItems(DataItemId(Interop, cut, 0));
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem1 }));
+        cut.Render(ps => ps.Add(c => c.Data, new[] { new ComboItem { Id = 3, Text = "Third" } }));
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("", oldRef, "deselection"));
+        Assert.Same(_valueItem1, Assert.Single(received!.Detail.Items));
+    }
+
+    [Fact]
+    public void Combo_ObservableCollectionCleared_SelectedItemStillResolves()
+    {
+        // Clearing the bound collection in place releases its items, as a new Data does.
+        Interop.PrimeReady();
+        IgbComboChangeEventArgs<int, ComboItem>? received = null;
+        var items = new System.Collections.ObjectModel.ObservableCollection<ComboItem> { _valueItem1, _valueItem2 };
+        var cut = Render<IgbCombo<int, ComboItem>>(ps => ps
+            .Add(c => c.Data, items)
+            .Add(c => c.ValueKey, "Id")
+            .Add(c => c.Change, (IgbComboChangeEventArgs<int, ComboItem> args) => received = args));
+
+        var oldRef = UuidRef(Interop, cut, 0);
+        SetupHeldItems(DataItemId(Interop, cut, 0));
+
+        cut.InvokeAsync(() =>
+        {
+            items.Clear();
+            items.Add(new ComboItem { Id = 3, Text = "Third" });
+        });
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change", ChangeDetail("", oldRef, "deselection"));
+        Assert.Same(_valueItem1, Assert.Single(received!.Detail.Items));
+    }
+
+    [Theory]
+    [InlineData("""{"detail": {"retType": "object", "type": "WebComboClosingEventArgsDetail", "value": {"trigger": "some-future-trigger"}}}""")]
+    [InlineData("""{"detail": {"retType": "object", "type": "WebComboClosingEventArgsDetail", "value": {"trigger": "3"}}}""")]
+    [InlineData("""{"detail": {"retType": "object", "type": "WebComboClosingEventArgsDetail", "value": {}}}""")]
+    public void Combo_Closing_UnknownOrMissingTrigger_IsNull(string argsJson)
+    {
+        // Not reported as Enter, the first member, which a handler could take for a real Enter.
+        Interop.PrimeReady();
+        IgbComboClosingEventArgs? received = null;
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Closing, (IgbComboClosingEventArgs args) => received = args));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Closing", argsJson);
+
+        Assert.NotNull(received);
+        Assert.Null(received.Detail.Trigger);
+    }
+
+    [Fact]
+    public void Combo_ClosingHandlerTakingVoidEventArgs_StillBinds()
+    {
+        Interop.PrimeReady();
+        IgbVoidEventArgs? received = null;
+        void OnClosing(IgbVoidEventArgs args) => received = args;
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Closing, (Action<IgbVoidEventArgs>)OnClosing));
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Closing", ClosingDetail("escape"));
+
+        var args = Assert.IsType<IgbComboClosingEventArgs>(received);
+        Assert.Equal(ComboCloseTrigger.Escape, args.Detail.Trigger);
     }
 
     [Fact]

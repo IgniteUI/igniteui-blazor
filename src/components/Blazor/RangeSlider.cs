@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
@@ -56,15 +57,19 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _upper = 0;
+        private double? _upper;
 
         /// <summary>
         /// The current value of the upper thumb.
         /// </summary>
+        /// <remarks>
+        /// Until it is set, the upper thumb follows <see cref="IgbSliderBase.UpperBound"/>, or <see cref="IgbSliderBase.Max"/>
+        /// without a bound, so the default range covers the full scale, and the getter returns that value.
+        /// </remarks>
         [Parameter]
         public double Upper
         {
-            get { return this._upper; }
+            get { return this._upper ?? DefaultUpper; }
             set
             {
                 if (this._upper != value || !IsPropDirty("Upper"))
@@ -73,6 +78,86 @@ namespace IgniteUI.Blazor.Controls
                 }
                 this._upper = value;
 
+            }
+        }
+
+        // The web component's upper thumb before it is set: its upperBound, which is UpperBound clamped
+        // between LowerBound (or Min) and Max, or Max without a bound.
+        private double DefaultUpper
+        {
+            get
+            {
+                var lower = Math.Max(LowerBound ?? Min, Min);
+                return Math.Min(Math.Max(UpperBound ?? Max, lower), Max);
+            }
+        }
+
+        private EventCallback<double>? _lowerChanged = null;
+
+        /// <summary>
+        /// Emitted when the user commits a new <see cref="Lower"/> value.
+        /// Enables two-way binding through <c>@bind-Lower</c>.
+        /// </summary>
+        [Parameter]
+        public EventCallback<double> LowerChanged
+        {
+            get
+            {
+                return this._lowerChanged != null ? this._lowerChanged.Value : EventCallback<double>.Empty;
+            }
+            set
+            {
+                if (value.HasHandler())
+                {
+                    if (!value.EqualsCompat(_lowerChanged))
+                    {
+                        this.EnsureChangeHandled();
+                        _lowerChanged = value;
+                    }
+                }
+                else
+                {
+                    _lowerChanged = null;
+                }
+            }
+        }
+
+        private EventCallback<double>? _upperChanged = null;
+
+        /// <summary>
+        /// Emitted when the user commits a new <see cref="Upper"/> value.
+        /// Enables two-way binding through <c>@bind-Upper</c>.
+        /// </summary>
+        [Parameter]
+        public EventCallback<double> UpperChanged
+        {
+            get
+            {
+                return this._upperChanged != null ? this._upperChanged.Value : EventCallback<double>.Empty;
+            }
+            set
+            {
+                if (value.HasHandler())
+                {
+                    if (!value.EqualsCompat(_upperChanged))
+                    {
+                        this.EnsureChangeHandled();
+                        _upperChanged = value;
+                    }
+                }
+                else
+                {
+                    _upperChanged = null;
+                }
+            }
+        }
+
+        internal void EnsureChangeHandled()
+        {
+            if (EventCallback<IgbRangeSliderValueEventArgs>.Empty.Equals(this.Change))
+            {
+                this.Change = new EventCallback<IgbRangeSliderValueEventArgs>(null, (Action<IgbRangeSliderValueEventArgs>)((e) => { }));
+                this._change = null;
             }
         }
         private string? _thumbLabelLower;
@@ -239,7 +324,32 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_change))
                     {
                         _change = value;
-                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Change", value);
+                        this.SetHandler<IgbRangeSliderValueEventArgs>(this.RendererName, "Change", value, (args) =>
+                        {
+                            // Copy the committed thumbs back, as IgbSlider does for Value, so Lower and
+                            // Upper report where the user left them, not the bound or default values.
+                            // Lower and Upper render as attributes, so a parent that passes them one-way
+                            // and re-renders with its unchanged values diffs to no update and leaves the
+                            // thumbs where the user put them; LowerChanged and UpperChanged let it bind.
+                            var detail = args.Detail;
+                            if (detail != null)
+                            {
+                                var lowerChanged = Math.Abs(this.Lower - detail.Lower) > double.Epsilon;
+                                var upperChanged = Math.Abs(this.Upper - detail.Upper) > double.Epsilon;
+                                this.Lower = detail.Lower;
+                                this.Upper = detail.Upper;
+                                OnPropertyPropagatedOut(RendererName, "Lower");
+                                OnPropertyPropagatedOut(RendererName, "Upper");
+                                if (lowerChanged && !EventCallback<double>.Empty.Equals(LowerChanged))
+                                {
+                                    ObserveHandlerTask(LowerChanged.InvokeAsync(detail.Lower));
+                                }
+                                if (upperChanged && !EventCallback<double>.Empty.Equals(UpperChanged))
+                                {
+                                    ObserveHandlerTask(UpperChanged.InvokeAsync(detail.Upper));
+                                }
+                            }
+                        });
                         this.OnRefChanged("Change", null, "event:::Change", true, false, (refName, oldValue, newValue) =>
                         {
                             this._changeRef = refName;
@@ -267,7 +377,7 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("Lower"))
             { ser.AddNumberProp("lower", this._lower); }
             if (IsPropDirty("Upper"))
-            { ser.AddNumberProp("upper", this._upper); }
+            { ser.AddNumberProp("upper", this.Upper); }
             if (IsPropDirty("ThumbLabelLower"))
             { ser.AddStringProp("thumbLabelLower", this._thumbLabelLower); }
             if (IsPropDirty("ThumbLabelUpper"))

@@ -62,6 +62,26 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private ComboFilteringMode _mode = ComboFilteringMode.Local;
+
+        /// <summary>
+        /// Where the filtering runs. With <see cref="ComboFilteringMode.Remote"/>, the combo does not filter its
+        /// options: handle <see cref="IgbCombo{TValue, TItem}.SearchInput"/> to set the data to the results of a
+        /// server search, and <see cref="IgbCombo{TValue, TItem}.DataRequest"/> to append more items.
+        /// </summary>
+        public ComboFilteringMode Mode
+        {
+            get { return this._mode; }
+            set
+            {
+                if (this._mode != value || !IsPropDirty("Mode"))
+                {
+                    MarkPropDirty("Mode");
+                }
+                this._mode = value;
+
+            }
+        }
 
         internal override void SerializeCore(RendererSerializer ser)
         {
@@ -73,6 +93,8 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddBooleanProp("caseSensitive", this._caseSensitive); }
             if (IsPropDirty("MatchDiacritics"))
             { ser.AddBooleanProp("matchDiacritics", this._matchDiacritics); }
+            if (IsPropDirty("Mode"))
+            { ser.AddEnumProp("mode", this._mode); }
 
         }
 

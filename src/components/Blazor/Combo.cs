@@ -58,6 +58,8 @@ namespace IgniteUI.Blazor.Controls
 
                 if (oldValue != value || !IsPropDirty("Data"))
                 {
+                    // Before the old data source goes: the items that leave it stay resolvable while the client holds them.
+                    EnsureItemReleaseTracking();
                     MarkPropDirty("Data");
                     this._data = value;
                     this.OnRefChanged("Data", oldValue, value, false, false, (string refName, object? old, object? newValue) =>
@@ -444,6 +446,109 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
+        private double? _totalItemCount;
+
+        /// <summary>
+        /// The number of all the items of a remote source, when the source knows it.
+        /// In <see cref="ComboFilteringMode.Remote"/> filtering mode, the list shows a placeholder for each item
+        /// that <see cref="Data"/> does not hold yet, so the scrollbar shows the full list.
+        /// </summary>
+        [Parameter]
+        public double? TotalItemCount
+        {
+            get { return this._totalItemCount; }
+            set
+            {
+                if (this._totalItemCount != value || !IsPropDirty("TotalItemCount"))
+                {
+                    MarkPropDirty("TotalItemCount");
+                }
+                this._totalItemCount = value;
+
+            }
+        }
+        private bool _loading = false;
+
+        /// <summary>
+        /// Whether the combo loads options. A spinner, which the <c>loading</c> slot can replace, then takes the
+        /// place of the toggle icon, and an empty list shows a loading message instead of the empty message.
+        /// </summary>
+        [Parameter]
+        public bool Loading
+        {
+            get { return this._loading; }
+            set
+            {
+                if (this._loading != value || !IsPropDirty("Loading"))
+                {
+                    MarkPropDirty("Loading");
+                }
+                this._loading = value;
+
+            }
+        }
+        private bool _showSelectAll = false;
+
+        /// <summary>
+        /// Whether the list starts with an option that selects all the items that it shows, or deselects them
+        /// when all of them are selected. Only in multiple selection mode.
+        /// </summary>
+        [Parameter]
+        public bool ShowSelectAll
+        {
+            get { return this._showSelectAll; }
+            set
+            {
+                if (this._showSelectAll != value || !IsPropDirty("ShowSelectAll"))
+                {
+                    MarkPropDirty("ShowSelectAll");
+                }
+                this._showSelectAll = value;
+
+            }
+        }
+        private bool _groupSelection = false;
+
+        /// <summary>
+        /// Whether a group header is an option that selects the items of its group that the list shows, or
+        /// deselects them when all of them are selected. Only in multiple selection mode with <see cref="GroupKey"/>.
+        /// </summary>
+        [Parameter]
+        public bool GroupSelection
+        {
+            get { return this._groupSelection; }
+            set
+            {
+                if (this._groupSelection != value || !IsPropDirty("GroupSelection"))
+                {
+                    MarkPropDirty("GroupSelection");
+                }
+                this._groupSelection = value;
+
+            }
+        }
+        private ComboSelectionCommit _selectionCommit = ComboSelectionCommit.Immediate;
+
+        /// <summary>
+        /// When the user's changes of the selection apply in multiple selection mode.
+        /// With <see cref="ComboSelectionCommit.Confirm"/>, they change a pending selection while the list is open,
+        /// and Enter or the Apply button applies it with one <see cref="Change"/>. Any other close drops it.
+        /// While it exists, the selection methods change it too.
+        /// </summary>
+        [Parameter]
+        public ComboSelectionCommit SelectionCommit
+        {
+            get { return this._selectionCommit; }
+            set
+            {
+                if (this._selectionCommit != value || !IsPropDirty("SelectionCommit"))
+                {
+                    MarkPropDirty("SelectionCommit");
+                }
+                this._selectionCommit = value;
+
+            }
+        }
         private TValue[] _value = Array.Empty<TValue>();
 
         /// <summary>
@@ -505,6 +610,28 @@ namespace IgniteUI.Blazor.Controls
         {
             var iv = InvokeMethodSync("p:Selection", new object?[] { }, new string[] { });
             return ReturnToObjectArray<TItem>(iv);
+        }
+
+        /// <summary>
+        /// Returns the values of the pending selection in <see cref="ComboSelectionCommit.Confirm"/> mode, which
+        /// Enter, the Apply button or <see cref="CommitSelectionAsync"/> applies. Without a pending selection, the same as the value.
+        /// </summary>
+        /// <returns>The pending values, represented by <see cref="ValueKey"/> when provided.</returns>
+        public async Task<TValue[]> GetPendingValueAsync()
+        {
+            var iv = await InvokeMethod("p:PendingValue", new object?[] { }, new string[] { });
+            return ReturnToObjectArray<TValue>(iv);
+        }
+
+        /// <summary>
+        /// Returns the values of the pending selection in <see cref="ComboSelectionCommit.Confirm"/> mode, which
+        /// Enter, the Apply button or <see cref="CommitSelection"/> applies. Without a pending selection, the same as the value.
+        /// </summary>
+        /// <returns>The pending values, represented by <see cref="ValueKey"/> when provided.</returns>
+        public TValue[] GetPendingValue()
+        {
+            var iv = InvokeMethodSync("p:PendingValue", new object?[] { }, new string[] { });
+            return ReturnToObjectArray<TValue>(iv);
         }
         private bool _disabled = false;
 
@@ -723,42 +850,134 @@ namespace IgniteUI.Blazor.Controls
 
         /// <summary>
         /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are selected.
+        /// If no items are provided all items are selected. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="items">One or more items to be selected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public async Task SelectAsync(TValue[] items)
         {
             await InvokeMethod("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+            await SyncValueFromClientAsync();
         }
 
         /// <summary>
         /// Selects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are selected.
+        /// If no items are provided all items are selected. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="items">One or more items to be selected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public void Select(TValue[] items)
         {
             InvokeMethodSync("select", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+            SyncValueFromClient();
         }
 
         /// <summary>
         /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are deselected.
+        /// If no items are provided all items are deselected. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="items">One or more items to be deselected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public async Task DeselectAsync(TValue[] items)
         {
             await InvokeMethod("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+            await SyncValueFromClientAsync();
         }
 
         /// <summary>
         /// Deselects one or more options in the list by either reference or <see cref="ValueKey"/>.
-        /// If no items are provided all items are deselected.
+        /// If no items are provided all items are deselected. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
         /// </summary>
         /// <param name="items">One or more items to be deselected: their <see cref="ValueKey"/> values when it is set, otherwise the items themselves.</param>
         public void Deselect(TValue[] items)
         {
             InvokeMethodSync("deselect", new object?[] { ObjectArrayToParam(items) }, new string[] { "" });
+            SyncValueFromClient();
+        }
+
+        /// <summary>
+        /// Selects all the items that the list shows. It does not emit <see cref="Change"/>,
+        /// and does nothing in single selection mode. <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
+        /// </summary>
+        /// <param name="ignoreFilter">Whether to select all the items of the data, not only the ones that the filter shows.</param>
+        public async Task SelectAllItemsAsync(bool ignoreFilter = false)
+        {
+            await InvokeMethod("selectAllItems", new object?[] { ignoreFilter }, new string[] { "Boolean" });
+            await SyncValueFromClientAsync();
+        }
+
+        /// <summary>
+        /// Selects all the items that the list shows. It does not emit <see cref="Change"/>,
+        /// and does nothing in single selection mode. <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
+        /// </summary>
+        /// <param name="ignoreFilter">Whether to select all the items of the data, not only the ones that the filter shows.</param>
+        public void SelectAllItems(bool ignoreFilter = false)
+        {
+            InvokeMethodSync("selectAllItems", new object?[] { ignoreFilter }, new string[] { "Boolean" });
+            SyncValueFromClient();
+        }
+
+        /// <summary>
+        /// Deselects all the items that the list shows. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
+        /// </summary>
+        /// <param name="ignoreFilter">Whether to deselect all the items, not only the ones that the filter shows.</param>
+        public async Task DeselectAllItemsAsync(bool ignoreFilter = false)
+        {
+            await InvokeMethod("deselectAllItems", new object?[] { ignoreFilter }, new string[] { "Boolean" });
+            await SyncValueFromClientAsync();
+        }
+
+        /// <summary>
+        /// Deselects all the items that the list shows. It does not emit <see cref="Change"/>;
+        /// <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
+        /// </summary>
+        /// <param name="ignoreFilter">Whether to deselect all the items, not only the ones that the filter shows.</param>
+        public void DeselectAllItems(bool ignoreFilter = false)
+        {
+            InvokeMethodSync("deselectAllItems", new object?[] { ignoreFilter }, new string[] { "Boolean" });
+            SyncValueFromClient();
+        }
+
+        /// <summary>
+        /// Applies the pending selection of <see cref="ComboSelectionCommit.Confirm"/> mode to the value.
+        /// It does not emit <see cref="Change"/> or close the list; <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
+        /// </summary>
+        public async Task CommitSelectionAsync()
+        {
+            await InvokeMethod("commitSelection", new object?[] { }, new string[] { });
+            await SyncValueFromClientAsync();
+        }
+
+        /// <summary>
+        /// Applies the pending selection of <see cref="ComboSelectionCommit.Confirm"/> mode to the value.
+        /// It does not emit <see cref="Change"/> or close the list; <see cref="Value"/> and <see cref="ValueChanged"/> follow the new value.
+        /// </summary>
+        public void CommitSelection()
+        {
+            InvokeMethodSync("commitSelection", new object?[] { }, new string[] { });
+            SyncValueFromClient();
+        }
+
+        /// <summary>
+        /// Puts the value back as the pending selection of <see cref="ComboSelectionCommit.Confirm"/> mode.
+        /// It does not close the list.
+        /// </summary>
+        public async Task CancelSelectionAsync()
+        {
+            await InvokeMethod("cancelSelection", new object?[] { }, new string[] { });
+            await SyncHeldIdsFromClientAsync();
+        }
+
+        /// <summary>
+        /// Puts the value back as the pending selection of <see cref="ComboSelectionCommit.Confirm"/> mode.
+        /// It does not close the list.
+        /// </summary>
+        public void CancelSelection()
+        {
+            InvokeMethodSync("cancelSelection", new object?[] { }, new string[] { });
+            SyncHeldIdsFromClient();
         }
 
         /// <summary>
@@ -902,6 +1121,7 @@ namespace IgniteUI.Blazor.Controls
 
                             {
                                 newValueValue = (TValue[])(DowncastArray<TValue>(args.Detail.NewValue));
+                                OnClientSelectionChanged(newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.
@@ -1274,17 +1494,23 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbVoidEventArgs>? _closing = null;
+        private EventCallback<IgbComboClosingEventArgs>? _closing = null;
 
         /// <summary>
-        /// Emitted just before the list of options is closed.
+        /// Emitted just before the user closes the list of options.
+        /// <see cref="IgbComboClosingEventArgsDetail.Trigger"/> gives the user action that closes it.
         /// </summary>
+        /// <remarks>
+        /// The web component event is cancelable, but a .NET handler runs after it has been dispatched and
+        /// cannot keep the list open. To cancel the close, handle it on the client with <see cref="ClosingScript"/>
+        /// and call <c>preventDefault()</c>, for example when <c>args.detail.trigger</c> is <c>'outside-click'</c>.
+        /// </remarks>
         [Parameter]
-        public EventCallback<IgbVoidEventArgs> Closing
+        public EventCallback<IgbComboClosingEventArgs> Closing
         {
             get
             {
-                return this._closing != null ? this._closing.Value : EventCallback<IgbVoidEventArgs>.Empty;
+                return this._closing != null ? this._closing.Value : EventCallback<IgbComboClosingEventArgs>.Empty;
             }
             set
             {
@@ -1293,7 +1519,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closing))
                     {
                         _closing = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", value);
+                        this.SetHandler<IgbComboClosingEventArgs>(this.RendererName, "Closing", value);
                         this.OnRefChanged("Closing", null, "event:::Closing", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closingRef = refName;
@@ -1304,7 +1530,7 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closing = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closing", null);
+                    this.SetHandler<IgbComboClosingEventArgs>(this.RendererName, "Closing", null);
                     this.OnRefChanged("Closing", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closingRef = null;
@@ -1347,17 +1573,18 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private EventCallback<IgbVoidEventArgs>? _closed = null;
+        private EventCallback<IgbComboClosingEventArgs>? _closed = null;
 
         /// <summary>
-        /// Emitted after the list of options is closed.
+        /// Emitted after the user closes the list of options.
+        /// <see cref="IgbComboClosingEventArgsDetail.Trigger"/> gives the user action that closed it.
         /// </summary>
         [Parameter]
-        public EventCallback<IgbVoidEventArgs> Closed
+        public EventCallback<IgbComboClosingEventArgs> Closed
         {
             get
             {
-                return this._closed != null ? this._closed.Value : EventCallback<IgbVoidEventArgs>.Empty;
+                return this._closed != null ? this._closed.Value : EventCallback<IgbComboClosingEventArgs>.Empty;
             }
             set
             {
@@ -1366,7 +1593,7 @@ namespace IgniteUI.Blazor.Controls
                     if (!value.EqualsCompat(_closed))
                     {
                         _closed = value;
-                        this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", value);
+                        this.SetHandler<IgbComboClosingEventArgs>(this.RendererName, "Closed", value);
                         this.OnRefChanged("Closed", null, "event:::Closed", true, false, (refName, oldValue, newValue) =>
                         {
                             this._closedRef = refName;
@@ -1377,11 +1604,237 @@ namespace IgniteUI.Blazor.Controls
                 else
                 {
                     _closed = null;
-                    this.SetHandler<IgbVoidEventArgs>(this.RendererName, "Closed", null);
+                    this.SetHandler<IgbComboClosingEventArgs>(this.RendererName, "Closed", null);
                     this.OnRefChanged("Closed", null, null, true, false, (refName, oldValue, newValue) =>
                     {
                         this._closedRef = null;
                         this.MarkPropDirty("ClosedRef");
+                    });
+                }
+            }
+        }
+
+        private string? _pendingChangeRef = null;
+        private string? _pendingChangeScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="PendingChange"/> event in the browser instead.
+        /// A client handler can call <c>preventDefault()</c> to keep the pending selection.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
+        /// </remarks>
+        [Parameter]
+        public string? PendingChangeScript
+        {
+
+            set
+            {
+                if (value != this._pendingChangeScript)
+                {
+                    this._pendingChangeScript = value;
+                    this.OnRefChanged("PendingChange", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
+                    {
+                        this._pendingChangeRef = refName;
+                        this.MarkPropDirty("PendingChangeRef");
+                    });
+                }
+            }
+            get
+            {
+                return this._pendingChangeScript;
+            }
+        }
+
+        private EventCallback<IgbComboChangeEventArgs<TValue, TItem>>? _pendingChange = null;
+
+        /// <summary>
+        /// Emitted in <see cref="ComboSelectionCommit.Confirm"/> mode when the user changes the pending selection.
+        /// </summary>
+        [Parameter]
+        public EventCallback<IgbComboChangeEventArgs<TValue, TItem>> PendingChange
+        {
+            get
+            {
+                return this._pendingChange != null ? this._pendingChange.Value : EventCallback<IgbComboChangeEventArgs<TValue, TItem>>.Empty;
+            }
+            set
+            {
+                if (value.HasHandler())
+                {
+                    if (!value.EqualsCompat(_pendingChange))
+                    {
+                        _pendingChange = value;
+                        this.SetHandler<IgbComboChangeEventArgs<TValue, TItem>>(this.RendererName, "PendingChange", value);
+                        this.OnRefChanged("PendingChange", null, "event:::PendingChange", true, false, (refName, oldValue, newValue) =>
+                        {
+                            this._pendingChangeRef = refName;
+                            this.MarkPropDirty("PendingChangeRef");
+                        });
+                    }
+                }
+                else
+                {
+                    _pendingChange = null;
+                    this.SetHandler<IgbComboChangeEventArgs<TValue, TItem>>(this.RendererName, "PendingChange", null);
+                    this.OnRefChanged("PendingChange", null, null, true, false, (refName, oldValue, newValue) =>
+                    {
+                        this._pendingChangeRef = null;
+                        this.MarkPropDirty("PendingChangeRef");
+                    });
+                }
+            }
+        }
+
+        private string? _searchInputRef = null;
+        private string? _searchInputScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="SearchInput"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
+        /// </remarks>
+        [Parameter]
+        public string? SearchInputScript
+        {
+
+            set
+            {
+                if (value != this._searchInputScript)
+                {
+                    this._searchInputScript = value;
+                    this.OnRefChanged("SearchInput", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
+                    {
+                        this._searchInputRef = refName;
+                        this.MarkPropDirty("SearchInputRef");
+                    });
+                }
+            }
+            get
+            {
+                return this._searchInputScript;
+            }
+        }
+
+        private EventCallback<IgbComboSearchInputEventArgs>? _searchInput = null;
+
+        /// <summary>
+        /// Emitted when the user changes the text of the search input, or of the main input in single selection
+        /// mode, and when a selection, a blur or the clear button clears the text. Also emitted with the same text
+        /// when the case-sensitive icon changes the case of a search text.
+        /// In <see cref="ComboFilteringMode.Remote"/> filtering mode, search on the server and set <see cref="Data"/> to the results.
+        /// </summary>
+        [Parameter]
+        public EventCallback<IgbComboSearchInputEventArgs> SearchInput
+        {
+            get
+            {
+                return this._searchInput != null ? this._searchInput.Value : EventCallback<IgbComboSearchInputEventArgs>.Empty;
+            }
+            set
+            {
+                if (value.HasHandler())
+                {
+                    if (!value.EqualsCompat(_searchInput))
+                    {
+                        _searchInput = value;
+                        this.SetHandler<IgbComboSearchInputEventArgs>(this.RendererName, "SearchInput", value);
+                        this.OnRefChanged("SearchInput", null, "event:::SearchInput", true, false, (refName, oldValue, newValue) =>
+                        {
+                            this._searchInputRef = refName;
+                            this.MarkPropDirty("SearchInputRef");
+                        });
+                    }
+                }
+                else
+                {
+                    _searchInput = null;
+                    this.SetHandler<IgbComboSearchInputEventArgs>(this.RendererName, "SearchInput", null);
+                    this.OnRefChanged("SearchInput", null, null, true, false, (refName, oldValue, newValue) =>
+                    {
+                        this._searchInputRef = null;
+                        this.MarkPropDirty("SearchInputRef");
+                    });
+                }
+            }
+        }
+
+        private string? _dataRequestRef = null;
+        private string? _dataRequestScript = null;
+
+        /// <summary>
+        /// Name of a client-side function that handles the <see cref="DataRequest"/> event in the browser instead.
+        /// </summary>
+        /// <remarks>
+        /// Register the function on the client like<br/>
+        /// <c>import { registerScript } from './_content/IgniteUI.Blazor/api.js';</c><br/>
+        /// <c>registerScript("MyHandler", (args) => { })</c>.
+        /// </remarks>
+        [Parameter]
+        public string? DataRequestScript
+        {
+
+            set
+            {
+                if (value != this._dataRequestScript)
+                {
+                    this._dataRequestScript = value;
+                    this.OnRefChanged("DataRequest", null, value, true, false, (string refName, object? oldValue, object? newValue) =>
+                    {
+                        this._dataRequestRef = refName;
+                        this.MarkPropDirty("DataRequestRef");
+                    });
+                }
+            }
+            get
+            {
+                return this._dataRequestScript;
+            }
+        }
+
+        private EventCallback<IgbVirtualScrollDataRequestEventArgs>? _dataRequest = null;
+
+        /// <summary>
+        /// Emitted in <see cref="ComboFilteringMode.Remote"/> filtering mode when the user scrolls near the end of
+        /// the options, or to a placeholder of <see cref="TotalItemCount"/>. Append the requested items to
+        /// <see cref="Data"/>. It is not emitted again until the length of the data, the search text or its case
+        /// changes, or the list opens again.
+        /// </summary>
+        [Parameter]
+        public EventCallback<IgbVirtualScrollDataRequestEventArgs> DataRequest
+        {
+            get
+            {
+                return this._dataRequest != null ? this._dataRequest.Value : EventCallback<IgbVirtualScrollDataRequestEventArgs>.Empty;
+            }
+            set
+            {
+                if (value.HasHandler())
+                {
+                    if (!value.EqualsCompat(_dataRequest))
+                    {
+                        _dataRequest = value;
+                        this.SetHandler<IgbVirtualScrollDataRequestEventArgs>(this.RendererName, "DataRequest", value);
+                        this.OnRefChanged("DataRequest", null, "event:::DataRequest", true, false, (refName, oldValue, newValue) =>
+                        {
+                            this._dataRequestRef = refName;
+                            this.MarkPropDirty("DataRequestRef");
+                        });
+                    }
+                }
+                else
+                {
+                    _dataRequest = null;
+                    this.SetHandler<IgbVirtualScrollDataRequestEventArgs>(this.RendererName, "DataRequest", null);
+                    this.OnRefChanged("DataRequest", null, null, true, false, (refName, oldValue, newValue) =>
+                    {
+                        this._dataRequestRef = null;
+                        this.MarkPropDirty("DataRequestRef");
                     });
                 }
             }
@@ -1500,6 +1953,16 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddBooleanProp("disableFiltering", this._disableFiltering); }
             if (IsPropDirty("DisableClear"))
             { ser.AddBooleanProp("disableClear", this._disableClear); }
+            if (IsPropDirty("TotalItemCount"))
+            { ser.AddNumberProp("totalItemCount", this._totalItemCount); }
+            if (IsPropDirty("Loading"))
+            { ser.AddBooleanProp("loading", this._loading); }
+            if (IsPropDirty("ShowSelectAll"))
+            { ser.AddBooleanProp("showSelectAll", this._showSelectAll); }
+            if (IsPropDirty("GroupSelection"))
+            { ser.AddBooleanProp("groupSelection", this._groupSelection); }
+            if (IsPropDirty("SelectionCommit"))
+            { ser.AddEnumProp("selectionCommit", this._selectionCommit); }
             if (IsPropDirty("Value"))
             { ser.AddArrayProp("value", this._value); }
             if (IsPropDirty("Disabled"))
@@ -1526,6 +1989,12 @@ namespace IgniteUI.Blazor.Controls
             { ser.AddStringProp("closingRef", this._closingRef); }
             if (IsPropDirty("ClosedRef"))
             { ser.AddStringProp("closedRef", this._closedRef); }
+            if (IsPropDirty("PendingChangeRef"))
+            { ser.AddStringProp("pendingChangeRef", this._pendingChangeRef); }
+            if (IsPropDirty("SearchInputRef"))
+            { ser.AddStringProp("searchInputRef", this._searchInputRef); }
+            if (IsPropDirty("DataRequestRef"))
+            { ser.AddStringProp("dataRequestRef", this._dataRequestRef); }
 
         }
 

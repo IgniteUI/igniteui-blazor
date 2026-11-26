@@ -10,7 +10,11 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>One or more items were deselected.</summary>
         Deselection,
         /// <summary>A custom value typed by the user was added as an item.</summary>
-        Addition
+        Addition,
+        /// <summary>
+        /// The user applied the pending selection of <see cref="ComboSelectionCommit.Confirm"/> mode.
+        /// </summary>
+        Commit
 
     }
 }
