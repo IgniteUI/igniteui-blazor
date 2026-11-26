@@ -136,13 +136,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Number of extra items to render beyond the visible area of the viewport.
         /// Higher values reduce blank flashes during fast scrolling but can lower performance.
+        /// Must be 0 or greater; 0 renders only the visible items.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
         [Parameter]
         public int OverScan
         {
             get { return this._overScan; }
             set
             {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "OverScan cannot be negative.");
+                }
                 if (this._overScan != value || !IsPropDirty("OverScan"))
                 {
                     MarkPropDirty("OverScan");
@@ -156,13 +162,19 @@ namespace IgniteUI.Blazor.Controls
         /// <summary>
         /// Estimated item size in pixels, used before an item is measured in the DOM.
         /// After the first render of an item, the component replaces the estimate with the measured size.
+        /// Must be greater than 0.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">The value is 0 or negative.</exception>
         [Parameter]
         public int EstimatedItemSize
         {
             get { return this._estimatedItemSize; }
             set
             {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "EstimatedItemSize must be greater than zero.");
+                }
                 if (this._estimatedItemSize != value || !IsPropDirty("EstimatedItemSize"))
                 {
                     MarkPropDirty("EstimatedItemSize");
@@ -248,9 +260,13 @@ namespace IgniteUI.Blazor.Controls
         /// measures the items at the landing point and corrects the scroll position until
         /// the offset is stable.
         /// </summary>
-        public async Task ScrollToIndexAsync(int index)
+        /// <param name="index">The item index; 0 or greater.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative. Thrown by the call itself, not through the returned task.</exception>
+        public Task ScrollToIndexAsync(int index)
         {
-            await InvokeMethod("scrollToIndex", [index], ["Number"]);
+            // Not async, so an invalid index throws at the call instead of faulting the returned task.
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
+            return InvokeMethod("scrollToIndex", [index], ["Number"]);
         }
 
         /// <summary>
@@ -259,23 +275,35 @@ namespace IgniteUI.Blazor.Controls
         /// measures the items at the landing point and corrects the scroll position until
         /// the offset is stable.
         /// </summary>
+        /// <param name="index">The item index; 0 or greater.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative.</exception>
         public void ScrollToIndex(int index)
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
             InvokeMethodSync("scrollToIndex", [index], ["Number"]);
         }
         /// <summary>
         /// Scrolls to the specified item index, with a configurable alignment and scroll behavior.
         /// </summary>
-        public async Task ScrollToIndexAsync(int index, IgbScrollIntoViewOptions options)
+        /// <param name="index">The item index; 0 or greater.</param>
+        /// <param name="options">The alignment and scroll behavior.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative. Thrown by the call itself, not through the returned task.</exception>
+        public Task ScrollToIndexAsync(int index, IgbScrollIntoViewOptions options)
         {
-            await InvokeMethod("scrollToIndex", [index, ObjectToParam(options)], ["Number", "Json"]);
+            // Not async, so an invalid index throws at the call instead of faulting the returned task.
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
+            return InvokeMethod("scrollToIndex", [index, ObjectToParam(options)], ["Number", "Json"]);
         }
 
         /// <summary>
         /// Scrolls to the specified item index, with a configurable alignment and scroll behavior.
         /// </summary>
+        /// <param name="index">The item index; 0 or greater.</param>
+        /// <param name="options">The alignment and scroll behavior.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative.</exception>
         public void ScrollToIndex(int index, IgbScrollIntoViewOptions options)
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
             InvokeMethodSync("scrollToIndex", [index, ObjectToParam(options)], ["Number", "Json"]);
         }
 
