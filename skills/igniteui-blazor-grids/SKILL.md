@@ -51,7 +51,7 @@ When Grid Lite's capabilities run out, the upgrade path is always `IgbGrid` — 
 | `IgbHierarchicalGrid` | `IgbHierarchicalGridModule` | `IgniteUI.Blazor` / `.Trial` |
 | `IgbPivotGrid` | `IgbPivotGridModule` | `IgniteUI.Blazor` / `.Trial` |
 
-Grids are **not** included in `IgniteUI.Blazor.Lite`.
+Grids are **not** included in `IgniteUI.Blazor.Lite`. From 26.2, `IgniteUI.Blazor` / `.Trial` depends on `IgniteUI.Blazor.Lite`, so the two coexist: the full package already brings Lite in, and an explicit Lite reference is redundant but harmless. Before 26.2 they cannot be referenced together (`RZ9985: Multiple components use the tag …`, `CS0121` on `AddIgniteUIBlazor`).
 
 ## Prerequisites
 

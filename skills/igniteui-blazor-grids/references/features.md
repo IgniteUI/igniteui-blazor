@@ -241,13 +241,13 @@ The recommended pattern: assign `Data` once, then send only the changed fields t
 ```
 
 ```js
-// wwwroot/grid-templates.js (structure.md; on 26.1.x register with igRegisterScript(…, false) and igTemplating.html)
+// wwwroot/grid-templates.js (structure.md)
 registerScript('LivePriceCell', (ctx) => html`<span class="price-cell">${Number(ctx.implicit).toFixed(2)}</span>`);
 ```
 
 ```js
 // wwwroot/grid-live.js, loaded with <script type="module" src="grid-live.js"></script>.
-// It needs no api.js, so it works on 26.1.x and 26.2+. Paste keepPixelHeight (sizing.md) and watchSparklines (structure.md) into it.
+// Paste keepPixelHeight (sizing.md) and watchSparklines (structure.md) into it.
 
 // IgbGrid adds its igc-grid element a moment after the first render, also after `await grid.EnsureReady()` (#483).
 function whenElement(id) {

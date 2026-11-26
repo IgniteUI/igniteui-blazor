@@ -113,22 +113,16 @@ Inside `IgbIcon`, the parameter is `IconName` — `Name` is the framework elemen
 
 ### JavaScript cell templates (`BodyTemplateScript`)
 
-`BodyTemplateScript` names a function registered on the client. The grid calls it in the browser with no .NET round trip, and it returns lit markup. Register it at the top level of a script that the host page loads before Blazor starts. The API depends on the package version:
-
-- **26.2 and later** (in beta at the time of writing): `registerScript` and `html` from `_content/IgniteUI.Blazor/api.js`, in a module script.
-- **26.1.x**: there is no `api.js` (it returns 404). Use the `igRegisterScript` and `window.igTemplating` globals that the `app.bundle.js` script tag installs, from a script placed after that tag.
+`BodyTemplateScript` names a function registered on the client. The grid calls it in the browser with no .NET round trip, and it returns lit markup. Register it with `registerScript` and `html` from `_content/IgniteUI.Blazor/api.js`, at the top level of a module script that the host page loads before Blazor starts:
 
 ```html
-<!-- 26.2+: in <head> of wwwroot/index.html (WebAssembly) or App.razor (Blazor Web App), after the import map -->
+<!-- in <head> of wwwroot/index.html (WebAssembly) or App.razor (Blazor Web App), after the import map -->
 <script type="importmap"></script>   <!-- App.razor: <ImportMap /> -->
 <script type="module" src="grid-templates.js"></script>
-
-<!-- 26.1.x: after <script src="_content/IgniteUI.Blazor/app.bundle.js"></script> -->
-<script src="grid-templates.js"></script>
 ```
 
 ```js
-// wwwroot/grid-templates.js, 26.2+
+// wwwroot/grid-templates.js
 import { registerScript, html } from './_content/IgniteUI.Blazor/api.js';
 
 registerScript('PriceCell', (ctx) => {
@@ -137,23 +131,12 @@ registerScript('PriceCell', (ctx) => {
 });
 ```
 
-```js
-// wwwroot/grid-templates.js, 26.1.x (classic script: wrap it so its names stay out of the global scope)
-(() => {
-    const html = window.igTemplating.html;
-    igRegisterScript('PriceCell', (ctx) => {
-        const row = ctx.cell.row.data;
-        return html`<span class="price-cell ${row.Change < 0 ? 'down' : 'up'}">${Number(ctx.implicit).toFixed(2)}</span>`;
-    }, false);                                // false: igRegisterScript's shouldCall defaults to true
-})();
-```
-
 ```razor
 <IgbColumn Field="Price" DataType="GridColumnDataType.Number" BodyTemplateScript="PriceCell" />
 ```
 
 - **Register before the grid renders.** A name that is missing at render time logs `[Ignite UI] script 'PriceCell' is not registered …`, and registering it later does not apply it. A module script that the host page loads is in place in time.
-- **`shouldCall`, the third argument, decides whether the registered function is the script (`false`) or is called once to produce it (`true`).** It defaults to `false` in `registerScript` but to **`true`** in `igRegisterScript`. Templates, `FormatterScript` and event `*Script` handlers need `false`. `CellClassesScript`, `RowClassesScript`, `CellStylesScript` and `RowStylesScript` take an object that maps a class name or CSS property to a function. Register that object directly (any flag), or a factory that returns it with `true`:
+- **`shouldCall`, the third argument, decides whether the registered function is the script (`false`) or is called once to produce it (`true`).** It defaults to `false`. Templates, `FormatterScript` and event `*Script` handlers need `false`. `CellClassesScript`, `RowClassesScript`, `CellStylesScript` and `RowStylesScript` take an object that maps a class name or CSS property to a function. Register that object directly (any flag), or a factory that returns it with `true`:
 
   ```js
   registerScript('PriceClasses', { 'is-down': (rowData, columnKey, cellValue, rowIndex) => rowData.Change < 0 });
@@ -161,7 +144,7 @@ registerScript('PriceCell', (ctx) => {
   ```
 
   A wrong flag mostly fails silently: a template or handler registered with `true` is called once with no arguments and never applied, a factory registered without `true` is never applied, and a formatter registered with `true` breaks the grid (`TypeError: this.formatter is not a function`).
-- **26.2 keeps the globals** for existing code: `igRegisterScript` and `window.igTemplating.html` still work, but each logs a deprecation warning. A name missing at render time logs the warning above on 26.2 and nothing on 26.1. Classic scripts share one global scope, so two of them declaring the same top-level `const` throw `SyntaxError: Identifier '…' has already been declared`. Wrap them as above, or use module scripts.
+- **`igRegisterScript` and `window.igTemplating.html` are deprecated** and log a warning. Their `shouldCall` defaults to `true`, so when you move existing code to `registerScript`, drop a `false` third argument and turn a missing one into `true`.
 - **Markup.** `html` is lit-html 3's template tag. Attribute, `.property`, `?boolean` and `@event` bindings work, and a template can return `html` markup, a string, a number, an array, or `''`/`null` for an empty cell. Strings are escaped, never parsed as HTML. No lit directives ship (`classMap`, `repeat`, `keyed`, …): build class strings by hand. An `@click` inside a cell still activates and selects the cell, even with `stopPropagation()`. `igc-*` elements need their module registered in `Program.cs` ([client scripts](../../igniteui-blazor-components/references/client-scripts.md#templates)).
 
 **Context.** `ctx` is a proxy, so `Object.keys(ctx)`, `{...ctx}` and `JSON.stringify(ctx)` all come back empty. Parameter destructuring (`({ implicit, cell }) =>`) does work.
@@ -200,7 +183,7 @@ registerScript('PriceCell', (ctx) => {
 Render-fragment `BodyTemplate`s are laid out differently: their content is inside `div#host-<guid>` wrappers. CSS written for one shape does not carry over to the other.
 
 **Gotchas.**
-- **There is no way back to the default cell template.** Setting the `igc-column` element's `bodyTemplate` to `null` throws `Cannot read properties of null (reading '___isBridged')` and leaves the cells empty (#484), and binding `BodyTemplateScript` to `null` from C# keeps the old template (26.2) or throws during rendering (26.1). Switch between registered names instead. For a plain look, register a pass-through template, `registerScript('PlainCell', (ctx) => ctx.implicit ?? '')`. Unlike the default cell, it wraps long text instead of truncating it. Likewise, don't bind `BodyTemplate` to `null` to switch a render fragment off: the column's cells go blank.
+- **There is no way back to the default cell template.** Setting the `igc-column` element's `bodyTemplate` to `null` throws `Cannot read properties of null (reading '___isBridged')` and leaves the cells empty (#484), and binding `BodyTemplateScript` to `null` from C# keeps the old template. Switch between registered names instead. For a plain look, register a pass-through template, `registerScript('PlainCell', (ctx) => ctx.implicit ?? '')`. Unlike the default cell, it wraps long text instead of truncating it. Likewise, don't bind `BodyTemplate` to `null` to switch a render fragment off: the column's cells go blank.
 - **Blazor Server: arrays of primitives in `Data` arrive as `null`.** That includes `double[]`, `List<double>` and `string[]`, so a template that reads them gets nothing (#479). Send them as JSON text and `JSON.parse` them in the template, or as a list of objects.
 - **`igc-sparkline` rendered from a template must be `destroy()`ed** when the grid discards its cell (#480). Until then it polls its size every 100 ms, also after its column is hidden, its row is filtered out, or the page is left. Watch the grid for removed nodes and destroy the disconnected sparklines:
 
