@@ -18,7 +18,7 @@ nuget sources add -name "Infragistics" \
 dotnet add package IgniteUI.Blazor
 ```
 
-Never reference `IgniteUI.Blazor` and `IgniteUI.Blazor.Lite` together — same namespace, duplicate types.
+`IgniteUI.Blazor` brings in `IgniteUI.Blazor.Lite` at the version it was released with, so it needs no Lite reference. Reference Lite directly only to pick up a newer Lite before the next `IgniteUI.Blazor` release: stay on the same major version, and raise the reference when updating `IgniteUI.Blazor`, or restore fails with `NU1605` (package downgrade).
 
 ## 2. `IgniteUI.Blazor[.Lite/Trial]` Service Registration
 
@@ -35,7 +35,7 @@ builder.Services.AddIgniteUIBlazor(
     typeof(IgbInputModule), typeof(IgbComboModule), typeof(IgbDialogModule));
 ```
 
-Module names always follow `Igb{ComponentName}Module`. A component requests its own module on first render, so the explicit list trims the initial payload rather than gating rendering. The exception is the full product's feature modules, which add behavior to a component instead of defining one (`IgbDataChartInteractivityModule`, `IgbDataChartAnnotationModule`) and the `*FullModule` bundles that include them: nothing requests those on render, so they must be listed.
+Module names always follow `Igb{ComponentName}Module`. A component requests its own module on first render, so the explicit list trims the initial payload rather than gating rendering. The exception is the full product's feature modules, which add behavior to a component instead of defining one (`IgbDataChartInteractivityModule`, `IgbDataChartAnnotationModule`) and the `*FullModule` bundles that include them: nothing requests those on render, so they must be listed. So must the modules of components used only as `igc-*` elements in client templates ([`client-scripts.md`](./client-scripts.md)), which nothing renders from Razor.
 
 **Blazor Web App:** call `AddIgniteUIBlazor()` in **both** the server and the client `Program.cs`.
 
@@ -58,11 +58,11 @@ builder.Services.AddIgniteUIBlazor();
 
 Add it to both `_Imports.razor` files in split Blazor Web App solutions.
 
-## 4. Host page — CSS and script
+## 4. Host page — CSS
 
 Host page is `wwwroot/index.html` (WASM/MAUI), `Pages/_Host.cshtml` (Server), or `Components/App.razor` (Web App).
 
-For `IgniteUI.Blazor.Lite` the theme stylesheet is the only required tag — without it components render unstyled. The full product also needs a script tag in Blazor Web Apps so the library's client resources initialize correctly (below).
+The theme stylesheet is the only required tag — without it components render unstyled.
 
 ```html
 <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
@@ -70,16 +70,7 @@ For `IgniteUI.Blazor.Lite` the theme stylesheet is the only required tag — wit
 <script src="_framework/blazor.web.js"></script>   <!-- or blazor.server.js / blazor.webassembly.js / blazor.webview.js -->
 ```
 
-**`IgniteUI.Blazor.Lite` (≥ 0.1.0) loads its component bundle itself** — a JS initializer runs during Blazor startup on every hosting model: Blazor Server, standalone WASM, Blazor Web App (`blazor.web.js`, any render mode), and BlazorWebView/Hybrid.
-
-**The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`) currently needs the tag in Blazor Web Apps** so its client resources initialize correctly. There the tag must come **before** the Blazor framework script; classic Blazor Server and standalone WASM apps on the full product may omit it.
-
-```html
-<script src="_content/IgniteUI.Blazor/app.bundle.js"></script>   <!-- full product, Blazor Web App only -->
-<script src="_framework/blazor.web.js"></script>
-```
-
-On the full product, **never wrap that tag in `@Assets[...]`** — fingerprinting it breaks loading and the app renders blank ([#233](https://github.com/IgniteUI/igniteui-blazor/issues/233)). `IgniteUI.Blazor.Lite` no longer ships `app.bundle.js`; remove any existing tag, which would otherwise return 404.
+**Every package loads its scripts itself** — a JS initializer runs during Blazor startup on every hosting model: Blazor Server, standalone WASM, Blazor Web App (`blazor.web.js`, any render mode), and BlazorWebView/Hybrid. Do not add a `_content/IgniteUI.Blazor/app.bundle.js` script tag. `IgniteUI.Blazor.Lite` alone doesn't ship the file, so an existing tag returns 404 there; on the full product it keeps working, and is needed only while a classic script calls the deprecated `igRegisterScript` as the page loads ([`client-scripts.md`](./client-scripts.md#migrating-from-the-window-globals)).
 
 Theme files under `_content/IgniteUI.Blazor/themes/` are `{light|dark}/{bootstrap|material|fluent|indigo}.css` — link exactly one.
 

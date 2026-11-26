@@ -58,14 +58,14 @@ Only pick a grid when the content is genuinely tabular. A list of records with r
 | Text field, search box, inline editor | `IgbInput` | `Label`, `Placeholder`, `Outlined`, `@bind-Value` |
 | Multi-line text | `IgbTextarea` | `Rows`, `Resize` |
 | Dropdown selecting a value | `IgbSelect` + `IgbSelectItem` | |
-| Searchable / multi-select picker | `IgbCombo` | generic over the value type: `TValue` and `TItem` in Lite, `T` in the full product; `Data`, `DisplayKey`, `ValueKey` |
+| Searchable / multi-select picker | `IgbCombo` | generic over the value type `TValue` and the item type `TItem`; `Data`, `DisplayKey`, `ValueKey` |
 | Contextual action menu | `IgbDropdown` | trigger in `slot="target"` — not for form values |
-| Date picker | `IgbDatePicker` | `DateTime?` in the full product; Lite: `<TValue>` is `DateTime`, `DateTime?` or `string` |
+| Date picker | `IgbDatePicker` | `<TValue>` is `DateTime`, `DateTime?` or `string` |
 | Date range | `IgbDateRangePicker` | |
-| Always-visible calendar | `IgbCalendar` | `Selection`, `VisibleMonths`; non-nullable `DateTime` in the full product, Lite takes `<TValue>` as the date picker does |
+| Always-visible calendar | `IgbCalendar` | `Selection`, `VisibleMonths`; `<TValue>` as for the date picker |
 | Masked entry (phone, postal) | `IgbMaskInput` | `Mask`: `0` digit, `L` letter, `A` alphanumeric |
 | Checkbox / switch | `IgbCheckbox` / `IgbSwitch` | `@bind-Checked` |
-| Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group in the full product (give its radios the same lowercase `name`) |
+| Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` and `Name` on the **group** |
 | Slider / range slider | `IgbSlider` / `IgbRangeSlider` | range uses `Lower` / `Upper` |
 | Star rating | `IgbRating` | |
 | Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string; Lite also `System.Drawing.Color`), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |

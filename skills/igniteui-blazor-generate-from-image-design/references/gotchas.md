@@ -31,7 +31,7 @@ Mixing literal text with `@(...)` in one attribute on a component fails the buil
 
 ### CS0103 — a bare string `Value` on `IgbSelectItem` / `IgbRadio`
 
-In `IgniteUI.Blazor.Lite` their `Value` is generic (`TValue`, which must match the parent `IgbSelect` / `IgbRadioGroup`), so the attribute is a C# expression and `Value="apple"` reads as an identifier. Enum members, numbers and loop variables (`Value="Plan.Pro"`, `Value="1"`, `Value="item.Id"`) need no quoting; only a fixed string does.
+Their `Value` is generic (`TValue`, which must match the parent `IgbSelect` / `IgbRadioGroup`), so the attribute is a C# expression and `Value="apple"` reads as an identifier. Enum members, numbers and loop variables (`Value="Plan.Pro"`, `Value="1"`, `Value="item.Id"`) need no quoting; only a fixed string does.
 
 ```razor
 @* ❌ *@ <IgbSelectItem Value="apple">Apple</IgbSelectItem>
@@ -40,7 +40,7 @@ In `IgniteUI.Blazor.Lite` their `Value` is generic (`TValue`, which must match t
 
 ### CS1503 / RZ10001 — `TValue` on a value control's event handler
 
-In `IgniteUI.Blazor.Lite` the value controls (Calendar, Color Picker, Date Picker, Date Range Picker, Date Time Input, Radio Group, Rating, Select, Slider) are generic over `TValue`. Razor infers it from `@bind-Value` or `Value`, but not through a method group, so a method handling a value event fails even next to `@bind-Value`, and a control with no value cannot infer it at all. Set `TValue`, or react with `@bind-Value:after`, which works in both packages.
+The value controls (Calendar, Color Picker, Date Picker, Date Range Picker, Date Time Input, Radio Group, Rating, Select, Slider) are generic over `TValue`. Razor infers it from `@bind-Value` or `Value`, but not through a method group, so a method handling a value event fails even next to `@bind-Value`, and a control with no value cannot infer it at all. Set `TValue`, or react with `@bind-Value:after`.
 
 ```razor
 @* ❌ *@ <IgbSlider @bind-Value="Volume" Change="OnVolumeChange" />
@@ -70,7 +70,7 @@ Every component method has an `XAsync()` form and a sync twin `X()`. **Use `Asyn
   ```
 - `@bind-Value` / `@bind-Checked` — verify the bindable parameter exists rather than inventing one.
 - Mock data is C# `record` or `class`, not a TypeScript interface.
-- `AddIgniteUIBlazor()` must be called in `Program.cs`. Listing `typeof(Igb…Module)` values pre-loads those modules; in `IgniteUI.Blazor.Lite` components also self-register on first render.
+- `AddIgniteUIBlazor()` must be called in `Program.cs`. Listing `typeof(Igb…Module)` values pre-loads those modules; components also request their own module on first render.
 
 ## CSS scoping
 
@@ -212,19 +212,19 @@ A font-icon `<span>` is `display: inline`, so `vertical-align` is ignored by the
 @* ✅ *@ <IgbInput><IgbIcon @ref="_icon" slot="prefix" IconName="search" Collection="material" /></IgbInput>
 ```
 
-The parameter is `IconName`; `Name` is the framework's element identity on every component. Register the icon in `OnAfterRenderAsync(firstRender)` after `await EnsureReady()`, or nothing renders.
+The parameter is `IconName`, not `Name`. Register the icon in `OnAfterRenderAsync(firstRender)` after `await EnsureReady()`, or nothing renders.
 
-### Grouping radios: lowercase `name`
+### Grouping radios: `Name` on the group
 
-Radios are mutually exclusive only when they share an HTML `name`: give every `IgbRadio` in a group the same lowercase `name`, and read the selection from the group's `@bind-Value`. In the full product `Name` is the framework's element identity and does not group them. In `IgniteUI.Blazor.Lite`, `Name` on `IgbRadioGroup` passes the name to its radios.
+Radios are mutually exclusive only when they share a `Name`: set `Name` on the `IgbRadioGroup`, which passes it to its radios, and read the selection from the group's `@bind-Value`.
 
 ### `IgbAvatar` uses `Shape`
 
 `AvatarShape.Circle | Rounded | Square`. There is no `RoundShape`.
 
-### `IgbCombo`'s generic parameters differ per package
+### `IgbCombo`'s generic parameters
 
-`IgniteUI.Blazor.Lite`: `<IgbCombo TValue="int" TItem="Person" …>`. Full `IgniteUI.Blazor`: `<IgbCombo T="int" …>`. `TValue` / `T` is the value type: the `ValueKey` property's type, or the item type without a `ValueKey` — not the item type of a keyed combo. Razor infers them from `@bind-Value` and `Data`, but in Lite a `Change` handler needs both set explicitly.
+`<IgbCombo TValue="int" TItem="Person" …>`. `TValue` is the value type: the `ValueKey` property's type, or the item type without a `ValueKey` — not the item type of a keyed combo. Razor infers them from `@bind-Value` and `Data`, but a `Change` handler needs both set explicitly.
 
 ### `IgbCard` has no default width
 
