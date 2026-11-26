@@ -7,7 +7,13 @@ Every component parameter ending in `Script` takes the **name** of a JavaScript 
 | Template | `ItemTemplateScript`, `GroupHeaderTemplateScript`, `MessageHeaderScript`, … | a context object | an `html` template result, a string, a primitive — anything lit can render |
 | Event handler | `ChangeScript`, `ClosingScript`, `FocusScript`, … — one per C# event | the DOM `CustomEvent` | nothing |
 
-**Package scope.** On `IgniteUI.Blazor.Lite`, register through the `api.js` module below; the `igRegisterScript` / `igRemoveScript` / `igTemplating` window globals no longer exist there. The full product (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`, grids, charts, Dock Manager) does not ship `api.js` yet: register there through the `igRegisterScript(name, fn, shouldCall)` window global, which its `app.bundle.js` script tag installs. Its `shouldCall` defaults to `true`, so pass `false` for handlers and templates.
+**Package scope.** Register through the `api.js` module below. How the older `igRegisterScript` / `igRemoveScript` / `igTemplating` window globals behave depends on the package:
+
+- **`IgniteUI.Blazor.Lite` on its own:** `api.js` only; the globals do not exist.
+- **Full product 26.2+** (`IgniteUI.Blazor` / `IgniteUI.Blazor.Trial`: grids, charts, Dock Manager): `api.js` for every component. The globals still work but are deprecated — every call logs a console deprecation warning. They are defined once Blazor starts; a page script that calls `igRegisterScript` or `igRemoveScript` earlier needs the `app.bundle.js` tag, which queues those calls. `igTemplating.html` cannot be queued: it only works once the components have loaded.
+- **Full product 26.1.x and earlier:** no `api.js`. Register through `igRegisterScript(name, fn, shouldCall)`, which the `app.bundle.js` tag installs, and take `html` from `igTemplating`.
+
+The global's `shouldCall` defaults to `true` and `registerScript`'s to `false`: pass `false` to `igRegisterScript` for handlers and templates, and drop that `false` when converting the call to `registerScript`.
 
 ## Registering
 
@@ -29,7 +35,7 @@ registerScript('OnDialogClosing', (evt) => {
 ```
 
 - The specifier is relative to the importing script's own URL: `./_content/…` from a script at the wwwroot root, `../_content/…` from a subfolder. A classic script's `import()` resolves it against the document base.
-- **Register at the top level of a `type="module"` script, or any time before Blazor starts.** Module scripts run once the page is parsed, while Blazor still has to fetch the component bundle before it can render, so registrations from a page-level module script are in place in time. If a registration lands after a component rendered, the library applies it as soon as it is registered. For a hard guarantee, register from the app's own JS initializer (`beforeWebStart`).
+- **Register at the top level of a `type="module"` script, or any time before Blazor starts.** Module scripts run once the page is parsed, while Blazor still has to fetch the component bundle before it can render, so registrations from a page-level module script are in place in time. A registration that lands after a component rendered still reaches a general component from `IgniteUI.Blazor.Lite` (such as the combo, also under the full product 26.2+), but a grid ignores it and logs `[Ignite UI] script '…' is not registered`; treat every full-product-only component (charts, Dock Manager) the same way. For a hard guarantee, register from the app's own JS initializer (`beforeWebStart`).
 - The registered function is the script. For the few parameters that take a *value* rather than a function (e.g. `DataScript`), pass `true` as the third argument (`shouldCall`): the function is then called once when the parameter resolves and its result is used.
 - Other exports: `removeScript(name)`, and `html` — the lit-html template tag, the same instance the components render with. Typings ship at `_content/IgniteUI.Blazor/api.d.ts`.
 - From a classic (non-module) script use a dynamic import (no top-level `await` there): `import('./_content/IgniteUI.Blazor/api.js').then(({ registerScript, html }) => { /* register */ });`
@@ -41,7 +47,7 @@ A template function receives one context object and returns an `html` template r
 The context mirrors the component's .NET template context: the same data is exposed under the same names — the item for a list item, the message for a chat message — so start from the component's C# template context type when writing one. One exception: a Combo group header gets `{ item }`, a record holding the group's value under the `GroupKey` field, which the C# `IgbComboGroupHeaderContext` of `IgniteUI.Blazor.Lite` exposes as `Key`.
 
 ```razor
-@* Full product: T="string" in place of TValue and TItem *@
+@* Full product 26.1.x and earlier: T="string" in place of TValue and TItem *@
 <IgbCombo TValue="string" TItem="City" Data="Cities" ValueKey="Id" DisplayKey="Name" GroupKey="Country"
           ItemTemplateScript="CityItem" GroupHeaderTemplateScript="CountryHeader" />
 ```

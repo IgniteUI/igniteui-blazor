@@ -4,7 +4,7 @@ Module for every component below is `Igb<Name>Module` (`IgbInputModule`, `IgbCom
 
 Verify exact members with `get_api_reference` / `get_doc` when the MCP server is available — the tables here list the members these controls are normally driven by, not their full API.
 
-The examples compile in both packages, and the types shown are the full `IgniteUI.Blazor`'s. In `IgniteUI.Blazor.Lite`, Calendar, Color Picker, Date Picker, Date Range Picker, Date Time Input, Radio Group, Rating, Select and Slider are generic over `TValue`, the type of their value; each section lists the types it takes. Razor infers `TValue` from `@bind-Value` or `Value`, but not through a method group, so set it when there is no value, or when a method handles an event that carries the value. Those events carry generic args, such as `IgbNumberEventArgs<TValue>`:
+From 26.2 the full `IgniteUI.Blazor` takes these components from `IgniteUI.Blazor.Lite`, so what this file says about Lite also holds for the full product 26.2+. Where the full product 26.1.x and earlier differs, each section says so. The examples compile in both. In `IgniteUI.Blazor.Lite` (and so the full product 26.2+), Calendar, Color Picker, Date Picker, Date Range Picker, Date Time Input, Radio Group, Rating, Select and Slider are generic over `TValue`, the type of their value; each section lists the types it takes. Razor infers `TValue` from `@bind-Value` or `Value`, but not through a method group, so set it when there is no value, or when a method handles an event that carries the value. Those events carry generic args, such as `IgbNumberEventArgs<TValue>`:
 
 ```razor
 <IgbSlider TValue="double" @bind-Value="Volume" Change="OnVolumeChange" />
@@ -61,7 +61,7 @@ Icons in `prefix` / `suffix` slots must be `IgbIcon`. A `<span class="material-i
 }
 ```
 
-The combo is generic over its value type: the `ValueKey` property's type (here `City.Id`, `string`), or the item type when there is no `ValueKey`. `Value` is an array of it, even with `SingleSelect`. The full `IgniteUI.Blazor` names it `T`; `IgniteUI.Blazor.Lite` names it `TValue` and adds `TItem`, the item type `Data` takes. Razor infers them from `@bind-Value` and `Data`, so the example sets neither. Set them when there is nothing to infer them from, and in Lite whenever the combo has a `Change` handler, as its args are `IgbComboChangeEventArgs<TValue, TItem>`: `<IgbCombo T="string" …>` in the full product, `<IgbCombo TValue="string" TItem="City" …>` in Lite. `IgbCombo` does not participate in a plain HTML `<form>`; bind its value explicitly.
+The combo is generic over its value type: the `ValueKey` property's type (here `City.Id`, `string`), or the item type when there is no `ValueKey`. `Value` is an array of it, even with `SingleSelect`. The full `IgniteUI.Blazor` 26.1.x and earlier names it `T`; `IgniteUI.Blazor.Lite` names it `TValue` and adds `TItem`, the item type `Data` takes. Razor infers them from `@bind-Value` and `Data`, so the example sets neither. Set them when there is nothing to infer them from, and in Lite whenever the combo has a `Change` handler, as its args are `IgbComboChangeEventArgs<TValue, TItem>`: `<IgbCombo T="string" …>` in the full product 26.1.x and earlier, `<IgbCombo TValue="string" TItem="City" …>` in Lite. `IgbCombo` does not participate in a plain HTML `<form>`; bind its value explicitly.
 
 ## Select
 
@@ -82,7 +82,7 @@ The combo is generic over its value type: the `ValueKey` property's type (here `
 
 Write item values as C# expressions, `Value="@country.Code"` or `Value="@("us")"`, which works in both packages. Use `Placeholder` for the empty state rather than an empty item. `IgbSelectHeader` and `IgbSelectGroup` add section headings and grouping.
 
-In `IgniteUI.Blazor.Lite`, `IgbSelect<TValue>` is generic: it takes `string`, `char`, an enum, or a numeric type, each optionally nullable. Each item infers its own `TValue` from its `Value`, so item values must have the select's exact type: an `int?` select needs `int?` values, not `int`. A bare `Value="apple"` is a C# expression there, reads as the identifier `apple`, and does not compile. `Change` carries `IgbSelectItemComponentEventArgs<TValue>`, whose `Detail` is the selected `IgbSelectItem<TValue>`. In the full product `Value` is a `string`.
+In `IgniteUI.Blazor.Lite`, `IgbSelect<TValue>` is generic: it takes `string`, `char`, an enum, or a numeric type, each optionally nullable. Each item infers its own `TValue` from its `Value`, so item values must have the select's exact type: an `int?` select needs `int?` values, not `int`. A bare `Value="apple"` is a C# expression there, reads as the identifier `apple`, and does not compile. `Change` carries `IgbSelectItemComponentEventArgs<TValue>`, whose `Detail` is the selected `IgbSelectItem<TValue>`. In the full product 26.1.x and earlier `Value` is a `string`.
 
 ## Date and time
 
@@ -110,7 +110,7 @@ In `IgniteUI.Blazor.Lite`, `IgbSelect<TValue>` is generic: it takes `string`, `c
 }
 ```
 
-In the full product `IgbCalendar.Value` is a non-nullable `DateTime` and the pickers are nullable. Multi and range calendar selection come from `Selection` (`CalendarSelection.Single | Multiple | Range`).
+In the full product 26.1.x and earlier `IgbCalendar.Value` is a non-nullable `DateTime` and the pickers are nullable. Multi and range calendar selection come from `Selection` (`CalendarSelection.Single | Multiple | Range`).
 
 In `IgniteUI.Blazor.Lite`, `IgbDatePicker<TValue>`, `IgbDateRangePicker<TValue>`, `IgbCalendar<TValue>` and `IgbDateTimeInput<TValue>` take `DateTime`, `DateTime?`, or `string`, the Date Range Picker's `Value` being an `IgbDateRangeValue<TValue>`; `Min`, `Max` and `ActiveDate` take the same `TValue`, and the Calendar's `Values` is a `TValue[]`. Dates reported back are UTC (`Kind = Utc`), and `string` values come back in round-trip `"o"` form (e.g. `2026-01-02T03:04:05.0000000Z`). A cleared `DateTime?` or `string` is `null`; a cleared `DateTime` is `DateTime.MinValue`.
 
@@ -129,7 +129,7 @@ In `IgniteUI.Blazor.Lite`, `IgbDatePicker<TValue>`, `IgbDateRangePicker<TValue>`
 </IgbRadioGroup>
 ```
 
-The selected option is the group's `Value`; radio values are written as for `IgbSelectItem`. The radios are only mutually exclusive when they share a `name`: give every radio in a group the same lowercase `name`, unique to that group, or an unbound group lets each radio stay checked. In the full product, do **not** set `Name` to group them — `Name` is the framework's element identity, not the HTML radio name.
+The selected option is the group's `Value`; radio values are written as for `IgbSelectItem`. The radios are only mutually exclusive when they share a `name`: give every radio in a group the same lowercase `name`, unique to that group, or an unbound group lets each radio stay checked. In the full product 26.1.x and earlier, do **not** set `Name` to group them — `Name` is the framework's element identity, not the HTML radio name.
 
 In `IgniteUI.Blazor.Lite`, `IgbRadioGroup<TValue>` is generic: it takes `string`, `char`, `bool`, an enum, or a numeric type, each optionally nullable; each radio infers `TValue` from its own `Value`, which must have the group's type, and `Change` carries `IgbRadioChangeEventArgs<TValue>`. `Name` on `IgbRadioGroup` passes the name to each of its radios. An enum binds its members directly:
 
@@ -157,7 +157,7 @@ In `IgniteUI.Blazor.Lite`, `IgbRadioGroup<TValue>` is generic: it takes `string`
 }
 ```
 
-`Min`, `Max`, `Step`, `LowerBound`, `UpperBound`, `PrimaryTicks`, `SecondaryTicks`, `DiscreteTrack` and the label/tooltip options come from the shared slider base and apply to both sliders. `IgbRangeSlider` uses `Lower` / `Upper` instead of `Value`. `@bind-Value:after` reacts to a new value without naming the event args, which differ by package: in the full product `IgbRating.Value` and `IgbSlider.Value` are `double` and their events carry `IgbNumberEventArgs`; in `IgniteUI.Blazor.Lite`, `IgbSlider<TValue>` and `IgbRating<TValue>` take `int`, `long`, `short`, `float`, `double`, or `decimal`, and the slider's `Input` / `Change` and the rating's `Change` / `Hover` carry `IgbNumberEventArgs<TValue>`.
+`Min`, `Max`, `Step`, `LowerBound`, `UpperBound`, `PrimaryTicks`, `SecondaryTicks`, `DiscreteTrack` and the label/tooltip options come from the shared slider base and apply to both sliders. `IgbRangeSlider` uses `Lower` / `Upper` instead of `Value`. `@bind-Value:after` reacts to a new value without naming the event args, which differ by package: in the full product 26.1.x and earlier `IgbRating.Value` and `IgbSlider.Value` are `double` and their events carry `IgbNumberEventArgs`; in `IgniteUI.Blazor.Lite`, `IgbSlider<TValue>` and `IgbRating<TValue>` take `int`, `long`, `short`, `float`, `double`, or `decimal`, and the slider's `Input` / `Change` and the rating's `Change` / `Hover` carry `IgbNumberEventArgs<TValue>`.
 
 ## Color Picker
 

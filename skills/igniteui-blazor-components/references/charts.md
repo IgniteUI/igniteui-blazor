@@ -62,7 +62,7 @@ The chart auto-detects the string/date property for the X axis and creates a ser
 ```
 
 - Every series must reference its axes by matching `Name` ↔ `XAxisName` / `YAxisName`.
-- `IgbDataChart` needs one module per **series category** — `IgbDataChartCoreModule` plus e.g. `IgbDataChartCategoryModule`, `IgbDataChartScatterModule`, `IgbDataChartFinancialModule`. Check `get_doc` for the exact names.
+- `IgbDataChart` needs one module per **series category** — `IgbDataChartCoreModule` plus e.g. `IgbDataChartCategoryModule`, `IgbDataChartScatterModule`, `IgbDataChartFinancialModule`. Hover tooltips also need `IgbDataChartInteractivityModule`, which must be passed to `AddIgniteUIBlazor(...)` even when no other module is listed. Check `get_doc` for the exact names.
 - `IgbScatterSeries` / `IgbBubbleSeries` map fields with `XMemberPath` / `YMemberPath` (not `XAxisMemberPath`); bubbles also need `RadiusMemberPath`.
 
 The legend property-with-`StateHasChanged` idiom above is required for any chart that binds a legend by reference.
@@ -124,4 +124,4 @@ Binding shapes differ enough between these that guessing fails: read `get_doc` f
 
 **Set visual parameters inline in markup, not via `@ref` in `OnAfterRenderAsync`** — assigning them to a component reference raises Blazor warning **BL0005** (component parameter set outside its component).
 
-**Other common parameters:** default tooltips appear on hover with no configuration (`TooltipTemplate` replaces them); `IsTransitionInEnabled` / `TransitionInDuration` animate entry; `IsSeriesHighlightingEnabled` with `HighlightingMode` / `HighlightingBehavior` controls hover emphasis; `IsHorizontalZoomEnabled` / `IsVerticalZoomEnabled` and `CrosshairsDisplayMode` handle zoom and crosshairs.
+**Other common parameters:** default tooltips appear on hover (on `IgbDataChart` only once `IgbDataChartInteractivityModule` is registered; `TooltipTemplate` replaces them); `IsTransitionInEnabled` / `TransitionInDuration` animate entry; `IsSeriesHighlightingEnabled` with `HighlightingMode` / `HighlightingBehavior` controls hover emphasis; `IsHorizontalZoomEnabled` / `IsVerticalZoomEnabled` and `CrosshairsDisplayMode` handle zoom and crosshairs.
