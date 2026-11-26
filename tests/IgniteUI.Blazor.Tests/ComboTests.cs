@@ -598,6 +598,77 @@ public class ComboTests : ComponentWithContractTestBase<IgbCombo<ComboItem, Comb
         Assert.DoesNotContain(oldId, arg, StringComparison.OrdinalIgnoreCase);
     }
 
+    // Replaces the data with one that holds _valueItem1 again under a new uuid, while the client's
+    // selection holds the object of the old data, and waits until Deselect names the old uuid.
+    private async Task<(string OldId, string NewId)> HoldFirstItemOfTheOldData(IRenderedComponent<IgbCombo<ComboItem, ComboItem>> cut)
+    {
+        var oldId = DataItemId(Interop, cut, 0);
+        SetupHeldItems(oldId);
+
+        cut.Render(ps => ps.Add(c => c.Data, new[] { _valueItem1, new ComboItem { Id = 3, Text = "Third" } }));
+        var newId = DataItemId(Interop, cut, 0);
+        cut.WaitForAssertion(() => Assert.NotEmpty(Interop.CallsOf("___heldItemIds")));
+
+        Interop.SetupPropertyRead("Value", InteropReturn.Array("[]"));
+        for (var attempt = 0; attempt < 100; attempt++)
+        {
+            await cut.InvokeAsync(() => cut.Instance.DeselectAsync([_valueItem1]));
+            if (Interop.RequireCall("deselect").Arguments[0].GetRawText().Contains(oldId, StringComparison.OrdinalIgnoreCase))
+            {
+                return (oldId, newId);
+            }
+            await Task.Delay(10);
+        }
+        throw new Xunit.Sdk.XunitException("Deselect never named the held uuid.");
+    }
+
+    [Fact]
+    public async Task Combo_DeselectThenSelectTheHeldItem_SelectNamesTheCurrentObject()
+    {
+        // After the deselect the client no longer holds the old object, so a Select right after it
+        // must name the item by its uuid in the current data, not by the uuid of the old data.
+        Interop.PrimeReady();
+        var cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 }));
+        var (oldId, newId) = await HoldFirstItemOfTheOldData(cut);
+
+        SetupHeldItems();
+        await cut.InvokeAsync(async () =>
+        {
+            await cut.Instance.DeselectAsync([_valueItem1]);
+            await cut.Instance.SelectAsync([_valueItem1]);
+        });
+
+        var arg = Interop.RequireCall("select").Arguments[0].GetRawText();
+        Assert.Contains(newId, arg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(oldId, arg, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Combo_ChangeDeselectsTheHeldItem_SelectInTheHandlerNamesTheCurrentObject()
+    {
+        // A user's deselection reaches .NET as a Change; a Select made by its handler runs before the
+        // background prune and must not name the old uuid, which the client no longer resolves.
+        Interop.PrimeReady();
+        Task? select = null;
+        IRenderedComponent<IgbCombo<ComboItem, ComboItem>>? cut = null;
+        cut = Render<IgbCombo<ComboItem, ComboItem>>(ps => ps
+            .Add(c => c.Data, new[] { _valueItem1, _valueItem2 })
+            .Add(c => c.Change, (IgbComboChangeEventArgs<ComboItem, ComboItem> args) =>
+            {
+                select = cut!.Instance.SelectAsync([_valueItem1]);
+            }));
+        var (oldId, newId) = await HoldFirstItemOfTheOldData(cut);
+
+        Interop.RaiseEvent(Interop.ContainerIdOf(cut), "Change",
+            ChangeDetail("", $$"""{"refType": "uuid", "id": "{{oldId}}"}""", "deselection"));
+        await cut.InvokeAsync(() => select!);
+
+        var arg = Interop.RequireCall("select").Arguments[0].GetRawText();
+        Assert.Contains(newId, arg, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(oldId, arg, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public void Combo_ItemReleasedTwice_TheUuidTheClientHoldsStillResolves()
     {

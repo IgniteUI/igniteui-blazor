@@ -967,6 +967,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task CancelSelectionAsync()
         {
             await InvokeMethod("cancelSelection", new object?[] { }, new string[] { });
+            await SyncHeldIdsFromClientAsync();
         }
 
         /// <summary>
@@ -976,6 +977,7 @@ namespace IgniteUI.Blazor.Controls
         public void CancelSelection()
         {
             InvokeMethodSync("cancelSelection", new object?[] { }, new string[] { });
+            SyncHeldIdsFromClient();
         }
 
         /// <summary>
@@ -1116,10 +1118,10 @@ namespace IgniteUI.Blazor.Controls
                         this.SetHandler<IgbComboChangeEventArgs<TValue, TItem>>(this.RendererName, "Change", value, (args) =>
                         {
                             var newValueValue = default(TValue[]);
-                            OnClientSelectionChanged();
 
                             {
                                 newValueValue = (TValue[])(DowncastArray<TValue>(args.Detail.NewValue));
+                                OnClientSelectionChanged(newValueValue);
                                 if (UseDirectRender)
                                 {
                                     //TODO: maybe we should be doing this for everything. Need to make sure we don't infinity bounce though.

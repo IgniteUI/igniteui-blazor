@@ -41,6 +41,8 @@ namespace IgniteUI.Blazor.Controls
         private readonly Dictionary<object, Guid> _retainedIds = new(ReferenceEqualityComparer.Instance);
         // The uuid under which the client held each retained item at the last prune.
         private readonly Dictionary<object, Guid> _heldIds = new(ReferenceEqualityComparer.Instance);
+        // Goes up whenever _heldIds is set from a newer view of the client than a running prune has.
+        private int _heldVersion;
         private int _pruneScheduled;
 
         private void EnsureItemReleaseTracking()
@@ -66,6 +68,74 @@ namespace IgniteUI.Blazor.Controls
                 _retainedIds[item] = id;
             }
             SchedulePruneRetainedItems();
+        }
+
+        // After a Change, the client holds exactly the items of the new value: in confirm mode the commit
+        // copies the pending selection. Drop the held uuids of the other items now. The deferred prune
+        // comes too late for a Select that the Change handler makes, which would otherwise send a
+        // deselected item under a uuid the client no longer resolves.
+        private void OnClientSelectionChanged(TValue[]? newValue)
+        {
+            // With a ValueKey, the value holds keys, which tell nothing about the items.
+            if (newValue != null && string.IsNullOrEmpty(ValueKey))
+            {
+                lock (_retainedLock)
+                {
+                    if (_heldIds.Count > 0)
+                    {
+                        var kept = new HashSet<object>(newValue.OfType<object>(), ReferenceEqualityComparer.Instance);
+                        foreach (var item in _heldIds.Keys.Where(item => !kept.Contains(item)).ToList())
+                        {
+                            _heldIds.Remove(item);
+                        }
+                        _heldVersion++;
+                    }
+                }
+            }
+            OnClientSelectionChanged();
+        }
+
+        // A selection call changes the items that the client holds. Read them right after it, not in
+        // the deferred prune, so that the next call sends each item under the uuid the client holds.
+        private void RefreshHeldIds()
+        {
+            if (IsReady && HasRetainedItems())
+            {
+                ApplyHeldItemIds(ReturnToObjectArray<string>(InvokeMethodSync("___heldItemIds", Array.Empty<object?>(), Array.Empty<string>())));
+            }
+        }
+
+        private async Task RefreshHeldIdsAsync()
+        {
+            if (IsReady && HasRetainedItems())
+            {
+                ApplyHeldItemIds(ReturnToObjectArray<string>(await InvokeMethod("___heldItemIds", Array.Empty<object?>(), Array.Empty<string>())));
+            }
+        }
+
+        private bool HasRetainedItems()
+        {
+            lock (_retainedLock)
+            {
+                return _retainedItems.Count > 0;
+            }
+        }
+
+        private void ApplyHeldItemIds(string[] held)
+        {
+            var heldIds = new HashSet<string>(held.Where(id => id != null), StringComparer.OrdinalIgnoreCase);
+            lock (_retainedLock)
+            {
+                _heldIds.Clear();
+                foreach (var (id, item) in _retainedItems)
+                {
+                    if (item is not null && heldIds.Contains(id.ToString()))
+                    {
+                        _heldIds[item] = id;
+                    }
+                }
+                _heldVersion++;
+            }
         }
 
         // The client's selection changed, so the retained items it holds may have too.
@@ -104,15 +174,23 @@ namespace IgniteUI.Blazor.Controls
                     return;
                 }
                 List<Guid> candidates;
+                int version;
                 lock (_retainedLock)
                 {
                     candidates = _retainedItems.Keys.ToList();
+                    version = _heldVersion;
                 }
                 var held = ReturnToObjectArray<string>(await InvokeMethod("___heldItemIds", Array.Empty<object?>(), Array.Empty<string>()));
                 var heldIds = new HashSet<string>(held.Where(id => id != null), StringComparer.OrdinalIgnoreCase);
                 // Only the items retained before the query: the ones released since then wait for the next one.
                 lock (_retainedLock)
                 {
+                    if (version != _heldVersion)
+                    {
+                        // The selection changed during the query, so its answer is stale. Every change
+                        // of the version schedules a prune of its own, which decides instead.
+                        return;
+                    }
                     foreach (var id in candidates)
                     {
                         if (!_retainedItems.TryGetValue(id, out var item) || item is null)
@@ -209,12 +287,29 @@ namespace IgniteUI.Blazor.Controls
         // so Value and @bind-Value follow, as they do for a user's selection.
         private async Task SyncValueFromClientAsync()
         {
-            ApplyValueFromClient(await GetCurrentValueAsync());
+            var value = await GetCurrentValueAsync();
+            await RefreshHeldIdsAsync();
+            ApplyValueFromClient(value);
         }
 
         private void SyncValueFromClient()
         {
-            ApplyValueFromClient(GetCurrentValue());
+            var value = GetCurrentValue();
+            RefreshHeldIds();
+            ApplyValueFromClient(value);
+        }
+
+        // CancelSelection drops the pending selection, and the items only it held, without changing the value.
+        private async Task SyncHeldIdsFromClientAsync()
+        {
+            await RefreshHeldIdsAsync();
+            OnClientSelectionChanged();
+        }
+
+        private void SyncHeldIdsFromClient()
+        {
+            RefreshHeldIds();
+            OnClientSelectionChanged();
         }
 
         private void ApplyValueFromClient(TValue[]? value)
