@@ -75,7 +75,7 @@ namespace IgniteUI.Blazor.Controls
             this.SuppressParentNotify = true;
 
             if (args != null && args.TryGetValue("text", out var textObj))
-            { this.Text = ReturnToString(textObj); }
+            { this.Text = ReturnToString(textObj) ?? ""; }
             if (args != null && args.TryGetValue("attachments", out var attachmentsObj))
             { this.Attachments = ReturnToObjectArray<IgbChatMessageAttachment>(attachmentsObj) ?? Array.Empty<IgbChatMessageAttachment>(); }
 

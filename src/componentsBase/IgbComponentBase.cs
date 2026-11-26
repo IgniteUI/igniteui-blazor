@@ -999,6 +999,11 @@ namespace IgniteUI.Blazor.Controls
             m.SetData("types", "[" + String.Join(", ", typeStrings) + "]");
             m.NativeElements = nativeElements;
             var ret = await SendMessageImmediate(m);
+            // Only a sent invocation answers with a string; otherwise no return will arrive.
+            if (!(ret is JsonElement sentElement && sentElement.ValueKind == JsonValueKind.String))
+            {
+                return null;
+            }
 
             TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
             // A return can arrive on the dispatcher while a call made off it is still getting here.
@@ -1401,7 +1406,7 @@ namespace IgniteUI.Blazor.Controls
                 m.SetData("refName", "\"" + refName + "\"");
                 m.SetData("index", index.ToString());
                 m.SetData("oldItem", oldItem == null ? "null" : ((JsonDataSourceItem)oldItem).ToJson());
-                m.SetData("newItem", oldItem == null ? "null" : ((JsonDataSourceItem?)newItem)?.ToJson());
+                m.SetData("newItem", newItem == null ? "null" : ((JsonDataSourceItem)newItem).ToJson());
                 if (!((JsonDataSource)dataSource).DateCacheReady)
                 {
                     m.SetData("dateCache", ((JsonDataSource)dataSource).GetDateCacheAsJson());
@@ -2622,10 +2627,10 @@ namespace IgniteUI.Blazor.Controls
             ObjectToParam(c, val);
         }
 
-        internal string ReturnToString(object? val)
+        internal string? ReturnToString(object? val)
         {
             val = ConvertReturnValue(val);
-            return val?.ToString() ?? String.Empty;
+            return val?.ToString();
         }
 
         internal string? StringToString(object? val)
