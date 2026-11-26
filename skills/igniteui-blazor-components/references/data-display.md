@@ -44,21 +44,30 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 ## Card
 
 ```razor
-<IgbCard style="width: 350px;">
-    <IgbCardMedia><img src="photo.jpg" alt="Card image" /></IgbCardMedia>
-    <IgbCardHeader>
-        <h3 slot="title">Jane Doe</h3>
-        <span slot="subtitle">Photographer</span>
-    </IgbCardHeader>
-    <IgbCardContent><p>A short description.</p></IgbCardContent>
-    <IgbCardActions>
-        <IgbButton slot="start" Variant="ButtonVariant.Flat">Like</IgbButton>
-        <IgbButton slot="end" Variant="ButtonVariant.Contained">Buy Now</IgbButton>
-    </IgbCardActions>
-</IgbCard>
+<div class="card-row">
+    <IgbCard>
+        <IgbCardMedia><img src="photo.jpg" alt="Card image" /></IgbCardMedia>
+        <IgbCardHeader>
+            <h3 slot="title">Jane Doe</h3>
+            <span slot="subtitle">Photographer</span>
+        </IgbCardHeader>
+        <IgbCardContent><p>A short description.</p></IgbCardContent>
+        <IgbCardActions>
+            <IgbButton slot="start" Variant="ButtonVariant.Flat">Like</IgbButton>
+            <IgbButton slot="end" Variant="ButtonVariant.Contained">Buy Now</IgbButton>
+        </IgbCardActions>
+    </IgbCard>
+</div>
 ```
 
-`IgbCard` has no default width — always give it one.
+```css
+/* MyView.razor.css */
+.card-row ::deep igc-card {
+    width: 350px;
+}
+```
+
+`IgbCard` has no width of its own — in a block container it stretches to the container's width, in a flex row it shrinks to its content — so give it one from CSS, not a `style` attribute. In a `.razor.css` file, use `::deep` under an element the view renders itself: `igc-card` carries no CSS-isolation attribute, so a plain `.my-card { … }` rule there never matches, even with `class="my-card"` on the `IgbCard`. In `app.css`, a `class` plus a plain rule works. `IgbCard` has no `Width` parameter: `Width="350px"` compiles, but only renders a `width` attribute on `igc-card`, which does not size it.
 
 ## List
 
@@ -89,18 +98,23 @@ The parameter is **`IconName`**, not `Name` (`Name` is the framework element ide
 <IgbBadge Variant="StyleVariant.Primary">5</IgbBadge>
 <IgbBadge Variant="StyleVariant.Danger" Shape="BadgeShape.Square" Dot="true" />
 
-<IgbChip Selectable="true" Removable="true" Variant="StyleVariant.Info" Remove="OnChipRemoved">
+<IgbChip Selectable="true" Removable="true" Variant="StyleVariant.Info" @bind-Selected="BlazorSelected" Remove="OnChipRemoved">
     <IgbIcon slot="start" IconName="star" Collection="material" />
     Blazor
 </IgbChip>
 <IgbChip Outlined="true" Variant="StyleVariant.Primary">Outlined</IgbChip>
 
 @code {
-    void OnChipRemoved(IgbVoidEventArgs e) { }
+    bool BlazorSelected { get; set; }
+    void OnChipRemoved(IgbVoidEventArgs e) { }   // the chip does not remove itself: drop it from your data here
 }
 ```
 
-`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`; a chip without `Variant` has no color variant. `IgbChip` also has `Outlined`, `Selected` / `SelectedChanged` and a `Select` event.
+`Remove` is an `EventCallback<IgbVoidEventArgs>`. `Outlined="true"` gives a transparent chip with a 1px border; with a `Variant` the border takes the variant color and the text stays the theme's text color (Indigo gives an outlined chip without `Variant` a light fill and a grey border). Selecting a chip adds a check icon. In Bootstrap and Material that is all it changes. In Fluent and Indigo, selecting a chip **without** a `Variant` also fills a non-outlined chip with the primary color and gives an outlined one a primary border and darker text. A chip with a `Variant` keeps its variant colors when selected, and an outlined chip is transparent when selected.
+
+Without a `Variant`, restyle an outlined chip with `--ig-chip-outlined-background`, `--ig-chip-outlined-text-color` and `--ig-chip-border-color`; once it is selected these are replaced by `--ig-chip-selected-outlined-background`, `--ig-chip-selected-outlined-text-color` and `--ig-chip-selected-border-color`. With a `Variant`, the variant rules win over every background, text and border token (including `--ig-chip-background` / `--ig-chip-text-color`); size and shape tokens such as `--ig-chip-size` and `--ig-chip-border-radius` still apply. To recolor a variant chip, style the part, e.g. `.chips ::deep igc-chip[selected]::part(base) { background: …; border-color: …; color: …; }` in the view's `.razor.css`, where `.chips` is an element the view renders. Tokens alone do not outline a chip without `Outlined` (it gets no border). `IgbChip` also has `Selected` / `SelectedChanged` (`@bind-Selected`) and a `Select` event (`IgbComponentBoolValueChangedEventArgs`; `Detail` is the new state).
+
+`AvatarShape`: `Circle | Rounded | Square` — use `Shape`, there is no `RoundShape`. `StyleVariant` (shared by badge and chip): `Primary | Info | Success | Warning | Danger`; a chip without `Variant` has no color variant.
 
 `IgbBadge` is a non-interactive visual notification, such as a status or a count. It also works as a label, such as a category, a role ("Maintainer") or a tag. It defaults to `role="status"`. For a label, set a `role` that fits the context, for example `role="listitem"` in a `role="list"` row. `IgbChip` is interactive: a filter, a contextual action, or an item the user selects or removes. It renders a `<button>`, so it is focusable and has hover and pressed states.
 

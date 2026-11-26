@@ -83,16 +83,41 @@ Merges visually identical adjacent cells. Sort by the merged columns first, or t
 
 ## Export
 
+`IgbGridToolbarExporter` offers Export to Excel, CSV **and PDF** by default (`ExportExcel`, `ExportCSV`, `ExportPDF` all default to `true`); set the unwanted ones to `false` — Excel only is `ExportCSV="false" ExportPDF="false"`. PDF needs no extra module or script. `Filename` defaults to `ExportedData`.
+
 ```razor
-<IgbGridToolbarExporter @ref="exporter" ExportExcel="true" ExportCSV="true" Filename="employees" />
+@inject IJSRuntime JS
+
+<div @ref="employeesHost">
+    <IgbGrid Data="employees" PrimaryKey="Id">
+        <IgbGridToolbar>
+            <IgbGridToolbarActions>
+                <IgbGridToolbarExporter ExportExcel="true" ExportCSV="true" ExportPDF="false" Filename="employees" />
+            </IgbGridToolbarActions>
+        </IgbGridToolbar>
+        …
+    </IgbGrid>
+</div>
 
 @code {
-    private IgbGridToolbarExporter exporter = default!;
+    private ElementReference employeesHost;   // one host per grid, so each export targets its own grid
 
-    private Task ExportToExcel() => exporter.ExportGridAsync(GridToolbarExporterType.Excel);
-    private Task ExportToCsv()   => exporter.ExportGridAsync(GridToolbarExporterType.CSV);
+    private async Task ExportToExcel() => await JS.InvokeVoidAsync("exportGrid", employeesHost, "excel");
+    private async Task ExportToCsv()   => await JS.InvokeVoidAsync("exportGrid", employeesHost, "csv");
 }
 ```
+
+```js
+// wwwroot/js/export-grid.js — export() on the toolbar exporter inside the host element: "excel" | "csv" | "pdf"
+window.exportGrid = (host, type) => host.querySelector('igc-grid-toolbar-exporter').export(type);
+```
+
+```html
+<!-- host page (wwwroot/index.html, or App.razor in a Blazor Web App) -->
+<script src="js/export-grid.js"></script>
+```
+
+To export from code, call the element's `export()` through JS interop as above — this needs an `IgbGridToolbarExporter` in the grid's toolbar (without one the helper throws a `JSException`: `Cannot read properties of null`). `ExportCSV` / `ExportPDF="false"` only hide that format in the menu; `export('csv')` / `export('pdf')` still work. Passing the grid's host element keeps the export on that grid when the page has several. The C# `ExportGridAsync` / `ExportGrid` fail: the console logs `target doesn't have prop: export`, .NET throws an `InvalidOperationException`, and nothing downloads. The `GridToolbarExporterType` values are `Excel`, `Csv`, `Pdf` — not `CSV`. `ExportStarted` / `ExportEnded` fire for every export, but in the C# `ExportStarted` args `Detail.Options` and `Detail.Grid` are always `null`, and the export cannot be cancelled (`IgbExporterEventArgsDetail` has no `Cancel`).
 
 Configure or cancel an export from the grid's `ToolbarExporting` event. In Blazor the practical hook is the JS variant, because the exporter's own per-column and per-row events are only reachable from script:
 
@@ -154,7 +179,23 @@ Row and column virtualization are on by default once the grid has a fixed `Heigh
 </IgbGrid>
 ```
 
-`IgbGridEditingActions` renders edit/delete (plus add-row when `AddRow="true"`) and needs `RowEditable="true"` on the grid to function. `IgbGridPinningActions` renders row pin/unpin. Extra buttons can be placed inside `IgbActionStrip` alongside them.
+`IgbGridEditingActions` shows Edit and Delete by default (`EditRow` and `DeleteRow` default to `true`). `AddRow="true"` adds an Add button on root rows; on `IgbTreeGrid`, `AddChild="true"` adds an Add Child button. Set `EditRow="false"` or `DeleteRow="false"` to hide one. What each needs:
+
+- **Delete** removes the row by key — it needs `PrimaryKey`, not `RowEditable`; without `PrimaryKey` it silently does nothing. It also removes the row from the bound `List<T>` instance itself (not from a list that one was copied from), but the page does not re-render: `RowDeleted` is an `Action<T>`, so call `StateHasChanged()` in its handler when something else on the page (a count, a summary) depends on the list.
+- **Edit** enters row editing with `RowEditable="true"` (which also makes the non-key columns editable), or cell editing on the first `Editable="true"` column without it. With no editable column it silently does nothing.
+- **Add / Add Child** need `RowEditable="true"`; otherwise they only log a console warning.
+
+`IgbGridPinningActions` renders row pin/unpin and needs neither. `AsMenuItems="true"` on an actions component moves its buttons into a "More" (⋮) menu. Extra buttons can be placed inside `IgbActionStrip` alongside them.
+
+```razor
+@* delete-only strip, no row editing *@
+<IgbGrid Data="data" PrimaryKey="Id">
+    <IgbColumn Field="Name" />
+    <IgbActionStrip>
+        <IgbGridEditingActions EditRow="false" />
+    </IgbActionStrip>
+</IgbGrid>
+```
 
 ## Master-detail — `IgbGrid` only
 

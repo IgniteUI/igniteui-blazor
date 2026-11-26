@@ -80,19 +80,19 @@ Full rules are in the theming skill's [`common-patterns.md`](../../igniteui-blaz
 |---|---|
 | `--ig-*` design tokens | **primary** — whenever a token exists for the property |
 | `::part(name)` | only when no token covers it, and only after confirming the part name |
-| `::deep` | only in `.razor.css`, only on `igc-*` selectors |
+| `::deep` | only in `.razor.css`, only on `igc-*` selectors or on a `class` you set on an `Igb*` component (it lands on the `igc-*` element, which has no scope attribute) |
 
 ```css
 /* app.css — global, no ::deep */
 igc-chip { --ig-chip-background: var(--ig-primary-500); }
 igc-dialog::part(footer) { border-top: 1px solid var(--ig-gray-200); }
 
-/* MyView.razor.css — ::deep on igc-*, never on your own class selectors */
+/* MyView.razor.css — ::deep before igc-* selectors (and classes set on Igb* components); a plain .my-class for your own HTML */
 ::deep igc-chip { --ig-chip-background: var(--ig-primary-500); }
 .dashboard-shell { display: grid; grid-template-columns: 260px 1fr; }
 ```
 
-`::deep` does **not** work on the component's own root element — Blazor puts the scope attribute there, so there is no scoped parent above it. Never add `::deep` to a `:root {}` block. `create_component_theme` emits global CSS; use it verbatim in `app.css`. Blazor projects have no Sass step.
+`::deep` does **not** work on the component's own root element — Blazor puts the scope attribute there, so there is no scoped parent above it. For the same reason `::deep igc-chip` matches only chips inside an HTML element the view renders; a chip at the top level of the view needs a wrapper element. Never add `::deep` to a `:root {}` block. `create_component_theme` emits global CSS; use it verbatim in `app.css`. Blazor projects have no Sass step.
 
 ## Charts
 

@@ -11,7 +11,7 @@ Applies to `IgbGrid`, `IgbTreeGrid`, and `IgbHierarchicalGrid`. **`IgbPivotGrid`
 | Cell editing | `Editable="true"` on each column | blur, Enter, Tab | quick single-value edits |
 | Row editing | `RowEditable="true"` on the grid | the Done button in the row overlay | multi-field changes — **prefer this for CRUD** |
 
-Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Both modes still need `Editable="true"` on the individual columns.
+Row editing gives a clear confirm/cancel flow and prevents half-updated rows. Cell editing needs `Editable="true"` on each column; with `RowEditable="true"` a column without an explicit `Editable` is editable by default (the primary-key column never is), so set `Editable="false"` on columns that must stay read-only.
 
 ## Cell editing
 
