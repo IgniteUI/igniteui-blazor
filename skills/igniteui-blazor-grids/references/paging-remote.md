@@ -23,7 +23,7 @@ Paging is not a grid parameter — place an `IgbPaginator` **inside** the grid a
 | Parameter | Type | Default | Purpose |
 |---|---|---|---|
 | `PerPage` | `double` | `15` | Rows per page |
-| `TotalRecords` | `double` | — | Server-side total; required for remote paging |
+| `TotalRecords` | `double?` | — | Server-side total; required for remote paging |
 | `SelectOptions` | `double[]` | `[5, 10, 15, 25, 50]` | Page-size dropdown |
 
 Events: `PageChange` and `PerPageChange` (`IgbNumberEventArgs`), `PagingDone` (`IgbPageEventArgs`).

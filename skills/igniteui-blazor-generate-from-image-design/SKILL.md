@@ -39,13 +39,13 @@ Start every region with the most appropriate Ignite UI component. Fall back to p
 
 | Need | Package |
 |---|---|
-| Core UI: navbar, drawer, list, card, inputs, chips, tabs, tile manager | `IgniteUI.Blazor.Lite` |
+| Core UI: navbar, drawer, list, card, inputs, chips, tabs, tile manager | `IgniteUI.Blazor.Lite` (also included in `IgniteUI.Blazor`) |
 | Lightweight read-only grid | `IgniteUI.Blazor.GridLite` |
 | Charts, maps, gauges, sparklines, full grids, Dock Manager | `IgniteUI.Blazor` (licensed) or `IgniteUI.Blazor.Trial` |
 
 There are no separate DV packages. If a required package is missing from the project, identify the right package and version and **ask before editing the `.csproj`**.
 
-Call `builder.Services.AddIgniteUIBlazor()` in `Program.cs`. Components request their own module on first render, so listing `typeof(Igb<Name>Module)` arguments only pre-loads them. The exception is the full `IgniteUI.Blazor`/`.Trial`'s feature modules, which add behavior to a component instead of defining one (`IgbDataChartInteractivityModule`, `IgbDataChartAnnotationModule`) and the `*FullModule` bundles that include them: nothing requests those on render, so they must be listed. Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`, and confirm the theme stylesheet is in the host page (on `IgniteUI.Blazor`/`.Trial` in a Blazor Web App, also the `_content/IgniteUI.Blazor/app.bundle.js` script tag before the Blazor script — so the library's client resources initialize correctly; `IgniteUI.Blazor.Lite` needs no tag) — see the components skill's [`setup.md`](../igniteui-blazor-components/references/setup.md).
+Call `builder.Services.AddIgniteUIBlazor()` in `Program.cs`. Components request their own module on first render, so listing `typeof(Igb<Name>Module)` arguments only pre-loads them. The exception is the full `IgniteUI.Blazor`/`.Trial`'s feature modules, which add behavior to a component instead of defining one (`IgbDataChartInteractivityModule`, `IgbDataChartAnnotationModule`) and the `*FullModule` bundles that include them: nothing requests those on render, so they must be listed. Add `@using IgniteUI.Blazor.Controls` to `_Imports.razor`, and confirm the theme stylesheet is in the host page; no script tag is needed — see the components skill's [`setup.md`](../igniteui-blazor-components/references/setup.md).
 
 ## Step 3 — Theme
 

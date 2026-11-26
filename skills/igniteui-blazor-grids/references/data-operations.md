@@ -102,7 +102,7 @@ Nest trees for AND/OR groups — `FilteringOperands` accepts both expressions an
 
 ## Custom strategies
 
-Set `SortStrategy="typeof(YourStrategy)"` or `FilterStrategy="typeof(YourStrategy)"` on a column and implement the matching base class. Look up the exact base type and method signature with `get_api_reference` before writing it — these differ from the Angular and Web Components equivalents.
+Blazor has no custom sorting, filtering or grouping strategies: the grids and columns have no `SortStrategy`, `FilterStrategy` or `GroupStrategy`, unlike the Angular and Web Components grids. Sort or filter the bound data in C# when the built-in conditions do not fit.
 
 ## Rules
 

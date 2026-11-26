@@ -58,14 +58,14 @@ With `AutoGenerate="true"` the grid creates a column per public property. Refine
 | `Width` / `MinWidth` / `MaxWidth` | `string` | — | `"200px"`, `"20%"`, or `"auto"` |
 | `Sortable` | `bool` | `false` | Sorting on this column |
 | `Filterable` | `bool` | `true` | Filtering on this column (needs `AllowFiltering` on the grid) |
-| `Editable` | `bool` | `false` | Editing on this column |
+| `Editable` | `bool?` | `false` | Editing on this column |
 | `Resizable` | `bool` | `false` | User resizing |
 | `Hidden` / `Pinned` | `bool` | `false` | Visibility / pinning |
 | `Groupable` | `bool` | `false` | Grouping — `IgbGrid` only |
 | `HasSummary` | `bool` | `false` | Column summaries |
 | `Selectable` | `bool` | — | Column selection |
 | `DisablePinning` / `DisableHiding` | `bool` | `false` | Remove from the toolbar UI |
-| `CellClasses` / `HeaderClasses` | | — | Conditional CSS classes |
+| `CellClasses` / `HeaderClasses` | `string` | — | CSS class list; per-cell classes need `CellClassesScript` |
 
 Leave `Width` unset unless the user asks for fixed sizing — see [`sizing.md`](./sizing.md).
 
@@ -92,9 +92,9 @@ Templates are Blazor render fragments on `IgbColumn`, and the `context` needs a 
 
     <InlineEditorTemplate>
         @{ var cell = (IgbCellTemplateContext)context; }
-        <IgbSelect @bind-Value="cell.Cell.EditValue">
-            <IgbSelectItem Value="Active">Active</IgbSelectItem>
-            <IgbSelectItem Value="Inactive">Inactive</IgbSelectItem>
+        <IgbSelect TValue="string" Value="@(cell.Cell.EditValue as string)" ValueChanged="@(v => cell.Cell.EditValue = v)">
+            <IgbSelectItem Value="@("Active")">Active</IgbSelectItem>
+            <IgbSelectItem Value="@("Inactive")">Inactive</IgbSelectItem>
         </IgbSelect>
     </InlineEditorTemplate>
 </IgbColumn>
@@ -107,7 +107,7 @@ Templates are Blazor render fragments on `IgbColumn`, and the `context` needs a 
 | `InlineEditorTemplate` | `IgbCellTemplateContext` | `cell.Cell.EditValue` |
 | `ErrorTemplate` | `IgbCellTemplateContext` | validation message slot |
 
-Inside `IgbIcon`, the parameter is `IconName` — `Name` is the framework element identity, not the glyph.
+Inside `IgbIcon`, the parameter is `IconName`, not `Name`.
 
 ## Column groups & multi-row layout
 

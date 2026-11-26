@@ -101,14 +101,16 @@ Configure or cancel an export from the grid's `ToolbarExporting` event. In Blazo
 ```
 
 ```javascript
-igRegisterScript("OnToolbarExporting", (evt) => {
+import { registerScript } from './_content/IgniteUI.Blazor/api.js';
+
+registerScript("OnToolbarExporting", (evt) => {
     const args = evt.detail;
     args.options.fileName = `Report_${new Date().toDateString()}`;
     // args.cancel = true;
     args.exporter.columnExporting.subscribe((colArgs) => {
         if (colArgs.header === "ID") colArgs.cancel = true;
     });
-}, false);
+});
 ```
 
 Options on the exporting args (`IgbExporterOptionsBase`): `FileName`, `IgnoreFiltering`, `IgnoreSorting`, `IgnoreColumnsVisibility`, `IgnoreGrouping`, `AlwaysExportHeaders`, `ExportSummaries`.

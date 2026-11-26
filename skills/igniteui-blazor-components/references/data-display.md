@@ -39,7 +39,7 @@ Module for every component below is `Igb<Name>Module`. `IgbButton` and `IgbIconB
 }
 ```
 
-The parameter is **`IconName`**, not `Name` (`Name` is the framework element identity on every component). Icons are keyed by name + collection and must be registered before they render — always in `OnAfterRenderAsync(firstRender)` after `await EnsureReady()`. Reuse one collection name across the app.
+The parameter is **`IconName`**, not `Name`. Icons are keyed by name + collection and must be registered before they render — always in `OnAfterRenderAsync(firstRender)` after `await EnsureReady()`. Reuse one collection name across the app.
 
 ## Card
 
