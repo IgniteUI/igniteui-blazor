@@ -144,7 +144,7 @@ registerScript('PriceCell', (ctx) => {
   ```
 
   A wrong flag mostly fails silently: a template or handler registered with `true` is called once with no arguments and never applied, a factory registered without `true` is never applied, and a formatter registered with `true` breaks the grid (`TypeError: this.formatter is not a function`).
-- **`igRegisterScript` and `window.igTemplating.html` are deprecated** and log a warning. Their `shouldCall` defaults to `true`, so when you move existing code to `registerScript`, drop a `false` third argument and turn a missing one into `true`.
+- **`igRegisterScript` and `window.igTemplating.html` are deprecated** and log a warning. Their `shouldCall` defaults to `true`, so when you move existing code to `registerScript`, a `false` third argument can go and a missing one becomes `true` (see the components skill's [`client-scripts.md`](../../igniteui-blazor-components/references/client-scripts.md)).
 - **Markup.** `html` is lit-html 3's template tag. Attribute, `.property`, `?boolean` and `@event` bindings work, and a template can return `html` markup, a string, a number, an array, or `''`/`null` for an empty cell. Strings are escaped, never parsed as HTML. No lit directives ship (`classMap`, `repeat`, `keyed`, …): build class strings by hand. An `@click` inside a cell still activates and selects the cell, even with `stopPropagation()`. `igc-*` elements need their module registered in `Program.cs` ([client scripts](../../igniteui-blazor-components/references/client-scripts.md#templates)).
 
 **Context.** `ctx` is a proxy, so `Object.keys(ctx)`, `{...ctx}` and `JSON.stringify(ctx)` all come back empty. Parameter destructuring (`({ implicit, cell }) =>`) does work.
