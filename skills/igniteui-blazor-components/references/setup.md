@@ -18,7 +18,7 @@ nuget sources add -name "Infragistics" \
 dotnet add package IgniteUI.Blazor
 ```
 
-`IgniteUI.Blazor` brings in `IgniteUI.Blazor.Lite` at the version it was released with, so it needs no Lite reference. Reference Lite directly only to pick up a newer Lite before the next `IgniteUI.Blazor` release: stay on the same major version, and raise the reference when updating `IgniteUI.Blazor`, or restore fails with `NU1605` (package downgrade).
+`IgniteUI.Blazor` brings in `IgniteUI.Blazor.Lite` at the version it was released with, so it needs no Lite reference. Reference Lite directly only to pick up a newer Lite before the next `IgniteUI.Blazor` release: stay on the same major version, and raise or remove the reference when updating `IgniteUI.Blazor`, or restore fails with `NU1605` (package downgrade).
 
 ## 2. `IgniteUI.Blazor[.Lite/Trial]` Service Registration
 
