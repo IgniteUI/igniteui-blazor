@@ -5,8 +5,9 @@ namespace IgniteUI.Blazor.Controls
 {
     // Sends unmarshalled data (WebAssembly) to the component's client interop module: a synchronous in-process call
     // that passes the address of the local holding the columns array, which the client reads off the heap for the
-    // duration of the call. The same path on every target framework (the net8-only InvokeUnmarshalled fast path
-    // needed a window global).
+    // duration of the call. The same path on every target framework.
+    // The calls are in-process (WebAssembly, no circuit to lose): a client error reaches the code that changed
+    // the data, reported with the call that raised it.
     internal class RuntimeHelper
     {
         private readonly IIgniteUIBlazorRuntime? _igBlazor;
@@ -38,17 +39,7 @@ namespace IgniteUI.Blazor.Controls
 
         public void SendUnmarshalledColumnDataIntentsMessage(string methodName, string refName, string dataIntents)
         {
-            _interop?.Invoke().Post(module =>
-            {
-                if (module is IUnmarshalledColumnSink sink)
-                {
-                    sink.SendDataIntents(methodName, refName, dataIntents);
-                }
-                else
-                {
-                    (module as IJSInProcessObjectReference)?.InvokeVoid(methodName, refName, dataIntents);
-                }
-            });
+            _interop?.Invoke().Post(module => SendUnmarshalledColumnDataIntentsMessageNow(module, methodName, refName, dataIntents));
         }
 
         private static unsafe void SendUnmarshalledColumnMessageNow(IJSObjectReference module, string methodName, string refName, int index, UnmarshalledColumn[]? columns)
@@ -60,7 +51,33 @@ namespace IgniteUI.Blazor.Controls
             else if (module is IJSInProcessObjectReference inproc)
             {
                 var intptr = Unsafe.AsPointer(ref columns);
-                inproc.InvokeVoid(methodName, refName, index, (int)intptr);
+                try
+                {
+                    inproc.InvokeVoid(methodName, refName, index, (int)intptr);
+                }
+                catch (JSException ex)
+                {
+                    throw InteropModule.CallFailed(methodName, ex);
+                }
+            }
+        }
+
+        private static void SendUnmarshalledColumnDataIntentsMessageNow(IJSObjectReference module, string methodName, string refName, string dataIntents)
+        {
+            if (module is IUnmarshalledColumnSink sink)
+            {
+                sink.SendDataIntents(methodName, refName, dataIntents);
+            }
+            else if (module is IJSInProcessObjectReference inproc)
+            {
+                try
+                {
+                    inproc.InvokeVoid(methodName, refName, dataIntents);
+                }
+                catch (JSException ex)
+                {
+                    throw InteropModule.CallFailed(methodName, ex);
+                }
             }
         }
 

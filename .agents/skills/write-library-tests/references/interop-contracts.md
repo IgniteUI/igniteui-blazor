@@ -200,7 +200,7 @@ Contract failures carry the violated member and, as the top stack frame, the con
 ## Verify
 
 ```
-dotnet test tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj -f net10.0 --nologo --filter "FullyQualifiedName~<Name>Tests"
+dotnet test tests/IgniteUI.Blazor.Tests/IgniteUI.Blazor.Tests.csproj -f net11.0 --nologo --filter "FullyQualifiedName~<Name>Tests"
 ```
 
 Common failures:

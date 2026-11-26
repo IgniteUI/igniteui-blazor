@@ -79,16 +79,68 @@ namespace IgniteUI.Blazor.Controls
             call(module);
         }
 
+        /// <summary>
+        /// Posts a call that nothing awaits, such as a message to the client. Its failure when the circuit goes
+        /// away is expected and dropped; any other failure stays unobserved, as a discarded task's would.
+        /// </summary>
+        internal void PostVoid(string identifier, params object?[]? args)
+        {
+            Post(module => _ = InvokeAndForgetAsync(module, identifier, args));
+        }
+
+        // Internal so tests can await the task that PostVoid discards and check which failures are dropped.
+        internal static async Task InvokeAndForgetAsync(IJSObjectReference module, string identifier, object?[]? args)
+        {
+            try
+            {
+                await module.InvokeVoidAsync(identifier, args).ConfigureAwait(false);
+            }
+            catch (JSDisconnectedException)
+            {
+                // The circuit is gone; there is no client left to update.
+            }
+            catch (OperationCanceledException)
+            {
+                // The call was canceled with the circuit or runtime.
+            }
+        }
+
+        // Awaited calls: the caller gets the failure, so it can handle it as its own. A client error is reported
+        // with the call that raised it; the circuit going away or a canceled call reaches the caller unchanged.
         internal async ValueTask<TValue> InvokeAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)] TValue>(string identifier, params object?[]? args)
         {
             var module = _module ?? await GetAsync().ConfigureAwait(false);
-            return await module.InvokeAsync<TValue>(identifier, args).ConfigureAwait(false);
+            try
+            {
+                return await module.InvokeAsync<TValue>(identifier, args).ConfigureAwait(false);
+            }
+            catch (JSException ex)
+            {
+                throw CallFailed(identifier, ex);
+            }
         }
 
         internal async ValueTask InvokeVoidAsync(string identifier, params object?[]? args)
         {
             var module = _module ?? await GetAsync().ConfigureAwait(false);
-            await module.InvokeVoidAsync(identifier, args).ConfigureAwait(false);
+            try
+            {
+                await module.InvokeVoidAsync(identifier, args).ConfigureAwait(false);
+            }
+            catch (JSException ex)
+            {
+                throw CallFailed(identifier, ex);
+            }
+        }
+
+        /// <summary>
+        /// The failure of client call <paramref name="identifier"/>, naming the call. It is still a
+        /// <see cref="JSException"/>, so code that handles client errors keeps handling it, and it keeps the
+        /// client's error as its inner exception.
+        /// </summary>
+        internal static JSException CallFailed(string identifier, JSException error)
+        {
+            return new JSException($"The Ignite UI client call '{identifier}' failed: {error.Message}", error);
         }
 
         private async Task<IJSObjectReference> LoadAsync()
