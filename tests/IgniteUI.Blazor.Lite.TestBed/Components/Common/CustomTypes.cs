@@ -43,10 +43,23 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
              { "ScrollToIndexAsync", [1] },
         };
 
+        /// <summary>
+        /// Event details for events whose detail is an object the sweep cannot sample, keyed by
+        /// "{Component}.{Event}". Without one the event is dispatched with an empty detail, which a
+        /// wrapper that copies the detail back into its state reads as zeros.
+        /// </summary>
+        public static readonly Dictionary<string, object> PredefinedEventDetails = new Dictionary<string, object>
+        {
+            // The range slider copies the committed thumbs back into Lower and Upper. Report the
+            // thumbs where they start (Min and Max), so the event does not pin Upper to 0 and make
+            // the client clamp every later Lower to it.
+            { "IgbRangeSlider.Change", new Dictionary<string, object> { { "lower", 0.0 }, { "upper", 100.0 } } },
+        };
+
         public static readonly Dictionary<string, object> PredefinedPropertyValues = new Dictionary<string, object>
         {
-             { "Step", 0.5 },
-             { "Locale", "en" },
+            { "Step", 0.5 },
+            { "Locale", "en" },
             { "VisibleMonths", 2.0 },
             // prompt needs to be a single symbol
             { "Prompt", "/" },

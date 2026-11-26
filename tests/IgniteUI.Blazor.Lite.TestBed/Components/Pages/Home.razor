@@ -426,7 +426,11 @@
             var arg = evt.PropertyType.GenericTypeArguments[0];
             var detailType = ReflectionUtils.GetOriginEventDetailType(arg, selectedType);
             object? argDetailToSend = null;
-            if (detailType != null)
+            if (CustomTypes.PredefinedEventDetails.TryGetValue(summary.Component + "." + evt.Name, out var predefinedDetail))
+            {
+                argDetailToSend = predefinedDetail;
+            }
+            else if (detailType != null)
             {
                 argDetailToSend = ReflectionUtils.GetSimpleType(detailType);
             }
