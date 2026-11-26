@@ -511,7 +511,6 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
                 // Re-binding an equivalent callback must not read as a new subscription — Blazor hands over a
                 // fresh delegate for the same handler every render. Read through the member (a setter assigns
                 // and registers in one branch) since probing the wire for an absent message costs a 2s retry.
-                // Only bites on net8.0/net9.0, whose EventCallback.Equals compares the delegate by reference.
                 cut.Render(ps => evt.Bind(ps, Sink));
                 Assert.Equal(bound, evt.Get(cut.Instance));
 

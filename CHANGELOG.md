@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `IgbVirtualScroll<TItem>` - Renders large or unbounded lists efficiently by rendering only the items in the viewport plus a configurable `OverScan`. `Data` is an `IEnumerable<TItem>`, with `DataJson` for data that is already JSON, and `KeyFunctionScript` keys items for insert, prepend and sort. Supports vertical and horizontal `Orientation`, `EstimatedItemSize` with automatic item measurement, `ScrollToIndexAsync` with configurable alignment and behavior through `IgbScrollIntoViewOptions`, a `DataRequest` event for infinite scroll and remote data, and a `StateChange` event reporting the rendered window. Item content is rendered through a client-side template registered with `registerScript` from `api.js` and assigned via `ItemTemplateScript`. [#572](https://github.com/IgniteUI/igniteui-blazor/pull/572) (wraps `igc-virtual-scroll` from [IgniteUI/igniteui-webcomponents#2222](https://github.com/IgniteUI/igniteui-webcomponents/pull/2222))
+### Fixed
+
+- **Date Range Picker:** `Select` and `SelectAsync` now apply the range they are given, instead of clearing the picker's value. [#174](https://github.com/IgniteUI/igniteui-blazor/issues/174)
+
+### Breaking Changes
+
+- The library targets `net10.0` and `net11.0`. It no longer targets `net8.0` and `net9.0`, which reach the end of support with the release of .NET 11. Apps on .NET 8 or 9 stay on 1.0.x; to update, retarget the app to .NET 10 or later.
+- Apps on .NET 11 WebAssembly need a browser that supports WebAssembly exception handling (`exnref`); see the [Blazor supported platforms](https://learn.microsoft.com/aspnet/core/blazor/supported-platforms). The .NET 11 runtime does not start in older browsers. This is a requirement of .NET 11, not of the library.
 
 ## 1.0.1 - 2026-10-29
 

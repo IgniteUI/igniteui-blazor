@@ -199,7 +199,7 @@ The [skills/](skills/README.md) directory contains skill files and an `AGENTS.md
 
 ## Building and Running Locally
 
-**Prerequisites:** [.NET SDK](https://dotnet.microsoft.com/download) 10.0 and [Node.js](https://nodejs.org/) 22.12 or later (the Vite build requires it). The library targets `net8.0`, `net9.0` and `net10.0`.
+**Prerequisites:** [.NET SDK](https://dotnet.microsoft.com/download) 11.0 and [Node.js](https://nodejs.org/) 22.12 or later (the Vite build requires it). The library targets `net10.0` and `net11.0`.
 
 ```bash
 # 1. Install Node dependencies
