@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Chips help people enter information, make selections, filter content, or trigger actions.
     /// </summary>
-    public partial class IgbChip : BaseRendererControl
+    public partial class IgbChip : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChip"; } }
@@ -16,21 +16,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbChipModule.IsLoadRequested(IgBlazor))
             {
                 IgbChipModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 
@@ -152,13 +137,13 @@ namespace IgniteUI.Blazor.Controls
             var iv = InvokeMethodSync("p:Selected", new object?[] { }, new string[] { });
             return ReturnToBoolean(iv);
         }
-        private StyleVariant _variant = StyleVariant.Primary;
+        private StyleVariant? _variant;
 
         /// <summary>
-        /// A property that sets the color variant of the chip component.
+        /// A property that sets the color variant of the chip component. When <c>null</c>, the chip has no color variant.
         /// </summary>
         [Parameter]
-        public StyleVariant Variant
+        public StyleVariant? Variant
         {
             get { return this._variant; }
             set

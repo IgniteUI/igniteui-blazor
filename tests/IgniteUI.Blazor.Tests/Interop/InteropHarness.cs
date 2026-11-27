@@ -180,6 +180,13 @@ public abstract class InteropHarness
     /// </summary>
     public abstract void RaiseEvent(string containerId, string eventName, string argsJson = "{}", string targetName = "mainControl");
 
+    /// <summary>
+    /// Dispatches a batch of client-side template content changes (Add / Update / Remove) into .NET,
+    /// as the client does when a web component renders a bridged template.
+    /// <paramref name="batchJson"/> is the JSON array of entries the client batches up.
+    /// </summary>
+    public abstract void AdjustDynamicContentBatch(string containerId, string batchJson);
+
     /// <summary>Completes a method invocation that was answered with <see cref="InteropReturn.Deferred"/>.</summary>
     public abstract void CompleteDeferred(InteropMethodCall call, InteropReturn result);
 

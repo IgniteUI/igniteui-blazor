@@ -111,9 +111,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     (_component as BaseJsonSerializable)?.ObjectToParam(_context, val);
                 }
-                else if (_component is BaseRendererControl)
+                else if (_component is IgbComponentBase)
                 {
-                    (_component as BaseRendererControl)?.ObjectToParam(_context, val);
+                    (_component as IgbComponentBase)?.ObjectToParam(_context, val);
                 }
             }
         }
@@ -155,6 +155,34 @@ namespace IgniteUI.Blazor.Controls
             {
                 _context.Writer.WriteNumber(propertyName, (short)val);
             }
+            else if (val is byte)
+            {
+                _context.Writer.WriteNumber(propertyName, (byte)val);
+            }
+            else if (val is sbyte)
+            {
+                _context.Writer.WriteNumber(propertyName, (sbyte)val);
+            }
+            else if (val is ushort)
+            {
+                _context.Writer.WriteNumber(propertyName, (ushort)val);
+            }
+            else if (val is uint)
+            {
+                _context.Writer.WriteNumber(propertyName, (uint)val);
+            }
+            else if (val is ulong)
+            {
+                _context.Writer.WriteNumber(propertyName, (ulong)val);
+            }
+            else if (val is float)
+            {
+                _context.Writer.WriteNumber(propertyName, (float)val);
+            }
+            else if (val is decimal)
+            {
+                _context.Writer.WriteNumber(propertyName, (decimal)val);
+            }
             else if (val is bool)
             {
                 _context.Writer.WriteBoolean(propertyName, (bool)val);
@@ -174,9 +202,9 @@ namespace IgniteUI.Blazor.Controls
                 {
                     (_component as BaseJsonSerializable)?.ObjectToParam(_context, propertyName, val);
                 }
-                else if (_component is BaseRendererControl)
+                else if (_component is IgbComponentBase)
                 {
-                    (_component as BaseRendererControl)?.ObjectToParam(_context, propertyName, val);
+                    (_component as IgbComponentBase)?.ObjectToParam(_context, propertyName, val);
                 }
             }
         }
@@ -189,7 +217,7 @@ namespace IgniteUI.Blazor.Controls
             {
                 foreach (var val in items)
                 {
-                    if (val is BaseRendererControl || val is BaseJsonSerializable)
+                    if (val is IgbComponentBase || val is BaseJsonSerializable)
                     {
                         containsSub = true;
                         break;
@@ -263,9 +291,9 @@ namespace IgniteUI.Blazor.Controls
                         {
                             (_component as BaseJsonSerializable)?.ObjectToParam(context, val);
                         }
-                        else if (_component is BaseRendererControl)
+                        else if (_component is IgbComponentBase)
                         {
-                            (_component as BaseRendererControl)?.ObjectToParam(context, val);
+                            (_component as IgbComponentBase)?.ObjectToParam(context, val);
                         }
                     }
                 }
@@ -283,7 +311,7 @@ namespace IgniteUI.Blazor.Controls
             return value.Substring(0, 1).ToLower() + value.Substring(1);
         }
 
-        public void AddEnumProp(string propertyName, Enum value)
+        public void AddEnumProp(string propertyName, Enum? value)
         {
             if (_context.Filter != null)
             {
@@ -291,6 +319,12 @@ namespace IgniteUI.Blazor.Controls
                 {
                     return;
                 }
+            }
+
+            if (value == null)
+            {
+                _context.Writer.WriteNull(propertyName);
+                return;
             }
 
             if (Utils.TryGetWCEnumName(value.GetType(), value.ToString(), out var wcName))

@@ -14,7 +14,7 @@ namespace IgniteUI.Blazor.Controls
     /// <c>"--toggle"</c> and <c>commandfor</c> pointing to this element will call the corresponding
     /// method declaratively.
     /// </summary>
-    public partial class IgbDialog : BaseRendererControl
+    public partial class IgbDialog : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDialog"; } }
@@ -25,21 +25,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbDialogModule.IsLoadRequested(IgBlazor))
             {
                 IgbDialogModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

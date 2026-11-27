@@ -2,7 +2,7 @@
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbTabs : BaseRendererControl
+    public partial class IgbTabs : IgbComponentBase
     {
 
         private void SyncSelectedTab(IgbTabComponentEventArgs args)

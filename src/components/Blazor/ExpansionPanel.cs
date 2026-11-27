@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// compact summary view containing title and description and expanded detail view containing
     /// additional content to the summary header.
     /// </summary>
-    public partial class IgbExpansionPanel : BaseRendererControl
+    public partial class IgbExpansionPanel : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebExpansionPanel"; } }
@@ -18,21 +18,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbExpansionPanelModule.IsLoadRequested(IgBlazor))
             {
                 IgbExpansionPanelModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

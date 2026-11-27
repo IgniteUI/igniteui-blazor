@@ -103,6 +103,17 @@ public class ButtonTests : ComponentWithContractTestBase<IgbButton>
     }
 
     [Fact]
+    public void Button_DefaultTarget_IsSelf()
+    {
+        var cut = Render<IgbButton>(parameters =>
+            parameters.Add(p => p.Href, "https://example.com"));
+
+        // Unset: the client renders no target, so the browser opens the link in the current context.
+        Assert.Equal(ButtonBaseTarget._self, cut.Instance.Target);
+        Assert.Null(cut.Find("igc-button").GetAttribute("target"));
+    }
+
+    [Fact]
     public void Button_ChildContent_Renders()
     {
         var cut = Render<IgbButton>(parameters =>

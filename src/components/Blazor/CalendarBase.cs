@@ -3,18 +3,12 @@ using Microsoft.AspNetCore.Components;
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Base class for <see cref="IgbCalendar"/>.
+    /// Base class for <see cref="IgbCalendar{TValue}"/>.
     /// </summary>
-    public partial class IgbCalendarBase : BaseRendererControl
+    public partial class IgbCalendarBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCalendarBase"; } }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
 
         /// <inheritdoc />
         private protected override ControlEventBehavior DefaultEventBehavior
@@ -60,13 +54,13 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private WeekDays _weekStart = WeekDays.Sunday;
+        private WeekDays? _weekStart;
 
         /// <summary>
-        /// Gets/Sets the first day of the week.
+        /// Gets/Sets the first day of the week. When <c>null</c>, the week follows the locale: <see cref="Locale"/> if set, otherwise the client locale.
         /// </summary>
         [Parameter]
-        public WeekDays WeekStart
+        public WeekDays? WeekStart
         {
             get { return this._weekStart; }
             set

@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The notation an <see cref="IgbColorPicker"/> renders its string value in.
+    /// The notation an <see cref="IgbColorPicker{TValue}"/> renders its string value in.
     /// </summary>
     public enum ColorFormat
     {

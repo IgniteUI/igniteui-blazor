@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// The view an <see cref="IgbCalendar"/> is currently showing.
+    /// The view an <see cref="IgbCalendar{TValue}"/> is currently showing.
     /// </summary>
     public enum CalendarActiveView
     {

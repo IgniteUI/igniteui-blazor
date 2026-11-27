@@ -5,43 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbCheckbox"/> and <see cref="IgbSwitch"/>.
     /// </summary>
-    public partial class IgbCheckboxBase : BaseRendererControl
+    public partial class IgbCheckboxBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCheckboxBase"; } }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-checkbox-base";
-            }
-        }
 
         /// <inheritdoc />
         private protected override ControlEventBehavior DefaultEventBehavior

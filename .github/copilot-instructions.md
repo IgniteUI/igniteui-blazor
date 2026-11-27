@@ -68,7 +68,7 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 
 ## Repository Architecture
 
-- **`components/Blazor/`** - Auto-generated and hand-maintained C# component wrappers (e.g., `IgbButton`, `IgbGrid`). Each component extends `BaseRendererControl` and renders an underlying web component (`igc-*` custom element) via `DirectRenderElementName`.
+- **`components/Blazor/`** - Auto-generated and hand-maintained C# component wrappers (e.g., `IgbButton`, `IgbGrid`). Each component extends `IgbComponentBase` and renders an underlying web component (`igc-*` custom element) via `DirectRenderElementName`.
 - **`componentsBase/`** - Shared base classes, DI extensions (`AddIgniteUIBlazor`), serialization, data adapters, and JS interop plumbing.
 - **`src/`** - TypeScript interop layer (vite, native ESM). Manages component mounting, property sync, event bridging, and module loading between Blazor and the `igniteui-webcomponents` package.
 - **`skills/`** - AI agent skill files that teach LLMs how to *use* this library. These are shipped in the package for downstream consumers.
@@ -76,7 +76,7 @@ This repository is the **source code for the Ignite UI for Blazor component libr
 
 ## Build & Tooling
 
-- **Multi-target**: `net8.0`, `net9.0`, `net10.0`
+- **Multi-target**: `net10.0`, `net11.0`
 - **C# build**: `dotnet build` - produces the Razor class library
 - **TS build**: `npm run build` - type-checks and bundles the JS interop (vite, ESM) into static web assets; `npm test` checks the built output
 

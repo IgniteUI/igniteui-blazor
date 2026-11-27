@@ -1,0 +1,96 @@
+@* Razor RenderFragment templates that the web components invoke directly, shared by the
+   InteractiveServer (/templates) and InteractiveWebAssembly (/templates-wasm) pages. *@
+
+<IgbCombo id="cities" TValue="string" TItem="City" Data="_cities" ValueKey="Name" DisplayKey="Name" GroupKey="Country">
+    <ItemTemplate>
+        <span class="tmpl-city">City: @context.Name (@context.Country)</span>
+    </ItemTemplate>
+    <GroupHeaderTemplate>
+        <span class="tmpl-group">Country: @context.Key</span>
+    </GroupHeaderTemplate>
+</IgbCombo>
+
+<IgbCombo id="numbers" TValue="int" TItem="int" Data="_numbers">
+    <ItemTemplate>
+        <span class="tmpl-number">Number: @context</span>
+    </ItemTemplate>
+</IgbCombo>
+
+<IgbChat id="chat" @ref="_chat" Messages="_messages" Options="_chatOptions" />
+
+@* Template replacement and release: the item template can be swapped while the combo shows its
+   items, and items can be dropped; each item's content counts itself in live-count. *@
+<IgbCombo id="live" TValue="string" TItem="City" Data="_liveCities" ValueKey="Name" DisplayKey="Name"
+          ItemTemplate="@(_useAltTemplate ? _altItemTemplate : _liveItemTemplate)" />
+<span id="live-count">@_tracker.Live</span>
+@* Driven by a change event: the combo closes on any click outside it, which would drop its items. *@
+<input id="live-action" @onchange="OnLiveAction" />
+
+@code {
+    public sealed class City
+    {
+        public required string Name { get; init; }
+        public required string Country { get; init; }
+    }
+
+    private readonly City[] _cities =
+    [
+        new() { Name = "Berlin", Country = "Germany" },
+        new() { Name = "Munich", Country = "Germany" },
+        new() { Name = "Sofia", Country = "Bulgaria" },
+        new() { Name = "Plovdiv", Country = "Bulgaria" },
+    ];
+
+    // A List rather than an array: JsonDataSource casts arrays to object[], which an int[] is not.
+    private readonly List<int> _numbers = [1, 2, 3];
+
+    private readonly IgbChatMessage[] _messages =
+    [
+        new() { Id = "1", Sender = "agent", Text = "Hello from Blazor", Timestamp = "2026-01-01T00:00:00.000Z" },
+    ];
+
+    private IgbChat? _chat;
+    private IgbChatOptions _chatOptions = null!;
+
+    private City[] _liveCities = null!;
+    private readonly TrackedContent.Counter _tracker = new();
+    private bool _useAltTemplate;
+    // Fields, so re-rendering this page hands the combo the same template rather than a new one.
+    private RenderFragment<City> _liveItemTemplate = null!;
+    private RenderFragment<City> _altItemTemplate = null!;
+
+    private void OnLiveAction(ChangeEventArgs e)
+    {
+        switch (e.Value as string)
+        {
+            case "swap-template":
+                _useAltTemplate = true;
+                // The combo re-renders its items, in the hosts already on screen, when its data changes.
+                _liveCities = [.. _liveCities];
+                break;
+            case "drop-cities":
+                _liveCities = _liveCities[..2];
+                break;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        _liveCities = [.. _cities];
+        _tracker.Changed += () => InvokeAsync(StateHasChanged);
+        _liveItemTemplate = city =>
+            @<TrackedContent Tracker="_tracker"><span class="tmpl-live">Live: @city.Name</span></TrackedContent>;
+        _altItemTemplate = city =>
+            @<TrackedContent Tracker="_tracker"><span class="tmpl-alt">Alt: @city.Name</span></TrackedContent>;
+
+        _chatOptions = new IgbChatOptions
+        {
+            CurrentUserId = "user",
+            Renderers = new IgbChatRenderers
+            {
+                MessageContent = ctx => @<span class="tmpl-message">Message: @ctx.Message.Text</span>,
+                SendButton = ctx => @<span class="tmpl-instance">Instance: @(ReferenceEquals(ctx.Instance, _chat) ? "owner" : "other")</span>,
+            },
+        };
+    }
+}

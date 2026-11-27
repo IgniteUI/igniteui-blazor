@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// The divider allows the content author to easily create a horizontal or vertical rule as a break between
     /// content, to better organize information on a page.
     /// </summary>
-    public partial class IgbDivider : BaseRendererControl
+    public partial class IgbDivider : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDivider"; } }
@@ -17,21 +17,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbDividerModule.IsLoadRequested(IgBlazor))
             {
                 IgbDividerModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

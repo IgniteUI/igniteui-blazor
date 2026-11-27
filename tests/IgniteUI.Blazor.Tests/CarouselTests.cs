@@ -127,6 +127,16 @@ public class CarouselTests : ComponentWithContractTestBase<IgbCarousel>
     }
 
     [Fact]
+    public void Carousel_Interval_Unset_RendersNoAttribute()
+    {
+        var cut = Render<IgbCarousel>();
+
+        // Unset: the carousel does not play automatically.
+        Assert.Null(cut.Instance.Interval);
+        Assert.Null(cut.Find("igc-carousel").GetAttribute("interval"));
+    }
+
+    [Fact]
     public void Carousel_MaximumIndicatorsCount_RendersAttribute()
     {
         var cut = Render<IgbCarousel>(p =>

@@ -2,7 +2,7 @@ namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
     /// The options used to format numbers, mirroring the browser <c>Intl.NumberFormatOptions</c>.
-    /// Currently used for the thumb and tick label values of <see cref="IgbSlider"/> and <see cref="IgbRangeSlider"/>.
+    /// Currently used for the thumb and tick label values of <see cref="IgbSlider{TValue}"/> and <see cref="IgbRangeSlider"/>.
     /// </summary>
     public partial class IgbNumberFormatOptions : BaseJsonSerializable
     {
@@ -212,12 +212,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private bool _useGrouping = false;
+        private NumberFormatGrouping _useGrouping = NumberFormatGrouping.Auto;
 
         /// <summary>
-        /// Whether grouping separators, such as thousands separators, are used.
+        /// When grouping separators, such as thousands separators, are used.
         /// </summary>
-        public bool UseGrouping
+        public NumberFormatGrouping UseGrouping
         {
             get { return this._useGrouping; }
             set
@@ -230,12 +230,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private int _minimumIntegerDigits = 0;
+        private int? _minimumIntegerDigits;
 
         /// <summary>
         /// The minimum number of integer digits to use.
         /// </summary>
-        public int MinimumIntegerDigits
+        public int? MinimumIntegerDigits
         {
             get { return this._minimumIntegerDigits; }
             set
@@ -248,12 +248,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private int _minimumFractionDigits = 0;
+        private int? _minimumFractionDigits;
 
         /// <summary>
         /// The minimum number of fraction digits to use.
         /// </summary>
-        public int MinimumFractionDigits
+        public int? MinimumFractionDigits
         {
             get { return this._minimumFractionDigits; }
             set
@@ -266,12 +266,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private int _maximumFractionDigits = 0;
+        private int? _maximumFractionDigits;
 
         /// <summary>
         /// The maximum number of fraction digits to use.
         /// </summary>
-        public int MaximumFractionDigits
+        public int? MaximumFractionDigits
         {
             get { return this._maximumFractionDigits; }
             set
@@ -284,12 +284,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private int _minimumSignificantDigits = 0;
+        private int? _minimumSignificantDigits;
 
         /// <summary>
         /// The minimum number of significant digits to use.
         /// </summary>
-        public int MinimumSignificantDigits
+        public int? MinimumSignificantDigits
         {
             get { return this._minimumSignificantDigits; }
             set
@@ -302,12 +302,12 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private int _maximumSignificantDigits = 0;
+        private int? _maximumSignificantDigits;
 
         /// <summary>
         /// The maximum number of significant digits to use.
         /// </summary>
-        public int MaximumSignificantDigits
+        public int? MaximumSignificantDigits
         {
             get { return this._maximumSignificantDigits; }
             set
@@ -348,7 +348,13 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("UnitDisplay"))
             { ser.AddStringProp("unitDisplay", this._unitDisplay); }
             if (IsPropDirty("UseGrouping"))
-            { ser.AddBooleanProp("useGrouping", this._useGrouping); }
+            {
+                // Intl takes false to disable grouping; the string "false" falls back to "auto".
+                if (this._useGrouping == NumberFormatGrouping.Never)
+                { ser.AddBooleanProp("useGrouping", false); }
+                else
+                { ser.AddEnumProp("useGrouping", this._useGrouping); }
+            }
             if (IsPropDirty("MinimumIntegerDigits"))
             { ser.AddNumberProp("minimumIntegerDigits", this._minimumIntegerDigits); }
             if (IsPropDirty("MinimumFractionDigits"))
@@ -363,7 +369,7 @@ namespace IgniteUI.Blazor.Controls
         }
 
         /// <inheritdoc />
-        internal override void ToEventJson(BaseRendererControl control, Dictionary<string, object?> args)
+        internal override void ToEventJson(IgbComponentBase control, Dictionary<string, object?> args)
         {
             base.ToEventJson(control, args);
 
@@ -390,22 +396,22 @@ namespace IgniteUI.Blazor.Controls
             if (IsPropDirty("UnitDisplay"))
             { args["unitDisplay"] = this._unitDisplay; }
             if (IsPropDirty("UseGrouping"))
-            { args["useGrouping"] = (this._useGrouping).ToString().ToLower(); }
+            { args["useGrouping"] = this._useGrouping == NumberFormatGrouping.Never ? (object?)false : EnumToString(this._useGrouping); }
             if (IsPropDirty("MinimumIntegerDigits"))
-            { args["minimumIntegerDigits"] = (this._minimumIntegerDigits).ToString(); }
+            { args["minimumIntegerDigits"] = this._minimumIntegerDigits?.ToString(); }
             if (IsPropDirty("MinimumFractionDigits"))
-            { args["minimumFractionDigits"] = (this._minimumFractionDigits).ToString(); }
+            { args["minimumFractionDigits"] = this._minimumFractionDigits?.ToString(); }
             if (IsPropDirty("MaximumFractionDigits"))
-            { args["maximumFractionDigits"] = (this._maximumFractionDigits).ToString(); }
+            { args["maximumFractionDigits"] = this._maximumFractionDigits?.ToString(); }
             if (IsPropDirty("MinimumSignificantDigits"))
-            { args["minimumSignificantDigits"] = (this._minimumSignificantDigits).ToString(); }
+            { args["minimumSignificantDigits"] = this._minimumSignificantDigits?.ToString(); }
             if (IsPropDirty("MaximumSignificantDigits"))
-            { args["maximumSignificantDigits"] = (this._maximumSignificantDigits).ToString(); }
+            { args["maximumSignificantDigits"] = this._maximumSignificantDigits?.ToString(); }
 
         }
 
         /// <inheritdoc />
-        internal override void FromEventJson(BaseRendererControl control, Dictionary<string, object?>? args)
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
         {
             base.FromEventJson(control, args);
             this.SuppressParentNotify = true;
@@ -433,17 +439,24 @@ namespace IgniteUI.Blazor.Controls
             if (args != null && args.TryGetValue("unitDisplay", out var unitDisplayObj))
             { this.UnitDisplay = ReturnToString(unitDisplayObj); }
             if (args != null && args.TryGetValue("useGrouping", out var useGroupingObj))
-            { this.UseGrouping = ReturnToBoolean(useGroupingObj); }
+            {
+                this.UseGrouping = ConvertReturnValue(useGroupingObj) switch
+                {
+                    true => NumberFormatGrouping.Always,
+                    false => NumberFormatGrouping.Never,
+                    _ => StringToEnum<NumberFormatGrouping>(useGroupingObj),
+                };
+            }
             if (args != null && args.TryGetValue("minimumIntegerDigits", out var minimumIntegerDigitsObj))
-            { this.MinimumIntegerDigits = ReturnToInt(minimumIntegerDigitsObj); }
+            { this.MinimumIntegerDigits = ConvertReturnValue(minimumIntegerDigitsObj) is null ? null : ReturnToInt(minimumIntegerDigitsObj); }
             if (args != null && args.TryGetValue("minimumFractionDigits", out var minimumFractionDigitsObj))
-            { this.MinimumFractionDigits = ReturnToInt(minimumFractionDigitsObj); }
+            { this.MinimumFractionDigits = ConvertReturnValue(minimumFractionDigitsObj) is null ? null : ReturnToInt(minimumFractionDigitsObj); }
             if (args != null && args.TryGetValue("maximumFractionDigits", out var maximumFractionDigitsObj))
-            { this.MaximumFractionDigits = ReturnToInt(maximumFractionDigitsObj); }
+            { this.MaximumFractionDigits = ConvertReturnValue(maximumFractionDigitsObj) is null ? null : ReturnToInt(maximumFractionDigitsObj); }
             if (args != null && args.TryGetValue("minimumSignificantDigits", out var minimumSignificantDigitsObj))
-            { this.MinimumSignificantDigits = ReturnToInt(minimumSignificantDigitsObj); }
+            { this.MinimumSignificantDigits = ConvertReturnValue(minimumSignificantDigitsObj) is null ? null : ReturnToInt(minimumSignificantDigitsObj); }
             if (args != null && args.TryGetValue("maximumSignificantDigits", out var maximumSignificantDigitsObj))
-            { this.MaximumSignificantDigits = ReturnToInt(maximumSignificantDigitsObj); }
+            { this.MaximumSignificantDigits = ConvertReturnValue(maximumSignificantDigitsObj) is null ? null : ReturnToInt(maximumSignificantDigitsObj); }
 
             this.SuppressParentNotify = false;
         }

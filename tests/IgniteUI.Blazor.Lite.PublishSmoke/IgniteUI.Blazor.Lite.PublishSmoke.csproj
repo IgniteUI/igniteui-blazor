@@ -4,8 +4,8 @@
        and, via the manual Wasm AOT Smoke workflow, under wasm AOT compilation (-p:RunAOTCompilation=true),
        exercising the reflection-adjacent features in the browser. See docs/TRIMMING.md. -->
   <PropertyGroup>
-    <!-- Match the library's TFMs so each gets a real ILLink pass (e.g. the net8-only reflection paths). -->
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <!-- Match the library's TFMs so each gets a real ILLink pass. -->
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Trim analyzer for the app's own code (errors via the repo .editorconfig);
          linker-level issues still only surface at publish. -->

@@ -8,7 +8,7 @@ namespace IgniteUI.Blazor.Controls
     /// The banner slides into view with an animated grow transition and renders
     /// inline, pushing the surrounding page content rather than overlaying it.
     /// </summary>
-    public partial class IgbBanner : BaseRendererControl
+    public partial class IgbBanner : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebBanner"; } }
@@ -19,21 +19,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbBannerModule.IsLoadRequested(IgBlazor))
             {
                 IgbBannerModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

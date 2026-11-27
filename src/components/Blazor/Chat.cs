@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A chat UI component for displaying messages, attachments, and input interaction.
     /// </summary>
-    public partial class IgbChat : BaseRendererControl
+    public partial class IgbChat : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChat"; } }
@@ -16,15 +16,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbChatModule.IsLoadRequested(IgBlazor))
             {
                 IgbChatModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

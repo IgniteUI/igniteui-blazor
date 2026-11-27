@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// maintaining parent-child relationships, as well as to define static tree-view structure
     /// without a corresponding data model.
     /// </summary>
-    public partial class IgbTree : BaseRendererControl
+    public partial class IgbTree : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTree"; } }
@@ -18,21 +18,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbTreeModule.IsLoadRequested(IgBlazor))
             {
                 IgbTreeModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

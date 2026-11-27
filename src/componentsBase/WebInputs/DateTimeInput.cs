@@ -1,6 +1,6 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbDateTimeInput
+    public partial class IgbDateTimeInput<TValue>
     {
         /// <summary>
         /// Increments the date/time portion at the caret.

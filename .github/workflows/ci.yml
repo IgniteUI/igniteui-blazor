@@ -40,15 +40,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # The SDK is pinned via global.json (10.0.x builds all TFMs);
-      # older runtimes are needed to run tests targeting net8.0/net9.0.
+      # The SDK is pinned via global.json (11.0.x builds all TFMs);
+      # the 10.0 runtime is needed to run tests targeting net10.0.
       - name: Setup .NET
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: |
-            8.0.x
-            9.0.x
             10.0.x
+            11.0.x
 
       # Folder mode formats files directly without loading MSBuild projects —
       # full `dotnet format` corrupts sources on multi-targeted projects
@@ -57,9 +56,9 @@ jobs:
         run: dotnet format whitespace . --folder --exclude templates node_modules --verify-no-changes
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22
+          node-version: 26
           cache: npm
 
       - name: Install npm dependencies
@@ -83,9 +82,8 @@ jobs:
       # Trimmed publish of the smoke app fails on any linker warning; publish runs per TFM
       - name: Publish trimmed smoke app
         run: |
-          dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net8.0
-          dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net9.0
           dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net10.0
+          dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke --configuration Release --framework net11.0
 
       # NativeAOT (ILC) gate: publishes the console smoke app rooting the whole library
       # (fails on ILC warnings) and runs its checks — behavior the build analyzer cannot see.
@@ -94,11 +92,8 @@ jobs:
         run: |
           dotnet publish tests/IgniteUI.Blazor.Lite.AotSmoke --configuration Release -r linux-x64
           status=0
-          tests/IgniteUI.Blazor.Lite.AotSmoke/bin/Release/net10.0/linux-x64/publish/IgniteUI.Blazor.Lite.AotSmoke || status=$?
+          tests/IgniteUI.Blazor.Lite.AotSmoke/bin/Release/net11.0/linux-x64/publish/IgniteUI.Blazor.Lite.AotSmoke || status=$?
           test "$status" -eq 100
-
-      - name: Build VS Templates
-        run: dotnet pack templates/IgniteUI.Blazor.Templates/
 
       - name: Run .NET tests with coverage
         run: >
@@ -110,7 +105,7 @@ jobs:
 
       - name: Install Playwright
         shell: pwsh
-        run: ./tests/IgniteUI.Blazor.Lite.IntegrationTests/bin/Release/net10.0/playwright.ps1 install
+        run: ./tests/IgniteUI.Blazor.Lite.IntegrationTests/bin/Release/net11.0/playwright.ps1 install
 
       - name: Run Bulk API Automation
         run: >
@@ -121,7 +116,7 @@ jobs:
           --results-directory ./TestResults
 
       - name: Generate coverage report
-        uses: danielpalme/ReportGenerator-GitHub-Action@d3ebf1f760f7d8ab92cc44d9bcfee7ad73722a31
+        uses: danielpalme/ReportGenerator-GitHub-Action@861674232075b2c6bd1405a04c4bb9b150653e81
         with:
           reports: TestResults/**/*.cobertura.xml
           targetdir: CoverageReport
@@ -131,7 +126,7 @@ jobs:
         run: cat CoverageReport/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-report
           path: CoverageReport

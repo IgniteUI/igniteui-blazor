@@ -2,7 +2,7 @@
 
 `IgniteUI.Blazor.Lite` is trim-compatible (`IsTrimmable=true`): the library builds warning-free under the .NET trim analyzer, and its own serialization uses source-generated `System.Text.Json` contexts and hand-written `Utf8JsonWriter` code that needs no reflection over your types.
 
-Two library features intrinsically depend on runtime type information that the trimmer cannot see. Applications published with `PublishTrimmed=true` (the default for Blazor WebAssembly publish) must follow the guidance below when using them.
+Some library features intrinsically depend on runtime type information. Applications published with `PublishTrimmed=true` (the default for Blazor WebAssembly publish) must follow the guidance below when using them.
 
 ## App-provided data types: when to preserve them
 
@@ -26,6 +26,8 @@ or with a [trimmer root descriptor](https://learn.microsoft.com/dotnet/core/depl
 > **Prefer the `DynamicDependency` form.** It is honored by every trim/AOT pipeline. Annotating the type itself works under Blazor WebAssembly's ILLink (verified in the trimmed browser smoke) but was found **insufficient under NativeAOT's ILC** (verified 2026-09-01 via the AotSmoke gate) — the class-level annotation only takes effect where a `Type` value flows through annotated locations, and the data-source entry points deliberately take unannotated `Type`s.
 
 Preservation must cover **every complex type reachable from the item type**, not just the root: if `MyDataItem` has an `Address` property whose members the component renders, `Address` needs the same treatment — the schema builder reflects over nested object types as it encounters them.
+
+A component that takes its item type as a type parameter preserves that type's members itself: `IgbCombo`'s `TItem` carries `[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]`, as the framework's generic inputs do for their values. That covers only the declared item type. Nested types, and items whose runtime type differs from it (a derived type, or `TItem="object"`), still need the preservation above.
 
 ## Module preloading: trim-safe by design
 
@@ -53,13 +55,13 @@ AOT diagnostics (IL3xxx) build as errors like trim ones (`dotnet_analyzer_diagno
 
 1. **Avoid dynamic code outright** where a static shape exists.
 2. **Expression trees: the delegate type must be statically known** — use `Expression.Lambda<TDelegate>(...)` or `Expression.Lambda(Type delegateType, ...)` with a `typeof` literal (see the closed delegate-type map in `JsonDataSourceSchema`). Never `Expression.GetFuncType` or the non-generic `Lambda(body, params)` overloads — those are the `RequiresDynamicCode` sites; `Compile()` itself is AOT-safe (interprets).
-3. **`MakeGenericType`/`MakeGenericMethod` only over closed sets** that are statically visible or class-constrained (the net9+ analyzer proves the `where T : class` pattern; net8 needs a narrow suppression).
+3. **`MakeGenericType`/`MakeGenericMethod` only over closed sets** that are statically visible or class-constrained (the analyzer proves the `where T : class` pattern).
 4. **Suppression policy**: `[UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = ...)]` on the smallest member — the ID is what ILC matches; the justification states the runtime invariant. Same no-`#pragma` rule as trimming.
 5. **Verify under real ILC**: `tests/IgniteUI.Blazor.Lite.AotSmoke` (see its README) — CI publishes and runs it; locally `dotnet run -p:SimulateNoDynamicCode=true` covers the interpreter paths without the native toolchain.
 
 ## Maintaining trim compatibility (contributors)
 
-The library must stay trim-clean. Every trim-analysis diagnostic builds as an error (`dotnet_analyzer_diagnostic.category-Trimming.severity = error` in the repo `.editorconfig`; category bulk-config covers future IL2xxx codes, inert where the analyzer is off). The analyzer cannot validate suppression justifications or retention-based mechanisms like `[IgbModule<TSelf>]` — `tests/IgniteUI.Blazor.Lite.PublishSmoke` is the authoritative check for those, automated as the `TrimmedPublish`-category browser facts in `IgniteUI.Blazor.Lite.IntegrationTests` (net10.0, runs in CI); its README has the manual checklist covering the other TFMs.
+The library must stay trim-clean. Every trim-analysis diagnostic builds as an error (`dotnet_analyzer_diagnostic.category-Trimming.severity = error` in the repo `.editorconfig`; category bulk-config covers future IL2xxx codes, inert where the analyzer is off). The analyzer cannot validate suppression justifications or retention-based mechanisms like `[IgbModule<TSelf>]` — `tests/IgniteUI.Blazor.Lite.PublishSmoke` is the authoritative check for those, automated as the `TrimmedPublish`-category browser facts in `IgniteUI.Blazor.Lite.IntegrationTests` (net10.0 and net11.0, runs in CI); its README has the manual checklist.
 
 When the analyzer flags new code, follow the standard playbook — avoid reflection and dynamic code where possible, otherwise annotate or fix the root cause, and suppress only as a last resort: see [preparing libraries for trimming: recommendations](https://learn.microsoft.com/dotnet/core/deploying/trimming/prepare-libraries-for-trimming#recommendations) and [resolving trim warnings](https://learn.microsoft.com/dotnet/core/deploying/trimming/fixing-warnings). Repo-specific rules on top:
 

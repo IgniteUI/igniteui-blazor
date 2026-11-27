@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// All library components within this provider will use the specified theme
     /// instead of the global theme.
     /// </summary>
-    public partial class IgbThemeProvider : BaseRendererControl
+    public partial class IgbThemeProvider : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebThemeProvider"; } }
@@ -20,21 +20,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbThemeProviderModule.IsLoadRequested(IgBlazor))
             {
                 IgbThemeProviderModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

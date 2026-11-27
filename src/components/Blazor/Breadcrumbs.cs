@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// The component has the ARIA <c>list</c> role. Put it in a <c>&lt;nav aria-label="..."&gt;</c> element,
     /// as the ARIA breadcrumb pattern requires the label on the navigation landmark, not on the list.
     /// </remarks>
-    public partial class IgbBreadcrumbs : BaseRendererControl
+    public partial class IgbBreadcrumbs : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebBreadcrumbs"; } }
@@ -20,21 +20,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbBreadcrumbsModule.IsLoadRequested(IgBlazor))
             {
                 IgbBreadcrumbsModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

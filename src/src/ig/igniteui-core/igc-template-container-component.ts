@@ -8,7 +8,7 @@ import { FontDefaults } from 'igniteui-core/FontDefaults';
 export class IgcTemplateContainerComponent extends IgcTemplateContentComponent {
     
     protected static _registered: boolean = false;
-    public static htmlTagName: string = "igc-template-container";
+    public static htmlTagName: string = "igc-lite-template-container";
     static register(): void {
         if (!IgcTemplateContainerComponent._registered) {
             IgcTemplateContainerComponent._registered = true;

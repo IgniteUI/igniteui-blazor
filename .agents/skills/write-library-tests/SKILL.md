@@ -11,8 +11,8 @@ Three test projects under `tests/`, two suites:
 
 | Project | Suite | What it is |
 |---|---|---|
-| `IgniteUI.Blazor.Tests` | **Unit** | xUnit + bUnit, multi-targeted `net8.0`/`net9.0`/`net10.0`; renders components in-process with a recording JS runtime — no browser |
-| `IgniteUI.Blazor.Lite.IntegrationTests` | **Integration** | NUnit + Playwright; one generated test fixture per component |
+| `IgniteUI.Blazor.Tests` | **Unit** | xUnit + bUnit, multi-targeted `net10.0`/`net11.0`; renders components in-process with a recording JS runtime — no browser |
+| `IgniteUI.Blazor.Lite.IntegrationTests` | **Integration** | NUnit + Playwright; one generated test fixture per component; multi-targeted `net10.0`/`net11.0` (with the TestBed), the TFMs run one after another since the TestBed uses a fixed port |
 | `IgniteUI.Blazor.Lite.TestBed` | (integration host) | Blazor app the integration tests drive; renders one component per run and sweeps its surface |
 
 ## How the suites divide the work
@@ -20,11 +20,12 @@ Three test projects under `tests/`, two suites:
 | Behavior | Where it's tested |
 |---|---|
 | Property → rendered attribute (direct-render components) | unit: plain bUnit facts (`cut.Find(...).GetAttribute(...)`) |
+| **Own element and render mode** — the component renders its web component's tag as its root, with `data-ig-root` when the client renderer drives it through descriptions (Calendar, Chat, Color Picker, Combo, Date Picker, Date Range Picker, Date Time Input, Mask Input) | unit: a `<Name>_RendersCorrectElement` fact in every component's suite, `cut.Find("igc-<tag>")`; for a renderer-driven component also assert `data-ig-root` on it, since that attribute picks the client path |
 | Markup/child content rendering | unit: plain bUnit facts |
 | **Parent/child collection membership** — a child registering itself into its parent's collection and leaving again over the child's lifetime | unit: plain bUnit facts in the *parent's* suite, in a `#region Child collection lifecycle` — membership only; name resolution *off* that collection is interop behavior and stays in the contract |
 | Message-borne state serialization shapes | unit: `EnumSerializationTests` / `RenderingSerializationTests` |
 | **Interop wire behavior** — method identifiers, argument serialization + type tags, return decoding, event-handler registration/removal transmissions + JS→.NET event dispatch, `@bind-` two-way round trips, interop-borne props/data | unit: the component's `ComponentContract` — full authoring guide: [`references/interop-contracts.md`](./references/interop-contracts.md) |
-| `<Member>Script` parameters (JS-side handlers/providers) | unit: automated sweep (`ScriptPropTests`, all components at once — no per-contract entries, no integration coverage exists) |
+| `<Member>Script` parameters (JS-side handlers/providers) | unit: automated sweep (`ScriptPropTests`, all components at once; a base class is swept through the components derived from it — no per-contract entries, no integration coverage exists) |
 | End-to-end prop/event/method behavior against the **real web component in a real browser** | integration: the TestBed sweep |
 | Visual output, client-side component logic | integration / e2e — never unit |
 
@@ -40,10 +41,10 @@ The suites overlap on purpose but answer different questions. Integration proves
 ### Running
 
 ```
-dotnet test tests/IgniteUI.Blazor.Tests -f net10.0 --nologo --filter "FullyQualifiedName~<Name>Tests"
+dotnet test tests/IgniteUI.Blazor.Tests -f net11.0 --nologo --filter "FullyQualifiedName~<Name>Tests"
 ```
 
-- Iterate on one TFM (`-f net10.0`); finish with a full run on all TFMs (drop `-f`).
+- Iterate on one TFM (`-f net11.0`); finish with a full run on all TFMs (drop `-f`).
 - Contract failure stacks carry the violated contract line as the top frame — the test UI navigates to the spec, not the shared runner.
 
 ### Conventions
@@ -80,7 +81,7 @@ over the component's public surface —
 
 ## Adding coverage for a new component — checklist
 
-1. Unit suite: bUnit facts for rendered attributes/markup; if the component has an interop surface (it sends interop invocations or registers JS-originated event handlers — the reference explains how to identify these per stack), add a `ComponentContract` per [`references/interop-contracts.md`](./references/interop-contracts.md). For a brand-new component this works TDD-style: author the contract first from the intended API following the library's conventions; the contract doubles as the API design record (spec mode in the reference).
+1. Unit suite: a `<Name>_RendersCorrectElement` fact (own element, plus `data-ig-root` if renderer-driven), bUnit facts for rendered attributes/markup; if the component has an interop surface (it sends interop invocations or registers JS-originated event handlers — the reference explains how to identify these per stack), add a `ComponentContract` per [`references/interop-contracts.md`](./references/interop-contracts.md). For a brand-new component this works TDD-style: author the contract first from the intended API following the library's conventions; the contract doubles as the API design record (spec mode in the reference).
 2. If it is a parent that collects children, or a child that registers with a parent, exercise that membership **over the child's lifetime**, not just at first render: the children are the collection in order, a disposed child leaves it, all disposed empties it. Keep these facts to membership and asserting resolution that are covered by the interop contract.
 3. Integration: the sweep picks the component up automatically; add  `componentsConfig.json` entries only for members the generic sweep genuinely cannot  model (cite why), and mirror each exclusion with unit contract coverage.
 4. Verify: unit full-suite on all TFMs, plus the component's integration fixture.

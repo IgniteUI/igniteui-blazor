@@ -7,8 +7,8 @@ namespace IgniteUI.Blazor.Tests;
 public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
 {
     // Interop contract — source: src/components/Blazor/MaskInput.cs, src/components/Blazor/InputBase.cs.
-    // IgbMaskInput does not override UseDirectRender, so — like IgbDateTimeInput — it renders
-    // through the component-renderer-container and all its scalar props travel as .Prop updates.
+    // IgbMaskInput does not override UseDirectRender, so — like IgbDateTimeInput — the renderer
+    // adopts its element and all its scalar props travel as .Prop updates.
     protected override ComponentContract<IgbMaskInput> InteropContract { get; } = new ComponentContract<IgbMaskInput>()
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: "hello")
         .Method(c => c.SetSelectionRangeAsync(1, 3, "forward"), c => c.SetSelectionRange(1, 3, "forward"),
@@ -57,11 +57,11 @@ public class MaskInputTests : ComponentWithContractTestBase<IgbMaskInput>
     [Fact]
     public void Binds_FollowContract() => VerifyBindContract();
 
-    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+    [Fact]
     public void MaskInput_RendersCorrectElement()
     {
         var cut = Render<IgbMaskInput>();
-        Assert.NotNull(cut.Find("igc-mask-input"));
+        Assert.True(cut.Find("igc-mask-input").HasAttribute("data-ig-root"));
     }
 
     [Fact]

@@ -28,9 +28,4 @@ public class NavbarTests : BlazorComponentTestBase
         Assert.Contains("Navigation Title", cut.Markup);
     }
 
-    [Fact]
-    public void Navbar_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbNavbar).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

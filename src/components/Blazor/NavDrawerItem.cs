@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Represents a navigation drawer item.
     /// </summary>
-    public partial class IgbNavDrawerItem : BaseRendererControl
+    public partial class IgbNavDrawerItem : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebNavDrawerItem"; } }
@@ -16,21 +16,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbNavDrawerModule.IsLoadRequested(IgBlazor))
             {
                 IgbNavDrawerModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

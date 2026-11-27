@@ -27,7 +27,8 @@ A selection reference, not an API reference. Confirm exact parameters with `get_
 | KPI / stat tile row | plain HTML in CSS Grid | compose Ignite UI primitives (icon, badge, progress) inside your own containers |
 | Avatar | `IgbAvatar` | `Shape` (`Circle`/`Rounded`/`Square`), `Initials`, `Src` |
 | Status badge / count | `IgbBadge` | `Variant` (`StyleVariant`), `Shape`, `Dot`, `Outlined` |
-| Filter tag, removable pill | `IgbChip` | `Removable`, `Selectable`, `Variant` |
+| Label: category, role, read-only tag | `IgbBadge` | set `role` to fit the context (default `status`) |
+| Filter tag, action, selectable or removable pill | `IgbChip` | `Removable`, `Selectable`, `Variant`; renders a button |
 | Icon | `IgbIcon` | `IconName` + `Collection`; register before first render |
 | Progress bar / ring | `IgbLinearProgress` / `IgbCircularProgress` | `Value`, `Max`, `Indeterminate` — not for data viz |
 | Tree view | `IgbTree` + `IgbTreeItem` | `Label`, `Expanded`, `Selection` |
@@ -57,17 +58,17 @@ Only pick a grid when the content is genuinely tabular. A list of records with r
 | Text field, search box, inline editor | `IgbInput` | `Label`, `Placeholder`, `Outlined`, `@bind-Value` |
 | Multi-line text | `IgbTextarea` | `Rows`, `Resize` |
 | Dropdown selecting a value | `IgbSelect` + `IgbSelectItem` | |
-| Searchable / multi-select picker | `IgbCombo` | generic parameter is `T`; `Data`, `DisplayKey`, `ValueKey` |
+| Searchable / multi-select picker | `IgbCombo` | generic over the value type: `TValue` and `TItem` in Lite, `T` in the full product; `Data`, `DisplayKey`, `ValueKey` |
 | Contextual action menu | `IgbDropdown` | trigger in `slot="target"` — not for form values |
-| Date picker | `IgbDatePicker` (`DateTime?`) | |
+| Date picker | `IgbDatePicker` | `DateTime?` in the full product; Lite: `<TValue>` is `DateTime`, `DateTime?` or `string` |
 | Date range | `IgbDateRangePicker` | |
-| Always-visible calendar | `IgbCalendar` (`DateTime`, non-nullable) | `Selection`, `VisibleMonths` |
+| Always-visible calendar | `IgbCalendar` | `Selection`, `VisibleMonths`; non-nullable `DateTime` in the full product, Lite takes `<TValue>` as the date picker does |
 | Masked entry (phone, postal) | `IgbMaskInput` | `Mask`: `0` digit, `L` letter, `A` alphanumeric |
 | Checkbox / switch | `IgbCheckbox` / `IgbSwitch` | `@bind-Checked` |
-| Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group |
+| Radio options | `IgbRadioGroup` + `IgbRadio` | `@bind-Value` on the **group**; do not use `Name` to group in the full product (give its radios the same lowercase `name`) |
 | Slider / range slider | `IgbSlider` / `IgbRangeSlider` | range uses `Lower` / `Upper` |
 | Star rating | `IgbRating` | |
-| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |
+| Color picker / color swatch input | `IgbColorPicker` | `@bind-Value` (CSS color string; Lite also `System.Drawing.Color`), `Mode` (`Default` trigger / `Input` field), `Format`, `ShowAlpha`, `Swatches` |
 | Primary action button | `IgbButton` | `Variant`: `Contained`/`Outlined`/`Flat`/`Fab` |
 | Segmented / toggle control | `IgbButtonGroup` + `IgbToggleButton` | |
 | Icon-only button | `IgbIconButton` | |

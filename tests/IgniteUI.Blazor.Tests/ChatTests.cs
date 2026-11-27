@@ -83,11 +83,11 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
 
-    [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
+    [Fact]
     public void Chat_RendersCorrectElement()
     {
         var cut = Render<IgbChat>();
-        Assert.NotNull(cut.Find("igc-chat"));
+        Assert.True(cut.Find("igc-chat").HasAttribute("data-ig-root"));
     }
 
     [Fact]
@@ -97,6 +97,19 @@ public class ChatTests : ComponentWithContractTestBase<IgbChat>
 
         Assert.NotNull(chat.Options);
         Assert.True(chat.Options.DisableInputAttachments);
+    }
+
+    /// <summary>
+    /// Only assigned options are sent, so an unassigned one must report the web component's own default.
+    /// </summary>
+    [Fact]
+    public void ChatOptions_DefaultValues_MatchWebComponent()
+    {
+        var options = new IgbChatOptions();
+
+        Assert.Equal("user", options.CurrentUserId);
+        Assert.Equal(ChatSuggestionsPosition.BelowMessages, options.SuggestionsPosition);
+        Assert.Equal(3000, options.StopTypingDelay);
     }
 
     [Fact]

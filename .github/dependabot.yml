@@ -13,3 +13,13 @@ updates:
         applies-to: version-updates # security updates bypass grouping — each gets its own fast-track PR
         patterns:
           - "*" # batch all version updates into a single PR
+
+  # Temporary declare nuget to trigger automatic dependency submission of graph with the versions
+  # from Directory.Packages.props, which the static parser records as ">= 0" (dependabot/dependabot-core#16053),
+  # so alerts and security updates work with the correct versions.
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 0 # no scheduled version updates (security updates are unaffected); routine bumps would raise the library's per-TFM package floors

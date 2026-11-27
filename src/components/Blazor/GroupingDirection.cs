@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Sort order of the groups in an <see cref="IgbCombo{T}"/>.
+    /// Sort order of the groups in an <see cref="IgbCombo{TValue, TItem}"/>.
     /// </summary>
     public enum GroupingDirection
     {

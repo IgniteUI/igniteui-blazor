@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// The amounts by which each date or time part is incremented or decremented on a step action
     /// in a date-time input. Set through the <c>SpinDelta</c> property of
-    /// <see cref="IgbDateTimeInput"/>; every part defaults to <c>1</c>.
+    /// <see cref="IgbDateTimeInput{TValue}"/>; every part defaults to <c>1</c>.
     /// </summary>
     public partial class IgbDatePartDeltas : BaseJsonSerializable
     {

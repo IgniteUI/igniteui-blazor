@@ -5,7 +5,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A stepper component that provides a wizard-like workflow by dividing content into logical steps.
     /// </summary>
-    public partial class IgbStepper : BaseRendererControl
+    public partial class IgbStepper : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebStepper"; } }
@@ -16,21 +16,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbStepperModule.IsLoadRequested(IgBlazor))
             {
                 IgbStepperModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 
@@ -64,13 +49,7 @@ namespace IgniteUI.Blazor.Controls
         public async Task<IgbStep[]> GetStepsAsync()
         {
             var iv = await InvokeMethod("p:Steps", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbStep>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbStep>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbStep>(iv);
         }
 
         /// <summary>
@@ -79,13 +58,7 @@ namespace IgniteUI.Blazor.Controls
         public IgbStep[] GetSteps()
         {
             var iv = InvokeMethodSync("p:Steps", new object?[] { }, new string[] { });
-            var retVal = ReturnToObjectArray<IgbStep>(iv);
-            if (retVal == null)
-            {
-                return Array.Empty<IgbStep>();
-            }
-            return retVal;
-
+            return ReturnToObjectArray<IgbStep>(iv);
         }
         private StepperOrientation _orientation = StepperOrientation.Horizontal;
 

@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Tests;
 /// <summary>
 /// Tests enum serialization rules:
 /// - Single word → lowercase
-/// - Multi-word without WCEnumName → camelCase  
+/// - Multi-word without WCEnumName → camelCase
 /// - With WCEnumName → specified string
 /// </summary>
 public class EnumSerializationTests : BlazorComponentTestBase

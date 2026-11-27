@@ -87,12 +87,6 @@ public class AccordionTests : ComponentWithContractTestBase<IgbAccordion>
         Assert.Contains("Accordion content", cut.Markup);
     }
 
-    [Fact]
-    public void Accordion_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbAccordion).IsSubclassOf(typeof(BaseRendererControl)));
-    }
-
     #region Child collection lifecycle
 
     /// <summary>Renders <paramref name="count"/> <see cref="IgbExpansionPanel"/> children.</summary>

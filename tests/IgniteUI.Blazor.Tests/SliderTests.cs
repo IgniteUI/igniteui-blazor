@@ -4,9 +4,9 @@ using IgniteUI.Blazor.Tests.Interop;
 
 namespace IgniteUI.Blazor.Tests;
 
-public class SliderTests : ComponentWithContractTestBase<IgbSlider>
+public class SliderTests : ComponentWithContractTestBase<IgbSlider<double>>
 {
-    protected override ComponentContract<IgbSlider> InteropContract { get; } = new ComponentContract<IgbSlider>()
+    protected override ComponentContract<IgbSlider<double>> InteropContract { get; } = new ComponentContract<IgbSlider<double>>()
         .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: 42.0)
         .Method(c => c.StepUpAsync(2), c => c.StepUp(2), "stepUp", args: [2.0], types: ["Number"])
         .Method(c => c.StepDownAsync(2), c => c.StepDown(2), "stepDown", args: [2.0], types: ["Number"])
@@ -56,18 +56,18 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
     public Task Methods_FollowContract() => VerifyMethodContract();
 
     [Fact]
+    public void Props_FollowContract() => VerifyPropContract();
+
+    [Fact]
     public void Events_FollowContract() => VerifyEventContract();
 
     [Fact]
     public void Binds_FollowContract() => VerifyBindContract();
 
     [Fact]
-    public void Props_FollowContract() => VerifyPropContract();
-
-    [Fact]
     public void Slider_RendersCorrectElement()
     {
-        var cut = Render<IgbSlider>();
+        var cut = Render<IgbSlider<double>>();
         Assert.NotNull(cut.Find("igc-slider"));
     }
 
@@ -77,7 +77,7 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
     [Fact]
     public void Slider_Labels_RenderInsideTheElement()
     {
-        var cut = Render<IgbSlider>(p => p.AddChildContent<IgbSliderLabel>(l => l.AddChildContent("Low")));
+        var cut = Render<IgbSlider<double>>(p => p.AddChildContent<IgbSliderLabel>(l => l.AddChildContent("Low")));
 
         Assert.Contains("Low", cut.Find("igc-slider > igc-slider-label").TextContent);
     }
@@ -85,14 +85,94 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider>
     [Fact]
     public void Slider_TypeMetadata_IsCorrect()
     {
-        var slider = new IgbSlider();
+        var slider = new IgbSlider<double>();
         Assert.Equal("WebSlider", slider.RendererType);
     }
 
     [Fact]
     public void Slider_InheritsFromSliderBase()
     {
-        Assert.True(typeof(IgbSlider).IsSubclassOf(typeof(IgbSliderBase)));
+        Assert.True(typeof(IgbSlider<double>).IsSubclassOf(typeof(IgbSliderBase)));
+    }
+
+    [Fact]
+    public void NumberFormatOptions_Unset_SendsNoDigitOrGroupingOptions()
+    {
+        var options = new IgbNumberFormatOptions { Style = "percent" };
+
+        // Unset: Intl derives these from the style and locale, and rejects 0 for the integer and significant digits.
+        Assert.Equal(NumberFormatGrouping.Auto, options.UseGrouping);
+        Assert.Null(options.MinimumIntegerDigits);
+        Assert.Null(options.MinimumFractionDigits);
+        Assert.Null(options.MaximumFractionDigits);
+        Assert.Null(options.MinimumSignificantDigits);
+        Assert.Null(options.MaximumSignificantDigits);
+        var json = options.Serialize();
+        Assert.DoesNotContain("useGrouping", json);
+        Assert.DoesNotContain("Digits", json);
+    }
+
+    [Fact]
+    public void NumberFormatOptions_SetToNull_SendsNull()
+    {
+        var options = new IgbNumberFormatOptions { MaximumFractionDigits = null };
+
+        Assert.Contains("\"maximumFractionDigits\":null", options.Serialize());
+    }
+
+    [Theory]
+    [InlineData(NumberFormatGrouping.Auto, "\"useGrouping\":\"auto\"")]
+    [InlineData(NumberFormatGrouping.Always, "\"useGrouping\":\"always\"")]
+    [InlineData(NumberFormatGrouping.Min2, "\"useGrouping\":\"min2\"")]
+    // Intl reads the string "false" as "auto"; only the boolean disables grouping.
+    [InlineData(NumberFormatGrouping.Never, "\"useGrouping\":false")]
+    public void NumberFormatOptions_UseGrouping_SendsIntlValue(NumberFormatGrouping grouping, string expected)
+    {
+        var options = new IgbNumberFormatOptions { UseGrouping = grouping };
+
+        Assert.Contains(expected, options.Serialize());
+    }
+}
+
+public class IntSliderTests : ComponentWithContractTestBase<IgbSlider<int>>
+{
+    protected override ComponentContract<IgbSlider<int>> InteropContract { get; } = new ComponentContract<IgbSlider<int>>()
+        .Getter(c => c.GetCurrentValueAsync(), c => c.GetCurrentValue(), "Value", returns: 42)
+        .Event(c => c.Change,
+            argsJson: """{"detail": 5}""",
+            assert: args =>
+            {
+                Assert.IsType<int>(args.Detail);
+                Assert.Equal(5, args.Detail);
+            })
+        .Event(c => c.Change,
+            argsJson: """{"detail": 0.5}""",
+            assert: args => Assert.Equal(0, args.Detail))
+        .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
+            argsJson: """{"detail": 7}""", expect: 7);
+
+    [Fact]
+    public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Events_FollowContract() => VerifyEventContract();
+
+    [Fact]
+    public void Binds_FollowContract() => VerifyBindContract();
+
+    [Fact]
+    public void IntValue_EventsAndBindingUseInt()
+    {
+        VerifyEventContract();
+        VerifyBindContract();
+    }
+
+    [Fact]
+    public void IntValue_UsesIntTypes()
+    {
+        Assert.Equal(typeof(int), typeof(IgbSlider<int>).GetProperty(nameof(IgbSlider<int>.Value))!.PropertyType);
+        Assert.Equal(typeof(int), typeof(IgbSlider<int>).GetProperty(nameof(IgbSlider<int>.ValueChanged))!.PropertyType.GetGenericArguments()[0]);
+        Assert.Equal(typeof(int), typeof(IgbNumberEventArgs<int>).GetProperty(nameof(IgbNumberEventArgs<int>.Detail))!.PropertyType);
     }
 }
 
@@ -121,9 +201,12 @@ public class SliderLabelTests : BlazorComponentTestBase
     [Fact]
     public void Slider_DefaultValues_MatchWebComponent()
     {
-        var slider = new IgbSlider();
+        var slider = new IgbSlider<double>();
 
         Assert.Equal(100, slider.Max);
         Assert.Equal(1, slider.Step);
+        // Unset: the client bounds the value by Min and Max, so the wrapper must not report 0.
+        Assert.Null(slider.LowerBound);
+        Assert.Null(slider.UpperBound);
     }
 }

@@ -1,9 +1,8 @@
 <Project>
 
   <!-- Repo-wide MSBuild targets — intentionally empty. Being present stops MSBuild from importing a
-       Directory.Build.targets from above the repo; being empty means the templates/ subtree (which
-       shields itself from the root props with its own sentinel) inherits nothing here either. The
-       library's static web assets (src/wwwroot: JS bundle, initializer, api.js, themes) are produced by
-       `npm run build`, on purpose not by MSBuild — see README "Building and Running Locally". -->
+       Directory.Build.targets from above the repo. The library's static web assets (src/wwwroot:
+       JS bundle, initializer, api.js, themes) are produced by `npm run build`, on purpose not by
+       MSBuild — see README "Building and Running Locally". -->
 
 </Project>

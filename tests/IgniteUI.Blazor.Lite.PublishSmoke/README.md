@@ -11,10 +11,10 @@ No — the trimmer (ILLink) only runs during **publish**. `dotnet run`/`dotnet b
 ```bash
 # 1. Publish trimmed (from the repo root). The app multi-targets the library's TFMs;
 #    publish requires picking one — check all three after linker-sensitive changes.
-dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net10.0
+dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net11.0
 
 # 2. Serve the publish output (any static file server works; npx needs no install — Node is a repo prerequisite):
-npx http-server tests/IgniteUI.Blazor.Lite.PublishSmoke/bin/Release/net10.0/publish/wwwroot -p 5620
+npx http-server tests/IgniteUI.Blazor.Lite.PublishSmoke/bin/Release/net11.0/publish/wwwroot -p 5620
 
 # 3. Open http://localhost:5620/ and check the page against the table below.
 ```
@@ -29,14 +29,15 @@ Three gates, in order of what they can see:
 
 | Page section | Expected | A failure means |
 |---|---|---|
-| `ChatModule preloaded:` | `True` | `[IgbModule<TSelf>]` preservation broke — the Type-based module preload silently lost `Register` (IgbChat's component is deliberately never referenced by this app, so nothing else can keep it alive) |
+| `RatingModule preloaded:` | `True` | `[IgbModule<TSelf>]` preservation broke — the Type-based module preload silently lost `Register` (IgbRating's component is deliberately never referenced by this app, so nothing else can keep it alive) |
 | Outlined button + avatar render styled | camelCase enum attributes (`variant="outlined"`, `shape="circle"` in dev tools) | enum fields were trimmed — the enum-preservation justification in `TryGetWCEnumName`/`GetWCEnumTransform` no longer holds |
 | Button group | `selection` is `single-required` in dev tools | enum **field attributes** were trimmed — the `[WCEnumName]` mapping path degraded to camelCase (`singleRequired`) |
-| Combo shows 3 items | `Alpha`, `Beta`, `Gamma` | data-source reflection over the (preserved) POCO broke — the documented `DynamicallyAccessedMembers` consumer pattern in docs/TRIMMING.md no longer suffices |
+| Combo shows 3 items | `Alpha`, `Beta`, `Gamma` | data-source reflection over the POCO broke — `IgbCombo<TValue, TItem>` must continue to preserve all members of its `TItem` argument |
 | Date range picker present; selecting a range updates the result line | date text below the picker | the event payload path (`IgbDateRangeValue` materialization) broke |
+| Chat message reads `Message: Hello from a trimmed app` | the Razor `MessageContent` renderer's output inside the chat | the renderer context lost its constructor — the library builds `IgbChatMessageRenderContext` itself and the app never does |
 | Browser console | no errors (a stray `favicon` 404 is fine) | anything else: investigate |
 
-The checklist is automated as `TrimmedPublishSmokeTest` in `IgniteUI.Blazor.Lite.IntegrationTests` (`Category=TrimmedPublish`, runs in CI after the publish step). It serves the net10.0 publish output — publishing it on demand if missing — so locally it's just:
+The checklist is automated as `TrimmedPublishSmokeTest` in `IgniteUI.Blazor.Lite.IntegrationTests` (`Category=TrimmedPublish`, runs in CI after the publish step). Each TFM run of the suite serves the publish output for its own TFM — publishing it on demand if missing — so locally it's just:
 
 ```bash
 dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=TrimmedPublish --settings .runsettings
@@ -46,15 +47,15 @@ The manual browser pass above remains useful for the other TFMs and for linker e
 
 ## Wasm AOT
 
-The manual **`Wasm AOT Smoke`** workflow (`workflow_dispatch`) publishes this app with `-p:RunAOTCompilation=true` (net10.0, slow multi-minute compile) and runs the same browser checks against that output. Locally:
+The manual **`Wasm AOT Smoke`** workflow (`workflow_dispatch`) publishes this app with `-p:RunAOTCompilation=true` (net11.0, slow multi-minute compile) and runs the same browser checks against that output. Locally:
 
 ```bash
 dotnet workload install wasm-tools
-dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net10.0 -p:TargetFrameworks=net10.0 -p:RunAOTCompilation=true
+dotnet publish tests/IgniteUI.Blazor.Lite.PublishSmoke -c Release -f net11.0 -p:TargetFrameworks=net11.0 -p:RunAOTCompilation=true
 dotnet test tests/IgniteUI.Blazor.Lite.IntegrationTests --filter Category=TrimmedPublish --settings .runsettings
 ```
 
-Restore ignores `-f`, and restoring net8/net9 with AOT on needs `wasm-tools-net8`/`wasm-tools-net9`. `-p:TargetFrameworks=net10.0` limits restore to net10.
+Restore ignores `-f`, and restoring net11 with AOT on needs `wasm-tools-net11`. `-p:TargetFrameworks=net11.0` limits restore to net11.
 
 Wasm AOT is Mono AOT with the interpreter retained — it validates the product path but emits no NativeAOT diagnostics; that gate is `tests/IgniteUI.Blazor.Lite.AotSmoke` (per-PR CI).
 

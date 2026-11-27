@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// <see cref="IgbTab"/> children.
     /// It supports keyboard navigation and provides API methods to control the selected tab.
     /// </summary>
-    public partial class IgbTabs : BaseRendererControl
+    public partial class IgbTabs : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTabs"; } }
@@ -20,21 +20,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbTabsModule.IsLoadRequested(IgBlazor))
             {
                 IgbTabsModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

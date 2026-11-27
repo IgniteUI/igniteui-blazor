@@ -18,7 +18,7 @@ Batch editing with undo is not supported in Blazor on either grid.
 
 ```html
 <!-- index.html / App.razor — Grid Lite ships one stylesheet, IgbGrid needs two -->
-- <link href="_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css" rel="stylesheet" />
+- <link href="_content/IgniteUI.Blazor.GridLite/themes/light/bootstrap.css" rel="stylesheet" />
 + <link href="_content/IgniteUI.Blazor/themes/light/bootstrap.css" rel="stylesheet" />
 + <link href="_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css" rel="stylesheet" />
 ```

@@ -12,7 +12,7 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
             var classes = asm.GetTypes().Where(p =>
                   p.Namespace == "IgniteUI.Blazor.Controls" &&
                   p.Name.StartsWith("Igb") &&
-                  p.IsSubclassOf(typeof(BaseRendererControl)) &&
+                  p.IsSubclassOf(typeof(IgbComponentBase)) &&
                   !p.Name.Contains("Base")
             ).ToList();
             return classes.Select(x => x.IsGenericType ? x.Name[..x.Name.IndexOf('`')] : x.Name).Where(x => !excluded.Contains(x)).ToList();

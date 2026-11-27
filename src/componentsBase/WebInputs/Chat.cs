@@ -6,6 +6,14 @@ namespace IgniteUI.Blazor.Controls
     /// </remarks>
     public partial class IgbChat
     {
+        private protected override bool NeedsDynamicContent
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         /// <summary>
         /// Returns the message currently being composed but not yet sent, including its text and attachments.
         /// </summary>

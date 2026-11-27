@@ -2,10 +2,10 @@
 
 <h1>IgniteUI.Blazor.Lite publish smoke</h1>
 
-@* Expected: True. Chat's preload survives trimming only through [IgbModule<IgbChatModule>]
+@* Expected: True. Rating's preload survives trimming only through [IgbModule<IgbRatingModule>]
    (see Program.cs); the static IsLoadRequested call here roots that method, not Register. *@
 <section id="module-preload-section">
-    <p id="module-preload-result">ChatModule preloaded: @IgbChatModule.IsLoadRequested(IgBlazor)</p>
+    <p id="module-preload-result">RatingModule preloaded: @IgbRatingModule.IsLoadRequested(IgBlazor)</p>
 </section>
 
 @* Enum serialization path: Variant/Shape flow through AddEnumProp/TryGetWCEnumName.
@@ -26,22 +26,46 @@
     </IgbButtonGroup>
 </section>
 
-@* Data source path: reflects over SmokeDataItem, which is preserved via the
-   documented DynamicallyAccessedMembers pattern from docs/TRIMMING.md. *@
+@* Data source path: IgbCombo's annotated TItem parameter preserves SmokeDataItem
+    for the reflection-based data source path. *@
 <section id="combo-section">
-    <IgbCombo T="SmokeDataItem" Data="_items" ValueKey="Id" DisplayKey="Name" Label="Smoke combo"></IgbCombo>
+    <IgbCombo TValue="int" TItem="SmokeDataItem" Data="@_items" ValueKey="Id" DisplayKey="Name" Label="Smoke combo"></IgbCombo>
 </section>
 
 @* Event payload path: Change materializes IgbDateRangeValue from the event detail. *@
 <section id="daterange-section">
-    <IgbDateRangePicker Change="OnRangeChanged"></IgbDateRangePicker>
+    <IgbDateRangePicker TValue="DateTime" Change="OnRangeChanged"></IgbDateRangePicker>
     <p id="range-result">@_rangeResult</p>
+</section>
+
+@* Razor renderer path: the library builds the renderer's context (IgbChatMessageRenderContext)
+   from the property bag the chat hands back; nothing in this app constructs one. *@
+<section id="chat-section">
+    <IgbChat Messages="@_messages" Options="@_chatOptions"></IgbChat>
 </section>
 
 @code {
     private string _rangeResult = "no range selected";
 
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)]
+    private readonly IgbChatMessage[] _messages =
+    [
+        new() { Id = "1", Sender = "agent", Text = "Hello from a trimmed app", Timestamp = "2026-01-01T00:00:00.000Z" },
+    ];
+
+    private IgbChatOptions _chatOptions = null!;
+
+    protected override void OnInitialized()
+    {
+        _chatOptions = new IgbChatOptions
+        {
+            CurrentUserId = "user",
+            Renderers = new IgbChatRenderers
+            {
+                MessageContent = ctx => @<span class="smoke-message">Message: @ctx.Message.Text</span>,
+            },
+        };
+    }
+
     public class SmokeDataItem
     {
         public int Id { get; set; }
@@ -55,7 +79,7 @@
         new SmokeDataItem { Id = 3, Name = "Gamma" },
     };
 
-    private void OnRangeChanged(IgbDateRangeValueEventArgs args)
+    private void OnRangeChanged(IgbDateRangeValueEventArgs<DateTime> args)
     {
         var value = args.Detail;
         _rangeResult = value == null ? "no range selected" : $"{value.Start:d} - {value.End:d}";

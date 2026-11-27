@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// The card component provides a flexible container for organizing content such as headers,
     /// media, text content, and actions.
     /// </summary>
-    public partial class IgbCard : BaseRendererControl
+    public partial class IgbCard : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCard"; } }
@@ -18,21 +18,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbCardModule.IsLoadRequested(IgBlazor))
             {
                 IgbCardModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

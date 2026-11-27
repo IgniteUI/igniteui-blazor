@@ -121,9 +121,9 @@ namespace IgniteUI.Blazor.Controls
             {
                 ((BaseJsonSerializable)_parent).MarkPropDirty(_propertyName);
             }
-            if (_parent is BaseRendererControl)
+            if (_parent is IgbComponentBase)
             {
-                ((BaseRendererControl)_parent).MarkPropDirty(_propertyName);
+                ((IgbComponentBase)_parent).MarkPropDirty(_propertyName);
             }
         }
 
@@ -202,7 +202,7 @@ namespace IgniteUI.Blazor.Controls
                     {
                         parentElement.ObjectToParam(context, val);
                     }
-                    if (_parent is BaseRendererControl parentControl)
+                    if (_parent is IgbComponentBase parentControl)
                     {
                         parentControl.ObjectToParam(context, val);
                     }
@@ -230,7 +230,7 @@ namespace IgniteUI.Blazor.Controls
                         return childElement;
                     }
                 }
-                else if (item is BaseRendererControl element)
+                else if (item is IgbComponentBase element)
                 {
                     if (name == element.ContainerId)
                     {
@@ -259,7 +259,7 @@ namespace IgniteUI.Blazor.Controls
                         return true;
                     }
                 }
-                else if (item is BaseRendererControl element)
+                else if (item is IgbComponentBase element)
                 {
                     if (name == element.ContainerId)
                     {

@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// The component supports case-sensitive matching, programmatic navigation between
     /// matches, and automatic scroll-into-view of the active match.
     /// </summary>
-    public partial class IgbHighlight : BaseRendererControl
+    public partial class IgbHighlight : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebHighlight"; } }
@@ -20,21 +20,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbHighlightModule.IsLoadRequested(IgBlazor))
             {
                 IgbHighlightModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

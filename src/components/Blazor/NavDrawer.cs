@@ -20,7 +20,7 @@ namespace IgniteUI.Blazor.Controls
     /// <c>"--toggle"</c> and <c>commandfor</c> pointing to this component will call the
     /// corresponding method declaratively.
     /// </summary>
-    public partial class IgbNavDrawer : BaseRendererControl
+    public partial class IgbNavDrawer : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebNavDrawer"; } }
@@ -31,21 +31,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbNavDrawerModule.IsLoadRequested(IgBlazor))
             {
                 IgbNavDrawerModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

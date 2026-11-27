@@ -60,7 +60,7 @@ Grids are **not** included in `IgniteUI.Blazor.Lite`.
 | Registration | `builder.Services.AddIgniteUIBlazor(typeof(IgbGridModule), …)` in `Program.cs` |
 | Using directive | `@using IgniteUI.Blazor.Controls` in `_Imports.razor` |
 | CSS — full grids | **both** `_content/IgniteUI.Blazor/themes/light/bootstrap.css` **and** `_content/IgniteUI.Blazor/themes/grid/light/bootstrap.css` |
-| CSS — Grid Lite | `_content/IgniteUI.Blazor.GridLite/css/themes/light/bootstrap.css` only — not the two above |
+| CSS — Grid Lite | `_content/IgniteUI.Blazor.GridLite/themes/light/bootstrap.css` only — not the two above |
 | Script | None for `IgniteUI.Blazor.GridLite`; full grids (`IgniteUI.Blazor`/`.Trial`) need `_content/IgniteUI.Blazor/app.bundle.js` before the Blazor framework script in Blazor Web Apps (so the library's client resources initialize correctly there) — never wrapped in `@Assets[...]` |
 
 The grid-specific stylesheet is easy to miss and is required whenever any full-featured grid is on the page. Full setup detail lives in the components skill's [`setup.md`](../igniteui-blazor-components/references/setup.md).
@@ -103,19 +103,19 @@ The grid-specific stylesheet is easy to miss and is required whenever any full-f
 
 ## MCP server (optional)
 
-`igniteui-cli` provides `list_components`, `get_doc`, `search_docs`, `search_api`, `get_api_reference`, all taking `framework: "blazor"`. To enable it, add to `.vscode/mcp.json` (VS Code, key `servers`):
+`@igniteui/mcp-server` provides `list_components`, `get_doc`, `search_docs`, `search_api`, `get_api_reference`, all taking `framework: "blazor"`. To enable it, add to `.vscode/mcp.json` (VS Code, key `servers`):
 
 ```json
-{ "servers": { "igniteui-cli": { "command": "npx", "args": ["-y", "igniteui-cli", "mcp"] } } }
+{ "servers": { "igniteui-cli": { "command": "npx", "args": ["-y", "@igniteui/mcp-server"] } } }
 ```
 
 Or `.cursor/mcp.json` / `claude_desktop_config.json` (key `mcpServers`):
 
 ```json
-{ "mcpServers": { "igniteui-cli": { "command": "npx", "args": ["-y", "igniteui-cli", "mcp"] } } }
+{ "mcpServers": { "igniteui-cli": { "command": "npx", "args": ["-y", "@igniteui/mcp-server"] } } }
 ```
 
-Reload the editor afterwards. JetBrains: **Settings → Tools → AI Assistant → MCP Servers**, command `npx`, arguments `igniteui-cli mcp`.
+Reload the editor afterwards. JetBrains: **Settings → Tools → AI Assistant → MCP Servers**, command `npx`, arguments `@igniteui/mcp-server`.
 
 ## Related skills
 

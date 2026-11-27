@@ -38,7 +38,7 @@
     "webpack-cli": "^7.2.3",
     "webpack-dev-server": "^6.0.0",
     "worker-loader": "^3.0.8",
-    "vite": "^8.2.2",
+    "vite": "^8.3.3",
     "yargs": "^17.2.1"
   },
   "dependencies": {

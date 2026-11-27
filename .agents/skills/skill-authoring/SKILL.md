@@ -49,14 +49,10 @@ A skill installed from another repository (its `metadata` carries `github-repo` 
 1. Frontmatter passes the rules above.
 2. The description includes `WHEN TO USE:` and `WHEN NOT TO USE:`.
 3. The body is under 500 lines, and every reference file is linked from `SKILL.md`.
-4. Every relative link resolves; public skills link only inside `skills/`.
-5. The skill is listed where its readers find it:
+4. Description is under 1,024 characters.
+5. Every relative link resolves; public skills link only inside `skills/`.
+6. The skill is listed where its readers find it:
    - Internal skills: the Skills table of [.agents/skills/README.md](../README.md) and the Workflow section of [.agents/context/project.md](../../context/project.md).
    - Public skills: the Skills table of [skills/README.md](../../../skills/README.md) and the Copilot Skills section of [.github/copilot-instructions.md](../../../.github/copilot-instructions.md).
-6. When a skill is renamed, search the repository for the old name (`CONTRIBUTING.md`, test READMEs, other skills) and update every reference.
+7. When a skill is renamed, search the repository for the old name (`CONTRIBUTING.md`, test READMEs, other skills) and update every reference.
 
-## Related Skills
-
-- [`write-library-tests`](../write-library-tests/SKILL.md) — Unit and integration tests for the library
-- [`maintain-trim-compatibility`](../maintain-trim-compatibility/SKILL.md) — Trim-safe library code and IL2xxx errors
-- [`blazing-story-story`](../blazing-story-story/SKILL.md) — Blazing Story stories for a component

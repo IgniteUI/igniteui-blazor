@@ -4,11 +4,16 @@ import { fromSpinal, getAllPropertyNames } from 'igniteui-core/componentUtil';
 import { dateMinValue } from 'igniteui-core/date';
 import { Loader } from './Loader';
 import { html, noChange } from 'lit-html';
-import { IgcPortalModule } from 'igniteui-core/igc-portal';
+import { IgcTemplateContentComponent } from 'igniteui-core/igc-template-content-component';
 import { refValues, itemMaps } from './refs-state';
 import { _getRegisteredScript, _scriptRegistryEvents } from './api';
 
-IgcPortalModule.register();
+// Ensure the <igc-lite-template-content> host element is always defined. Bridged
+// templates invoked directly by a web component (e.g. igc-combo item /
+// group-header templates) rely on this element to satisfy the Blazor template
+// lifecycle contract, and unlike the grid the combo does not pull in the
+// template-container module on its own.
+IgcTemplateContentComponent.register();
 
 let cr = new ComponentRenderer();
 ComponentRenderer.defaultInstance = cr;
@@ -38,7 +43,7 @@ _scriptRegistryEvents.addEventListener('registered', (e) => {
     if (refs.size === 0) containersPendingScriptRefs.delete(containerId);
   }
   for (const [containerId, json] of ready) {
-    (window as any).igSendMessage(containerId, json, null /* webCallback not used */, [] /* nativeElements not used */);
+    sendMessage(containerId, json, null /* webCallback not used */, [] /* nativeElements not used */);
   }
 });
 function getContainer(id: string): HTMLElement {
@@ -47,25 +52,10 @@ function getContainer(id: string): HTMLElement {
     return null;
   }
   if (!containersDirect.has(id)) {
-    // A data-ig-root element is the component too, but driven by the renderer like a container.
-    containersDirect.set(id, !isRendererContainer(cont) && !cont.hasAttribute('data-ig-root'));
+    // A data-ig-root element is driven by the renderer through descriptions, any other by its attributes and direct events.
+    containersDirect.set(id, !cont.hasAttribute('data-ig-root'));
   }
   return cont;
-}
-function isRendererContainer(cont: Element): boolean {
-  return cont.tagName.toUpperCase() == 'IGC-COMPONENT-RENDERER-CONTAINER';
-}
-/** The component element for a container: the container's child, or the element itself when Blazor rendered it. */
-function targetOf(cont: Element): any {
-  if (!cont) {
-    return null;
-  }
-  return isRendererContainer(cont) ? cont.children[0] : cont;
-}
-/** Blazor renders the template holder next to a renderer container, and inside a data-ig-root element. */
-function dynamicContentHolderOf(cont: Element): Element {
-  const scope = isRendererContainer(cont) ? cont.parentElement : cont;
-  return scope.querySelector(':scope > .ig-dynamic-content-holder');
 }
 function getContainerId(container) {
   // return container.id;
@@ -105,7 +95,7 @@ cr.addReferenceLookupListener((container, refType, value) => {
     });
     return retVal;
   } else {
-    findByName(targetOf(container), value);
+    findByName(container, value);
   }
 });
 
@@ -131,7 +121,7 @@ async function callDotNet(webCallback, methodName: string, ...args: any[]): Prom
   }
 }
 
-(window as any).igWaitForLoaded = async function waitForLoaded() {
+export const waitForLoaded = async function waitForLoaded() {
   if (Loader.instance.isLoading) {
     await Loader.instance.loadingPromise;
   } else {
@@ -139,16 +129,11 @@ async function callDotNet(webCallback, methodName: string, ...args: any[]): Prom
   }
 };
 
-(window as any).igRequestLoad = function requestLoad(module: string) {
+export const requestLoad = function requestLoad(module: string) {
   Loader.instance.request(module, cr);
 };
 
-(window as any).igSetResourceString = function setResourceString(
-  type: string,
-  grouping: string,
-  id: string,
-  value: string,
-) {
+export const setResourceString = function setResourceString(type: string, grouping: string, id: string, value: string) {
   switch (type) {
     case 'set':
       Loader.instance.setResourceString(grouping, id, value);
@@ -171,7 +156,7 @@ function isContainerDirectRender(): boolean {
 }
 
 function getMainTarget() {
-  return targetOf(currentContainer());
+  return currentContainer();
 }
 
 function copyProperties(target: any, source: any) {
@@ -300,8 +285,6 @@ let toReturn = function (retVal: any): any {
 
   return JSON.parse(Loader.stringify(retVal, getMainTarget()));
 };
-
-(window as any).igConvertReturnValue = convertReturnValue;
 
 function toSimpleArgs(args: CustomEvent) {
   let orig = args;
@@ -508,31 +491,25 @@ function raiseEventImpl(propertyName: string, sender: any, args: any, containerN
 
   Loader.clearMarshalIdByValueOnceByEvent(propertyName);
 
-  try {
-    (window as any).raisingEvent = true;
-
-    callDotNet(webCallback, 'OnRaiseEvent', name, propertyName, JSON.stringify({ sender: sender, args: outerArgs }));
-    if ((window as any).webViewCallback) {
-      (window as any).webViewCallback.onRaiseEvent(
-        name,
-        propertyName,
-        JSON.stringify({ sender: sender, args: outerArgs }),
-      );
-    }
-    if (
-      (window as any).webkit &&
-      (window as any).webkit.messageHandlers &&
-      (window as any).webkit.messageHandlers.raiseEvent
-    ) {
-      (window as any).webkit.messageHandlers.raiseEvent.postMessage({
-        name: name,
-        propertyName: propertyName,
-        sender: sender,
-        args: outerArgs,
-      });
-    }
-  } finally {
-    (window as any).raisingEvent = false;
+  callDotNet(webCallback, 'OnRaiseEvent', name, propertyName, JSON.stringify({ sender: sender, args: outerArgs }));
+  if ((window as any).webViewCallback) {
+    (window as any).webViewCallback.onRaiseEvent(
+      name,
+      propertyName,
+      JSON.stringify({ sender: sender, args: outerArgs }),
+    );
+  }
+  if (
+    (window as any).webkit &&
+    (window as any).webkit.messageHandlers &&
+    (window as any).webkit.messageHandlers.raiseEvent
+  ) {
+    (window as any).webkit.messageHandlers.raiseEvent.postMessage({
+      name: name,
+      propertyName: propertyName,
+      sender: sender,
+      args: outerArgs,
+    });
   }
 }
 
@@ -551,17 +528,10 @@ var raiseEvent = function (propertyName: string, sender: any, args: any, contain
   }
 };
 
-(window as any).igCheckReady = function (containerId: string) {
+export const checkReady = function checkReady(containerId: string) {
   // var cont = document.getElementById(containerId);
   var cont = getContainerByIgIdAttribute(containerId);
   return cont !== null && cont !== undefined;
-};
-
-(window as any).igSendMessages = function (json: string) {
-  let m = JSON.parse(json);
-  for (let i = 0; i < m.length; i++) {
-    (window as any).sendMessage(JSON.stringify(m[i]));
-  }
 };
 
 var propMaps = new WeakMap<any, Set<string>>();
@@ -713,7 +683,12 @@ function updateAngularElement(element: any) {
   }
 }
 
-(window as any).igSendMessage = function (containerId: string, json: string, webCallback: any, nativeElements: any[]) {
+export const sendMessage = function sendMessage(
+  containerId: string,
+  json: string,
+  webCallback: any,
+  nativeElements: any[],
+) {
   updateContainer(containerId);
   let m = JSON.parse(json);
 
@@ -827,8 +802,8 @@ function updateAngularElement(element: any) {
         } else {
           if (typeof refValue == 'string' && refValue.indexOf('containerId:::') == 0) {
             refValue = refValue.substring('containerId:::'.length);
-            if (containers.has(refValue) && targetOf(containers.get(refValue)) != null) {
-              refValue = targetOf(containers.get(refValue));
+            if (containers.has(refValue) && containers.get(refValue) != null) {
+              refValue = containers.get(refValue);
             } else {
               if (!containersPendingRefs.has(refValue)) {
                 containersPendingRefs.set(refValue, []);
@@ -836,7 +811,7 @@ function updateAngularElement(element: any) {
               let arr = containersPendingRefs.get(refValue);
               let cc = currentContainer();
               arr.push(() => {
-                refValue = targetOf(containers.get(refValue));
+                refValue = containers.get(refValue);
                 cr.provideRefValue(cc, refName, refValue);
                 refValues.set(refName, refValue);
               });
@@ -968,6 +943,28 @@ function updateAngularElement(element: any) {
                 if (!context) {
                   return html`<div></div>`;
                 }
+                // Some web components (e.g. igc-combo item / group-header templates)
+                // invoke the template function directly with a plain `{ item }`
+                // context that lacks the Blazor lifecycle markers (___contentId /
+                // ___immediate) this bridge relies on. In that case, host the template
+                // in an <igc-lite-template-content> element - the same wrapper the grid uses
+                // for EmptyGridTemplate / cell templates - which drives
+                // ___onTemplateInit / ___onTemplateContextChanged and injects
+                // ___contentId onto the context before re-invoking this function (so
+                // there is no recursion on the second pass).
+                if (
+                  !context.___contentId &&
+                  !context.___immediate &&
+                  !(context.i && context.i.___immediate) &&
+                  !(context.i && context.i.nativeElement && context.i.nativeElement.___immediate) &&
+                  !(context.i && context.i.___contentId) &&
+                  !(context.i && context.i.nativeElement && context.i.nativeElement.___contentId)
+                ) {
+                  return html`<igc-lite-template-content
+                    .template=${currTemplate}
+                    .context=${context}
+                  ></igc-lite-template-content>`;
+                }
                 let contentId = context.___contentId;
                 if (
                   context.___immediate ||
@@ -1027,47 +1024,39 @@ function updateAngularElement(element: any) {
               refValue.___containerId = currentContainerName;
               refValue.___container = currentContainer();
               refValue.___onTemplateInit = (template, templateContent) => {
-                let mut = createMutationObserver((list) => {
+                // One pair of observers per host: a host set up again (reconnected, or given a new
+                // template) drops the pair from its previous setup.
+                templateContent.___disconnectObservers?.();
+                // Waits for the host (this element's render) and the content (the holder's render),
+                // then moves the content into the host.
+                const onChildList = (list: MutationRecord[]) => {
                   for (var mutation of list) {
                     if (mutation.type == 'childList') {
                       var host = templateContent.querySelector('#' + 'host-' + templateContent._id);
                       templateContent.___host = host;
                       if (template.___checkHost(template, templateContent, templateContent.___host)) {
-                        mut.disconnect();
-                        mut = null;
-                        if (mut2) {
-                          mut2.disconnect();
-                          mut2 = null;
-                        }
+                        templateContent.___disconnectObservers();
                       }
                       break;
                     }
                   }
-                });
+                };
+                const mut = createMutationObserver(onChildList);
                 mut.observe(templateContent, {
                   childList: true,
                 });
-                var dynCont = dynamicContentHolderOf(template.___container);
-                let mut2 = createMutationObserver((list) => {
-                  for (var mutation of list) {
-                    if (mutation.type == 'childList') {
-                      var host = templateContent.querySelector('#' + 'host-' + templateContent._id);
-                      templateContent.___host = host;
-                      if (template.___checkHost(template, templateContent, templateContent.___host)) {
-                        mut2.disconnect();
-                        mut2 = null;
-                        if (mut) {
-                          mut.disconnect();
-                          mut = null;
-                        }
-                      }
-                      break;
-                    }
-                  }
-                });
+                var dynCont = template.___container.querySelector(':scope > .ig-dynamic-content-holder');
+                const mut2 = createMutationObserver(onChildList);
                 mut2.observe(dynCont, {
                   childList: true,
                 });
+                // Also run on teardown: content that never arrives (the host left first) would
+                // otherwise keep the holder's observer, and through it this host, alive.
+                templateContent.___disconnectObservers = () => {
+                  mut.disconnect();
+                  mut2.disconnect();
+                  templateContent.___disconnectObservers = null;
+                };
                 adjustDynamicContent(
                   template.___containerId,
                   'TemplateContent',
@@ -1079,6 +1068,17 @@ function updateAngularElement(element: any) {
                 );
               };
               refValue.___onTemplateTeardown = (template, templateContent) => {
+                templateContent.___disconnectObservers?.();
+                if (template.___currentContextMap) {
+                  template.___currentContextMap.delete(templateContent._id);
+                }
+                // The content was moved out of the holder into this host, so the holder dropping it
+                // would leave it here.
+                templateContent.querySelector(`[id="${templateContent._id}"]`)?.remove();
+                // The owner's content goes with it, and its hosts disconnect as it is torn down.
+                if (template.___container.__disposed) {
+                  return;
+                }
                 adjustDynamicContent(
                   template.___containerId,
                   'TemplateContent',
@@ -1207,7 +1207,7 @@ function updateAngularElement(element: any) {
               if (args[i].indexOf('containerId:::') == 0) {
                 args[i] = args[i].substring('containerId:::'.length);
                 if (containers.has(args[i])) {
-                  args[i] = targetOf(containers.get(args[i]));
+                  args[i] = containers.get(args[i]);
                 } else {
                   var ele = getContainerByIgIdAttribute(args[i]);
                   if (ele) {
@@ -1491,7 +1491,6 @@ function updateAngularElement(element: any) {
 };
 
 declare var Blazor: any;
-declare var BINDING: any;
 declare var getValue: any;
 declare var Module: any;
 
@@ -2235,44 +2234,59 @@ function getValueNinePlus(ptr, type) {
   }
 }
 
-let isDotnetNinePlus = false;
-
 function getArrayDataPtr(value: any): any {
   return value + 12;
 }
 
-(window as any).igUnmarshalledDataSourceCreate = function (refName: string, index: number, columns: any) {
-  if ((window as any).getValue) {
-    getValueActual = (window as any).getValue;
-  }
-  if ((globalThis as any).getValue) {
-    getValueActual = (globalThis as any).getValue;
-  }
-  if ((self as any).getValue) {
-    getValueActual = (self as any).getValue;
-  }
-  if (!getValueActual && (window as any).Module !== undefined) {
-    getValueActual = Module.getValue;
-  }
+// Picks the heap readers of the running .NET WebAssembly runtime (getValue on .NET 8, the Blazor.runtime
+// heap views on .NET 9+).
+function ensureHeapAccess() {
   if (!getValueActual) {
-    getValueActual = getValueNinePlus;
-    isDotnetNinePlus = true;
+    if ((window as any).getValue) {
+      getValueActual = (window as any).getValue;
+    }
+    if ((globalThis as any).getValue) {
+      getValueActual = (globalThis as any).getValue;
+    }
+    if ((self as any).getValue) {
+      getValueActual = (self as any).getValue;
+    }
+    if (!getValueActual && (window as any).Module !== undefined) {
+      getValueActual = Module.getValue;
+    }
+    if (!getValueActual) {
+      getValueActual = getValueNinePlus;
+    }
   }
 
-  if (Blazor.platform.getArrayLength) {
-    getArrayLengthActual = Blazor.platform.getArrayLength;
-  }
   if (!getArrayLengthActual) {
-    getArrayLengthActual = (arr: any) => {
-      return getValueActual(getArrayDataPtr(arr), 'i32');
-    };
+    if (Blazor.platform.getArrayLength) {
+      getArrayLengthActual = Blazor.platform.getArrayLength;
+    } else {
+      getArrayLengthActual = (arr: any) => {
+        return getValueActual(getArrayDataPtr(arr), 'i32');
+      };
+    }
   }
+}
 
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
-
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
+// .NET passes the address of the local that holds the columns array (a synchronous in-process call, so the
+// address is valid for its duration); read the array's address out of it.
+function derefColumns(ptr: any): any {
+  ensureHeapAccess();
+  if (Blazor.runtime && Blazor.runtime.getHeapU32) {
+    return Blazor.runtime.getHeapU32(ptr);
   }
+  return getValueActual(ptr, 'i32');
+}
+
+export const unmarshalledDataSourceCreate = function unmarshalledDataSourceCreate(
+  refName: string,
+  index: number,
+  columns: any,
+) {
+  columns = derefColumns(columns);
+
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
@@ -2327,11 +2341,10 @@ function getArrayDataPtr(value: any): any {
   refValues.set(refName, data);
 };
 
-(window as any).igUnmarshalledDataSourceCreateDataIntents = function (refName: string, intents: string) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-    intents = BINDING.conv_string(intents);
-  }
+export const unmarshalledDataSourceCreateDataIntents = function unmarshalledDataSourceCreateDataIntents(
+  refName: string,
+  intents: string,
+) {
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
@@ -2345,16 +2358,17 @@ function getArrayDataPtr(value: any): any {
   refDataIntents.set(refName, dataIntents);
 };
 
-(window as any).igUnmarshalledDataSourceInsert = function (refName: string, index: number, columns: any) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-  }
+export const unmarshalledDataSourceInsert = function unmarshalledDataSourceInsert(
+  refName: string,
+  index: number,
+  columns: any,
+) {
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
 
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
+  columns = derefColumns(columns);
 
   var colItems = getUnmarshalledColumnItems(columns, index);
   var item = createOrUpdateUnmarshalledItem(refName, null, colItems);
@@ -2381,10 +2395,11 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceUpdate = function (refName: string, index: number, columns: any) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-  }
+export const unmarshalledDataSourceUpdate = function unmarshalledDataSourceUpdate(
+  refName: string,
+  index: number,
+  columns: any,
+) {
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
@@ -2394,7 +2409,7 @@ function getArrayDataPtr(value: any): any {
   var syncDataOnly = refName.substr(ind + 1) == 'true';
   refName = n;
 
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
+  columns = derefColumns(columns);
 
   var colItems = getUnmarshalledColumnItems(columns, index);
 
@@ -2421,12 +2436,12 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceRemove = function (refName: string, index: number, columns: any) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-  }
-
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
+export const unmarshalledDataSourceRemove = function unmarshalledDataSourceRemove(
+  refName: string,
+  index: number,
+  columns: any,
+) {
+  derefColumns(columns);
 
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
@@ -2455,16 +2470,17 @@ function getArrayDataPtr(value: any): any {
     }
   }
 };
-(window as any).igUnmarshalledDataSourceClear = function (refName: string, index: number, columns: any) {
-  if (!isDotnetNinePlus) {
-    refName = BINDING.conv_string(refName);
-  }
+export const unmarshalledDataSourceClear = function unmarshalledDataSourceClear(
+  refName: string,
+  index: number,
+  columns: any,
+) {
   var ind = refName.indexOf(':');
   var containerId = refName.substr(0, ind);
   updateContainer(containerId);
   var refName = refName.substr(ind + 1);
 
-  if (isDotnetNinePlus) columns = Blazor.runtime.getHeapU32(columns);
+  columns = derefColumns(columns);
 
   var cols = getUnmarshalledColumns(columns);
 

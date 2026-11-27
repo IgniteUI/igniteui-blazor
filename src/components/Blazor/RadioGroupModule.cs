@@ -1,7 +1,7 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Client resource module for <see cref="IgbRadioGroup"/>.
+    /// Client resource module for <see cref="IgbRadioGroup{TValue}"/>.
     /// </summary>
     /// <remarks>
     /// Register explicitly on application startup by passing this type to <c>AddIgniteUIBlazor</c>.

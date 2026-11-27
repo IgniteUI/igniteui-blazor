@@ -7,6 +7,13 @@
     ],
     "ExcludedEvents": []
   },
+  "IgbCombo": {
+    "ExcludedProps": [
+      // Interface-typed, so the sweep cannot create a sample, and it sets the client's data
+      // rather than a dataJson property. The unit interop contract covers both wrappers.
+      "DataJson"
+    ]
+  },
   "IgbDatePicker": {
     "ExcludedProps": ["ResourceStrings"],
     "DependantMethods": []

@@ -7,7 +7,7 @@ namespace IgniteUI.Blazor.Controls
     /// interacts with it, for example on hover or focus.
     /// It offers features such as placement customization, delays, sticky mode, and animations.
     /// </summary>
-    public partial class IgbTooltip : BaseRendererControl
+    public partial class IgbTooltip : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebTooltip"; } }
@@ -18,21 +18,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbTooltipModule.IsLoadRequested(IgBlazor))
             {
                 IgbTooltipModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

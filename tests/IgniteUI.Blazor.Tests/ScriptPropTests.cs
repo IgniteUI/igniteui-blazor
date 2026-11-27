@@ -28,13 +28,28 @@ public class ScriptPropTests : BlazorComponentTestBase
     public static TheoryData<Type> ComponentsWithScriptProps()
     {
         var data = new TheoryData<Type>();
-        foreach (var type in typeof(IgbBanner).Assembly.GetTypes())
+        var types = typeof(IgbBanner).Assembly.GetTypes();
+        foreach (var type in types)
         {
-            if (type.IsAbstract || !typeof(BaseRendererControl).IsAssignableFrom(type))
+            if (type.IsAbstract || !typeof(IgbComponentBase).IsAssignableFrom(type))
             {
                 continue;
             }
-            var closed = type.IsGenericTypeDefinition ? type.MakeGenericType(typeof(object)) : type;
+            // A base class is swept through the components derived from it, which inherit its Script props; some bases have no element and cannot render.
+            if (types.Any(t => (t.BaseType is { IsGenericType: true } b ? b.GetGenericTypeDefinition() : t.BaseType) == type))
+            {
+                continue;
+            }
+            var closed = type.IsGenericTypeDefinition
+                ? type.MakeGenericType(type.Name[..type.Name.IndexOf('`')] switch
+                {
+                    nameof(IgbCalendar<>) or nameof(IgbDatePicker<>) or nameof(IgbDateTimeInput<>) or nameof(IgbDateRangePicker<>) => new Type[] { typeof(DateTime) },
+                    nameof(IgbSlider<>) or nameof(IgbRating<>) => new Type[] { typeof(double) },
+                    nameof(IgbColorPicker<>) or nameof(IgbSelect<>) => new Type[] { typeof(string) },
+                    nameof(IgbCombo<,>) => new Type[] { typeof(object), typeof(object) },
+                    _ => new Type[] { typeof(object) }
+                })
+                : type;
             if (ScriptPropsOf(closed).Any())
             {
                 data.Add(closed);

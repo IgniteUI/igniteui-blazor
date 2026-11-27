@@ -21,7 +21,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         // gets the full list of valid properties for type
         public static List<PropertyInfo> GetValidProps(Type type)
         {
-            List<string> basePropNames = (typeof(BaseRendererControl)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
+            List<string> basePropNames = (typeof(IgbComponentBase)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
             // exclude readonly, broken component specific props, dependant props, props from the base renderer, templates and events
             .Where(x => x.CanWrite && !excludedProps.Contains(x.Name) && !dependantProps.Contains(x.Name) && !basePropNames.Contains(x.Name) && !x.Name.EndsWith("Script") &&
@@ -32,9 +32,9 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         public static List<MethodInfo> GetValidMethods(Type componentType)
         {
             var baseRendererMethodNames = new HashSet<string>();
-            if (componentType.IsAssignableTo(typeof(BaseRendererControl)))
+            if (componentType.IsAssignableTo(typeof(IgbComponentBase)))
             {
-                baseRendererMethodNames = [.. typeof(BaseRendererControl)
+                baseRendererMethodNames = [.. typeof(IgbComponentBase)
                     .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                     .Where(m => !m.IsSpecialName)
                     .Select(m => m.Name)];
@@ -44,7 +44,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             var validMethods = methodInfos
             // only async in this env.
             .Where(x => x.Name.EndsWith("Async"))
-            // exclude methods coming from BaseRendererControl.
+            // exclude methods coming from IgbComponentBase.
             .Where(x => !baseRendererMethodNames.Contains(x.Name))
             // this is not user settable but exist in all classes.
             .Where(x => x.Name != "SetParametersAsync")
@@ -70,7 +70,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             var classes = asm.GetTypes().Where(p =>
                  p.Namespace == "IgniteUI.Blazor.Controls" &&
                   p.Name.StartsWith("Igb") &&
-                  p.IsSubclassOf(typeof(BaseRendererControl))
+                  p.IsSubclassOf(typeof(IgbComponentBase))
             ).ToList();
 
             // The names come from TestUtil.GetComponentsForTesting and already carry the
@@ -83,7 +83,14 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             if (match is not null && match.IsGenericTypeDefinition)
             {
                 var typeArgs = match.GetGenericArguments();
-                var concreteArgs = typeArgs.Select(_ => typeof(object)).ToArray();
+                var valueType = type switch
+                {
+                    "IgbCalendar" or "IgbDatePicker" or "IgbDateRangePicker" or "IgbDateTimeInput" => typeof(DateTime),
+                    "IgbSlider" or "IgbRating" => typeof(double),
+                    "IgbColorPicker" or "IgbRadioGroup" or "IgbRadio" or "IgbSelect" => typeof(string),
+                    _ => typeof(object)
+                };
+                var concreteArgs = typeArgs.Select(_ => valueType).ToArray();
                 match = match.MakeGenericType(concreteArgs);
             }
             return match;
@@ -92,7 +99,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
         public static List<string> IgnoredProps()
         {
             List<string> all = new List<string>();
-            List<string> baseRenderedControlPropNames = (typeof(BaseRendererControl)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
+            List<string> baseRenderedControlPropNames = (typeof(IgbComponentBase)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
             List<string> baseRendererElementPropNames = (typeof(BaseJsonSerializable)).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(x => x.Name).ToList();
             all = all.Concat(baseRenderedControlPropNames).ToList();
             all = all.Concat(baseRendererElementPropNames).ToList();
@@ -136,7 +143,15 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static Type? GetOriginEventDetailType(Type eventArgsType, Type componentType)
         {
-            var detailProp = eventArgsType.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance);
+            // Some concrete event-argument types inherit Detail from a generic base class
+            // (for example, IgbNumberEventArgs from IgbNumberEventArgs<double>), while others
+            // hide a base Detail property. Look at each declaration level to avoid ambiguity.
+            PropertyInfo? detailProp = null;
+            for (var type = eventArgsType; type != null && detailProp == null; type = type.BaseType)
+            {
+                detailProp = type.GetProperty("Detail", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            }
+
             if (detailProp == null)
             {
                 return null;
@@ -149,7 +164,8 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             }
 
             // TODO: Calendar detail type is Object, but it actually casts to DateTime, so we need to handle that case specifically.
-            if (detailType == typeof(object) && componentType == typeof(IgbCalendar))
+            if (detailType == typeof(object) && componentType.IsGenericType &&
+                componentType.GetGenericTypeDefinition() == typeof(IgbCalendar<>))
             {
                 return typeof(DateTime);
             }
@@ -247,6 +263,13 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
 
         public static object? GetObjectOfType(Type type, bool isData = false, int depth = 0)
         {
+            // A null enum or number leaves the value to the client, which then reports one it derives itself
+            // (e.g. a week start from the locale, a slider bound from Min), so sample a value instead.
+            if (Nullable.GetUnderlyingType(type) is { } underlying && (underlying.IsEnum || underlying == typeof(double)))
+            {
+                type = underlying;
+            }
+
             object? value = GetSimpleType(type);
 
             if (CustomTypes.PredefinedTypes.ContainsKey(type.Name))

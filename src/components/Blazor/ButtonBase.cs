@@ -5,43 +5,10 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Base class shared by <see cref="IgbButton"/> and <see cref="IgbIconButton"/>.
     /// </summary>
-    public partial class IgbButtonBase : BaseRendererControl
+    public partial class IgbButtonBase : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebButtonBase"; } }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override bool UseDirectRender
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string DirectRenderElementName
-        {
-            get
-            {
-                return "igc-button-base";
-            }
-        }
 
         /// <inheritdoc />
         private protected override ControlEventBehavior DefaultEventBehavior
@@ -120,7 +87,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private ButtonBaseTarget _target = ButtonBaseTarget._blank;
+        private ButtonBaseTarget _target = ButtonBaseTarget._self;
 
         /// <summary>
         /// Where to open the linked document. Only effective when <see cref="Href"/> is set.

@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// A container for a group of dropdown items.
     /// </summary>
-    public partial class IgbDropdownGroup : BaseRendererControl
+    public partial class IgbDropdownGroup : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebDropdownGroup"; } }
@@ -14,21 +14,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbDropdownModule.IsLoadRequested(IgBlazor))
             {
                 IgbDropdownModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

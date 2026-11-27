@@ -3,7 +3,7 @@ namespace IgniteUI.Blazor.Controls
     /// <summary>
     /// Displays a collection of data items in a templatable list format.
     /// </summary>
-    public partial class IgbList : BaseRendererControl
+    public partial class IgbList : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebList"; } }
@@ -14,21 +14,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbListModule.IsLoadRequested(IgBlazor))
             {
                 IgbListModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

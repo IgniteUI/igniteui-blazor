@@ -87,9 +87,4 @@ public class ExpansionPanelTests : ComponentWithContractTestBase<IgbExpansionPan
         Assert.Contains("Panel content", cut.Markup);
     }
 
-    [Fact]
-    public void ExpansionPanel_InheritsFromBaseRendererControl()
-    {
-        Assert.True(typeof(IgbExpansionPanel).IsSubclassOf(typeof(BaseRendererControl)));
-    }
 }

@@ -1,6 +1,6 @@
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbSelect
+    public partial class IgbSelect<TValue>
     {
         /// <inheritdoc />
         private protected override string ParentTypeName
@@ -11,16 +11,16 @@ namespace IgniteUI.Blazor.Controls
             }
         }
 
-        private BaseCollection<IgbSelectItem>? _contentItems = null;
+        private BaseCollection<IgbComponentBase>? _contentItems = null;
 
-        internal BaseCollection<IgbSelectItem> ContentItems
+        internal BaseCollection<IgbComponentBase> ContentItems
         {
 
             get
             {
                 if (this._contentItems == null)
                 {
-                    this._contentItems = new BaseCollection<IgbSelectItem>(this, "Items");
+                    this._contentItems = new BaseCollection<IgbComponentBase>(this, "Items");
                 }
                 return this._contentItems;
             }

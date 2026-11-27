@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// The badge is a component indicating a status on a related item or an area
     /// where some active indication is required.
     /// </summary>
-    public partial class IgbBadge : BaseRendererControl
+    public partial class IgbBadge : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebBadge"; } }
@@ -17,21 +17,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbBadgeModule.IsLoadRequested(IgBlazor))
             {
                 IgbBadgeModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

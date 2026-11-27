@@ -8,10 +8,11 @@ namespace IgniteUI.Blazor.Controls
         /// <inheritdoc />
         internal override string RendererType { get { return "WebChatOptions"; } }
 
-        private string? _currentUserId;
+        private string? _currentUserId = "user";
 
         /// <summary>
         /// The ID of the current user. Used to differentiate between incoming and outgoing messages.
+        /// Default is <c>user</c>.
         /// </summary>
         public string? CurrentUserId
         {
@@ -136,7 +137,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private ChatSuggestionsPosition _suggestionsPosition = ChatSuggestionsPosition.BelowInput;
+        private ChatSuggestionsPosition _suggestionsPosition = ChatSuggestionsPosition.BelowMessages;
 
         /// <summary>
         /// Controls the position of the chat suggestions within the component layout.
@@ -161,7 +162,7 @@ namespace IgniteUI.Blazor.Controls
 
             }
         }
-        private double _stopTypingDelay = 0;
+        private double _stopTypingDelay = 3000;
 
         /// <summary>
         /// Time in milliseconds to wait before dispatching a stop typing event.

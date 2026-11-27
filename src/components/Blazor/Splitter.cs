@@ -9,7 +9,7 @@ namespace IgniteUI.Blazor.Controls
     /// using the built-in collapse buttons or the <see cref="Toggle"/> method.
     /// Nested splitters are supported for more complex layouts.
     /// </summary>
-    public partial class IgbSplitter : BaseRendererControl
+    public partial class IgbSplitter : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebSplitter"; } }
@@ -20,21 +20,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbSplitterModule.IsLoadRequested(IgBlazor))
             {
                 IgbSplitterModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

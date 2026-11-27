@@ -2,25 +2,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace IgniteUI.Blazor.Controls
 {
-    public partial class IgbInputBase : BaseRendererControl
+    public partial class IgbInputBase<TValue> : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebInputBase"; } }
 
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
-            }
-        }
+        internal override Type GenericType => Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
         /// <inheritdoc />
         private protected override ControlEventBehavior DefaultEventBehavior

@@ -1,9 +1,9 @@
 namespace IgniteUI.Blazor.Controls
 {
     /// <summary>
-    /// Used when a custom icon/symbol/element needs to be passed to an <see cref="IgbRating"/> component.
+    /// Used when a custom icon/symbol/element needs to be passed to an <see cref="IgbRating{TValue}"/> component.
     /// </summary>
-    public partial class IgbRatingSymbol : BaseRendererControl
+    public partial class IgbRatingSymbol : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebRatingSymbol"; } }
@@ -14,21 +14,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbRatingModule.IsLoadRequested(IgBlazor))
             {
                 IgbRatingModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// The Accordion is a container-based component that can house multiple expansion panels
     /// and offers keyboard navigation.
     /// </summary>
-    public partial class IgbAccordion : BaseRendererControl
+    public partial class IgbAccordion : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebAccordion"; } }
@@ -17,21 +17,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbAccordionModule.IsLoadRequested(IgBlazor))
             {
                 IgbAccordionModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// A container component for the card's main text content.
     /// Nest inside an <see cref="IgbCard"/> to display the primary content.
     /// </summary>
-    public partial class IgbCardContent : BaseRendererControl
+    public partial class IgbCardContent : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebCardContent"; } }
@@ -15,21 +15,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbCardModule.IsLoadRequested(IgBlazor))
             {
                 IgbCardModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

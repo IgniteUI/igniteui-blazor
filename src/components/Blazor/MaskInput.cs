@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// A masked input is an input field where a developer can control user input and format the visible value,
     /// based on configurable rules.
     /// </summary>
-    public partial class IgbMaskInput : IgbInputBase
+    public partial class IgbMaskInput : IgbInputBase<string>
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebMaskInput"; } }
@@ -17,15 +17,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbMaskInputModule.IsLoadRequested(IgBlazor))
             {
                 IgbMaskInputModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

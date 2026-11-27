@@ -36,5 +36,17 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args != null && args.TryGetValue("value", out var valueObj))
+            { this.Value = ReturnToString(valueObj); }
+
+            this.SuppressParentNotify = false;
+        }
+
     }
 }

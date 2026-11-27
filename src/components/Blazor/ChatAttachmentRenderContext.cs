@@ -41,5 +41,17 @@ namespace IgniteUI.Blazor.Controls
 
         }
 
+        /// <inheritdoc />
+        internal override void FromEventJson(IgbComponentBase control, Dictionary<string, object?>? args)
+        {
+            base.FromEventJson(control, args);
+            this.SuppressParentNotify = true;
+
+            if (args != null && args.TryGetValue("attachment", out var attachmentObj) && ConvertReturnValue(attachmentObj, "ChatMessageAttachment", true) is IgbChatMessageAttachment attachment)
+            { this.Attachment = attachment; }
+
+            this.SuppressParentNotify = false;
+        }
+
     }
 }

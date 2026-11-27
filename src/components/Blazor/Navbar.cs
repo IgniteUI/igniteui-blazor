@@ -4,7 +4,7 @@ namespace IgniteUI.Blazor.Controls
     /// A navigation bar component is used to facilitate navigation through
     /// a series of hierarchical screens within an app.
     /// </summary>
-    public partial class IgbNavbar : BaseRendererControl
+    public partial class IgbNavbar : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebNavbar"; } }
@@ -15,21 +15,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbNavbarModule.IsLoadRequested(IgBlazor))
             {
                 IgbNavbarModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

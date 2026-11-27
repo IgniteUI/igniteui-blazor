@@ -6,7 +6,7 @@ namespace IgniteUI.Blazor.Controls
     /// A step component used within an <see cref="IgbStepper"/> to represent an individual step
     /// in a wizard-like workflow.
     /// </summary>
-    public partial class IgbStep : BaseRendererControl
+    public partial class IgbStep : IgbComponentBase
     {
         /// <inheritdoc />
         internal override string RendererType { get { return "WebStep"; } }
@@ -17,21 +17,6 @@ namespace IgniteUI.Blazor.Controls
             if (!IgbStepperModule.IsLoadRequested(IgBlazor))
             {
                 IgbStepperModule.Register(IgBlazor);
-            }
-        }
-
-        /// <inheritdoc />
-        private protected override string ResolveDisplay()
-        {
-            return "inline-block";
-        }
-
-        /// <inheritdoc />
-        private protected override bool SupportsVisualChildren
-        {
-            get
-            {
-                return true;
             }
         }
 

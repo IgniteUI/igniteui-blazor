@@ -118,7 +118,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Radio_RendersAllAttributes()
     {
-        var cut = Render<IgbRadio>(p => p
+        var cut = Render<IgbRadio<string>>(p => p
             .Add(x => x.Value, "option-a")
             .Add(x => x.Checked, true)
             .Add(x => x.Disabled, true)
@@ -136,7 +136,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Rating_RendersAllAttributes()
     {
-        var cut = Render<IgbRating>(p => p
+        var cut = Render<IgbRating<double>>(p => p
             .Add(x => x.Value, 4)
             .Add(x => x.Max, 10)
             .Add(x => x.ReadOnly, true)
@@ -511,7 +511,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact]
     public void Select_RendersAllAttributes()
     {
-        var cut = Render<IgbSelect>(p => p
+        var cut = Render<IgbSelect<string>>(p => p
             .Add(x => x.Label, "Choose")
             .Add(x => x.Placeholder, "Select...")
             .Add(x => x.Disabled, true)
@@ -531,7 +531,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void DateTimeInput_RendersAllAttributes()
     {
-        var cut = Render<IgbDateTimeInput>(p => p
+        var cut = Render<IgbDateTimeInput<DateTime>>(p => p
             .Add(x => x.InputFormat, "dd/MM/yyyy")
             .Add(x => x.Label, "Date")
             .Add(x => x.Placeholder, "Enter date")
@@ -643,7 +643,7 @@ public class RenderingSerializationTests : BlazorComponentTestBase
     [Fact(Skip = "Indirect rendering, awaiting render simplification.")]
     public void ColorPicker_RendersAllAttributes()
     {
-        var cut = Render<IgbColorPicker>(p => p
+        var cut = Render<IgbColorPicker<string>>(p => p
             .Add(x => x.Value, "#ff0000")
             .Add(x => x.Label, "Background")
             .Add(x => x.Format, ColorFormat.Rgb)
