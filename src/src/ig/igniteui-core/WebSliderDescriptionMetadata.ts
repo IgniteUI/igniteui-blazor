@@ -30,7 +30,7 @@ export class WebSliderDescriptionMetadata extends Base {
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
 		metadata.item("Value", "Number:double");
 		metadata.item("DefaultValue", "Unknown");
-		metadata.item("Name", "String");
+		metadata.item("FormName", "(wc:Name)String");
 		metadata.item("Invalid", "Boolean");
 		metadata.item("InputRef", "EventRef:NumberEventHandler:input");
 		metadata.item("InputRef@args", "NumberEventArgs");

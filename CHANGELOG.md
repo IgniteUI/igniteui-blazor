@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Date Range Picker:** `Select` and `SelectAsync` now apply the range they are given, instead of clearing the picker's value. [#174](https://github.com/IgniteUI/igniteui-blazor/issues/174)
+- **Slider, Range Slider:** `ValueFormatOptions` now reaches the element, so the thumb and tick labels show the formatted values. All their properties now reach the element through the client renderer, as the date pickers' do, so prerendered markup no longer carries them.
 
 ### Breaking Changes
 

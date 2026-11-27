@@ -72,7 +72,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     {
         var contract = InteropContract;
         RequireSectionFact(contract.Methods.Count > 0, "Methods_FollowContract", nameof(VerifyMethodContract));
-        RequireSectionFact(contract.Props.Count > 0, "Props_FollowContract", nameof(VerifyPropContract));
+        RequireSectionFact(contract.Props.Count + contract.UnsetProps.Count > 0, "Props_FollowContract", nameof(VerifyPropContract));
         RequireSectionFact(contract.Events.Count > 0, "Events_FollowContract", nameof(VerifyEventContract));
         RequireSectionFact(contract.Binds.Count > 0, "Binds_FollowContract", nameof(VerifyBindContract));
     }
@@ -271,6 +271,7 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
     /// then asserts the component property reads back the assigned parameter value and
     /// a property update carrying the expected wire value was transmitted — on whichever
     /// channel the current stack uses (the harness abstracts state descriptions vs. ref transfers).
+    /// <c>.Unset</c> specs run here too: no update may carry them.
     /// </summary>
     /// <exception cref="ContractViolationException">
     /// Any spec failure, naming the violated member and carrying the declaring contract
@@ -305,6 +306,35 @@ public abstract class ComponentWithContractTestBase<TComponent> : BlazorComponen
             catch (Exception ex) when (ex is not ContractViolationException)
             {
                 throw Violation($"prop \"{prop.WireName}\"", prop.Source, ex);
+            }
+        }
+
+        foreach (var unset in InteropContract.UnsetProps)
+        {
+            try
+            {
+                var witness = InteropContract.Props.FirstOrDefault(p => p.WireName != unset.WireName)
+                    ?? throw new XunitException("an .Unset spec needs another .Prop spec to prove the state crossed");
+                var cut = Render<TComponent>(ps =>
+                {
+                    witness.Arrange?.Invoke(ps);
+                    witness.Set(ps);
+                });
+                var containerId = harness.ContainerIdOf(cut);
+
+                // An absent update alone cannot tell "left out" from "nothing crossed yet".
+                if (harness.FindPropertyUpdate(containerId, witness.WireName) is null)
+                {
+                    throw new XunitException($"no property update was observed, not even \"{witness.WireName}\", which the render set");
+                }
+                if (harness.FindPropertyUpdate(containerId, unset.WireName) is { } actual)
+                {
+                    throw new XunitException($"transmitted {actual.GetRawText()} although never assigned");
+                }
+            }
+            catch (Exception ex) when (ex is not ContractViolationException)
+            {
+                throw Violation($"unset prop \"{unset.WireName}\"", unset.Source, ex);
             }
         }
     }

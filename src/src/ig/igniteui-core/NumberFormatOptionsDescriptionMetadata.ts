@@ -22,6 +22,7 @@ export class NumberFormatOptionsDescriptionMetadata extends Base {
 	static fillMetadata(metadata: Dictionary$2<string, string>): void {
 		metadata.item("__skipModuleRegisterWebComponents", "Boolean");
 		metadata.item("__importTypesWebComponents", "String:igniteui-webcomponents");
+		metadata.item("__isPlainObject", "Boolean");
 		metadata.item("__marshalByValue", "Boolean");
 		metadata.item("CompactDisplay", "String");
 		metadata.item("Currency", "String");
@@ -34,6 +35,7 @@ export class NumberFormatOptionsDescriptionMetadata extends Base {
 		metadata.item("Style", "String");
 		metadata.item("Unit", "String");
 		metadata.item("UnitDisplay", "String");
+		// Intl takes "auto" | "always" | "min2" | false; Boolean is the one type the renderer passes through as is.
 		metadata.item("UseGrouping", "Boolean");
 		metadata.item("MinimumIntegerDigits", "Number:int");
 		metadata.item("MinimumFractionDigits", "Number:int");

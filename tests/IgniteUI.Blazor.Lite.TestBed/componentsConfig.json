@@ -53,10 +53,6 @@
   },
   "IgbSlider": {
     "DependantMethods": [],
-    "ExcludedProps": [
-      // BUG 35189
-      "ValueFormatOptions"
-    ],
     "ExcludedDefaultProps": [
       // Derived on the client, not stored: upperBound reports max and lowerBound reports min
       // while unset, so the wrapper cannot mirror either with a constant initializer.
@@ -144,10 +140,6 @@
     ]
   },
   "IgbRangeSlider": {
-    "ExcludedProps": [
-      // BUG 35189
-      "ValueFormatOptions"
-    ],
     "ExcludedDefaultProps": [
       // Derived on the client, not stored: upperBound reports max and lowerBound reports min
       // while unset, so the wrapper cannot mirror either with a constant initializer.
