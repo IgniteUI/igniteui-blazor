@@ -37,7 +37,7 @@ namespace IgniteUI.Blazor.Lite.TestBed.Components.Common
             "IgbNumberFormatOptions", new IgbNumberFormatOptions()
             {
                 Style = "percent",
-                UseGrouping = true,
+                UseGrouping = NumberFormatGrouping.Always,
                 MinimumIntegerDigits = 1,
                 MinimumFractionDigits = 0,
                 MaximumFractionDigits = 1,
