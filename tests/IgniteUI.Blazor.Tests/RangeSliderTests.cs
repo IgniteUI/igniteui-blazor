@@ -23,6 +23,8 @@ public class RangeSliderTests : ComponentWithContractTestBase<IgbRangeSlider>
             })
         .Prop(c => c.Lower, 20.0)
         .Prop(c => c.Upper, 80.0)
+        .Prop(c => c.ThumbLabelLower, "From")
+        .Prop(c => c.ThumbLabelUpper, "To")
         .Prop(c => c.Min, 10.0)
         .Prop(c => c.Max, 200.0)
         .Prop(c => c.Step, 5.0)

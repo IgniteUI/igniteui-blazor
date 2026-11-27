@@ -151,6 +151,12 @@ public sealed class StatePropContractSpec<TComponent> where TComponent : ICompon
     public SpecSource? Source { get; init; }
 }
 
+public sealed class UnsetPropContractSpec
+{
+    public required string WireName { get; init; }
+    public SpecSource? Source { get; init; }
+}
+
 public sealed class EventContractSpec<TComponent> where TComponent : IComponent
 {
     public required string EventName { get; init; }
@@ -263,11 +269,13 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
     private readonly List<MethodContractSpec<TComponent>> _methods = [];
     private readonly List<EventContractSpec<TComponent>> _events = [];
     private readonly List<StatePropContractSpec<TComponent>> _props = [];
+    private readonly List<UnsetPropContractSpec> _unsetProps = [];
     private readonly List<BindContractSpec<TComponent>> _binds = [];
 
     public IReadOnlyList<MethodContractSpec<TComponent>> Methods => _methods;
     public IReadOnlyList<EventContractSpec<TComponent>> Events => _events;
     public IReadOnlyList<StatePropContractSpec<TComponent>> Props => _props;
+    public IReadOnlyList<UnsetPropContractSpec> UnsetProps => _unsetProps;
     public IReadOnlyList<BindContractSpec<TComponent>> Binds => _binds;
 
     /// <summary>
@@ -693,6 +701,23 @@ public sealed class ComponentContract<TComponent> where TComponent : IComponent
             ExpectedMemberValue = value,
             ExpectedValue = wire,
             Arrange = arrange,
+            Source = new SpecSource(atFile, atLine),
+        });
+        return this;
+    }
+
+    /// <summary>
+    /// A property that must not cross while never assigned, so the web component keeps its own default.
+    /// Checked on a render with the contract's first other <c>.Prop</c> set, whose update proves the state crossed.
+    /// </summary>
+    public ComponentContract<TComponent> Unset<TValue>(
+        Expression<Func<TComponent, TValue>> member,
+        [CallerFilePath] string atFile = "",
+        [CallerLineNumber] int atLine = 0)
+    {
+        _unsetProps.Add(new UnsetPropContractSpec
+        {
+            WireName = WirePropertyName(member),
             Source = new SpecSource(atFile, atLine),
         });
         return this;

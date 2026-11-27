@@ -13,9 +13,6 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         private const string ThumbTexts =
             "s => [...(document.querySelector(s)?.shadowRoot?.querySelectorAll('[part~=\"thumb\"]') ?? [])].map(t => t.getAttribute('aria-valuetext'))";
 
-        /// <summary>
-        /// Without it, the options never reach the element, so the values show unformatted.
-        /// </summary>
         [Test]
         public async Task ValueFormatOptions_FormatTheValues()
         {
@@ -37,8 +34,28 @@ namespace IgniteUI.Blazor.Lite.IntegrationTests
         }
 
         /// <summary>
-        /// Without it, the tick labels would not rotate: the element takes the rotation in degrees, which the enum names stand for.
+        /// Never crosses as the boolean false and Min2 as a string; both must leave 1200% ungrouped, where "auto" would not.
         /// </summary>
+        [Test]
+        public async Task ValueFormatOptions_UseGrouping_ReachesIntlAsIs()
+        {
+            await Page.GotoAsync("http://localhost:5249/slider-options");
+            try
+            {
+                await Page.WaitForFunctionAsync(
+                    "() => { const texts = s => (" + ThumbTexts + ")(s).join('|');"
+                    + " return texts('#grouping-never') === '1200%' && texts('#grouping-min2') === '1200%'; }");
+            }
+            catch (TimeoutException)
+            {
+                var observed = await Page.EvaluateAsync<JsonElement>(
+                    "() => Object.fromEntries(['#grouping-never', '#grouping-min2'].map(s => [s, {"
+                    + " thumbs: (" + ThumbTexts + ")(s),"
+                    + " options: document.querySelector(s)?.valueFormatOptions ?? null }]))");
+                Assert.Fail($"The thumbs do not show 1200% ungrouped. Observed: {observed.GetRawText()}");
+            }
+        }
+
         [Test]
         public async Task TickLabelRotation_ReachesTheElementAsDegrees()
         {

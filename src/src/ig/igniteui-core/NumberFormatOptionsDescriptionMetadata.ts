@@ -35,6 +35,7 @@ export class NumberFormatOptionsDescriptionMetadata extends Base {
 		metadata.item("Style", "String");
 		metadata.item("Unit", "String");
 		metadata.item("UnitDisplay", "String");
+		// Intl takes "auto" | "always" | "min2" | false; Boolean is the one type the renderer passes through as is.
 		metadata.item("UseGrouping", "Boolean");
 		metadata.item("MinimumIntegerDigits", "Number:int");
 		metadata.item("MinimumFractionDigits", "Number:int");

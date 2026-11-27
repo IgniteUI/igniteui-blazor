@@ -30,6 +30,9 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider<double>>
         .Prop(c => c.Max, 200.0)
         .Prop(c => c.LowerBound, 20.0)
         .Prop(c => c.UpperBound, 80.0)
+        // Unset: the client bounds the value by Min and Max, so no bound may cross, not even as 0.
+        .Unset(c => c.LowerBound)
+        .Unset(c => c.UpperBound)
         .Prop(c => c.Step, 5.0)
         .Prop(c => c.Disabled, true)
         .Prop(c => c.DiscreteTrack, true)
@@ -71,9 +74,6 @@ public class SliderTests : ComponentWithContractTestBase<IgbSlider<double>>
         Assert.NotNull(cut.Find("igc-slider"));
     }
 
-    /// <summary>
-    /// Without it, the labels would render outside the slider element, which reads them from its own children.
-    /// </summary>
     [Fact]
     public void Slider_Labels_RenderInsideTheElement()
     {
@@ -149,10 +149,14 @@ public class IntSliderTests : ComponentWithContractTestBase<IgbSlider<int>>
             argsJson: """{"detail": 0.5}""",
             assert: args => Assert.Equal(0, args.Detail))
         .Bind(c => c.Value, c => c.ValueChanged, via: c => c.Change,
-            argsJson: """{"detail": 7}""", expect: 7);
+            argsJson: """{"detail": 7}""", expect: 7)
+        .Prop(c => c.Value, 7);
 
     [Fact]
     public Task Methods_FollowContract() => VerifyMethodContract();
+
+    [Fact]
+    public void Props_FollowContract() => VerifyPropContract();
 
     [Fact]
     public void Events_FollowContract() => VerifyEventContract();
